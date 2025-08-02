@@ -1,19 +1,35 @@
-const n=`---
+---
 title: "About Me"
 description: "Learn how I leverage cloud automation, DevOps best practices, and SaaS integrations to drive digital strategy and measurable impact."
 ---
 
-![Roger Cormier headshot](https://www.rcormier.dev/assets/images/IMG_1242.JPG)
+<div style="display: flex; align-items: flex-start; gap: 2rem; margin-bottom: 2rem; flex-direction: row; flex-wrap: wrap;">
+  <div style="flex-shrink: 0; width: 200px; margin: 0;">
+    <img src="https://www.rcormier.dev/assets/images/IMG_1242.JPG" alt="Roger Cormier headshot" style="width: 200px; height: 250px; border-radius: 50%; object-fit: cover; border: 4px solid #e5e7eb; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: block; margin: 0;" />
+  </div>
+  <div style="flex: 1; min-width: 280px;">
+    <h3 style="margin: 0 0 0.5rem 0;">Roger Cormier, PMP</h3>
+    <p><strong>🎯 Technical Program Manager</strong> – Leading DevOps, SaaS, and ERP transformations</p>
+    <p><strong>🪖 Military Veteran</strong> – Strategy-driven, operationally grounded</p>
+    <p><strong>🔧 Systems Integrator</strong> – Connecting NetSuite, Azure, Ramp, and Smartsheet pipelines</p>
+  </div>
+</div>
 
-## Roger Cormier, PMP
-
-**🎯 Technical Program Manager** – Leading DevOps, SaaS, and ERP transformations  
-**🪖 Military Veteran** – Strategy-driven, operationally grounded  
-**🔧 Systems Integrator** – Connecting NetSuite, Azure, Ramp, and Smartsheet pipelines  
+<style>
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column !important;
+    text-align: center;
+  }
+  .hero-image {
+    margin-bottom: 1.5rem !important;
+  }
+}
+</style>
 
 ---
 
-I’m a PMP-certified Technical Project Manager and U.S. Army veteran who operates at the intersection of cloud platforms, SaaS ecosystems, and operational strategy.
+I'm a PMP-certified Technical Project Manager and U.S. Army veteran who operates at the intersection of cloud platforms, SaaS ecosystems, and operational strategy.
 
 I specialize in modernizing legacy systems, integrating enterprise tools, and aligning cross-functional teams around systems thinking and practical execution.
 
@@ -74,7 +90,7 @@ I intend to pursue a **Doctor of Business Administration (DBA)** with a concentr
 
 I'm a Christian, a husband, and a father of five—and those commitments shape how I lead. I approach work with a sense of stewardship, integrity, and service.
 
-I don’t bring religion into the workplace, but I lead with consistency, humility, and the belief that leadership is about responsibility to others—not authority over them.
+I don't bring religion into the workplace, but I lead with consistency, humility, and the belief that leadership is about responsibility to others—not authority over them.
 
 ---
 
@@ -88,7 +104,6 @@ I don’t bring religion into the workplace, but I lead with consistency, humili
 | Calm under pressure     | I bring structure, not panic, when uncertainty hits                   |
 | Outcomes over activity  | I define success by delivery, adoption, and durability—not effort     |
 
-
 ---
 
 ## 📫 Let’s Connect
@@ -96,4 +111,3 @@ I don’t bring religion into the workplace, but I lead with consistency, humili
 I’m always open to discussing systems leadership, enterprise transformation, or cross-functional delivery strategy.  
 
 ➡️ Reach out via the [Contact](/contact) page or connect with me on [LinkedIn](https://www.linkedin.com/in/rogerleecormier)
-`;export{n as default};
