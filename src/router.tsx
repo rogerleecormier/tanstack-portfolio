@@ -3,6 +3,7 @@ import {
   createRoute,
   createRouter,
   RouterProvider,
+  Outlet,
 } from '@tanstack/react-router'
 import AppLayout from './layout/AppLayout'
 import MarkdownPage from './pages/MarkdownPage'
@@ -23,60 +24,86 @@ const aboutRoute = createRoute({
   component: () => <MarkdownPage file="about" />
 })
 
-const projectsRoute = createRoute({
+const strategyRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/projects',
-  component: () => <MarkdownPage file="projects" />
+  path: '/strategy',
+  component: () => <MarkdownPage file="strategy" />
 })
 
-// Sub-routes for about section
-const aboutExperienceRoute = createRoute({
+const leadershipRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/about/experience',
-  component: () => <MarkdownPage file="about/experience" />
+  path: '/leadership',
+  component: () => <MarkdownPage file="leadership" />
 })
 
-const aboutSkillsRoute = createRoute({
+const devopsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/about/skills',
-  component: () => <MarkdownPage file="about/skills" />
+  path: '/devops',
+  component: () => <MarkdownPage file="devops" />
 })
 
-const aboutEducationRoute = createRoute({
+const saasRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/about/education',
-  component: () => <MarkdownPage file="about/education" />
+  path: '/saas',
+  component: () => <MarkdownPage file="saas" />
 })
 
-// Sub-routes for projects section
-const projectsWebRoute = createRoute({
+const talentRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/projects/web',
-  component: () => <MarkdownPage file="projects/web" />
+  path: '/talent',
+  component: () => <MarkdownPage file="talent" />
 })
 
-const projectsMobileRoute = createRoute({
+const cultureRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/projects/mobile',
-  component: () => <MarkdownPage file="projects/mobile" />
+  path: '/culture',
+  component: () => <MarkdownPage file="culture" />
 })
 
-const projectsDataRoute = createRoute({
+// Create analytics layout route that can render children
+const analyticsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/projects/data',
-  component: () => <MarkdownPage file="projects/data" />
+  path: '/analytics',
+  component: () => <Outlet />  // This renders child routes
 })
+
+// Create index route for analytics (shows when visiting /analytics)
+const analyticsIndexRoute = createRoute({
+  getParentRoute: () => analyticsRoute,
+  path: '/',
+  component: () => <MarkdownPage file="analytics" />
+})
+
+// Create nested route for project analysis under analytics
+const projectAnalysisRoute = createRoute({
+  getParentRoute: () => analyticsRoute,
+  path: '/project-analysis',
+  component: () => <MarkdownPage file="project-analysis" />
+})
+
+const visionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/vision',
+  component: () => <MarkdownPage file="vision" />
+})
+
+// Update analytics route to include children
+const analyticsRouteWithChildren = analyticsRoute.addChildren([
+  analyticsIndexRoute,  // Add the index route
+  projectAnalysisRoute
+])
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
   aboutRoute,
-  aboutExperienceRoute,
-  aboutSkillsRoute,
-  aboutEducationRoute,
-  projectsRoute,
-  projectsWebRoute,
-  projectsMobileRoute,
-  projectsDataRoute,
+  leadershipRoute,
+  visionRoute,
+  strategyRoute,
+  cultureRoute,
+  talentRoute,
+  devopsRoute,
+  saasRoute,
+  analyticsRouteWithChildren,
 ])
 
 export const router = createRouter({ routeTree })

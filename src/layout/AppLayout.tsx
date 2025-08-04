@@ -1,15 +1,18 @@
 // src/layout/AppLayout.tsx
 import { Outlet } from '@tanstack/react-router'
 import Header from './Header'
+import Footer from './Footer'
 
 export default function AppLayout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <Outlet />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Outlet />
+        </div>
       </main>
-      <footer className="bg-gray-800 text-white p-4 text-center">Footer</footer>
+      <Footer />
     </div>
   )
 }

@@ -94,20 +94,12 @@ I don't bring religion into the workplace, but I lead with consistency, humility
 
 ---
 
-## 🧠 Leadership Philosophy
+## 🧭 Leadership Philosophy
 
-| Principle               | Behavior in Practice                                                  |
-|-------------------------|------------------------------------------------------------------------|
-| Systems over silos      | I design for integration and sustainability, not isolation            |
-| Clarity is non-negotiable | I surface ambiguity early and align teams around shared understanding |
-| Respect as a standard   | I challenge ideas, not people—and I lead by example                   |
-| Calm under pressure     | I bring structure, not panic, when uncertainty hits                   |
-| Outcomes over activity  | I define success by delivery, adoption, and durability—not effort     |
+> *"Leadership is not about being in charge. It's about taking care of those in your charge and delivering outcomes that matter."*
+
+Whether leading cross-functional teams through complex integrations or mentoring junior staff through technical challenges, my approach centers on clarity, accountability, and service—creating environments where people can do their best work while delivering measurable business value.
 
 ---
 
-## 📫 Let’s Connect
-
-I’m always open to discussing systems leadership, enterprise transformation, or cross-functional delivery strategy.  
-
-➡️ Reach out via the [Contact](/contact) page or connect with me on [LinkedIn](https://www.linkedin.com/in/rogerleecormier)
+📋 *Sample artifacts, documentation, and detailed case studies available upon request. [Let's connect](/contact).*

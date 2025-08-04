@@ -4,58 +4,82 @@ export const searchData: SearchItem[] = [
   {
     id: 'about',
     title: 'About Me',
+    description: 'Learn how I leverage cloud automation, DevOps best practices, and SaaS integrations to drive digital strategy and measurable impact.',
     content: 'PMP-certified Technical Project Manager and U.S. Army veteran cloud platforms SaaS ecosystems operational strategy DevOps ERP transformations',
     url: '/about',
     section: 'About',
-    headings: ['What I Do', 'Military Background', 'Education & Certifications', 'Values & Personal Ethic', 'Leadership Philosophy']
+    headings: []
   },
   {
-    id: 'about-experience',
-    title: 'Experience',
-    content: 'Technical Program Manager DevOps SaaS ERP transformations cloud automation',
-    url: '/about/experience',
-    section: 'About'
+    id: 'strategy',
+    title: 'Digital Transformation Strategy',
+    description: 'Strategic approach to digital transformation and operational excellence',
+    content: 'Digital transformation strategy and operational excellence',
+    url: '/strategy',
+    section: 'Strategy',
+    headings: []
   },
   {
-    id: 'about-skills',
-    title: 'Skills',
-    content: 'Azure Functions GitHub Actions NetSuite Ramp Vena technical skills programming',
-    url: '/about/skills',
-    section: 'About'
+    id: 'leadership',
+    title: 'Technical Project Leadership',
+    description: 'Leadership approach to technical project management and team development',
+    content: 'Technical project leadership and team management',
+    url: '/leadership',
+    section: 'Leadership',
+    headings: []
   },
   {
-    id: 'about-education',
-    title: 'Education',
-    content: 'PMP certification CompTIA Network+ Organizational Leadership Information Technology',
-    url: '/about/education',
-    section: 'About'
+    id: 'devops',
+    title: 'Cloud & DevOps Engineering',
+    description: 'Cloud automation and DevOps best practices implementation',
+    content: 'Cloud automation DevOps best practices Azure Functions GitHub Actions',
+    url: '/devops',
+    section: 'DevOps',
+    headings: []
   },
   {
-    id: 'projects',
-    title: 'Projects',
-    content: 'Portfolio of technical projects and implementations web development mobile apps data science',
-    url: '/projects',
-    section: 'Projects'
+    id: 'saas',
+    title: 'ERP & SaaS Integration',
+    description: 'Enterprise system integration and SaaS platform connectivity',
+    content: 'SaaS integration NetSuite Ramp Vena enterprise systems',
+    url: '/saas',
+    section: 'SaaS',
+    headings: []
   },
   {
-    id: 'projects-web',
-    title: 'Web Development',
-    content: 'Web development projects React TypeScript Vite modern web applications',
-    url: '/projects/web',
-    section: 'Projects'
+    id: 'talent',
+    title: 'Organizational Strategy & Talent Innovation',
+    description: 'Talent development and organizational strategy initiatives',
+    content: 'Organizational strategy and talent innovation',
+    url: '/talent',
+    section: 'Talent',
+    headings: []
   },
   {
-    id: 'projects-mobile',
-    title: 'Mobile Apps',
-    content: 'Mobile application development iOS Android React Native',
-    url: '/projects/mobile',
-    section: 'Projects'
+    id: 'culture',
+    title: 'Culture & Leadership Philosophy',
+    description: 'Leadership philosophy and organizational culture development',
+    content: 'Culture and leadership philosophy organizational development',
+    url: '/culture',
+    section: 'Culture',
+    headings: []
   },
   {
-    id: 'projects-data',
-    title: 'Data Science',
-    content: 'Data analysis machine learning analytics visualization Python R',
-    url: '/projects/data',
-    section: 'Projects'
+    id: 'analytics',
+    title: 'Data Analytics & Business Intelligence',
+    description: 'Data analytics and business intelligence solutions',
+    content: 'Data analytics business intelligence reporting dashboards',
+    url: '/analytics',
+    section: 'Analytics',
+    headings: []
+  },
+  {
+    id: 'vision',
+    title: 'Strategic Vision & Career Aspirations',
+    description: 'Long-term strategic vision and career development goals',
+    content: 'Strategic vision and career aspirations future planning',
+    url: '/vision',
+    section: 'Vision',
+    headings: []
   }
 ]
