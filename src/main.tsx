@@ -1,14 +1,10 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { AppRouter } from './router'
-import { initializeSearchIndex } from './utils/searchIndex'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import AppRouter from './router.tsx'  // Changed from named import to default import
 import './index.css'
 
-// Initialize search index
-initializeSearchIndex().catch(console.error)
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
     <AppRouter />
-  </React.StrictMode>,
+  </StrictMode>,
 )

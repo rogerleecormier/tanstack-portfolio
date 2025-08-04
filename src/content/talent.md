@@ -32,7 +32,7 @@ Delivered actionable job descriptions, recruitment strategies, and measurable im
 
 ---
 
-## 💰 Compensation & Talent Acquisition
+## 💰 Compensation & Acquisition
 
 ### Strategic Offer Design Simulation
 
@@ -72,7 +72,7 @@ Delivered blueprint for measurable workforce development with clear business imp
 
 ---
 
-## 🚀 Product Strategy & Consulting
+## 🚀 Product Strategy
 
 ### BCG Forage Consulting Portfolio
 
@@ -91,7 +91,7 @@ Applied design thinking, user research, and MVP development across diverse indus
 
 ---
 
-## 🌍 Global Team Leadership
+## 🌍 Global Leadership
 
 ### International Product Rollout Strategy
 
@@ -111,7 +111,7 @@ Improved team clarity, performance, and delivery predictability across distribut
 
 ---
 
-## 🔄 Organizational Change & Consulting
+## 🔄 Change & Consulting
 
 ### Microsoft IT Support Transformation
 
@@ -173,7 +173,7 @@ Practical frameworks for inclusive leadership that drive both equity outcomes an
 
 ---
 
-## 🌟 Talent Philosophy
+## 🌟 Philosophy
 
 > *"The best way to find out if you can trust somebody is to trust them... but in organizations, the best way to build that trust is through systems that make excellence inevitable and equity visible."*
 

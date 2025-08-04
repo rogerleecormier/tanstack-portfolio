@@ -31,7 +31,7 @@ I lead initiatives that turn legacy, spreadsheet‑driven workflows into cloud�
 
 ---
 
-## 💳 Accounts Payable Transformation (Ramp → NetSuite) — *In Progress*
+## 💳 AP Transformation — *In Progress*
 
 | 📌 Area | ⬅️ Before | ➡️ After (Target) |
 |---------|-----------|-------------------|
@@ -50,7 +50,7 @@ I lead initiatives that turn legacy, spreadsheet‑driven workflows into cloud�
 
 ---
 
-## 📦 Forecast File Intake Streamlining (Box → Vena)
+## 📦 Forecast Streamlining (Box → Vena)
 
 | 📌 Metric | Result |
 |-----------|--------|
@@ -113,7 +113,7 @@ Why it matters: PR‑based docs, zero runtime footprint, fully auditable change 
 
 ---
 
-## 🚀 Transformation Philosophy
+## 🚀 Philosophy
 
 > *"The best digital transformation feels invisible to end users—they just know their work got easier."*
 

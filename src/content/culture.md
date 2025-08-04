@@ -9,7 +9,7 @@ My goal is not just to deliver projects, but to build resilient systems, trusted
 
 ---
 
-## 🧭 What I Value in Team Culture
+## 🧭 Team Culture Values
 
 ### 🔍 Radical Clarity  
 I believe that clarity is the antidote to confusion, misalignment, and burnout. Whether in technical requirements or stakeholder expectations, I seek to make ambiguity explicit and drive teams toward shared understanding.
@@ -28,7 +28,7 @@ I give feedback early, directly, and constructively—and I expect the same in r
 
 ---
 
-## ✝️ Values & Personal Ethic
+## ✝️ Personal Values
 
 I'm a Christian, and while I don’t impose my beliefs on others, my faith shapes how I lead and serve:
 
@@ -53,7 +53,7 @@ My worldview drives me to lead with consistency, care, and conviction—regardle
 
 ---
 
-## 🌱 Culture Philosophy
+## 🌱 Philosophy
 
 > *"Culture is not what you say—it's what you consistently do when no one is watching."*
 

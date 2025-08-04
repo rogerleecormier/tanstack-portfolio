@@ -44,7 +44,7 @@ I operate across business and engineering domains, enabling secure, scalable, an
 
 ---
 
-## 🏦 Ramp + NetSuite Integration | AP Process Reform
+## 🏦 Ramp + NetSuite Integration
 
 - Led rollout of Ramp's native NetSuite integration (Ramp Plus) to replace spreadsheet-based transaction coding  
 - Coordinated setup of GL mapping, vendor alignment, and sync validation with Finance and IT teams  
@@ -56,7 +56,7 @@ I operate across business and engineering domains, enabling secure, scalable, an
 
 ---
 
-## 📁 Box → Vena Forecast File Intake Streamlining
+## 📁 Box → Vena Forecast Intake
 
 - Resolved delays and file inconsistency in financial forecast uploads to Vena via Box  
 - Introduced structured folder hierarchy, naming conventions, and file intake validation via Smartsheet  
@@ -68,7 +68,7 @@ I operate across business and engineering domains, enabling secure, scalable, an
 
 ---
 
-## 📊 Financial Reporting QA Workflow with Smartsheet
+## 📊 Financial Reporting QA Workflow
 
 - Developed a Smartsheet-based tracking system to support financial data handoff between business units and the Finance team  
 - Enabled consistent review of uploaded forecast and budget data by mapping file locations, submitters, and timestamps  
@@ -80,7 +80,7 @@ I operate across business and engineering domains, enabling secure, scalable, an
 
 ---
 
-## 🧪 GitHub Actions + Azure DevOps Automation
+## 🧪 GitHub Actions + Azure DevOps
 
 - Supported cloud automation and CI/CD pipeline adoption using GitHub Actions and Azure Functions  
 - Scoped, tested, and deployed automated workflows for ETL jobs and system monitoring  

@@ -1,5 +1,5 @@
 ---
-title: "Cloud & DevOps Engineering"
+title: "Cloud DevOps Engineering"
 description: "Hands-on engineering turning fragmented SaaS ecosystems into automated, audit-ready pipelines using Azure Functions, GitHub Actions, and AI-assisted development."
 ---
 

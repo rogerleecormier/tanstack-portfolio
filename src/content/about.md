@@ -59,7 +59,7 @@ This experience instilled a leadership style rooted in discipline, clarity, and 
 
 ---
 
-## 🎓 Education & Certifications
+## 🎓 Education & Credentials
 
 ### 📚 Academic Background
 

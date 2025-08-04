@@ -21,7 +21,7 @@ Whether it’s through a future **Doctor of Business Administration (DBA)** or e
 
 ---
 
-## 💼 The Type of Work That Drives Me
+## 💼 What Drives Me
 
 - Leading transformations that unify fragmented systems into cohesive, automated ecosystems
 - Designing workflows that make life easier for end users without sacrificing compliance or structure
@@ -30,7 +30,7 @@ Whether it’s through a future **Doctor of Business Administration (DBA)** or e
 
 ---
 
-## 🌱 From Tactical Execution to Strategic Impact
+## 🌱 Strategic Impact
 
 I don’t just want to build better systems—I want to build better organizations through technology.
 
@@ -38,7 +38,7 @@ The next chapter of my career is about taking the principles that have served me
 
 ---
 
-## 🎯 Vision Philosophy
+## 🎯 Philosophy
 
 > *"Vision without execution is hallucination; execution without vision is just busy work."*
 

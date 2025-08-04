@@ -7,11 +7,11 @@ Data enables visibility, action, and accountability. As a Technical Project Mana
 
 ---
 
-## 🛠 Real-World Analytics in Practice
+## 🛠 Analytics in Practice
 
 ### ✅ Asana AI Reporting for Project Risk
 
-- Used Asana’s built-in AI to surface risk indicators, missed deadlines, and task velocity drops across parallel workstreams.
+- Used Asana's built-in AI to surface risk indicators, missed deadlines, and task velocity drops across parallel workstreams.
 - Automated reports exported for weekly status calls with product owners and technical leads.
 - Delivered early warnings and improved sprint closure predictability.
 
@@ -62,7 +62,7 @@ I embed operational analytics into every program I manage—using data to guide 
 
 ---
 
-## 🎓 Academic Foundation in Analytics
+## 🎓 Academic Foundation
 
 ### Courses
 
@@ -72,7 +72,7 @@ I embed operational analytics into every program I manage—using data to guide 
 
 ---
 
-### Key Competencies Gained:
+### 🎯 Key Competencies Gained
 
 | Technique               | Tools & Methods                                     |
 |-------------------------|----------------------------------------------------|
@@ -115,7 +115,7 @@ I embed operational analytics into every program I manage—using data to guide 
 
 ## 🔧 Tools & Platforms
 
-Here’s the current stack driving my analytics and automation workflows:
+Here's the current stack driving my analytics and automation workflows:
 
 | Area               | Tools Used                                               |
 |--------------------|----------------------------------------------------------|
