@@ -7,7 +7,6 @@ export default function Footer() {
   return (
     <footer className="bg-teal-700 text-teal-50 mt-auto">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        {/* Main Footer Content */}
         <div className="text-center space-y-6">
           {/* Name and Title */}
           <div>
