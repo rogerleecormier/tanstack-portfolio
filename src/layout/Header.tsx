@@ -13,7 +13,7 @@ export default function Header() {
     const pathSegments = currentPath.split('/').filter(Boolean)
     const breadcrumbs = [{ title: 'Home', path: '/' }]
     
-    pathSegments.forEach((segment, index) => {
+    pathSegments.forEach((_, index) => {
       const path = '/' + pathSegments.slice(0, index + 1).join('/')
       const page = navigationPages.find(p => p.path === path || p.children?.some(c => c.path === path))
       
