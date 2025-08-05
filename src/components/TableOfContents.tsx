@@ -32,8 +32,8 @@ export function TableOfContents() {
       const visibleHeading = headings.find(heading => {
         if (!heading) return false
         const rect = heading.getBoundingClientRect()
-        // Adjust for sticky header height (approximately 100px)
-        return rect.top >= 120 && rect.top <= 200
+        // Adjust for sticky header height (approximately 80px)
+        return rect.top >= 80 && rect.top <= 200
       })
 
       if (visibleHeading) {
@@ -48,7 +48,7 @@ export function TableOfContents() {
   if (currentToc.length === 0) return null
 
   return (
-    <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pt-4"> {/* Sticky with proper offset */}
+    <div className="fixed top-36 right-8 z-40 w-80 h-fit max-h-[calc(100vh-10rem)] overflow-y-auto">
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-gray-900 mb-3">
           On This Page

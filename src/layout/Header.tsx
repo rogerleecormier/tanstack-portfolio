@@ -45,7 +45,7 @@ export default function Header() {
   const breadcrumbs = getBreadcrumbs()
 
   return (
-    <header className="sticky top-0 z-40 bg-teal-600 shadow-md border-b border-teal-500">
+    <header className="sticky top-0 z-50 bg-teal-600 shadow-md border-b border-teal-500">
       <div className="px-4 sm:px-6 py-3 sm:py-4">
         {/* Mobile Layout: Stack vertically */}
         <div className="sm:hidden">
