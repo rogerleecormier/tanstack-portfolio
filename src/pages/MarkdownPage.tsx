@@ -4,11 +4,13 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import fm from 'front-matter'
 import slugify from 'slugify'
+import { useLocation } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import MermaidChart from '../components/MermaidChart'
 import { AboutProfileCard } from '@/components/AboutProfileCard'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -17,6 +19,8 @@ interface Frontmatter {
   tags?: string[]
   date?: string
   author?: string
+  keywords?: string[]
+  image?: string
 }
 
 // Define TOCEntry type - export it so sidebar can use it
@@ -28,6 +32,43 @@ export type TOCEntry = {
 export default function MarkdownPage({ file }: { file: string }) {
   const [content, setContent] = React.useState<string>('')
   const [frontmatter, setFrontmatter] = React.useState<Frontmatter>({})
+  const location = useLocation()
+
+  // Determine content type based on file
+  const getContentType = (file: string): 'website' | 'article' | 'profile' => {
+    if (file === 'about') return 'profile'
+    if (['strategy', 'leadership', 'devops', 'saas', 'analytics', 'project-analysis'].includes(file)) return 'article'
+    return 'website'
+  }
+
+  // Generate page-specific keywords
+  const getPageKeywords = (file: string, tags?: string[]): string[] => {
+    const baseKeywords = tags || []
+    
+    const fileKeywords: Record<string, string[]> = {
+      about: ['About', 'Biography', 'Professional Background'],
+      strategy: ['Strategy', 'Strategic Planning', 'Business Strategy'],
+      leadership: ['Leadership', 'Team Management', 'Leadership Philosophy'],
+      devops: ['DevOps', 'CI/CD', 'Azure Functions', 'GitHub Actions'],
+      saas: ['SaaS', 'Software as a Service', 'Enterprise Software'],
+      analytics: ['Analytics', 'Data Analysis', 'Project Analytics'],
+      'project-analysis': ['Project Analysis', 'Risk Analysis', 'Budget Analysis']
+    }
+
+    return [...baseKeywords, ...(fileKeywords[file] || [])]
+  }
+
+  // Update document title and meta tags with enhanced SEO
+  useDocumentTitle({
+    title: frontmatter.title,
+    description: frontmatter.description,
+    keywords: getPageKeywords(file, frontmatter.keywords || frontmatter.tags),
+    image: frontmatter.image,
+    url: location.pathname,
+    type: getContentType(file),
+    author: frontmatter.author,
+    publishedTime: frontmatter.date
+  })
 
   // Load markdown content and extract TOC
   React.useEffect(() => {
@@ -105,7 +146,7 @@ export default function MarkdownPage({ file }: { file: string }) {
       {/* Add the profile card for about page */}
       {file === 'about' && <AboutProfileCard />}
 
-      {/* Markdown Content with Typography - Normal prose size */}
+      {/* Markdown Content */}
       <article className={cn(
         "prose prose-neutral dark:prose-invert max-w-none w-full",
         "prose-headings:scroll-m-20 prose-headings:tracking-tight",
@@ -122,7 +163,6 @@ export default function MarkdownPage({ file }: { file: string }) {
           rehypePlugins={[rehypeRaw]}
           remarkPlugins={[remarkGfm]}
           components={{
-            // Add component mapping for AboutProfileCard
             h1: ({ children, ...props }) => {
               const text = String(children)
               const id = slugify(text, { lower: true, strict: true })

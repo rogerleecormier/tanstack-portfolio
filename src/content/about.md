@@ -1,6 +1,9 @@
 ---
 title: "About Me"
-description: "Technical Project Manager with expertise in ERP systems, SaaS integrations, and cross-functional project delivery."
+description: "PMP-certified Technical Project Manager and U.S. Army veteran specializing in enterprise systems modernization, SaaS integrations, and cross-functional project delivery."
+keywords: ["Technical Project Manager", "PMP Certified", "U.S. Army Veteran", "Enterprise Systems", "SaaS Integration"]
+image: "https://www.rcormier.dev/assets/images/roger-cormier-profile.jpg"
+author: "Roger Lee Cormier"
 ---
 
 I'm a PMP-certified Technical Project Manager and U.S. Army veteran who specializes in modernizing enterprise systems and leading cross-functional teams through complex technology transformations.
