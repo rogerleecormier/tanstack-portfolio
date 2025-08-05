@@ -10,12 +10,12 @@ export default function AppLayout() {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex bg-gray-50">
-        {/* Left Sidebar - Full height */}
+        {/* Left Sidebar - Responsive: overlay on mobile, fixed on desktop */}
         <AppSidebar />
         
         {/* Main Content Area */}
         <SidebarInset className="flex flex-col flex-1 min-w-0">
-          {/* Header positioned to the right of sidebar */}
+          {/* Header positioned to the right of sidebar on desktop, full width on mobile */}
           <Header />
           
           <div className="flex flex-1">
@@ -26,13 +26,13 @@ export default function AppLayout() {
               </div>
             </main>
             
-            {/* Right Sidebar - Table of Contents */}
+            {/* Right Sidebar - Table of Contents - Hidden on mobile */}
             <aside className="hidden xl:block w-96 flex-shrink-0 p-8 border-l border-gray-200 bg-white/50">
               <TableOfContents />
             </aside>
           </div>
           
-          {/* Footer positioned to the right of sidebar */}
+          {/* Footer */}
           <Footer />
         </SidebarInset>
       </div>

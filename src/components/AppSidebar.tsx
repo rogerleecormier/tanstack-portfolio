@@ -1,4 +1,4 @@
-import { ChevronRight, User, BarChart3, Briefcase, Users, Settings, Code, Target } from "lucide-react"
+import { ChevronRight, User, BarChart3, Briefcase, Users, Settings, Code, Target, Heart, Eye } from "lucide-react"
 import { Link, useLocation } from "@tanstack/react-router"
 
 import {
@@ -13,6 +13,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import {
   Collapsible,
@@ -23,7 +24,7 @@ import {
 const navigationItems = [
   {
     title: "About",
-    url: "/about",
+    url: "/",
     icon: User,
   },
   {
@@ -37,9 +38,34 @@ const navigationItems = [
       },
       {
         title: "Project Analysis",
-        url: "/project-analysis",
+        url: "/analytics/project-analysis",
       },
     ],
+  },
+  {
+    title: "Strategy",
+    url: "/strategy",
+    icon: Target,
+  },
+  {
+    title: "Leadership",
+    url: "/leadership",
+    icon: Users,
+  },
+  {
+    title: "Vision",
+    url: "/vision",
+    icon: Eye,
+  },
+  {
+    title: "Culture & Values",
+    url: "/culture",
+    icon: Heart,
+  },
+  {
+    title: "Talent Development",
+    url: "/talent",
+    icon: Briefcase,
   },
   {
     title: "DevOps & Automation",
@@ -51,36 +77,12 @@ const navigationItems = [
     url: "/saas",
     icon: Settings,
   },
-  {
-    title: "Leadership",
-    url: "/leadership",
-    icon: Users,
-  },
-  {
-    title: "Strategy",
-    url: "/strategy",
-    icon: Target,
-  },
-  {
-    title: "Culture & Values",
-    url: "/culture",
-    icon: Briefcase,
-  },
-  {
-    title: "Talent Development",
-    url: "/talent",
-    icon: Users,
-  },
-  {
-    title: "Vision",
-    url: "/vision",
-    icon: Target,
-  },
 ]
 
 export function AppSidebar() {
   const location = useLocation()
   const currentPath = location.pathname
+  useSidebar()
 
   const isCurrentPage = (url: string) => currentPath === url
 
@@ -93,7 +95,7 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar className="border-r border-teal-200 bg-teal-50 w-64">
+    <Sidebar className="border-r border-teal-200 bg-teal-50" collapsible="icon">
       <SidebarContent className="pt-4">
         <SidebarGroup>
           <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">

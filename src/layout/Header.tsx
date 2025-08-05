@@ -1,4 +1,4 @@
-import { Briefcase, ChevronRight } from 'lucide-react'
+import { Briefcase, ChevronRight, Menu } from 'lucide-react'
 import { Link, useLocation } from '@tanstack/react-router'
 import Search from '../components/Search'
 import { navigationPages } from '../config/navigation'
@@ -36,22 +36,41 @@ export default function Header() {
   const breadcrumbs = getBreadcrumbs()
 
   return (
-    <header className="sticky top-0 z-40 bg-teal-600 shadow-md border-b border-teal-500"> {/* Added sticky positioning */}
+    <header className="sticky top-0 z-40 bg-teal-600 shadow-md border-b border-teal-500">
       <div className="px-4 sm:px-6 py-3 sm:py-4">
-        {/* Top Row: Sidebar toggle + Logo/Title and Search */}
-        <div className="flex items-center justify-between gap-3 mb-3">
+        {/* Mobile Layout: Stack vertically */}
+        <div className="sm:hidden">
+          {/* Top row: Hamburger menu + Logo/Title */}
+          <div className="flex items-center gap-3 mb-3">
+            <SidebarTrigger className="inline-flex items-center justify-center w-10 h-10 text-white hover:text-teal-100 hover:bg-teal-700/20 rounded-md transition-colors [&>svg]:!w-6 [&>svg]:!h-6 [&>svg]:!text-white">
+              <Menu className="h-6 w-6" />
+            </SidebarTrigger>
+            <Briefcase className="h-5 w-5 text-white flex-shrink-0" />
+            <h1 className="text-lg font-bold text-white truncate">
+              Roger Lee Cormier Portfolio
+            </h1>
+          </div>
+
+          {/* Search box - Mobile (full width under logo) */}
+          <div className="w-full">
+            <Search />
+          </div>
+        </div>
+
+        {/* Desktop Layout: Side by side */}
+        <div className="hidden sm:flex items-center justify-between gap-3 mb-3">
           {/* Left side: Sidebar toggle + Logo and Title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            {/* Sidebar Toggle Button */}
-            <SidebarTrigger className="text-white hover:text-teal-100 p-1" />
-            
+            <SidebarTrigger className="inline-flex items-center justify-center w-8 h-8 text-white hover:text-teal-100 hover:bg-teal-700/20 rounded-md transition-colors [&>svg]:!w-5 [&>svg]:!h-5 [&>svg]:!text-white">
+              <Menu className="h-5 w-5" />
+            </SidebarTrigger>
             <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-white flex-shrink-0" />
             <h1 className="text-lg sm:text-xl font-bold text-white truncate">
               Roger Lee Cormier Portfolio
             </h1>
           </div>
 
-          {/* Right-aligned Search */}
+          {/* Right-aligned Search - Desktop */}
           <div className="flex-shrink-0">
             <Search />
           </div>
@@ -71,7 +90,7 @@ export default function Header() {
                 >
                   {crumb.title}
                 </Link>
-              )}
+                )}
             </div>
           ))}
         </div>

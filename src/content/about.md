@@ -1,35 +1,66 @@
 ---
 title: "About Me"
-description: "Learn how I leverage cloud automation, DevOps best practices, and SaaS integrations to drive digital strategy and measurable impact."
+description: "Technical Program Manager with expertise in ERP systems, SaaS integrations, and cross-functional project delivery."
 ---
 
-<div style="display: flex; align-items: flex-start; gap: 2rem; margin-bottom: 2rem; flex-direction: row; flex-wrap: wrap;">
-  <div style="flex-shrink: 0; width: 200px; margin: 0;">
-    <img src="https://www.rcormier.dev/assets/images/IMG_1242.JPG" alt="Roger Cormier headshot" style="width: 200px; height: 250px; border-radius: 50%; object-fit: cover; border: 4px solid #e5e7eb; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: block; margin: 0;" />
-  </div>
-  <div style="flex: 1; min-width: 280px;">
-    <h3 style="margin: 0 0 0.5rem 0;">Roger Cormier, PMP</h3>
-    <p><strong>🎯 Technical Program Manager</strong> – Leading DevOps, SaaS, and ERP transformations</p>
-    <p><strong>🪖 Military Veteran</strong> – Strategy-driven, operationally grounded</p>
-    <p><strong>🔧 Systems Integrator</strong> – Connecting NetSuite, Azure, Ramp, and Smartsheet pipelines</p>
+<!-- Professional Profile Card -->
+<div class="mb-8">
+  <div class="bg-white rounded-lg border shadow-sm p-6 hover:shadow-md transition-shadow duration-200">
+    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+      <!-- Profile Image - Oval -->
+      <div class="flex-shrink-0 w-full lg:w-auto flex justify-center lg:justify-start">
+        <img 
+          src="https://www.rcormier.dev/assets/images/IMG_1242.JPG" 
+          alt="Roger Cormier, PMP - Technical Program Manager" 
+          class="w-40 h-48 lg:w-44 lg:h-52 rounded-full object-cover border-4 border-teal-200 shadow-lg"
+        />
+      </div>
+      <!-- Professional Information -->
+      <div class="flex-1 w-full text-center lg:text-left space-y-4">
+        <!-- Header -->
+        <div class="space-y-2">
+          <h2 class="text-3xl font-bold text-gray-900">Roger Cormier, PMP</h2>
+          <p class="text-xl text-teal-600 font-semibold">Technical Program Manager</p>
+          <p class="text-sm text-gray-500 uppercase tracking-wide">U.S. Army Veteran • Systems Integration Leader</p>
+        </div>
+        <!-- Professional Summary -->
+        <div class="space-y-3">
+          <p class="text-gray-700 leading-relaxed">
+            Driving enterprise-scale digital transformation through strategic program leadership, 
+            cross-functional team coordination, and systematic execution of complex technology initiatives.
+          </p>
+          <!-- Key Specializations -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 text-sm">
+            <div class="flex items-center justify-center lg:justify-start gap-2">
+              <span class="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0"></span>
+              <span class="text-gray-600">ERP & SaaS Integration</span>
+            </div>
+            <div class="flex items-center justify-center lg:justify-start gap-2">
+              <span class="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0"></span>
+              <span class="text-gray-600">DevOps & Cloud Automation</span>
+            </div>
+            <div class="flex items-center justify-center lg:justify-start gap-2">
+              <span class="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0"></span>
+              <span class="text-gray-600">Process Optimization</span>
+            </div>
+            <div class="flex items-center justify-center lg:justify-start gap-2">
+              <span class="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0"></span>
+              <span class="text-gray-600">Cross-Platform Orchestration</span>
+            </div>
+          </div>
+          <!-- Call to Action -->
+          <div class="pt-2">
+            <p class="text-sm text-gray-600 text-center lg:text-left">
+              <strong>Focus Areas:</strong> NetSuite, Azure Functions, GitHub Actions, Smartsheet, and enterprise workflow automation
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<style>
-@media (max-width: 768px) {
-  .hero-section {
-    flex-direction: column !important;
-    text-align: center;
-  }
-  .hero-image {
-    margin-bottom: 1.5rem !important;
-  }
-}
-</style>
-
----
-
-I'm a PMP-certified Technical Project Manager and U.S. Army veteran who operates at the intersection of cloud platforms, SaaS ecosystems, and operational strategy.
+I'm a PMP-certified Technical Program Manager and U.S. Army veteran who operates at the intersection of cloud platforms, SaaS ecosystems, and operational strategy.
 
 I specialize in modernizing legacy systems, integrating enterprise tools, and aligning cross-functional teams around systems thinking and practical execution.
 

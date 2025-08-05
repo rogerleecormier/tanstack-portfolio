@@ -77,6 +77,36 @@
 }
 
 @layer components {
+  /* Enhanced responsive table styling */
+  .prose table {
+    @apply text-sm;
+  }
+  
+  @media (max-width: 640px) {
+    .prose table {
+      @apply text-xs;
+    }
+    
+    .prose th,
+    .prose td {
+      @apply px-2 py-1;
+    }
+  }
+  
+  /* Ensure table content doesn't break layout */
+  .prose table th,
+  .prose table td {
+    @apply break-words;
+    max-width: 200px;
+  }
+  
+  @media (min-width: 640px) {
+    .prose table th,
+    .prose table td {
+      max-width: none;
+    }
+  }
+
   /* Mermaid chart styling */
   .mermaid-chart svg {
     @apply max-w-full h-auto;
