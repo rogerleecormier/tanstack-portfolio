@@ -5,6 +5,9 @@ type TOCEntry = {
   slug: string
 }
 
+const STICKY_HEADER_HEIGHT = 80 // Height of the sticky header in pixels
+const VISIBLE_HEADING_OFFSET = 200 // Lower bound for heading visibility in pixels
+
 export function TableOfContents() {
   const [currentToc, setCurrentToc] = useState<TOCEntry[]>([])
   const [activeId, setActiveId] = useState<string>('')
@@ -32,8 +35,8 @@ export function TableOfContents() {
       const visibleHeading = headings.find(heading => {
         if (!heading) return false
         const rect = heading.getBoundingClientRect()
-        // Adjust for sticky header height (approximately 80px)
-        return rect.top >= 80 && rect.top <= 200
+        // Adjust for sticky header height and visible offset
+        return rect.top >= STICKY_HEADER_HEIGHT && rect.top <= VISIBLE_HEADING_OFFSET
       })
 
       if (visibleHeading) {
