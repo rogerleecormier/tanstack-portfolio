@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import MermaidChart from '../components/MermaidChart'
+import { AboutProfileCard } from '@/components/AboutProfileCard'
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -39,14 +40,17 @@ export default function MarkdownPage({ file }: { file: string }) {
         // Parse frontmatter
         const { attributes, body } = fm(text)
         setFrontmatter(attributes as Frontmatter)
-        setContent(body)
+        
+        // Remove import statements from markdown content
+        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+        setContent(cleanedBody)
 
         // Extract headings for TOC - ONLY H2 headings
-        const headingRegex = /^#{2}\s+(.+)$/gm  // Changed from #{2,3} to #{2} to capture only ## headers
+        const headingRegex = /^#{2}\s+(.+)$/gm
         const headings: TOCEntry[] = []
         let match
 
-        while ((match = headingRegex.exec(body)) !== null) {
+        while ((match = headingRegex.exec(cleanedBody)) !== null) {
           const title = match[1].trim()
           const slug = slugify(title, { lower: true, strict: true })
           headings.push({ title, slug })
@@ -98,6 +102,9 @@ export default function MarkdownPage({ file }: { file: string }) {
         </header>
       )}
 
+      {/* Add the profile card for about page */}
+      {file === 'about' && <AboutProfileCard />}
+
       {/* Markdown Content with Typography - Normal prose size */}
       <article className={cn(
         "prose prose-neutral dark:prose-invert max-w-none w-full",
@@ -110,12 +117,12 @@ export default function MarkdownPage({ file }: { file: string }) {
         "prose-blockquote:border-l-2 prose-blockquote:pl-6 prose-blockquote:italic",
         "prose-code:relative prose-code:rounded prose-code:bg-muted prose-code:px-[0.3rem] prose-code:py-[0.2rem] prose-code:font-mono prose-code:text-sm",
         "prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:border prose-pre:bg-muted prose-pre:p-4"
-        // Removed the responsive prose sizing: "sm:prose-xl xl:prose-2xl"
       )}>
         <ReactMarkdown
           rehypePlugins={[rehypeRaw]}
           remarkPlugins={[remarkGfm]}
           components={{
+            // Add component mapping for AboutProfileCard
             h1: ({ children, ...props }) => {
               const text = String(children)
               const id = slugify(text, { lower: true, strict: true })

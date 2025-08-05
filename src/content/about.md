@@ -1,136 +1,84 @@
 ---
 title: "About Me"
-description: "Technical Program Manager with expertise in ERP systems, SaaS integrations, and cross-functional project delivery."
+description: "Technical Project Manager with expertise in ERP systems, SaaS integrations, and cross-functional project delivery."
 ---
 
-<!-- Professional Profile Card -->
-<div class="mb-8">
-  <div class="bg-white rounded-lg border shadow-sm p-6 hover:shadow-md transition-shadow duration-200">
-    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
-      <!-- Profile Image - Oval -->
-      <div class="flex-shrink-0 w-full lg:w-auto flex justify-center lg:justify-start">
-        <img 
-          src="https://www.rcormier.dev/assets/images/IMG_1242.JPG" 
-          alt="Roger Cormier, PMP - Technical Program Manager" 
-          class="w-40 h-48 lg:w-44 lg:h-52 rounded-full object-cover border-4 border-teal-200 shadow-lg"
-        />
-      </div>
-      <!-- Professional Information -->
-      <div class="flex-1 w-full text-center lg:text-left space-y-4">
-        <!-- Header -->
-        <div class="space-y-2">
-          <h2 class="text-3xl font-bold text-gray-900">Roger Cormier, PMP</h2>
-          <p class="text-xl text-teal-600 font-semibold">Technical Program Manager</p>
-          <p class="text-sm text-gray-500 uppercase tracking-wide">U.S. Army Veteran • Systems Integration Leader</p>
-        </div>
-        <!-- Professional Summary -->
-        <div class="space-y-3">
-          <p class="text-gray-700 leading-relaxed">
-            Driving enterprise-scale digital transformation through strategic program leadership, 
-            cross-functional team coordination, and systematic execution of complex technology initiatives.
-          </p>
-          <!-- Key Specializations -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 text-sm">
-            <div class="flex items-center justify-center lg:justify-start gap-2">
-              <span class="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0"></span>
-              <span class="text-gray-600">ERP & SaaS Integration</span>
-            </div>
-            <div class="flex items-center justify-center lg:justify-start gap-2">
-              <span class="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0"></span>
-              <span class="text-gray-600">DevOps & Cloud Automation</span>
-            </div>
-            <div class="flex items-center justify-center lg:justify-start gap-2">
-              <span class="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0"></span>
-              <span class="text-gray-600">Process Optimization</span>
-            </div>
-            <div class="flex items-center justify-center lg:justify-start gap-2">
-              <span class="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0"></span>
-              <span class="text-gray-600">Cross-Platform Orchestration</span>
-            </div>
-          </div>
-          <!-- Call to Action -->
-          <div class="pt-2">
-            <p class="text-sm text-gray-600 text-center lg:text-left">
-              <strong>Focus Areas:</strong> NetSuite, Azure Functions, GitHub Actions, Smartsheet, and enterprise workflow automation
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+I'm a PMP-certified Technical Project Manager and U.S. Army veteran who specializes in modernizing enterprise systems and leading cross-functional teams through complex technology transformations.
 
-I'm a PMP-certified Technical Program Manager and U.S. Army veteran who operates at the intersection of cloud platforms, SaaS ecosystems, and operational strategy.
-
-I specialize in modernizing legacy systems, integrating enterprise tools, and aligning cross-functional teams around systems thinking and practical execution.
-
-With experience spanning DevOps, ERP, and SaaS environments, I lead delivery initiatives that eliminate manual friction, surface actionable insight, and support scalable, audit-ready outcomes.
+With deep experience in cloud platforms, SaaS ecosystems, and operational strategy, I bridge the gap between technical execution and business outcomes—delivering scalable solutions that eliminate friction and drive measurable results.
 
 ---
 
 ## 💼 What I Do
 
-As a TPM, I deliver value across the full lifecycle—from strategy to rollout—with a focus on executional clarity, architectural alignment, and business impact.
+As a Technical Project Manager, I orchestrate end-to-end delivery across the full project lifecycle—from strategic planning to implementation—with focus on operational excellence and stakeholder alignment.
 
-- **ERP & SaaS Integration:** NetSuite, Ramp, Vena, Box, Checkbook.io  
-- **Cloud & DevOps Automation:** Azure Functions, GitHub Actions, serverless workflows  
-- **Workflow Reengineering:** Business process mapping, automation pipelines, and cross-platform orchestration  
-- **Governance & Risk Mitigation:** Change control, audit readiness, secure data handling  
-- **Stakeholder Enablement:** Translating technical workflows into operational outcomes  
+**Core Competencies:**
+- **Enterprise Integration:** NetSuite, Ramp, Vena, Box, Checkbook.io, and custom API workflows
+- **Cloud & DevOps:** Azure Functions, GitHub Actions, CI/CD pipelines, and serverless architectures  
+- **Process Optimization:** Business process reengineering, automation design, and workflow orchestration
+- **Risk & Compliance:** Change management, audit readiness, SOX compliance, and secure data handling
+- **Leadership & Communication:** Cross-functional team coordination and technical-to-business translation
 
 ---
 
 ## 🪖 Military Background
 
-Before entering the private sector, I served as a Non-Commissioned Officer (NCO) in the U.S. Army, leading signal communications teams responsible for secure, mission-critical infrastructure across global operations.
+I served as a Non-Commissioned Officer (NCO) in the U.S. Army, leading signal communications teams responsible for mission-critical infrastructure in high-stakes operational environments.
 
-My roles included managing RF and satellite transmission systems, overseeing WIN-T tactical networks, and operating 24/7 Network Operations Centers (NOCs) in high-stakes environments.
+**Key Responsibilities:**
+- Managed RF and satellite transmission systems across global deployments
+- Supervised WIN-T tactical network operations and maintenance
+- Led 24/7 Network Operations Center (NOC) teams under demanding conditions
+- Mentored junior personnel in technical skills and leadership development
 
-This experience instilled a leadership style rooted in discipline, clarity, and ownership—under pressure and at scale.
-
----
-
-## 🎓 Education & Credentials
-
-### 📚 Academic Background
-
-- **M.S. in Organizational Leadership** *(In Progress)* – Excelsior University  
-  Focus: Technology Strategy, Data Analytics, and Change Management  
-
-- **B.S. in Information Technology** – Excelsior University  
-
-- **A.A.S. in Technical Studies** – Excelsior College  
-  Focus: Computer Technologies  
-
-I intend to pursue a **Doctor of Business Administration (DBA)** with a concentration in **technology leadership, innovation, or digital strategy**—to deepen my ability to drive enterprise-scale transformation from both technical and executive perspectives.
-
-### 🛠 Certifications
-
-- **Project Management Professional (PMP)**  
-- **CompTIA Network+**  
-
-### 🎯 Future Certifications (Planned)
-
-- **Cloud (Azure or AWS)**  
-- **Lean Six Sigma (Green Belt)**  
-- **Agile (Scrum or SAFe)**  
+This foundation instilled a leadership philosophy centered on discipline, accountability, and service—qualities I bring to every technical project I manage.
 
 ---
 
-## ✝️ Values & Personal Ethic
+## 🎓 Education & Professional Development
 
-I'm a Christian, a husband, and a father of five—and those commitments shape how I lead. I approach work with a sense of stewardship, integrity, and service.
+**Academic Credentials:**
+- **M.S. in Organizational Leadership** _(In Progress)_ – Excelsior University  
+  *Concentration: Technology & Data Analytics*
+- **B.S. in Information Technology** – Excelsior University
+- **A.A.S. in Technical Studies** – Excelsior College
 
-I don't bring religion into the workplace, but I lead with consistency, humility, and the belief that leadership is about responsibility to others—not authority over them.
+**Certifications:**
+- **Project Management Professional (PMP)** – Project Management Institute
+- **CompTIA Network+** – Computing Technology Industry Association
+
+**Planned Certifications:**
+- **Microsoft Azure Solutions Architect** or **AWS Solutions Architect**
+- **Lean Six Sigma Green Belt**
+- **Certified ScrumMaster (CSM)** or **SAFe Program Consultant**
+
+*Long-term Goal: Doctor of Business Administration (DBA) with concentration in Digital Strategy and Technology Leadership*
 
 ---
 
-## 🧭 Leadership Philosophy
+## 🎯 Leadership Philosophy
 
-> *"Leadership is not about being in charge. It's about taking care of those in your charge and delivering outcomes that matter."*
+> *"Effective leadership is not about having authority—it's about accepting responsibility for outcomes and empowering others to succeed."*
 
-Whether leading cross-functional teams through complex integrations or mentoring junior staff through technical challenges, my approach centers on clarity, accountability, and service—creating environments where people can do their best work while delivering measurable business value.
+My approach to project management emphasizes:
+- **Clarity of Vision:** Ensuring all stakeholders understand objectives, scope, and success criteria
+- **Operational Excellence:** Building processes that scale while maintaining quality and compliance
+- **Servant Leadership:** Creating environments where teams can perform at their highest potential
+- **Continuous Improvement:** Leveraging data and feedback to optimize performance and delivery
 
 ---
 
-📋 *Sample artifacts, documentation, and detailed case studies available upon request. [Let's connect](/contact).*
+## 🏠 Personal Values
+
+As a devoted husband and father of five, I understand the importance of balance, prioritization, and leading by example. My faith shapes my commitment to integrity, service, and treating all colleagues with respect and dignity.
+
+These personal foundations inform my professional approach—bringing consistency, reliability, and genuine care for team success to every project I lead.
+
+---
+
+**Ready to discuss how I can contribute to your next strategic initiative?** [Let's connect](/contact) to explore opportunities for collaboration.
+
+---
+
+*📋 Detailed case studies, project artifacts, and references available upon request.*

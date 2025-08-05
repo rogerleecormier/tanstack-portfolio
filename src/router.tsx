@@ -6,10 +6,12 @@ import {
 } from '@tanstack/react-router'
 import AppLayout from './layout/AppLayout'
 import MarkdownPage from './pages/MarkdownPage'
+import NotFound from './pages/NotFound'
 
 // Root route
 const rootRoute = createRootRoute({
   component: AppLayout,
+  notFoundComponent: NotFound,
 })
 
 // Define all routes
@@ -76,7 +78,7 @@ const routes = {
   
   projectAnalysis: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/project-analysis',
+    path: '/analytics/project-analysis',
     component: () => <MarkdownPage file="project-analysis" />
   })
 }
@@ -99,8 +101,8 @@ const routeTree = rootRoute.addChildren([
 // Create router instance
 const router = createRouter({ 
   routeTree,
-  // Add this to help with HMR
   defaultPreload: 'intent',
+  defaultNotFoundComponent: NotFound,
 })
 
 // Export router for use in other files

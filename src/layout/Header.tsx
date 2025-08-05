@@ -1,7 +1,7 @@
 import { Briefcase, ChevronRight, Menu } from 'lucide-react'
 import { Link, useLocation } from '@tanstack/react-router'
 import Search from '../components/Search'
-import { navigationPages } from '../config/navigation'
+import { navigationPages } from '@/config/navigation'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
 export default function Header() {
@@ -10,25 +10,34 @@ export default function Header() {
 
   // Generate breadcrumbs
   const getBreadcrumbs = () => {
-    const pathSegments = currentPath.split('/').filter(Boolean)
     const breadcrumbs = [{ title: 'Home', path: '/' }]
     
-    pathSegments.forEach((_, index) => {
-      const path = '/' + pathSegments.slice(0, index + 1).join('/')
-      const page = navigationPages.find(p => p.path === path || p.children?.some(c => c.path === path))
+    // Handle root path
+    if (currentPath === '/') {
+      return breadcrumbs
+    }
+    
+    // Find the matching page or child page
+    for (const page of navigationPages) {
+      // Check if current path matches a top-level page
+      if (page.path === currentPath) {
+        breadcrumbs.push({ title: page.title, path: page.path })
+        break
+      }
       
-      if (page) {
-        if (page.path === path) {
-          breadcrumbs.push({ title: page.title, path })
-        } else {
-          const child = page.children?.find(c => c.path === path)
-          if (child) {
+      // Check if current path matches a child page
+      if (page.children) {
+        const childPage = page.children.find(child => child.path === currentPath)
+        if (childPage) {
+          // Only add the parent if it's not the same as the child
+          if (page.path !== childPage.path) {
             breadcrumbs.push({ title: page.title, path: page.path })
-            breadcrumbs.push({ title: child.title, path })
           }
+          breadcrumbs.push({ title: childPage.title, path: childPage.path })
+          break
         }
       }
-    })
+    }
     
     return breadcrumbs
   }
@@ -79,7 +88,7 @@ export default function Header() {
         {/* Breadcrumbs - Show on desktop */}
         <div className="hidden lg:flex items-center gap-2 text-sm text-teal-100">
           {breadcrumbs.map((crumb, index) => (
-            <div key={crumb.path} className="flex items-center gap-2">
+            <div key={`breadcrumb-${index}-${crumb.path}`} className="flex items-center gap-2">
               {index > 0 && <ChevronRight className="h-3 w-3" />}
               {index === breadcrumbs.length - 1 ? (
                 <span className="text-white font-medium">{crumb.title}</span>
@@ -90,7 +99,7 @@ export default function Header() {
                 >
                   {crumb.title}
                 </Link>
-                )}
+              )}
             </div>
           ))}
         </div>
