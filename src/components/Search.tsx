@@ -94,18 +94,19 @@ export default function Search() {
   }
 
   return (
-    <>
+    <div className="w-full min-w-[192px] sm:w-48 md:w-56 lg:w-64 h-10 flex-shrink-0">
       <Button
         variant="outline"
-        className="relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-auto lg:w-64 min-w-[200px] border-teal-300 hover:bg-teal-50 hover:text-teal-900 dark:border-teal-600 dark:hover:bg-teal-950 dark:hover:text-teal-100"
+        className="w-full h-10 justify-start text-sm text-muted-foreground border-teal-300 hover:bg-teal-50 hover:text-teal-900 dark:border-teal-600 dark:hover:bg-teal-950 dark:hover:text-teal-100 relative pr-16"
         onClick={() => setOpen(true)}
       >
         <SearchIcon className="mr-2 h-4 w-4" />
         <span className="hidden sm:inline">Search...</span>
         <span className="sm:hidden">Search</span>
-        <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 lg:flex">
+        {/* Reserve space for kbd on all screens, but only show on lg */}
+        <span className="absolute right-1.5 inset-y-0 my-auto h-5 flex items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-0 lg:opacity-100 pointer-events-none select-none transition-opacity">
           <span className="text-xs">⌘</span>K
-        </kbd>
+        </span>
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -216,6 +217,6 @@ export default function Search() {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }

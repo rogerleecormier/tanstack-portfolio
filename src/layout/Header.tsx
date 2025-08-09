@@ -45,48 +45,58 @@ export default function Header() {
   const breadcrumbs = getBreadcrumbs()
 
   return (
-    <header className="sticky top-0 z-50 bg-teal-600 shadow-md border-b border-teal-500">
-      <div className="px-4 sm:px-6 py-3 sm:py-4">
+    <header className="sticky top-0 z-[100] bg-teal-600 shadow-md border-b border-teal-500">
+      <div className="py-3 sm:py-4">
         {/* Mobile Layout: Stack vertically */}
         <div className="sm:hidden">
-          {/* Top row: Hamburger menu + Logo/Title */}
-          <div className="flex items-center gap-3 mb-3">
-            <SidebarTrigger className="inline-flex items-center justify-center w-10 h-10 text-white hover:text-teal-100 hover:bg-teal-700/20 rounded-md transition-colors [&>svg]:!w-6 [&>svg]:!h-6 [&>svg]:!text-white">
-              <Menu className="h-6 w-6" />
-            </SidebarTrigger>
+          {/* Top row: Hamburger, Logo/Title */}
+          <div className="flex items-center gap-3 mb-3 px-4 sm:px-6">
+            {/* Hamburger Menu Button - Fixed dimensions */}
+            <div className="w-8 h-8 flex-shrink-0">
+              <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </SidebarTrigger>
+            </div>
+            
             <Briefcase className="h-5 w-5 text-white flex-shrink-0" />
             <h1 className="text-lg font-bold text-white truncate">
               Roger Lee Cormier Portfolio
             </h1>
           </div>
 
-          {/* Search box - Mobile (full width under logo) */}
-          <div className="w-full">
+          {/* Search box - Mobile - Fixed container */}
+          <div className="w-full h-10 flex-shrink-0 px-4 sm:px-6">
             <Search />
           </div>
         </div>
 
         {/* Desktop Layout: Side by side */}
-        <div className="hidden sm:flex items-center justify-between gap-3 mb-3">
-          {/* Left side: Sidebar toggle + Logo and Title */}
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <SidebarTrigger className="inline-flex items-center justify-center w-8 h-8 text-white hover:text-teal-100 hover:bg-teal-700/20 rounded-md transition-colors [&>svg]:!w-5 [&>svg]:!h-5 [&>svg]:!text-white">
-              <Menu className="h-5 w-5" />
-            </SidebarTrigger>
-            <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-white flex-shrink-0" />
-            <h1 className="text-lg sm:text-xl font-bold text-white truncate">
+        <div className="hidden sm:flex items-center justify-between gap-3 mb-3 pr-4">
+          {/* Left side: Hamburger, Logo and Title */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 pl-3">
+            {/* Hamburger Menu Button - Fixed dimensions */}
+            <div className="w-10 h-10 flex-shrink-0">
+              <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </SidebarTrigger>
+            </div>
+            
+            <Briefcase className="h-6 w-6 text-white flex-shrink-0" />
+            <h1 className="text-xl font-bold text-white truncate">
               Roger Lee Cormier Portfolio
             </h1>
           </div>
 
-          {/* Right-aligned Search - Desktop */}
-          <div className="flex-shrink-0">
+          {/* Right-aligned Search - Desktop - Fixed container */}
+          <div className="h-10 sm:w-48 md:w-56 lg:w-64 flex-shrink-0">
             <Search />
           </div>
         </div>
 
-        {/* Breadcrumbs - Show on desktop */}
-        <div className="hidden lg:flex items-center gap-2 text-sm text-teal-100">
+        {/* Breadcrumbs - Show on desktop - Fixed height */}
+        <div className="hidden lg:flex items-center gap-2 text-sm text-teal-100 h-6 px-6">
           {breadcrumbs.map((crumb, index) => (
             <div key={`breadcrumb-${index}-${crumb.path}`} className="flex items-center gap-2">
               {index > 0 && <ChevronRight className="h-3 w-3" />}

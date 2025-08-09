@@ -2,10 +2,8 @@ import { MapPin, Mail, Calendar } from 'lucide-react'
 import { FaLinkedin, FaGithub } from 'react-icons/fa'
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear()
-
   return (
-    <footer className="bg-teal-700 text-teal-50 mt-auto">
+    <footer className="bg-teal-700 text-teal-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
         <div className="text-center space-y-6">
           {/* Name and Title */}
@@ -28,6 +26,8 @@ export default function Footer() {
               <a 
                 href="mailto:roger@rcormier.dev" 
                 className="hover:text-white transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 roger@rcormier.dev
               </a>
@@ -40,6 +40,8 @@ export default function Footer() {
               href="https://linkedin.com/in/rogerleecormier" 
               className="p-2 rounded-lg bg-teal-600 hover:bg-teal-500 transition-colors"
               aria-label="LinkedIn"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <FaLinkedin size={20} />
             </a>
@@ -47,6 +49,8 @@ export default function Footer() {
               href="https://github.com/rogerleecormier" 
               className="p-2 rounded-lg bg-teal-600 hover:bg-teal-500 transition-colors"
               aria-label="GitHub"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <FaGithub size={20} />
             </a>
@@ -70,7 +74,8 @@ export default function Footer() {
           {/* Divider */}
           <div className="border-t border-teal-600 pt-4">
             <div className="flex flex-col sm:flex-row justify-center items-center gap-2 text-xs text-teal-300">
-              <span>© {currentYear} Roger Lee Cormier Portfolio</span>
+              {/* Fixed: Use static year to prevent hydration mismatch */}
+              <span>© 2025 Roger Lee Cormier Portfolio</span>
               <span className="hidden sm:inline">•</span>
               <span>Built with ❤️ using React, TypeScript & TanStack Router</span>
             </div>
