@@ -28,24 +28,30 @@ export function TableOfContents() {
   // Track which heading is currently visible
   useEffect(() => {
     const handleScroll = () => {
-      const headings = currentToc.map(entry => 
-        document.getElementById(entry.slug)
-      ).filter(Boolean)
+      const headings = currentToc
+        .map(entry => document.getElementById(entry.slug))
+        .filter(Boolean) as HTMLElement[];
 
-      const visibleHeading = headings.find(heading => {
-        if (!heading) return false
-        const rect = heading.getBoundingClientRect()
-        // Adjust for sticky header height and visible offset
-        return rect.top >= STICKY_HEADER_HEIGHT && rect.top <= VISIBLE_HEADING_OFFSET
-      })
-
-      if (visibleHeading) {
-        setActiveId(visibleHeading.id)
+      let current: HTMLElement | null = null;
+      for (const heading of headings) {
+        const rect = heading.getBoundingClientRect();
+        if (rect.top - STICKY_HEADER_HEIGHT <= 0) {
+          current = heading;
+        } else {
+          break;
+        }
       }
-    }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+      if (current) {
+        setActiveId(current.id);
+      } else if (headings.length > 0) {
+        setActiveId(headings[0].id);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Run on mount
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [currentToc])
 
   if (currentToc.length === 0) return null
@@ -53,18 +59,18 @@ export function TableOfContents() {
   return (
     <aside className="hidden xl:block w-96 min-w-[24rem] flex-shrink-0 p-8 border-l border-gray-200 bg-white/50">
       {currentToc.length === 0 ? (
-        // Optional: Add a skeleton or placeholder for loading
         <div className="h-32" />
       ) : (
-        <div className="sticky top-32 bottom-32">
-          {/* Header */}
+        <div
+          className="fixed right-0 top-[100px] w-96 min-w-[24rem] max-h-[calc(100vh-96px)] overflow-y-auto p-8 border-l border-gray-200 bg-white/50"
+          style={{ zIndex: 99 }}
+        >
           <div className="z-10 bg-white/80 mb-4">
             <h2 className="text-sm font-semibold text-gray-900 mb-3">
               On This Page
             </h2>
           </div>
-          {/* TOC list */}
-          <nav className="overflow-y-auto">
+          <nav>
             <ul className="space-y-2 text-sm">
               {currentToc.map((entry) => (
                 <li key={entry.slug}>
