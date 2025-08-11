@@ -82,7 +82,7 @@ const navigationItems = [
 export function AppSidebar() {
   const location = useLocation()
   const currentPath = location.pathname
-  useSidebar()
+  const { isMobile, setOpenMobile } = useSidebar()
 
   const isCurrentPage = (url: string) => currentPath === url
 
@@ -149,7 +149,12 @@ export function AppSidebar() {
                           isCurrentPage(item.url) ? 'bg-teal-200 text-teal-900 font-medium' : ''
                         }`}
                       >
-                        <Link to={item.url}>
+                        <Link
+                          to={item.url}
+                          onClick={() => {
+                            if (isMobile) setOpenMobile(false)
+                          }}
+                        >
                           {item.icon && <item.icon className="h-4 w-4" />}
                           <span>{item.title}</span>
                         </Link>
