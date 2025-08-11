@@ -200,7 +200,8 @@ export default function MarkdownPage({ file }: { file: string }) {
         <article
           className={cn(
             "prose prose-neutral dark:prose-invert max-w-none w-full",
-            "prose-headings:scroll-m-20 prose-headings:tracking-tight",
+            // REMOVE "prose-headings:scroll-m-20" from here!
+            "prose-headings:tracking-tight",
             "prose-h1:text-4xl prose-h1:font-extrabold",
             "prose-h2:text-3xl prose-h2:font-semibold prose-h2:border-b prose-h2:pb-2",
             "prose-h3:text-2xl prose-h3:font-semibold",
@@ -228,7 +229,11 @@ export default function MarkdownPage({ file }: { file: string }) {
                 const text = String(children)
                 const id = slugify(text, { lower: true, strict: true })
                 return (
-                  <h2 id={id} className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0" {...props}>
+                  <h2
+                    id={id}
+                    className="scroll-mt-[140px] border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0"
+                    {...props}
+                  >
                     {children}
                   </h2>
                 )

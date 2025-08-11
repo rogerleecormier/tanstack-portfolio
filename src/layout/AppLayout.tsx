@@ -11,6 +11,7 @@ export default function AppLayout() {
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex bg-gray-50">
         <AppSidebar />
+        {/* Main content and TOC fill the full height */}
         <div className="flex flex-col flex-1 min-w-0 min-h-screen">
           <Header />
           <div className="flex flex-1 min-h-0">
@@ -23,6 +24,7 @@ export default function AppLayout() {
           </div>
         </div>
       </div>
+      {/* Footer is now OUTSIDE the main flex column */}
       <Footer />
     </SidebarProvider>
   )

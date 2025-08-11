@@ -56,7 +56,7 @@ export function TableOfContents() {
   if (currentToc.length === 0) return null
 
   return (
-    <aside className="hidden xl:block w-96 min-w-[24rem] flex-shrink-0 p-8 border-l border-gray-200 bg-white/50 sticky top-[120px] max-h-[calc(100vh-88px)] overflow-y-auto">
+    <aside className="hidden xl:block w-96 min-w-[24rem] flex-shrink-0 p-8 border-l border-gray-200 bg-white/50 sticky top-[120px] max-h-[calc(100vh-120px)] overflow-y-auto">
       <div className="z-10 bg-white/80 mb-4">
         <h2 className="text-sm font-semibold text-gray-900 mb-3">
           On This Page
