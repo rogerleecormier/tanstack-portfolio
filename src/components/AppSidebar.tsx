@@ -132,7 +132,12 @@ export function AppSidebar() {
                                     isCurrentPage(subItem.url) ? 'bg-teal-200 text-teal-900 font-medium' : ''
                                   }`}
                                 >
-                                  <Link to={subItem.url}>
+                                  <Link
+                                    to={subItem.url}
+                                    onClick={() => {
+                                      if (isMobile) setOpenMobile(false)
+                                    }}
+                                  >
                                     <span>{subItem.title}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
