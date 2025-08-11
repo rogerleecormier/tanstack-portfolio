@@ -36,6 +36,11 @@ export default function MarkdownPage({ file }: { file: string }) {
   const [isLoading, setIsLoading] = React.useState(true)
   const location = useLocation()
 
+  // Scroll to top on route change
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [location.pathname]);
+
   // Determine content type based on file
   const getContentType = (file: string): 'website' | 'article' | 'profile' => {
     if (file === 'about') return 'profile'
