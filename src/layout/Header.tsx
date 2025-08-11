@@ -54,15 +54,13 @@ export default function Header() {
             {/* Hamburger Menu Button - Fixed dimensions */}
             <div className="w-5 h-5 flex-shrink-0">
               <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center">
-                <button className="gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-8 [&_svg]:shrink-0 hover:text-accent-foreground w-12 h-12 p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center" data-sidebar="trigger">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu h-8 w-8" aria-hidden="true">
-                    <path d="M4 12h16"></path>
-                    <path d="M4 18h16"></path>
-                    <path d="M4 6h16"></path>
-                  </svg>
-                  <span className="sr-only">Toggle navigation menu</span>
-                  <span className="sr-only">Toggle Sidebar</span>
-                </button>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu h-8 w-8" aria-hidden="true">
+                  <path d="M4 12h16"></path>
+                  <path d="M4 18h16"></path>
+                  <path d="M4 6h16"></path>
+                </svg>
+                <span className="sr-only">Toggle navigation menu</span>
+                <span className="sr-only">Toggle Sidebar</span>
               </SidebarTrigger>
             </div>
             
@@ -85,15 +83,13 @@ export default function Header() {
             {/* Hamburger Menu Button - Fixed dimensions */}
             <div className="w-12 h-12 flex-shrink-0">
               <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center">
-                <button className="gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-8 [&_svg]:shrink-0 hover:text-accent-foreground w-12 h-12 p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center" data-sidebar="trigger">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu h-8 w-8" aria-hidden="true">
-                    <path d="M4 12h16"></path>
-                    <path d="M4 18h16"></path>
-                    <path d="M4 6h16"></path>
-                  </svg>
-                  <span className="sr-only">Toggle navigation menu</span>
-                  <span className="sr-only">Toggle Sidebar</span>
-                </button>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu h-8 w-8" aria-hidden="true">
+                  <path d="M4 12h16"></path>
+                  <path d="M4 18h16"></path>
+                  <path d="M4 6h16"></path>
+                </svg>
+                <span className="sr-only">Toggle navigation menu</span>
+                <span className="sr-only">Toggle Sidebar</span>
               </SidebarTrigger>
             </div>
             

@@ -6,7 +6,6 @@ type TOCEntry = {
 }
 
 const STICKY_HEADER_HEIGHT = 80 // Height of the sticky header in pixels
-const VISIBLE_HEADING_OFFSET = 200 // Lower bound for heading visibility in pixels
 
 export function TableOfContents() {
   const [currentToc, setCurrentToc] = useState<TOCEntry[]>([])
