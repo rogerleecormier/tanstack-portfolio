@@ -6,7 +6,7 @@ export function AboutProfileCard() {
       name="Roger Lee Cormier"
       title="Technical Project Manager & U.S. Army Veteran"
       description="PMP-certified Technical Project Manager specializing in cloud platforms, SaaS ecosystems, and operational strategy. I modernize legacy systems, integrate enterprise tools, and align cross-functional teams around systems thinking and practical execution."
-      imageUrl="https://www.rcormier.dev/assets/images/IMG_1242.JPG"
+      imageUrl="/images/IMG_1242.JPG"
       imageAlt="Roger Lee Cormier - Technical Program Manager"
       badges={[
         { text: "PMP Certified", className: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
