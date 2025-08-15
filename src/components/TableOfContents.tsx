@@ -5,7 +5,7 @@ type TOCEntry = {
   slug: string
 }
 
-const STICKY_HEADER_HEIGHT = 150 // Height of the sticky header in pixels
+const STICKY_HEADER_HEIGHT = 170 // Height of the sticky header in pixels
 
 export function TableOfContents() {
   const [currentToc, setCurrentToc] = useState<TOCEntry[]>([])
