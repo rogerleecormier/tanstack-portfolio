@@ -58,18 +58,6 @@ const routes = {
     component: () => <MarkdownPage file="talent" />
   }),
   
-  culture: createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/culture',
-    component: () => <MarkdownPage file="culture" />
-  }),
-  
-  vision: createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/vision',
-    component: () => <MarkdownPage file="vision" />
-  }),
-  
   analytics: createRoute({
     getParentRoute: () => rootRoute,
     path: '/analytics',
@@ -88,9 +76,7 @@ const routeTree = rootRoute.addChildren([
   routes.index,
   routes.about,
   routes.leadership,
-  routes.vision,
   routes.strategy,
-  routes.culture,
   routes.talent,
   routes.devops,
   routes.saas,

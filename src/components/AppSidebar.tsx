@@ -28,7 +28,7 @@ const navigationItems = [
     icon: User,
   },
   {
-    title: "Analytics",
+    title: "Analytics & Insights",
     url: "/analytics",
     icon: BarChart3,
     items: [
@@ -43,27 +43,17 @@ const navigationItems = [
     ],
   },
   {
-    title: "Strategy",
+    title: "Strategy & Vision",
     url: "/strategy",
     icon: Target,
   },
   {
-    title: "Leadership",
+    title: "Leadership & Culture",
     url: "/leadership",
     icon: Users,
   },
   {
-    title: "Vision",
-    url: "/vision",
-    icon: Eye,
-  },
-  {
-    title: "Culture & Values",
-    url: "/culture",
-    icon: Heart,
-  },
-  {
-    title: "Talent Development",
+    title: "Talent & Org Design",
     url: "/talent",
     icon: Briefcase,
   },

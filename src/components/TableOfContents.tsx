@@ -5,7 +5,7 @@ type TOCEntry = {
   slug: string
 }
 
-const STICKY_HEADER_HEIGHT = 80 // Height of the sticky header in pixels
+const STICKY_HEADER_HEIGHT = 150 // Height of the sticky header in pixels
 
 export function TableOfContents() {
   const [currentToc, setCurrentToc] = useState<TOCEntry[]>([])
@@ -31,19 +31,22 @@ export function TableOfContents() {
         .map(entry => document.getElementById(entry.slug))
         .filter(Boolean) as HTMLElement[];
 
-      let current: HTMLElement | null = null;
+      let activeHeading: HTMLElement | null = null;
+      let maxOffset = -Infinity;
+
       for (const heading of headings) {
-        const rect = heading.getBoundingClientRect();
-        if (rect.top - STICKY_HEADER_HEIGHT <= 0) {
-          current = heading;
-        } else {
-          break;
+        const offset = heading.getBoundingClientRect().top - STICKY_HEADER_HEIGHT;
+        // Find the heading closest to but not above the sticky header
+        if (offset <= 0 && offset > maxOffset) {
+          maxOffset = offset;
+          activeHeading = heading;
         }
       }
 
-      if (current) {
-        setActiveId(current.id);
+      if (activeHeading) {
+        setActiveId(activeHeading.id);
       } else if (headings.length > 0) {
+        // If none are above the header, highlight the first one
         setActiveId(headings[0].id);
       }
     };
