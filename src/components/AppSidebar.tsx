@@ -1,4 +1,4 @@
-import { ChevronRight, User, BarChart3, Briefcase, Users, Settings, Code, Target, Heart, Eye } from "lucide-react"
+import { ChevronRight, User, BarChart3, Briefcase, Users, Settings, Code, Target } from "lucide-react"
 import { Link, useLocation } from "@tanstack/react-router"
 
 import {
