@@ -32,7 +32,7 @@ function isWithinRange(dateStr: string, start: Date, end: Date) {
   return date >= start && date <= end;
 }
 
-// Helper function for last 6 months
+// Helper function for last N months
 function isWithinMonths(dateStr: string, months: number) {
   const date = new Date(dateStr);
   const now = new Date();
@@ -68,7 +68,7 @@ export default function HealthBridgePage() {
 
   // Other filter states
   const [quickRange, setQuickRange] = useState<
-    "all" | "7" | "14" | "30" | "6m"
+    "all" | "7" | "14" | "30" | "3m" | "6m"
   >("30");
   const [selectedYear, setSelectedYear] = useState<number | "all">("all");
   const [selectedMonth, setSelectedMonth] = useState<number | "all">("all");
@@ -122,6 +122,10 @@ export default function HealthBridgePage() {
       result = result.filter((row) =>
         isWithinDays(row.date, Number(quickRange))
       );
+      return result;
+    }
+    if (quickRange === "3m") {
+      result = result.filter((row) => isWithinMonths(row.date, 3));
       return result;
     }
     if (quickRange === "6m") {
@@ -193,7 +197,7 @@ export default function HealthBridgePage() {
     setDateRange({ start: "", end: "" });
     setPage(1);
   };
-  const handleQuickRange = (days: "all" | "7" | "14" | "30" | "6m") => {
+  const handleQuickRange = (days: "all" | "7" | "14" | "30" | "3m" | "6m") => {
     setQuickRange(days);
     setSelectedYear("all");
     setSelectedMonth("all");
@@ -269,9 +273,10 @@ export default function HealthBridgePage() {
       return false;
     })();
 
-    // Aggregate by month if quickRange is "6m" OR date range exceeds 6 months
+    // Aggregate by month if quickRange is "6m" or "3m" OR date range exceeds 6 months
     if (
       quickRange === "6m" ||
+      quickRange === "3m" ||
       (dateRange.start && dateRange.end && isDateRangeOver6Months)
     ) {
       const monthMap = new Map<string, number[]>();
@@ -421,6 +426,14 @@ export default function HealthBridgePage() {
               onClick={() => handleQuickRange("30")}
             >
               Last 30 days
+            </button>
+            <button
+              className={`px-2 py-1 border rounded ${
+                quickRange === "3m" ? "bg-blue-100" : ""
+              }`}
+              onClick={() => handleQuickRange("3m")}
+            >
+              Last 3 months
             </button>
             <button
               className={`px-2 py-1 border rounded ${
