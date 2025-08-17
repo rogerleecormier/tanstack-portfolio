@@ -1,4 +1,4 @@
-import { ChevronRight, User, BarChart3, Briefcase, Users, Settings, Code, Target } from "lucide-react"
+import { User, BarChart3, Briefcase, Users, Settings, Code, Target } from "lucide-react"
 import { Link, useLocation } from "@tanstack/react-router"
 
 import {
@@ -10,16 +10,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 
 const navigationItems = [
   {
