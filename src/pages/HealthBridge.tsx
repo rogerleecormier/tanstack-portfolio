@@ -160,9 +160,15 @@ export default function HealthBridgePage() {
       const endDate = new Date(filteredData[0].date)
         .toISOString()
         .slice(0, 10);
-      setDateRange({ start: startDate, end: endDate || todayStr });
+
+      // Only update if values have changed
+      if (dateRange.start !== startDate || dateRange.end !== endDate) {
+        setDateRange({ start: startDate, end: endDate });
+      }
     } else {
-      setDateRange({ start: "", end: todayStr });
+      if (dateRange.start !== "" || dateRange.end !== todayStr) {
+        setDateRange({ start: "", end: todayStr });
+      }
     }
   }, [filteredData, todayStr]);
 
