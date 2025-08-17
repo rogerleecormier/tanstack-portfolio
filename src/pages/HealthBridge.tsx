@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWeights } from "../api/healthBridge";
 import {
@@ -50,21 +50,29 @@ export default function HealthBridgePage() {
     queryFn: fetchWeights,
   });
 
-  // Set default filter to last 30 days
+  // Sort state
+  const [sortBy, setSortBy] = useState<"date" | "weight">("date");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+
+  // Set default filter to last 30 days and end date to today
+  const todayStr = useMemo(() => {
+    const today = new Date();
+    return today.toISOString().slice(0, 10); // yyyy-mm-dd
+  }, []);
+
+  // Date range state
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
+    start: "",
+    end: todayStr,
+  });
+
+  // Other filter states
   const [quickRange, setQuickRange] = useState<
     "all" | "7" | "14" | "30" | "6m"
   >("30");
   const [selectedYear, setSelectedYear] = useState<number | "all">("all");
   const [selectedMonth, setSelectedMonth] = useState<number | "all">("all");
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: "",
-    end: "",
-  });
   const [page, setPage] = useState(1);
-
-  // Sort state
-  const [sortBy, setSortBy] = useState<"date" | "weight">("date");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
   // Sort data by selected column and direction
   const sortedData = useMemo(() => {
@@ -142,6 +150,21 @@ export default function HealthBridgePage() {
     }
     return result;
   }, [sortedData, selectedYear, selectedMonth, dateRange, quickRange]);
+
+  // Automatically update dateRange to match filtered data set each time a filter changes
+  useEffect(() => {
+    if (filteredData.length > 0) {
+      const startDate = new Date(filteredData[filteredData.length - 1].date)
+        .toISOString()
+        .slice(0, 10);
+      const endDate = new Date(filteredData[0].date)
+        .toISOString()
+        .slice(0, 10);
+      setDateRange({ start: startDate, end: endDate || todayStr });
+    } else {
+      setDateRange({ start: "", end: todayStr });
+    }
+  }, [filteredData, todayStr]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
@@ -226,6 +249,68 @@ export default function HealthBridgePage() {
   // Generate Mermaid xychart-beta syntax for filteredData as a line chart, with latest dates to the right
   const mermaidChart = useMemo(() => {
     if (!filteredData.length) return "";
+
+    // Helper to check if a date range exceeds 6 months
+    const isDateRangeOver6Months = (() => {
+      if (dateRange.start && dateRange.end) {
+        const start = new Date(dateRange.start);
+        const end = new Date(dateRange.end);
+        const months =
+          (end.getFullYear() - start.getFullYear()) * 12 +
+          (end.getMonth() - start.getMonth());
+        return months >= 6;
+      }
+      return false;
+    })();
+
+    // Aggregate by month if quickRange is "6m" OR date range exceeds 6 months
+    if (
+      quickRange === "6m" ||
+      (dateRange.start && dateRange.end && isDateRangeOver6Months)
+    ) {
+      const monthMap = new Map<string, number[]>();
+      filteredData.forEach((row) => {
+        const date = new Date(row.date);
+        const label = date.toLocaleString("default", {
+          month: "short",
+          year: "numeric",
+        });
+        const lbs = row.kg * 2.20462;
+        if (!monthMap.has(label)) monthMap.set(label, []);
+        monthMap.get(label)!.push(lbs);
+      });
+
+      // Sort month labels oldest to newest
+      const monthLabels = Array.from(monthMap.keys()).sort((a, b) => {
+        const aDate = new Date(a);
+        const bDate = new Date(b);
+        return aDate.getTime() - bDate.getTime();
+      });
+
+      const xLabels = monthLabels.map((label) => `"${label}"`).join(", ");
+      const yValues = monthLabels
+        .map((label) => {
+          const arr = monthMap.get(label)!;
+          return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
+        })
+        .join(", ");
+
+      const lbsArray = Array.from(monthMap.values()).flat();
+      const minWeight = Math.floor(Math.min(...lbsArray));
+      const maxWeight = Math.ceil(Math.max(...lbsArray));
+
+      return (
+        `%%{init: {"theme":"default","themeVariables":{"xyChart":{"plotColorPalette":"#14b8a6"}}}}%%\n` +
+        `xychart-beta\n` +
+        `\n` +
+        `title "Weight Over Time"\n` +
+        `x-axis [${xLabels}]\n` +
+        `y-axis "Weight (lbs)" ${minWeight} --> ${maxWeight}\n` +
+        `line [${yValues}]\n`
+      );
+    }
+
+    // Otherwise, show daily data
     const reversed = [...filteredData].reverse();
     const xLabels = reversed
       .map((row) => `"${new Date(row.date).toLocaleDateString()}"`)
@@ -236,8 +321,9 @@ export default function HealthBridgePage() {
     const lbsArray = reversed.map((row) => row.kg * 2.20462);
     const minWeight = Math.floor(Math.min(...lbsArray));
     const maxWeight = Math.ceil(Math.max(...lbsArray));
+
     return (
-      `%%{init: {"theme":"default","themeVariables":{"xyChart":{"plotColorPalette":"#14b8a6"}}}}%%\n` + // <-- double percent signs!
+      `%%{init: {"theme":"default","themeVariables":{"xyChart":{"plotColorPalette":"#14b8a6"}}}}%%\n` +
       `xychart-beta\n` +
       `\n` +
       `title "Weight Over Time"\n` +
@@ -245,7 +331,7 @@ export default function HealthBridgePage() {
       `y-axis "Weight (lbs)" ${minWeight} --> ${maxWeight}\n` +
       `line [${yValues}]\n`
     );
-  }, [filteredData]);
+  }, [filteredData, quickRange, dateRange]);
 
   return (
     <div>
