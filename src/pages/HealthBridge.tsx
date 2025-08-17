@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchWeights } from "../api/healthBridge";
 import {
   Table,
@@ -42,6 +42,88 @@ function isWithinMonths(dateStr: string, months: number) {
     now.getDate()
   );
   return date >= past && date <= now;
+}
+
+function AddWeightBox() {
+  const queryClient = useQueryClient();
+  const [weight, setWeight] = useState("");
+  const [date, setDate] = useState(() => {
+    const now = new Date();
+    return now.toISOString().slice(0, 16); // yyyy-mm-ddTHH:mm
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: async ({ kg, timestamp }: { kg: number; timestamp: string }) => {
+      // This should run on submit
+      const res = await fetch("https://health-bridge-api.rcormier.workers.dev/api/health/weight", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer Twins2015!", // <-- Replace with your actual token
+        },
+        body: JSON.stringify({ weight: kg, unit: "kg", timestamp }),
+      });
+      if (!res.ok) throw new Error("Failed to add weight");
+      return res.json();
+    },
+    onSuccess: () => {
+      setSuccess(true);
+      setWeight("");
+      queryClient.invalidateQueries({ queryKey: ["weights"] });
+      setTimeout(() => setSuccess(false), 2000);
+    },
+    onError: (err: any) => setError(err.message),
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    const kg = Number(weight);
+    if (isNaN(kg) || kg <= 0) {
+      setError("Enter a valid weight in kg (e.g. 82.50)");
+      return;
+    }
+    if (!date) {
+      setError("Please select a date/time");
+      return;
+    }
+    mutation.mutate({ kg, timestamp: new Date(date).toISOString() });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-2 max-w-md">
+      <label className="font-medium">Enter Weight (kg):</label>
+      <input
+        type="text"
+        inputMode="decimal"
+        pattern="^\d+(\.\d{1,2})?$"
+        value={weight}
+        onChange={e => setWeight(e.target.value)}
+        placeholder="e.g. 82.50"
+        className="border rounded px-2 py-1"
+        required
+      />
+      <label className="font-medium">Date & Time:</label>
+      <input
+        type="datetime-local"
+        value={date}
+        onChange={e => setDate(e.target.value)}
+        className="border rounded px-2 py-1"
+        required
+      />
+      <button
+        type="submit"
+        className="px-4 py-2 bg-blue-600 text-white rounded mt-2"
+        disabled={mutation.isPending}
+      >
+        Add Weight
+      </button>
+      {error && <div className="text-red-500">{error}</div>}
+      {success && <div className="text-green-600">Weight added!</div>}
+    </form>
+  );
 }
 
 export default function HealthBridgePage() {
@@ -342,6 +424,7 @@ export default function HealthBridgePage() {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Body Weight Analysis</h1>
+      <AddWeightBox />
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Summary Statistics</h2>
         <div className="flex flex-wrap gap-4 mb-6">
