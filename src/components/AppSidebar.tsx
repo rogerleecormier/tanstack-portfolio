@@ -67,6 +67,11 @@ const navigationItems = [
     url: "/saas",
     icon: Settings,
   },
+  {
+    title: "HealthBridge",
+    url: "/healthbridge",
+    icon: BarChart3, // or any icon you prefer
+  },
 ]
 
 export function AppSidebar() {
