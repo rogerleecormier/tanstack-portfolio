@@ -158,14 +158,9 @@ export default function HealthBridgePage() {
   // Automatically update dateRange to match filtered data set each time a filter changes
   useEffect(() => {
     if (filteredData.length > 0) {
-      const startDate = new Date(filteredData[filteredData.length - 1].date)
-        .toISOString()
-        .slice(0, 10);
-      const endDate = new Date(filteredData[0].date)
-        .toISOString()
-        .slice(0, 10);
+      const startDate = formatLocalDate(filteredData[filteredData.length - 1].date);
+      const endDate = formatLocalDate(filteredData[0].date);
 
-      // Only update if values have changed
       if (dateRange.start !== startDate || dateRange.end !== endDate) {
         setDateRange({ start: startDate, end: endDate });
       }
@@ -560,4 +555,12 @@ export default function HealthBridgePage() {
       </section>
     </div>
   );
+}
+
+function formatLocalDate(dateStr: string) {
+  const d = new Date(dateStr);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
