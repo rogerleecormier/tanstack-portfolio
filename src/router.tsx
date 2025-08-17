@@ -7,7 +7,7 @@ import {
 import AppLayout from './layout/AppLayout'
 import MarkdownPage from './pages/MarkdownPage'
 import NotFound from './pages/NotFound'
-import HealthBridgePage from './pages/HealthBridge' // <-- Import your page
+import HealthBridgePage from './pages/HealthBridge'
 
 // Root route
 const rootRoute = createRootRoute({
@@ -65,16 +65,16 @@ const routes = {
     component: () => <MarkdownPage file="analytics" />
   }),
   
+  // Projects section
   projectAnalysis: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/analytics/project-analysis',
+    path: 'project-analysis',
     component: () => <MarkdownPage file="project-analysis" />
   }),
-
-  healthBridge: createRoute({
+  healthBridgeAnalysis: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/healthbridge',
-    component: HealthBridgePage, // <-- Use your React page here
+    path: 'healthbridge-analysis',
+    component: HealthBridgePage,
   }),
 }
 
@@ -88,8 +88,8 @@ const routeTree = rootRoute.addChildren([
   routes.devops,
   routes.saas,
   routes.analytics,
-  routes.projectAnalysis,
-  routes.healthBridge, // <-- Add this line!
+  routes.projectAnalysis,        // Projects Analysis under Projects
+  routes.healthBridgeAnalysis,   // HealthBridge Analysis under Projects
 ])
 
 // Create router instance

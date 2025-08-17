@@ -31,16 +31,7 @@ const navigationItems = [
     title: "Analytics & Insights",
     url: "/analytics",
     icon: BarChart3,
-    items: [
-      {
-        title: "Analytics Overview",
-        url: "/analytics",
-      },
-      {
-        title: "Project Analysis",
-        url: "/analytics/project-analysis",
-      },
-    ],
+    // No items: now a top-level page
   },
   {
     title: "Strategy & Vision",
@@ -67,31 +58,34 @@ const navigationItems = [
     url: "/saas",
     icon: Settings,
   },
+];
+
+const projectItems = [
   {
-    title: "HealthBridge",
-    url: "/healthbridge",
-    icon: BarChart3, // or any icon you prefer
+    title: "Projects Analysis", 
+    url: "project-analysis",
+    icon: BarChart3,
   },
-]
+  {
+    title: "HealthBridge Analysis",
+    url: "healthbridge-analysis",
+    icon: BarChart3,
+  },
+  // Add more projects here as needed
+  // { title: "Project X", url: "/project-x", icon: Briefcase },
+];
 
 export function AppSidebar() {
-  const location = useLocation()
-  const currentPath = location.pathname
-  const { isMobile, setOpenMobile } = useSidebar()
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const { isMobile, setOpenMobile } = useSidebar();
 
-  const isCurrentPage = (url: string) => currentPath === url
-
-  const isActiveSection = (item: any) => {
-    if (isCurrentPage(item.url)) return true
-    if (item.items) {
-      return item.items.some((subItem: any) => isCurrentPage(subItem.url))
-    }
-    return false
-  }
+  const isCurrentPage = (url: string) => currentPath === url;
 
   return (
     <Sidebar className="border-r border-teal-200 bg-teal-50" collapsible="icon">
       <SidebarContent className="pt-4">
+        {/* Portfolio Navigation Group */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">
             Portfolio Navigation
@@ -99,74 +93,65 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {navigationItems.map((item) => (
-                <Collapsible 
-                  key={item.title} 
-                  asChild 
-                  defaultOpen={isActiveSection(item)}
-                >
-                  <SidebarMenuItem>
-                    {item.items ? (
-                      <>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton 
-                            tooltip={item.title}
-                            className="text-teal-800 hover:bg-teal-100 hover:text-teal-900 data-[state=open]:bg-teal-100"
-                          >
-                            {item.icon && <item.icon className="h-4 w-4" />}
-                            <span>{item.title}</span>
-                            <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                          </SidebarMenuButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub>
-                            {item.items.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton 
-                                  asChild
-                                  className={`text-teal-700 hover:bg-teal-100 hover:text-teal-900 ${
-                                    isCurrentPage(subItem.url) ? 'bg-teal-200 text-teal-900 font-medium' : ''
-                                  }`}
-                                >
-                                  <Link
-                                    to={subItem.url}
-                                    onClick={() => {
-                                      if (isMobile) setOpenMobile(false)
-                                    }}
-                                  >
-                                    <span>{subItem.title}</span>
-                                  </Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </>
-                    ) : (
-                      <SidebarMenuButton 
-                        asChild 
-                        tooltip={item.title}
-                        className={`text-teal-800 hover:bg-teal-100 hover:text-teal-900 ${
-                          isCurrentPage(item.url) ? 'bg-teal-200 text-teal-900 font-medium' : ''
-                        }`}
-                      >
-                        <Link
-                          to={item.url}
-                          onClick={() => {
-                            if (isMobile) setOpenMobile(false)
-                          }}
-                        >
-                          {item.icon && <item.icon className="h-4 w-4" />}
-                          <span>{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    )}
-                  </SidebarMenuItem>
-                </Collapsible>
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className={`text-teal-800 hover:bg-teal-100 hover:text-teal-900 ${
+                      isCurrentPage(item.url)
+                        ? "bg-teal-200 text-teal-900 font-medium"
+                        : ""
+                    }`}
+                  >
+                    <Link
+                      to={item.url}
+                      onClick={() => {
+                        if (isMobile) setOpenMobile(false);
+                      }}
+                    >
+                      {item.icon && <item.icon className="h-4 w-4" />}
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        {/* Projects Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">
+            Projects
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {projectItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className={`text-teal-800 hover:bg-teal-100 hover:text-teal-900 ${
+                      isCurrentPage(item.url)
+                        ? "bg-teal-200 text-teal-900 font-medium"
+                        : ""
+                    }`}
+                  >
+                    <Link
+                      to={item.url}
+                      onClick={() => {
+                        if (isMobile) setOpenMobile(false);
+                      }}
+                    >
+                      {item.icon && <item.icon className="h-4 w-4" />}
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
