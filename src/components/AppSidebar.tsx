@@ -21,33 +21,33 @@ const navigationItems = [
   },
   {
     title: "Analytics & Insights",
-    url: "/analytics",
+    url: "analytics",
     icon: BarChart3,
     // No items: now a top-level page
   },
   {
     title: "Strategy & Vision",
-    url: "/strategy",
+    url: "strategy",
     icon: Target,
   },
   {
     title: "Leadership & Culture",
-    url: "/leadership",
+    url: "leadership",
     icon: Users,
   },
   {
     title: "Talent & Org Design",
-    url: "/talent",
+    url: "talent",
     icon: Briefcase,
   },
   {
     title: "DevOps & Automation",
-    url: "/devops",
+    url: "devops",
     icon: Code,
   },
   {
     title: "ERP & SaaS Integration",
-    url: "/saas",
+    url: "saas",
     icon: Settings,
   },
 ];

@@ -25,43 +25,43 @@ const routes = {
   
   about: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/about',
+    path: 'about',
     component: () => <MarkdownPage file="about" />
   }),
   
   strategy: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/strategy',
+    path: 'strategy',
     component: () => <MarkdownPage file="strategy" />
   }),
   
   leadership: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/leadership',
+    path: 'leadership',
     component: () => <MarkdownPage file="leadership" />
   }),
   
   devops: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/devops',
+    path: 'devops',
     component: () => <MarkdownPage file="devops" />
   }),
   
   saas: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/saas',
+    path: 'saas',
     component: () => <MarkdownPage file="saas" />
   }),
   
   talent: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/talent',
+    path: 'talent',
     component: () => <MarkdownPage file="talent" />
   }),
   
   analytics: createRoute({
     getParentRoute: () => rootRoute,
-    path: '/analytics',
+    path: 'analytics',
     component: () => <MarkdownPage file="analytics" />
   }),
   
