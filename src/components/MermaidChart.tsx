@@ -1,80 +1,109 @@
-import React, { useEffect, useRef } from 'react'
-import mermaid from 'mermaid'
+import React, { useEffect, useRef } from "react";
+import mermaid from "mermaid";
 
 interface MermaidChartProps {
-  chart: string
-  className?: string
+  chart: string;
+  className?: string;
 }
 
-const MermaidChart: React.FC<MermaidChartProps> = ({ chart, className = '' }) => {
-  const chartRef = useRef<HTMLDivElement>(null)
-  const chartId = useRef(`mermaid-${Math.random().toString(36).substr(2, 9)}`)
+const MermaidChart: React.FC<MermaidChartProps> = ({
+  chart,
+  className = "",
+}) => {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const chartId = useRef(`mermaid-${Math.random().toString(36).slice(2, 11)}`);
+  const inited = useRef(false);
 
   useEffect(() => {
-    // Initialize mermaid with experimental features enabled
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'default',
-      securityLevel: 'loose',
-      fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
-      fontSize: 14,
-      flowchart: {
-        useMaxWidth: true,
-        htmlLabels: true,
-        curve: 'basis'
-      },
-      xyChart: {
-        useMaxWidth: true,
-        chartOrientation: 'vertical',
-        width: 700,
-        height: 400
-      }
-    })
-
-    const renderChart = async () => {
-      if (chartRef.current) {
-        try {
-          // Clear previous content
-          chartRef.current.innerHTML = ''
-          
-          // Force Mermaid to recognize experimental charts
-          const trimmedChart = chart.trim()
-          
-          // Check if it's an xychart and add proper config
-          if (trimmedChart.includes('xychart-beta')) {
-            const configuredChart = `%%{init: {'xyChart': {'useMaxWidth': true}}}%%\n${trimmedChart}`
-            const { svg } = await mermaid.render(chartId.current, configuredChart)
-            chartRef.current.innerHTML = svg
-          } else {
-            const { svg } = await mermaid.render(chartId.current, trimmedChart)
-            chartRef.current.innerHTML = svg
-          }
-          
-        } catch (error) {
-          console.error('Error rendering Mermaid chart:', error)
-          chartRef.current.innerHTML = `
-            <div class="text-red-500 p-4 border border-red-200 rounded bg-red-50">
-              <strong>Chart Error:</strong> ${error}
-              <pre class="mt-2 text-xs overflow-x-auto">${chart}</pre>
-            </div>
-          `
-        }
-      }
+    if (!chart || chart.trim() === "") {
+      if (chartRef.current) chartRef.current.innerHTML = "";
+      return; // Skip rendering if chart string is empty
     }
 
-    // Add a small delay to ensure Mermaid is fully loaded
-    const timer = setTimeout(renderChart, 100)
-    
-    return () => clearTimeout(timer)
-  }, [chart])
+    // Initialize Mermaid ONCE (xychart-beta support + safe defaults)
+    if (!inited.current) {
+      mermaid.initialize({
+        startOnLoad: false,
+        // theme: "forest", // <-- removed theme
+        securityLevel: "loose",
+        fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+        fontSize: 14,
+        xyChart: {
+          useMaxWidth: true,
+          chartOrientation: "vertical",
+          width: 1200,
+          height: 400,
+        },
+      });
+      inited.current = true;
+    }
+
+    const renderChart = async () => {
+      if (!chartRef.current) return;
+
+      try {
+        chartRef.current.innerHTML = "";
+
+        // Normalize line breaks to ensure y-axis starts on a new line
+        let src = chart.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+        const hasInitFirst = /^\s*%%\{.*?init.*?\}%%/m.test(src);
+        const needsXyInit = /xychart-beta/.test(src);
+
+        // Only add an init if none present; use valid JSON (double quotes)
+        if (!hasInitFirst && needsXyInit) {
+          const injected = `%%{init: {"xyChart": {"useMaxWidth": true}}}%%\n`;
+          src = injected + src;
+        }
+
+        // normalize newlines
+        src = src.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+        // add init only if missing
+        const hasInitSecond = /^\s*%%\{.*?init.*?\}%%/m.test(src);
+        if (!hasInitSecond && /xychart-beta/.test(src)) {
+          src =
+            `%%{init: {"theme":"forest","xyChart":{"useMaxWidth":true}}}%%\n` +
+            src;
+        }
+
+        // ensure newline after angle line (avoid 45y-axis)
+        src = src.replace(
+          /x-axis-label-angle\s+(\d+)\s*(?=y-axis)/,
+          "x-axis-label-angle $1\n"
+        );
+
+        // Log the exact string being rendered for debugging
+        console.log('RAW MERMAID SRC:\n' + chart.replace(/\n/g, '⏎\n'));
+        console.log('NORMALIZED MERMAID SRC:\n' + src.replace(/\n/g, '⏎\n'));
+
+        const { svg } = await mermaid.render(chartId.current, src);
+        chartRef.current.innerHTML = svg;
+      } catch (error) {
+        console.error("Error rendering Mermaid chart:", error);
+        chartRef.current.innerHTML = `
+          <div class="text-red-500 p-4 border border-red-200 rounded bg-red-50">
+            <strong>Chart Error:</strong> ${error}
+            <pre class="mt-2 text-xs overflow-x-auto">${chart.replace(
+              /</g,
+              "&lt;"
+            )}</pre>
+          </div>
+        `;
+      }
+    };
+
+    const timer = setTimeout(renderChart, 50);
+    return () => clearTimeout(timer);
+  }, [chart]);
 
   return (
-    <div 
-      ref={chartRef} 
-      className={`mermaid-chart my-6 flex justify-center ${className}`}
-      style={{ textAlign: 'center', minHeight: '200px' }}
+    <div
+      ref={chartRef}
+      className={`mermaid-chart w-full my-6 flex justify-center ${className}`}
+      style={{ textAlign: "center", minHeight: "400px", width: "100%" }}
     />
-  )
-}
+  );
+};
 
-export default MermaidChart
+export default MermaidChart;
