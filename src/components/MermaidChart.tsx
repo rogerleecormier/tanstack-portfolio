@@ -73,10 +73,6 @@ const MermaidChart: React.FC<MermaidChartProps> = ({
           "x-axis-label-angle $1\n"
         );
 
-        // Log the exact string being rendered for debugging
-        console.log('RAW MERMAID SRC:\n' + chart.replace(/\n/g, '⏎\n'));
-        console.log('NORMALIZED MERMAID SRC:\n' + src.replace(/\n/g, '⏎\n'));
-
         const { svg } = await mermaid.render(chartId.current, src);
         chartRef.current.innerHTML = svg;
       } catch (error) {
