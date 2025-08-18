@@ -63,9 +63,10 @@ function ShadcnDatePicker({
   disabled?: boolean;
 }) {
   const dateObj = value ? new Date(value) : undefined;
+  const [open, setOpen] = useState(false);
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -73,6 +74,7 @@ function ShadcnDatePicker({
             !dateObj ? "text-muted-foreground" : ""
           }`}
           disabled={disabled}
+          onClick={() => setOpen(true)}
         >
           {dateObj ? format(dateObj, "PPP") : <span>Pick a date</span>}
           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -83,7 +85,10 @@ function ShadcnDatePicker({
           mode="single"
           selected={dateObj}
           onSelect={(d) => {
-            if (d) onChange(d.toISOString().slice(0, 16)); // yyyy-mm-ddTHH:mm
+            if (d) {
+              onChange(d.toISOString().slice(0, 16)); // yyyy-mm-ddTHH:mm
+              setOpen(false); // Auto-close after selection
+            }
           }}
           disabled={(date) =>
             disabled || date > new Date() || date < new Date("1900-01-01")
@@ -718,10 +723,6 @@ export default function HealthBridgePage() {
                   >
                     Clear
                   </button>
-                  {/* Debug: Show record count */}
-                  <span className="ml-2 text-xs text-gray-400">
-                    ({filteredData.length} records)
-                  </span>
                 </div>
               )}
             </div>
