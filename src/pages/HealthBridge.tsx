@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { FilterIcon } from "lucide-react";
+import { H1, H2 } from "@/components/ui/typography";
 
 const PAGE_SIZE = 10;
 
@@ -546,10 +547,10 @@ export default function HealthBridgePage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-4">Body Weight Analysis</h1>
+      <H1 className="mb-4">Body Weight Analysis</H1>
       <AddWeightBox />
       <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Summary Statistics</h2>
+        <H2 className="mb-4">Summary Statistics</H2>
         <div className="flex flex-wrap gap-4 mb-6">
           {metrics && (
             <>
@@ -592,7 +593,7 @@ export default function HealthBridgePage() {
         </div>
       </section>
       <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Weight Trend</h2>
+        <H2 className="mb-4">Weight Trend</H2>
         <Card className="p-4 mb-6" style={{ width: "100%", maxWidth: "none" }}>
           <div style={{ width: "100%" }}>
             <MermaidChart chart={mermaidChart} className="w-full" />
@@ -726,11 +727,11 @@ export default function HealthBridgePage() {
         </Popover>
       </section>
       {/* Dynamic Table Header */}
-      <div className="mb-2 text-lg font-semibold">
+      <H2 className="mb-2">
         {filteredData.length > 0
           ? `Weight Changes (${metrics?.startDate} to ${metrics?.endDate})`
           : "Weight Changes"}
-      </div>
+      </H2>
       {paginatedData.length > 0 ? (
         <Table>
           <TableHeader>

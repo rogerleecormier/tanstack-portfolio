@@ -12,6 +12,7 @@ import MermaidChart from '../components/MermaidChart'
 import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
+import { H1, H2, P, Blockquote } from "@/components/ui/typography";
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -174,13 +175,13 @@ export default function MarkdownPage({ file }: { file: string }) {
         {/* Header with h1 title */}
         {frontmatter.title && (
           <header className="mb-8">
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">
+            <H1 className="mb-4">
               {frontmatter.title}
-            </h1>
+            </H1>
             {frontmatter.description && (
-              <p className="text-xl text-muted-foreground leading-7">
+              <P className="text-xl text-muted-foreground leading-7">
                 {frontmatter.description}
-              </p>
+              </P>
             )}
             {frontmatter.tags && (
               <div className="flex flex-wrap gap-2 mt-4">
@@ -225,22 +226,18 @@ export default function MarkdownPage({ file }: { file: string }) {
                 const text = String(children)
                 const id = slugify(text, { lower: true, strict: true })
                 return (
-                  <h1 id={id} className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl" {...props}>
+                  <H1 id={id} {...props}>
                     {children}
-                  </h1>
+                  </H1>
                 )
               },
               h2: ({ children, ...props }) => {
                 const text = String(children)
                 const id = slugify(text, { lower: true, strict: true })
                 return (
-                  <h2
-                    id={id}
-                    className="scroll-mt-[140px] border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0"
-                    {...props}
-                  >
+                  <H2 id={id} {...props}>
                     {children}
-                  </h2>
+                  </H2>
                 )
               },
               h3: ({ children, ...props }) => {
@@ -253,14 +250,14 @@ export default function MarkdownPage({ file }: { file: string }) {
                 )
               },
               p: ({ children, ...props }) => (
-                <p className="leading-7 [&:not(:first-child)]:mt-6" {...props}>
+                <P {...props}>
                   {children}
-                </p>
+                </P>
               ),
               blockquote: ({ children, ...props }) => (
-                <blockquote className="mt-6 border-l-2 pl-6 italic" {...props}>
+                <Blockquote {...props}>
                   {children}
-                </blockquote>
+                </Blockquote>
               ),
               code: ({ children, className, ...props }) => {
                 const match = /language-(\w+)/.exec(className || '')
