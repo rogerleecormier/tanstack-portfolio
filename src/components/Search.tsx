@@ -53,7 +53,8 @@ export default function Search() {
 
   // Navigate to selected result
   const navigateToResult = (url: string) => {
-    router.navigate({ to: url })
+    // Ensure absolute path for TanStack Router
+    router.navigate({ to: url.startsWith('/') ? url : `/${url}` })
     setOpen(false)
     setQuery('')
     setResults([])

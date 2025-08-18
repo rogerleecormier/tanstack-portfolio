@@ -22,7 +22,7 @@ console.count('[router] createRootRoute called')
 // Index route (About page at root)
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '', // root path for About
+  path: '/', // root path for About
   component: () => <MarkdownPage file="about" />
 })
 
