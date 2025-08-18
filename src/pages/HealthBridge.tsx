@@ -11,6 +11,15 @@ import {
 } from "../components/ui/table";
 import { Card } from "../components/ui/card";
 import MermaidChart from "../components/MermaidChart";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 const PAGE_SIZE = 10;
 
@@ -44,6 +53,48 @@ function isWithinMonths(dateStr: string, months: number) {
   return date >= past && date <= now;
 }
 
+function ShadcnDatePicker({
+  value,
+  onChange,
+  disabled = false,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  disabled?: boolean;
+}) {
+  const dateObj = value ? new Date(value) : undefined;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className={`w-[240px] pl-3 text-left font-normal border rounded ${
+            !dateObj ? "text-muted-foreground" : ""
+          }`}
+          disabled={disabled}
+        >
+          {dateObj ? format(dateObj, "PPP") : <span>Pick a date</span>}
+          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={dateObj}
+          onSelect={(d) => {
+            if (d) onChange(d.toISOString().slice(0, 16)); // yyyy-mm-ddTHH:mm
+          }}
+          disabled={(date) =>
+            disabled || date > new Date() || date < new Date("1900-01-01")
+          }
+          captionLayout="dropdown"
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function AddWeightBox() {
   const queryClient = useQueryClient();
   const [weight, setWeight] = useState("");
@@ -55,16 +106,25 @@ function AddWeightBox() {
   const [success, setSuccess] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: async ({ kg, timestamp }: { kg: number; timestamp: string }) => {
+    mutationFn: async ({
+      kg,
+      timestamp,
+    }: {
+      kg: number;
+      timestamp: string;
+    }) => {
       // This should run on submit
-      const res = await fetch("https://health-bridge-api.rcormier.workers.dev/api/health/weight", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer Twins2015!", // <-- Replace with your actual token
-        },
-        body: JSON.stringify({ weight: kg, unit: "kg", timestamp }),
-      });
+      const res = await fetch(
+        "https://health-bridge-api.rcormier.workers.dev/api/health/weight",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer Twins2015!", // <-- Replace with your actual token
+          },
+          body: JSON.stringify({ weight: kg, unit: "kg", timestamp }),
+        }
+      );
       if (!res.ok) throw new Error("Failed to add weight");
       return res.json();
     },
@@ -100,19 +160,13 @@ function AddWeightBox() {
         inputMode="decimal"
         pattern="^\d+(\.\d{1,2})?$"
         value={weight}
-        onChange={e => setWeight(e.target.value)}
+        onChange={(e) => setWeight(e.target.value)}
         placeholder="e.g. 82.50"
         className="border rounded px-2 py-1"
         required
       />
       <label className="font-medium">Date & Time:</label>
-      <input
-        type="datetime-local"
-        value={date}
-        onChange={e => setDate(e.target.value)}
-        className="border rounded px-2 py-1"
-        required
-      />
+      <ShadcnDatePicker value={date} onChange={setDate} />
       <button
         type="submit"
         className="px-4 py-2 bg-blue-600 text-white rounded mt-2"
@@ -136,24 +190,17 @@ export default function HealthBridgePage() {
   const [sortBy, setSortBy] = useState<"date" | "weight">("date");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
-  // Set default filter to last 30 days and end date to today
-  const todayStr = useMemo(() => {
-    const today = new Date();
-    return today.toISOString().slice(0, 10); // yyyy-mm-dd
-  }, []);
-
-  // Date range state
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: "",
-    end: todayStr,
-  });
-
-  // Other filter states
-  const [quickRange, setQuickRange] = useState<
-    "all" | "7" | "14" | "30" | "3m" | "6m"
-  >("30");
+  // Filter states
   const [selectedYear, setSelectedYear] = useState<number | "all">("all");
   const [selectedMonth, setSelectedMonth] = useState<number | "all">("all");
+  const [quickRange, setQuickRange] = useState<
+    "all" | "7" | "14" | "30" | "3m" | "6m"
+  >("all");
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
+    start: "",
+    end: "",
+  });
+  const [customRangeActive, setCustomRangeActive] = useState(false);
   const [page, setPage] = useState(1);
 
   // Sort data by selected column and direction
@@ -170,6 +217,71 @@ export default function HealthBridgePage() {
     });
     return sorted;
   }, [data, sortBy, sortDir]);
+
+  // Filter logic
+  const filteredData = useMemo(() => {
+    let result = sortedData;
+    if (customRangeActive && dateRange.start && dateRange.end) {
+      const start = new Date(dateRange.start);
+      const end = new Date(dateRange.end);
+      result = result.filter((row) => isWithinRange(row.date, start, end));
+      return result;
+    }
+    // Quick range filter
+    if (quickRange === "7" || quickRange === "14" || quickRange === "30") {
+      result = result.filter((row) =>
+        isWithinDays(row.date, Number(quickRange))
+      );
+      return result;
+    }
+    if (quickRange === "3m") {
+      result = result.filter((row) => isWithinMonths(row.date, 3));
+      return result;
+    }
+    if (quickRange === "6m") {
+      result = result.filter((row) => isWithinMonths(row.date, 6));
+      return result;
+    }
+    // Year/month filter
+    if (selectedYear !== "all") {
+      result = result.filter(
+        (row) => new Date(row.date).getFullYear() === selectedYear
+      );
+    }
+    if (selectedMonth !== "all") {
+      result = result.filter((row) =>
+        isWithinMonth(row.date, selectedYear as number, selectedMonth as number)
+      );
+    }
+    return result;
+  }, [
+    sortedData,
+    selectedYear,
+    selectedMonth,
+    quickRange,
+    customRangeActive,
+    dateRange,
+  ]);
+
+  // Automatically update dateRange to match filtered data set each time a filter changes, unless custom range is active
+  useEffect(() => {
+    if (!customRangeActive && filteredData.length > 0) {
+      const startDate = filteredData[filteredData.length - 1].date;
+      const endDate = filteredData[0].date;
+      // Only update if values actually changed to prevent infinite loop
+      if (dateRange.start !== startDate || dateRange.end !== endDate) {
+        setDateRange({ start: startDate, end: endDate });
+      }
+    }
+  }, [filteredData, customRangeActive]);
+
+  // Paginated data and total pages
+  const paginatedData = useMemo(() => {
+    const startIdx = (page - 1) * PAGE_SIZE;
+    return filteredData.slice(startIdx, startIdx + PAGE_SIZE);
+  }, [filteredData, page]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / PAGE_SIZE));
 
   // Extract years and months for filter dropdowns
   const years = useMemo(() => {
@@ -194,117 +306,6 @@ export default function HealthBridgePage() {
     "November",
     "December",
   ];
-
-  // Filter logic
-  const filteredData = useMemo(() => {
-    let result = sortedData;
-
-    // Quick range filter
-    if (quickRange === "7" || quickRange === "14" || quickRange === "30") {
-      result = result.filter((row) =>
-        isWithinDays(row.date, Number(quickRange))
-      );
-      return result;
-    }
-    if (quickRange === "3m") {
-      result = result.filter((row) => isWithinMonths(row.date, 3));
-      return result;
-    }
-    if (quickRange === "6m") {
-      result = result.filter((row) => isWithinMonths(row.date, 6));
-      return result;
-    }
-
-    // Date range filter
-    if (dateRange.start && dateRange.end) {
-      const start = new Date(dateRange.start);
-      const end = new Date(dateRange.end);
-      result = result.filter((row) => isWithinRange(row.date, start, end));
-      return result;
-    }
-
-    // Year/month filter
-    if (selectedYear !== "all") {
-      result = result.filter(
-        (row) => new Date(row.date).getFullYear() === selectedYear
-      );
-    }
-    if (selectedMonth !== "all") {
-      result = result.filter((row) =>
-        isWithinMonth(row.date, selectedYear as number, selectedMonth as number)
-      );
-    }
-    return result;
-  }, [sortedData, selectedYear, selectedMonth, dateRange, quickRange]);
-
-  // Automatically update dateRange to match filtered data set each time a filter changes
-  useEffect(() => {
-    if (filteredData.length > 0) {
-      const startDate = formatLocalDate(filteredData[filteredData.length - 1].date);
-      const endDate = formatLocalDate(filteredData[0].date);
-
-      if (dateRange.start !== startDate || dateRange.end !== endDate) {
-        setDateRange({ start: startDate, end: endDate });
-      }
-    } else {
-      if (dateRange.start !== "" || dateRange.end !== todayStr) {
-        setDateRange({ start: "", end: todayStr });
-      }
-    }
-  }, [filteredData, todayStr]);
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
-  const paginatedData = filteredData.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-  );
-
-  // Reset to page 1 when filter changes
-  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedYear(e.target.value === "all" ? "all" : Number(e.target.value));
-    setSelectedMonth("all");
-    setQuickRange("all");
-    setDateRange({ start: "", end: "" });
-    setPage(1);
-  };
-  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMonth(e.target.value === "all" ? "all" : Number(e.target.value));
-    setQuickRange("all");
-    setDateRange({ start: "", end: "" });
-    setPage(1);
-  };
-  const handleQuickRange = (days: "all" | "7" | "14" | "30" | "3m" | "6m") => {
-    setQuickRange(days);
-    setSelectedYear("all");
-    setSelectedMonth("all");
-    setDateRange({ start: "", end: "" });
-    setPage(1);
-  };
-  const handleDateRangeChange = (field: "start" | "end", value: string) => {
-    setDateRange((prev) => ({ ...prev, [field]: value }));
-    setQuickRange("all");
-    setSelectedYear("all");
-    setSelectedMonth("all");
-    setPage(1);
-  };
-
-  // Sort arrow helper
-  const getArrow = (col: "date" | "weight") => {
-    if (sortBy !== col) return "↕";
-    return sortDir === "asc" ? "↑" : "↓";
-  };
-
-  // Handle sort click
-  const handleSort = (col: "date" | "weight") => {
-    if (sortBy === col) {
-      setSortDir(sortDir === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(col);
-      setSortDir("desc");
-    }
-    setPage(1);
-  };
 
   // Metrics calculation for filteredData
   const metrics = useMemo(() => {
@@ -338,23 +339,23 @@ export default function HealthBridgePage() {
     if (!filteredData.length) return "";
 
     // Helper to check if a date range exceeds 6 months
-    const isDateRangeOver6Months = (() => {
-      if (dateRange.start && dateRange.end) {
-        const start = new Date(dateRange.start);
-        const end = new Date(dateRange.end);
-        const months =
-          (end.getFullYear() - start.getFullYear()) * 12 +
-          (end.getMonth() - start.getMonth());
-        return months >= 6;
-      }
-      return false;
-    })();
+    // const isDateRangeOver6Months = (() => {
+    //   if (dateRange.start && dateRange.end) {
+    //     const start = new Date(dateRange.start);
+    //     const end = new Date(dateRange.end);
+    //     const months =
+    //       (end.getFullYear() - start.getFullYear()) * 12 +
+    //       (end.getMonth() - start.getMonth());
+    //     return months >= 6;
+    //   }
+    //   return false;
+    // })();
 
-    // Aggregate by month if quickRange is "6m" or "3m" OR date range exceeds 6 months
+    // Aggregate by month if quickRange is "6m" or "3m"
     if (
       quickRange === "6m" ||
-      quickRange === "3m" ||
-      (dateRange.start && dateRange.end && isDateRangeOver6Months)
+      quickRange === "3m"
+      // || (dateRange.start && dateRange.end && isDateRangeOver6Months)
     ) {
       const monthMap = new Map<string, number[]>();
       filteredData.forEach((row) => {
@@ -419,7 +420,55 @@ export default function HealthBridgePage() {
       `y-axis "Weight (lbs)" ${minWeight} --> ${maxWeight}\n` +
       `line [${yValues}]\n`
     );
-  }, [filteredData, quickRange, dateRange]);
+  }, [filteredData, quickRange]);
+
+  // Sort arrow and handler
+  function getArrow(col: "date" | "weight") {
+    if (sortBy !== col) return "";
+    return sortDir === "asc" ? "↑" : "↓";
+  }
+  function handleSort(col: "date" | "weight") {
+    if (sortBy === col) {
+      setSortDir(sortDir === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(col);
+      setSortDir("desc");
+    }
+    setPage(1);
+  }
+
+  // Handlers for filters
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYear(e.target.value === "all" ? "all" : Number(e.target.value));
+    setSelectedMonth("all");
+    setQuickRange("all");
+    setCustomRangeActive(false);
+    setPage(1);
+  };
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMonth(e.target.value === "all" ? "all" : Number(e.target.value));
+    setQuickRange("all");
+    setCustomRangeActive(false);
+    setPage(1);
+  };
+  const handleQuickRange = (days: "all" | "7" | "14" | "30" | "3m" | "6m") => {
+    setQuickRange(days);
+    setSelectedYear("all");
+    setSelectedMonth("all");
+    setCustomRangeActive(false);
+    setPage(1);
+  };
+
+  // Handler for custom date range selection
+  // Removed unused handleCustomRangeChange function
+
+  // Now check loading/error AFTER all hooks
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div className="text-red-500">Error loading data</div>;
+  }
 
   return (
     <div>
@@ -556,7 +605,7 @@ export default function HealthBridgePage() {
             value={selectedMonth}
             onChange={handleMonthChange}
             className="border rounded px-2 py-1"
-            disabled={selectedYear === "all"}
+            disabled={customRangeActive}
           >
             <option value="all">All</option>
             {months.map((m, idx) => (
@@ -565,21 +614,59 @@ export default function HealthBridgePage() {
               </option>
             ))}
           </select>
-          {/* Date Range Filter */}
-          <label className="font-medium">Date range:</label>
-          <input
-            type="date"
-            value={dateRange.start}
-            onChange={(e) => handleDateRangeChange("start", e.target.value)}
-            className="border rounded px-2 py-1"
-          />
-          <span>-</span>
-          <input
-            type="date"
-            value={dateRange.end}
-            onChange={(e) => handleDateRangeChange("end", e.target.value)}
-            className="border rounded px-2 py-1"
-          />
+          {/* Date Range Filter - Shadcn Calendar Pickers */}
+          <div className="flex items-center gap-2">
+            <label className="font-medium">Custom Range:</label>
+            {/* Start Date Picker (left) */}
+            <ShadcnDatePicker
+              value={dateRange.start}
+              onChange={(val) => {
+                setCustomRangeActive(true);
+                setDateRange((prev) => ({ ...prev, start: val }));
+                setQuickRange("all");
+                setSelectedYear("all");
+                setSelectedMonth("all");
+                setPage(1);
+              }}
+            />
+            <span>-</span>
+            {/* End Date Picker (right) */}
+            <ShadcnDatePicker
+              value={dateRange.end}
+              onChange={(val) => {
+                setCustomRangeActive(true);
+                setDateRange((prev) => ({ ...prev, end: val }));
+                setQuickRange("all");
+                setSelectedYear("all");
+                setSelectedMonth("all");
+                setPage(1);
+              }}
+              disabled={!dateRange.start}
+            />
+            {customRangeActive && (
+              <>
+                <button
+                  className="ml-2 px-2 py-1 border rounded bg-gray-100"
+                  onClick={() => {
+                    setCustomRangeActive(false);
+                    setDateRange({ start: "", end: "" });
+                  }}
+                >
+                  Clear
+                </button>
+                {/* Debug: Show record count */}
+                <span className="ml-2 text-xs text-gray-400">
+                  ({filteredData.length} records)
+                </span>
+                {/* Show message if exactly 500 records */}
+                {filteredData.length === 500 && (
+                  <span className="ml-4 text-sm text-orange-600">
+                    Maximum of 500 records returned for the selected range.
+                  </span>
+                )}
+              </>
+            )}
+          </div>
         </div>
         {isLoading && <div>Loading...</div>}
         {error && <div className="text-red-500">Error loading data</div>}
@@ -640,10 +727,10 @@ export default function HealthBridgePage() {
   );
 }
 
-function formatLocalDate(dateStr: string) {
-  const d = new Date(dateStr);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
+// function formatLocalDate(dateStr: string) {
+//   const d = new Date(dateStr);
+//   const year = d.getFullYear();
+//   const month = String(d.getMonth() + 1).padStart(2, "0");
+//   const day = String(d.getDate()).padStart(2, "0");
+//   return `${year}-${month}-${day}`;
+// }
