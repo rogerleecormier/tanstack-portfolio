@@ -286,28 +286,9 @@ export default function HealthBridgePage() {
   const totalPages = Math.max(1, Math.ceil(filteredData.length / PAGE_SIZE));
 
   // Extract years and months for filter dropdowns
-  const years = useMemo(() => {
-    if (!sortedData) return [];
-    const yearSet = new Set(
-      sortedData.map((row) => new Date(row.date).getFullYear())
-    );
-    return Array.from(yearSet).sort((a, b) => b - a);
-  }, [sortedData]);
+  // Removed unused 'years' variable
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+  // Removed unused 'months' variable
 
   // Metrics calculation for filteredData
   const metrics = useMemo(() => {
@@ -547,19 +528,6 @@ export default function HealthBridgePage() {
   }
 
   // Handlers for filters
-  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedYear(e.target.value === "all" ? "all" : Number(e.target.value));
-    setSelectedMonth("all");
-    setQuickRange("all");
-    setCustomRangeActive(false);
-    setPage(1);
-  };
-  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMonth(e.target.value === "all" ? "all" : Number(e.target.value));
-    setQuickRange("all");
-    setCustomRangeActive(false);
-    setPage(1);
-  };
   const handleQuickRange = (days: "all" | "7" | "14" | "30" | "3m" | "6m") => {
     setQuickRange(days);
     setSelectedYear("all");
