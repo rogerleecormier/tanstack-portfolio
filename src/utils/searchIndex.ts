@@ -3,17 +3,17 @@ import type { SearchItem, SearchResult } from '../types/search'
 
 // Define all your markdown files and their route mappings
 const MARKDOWN_FILES = [
-  { file: 'about', url: '/about', section: 'About' },
-  { file: 'strategy', url: '/strategy', section: 'Strategy' },
-  { file: 'leadership', url: '/leadership', section: 'Leadership' },
-  { file: 'devops', url: '/devops', section: 'DevOps' },
-  { file: 'saas', url: '/saas', section: 'SaaS' },
-  { file: 'talent', url: '/talent', section: 'Talent' },
-  { file: 'culture', url: '/culture', section: 'Culture' },
-  { file: 'vision', url: '/vision', section: 'Vision' },
-  { file: 'analytics', url: '/analytics', section: 'Analytics' },
+  { file: 'about', url: 'about', section: 'About' },
+  { file: 'strategy', url: 'strategy', section: 'Strategy' },
+  { file: 'leadership', url: 'leadership', section: 'Leadership' },
+  { file: 'devops', url: 'devops', section: 'DevOps' },
+  { file: 'saas', url: 'saas', section: 'SaaS' },
+  { file: 'talent', url: 'talent', section: 'Talent' },
+  { file: 'culture', url: 'culture', section: 'Culture' },
+  { file: 'vision', url: 'vision', section: 'Vision' },
+  { file: 'analytics', url: 'analytics', section: 'Analytics' },
   // Add the nested project analysis page
-  { file: 'project-analysis', url: '/analytics/project-analysis', section: 'Analytics' },
+  { file: 'project-analysis', url: 'project-analysis', section: 'Analytics' },
 ]
 
 let searchIndex: Fuse<SearchItem> | null = null

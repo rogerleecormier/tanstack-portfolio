@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { HashRouter } from 'react-router-dom'
-import AppRouter from './router'
+import { RouterProvider } from '@tanstack/react-router'
+import { router } from './router'
 import './index.css'
 
 const queryClient = new QueryClient()
@@ -10,9 +10,7 @@ const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <HashRouter>
-        <AppRouter />
-      </HashRouter>
+      <RouterProvider router={router} />
     </QueryClientProvider>
   </React.StrictMode>,
 )

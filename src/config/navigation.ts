@@ -1,33 +1,55 @@
-export interface NavigationPage {
-  title: string
-  path: string
-  file: string
-  children?: NavigationPage[]
-}
+// Navigation config for TanStack Router and AppSidebar
 
-export const navigationPages: NavigationPage[] = [
-  { title: 'About', path: '/', file: 'about.md' },
-  { title: 'Strategy', path: '/strategy', file: 'strategy.md' },
-  { title: 'Leadership', path: '/leadership', file: 'leadership.md' },
-  { title: 'Vision', path: '/vision', file: 'vision.md' },
-  { title: 'Culture', path: '/culture', file: 'culture.md' },
-  { title: 'Talent', path: '/talent', file: 'talent.md' },
-  { title: 'DevOps', path: '/devops', file: 'devops.md' },
-  { title: 'SaaS', path: '/saas', file: 'saas.md' },
-  { 
-    title: 'Analytics', 
-    path: '/analytics', 
-    file: 'analytics.md',
-    children: [
-      { title: 'Project Risk Analysis', path: '/analytics/project-analysis', file: 'project-risk-analysis.md' }
-    ]
-  }
-]
+import { User, BarChart3, Briefcase, Users, Settings, Code, Target } from "lucide-react";
 
-export const allowedPaths = navigationPages.flatMap(page => {
-  const paths = [page.path]
-  if (page.children) {
-    paths.push(...page.children.map(child => child.path))
-  }
-  return paths
-})
+export const navigationItems = [
+  {
+    title: "About",
+    url: "", // root route
+    icon: User,
+  },
+  {
+    title: "Analytics & Insights",
+    url: "analytics",
+    icon: BarChart3,
+  },
+  {
+    title: "Strategy & Vision",
+    url: "strategy",
+    icon: Target,
+  },
+  {
+    title: "Leadership & Culture",
+    url: "leadership",
+    icon: Users,
+  },
+  {
+    title: "Talent & Org Design",
+    url: "talent",
+    icon: Briefcase,
+  },
+  {
+    title: "DevOps & Automation",
+    url: "devops",
+    icon: Code,
+  },
+  {
+    title: "ERP & SaaS Integration",
+    url: "saas",
+    icon: Settings,
+  },
+];
+
+export const projectItems = [
+  {
+    title: "Projects Analysis",
+    url: "project-analysis",
+    icon: BarChart3,
+  },
+  {
+    title: "HealthBridge Analysis",
+    url: "healthbridge-analysis",
+    icon: BarChart3,
+  },
+  // Add more projects here as needed
+];

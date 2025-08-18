@@ -1,5 +1,5 @@
-import { User, BarChart3, Briefcase, Users, Settings, Code, Target } from "lucide-react"
-import { Link, useLocation } from "@tanstack/react-router"
+import { User, BarChart3, Briefcase, Users, Settings, Code, Target } from "lucide-react";
+import { Link } from "@tanstack/react-router"; // TanStack Router
 
 import {
   Sidebar,
@@ -11,19 +11,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 const navigationItems = [
   {
     title: "About",
-    url: "/",
+    url: "", // root
     icon: User,
   },
   {
     title: "Analytics & Insights",
     url: "analytics",
     icon: BarChart3,
-    // No items: now a top-level page
   },
   {
     title: "Strategy & Vision",
@@ -54,7 +53,7 @@ const navigationItems = [
 
 const projectItems = [
   {
-    title: "Projects Analysis", 
+    title: "Projects Analysis",
     url: "project-analysis",
     icon: BarChart3,
   },
@@ -64,15 +63,10 @@ const projectItems = [
     icon: BarChart3,
   },
   // Add more projects here as needed
-  // { title: "Project X", url: "/project-x", icon: Briefcase },
 ];
 
 export function AppSidebar() {
-  const location = useLocation();
-  const currentPath = location.pathname;
   const { isMobile, setOpenMobile } = useSidebar();
-
-  const isCurrentPage = (url: string) => currentPath === url;
 
   return (
     <Sidebar className="border-r border-teal-200 bg-teal-50" collapsible="icon">
@@ -86,17 +80,12 @@ export function AppSidebar() {
             <SidebarMenu className="space-y-1">
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    tooltip={item.title}
-                    className={`text-teal-800 hover:bg-teal-100 hover:text-teal-900 ${
-                      isCurrentPage(item.url)
-                        ? "bg-teal-200 text-teal-900 font-medium"
-                        : ""
-                    }`}
-                  >
+                  <SidebarMenuButton asChild tooltip={item.title}>
                     <Link
-                      to={item.url}
+                      to={item.url === "" ? "/" : `/${item.url}`}
+                      activeOptions={{ exact: item.url === "" }}
+                      activeProps={{ className: "bg-teal-200 text-teal-900 font-medium" }}
+                      inactiveProps={{ className: "text-teal-800 hover:bg-teal-100 hover:text-teal-900" }}
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
@@ -119,17 +108,11 @@ export function AppSidebar() {
             <SidebarMenu className="space-y-1">
               {projectItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    tooltip={item.title}
-                    className={`text-teal-800 hover:bg-teal-100 hover:text-teal-900 ${
-                      isCurrentPage(item.url)
-                        ? "bg-teal-200 text-teal-900 font-medium"
-                        : ""
-                    }`}
-                  >
+                  <SidebarMenuButton asChild tooltip={item.title}>
                     <Link
-                      to={item.url}
+                      to={`/${item.url}`}
+                      activeProps={{ className: "bg-teal-200 text-teal-900 font-medium" }}
+                      inactiveProps={{ className: "text-teal-800 hover:bg-teal-100 hover:text-teal-900" }}
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
