@@ -338,27 +338,65 @@ export default function HealthBridgePage() {
   const mermaidChart = useMemo(() => {
     if (!filteredData.length) return "";
 
-    // Helper to check if a date range exceeds 6 months
-    // const isDateRangeOver6Months = (() => {
-    //   if (dateRange.start && dateRange.end) {
-    //     const start = new Date(dateRange.start);
-    //     const end = new Date(dateRange.end);
-    //     const months =
-    //       (end.getFullYear() - start.getFullYear()) * 12 +
-    //       (end.getMonth() - start.getMonth());
-    //     return months >= 6;
-    //   }
-    //   return false;
-    // })();
+    // Helper to check the custom range duration in months/years
+    const getRangeMonths = () => {
+      if (dateRange.start && dateRange.end) {
+        const start = new Date(dateRange.start);
+        const end = new Date(dateRange.end);
+        return (
+          (end.getFullYear() - start.getFullYear()) * 12 +
+          (end.getMonth() - start.getMonth())
+        );
+      }
+      return 0;
+    };
+    const getRangeYears = () => {
+      if (dateRange.start && dateRange.end) {
+        const start = new Date(dateRange.start);
+        const end = new Date(dateRange.end);
+        return end.getFullYear() - start.getFullYear();
+      }
+      return 0;
+    };
 
-    // Aggregate by month if quickRange is "6m" or "3m"
-    if (
-      quickRange === "6m" ||
-      quickRange === "3m"
-      // || (dateRange.start && dateRange.end && isDateRangeOver6Months)
-    ) {
+    // Aggregation helpers
+    function aggregateByWeek(data: typeof filteredData) {
+      const weekMap = new Map<string, number[]>();
+      data.forEach((row) => {
+        const date = new Date(row.date);
+        // Get the Monday of the week for this date
+        const day = date.getDay();
+        const diff = date.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
+        const weekStart = new Date(date.setDate(diff));
+        weekStart.setHours(0, 0, 0, 0);
+        const label = format(weekStart, "yyyy-MM-dd");
+        const lbs = row.kg * 2.20462;
+        if (!weekMap.has(label)) weekMap.set(label, []);
+        weekMap.get(label)!.push(lbs);
+      });
+      // Sort week labels oldest to newest
+      const weekLabels = Array.from(weekMap.keys()).sort();
+      const xLabels = weekLabels.map((label) => `"${label}"`).join(", ");
+      const yValues = weekLabels
+        .map((label) => {
+          const arr = weekMap.get(label)!;
+          return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
+        })
+        .join(", ");
+      const lbsArray = Array.from(weekMap.values()).flat();
+      const minWeight = Math.floor(Math.min(...lbsArray));
+      const maxWeight = Math.ceil(Math.max(...lbsArray));
+      return {
+        xLabels,
+        yValues,
+        minWeight,
+        maxWeight,
+      };
+    }
+
+    function aggregateByMonth(data: typeof filteredData) {
       const monthMap = new Map<string, number[]>();
-      filteredData.forEach((row) => {
+      data.forEach((row) => {
         const date = new Date(row.date);
         const label = date.toLocaleString("default", {
           month: "short",
@@ -368,14 +406,14 @@ export default function HealthBridgePage() {
         if (!monthMap.has(label)) monthMap.set(label, []);
         monthMap.get(label)!.push(lbs);
       });
-
       // Sort month labels oldest to newest
       const monthLabels = Array.from(monthMap.keys()).sort((a, b) => {
-        const aDate = new Date(a);
-        const bDate = new Date(b);
+        const aParts = a.split(" ");
+        const bParts = b.split(" ");
+        const aDate = new Date(`${aParts[0]} 1, ${aParts[1]}`);
+        const bDate = new Date(`${bParts[0]} 1, ${bParts[1]}`);
         return aDate.getTime() - bDate.getTime();
       });
-
       const xLabels = monthLabels.map((label) => `"${label}"`).join(", ");
       const yValues = monthLabels
         .map((label) => {
@@ -383,19 +421,88 @@ export default function HealthBridgePage() {
           return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
         })
         .join(", ");
-
       const lbsArray = Array.from(monthMap.values()).flat();
       const minWeight = Math.floor(Math.min(...lbsArray));
       const maxWeight = Math.ceil(Math.max(...lbsArray));
+      return {
+        xLabels,
+        yValues,
+        minWeight,
+        maxWeight,
+      };
+    }
 
+    function aggregateByYear(data: typeof filteredData) {
+      const yearMap = new Map<string, number[]>();
+      data.forEach((row) => {
+        const date = new Date(row.date);
+        const label = date.getFullYear().toString();
+        const lbs = row.kg * 2.20462;
+        if (!yearMap.has(label)) yearMap.set(label, []);
+        yearMap.get(label)!.push(lbs);
+      });
+      const yearLabels = Array.from(yearMap.keys()).sort();
+      const xLabels = yearLabels.map((label) => `"${label}"`).join(", ");
+      const yValues = yearLabels
+        .map((label) => {
+          const arr = yearMap.get(label)!;
+          return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
+        })
+        .join(", ");
+      const lbsArray = Array.from(yearMap.values()).flat();
+      const minWeight = Math.floor(Math.min(...lbsArray));
+      const maxWeight = Math.ceil(Math.max(...lbsArray));
+      return {
+        xLabels,
+        yValues,
+        minWeight,
+        maxWeight,
+      };
+    }
+
+    // Decide aggregation
+    let agg;
+    if (quickRange === "3m") {
+      agg = aggregateByWeek(filteredData);
+    } else if (quickRange === "6m") {
+      agg = aggregateByMonth(filteredData);
+    } else if (quickRange === "all") {
+      // If all, check the total range
+      const months = getRangeMonths();
+      const years = getRangeYears();
+      if (years >= 1) {
+        agg = aggregateByYear(filteredData);
+      } else if (months > 6) {
+        agg = aggregateByMonth(filteredData);
+      } else {
+        // Under 6 months, show daily
+        agg = null;
+      }
+    } else if (customRangeActive && dateRange.start && dateRange.end) {
+      const months = getRangeMonths();
+      const years = getRangeYears();
+      if (years >= 1) {
+        agg = aggregateByYear(filteredData);
+      } else if (months > 6) {
+        agg = aggregateByMonth(filteredData);
+      } else if (months >= 3) {
+        agg = aggregateByMonth(filteredData);
+      } else if (months >= 1) {
+        agg = aggregateByWeek(filteredData);
+      } else {
+        agg = null;
+      }
+    }
+
+    if (agg) {
       return (
         `%%{init: {"theme":"default","themeVariables":{"xyChart":{"plotColorPalette":"#14b8a6"}}}}%%\n` +
         `xychart-beta\n` +
         `\n` +
         `title "Weight Over Time"\n` +
-        `x-axis [${xLabels}]\n` +
-        `y-axis "Weight (lbs)" ${minWeight} --> ${maxWeight}\n` +
-        `line [${yValues}]\n`
+        `x-axis [${agg.xLabels}]\n` +
+        `y-axis "Weight (lbs)" ${agg.minWeight} --> ${agg.maxWeight}\n` +
+        `line [${agg.yValues}]\n`
       );
     }
 
@@ -420,7 +527,7 @@ export default function HealthBridgePage() {
       `y-axis "Weight (lbs)" ${minWeight} --> ${maxWeight}\n` +
       `line [${yValues}]\n`
     );
-  }, [filteredData, quickRange]);
+  }, [filteredData, quickRange, customRangeActive, dateRange]);
 
   // Sort arrow and handler
   function getArrow(col: "date" | "weight") {
@@ -525,204 +632,163 @@ export default function HealthBridgePage() {
           </div>
         </Card>
       </section>
+      {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
       <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Filters & Table</h2>
-        <div className="mb-4 flex flex-wrap items-center gap-4">
-          {/* Quick Range Buttons */}
-          <div className="flex gap-2">
-            <button
-              className={`px-2 py-1 border rounded ${
-                quickRange === "7" ? "bg-blue-100" : ""
-              }`}
-              onClick={() => handleQuickRange("7")}
-            >
-              Last 7 days
-            </button>
-            <button
-              className={`px-2 py-1 border rounded ${
-                quickRange === "14" ? "bg-blue-100" : ""
-              }`}
-              onClick={() => handleQuickRange("14")}
-            >
-              Last 14 days
-            </button>
-            <button
-              className={`px-2 py-1 border rounded ${
-                quickRange === "30" ? "bg-blue-100" : ""
-              }`}
-              onClick={() => handleQuickRange("30")}
-            >
-              Last 30 days
-            </button>
-            <button
-              className={`px-2 py-1 border rounded ${
-                quickRange === "3m" ? "bg-blue-100" : ""
-              }`}
-              onClick={() => handleQuickRange("3m")}
-            >
-              Last 3 months
-            </button>
-            <button
-              className={`px-2 py-1 border rounded ${
-                quickRange === "6m" ? "bg-blue-100" : ""
-              }`}
-              onClick={() => handleQuickRange("6m")}
-            >
-              Last 6 months
-            </button>
-            <button
-              className={`px-2 py-1 border rounded ${
-                quickRange === "all" ? "bg-blue-100" : ""
-              }`}
-              onClick={() => handleQuickRange("all")}
-            >
-              All
-            </button>
+        <div className="flex flex-col sm:flex-row gap-8">
+          {/* Quick Filters */}
+          <div className="flex-1">
+            <h2 className="text-xl font-semibold mb-2">Quick Filters</h2>
+            <div className="mb-4 flex gap-2 flex-wrap">
+              <button
+                className={`px-2 py-1 border rounded ${quickRange === "7" ? "bg-blue-100" : ""}`}
+                onClick={() => handleQuickRange("7")}
+              >
+                Last 7 days
+              </button>
+              <button
+                className={`px-2 py-1 border rounded ${quickRange === "14" ? "bg-blue-100" : ""}`}
+                onClick={() => handleQuickRange("14")}
+              >
+                Last 14 days
+              </button>
+              <button
+                className={`px-2 py-1 border rounded ${quickRange === "30" ? "bg-blue-100" : ""}`}
+                onClick={() => handleQuickRange("30")}
+              >
+                Last 30 days
+              </button>
+              <button
+                className={`px-2 py-1 border rounded ${quickRange === "3m" ? "bg-blue-100" : ""}`}
+                onClick={() => handleQuickRange("3m")}
+              >
+                Last 3 months
+              </button>
+              <button
+                className={`px-2 py-1 border rounded ${quickRange === "6m" ? "bg-blue-100" : ""}`}
+                onClick={() => handleQuickRange("6m")}
+              >
+                Last 6 months
+              </button>
+              <button
+                className={`px-2 py-1 border rounded ${quickRange === "all" ? "bg-blue-100" : ""}`}
+                onClick={() => handleQuickRange("all")}
+              >
+                All
+              </button>
+            </div>
           </div>
-          {/* Year Filter */}
-          <label htmlFor="year" className="font-medium">
-            Year:
-          </label>
-          <select
-            id="year"
-            value={selectedYear}
-            onChange={handleYearChange}
-            className="border rounded px-2 py-1"
-          >
-            <option value="all">All</option>
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-          {/* Month Filter */}
-          <label htmlFor="month" className="font-medium">
-            Month:
-          </label>
-          <select
-            id="month"
-            value={selectedMonth}
-            onChange={handleMonthChange}
-            className="border rounded px-2 py-1"
-            disabled={customRangeActive}
-          >
-            <option value="all">All</option>
-            {months.map((m, idx) => (
-              <option key={m} value={idx}>
-                {m}
-              </option>
-            ))}
-          </select>
-          {/* Date Range Filter - Shadcn Calendar Pickers */}
-          <div className="flex items-center gap-2">
-            <label className="font-medium">Custom Range:</label>
-            {/* Start Date Picker (left) */}
-            <ShadcnDatePicker
-              value={dateRange.start}
-              onChange={(val) => {
-                setCustomRangeActive(true);
-                setDateRange((prev) => ({ ...prev, start: val }));
-                setQuickRange("all");
-                setSelectedYear("all");
-                setSelectedMonth("all");
-                setPage(1);
-              }}
-            />
-            <span>-</span>
-            {/* End Date Picker (right) */}
-            <ShadcnDatePicker
-              value={dateRange.end}
-              onChange={(val) => {
-                setCustomRangeActive(true);
-                setDateRange((prev) => ({ ...prev, end: val }));
-                setQuickRange("all");
-                setSelectedYear("all");
-                setSelectedMonth("all");
-                setPage(1);
-              }}
-              disabled={!dateRange.start}
-            />
-            {customRangeActive && (
-              <>
-                <button
-                  className="ml-2 px-2 py-1 border rounded bg-gray-100"
-                  onClick={() => {
-                    setCustomRangeActive(false);
-                    setDateRange({ start: "", end: "" });
+          {/* Custom Range */}
+          <div className="flex-1">
+            <h2 className="text-xl font-semibold mb-2">Custom Range</h2>
+            {/* Maximum records notification above and flush with custom range fields */}
+            <div className="flex flex-col sm:flex-row gap-2 items-center">
+              <div className="flex items-center gap-2">
+                <label className="font-medium">Start:</label>
+                <ShadcnDatePicker
+                  value={dateRange.start}
+                  onChange={(val) => {
+                    setCustomRangeActive(true);
+                    setDateRange((prev) => ({ ...prev, start: val }));
+                    setQuickRange("all");
+                    setPage(1);
                   }}
-                >
-                  Clear
-                </button>
-                {/* Debug: Show record count */}
-                <span className="ml-2 text-xs text-gray-400">
-                  ({filteredData.length} records)
-                </span>
-                {/* Show message if exactly 500 records */}
-                {filteredData.length === 500 && (
-                  <span className="ml-4 text-sm text-orange-600">
-                    Maximum of 500 records returned for the selected range.
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="font-medium">End:</label>
+                <ShadcnDatePicker
+                  value={dateRange.end}
+                  onChange={(val) => {
+                    setCustomRangeActive(true);
+                    setDateRange((prev) => ({ ...prev, end: val }));
+                    setQuickRange("all");
+                    setPage(1);
+                  }}
+                  disabled={!dateRange.start}
+                />
+              </div>
+              {customRangeActive && (
+                <div className="flex items-center mt-2 sm:mt-0">
+                  <button
+                    className="px-2 py-1 border rounded bg-gray-100"
+                    onClick={() => {
+                      setCustomRangeActive(false);
+                      setDateRange({ start: "", end: "" });
+                    }}
+                  >
+                    Clear
+                  </button>
+                  {/* Debug: Show record count */}
+                  <span className="ml-2 text-xs text-gray-400">
+                    ({filteredData.length} records)
                   </span>
-                )}
-              </>
+                </div>
+              )}
+            </div>
+            {customRangeActive && filteredData.length === 500 && (
+              <div className="w-full flex">
+                <span className="text-sm text-orange-600 mb-1" style={{ minWidth: "240px" }}>
+                  Maximum of 500 records returned for the selected range.
+                </span>
+              </div>
             )}
           </div>
         </div>
-        {isLoading && <div>Loading...</div>}
-        {error && <div className="text-red-500">Error loading data</div>}
-        {paginatedData.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleSort("date")}
-                >
-                  Date {getArrow("date")}
-                </TableHead>
-                <TableHead
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleSort("weight")}
-                >
-                  Weight (lbs) {getArrow("weight")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedData.map((row) => (
-                <TableRow key={row.date}>
-                  <TableCell>
-                    {new Date(row.date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>{(row.kg * 2.20462).toFixed(2)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <div>No data for selected filter.</div>
-        )}
-        {/* Pagination Controls */}
-        <div className="flex justify-center items-center gap-2 mt-4">
-          <button
-            className="px-2 py-1 border rounded disabled:opacity-50"
-            onClick={() => setPage(page - 1)}
-            disabled={page === 1}
-          >
-            Prev
-          </button>
-          <span>
-            Page {page} of {totalPages}
-          </span>
-          <button
-            className="px-2 py-1 border rounded disabled:opacity-50"
-            onClick={() => setPage(page + 1)}
-            disabled={page === totalPages || totalPages === 0}
-          >
-            Next
-          </button>
-        </div>
       </section>
+      {isLoading && <div>Loading...</div>}
+      {error && <div className="text-red-500">Error loading data</div>}
+      {paginatedData.length > 0 ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead
+                style={{ cursor: "pointer" }}
+                onClick={() => handleSort("date")}
+              >
+                Date {getArrow("date")}
+              </TableHead>
+              <TableHead
+                style={{ cursor: "pointer" }}
+                onClick={() => handleSort("weight")}
+              >
+                Weight (lbs) {getArrow("weight")}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedData.map((row) => (
+              <TableRow key={row.date}>
+                <TableCell>
+                  {new Date(row.date).toLocaleDateString()}
+                </TableCell>
+                <TableCell>{(row.kg * 2.20462).toFixed(2)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <div>No data for selected filter.</div>
+      )}
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center gap-2 mt-4">
+        <button
+          className="px-2 py-1 border rounded disabled:opacity-50"
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
+        >
+          Prev
+        </button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <button
+          className="px-2 py-1 border rounded disabled:opacity-50"
+          onClick={() => setPage(page + 1)}
+          disabled={page === totalPages || totalPages === 0}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }
