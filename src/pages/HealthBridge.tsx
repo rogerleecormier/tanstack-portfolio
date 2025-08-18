@@ -725,8 +725,12 @@ export default function HealthBridgePage() {
           </PopoverContent>
         </Popover>
       </section>
-      {isLoading && <div>Loading...</div>}
-      {error && <div className="text-red-500">Error loading data</div>}
+      {/* Dynamic Table Header */}
+      <div className="mb-2 text-lg font-semibold">
+        {filteredData.length > 0
+          ? `Weight Changes (${metrics?.startDate} to ${metrics?.endDate})`
+          : "Weight Changes"}
+      </div>
       {paginatedData.length > 0 ? (
         <Table>
           <TableHeader>
