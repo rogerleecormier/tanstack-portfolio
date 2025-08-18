@@ -195,7 +195,7 @@ export default function HealthBridgePage() {
   const [selectedMonth, setSelectedMonth] = useState<number | "all">("all");
   const [quickRange, setQuickRange] = useState<
     "all" | "7" | "14" | "30" | "3m" | "6m"
-  >("all");
+  >("30");
   const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
     start: "",
     end: "",
