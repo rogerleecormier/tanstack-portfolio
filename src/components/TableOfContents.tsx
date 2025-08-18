@@ -76,6 +76,16 @@ export function TableOfContents() {
                     ? 'bg-teal-100 text-teal-800 font-medium'
                     : 'text-gray-600 hover:text-teal-600 hover:bg-gray-50'
                 }`}
+                onClick={e => {
+                  e.preventDefault();
+                  const el = document.getElementById(entry.slug);
+                  if (el) {
+                    window.scrollTo({
+                      top: el.getBoundingClientRect().top + window.scrollY - STICKY_HEADER_HEIGHT,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
               >
                 {entry.title}
               </a>
