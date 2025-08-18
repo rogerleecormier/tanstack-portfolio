@@ -15,11 +15,8 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { FilterIcon } from "lucide-react";
 
 const PAGE_SIZE = 10;
 
@@ -571,9 +568,6 @@ export default function HealthBridgePage() {
     setPage(1);
   };
 
-  // Handler for custom date range selection
-  // Removed unused handleCustomRangeChange function
-
   // Now check loading/error AFTER all hooks
   if (isLoading) {
     return <div>Loading...</div>;
@@ -639,102 +633,129 @@ export default function HealthBridgePage() {
       </section>
       {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
       <section className="mb-8">
-        <div className="flex flex-col sm:flex-row gap-8">
-          {/* Quick Filters */}
-          <div className="flex-1">
-            <h2 className="text-xl font-semibold mb-2">Quick Filters</h2>
-            <div className="mb-4 flex gap-2 flex-wrap">
-              <button
-                className={`px-2 py-1 border rounded ${quickRange === "7" ? "bg-blue-100" : ""}`}
-                onClick={() => handleQuickRange("7")}
-              >
-                Last 7 days
-              </button>
-              <button
-                className={`px-2 py-1 border rounded ${quickRange === "14" ? "bg-blue-100" : ""}`}
-                onClick={() => handleQuickRange("14")}
-              >
-                Last 14 days
-              </button>
-              <button
-                className={`px-2 py-1 border rounded ${quickRange === "30" ? "bg-blue-100" : ""}`}
-                onClick={() => handleQuickRange("30")}
-              >
-                Last 30 days
-              </button>
-              <button
-                className={`px-2 py-1 border rounded ${quickRange === "3m" ? "bg-blue-100" : ""}`}
-                onClick={() => handleQuickRange("3m")}
-              >
-                Last 3 months
-              </button>
-              <button
-                className={`px-2 py-1 border rounded ${quickRange === "6m" ? "bg-blue-100" : ""}`}
-                onClick={() => handleQuickRange("6m")}
-              >
-                Last 6 months
-              </button>
-              <button
-                className={`px-2 py-1 border rounded ${quickRange === "all" ? "bg-blue-100" : ""}`}
-                onClick={() => handleQuickRange("all")}
-              >
-                All
-              </button>
-            </div>
-          </div>
-          {/* Custom Range */}
-          <div className="flex-1">
-            <h2 className="text-xl font-semibold mb-2">Custom Range</h2>
-            {/* Maximum records notification above and flush with custom range fields */}
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <div className="flex items-center gap-2">
-                <label className="font-medium">Start:</label>
-                <ShadcnDatePicker
-                  value={dateRange.start}
-                  onChange={(val) => {
-                    setCustomRangeActive(true);
-                    setDateRange((prev) => ({ ...prev, start: val }));
-                    setQuickRange("all");
-                    setPage(1);
-                  }}
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <label className="font-medium">End:</label>
-                <ShadcnDatePicker
-                  value={dateRange.end}
-                  onChange={(val) => {
-                    setCustomRangeActive(true);
-                    setDateRange((prev) => ({ ...prev, end: val }));
-                    setQuickRange("all");
-                    setPage(1);
-                  }}
-                  disabled={!dateRange.start}
-                />
-              </div>
-              {customRangeActive && (
-                <div className="flex items-center mt-2 sm:mt-0">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="flex items-center gap-2">
+              <FilterIcon className="w-4 h-4" />
+              Filters
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="p-4 w-full max-w-[500px] sm:max-w-[900px] min-w-[0] box-border"
+            side="bottom"
+            align="start"
+          >
+            <div className="flex flex-col sm:flex-row flex-wrap gap-8 w-full items-start justify-start">
+              {/* Quick Filters */}
+              <div className="flex-1 min-w-[220px]">
+                <div className="mb-2 font-semibold">Quick Filters</div>
+                <div className="mb-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 justify-start items-start w-full">
                   <button
-                    className="px-2 py-1 border rounded bg-gray-100"
-                    onClick={() => {
-                      setCustomRangeActive(false);
-                      setDateRange({ start: "", end: "" });
-                    }}
+                    className={`px-2 py-1 border rounded ${quickRange === "7" ? "bg-blue-100" : ""}`}
+                    onClick={() => handleQuickRange("7")}
                   >
-                    Clear
+                    Last 7 days
+                  </button>
+                  <button
+                    className={`px-2 py-1 border rounded ${quickRange === "14" ? "bg-blue-100" : ""}`}
+                    onClick={() => handleQuickRange("14")}
+                  >
+                    Last 14 days
+                  </button>
+                  <button
+                    className={`px-2 py-1 border rounded ${quickRange === "30" ? "bg-blue-100" : ""}`}
+                    onClick={() => handleQuickRange("30")}
+                  >
+                    Last 30 days
+                  </button>
+                  <button
+                    className={`px-2 py-1 border rounded ${quickRange === "3m" ? "bg-blue-100" : ""}`}
+                    onClick={() => handleQuickRange("3m")}
+                  >
+                    Last 3 months
+                  </button>
+                  <button
+                    className={`px-2 py-1 border rounded ${quickRange === "6m" ? "bg-blue-100" : ""}`}
+                    onClick={() => handleQuickRange("6m")}
+                  >
+                    Last 6 months
+                  </button>
+                  <button
+                    className={`px-2 py-1 border rounded ${quickRange === "all" ? "bg-blue-100" : ""}`}
+                    onClick={() => handleQuickRange("all")}
+                  >
+                    All
                   </button>
                 </div>
-              )}
-            </div>
-            {customRangeActive && filteredData.length === 500 && (
-              <div className="w-full flex">
-                <span className="text-sm text-orange-600 mb-1" style={{ minWidth: "240px" }}>
-                  Maximum of 500 records returned for the selected range.
-                </span>
               </div>
-            )}
-          </div>
-        </div>
+              {/* Custom Range */}
+              <div className="flex-1 min-w-[220px] sm:ml-auto w-full">
+                <div className="font-semibold mb-2">Custom Range</div>
+                <div className="grid grid-cols-1 gap-4 w-full">
+                  {/* Start Label and Field */}
+                  <div className="flex items-center w-full">
+                    <label className="font-medium mr-2 text-left min-w-[60px]">
+                      Start:
+                    </label>
+                    <div className="flex-1 min-w-0">
+                      <ShadcnDatePicker
+                        value={dateRange.start}
+                        onChange={(val) => {
+                          setCustomRangeActive(true);
+                          setDateRange((prev) => ({ ...prev, start: val }));
+                          setQuickRange("all");
+                          setPage(1);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {/* End Label and Field */}
+                  <div className="flex items-center w-full">
+                    <label className="font-medium mr-2 text-left min-w-[60px]">
+                      End:
+                    </label>
+                    <div className="flex-1 min-w-0">
+                      <ShadcnDatePicker
+                        value={dateRange.end}
+                        onChange={(val) => {
+                          setCustomRangeActive(true);
+                          setDateRange((prev) => ({ ...prev, end: val }));
+                          setQuickRange("all");
+                          setPage(1);
+                        }}
+                        disabled={!dateRange.start}
+                      />
+                    </div>
+                  </div>
+                  {/* Clear button and record count */}
+                  {customRangeActive && (
+                    <div className="flex items-center mt-2">
+                      <button
+                        className="px-2 py-1 border rounded bg-gray-100"
+                        onClick={() => {
+                          setCustomRangeActive(false);
+                          setDateRange({ start: "", end: "" });
+                        }}
+                      >
+                        Clear
+                      </button>
+                      <span className="ml-2 text-xs text-gray-400">
+                        ({filteredData.length} records)
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {customRangeActive && filteredData.length === 500 && (
+                  <div className="w-full flex">
+                    <span className="text-sm text-orange-600 mb-1" style={{ minWidth: "240px" }}>
+                      Maximum of 500 records returned for the selected range.
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       </section>
       {isLoading && <div>Loading...</div>}
       {error && <div className="text-red-500">Error loading data</div>}
