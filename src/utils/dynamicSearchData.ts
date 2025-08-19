@@ -49,8 +49,41 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
   }
 }
 
+// Function to load TSX pages dynamically
+export const loadTsxPages = async (): Promise<SearchItem[]> => {
+  const tsxModules = import.meta.glob('/src/pages/**/*.tsx', { import: 'default' });
+  const tsxFiles = await Promise.all(
+    Object.entries(tsxModules).map(async ([path]) => {
+      const filename = path.split('/').pop()?.replace('.tsx', '') || 'page';
+      // Map filename to route
+      let url = `/${filename.toLowerCase()}`;
+      if (filename.toLowerCase() === 'healthbridge') {
+        url = '/healthbridge-analysis';
+      }
+      return {
+        id: `page-${filename}`,
+        title: filename.charAt(0).toUpperCase() + filename.slice(1),
+        content: '', // Optionally parse static text from the file
+        description: '', // Optionally add a description
+        url,
+        section: 'Pages',
+        headings: [],
+        tags: []
+      };
+    })
+  );
+  return tsxFiles;
+};
+
 // Function to refresh the search index (useful for development)
 export const refreshSearchIndex = async (): Promise<SearchItem[]> => {
   cachedSearchItems = []
   return loadMarkdownFiles()
 }
+
+// New function to load all search items (markdown + TSX)
+export const loadAllSearchItems = async (): Promise<SearchItem[]> => {
+  const markdownItems = await loadMarkdownFiles();
+  const tsxItems = await loadTsxPages();
+  return [...markdownItems, ...tsxItems];
+};
