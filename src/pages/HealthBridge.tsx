@@ -101,6 +101,7 @@ function ShadcnDatePicker({
 function AddWeightBox() {
   const queryClient = useQueryClient();
   const [weight, setWeight] = useState("");
+  const [unit, setUnit] = useState<"lb" | "kg">("lb"); // default to lbs
   const [date, setDate] = useState(() => {
     const now = new Date();
     return now.toISOString().slice(0, 16); // yyyy-mm-ddTHH:mm
@@ -110,22 +111,23 @@ function AddWeightBox() {
 
   const mutation = useMutation({
     mutationFn: async ({
-      kg,
+      weight,
+      unit,
       timestamp,
     }: {
-      kg: number;
+      weight: number;
+      unit: "lb" | "kg";
       timestamp: string;
     }) => {
-      // This should run on submit
       const res = await fetch(
         "https://health-bridge-api.rcormier.workers.dev/api/health/weight",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer Twins2015!", // <-- Replace with your actual token
+            Authorization: "Bearer Twins2015!",
           },
-          body: JSON.stringify({ weight: kg, unit: "kg", timestamp }),
+          body: JSON.stringify({ weight, unit, timestamp }),
         }
       );
       if (!res.ok) throw new Error("Failed to add weight");
@@ -143,31 +145,53 @@ function AddWeightBox() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const kg = Number(weight);
-    if (isNaN(kg) || kg <= 0) {
-      setError("Enter a valid weight in kg (e.g. 82.50)");
+    const val = Number(weight);
+    if (isNaN(val) || val <= 0) {
+      setError(`Enter a valid weight in ${unit} (e.g. 180.5)`);
       return;
     }
     if (!date) {
       setError("Please select a date/time");
       return;
     }
-    mutation.mutate({ kg, timestamp: new Date(date).toISOString() });
+    mutation.mutate({ weight: val, unit, timestamp: new Date(date).toISOString() });
   };
 
   return (
     <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-2 max-w-md">
-      <label className="font-medium">Enter Weight (kg):</label>
+      <label className="font-medium">Enter Weight ({unit}):</label>
       <input
         type="text"
         inputMode="decimal"
         pattern="^\d+(\.\d{1,2})?$"
         value={weight}
         onChange={(e) => setWeight(e.target.value)}
-        placeholder="e.g. 82.50"
+        placeholder={unit === "lb" ? "e.g. 180.5" : "e.g. 82.50"}
         className="border rounded px-2 py-1"
         required
       />
+      <div className="flex gap-2 items-center">
+        <label>
+          <input
+            type="radio"
+            name="unit"
+            value="lb"
+            checked={unit === "lb"}
+            onChange={() => setUnit("lb")}
+          />{" "}
+          lbs
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="unit"
+            value="kg"
+            checked={unit === "kg"}
+            onChange={() => setUnit("kg")}
+          />{" "}
+          kg
+        </label>
+      </div>
       <label className="font-medium">Date & Time:</label>
       <ShadcnDatePicker value={date} onChange={setDate} />
       <button
