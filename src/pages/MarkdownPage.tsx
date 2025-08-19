@@ -8,11 +8,16 @@ import { useLocation } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import MermaidChart from '../components/MermaidChart'
 import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label } from "recharts";
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -29,6 +34,15 @@ interface Frontmatter {
 export type TOCEntry = {
   title: string
   slug: string
+}
+
+function parseChartData(code: string) {
+  try {
+    // Expecting code block as JSON array: [{ date: "...", value: ... }, ...]
+    return JSON.parse(code);
+  } catch {
+    return [];
+  }
 }
 
 export default function MarkdownPage({ file }: { file: string }) {
@@ -260,25 +274,88 @@ export default function MarkdownPage({ file }: { file: string }) {
                 </Blockquote>
               ),
               code: ({ children, className, ...props }) => {
-                const match = /language-(\w+)/.exec(className || '')
-                const language = match ? match[1] : ''
-                
-                if (language === 'mermaid') {
-                  return <MermaidChart chart={String(children).replace(/\n$/, '')} />
-                }
-                
-                const isInline = !className?.includes('language-')
+                const match = /language-(\w+)/.exec(className || "")
+                const language = match ? match[1] : ""
 
+                if (language === "chart") {
+                  // Expecting chart data as JSON in code block
+                  const chartData = parseChartData(String(children).replace(/\n$/, ""))
+                  if (!Array.isArray(chartData) || chartData.length === 0) {
+                    return <div className="text-red-500">Invalid chart data</div>
+                  }
+                  // Calculate Y domain with padding
+                  const weights = chartData.map((d) => d.value)
+                  const min = Math.min(...weights)
+                  const max = Math.max(...weights)
+                  const padding = Math.max(2, Math.round((max - min) * 0.05))
+                  const yDomain = [min - padding, max + padding]
+
+                  return (
+                    <ChartContainer
+                      config={{
+                        value: {
+                          label: "Value",
+                          color: "#14b8a6",
+                        },
+                      }}
+                      className="aspect-auto h-[320px] w-full my-6"
+                    >
+                      <LineChart
+                        data={chartData}
+                        margin={{ left: 32, right: 32, bottom: 20 }} // Increased bottom margin
+                      >
+                        <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="date"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          minTickGap={32}
+                          tickFormatter={(value) => value}
+                        >
+                          <Label value="Budget Range" offset={-15} position="insideBottom" /> {/* Increased offset */}
+                        </XAxis>
+                        <YAxis domain={yDomain}>
+                          <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                        </YAxis>
+                        <ChartTooltip
+                          filterNull
+                          content={
+                            <ChartTooltipContent
+                              className="w-[150px]"
+                              nameKey="value"
+                              labelFormatter={(value) => value}
+                            />
+                          }
+                        />
+                        <Line
+                          dataKey="value"
+                          type="monotone"
+                          stroke="#14b8a6"
+                          strokeWidth={2}
+                          dot={true}
+                          isAnimationActive={false}
+                        />
+                      </LineChart>
+                    </ChartContainer>
+                  )
+                }
+
+                // Inline code and other code blocks
+                const isInline = !className?.includes("language-")
                 if (isInline) {
                   return (
-                    <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold" {...props}>
+                    <code
+                      className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
+                      {...props}
+                    >
                       {children}
                     </code>
                   )
                 }
 
                 return (
-                  <code className={`font-mono text-sm ${className || ''}`} {...props}>
+                  <code className={`font-mono text-sm ${className || ""}`} {...props}>
                     {children}
                   </code>
                 )

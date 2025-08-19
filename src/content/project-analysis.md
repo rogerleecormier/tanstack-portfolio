@@ -61,13 +61,24 @@ This project analyzes a dataset of **4,000 real-world project records** to explo
 
 ## 📉 Visualizing Budget Tiers
 
-```mermaid
-xychart-beta
-    title "Project Budget Frequency Distribution"
-    x-axis ["159K", "409K", "659K", "909K", "1.15M", "1.4M", "1.65M", "1.9M", "2.15M", "2.4M", "2.65M", "2.9M", "3.15M", "3.4M", "3.65M"]
-    y-axis "Frequency" 0 --> 900
-    bar [189, 701, 818, 672, 517, 350, 264, 181, 149, 88, 46, 17, 6, 1, 1]
-
+```chart
+[
+  { "date": "159K", "value": 189 },
+  { "date": "409K", "value": 701 },
+  { "date": "659K", "value": 818 },
+  { "date": "909K", "value": 672 },
+  { "date": "1.15M", "value": 517 },
+  { "date": "1.4M", "value": 350 },
+  { "date": "1.65M", "value": 264 },
+  { "date": "1.9M", "value": 181 },
+  { "date": "2.15M", "value": 149 },
+  { "date": "2.4M", "value": 88 },
+  { "date": "2.65M", "value": 46 },
+  { "date": "2.9M", "value": 17 },
+  { "date": "3.15M", "value": 6 },
+  { "date": "3.4M", "value": 1 },
+  { "date": "3.65M", "value": 1 }
+]
 ```
 
 ---
