@@ -10,7 +10,8 @@ import {
   TableHead,
 } from "../components/ui/table";
 import { Card } from "../components/ui/card";
-import MermaidChart from "../components/MermaidChart";
+// Remove MermaidChart import
+// import MermaidChart from "../components/MermaidChart";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,19 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { FilterIcon } from "lucide-react";
 import { H1, H2 } from "@/components/ui/typography";
+// Add shadcn chart imports
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent, // <-- Add this import
+} from "@/components/ui/chart";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid
+} from "recharts";
 
 const PAGE_SIZE = 10;
 
@@ -381,200 +395,31 @@ export default function HealthBridgePage() {
     };
   }, [filteredData]);
 
-  // Generate Mermaid xychart-beta syntax for filteredData as a line chart, with latest dates to the right
-  const mermaidChart = useMemo(() => {
-    if (!filteredData.length) return "";
+  // Prepare chart data for shadcn chart
+  const chartData = useMemo(() => {
+    return filteredData
+      .slice()
+      .reverse()
+      .map((row) => ({
+        date: new Date(row.date).toLocaleDateString(),
+        weight: Number((row.kg * 2.20462).toFixed(2)),
+      }));
+  }, [filteredData]);
 
-    // Helper to check the custom range duration in months/years
-    const getRangeMonths = () => {
-      if (dateRange.start && dateRange.end) {
-        const start = new Date(dateRange.start);
-        const end = new Date(dateRange.end);
-        return (
-          (end.getFullYear() - start.getFullYear()) * 12 +
-          (end.getMonth() - start.getMonth())
-        );
-      }
-      return 0;
-    };
-    const getRangeYears = () => {
-      if (dateRange.start && dateRange.end) {
-        const start = new Date(dateRange.start);
-        const end = new Date(dateRange.end);
-        return end.getFullYear() - start.getFullYear();
-      }
-      return 0;
-    };
+  // Y-axis domain state
+  const [yDomain, setYDomain] = useState<[number, number] | undefined>(undefined);
 
-    // Aggregation helpers
-    function aggregateByWeek(data: typeof filteredData) {
-      const weekMap = new Map<string, number[]>();
-      data.forEach((row) => {
-        const date = new Date(row.date);
-        // Get the Monday of the week for this date
-        const day = date.getDay();
-        const diff = date.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
-        const weekStart = new Date(date.setDate(diff));
-        weekStart.setHours(0, 0, 0, 0);
-        const label = format(weekStart, "yyyy-MM-dd");
-        const lbs = row.kg * 2.20462;
-        if (!weekMap.has(label)) weekMap.set(label, []);
-        weekMap.get(label)!.push(lbs);
-      });
-      // Sort week labels oldest to newest
-      const weekLabels = Array.from(weekMap.keys()).sort();
-      const xLabels = weekLabels.map((label) => `"${label}"`).join(", ");
-      const yValues = weekLabels
-        .map((label) => {
-          const arr = weekMap.get(label)!;
-          return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
-        })
-        .join(", ");
-      const lbsArray = Array.from(weekMap.values()).flat();
-      const minWeight = Math.floor(Math.min(...lbsArray));
-      const maxWeight = Math.ceil(Math.max(...lbsArray));
-      return {
-        xLabels,
-        yValues,
-        minWeight,
-        maxWeight,
-      };
+  useEffect(() => {
+    if (chartData.length > 0) {
+      const weights = chartData.map((d) => d.weight);
+      const min = Math.min(...weights);
+      const max = Math.max(...weights);
+      const padding = Math.max(2, Math.round((max - min) * 0.05)); // 5% or at least 2 lbs
+      setYDomain([min - padding, max + padding]);
+    } else {
+      setYDomain(undefined);
     }
-
-    function aggregateByMonth(data: typeof filteredData) {
-      const monthMap = new Map<string, number[]>();
-      data.forEach((row) => {
-        const date = new Date(row.date);
-        const label = date.toLocaleString("default", {
-          month: "short",
-          year: "numeric",
-        });
-        const lbs = row.kg * 2.20462;
-        if (!monthMap.has(label)) monthMap.set(label, []);
-        monthMap.get(label)!.push(lbs);
-      });
-      // Sort month labels oldest to newest
-      const monthLabels = Array.from(monthMap.keys()).sort((a, b) => {
-        const aParts = a.split(" ");
-        const bParts = b.split(" ");
-        const aDate = new Date(`${aParts[0]} 1, ${aParts[1]}`);
-        const bDate = new Date(`${bParts[0]} 1, ${bParts[1]}`);
-        return aDate.getTime() - bDate.getTime();
-      });
-      const xLabels = monthLabels.map((label) => `"${label}"`).join(", ");
-      const yValues = monthLabels
-        .map((label) => {
-          const arr = monthMap.get(label)!;
-          return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
-        })
-        .join(", ");
-      const lbsArray = Array.from(monthMap.values()).flat();
-      const minWeight = Math.floor(Math.min(...lbsArray));
-      const maxWeight = Math.ceil(Math.max(...lbsArray));
-      return {
-        xLabels,
-        yValues,
-        minWeight,
-        maxWeight,
-      };
-    }
-
-    function aggregateByYear(data: typeof filteredData) {
-      const yearMap = new Map<string, number[]>();
-      data.forEach((row) => {
-        const date = new Date(row.date);
-        const label = date.getFullYear().toString();
-        const lbs = row.kg * 2.20462;
-        if (!yearMap.has(label)) yearMap.set(label, []);
-        yearMap.get(label)!.push(lbs);
-      });
-      const yearLabels = Array.from(yearMap.keys()).sort();
-      const xLabels = yearLabels.map((label) => `"${label}"`).join(", ");
-      const yValues = yearLabels
-        .map((label) => {
-          const arr = yearMap.get(label)!;
-          return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1);
-        })
-        .join(", ");
-      const lbsArray = Array.from(yearMap.values()).flat();
-      const minWeight = Math.floor(Math.min(...lbsArray));
-      const maxWeight = Math.ceil(Math.max(...lbsArray));
-      return {
-        xLabels,
-        yValues,
-        minWeight,
-        maxWeight,
-      };
-    }
-
-    // Decide aggregation
-    let agg;
-    if (quickRange === "3m") {
-      agg = aggregateByWeek(filteredData);
-    } else if (quickRange === "6m") {
-      agg = aggregateByMonth(filteredData);
-    } else if (quickRange === "all") {
-      // If all, check the total range
-      const months = getRangeMonths();
-      const years = getRangeYears();
-      if (years >= 1) {
-        agg = aggregateByYear(filteredData);
-      } else if (months > 6) {
-        agg = aggregateByMonth(filteredData);
-      } else {
-        // Under 6 months, show daily
-        agg = null;
-      }
-    } else if (customRangeActive && dateRange.start && dateRange.end) {
-      const months = getRangeMonths();
-      const years = getRangeYears();
-      if (years >= 1) {
-        agg = aggregateByYear(filteredData);
-      } else if (months > 6) {
-        agg = aggregateByMonth(filteredData);
-      } else if (months >= 3) {
-        agg = aggregateByMonth(filteredData);
-      } else if (months >= 1) {
-        agg = aggregateByWeek(filteredData);
-      } else {
-        agg = null;
-      }
-    }
-
-    if (agg) {
-      return (
-        `%%{init: {"theme":"default","themeVariables":{"xyChart":{"plotColorPalette":"#14b8a6"}}}}%%\n` +
-        `xychart-beta\n` +
-        `\n` +
-        `title "Weight Over Time"\n` +
-        `x-axis [${agg.xLabels}]\n` +
-        `y-axis "Weight (lbs)" ${agg.minWeight} --> ${agg.maxWeight}\n` +
-        `line [${agg.yValues}]\n`
-      );
-    }
-
-    // Otherwise, show daily data
-    const reversed = [...filteredData].reverse();
-    const xLabels = reversed
-      .map((row) => `"${new Date(row.date).toLocaleDateString()}"`)
-      .join(", ");
-    const yValues = reversed
-      .map((row) => (row.kg * 2.20462).toFixed(1))
-      .join(", ");
-    const lbsArray = reversed.map((row) => row.kg * 2.20462);
-    const minWeight = Math.floor(Math.min(...lbsArray));
-    const maxWeight = Math.ceil(Math.max(...lbsArray));
-
-    return (
-      `%%{init: {"theme":"default","themeVariables":{"xyChart":{"plotColorPalette":"#14b8a6"}}}}%%\n` +
-      `xychart-beta\n` +
-      `\n` +
-      `title "Weight Over Time"\n` +
-      `x-axis [${xLabels}]\n` +
-      `y-axis "Weight (lbs)" ${minWeight} --> ${maxWeight}\n` +
-      `line [${yValues}]\n`
-    );
-  }, [filteredData, quickRange, customRangeActive, dateRange]);
+  }, [chartData]);
 
   // Sort arrow and handler
   function getArrow(col: "date" | "weight") {
@@ -662,9 +507,62 @@ export default function HealthBridgePage() {
       <section className="mb-8">
         <H2 className="mb-4">Weight Trend</H2>
         <Card className="p-4 mb-6" style={{ width: "100%", maxWidth: "none" }}>
-          <div style={{ width: "100%" }}>
-            <MermaidChart chart={mermaidChart} className="w-full" />
-          </div>
+          <ChartContainer
+            config={{
+              weight: {
+                label: "Weight",
+                color: "#14b8a6",
+              },
+            }}
+            className="aspect-auto h-[320px] w-full"
+          >
+            <LineChart
+              data={chartData}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  });
+                }}
+              />
+              <YAxis domain={yDomain} />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    nameKey="weight"
+                    labelFormatter={(value) =>
+                      new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    }
+                  />
+                }
+              />
+              <Line
+                dataKey="weight"
+                type="monotone"
+                stroke="#14b8a6"
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ChartContainer>
         </Card>
       </section>
       {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
