@@ -165,51 +165,76 @@ function AddWeightBox() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-2 max-w-md">
-      <label className="font-medium">Enter Weight ({unit}):</label>
-      <input
-        type="text"
-        inputMode="decimal"
-        pattern="^\d+(\.\d{1,2})?$"
-        value={weight}
-        onChange={(e) => setWeight(e.target.value)}
-        placeholder={unit === "lb" ? "e.g. 180.5" : "e.g. 82.50"}
-        className="border rounded px-2 py-1"
-        required
-      />
-      <div className="flex gap-2 items-center">
-        <label>
+    <form
+      onSubmit={handleSubmit}
+      className="mb-6 max-w-xl w-full flex flex-col gap-2"
+    >
+      {/* Responsive row: weight + radios + date & time + button */}
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
+        {/* Weight input with label and radio buttons */}
+        <div className="flex flex-row items-center flex-1 sm:max-w-[340px] sm:min-w-[420px]">
+          <label className="font-medium mr-2 whitespace-nowrap">
+            Enter Weight ({unit}):
+          </label>
           <input
-            type="radio"
-            name="unit"
-            value="lb"
-            checked={unit === "lb"}
-            onChange={() => setUnit("lb")}
-          />{" "}
-          lbs
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="unit"
-            value="kg"
-            checked={unit === "kg"}
-            onChange={() => setUnit("kg")}
-          />{" "}
-          kg
-        </label>
+            type="text"
+            inputMode="decimal"
+            pattern="^\d+(\.\d{1,2})?$"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            placeholder={unit === "lb" ? "e.g. 180.5" : "e.g. 82.50"}
+            className="border rounded px-2 py-1 w-[100px] sm:w-[160px] sm:flex-grow"
+            required
+          />
+          {/* lbs/kg radio buttons to the right of weight input */}
+          <div className="flex gap-2 items-center ml-2">
+            <label>
+              <input
+                type="radio"
+                name="unit"
+                value="lb"
+                checked={unit === "lb"}
+                onChange={() => setUnit("lb")}
+              />{" "}
+              lbs
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="unit"
+                value="kg"
+                checked={unit === "kg"}
+                onChange={() => setUnit("kg")}
+              />{" "}
+              kg
+            </label>
+          </div>
+        </div>
+        {/* Date picker with label and button to the right in desktop, stacked in mobile */}
+        <div className="flex flex-col w-full sm:flex-row sm:items-center flex-1 mt-2 sm:mt-0 sm:pl-4">
+          <div className="flex flex-row items-center w-full">
+            <label className="font-medium mr-2 whitespace-nowrap">
+              Date & Time:
+            </label>
+            <div className="flex-1 min-w-0 flex flex-row items-center">
+              <ShadcnDatePicker value={date} onChange={setDate} />
+            </div>
+          </div>
+          {/* Button: below date picker in mobile, right of date picker in desktop */}
+          <button
+            type="submit"
+            className="px-8 py-2 bg-blue-600 text-white rounded w-full mt-2 sm:ml-4 sm:mt-0 sm:w-auto h-[40px] self-center whitespace-nowrap"
+            disabled={mutation.isPending}
+          >
+            Add Weight
+          </button>
+        </div>
       </div>
-      <label className="font-medium">Date & Time:</label>
-      <ShadcnDatePicker value={date} onChange={setDate} />
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded mt-2"
-        disabled={mutation.isPending}
-      >
-        Add Weight
-      </button>
-      {error && <div className="text-red-500">{error}</div>}
-      {success && <div className="text-green-600">Weight added!</div>}
+      {/* Error and success messages */}
+      <div className="w-full">
+        {error && <div className="text-red-500">{error}</div>}
+        {success && <div className="text-green-600">Weight added!</div>}
+      </div>
     </form>
   );
 }
@@ -586,7 +611,11 @@ export default function HealthBridgePage() {
   return (
     <div>
       <H1 className="mb-4">Body Weight Analysis</H1>
+      <p className="text-xl text-muted-foreground mb-6">
+        Track, analyze, and visualize your body weight trends over time. Enter new measurements, explore summary statistics, and view progress with interactive charts and filters.
+      </p>
       <AddWeightBox />
+      <hr className="my-6 border-t border-gray-300" />
       <section className="mb-8">
         <H2 className="mb-4">Summary Statistics</H2>
         <div className="flex flex-wrap gap-4 mb-6">
