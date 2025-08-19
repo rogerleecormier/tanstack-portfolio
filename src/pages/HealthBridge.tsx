@@ -104,7 +104,14 @@ function AddWeightBox() {
   const [unit, setUnit] = useState<"lb" | "kg">("lb"); // default to lbs
   const [date, setDate] = useState(() => {
     const now = new Date();
-    return now.toISOString().slice(0, 16); // yyyy-mm-ddTHH:mm
+    // Format as yyyy-MM-ddTHH:mm in local time
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const yyyy = now.getFullYear();
+    const MM = pad(now.getMonth() + 1);
+    const dd = pad(now.getDate());
+    const HH = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    return `${yyyy}-${MM}-${dd}T${HH}:${mm}`;
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -294,10 +301,17 @@ export default function HealthBridgePage() {
   useEffect(() => {
     if (!customRangeActive && filteredData.length > 0) {
       const startDate = filteredData[filteredData.length - 1].date;
-      const endDate = filteredData[0].date;
-      // Only update if values actually changed to prevent infinite loop
-      if (dateRange.start !== startDate || dateRange.end !== endDate) {
-        setDateRange({ start: startDate, end: endDate });
+      // Use local datetime for end date
+      const now = new Date();
+      const pad = (n: number) => String(n).padStart(2, "0");
+      const yyyy = now.getFullYear();
+      const MM = pad(now.getMonth() + 1);
+      const dd = pad(now.getDate());
+      const HH = pad(now.getHours());
+      const mm = pad(now.getMinutes());
+      const localEndDate = `${yyyy}-${MM}-${dd}T${HH}:${mm}`;
+      if (dateRange.start !== startDate || dateRange.end !== localEndDate) {
+        setDateRange({ start: startDate, end: localEndDate });
       }
     }
   }, [filteredData, customRangeActive]);
