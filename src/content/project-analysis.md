@@ -1,5 +1,5 @@
 ---
-title: "Project Risk Analysis – Budget Tiers & Complexity"
+title: "Project Analysis – Budget Tiers & Complexity"
 description: "Percentile-based budget tiers (≤33rd, 33rd–67th, >67th) comparing Agile vs. Non-Agile complexity with pre-ANOVA visuals and two-way ANOVA insights."
 tags: ["Analytics", "Project Analysis", "Risk Analysis", "Budget Analysis"]
 ---
