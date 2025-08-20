@@ -11,7 +11,7 @@ import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -275,7 +275,7 @@ export default function MarkdownPage({ file }: { file: string }) {
                 const match = /language-(\w+)/.exec(className || "");
                 const language = match ? match[1] : "";
 
-                // SCATTER/BUBBLE CHARTS WITH GROUPING AND BUBBLE SIZE
+                // SCATTER/BUBBLE CHARTS WITH GROUPING, BUBBLE SIZE, LABELS, CI ERROR BARS
                 if (
                   language === "scatter-plot" ||
                   language === "scatterplot" ||
@@ -358,7 +358,7 @@ export default function MarkdownPage({ file }: { file: string }) {
                             tickMargin={8}
                             minTickGap={32}
                           >
-                            <Label value="Mean Budget (USD)" offset={-50} position="insideBottom" />
+                            <Label value="Budget (USD, scaled)" offset={-50} position="insideBottom" />
                           </XAxis>
                           <YAxis
                             type="number"
@@ -373,12 +373,12 @@ export default function MarkdownPage({ file }: { file: string }) {
                           </YAxis>
                           <Legend formatter={(value: string) => {
                             const total = seriesTotals?.[value];
-                            return total ? `${value} (n=${total})` : value;
+                            return total ? `${value} — Mean Complexity (n=${total})` : `${value} — Mean Complexity`;
                           }} />
                           <RechartsTooltip
                             formatter={(value: any, name: string) => {
                               if (name === "x") return formatCurrency(value);
-                              if (name === "y") return formatComplexity(value);
+                              if (name === "y") return [`${formatComplexity(value)}`, "Mean Complexity"];
                               if (name === "n") return formatCount(value);
                               return value;
                             }}
@@ -387,9 +387,13 @@ export default function MarkdownPage({ file }: { file: string }) {
                           {seriesNames.map((name, i) => (
                             <Scatter key={name} name={name} data={groups[name]} fill={colors[i % colors.length]}>
                               <ZAxis dataKey="n" range={[60, 300]} />
+                              {/* Optional 95% CI error bars if ciLow/ciHigh are provided */}
+                              <ErrorBar dataKey="ciLow" strokeOpacity={0.7} />
+                              <ErrorBar dataKey="ciHigh" strokeOpacity={0.7} />
+                              {/* Label each point with its budget tier */}
+                              <LabelList dataKey="group" position="top" />
                             </Scatter>
                           ))}
-                          {/* Trend lines for scatter-trend/scattertrend */}
                           {(language === "scatter-trend" || language === "scattertrend") && seriesNames.map((name, i) => {
                             const trend = getTrendLine(groups[name]);
                             return trend.length === 2 ? (

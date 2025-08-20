@@ -56,7 +56,7 @@ Budgets are **right-skewed**, with most projects under ~$1.5M. Percentile-based 
 
 ---
 
-### Complexity vs. Budget (Scatterplot – All Projects)
+### Complexity vs. Budget (Scatterplot – All Projects — Mean Complexity)
 
 ```scatterplot
 [
@@ -70,7 +70,7 @@ Budgets are **right-skewed**, with most projects under ~$1.5M. Percentile-based 
 ```
 
 **Explanation:**  
-Shows a **positive relationship** between budget and complexity, motivating the use of tiers and inferential tests.
+This scatterplot shows **mean complexity scores** grouped by representative budget bins, not all 4,000 records. It illustrates a **positive relationship** between project budget and complexity, motivating the use of tiers and inferential tests.
 ### Regression Trend – Budget vs. Complexity (Line)
 
 ```linechart
@@ -89,7 +89,7 @@ The fitted trend indicates a **monotonic increase** in complexity with budget, s
 
 ---
 
-### Complexity vs. Budget (Scatterplot – By Methodology)
+### Complexity vs. Budget (Scatterplot – By Methodology — Mean Complexity per Tier)
 
 ```scatterplot
 [
@@ -106,7 +106,7 @@ The fitted trend indicates a **monotonic increase** in complexity with budget, s
 ```
 
 **Explanation:**  
-At comparable budgets, **Agile** points tend to have **higher complexity** than **Non-Agile**, previewing the methodology effect and eventual interaction.
+This scatterplot shows **mean complexity per budget tier** for Agile vs. Non‑Agile. Agile projects consistently show higher complexity at each representative budget level, highlighting methodology effects without visualizing all 4,000 underlying data points.
 ### Regression Trend – By Methodology (Line)
 
 ```linechart
