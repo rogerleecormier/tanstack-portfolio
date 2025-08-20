@@ -12,8 +12,7 @@ import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line } from "recharts";
-import { ResponsiveContainer } from "recharts";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ResponsiveContainer } from "recharts";
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -34,17 +33,16 @@ export type TOCEntry = {
 
 function parseChartData(code: string) {
   try {
-    // Expecting code block as JSON array: [{ date: "...", value: ... }, ...]
-    return JSON.parse(code);
+    return JSON.parse(code.trim());
   } catch {
     return [];
   }
 }
 
 function getSeriesKeys(data: any[]) {
-  if (!Array.isArray(data) || data.length === 0) return []
+  if (!Array.isArray(data) || data.length === 0) return [];
   // Exclude 'date' key
-  return Object.keys(data[0]).filter((key) => key !== "date")
+  return Object.keys(data[0]).filter((key) => key !== "date");
 }
 
 export default function MarkdownPage({ file }: { file: string }) {
@@ -276,12 +274,173 @@ export default function MarkdownPage({ file }: { file: string }) {
                 </Blockquote>
               ),
               code: ({ children, className, ...props }) => {
-                const match = /language-(\w+)/.exec(className || "")
-                const language = match ? match[1] : ""
+                const match = /language-(\w+)/.exec(className || "");
+                const language = match ? match[1] : "";
+
+                // SCATTER-TREND: scatterplot with optional trend line
+                if (language === "scatter-trend" || language === "scattertrend") {
+                  const chartData = parseChartData(String(children));
+                  if (!Array.isArray(chartData) || chartData.length === 0) {
+                    return <div className="text-red-500">Invalid chart data</div>;
+                  }
+                  // Group by series (optional). If no 'series', treat as single series named 'Data'.
+                  const groups: Record<string, any[]> = {};
+                  for (const d of chartData) {
+                    const key = d.series ?? "Data";
+                    if (!groups[key]) groups[key] = [];
+                    groups[key].push(d);
+                  }
+                  // Compute domains
+                  const xs = chartData.map(d => Number(d.x));
+                  const ys = chartData.map(d => Number(d.y));
+                  const xMin = Math.min(...xs), xMax = Math.max(...xs);
+                  const yMin = Math.min(...ys), yMax = Math.max(...ys);
+                  const xPad = (xMax - xMin) * 0.05 || 1;
+                  const yPad = (yMax - yMin) * 0.05 || 1;
+                  const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"];
+                  const seriesNames = Object.keys(groups);
+
+                  // Simple linear regression for each series (least squares)
+                  function getTrendLine(data: any[]) {
+                    const n = data.length;
+                    if (n < 2) return [];
+                    const sumX = data.reduce((acc, d) => acc + d.x, 0);
+                    const sumY = data.reduce((acc, d) => acc + d.y, 0);
+                    const sumXY = data.reduce((acc, d) => acc + d.x * d.y, 0);
+                    const sumXX = data.reduce((acc, d) => acc + d.x * d.x, 0);
+                    const meanX = sumX / n;
+                    const meanY = sumY / n;
+                    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+                    const intercept = meanY - slope * meanX;
+                    // Trend line points: use min/max x
+                    const xVals = data.map(d => d.x);
+                    const xStart = Math.min(...xVals);
+                    const xEnd = Math.max(...xVals);
+                    return [
+                      { x: xStart, y: slope * xStart + intercept },
+                      { x: xEnd, y: slope * xEnd + intercept }
+                    ];
+                  }
+
+                  // Format currency for axis labels
+                  function formatCurrency(value: number) {
+                    if (value >= 1000000) {
+                      return `$${(value / 1000000).toFixed(2)}M`;
+                    }
+                    if (value >= 1000) {
+                      return `$${(value / 1000).toFixed(0)}K`;
+                    }
+                    return `$${value.toFixed(0)}`;
+                  }
+
+                  // Format y axis for complexity (max 2 decimals)
+                  function formatComplexity(value: number) {
+                    return value.toFixed(2);
+                  }
+
+                  return (
+                    <div className="w-full my-6" style={{ minHeight: 320 }}>
+                      <ResponsiveContainer width="100%" height={320}>
+                        <ScatterChart margin={{ left: 32, right: 32, bottom: 20 }}>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                          <XAxis
+                            type="number"
+                            dataKey="x"
+                            domain={[xMin - xPad, xMax + xPad]}
+                            tickFormatter={formatCurrency}
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            minTickGap={32}
+                          >
+                            <Label value="Budget (USD)" offset={-50} position="insideBottom" />
+                          </XAxis>
+                          <YAxis
+                            type="number"
+                            dataKey="y"
+                            domain={[yMin - yPad, yMax + yPad]}
+                            tickFormatter={formatComplexity}
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                          >
+                            <Label value="Complexity" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                          </YAxis>
+                          <Legend />
+                          <RechartsTooltip
+                            formatter={(value: any, name: string) =>
+                              name === "x"
+                                ? formatCurrency(value)
+                                : formatComplexity(value)
+                            }
+                            labelFormatter={(label) => formatCurrency(label)}
+                          />
+                          {seriesNames.map((name, i) => (
+                            <Scatter key={name} name={name} data={groups[name]} fill={colors[i % colors.length]} />
+                          ))}
+                          {/* Trend lines */}
+                          {seriesNames.map((name, i) => {
+                            const trend = getTrendLine(groups[name]);
+                            return trend.length === 2 ? (
+                              <Line
+                                key={name + "-trend"}
+                                data={trend}
+                                dataKey="y"
+                                type="linear"
+                                stroke={colors[i % colors.length]}
+                                strokeDasharray="5 5"
+                                dot={false}
+                                legendType="none"
+                                isAnimationActive={false}
+                              />
+                            ) : null;
+                          })}
+                        </ScatterChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )
+                }
+
+                // -----------------------------
+                // HISTOGRAM
+                // -----------------------------
+                // Expects pre-binned data: [{ "date": "<bin label>", "value": <count> }, ...]
+                if (language === "histogram" || language === "histchart") {
+                  const chartData = parseChartData(String(children))
+                  if (!Array.isArray(chartData) || chartData.length === 0) {
+                    return <div className="text-red-500">Invalid chart data</div>
+                  }
+                  const seriesKeys = ["value"]
+                  const allValues = chartData.flatMap(d => seriesKeys.map(k => d[k]))
+                  const min = Math.min(...allValues)
+                  const max = Math.max(...allValues)
+                  const padding = Math.max(2, Math.round((max - min) * 0.05))
+                  const yDomain = [
+                    Number((min - padding).toFixed(3)),
+                    Number((max + padding).toFixed(3))
+                  ]
+                  return (
+                    <div className="w-full my-6" style={{ minHeight: 320 }}>
+                      <ResponsiveContainer width="100%" height={320}>
+                        <BarChart data={chartData} margin={{ left: 32, right: 32, bottom: 20 }}>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                          <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={32}>
+                            <Label value="Budget Bins" offset={-50} position="insideBottom" />
+                          </XAxis>
+                          <YAxis domain={yDomain}>
+                            <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                          </YAxis>
+                          <RechartsTooltip />
+                          <Bar dataKey="value" fill="#0d9488" isAnimationActive={false} radius={[4,4,0,0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )
+                }
 
                 // Multi-series grouped bar chart
                 if (language === "barchart" || language === "bar-chart") {
-                  const chartData = parseChartData(String(children).replace(/\n$/, ""))
+                  const chartData = parseChartData(String(children))
                   if (!Array.isArray(chartData) || chartData.length === 0) {
                     return <div className="text-red-500">Invalid chart data</div>
                   }
@@ -339,7 +498,7 @@ export default function MarkdownPage({ file }: { file: string }) {
 
                 // Multi-series line chart
                 if (language === "linechart" || language === "line-chart") {
-                  const chartData = parseChartData(String(children).replace(/\n$/, ""))
+                  const chartData = parseChartData(String(children))
                   if (!Array.isArray(chartData) || chartData.length === 0) {
                     return <div className="text-red-500">Invalid chart data</div>
                   }
