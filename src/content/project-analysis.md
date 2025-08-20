@@ -1,127 +1,145 @@
 ---
-title: "Project Risk Analysis – Budget Insights"
-description: "Data-driven analysis of 4,000 project records exploring budget patterns, risk correlations, and financial distribution trends using statistical modeling and visualization."
+title: "Project Risk Analysis – Budget Tiers & Complexity"
+description: "Percentile-based budget tiers (≤33rd, 33rd–67th, >67th) comparing Agile vs. Non-Agile complexity using two-way ANOVA insights."
+tags: ["Analytics", "Project Analysis", "Risk Analysis", "Budget Analysis"]
 ---
 
-## 🧾 Project Overview
-
-This project analyzes a dataset of **4,000 real-world project records** to explore how **budget correlates with risk level and complexity**. The goal is to surface patterns in budget allocation across projects and visualize how often projects fall into specific budget tiers—informing project scoping, resource allocation, and portfolio-level planning.
-
-**Data Source:** [Kaggle – Project Management Risk Dataset](https://www.kaggle.com/datasets/ka66ledata/project-management-risk-raw)
-
----
-
-## 📁 Dataset Snapshot
-
-- **Total Records:** 4,000  
-- **Features:** 51 columns including budget, team size, risk level, methodology, and stakeholder data  
-- **Key Quantitative Variables:**  
-  - `Project_Budget_USD`  
-  - `Team_Size`  
-  - `Complexity_Score`
+## 💡 Problem Statement
+The objective is to understand how **project budget** influences **project complexity** and whether **methodology** (Agile vs. Non-Agile) interacts with budget tier to affect complexity levels. A two-way ANOVA test was performed to evaluate main effects and interactions.
 
 ---
 
-## 📈 Budget Summary Statistics
+## 📊 Data Summary
 
-| Metric               | Value           |
-|----------------------|-----------------|
-| Mean                 | $1,143,031.50   |
-| Median               | $1,007,471.81   |
-| Mode                 | $159,355.55     |
-| Minimum              | $159,355.55     |
-| Maximum              | $3,768,354.37   |
-| Range                | $3,608,998.82   |
-| Variance             | 349,136,947,199.23 |
-| Standard Deviation   | $590,878.12     |
+- **Total Projects:** 4,000
+- **Key Variables:**  
+  - `Project_Budget_USD` → Defines Low / Mid / High tiers via 33rd and 67th percentiles.
+  - `Complexity_Score` → Dependent variable (scale 0–10).
+  - `Methodology_Group` → Agile vs. Non-Agile.
 
----
+### Budget Tiers and Summary Statistics
 
-## 📊 Budget Distribution by Frequency
-
-| Budget Range               | Frequency |
-|---------------------------|-----------|
-| $159,355 – $409,355       | 189       |
-| $409,355 – $659,355       | 701       |
-| $659,355 – $909,355       | 818       |
-| $909,355 – $1,159,355     | 672       |
-| $1,159,355 – $1,409,355   | 517       |
-| $1,409,355 – $1,659,355   | 350       |
-| $1,659,355 – $1,909,355   | 264       |
-| $1,909,355 – $2,159,355   | 181       |
-| $2,159,355 – $2,409,355   | 149       |
-| $2,409,355 – $2,659,355   | 88        |
-| $2,659,355 – $2,909,355   | 46        |
-| $2,909,355 – $3,159,355   | 17        |
-| $3,159,355 – $3,409,355   | 6         |
-| $3,409,355 – $3,659,355   | 1         |
-| $3,659,355 – $3,909,355   | 1         |
+| **Budget Tier**     | **Budget Range (USD)**          | **Project Count** | **Mean Complexity (Agile)** | **Mean Complexity (Non-Agile)** |
+|---------------------|---------------------------------|-------------------|------------------------------|----------------------------------|
+| Low (≤33rd)         | $159,355.55 – $790,000.26       | 1,334             | 4.670                        | 3.982                            |
+| Mid (33rd–67th)     | $790,000.26 – $1,279,552.09     | 1,333             | 6.667                        | 5.436                            |
+| High (>67th)        | $1,279,552.09 – $3,768,354.37   | 1,333             | 8.919                        | 6.391                            |
 
 ---
 
-## 📉 Visualizing Budget Tiers
+## 📈 Visualizations
 
-```chart
+### Project Count by Budget Tier
+
+```barchart
 [
-  { "date": "159K", "value": 189 },
-  { "date": "409K", "value": 701 },
-  { "date": "659K", "value": 818 },
-  { "date": "909K", "value": 672 },
-  { "date": "1.15M", "value": 517 },
-  { "date": "1.4M", "value": 350 },
-  { "date": "1.65M", "value": 264 },
-  { "date": "1.9M", "value": 181 },
-  { "date": "2.15M", "value": 149 },
-  { "date": "2.4M", "value": 88 },
-  { "date": "2.65M", "value": 46 },
-  { "date": "2.9M", "value": 17 },
-  { "date": "3.15M", "value": 6 },
-  { "date": "3.4M", "value": 1 },
-  { "date": "3.65M", "value": 1 }
+  { "date": "Low (≤33rd)", "value": 1334 },
+  { "date": "Mid (33rd–67th)", "value": 1333 },
+  { "date": "High (>67th)", "value": 1333 }
 ]
 ```
 
----
-
-## 🧠 Observations
-
-- The dataset is **right-skewed**, with most project budgets falling below $1.5M.
-- Highest density appears in the $650K–$1.15M range.
-- Very few projects exceed $2.5M, suggesting large projects are rare.
-- **Implication:** Larger projects may require specialized risk frameworks and tailored resource strategies.
+**Explanation:**  
+Projects are evenly distributed across Low, Mid, and High tiers (~1,333 each), ensuring balanced comparisons without bias toward any single group.
 
 ---
 
-## 🛠 Tools & Methods
+### Mean Complexity by Tier (Agile vs Non-Agile)
 
-- **Excel** — Summary statistics, initial data prep
-- **Python (pandas)** — Binning, calculations, cleaning
-- **Mermaid.js** — Charts & visualizations
-- **Tanstack Start** — Documentation and site presentation
+```barchart
+[
+  { "date": "Low (≤33rd)", "Agile": 4.670, "Non-Agile": 3.982 },
+  { "date": "Mid (33rd–67th)", "Agile": 6.667, "Non-Agile": 5.436 },
+  { "date": "High (>67th)", "Agile": 8.919, "Non-Agile": 6.391 }
+]
+```
+
+**Explanation:**  
+Displays **mean complexity** for **Agile** and **Non-Agile** projects across budget tiers:
+- Agile projects consistently show higher complexity in all tiers.
+- The difference grows from **+0.69** at Low budgets to **+2.53** at High budgets.
+- Indicates Agile is more frequently chosen—or better suited—for higher-complexity efforts.
 
 ---
 
-## 📊 Data Philosophy
+### Complexity Gap by Tier
 
-> *"Data without context is just noise; analysis without action is just an academic exercise."*
+```linechart
+[
+  { "date": "Low (≤33rd)", "Gap": 0.688 },
+  { "date": "Mid (33rd–67th)", "Gap": 1.231 },
+  { "date": "High (>67th)", "Gap": 2.528 }
+]
+```
 
-My approach focuses on actionable insights that guide portfolio planning, risk mitigation, and executive decision-making—not just interesting charts.
+**Explanation:**  
+Shows the **difference** between Agile and Non-Agile mean complexity per tier. The widening gap indicates Agile’s role in addressing more complex projects at higher budget levels.
+
+---
+
+## 🧠 Interpretation
+
+### Two-Way ANOVA Findings
+A two-way ANOVA tested the effects of **budget tier**, **methodology**, and their interaction on **project complexity**:
+
+- **Main Effect of Budget Tier:** Significant → Higher budgets strongly correlate with higher complexity.
+- **Main Effect of Methodology:** Significant → Agile projects are consistently more complex than Non-Agile.
+- **Interaction Effect:** Significant → Agile’s complexity advantage widens at higher tiers.
+
+### Key Insights
+1. **Complexity Increases with Budget:** Higher budgets consistently mean higher complexity for all methodologies.
+2. **Agile Handles More Complex Work:** Agile projects demonstrate higher complexity in all tiers.
+3. **Methodology Interaction Matters:** Agile’s complexity advantage becomes most pronounced for High-budget projects.
+
+### Operational Implications
+- **Staffing:** High-tier Agile projects require advanced architecture, test automation, and deeper technical skill sets.
+- **Governance:** Mid/High tiers benefit from early risk validation, dependency mapping, and strong portfolio oversight.
+- **Tooling:** Invest in observability, feature flagging, and automated testing to support scaling Agile under high complexity.
+
+---
+
+## ✅ Conclusion
+
+1. Budget and project complexity are **strongly positively correlated**.
+2. Agile projects are consistently more complex than Non-Agile, with the largest gaps at higher budgets.
+3. The two-way ANOVA confirms a **significant interaction**: Agile’s advantage grows as budgets increase.
+4. Methodology selection should be aligned with project characteristics:
+   - **Agile** for uncertain, high-integration, or high-risk efforts.
+   - **Non-Agile** for stable, low-risk, and well-defined scopes.
+
+---
+
+## ⏭️ Next Steps
+
+### Statistical Extensions
+- **Post-Hoc Tests:** Apply Tukey HSD to analyze pairwise differences among budget tiers.
+- **Effect Sizes:** Report η² and partial η² for clarity on magnitude of impacts.
+
+### Sensitivity Analyses
+- Test alternate tier thresholds (**25/50/75**, **20/40/60/80**) to confirm robustness of results.
+
+### Predictive Modeling
+- Build a logistic regression to predict **methodology selection** based on pre-project characteristics.
+
+### Delivery Metrics Integration
+- Extend analysis to assess delivery outcomes like cycle time, defect density, and rework.
+- Validate if Agile’s higher complexity correlates with equal or better delivery performance at Mid/High tiers.
 
 ---
 
 ## 📂 Supporting Files
 
-- **Excel Summary Workbook:** [Download](/assets/files/M4.5%20Final%20Project%20Phase%201%20Data%20Set.xlsx)
+- **Excel Summary Workbook:** [Download](/assets/files/M7.3%20Final%20Project%20Phase%203.xlsx)
 
 ---
 
 ## 🔗 Related Pages
 
-- [Analytics & Insights](/analytics) — Portfolio of applied analytics projects  
-- [Strategy & Vision](/strategy) — How this analytical approach supports transformation initiatives  
+- [Analytics & Insights](/#/analytics) — Portfolio of applied analytics projects  
+- [Strategy & Vision](/#/strategy) — How this analytical approach supports transformation initiatives  
 
 ---
 
-📋 *Detailed methodology and code snippets available upon request. [Let's connect](/contact).*
+📋 *Detailed methodology and code snippets available upon request. [Let's connect](/#/contact).*
 
 

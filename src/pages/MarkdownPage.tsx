@@ -12,12 +12,8 @@ import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label } from "recharts";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line } from "recharts";
+import { ResponsiveContainer } from "recharts";
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -43,6 +39,12 @@ function parseChartData(code: string) {
   } catch {
     return [];
   }
+}
+
+function getSeriesKeys(data: any[]) {
+  if (!Array.isArray(data) || data.length === 0) return []
+  // Exclude 'date' key
+  return Object.keys(data[0]).filter((key) => key !== "date")
 }
 
 export default function MarkdownPage({ file }: { file: string }) {
@@ -277,67 +279,121 @@ export default function MarkdownPage({ file }: { file: string }) {
                 const match = /language-(\w+)/.exec(className || "")
                 const language = match ? match[1] : ""
 
-                if (language === "chart") {
-                  // Expecting chart data as JSON in code block
+                // Multi-series grouped bar chart
+                if (language === "barchart" || language === "bar-chart") {
                   const chartData = parseChartData(String(children).replace(/\n$/, ""))
                   if (!Array.isArray(chartData) || chartData.length === 0) {
                     return <div className="text-red-500">Invalid chart data</div>
                   }
-                  // Calculate Y domain with padding
-                  const weights = chartData.map((d) => d.value)
-                  const min = Math.min(...weights)
-                  const max = Math.max(...weights)
+                  const seriesKeys = getSeriesKeys(chartData)
+                  const allValues = chartData.flatMap(d => seriesKeys.map(k => d[k]))
+                  const min = Math.min(...allValues)
+                  const max = Math.max(...allValues)
                   const padding = Math.max(2, Math.round((max - min) * 0.05))
-                  const yDomain = [min - padding, max + padding]
+                  const yDomain = [
+                    Number((min - padding).toFixed(3)),
+                    Number((max + padding).toFixed(3))
+                  ]
+                  const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"]
 
                   return (
-                    <ChartContainer
-                      config={{
-                        value: {
-                          label: "Value",
-                          color: "#14b8a6",
-                        },
-                      }}
-                      className="aspect-auto h-[320px] w-full my-6"
-                    >
-                      <LineChart
-                        data={chartData}
-                        margin={{ left: 32, right: 32, bottom: 20 }} // Increased bottom margin
-                      >
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                        <XAxis
-                          dataKey="date"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          minTickGap={32}
-                          tickFormatter={(value) => value}
+                    <div className="w-full my-6" style={{ minHeight: 320 }}>
+                      <ResponsiveContainer width="100%" height={320}>
+                        <BarChart
+                          data={chartData}
+                          margin={{ left: 32, right: 32, bottom: 20 }}
                         >
-                          <Label value="Budget Range" offset={-15} position="insideBottom" /> {/* Increased offset */}
-                        </XAxis>
-                        <YAxis domain={yDomain}>
-                          <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
-                        </YAxis>
-                        <ChartTooltip
-                          filterNull
-                          content={
-                            <ChartTooltipContent
-                              className="w-[150px]"
-                              nameKey="value"
-                              labelFormatter={(value) => value}
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                          <XAxis
+                            dataKey="date"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            minTickGap={32}
+                            tickFormatter={(value) => value}
+                          >
+                            <Label value="Budget Tier" offset={-50} position="insideBottom" />
+                          </XAxis>
+                          <YAxis
+                            domain={yDomain}
+                            tickFormatter={(value) => Number(value).toFixed(3)}
+                          >
+                            <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                          </YAxis>
+                          <Legend />
+                          <RechartsTooltip />
+                          {seriesKeys.map((key, i) => (
+                            <Bar
+                              key={key}
+                              dataKey={key}
+                              fill={colors[i % colors.length]}
+                              isAnimationActive={false}
+                              radius={[4, 4, 0, 0]}
                             />
-                          }
-                        />
-                        <Line
-                          dataKey="value"
-                          type="monotone"
-                          stroke="#14b8a6"
-                          strokeWidth={2}
-                          dot={true}
-                          isAnimationActive={false}
-                        />
-                      </LineChart>
-                    </ChartContainer>
+                          ))}
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )
+                }
+
+                // Multi-series line chart
+                if (language === "linechart" || language === "line-chart") {
+                  const chartData = parseChartData(String(children).replace(/\n$/, ""))
+                  if (!Array.isArray(chartData) || chartData.length === 0) {
+                    return <div className="text-red-500">Invalid chart data</div>
+                  }
+                  const seriesKeys = getSeriesKeys(chartData)
+                  const allValues = chartData.flatMap(d => seriesKeys.map(k => d[k]))
+                  const min = Math.min(...allValues)
+                  const max = Math.max(...allValues)
+                  const padding = Math.max(2, Math.round((max - min) * 0.05))
+                  const yDomain = [
+                    Number((min - padding).toFixed(3)),
+                    Number((max + padding).toFixed(3))
+                  ]
+                  const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"]
+
+                  return (
+                    <div className="w-full my-6" style={{ minHeight: 320 }}>
+                      <ResponsiveContainer width="100%" height={320}>
+                        <LineChart
+                          data={chartData}
+                          margin={{ left: 32, right: 32, bottom: 20 }}
+                        >
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                          <XAxis
+                            dataKey="date"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            minTickGap={32}
+                            tickFormatter={(value) => value}
+                          >
+                            <Label value="Budget Tier" offset={-50} position="insideBottom" />
+                          </XAxis>
+                          <YAxis
+                            domain={yDomain}
+                            tickFormatter={(value) => Number(value).toFixed(3)}
+                          >
+                            <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                          </YAxis>
+                          <Legend />
+                          <RechartsTooltip />
+                          {seriesKeys.map((key, i) => (
+                            <Line
+                              key={key}
+                              dataKey={key}
+                              type="monotone"
+                              stroke={colors[i % colors.length]}
+                              strokeWidth={2}
+                              dot={true}
+                              isAnimationActive={false}
+                            />
+                          ))}
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
                   )
                 }
 
