@@ -3,21 +3,40 @@ title: "Project Risk Analysis – Budget Tiers & Complexity"
 description: "Percentile-based budget tiers (≤33rd, 33rd–67th, >67th) comparing Agile vs. Non-Agile complexity with pre-ANOVA visuals and two-way ANOVA insights."
 tags: ["Analytics", "Project Analysis", "Risk Analysis", "Budget Analysis"]
 ---
+## 📝 Project Overview
+This project analyzes a dataset of 4,000 real-world project records to explore how budget correlates with risk level and complexity. The goal is to surface patterns in budget allocation across projects and visualize how often projects fall into specific budget tiers.
 
-## 💡 Problem Statement
+## ❓ Problem Statement
 Determine how **project budget** relates to **project complexity** and whether **methodology** (Agile vs. Non-Agile) interacts with budget tier to influence complexity. A two-way ANOVA evaluates main effects and the interaction between budget tier and methodology.
 
 ---
 
-## 📊 Data Summary
-
-- **Total Projects:** 4,000
-- **Key Variables:**  
+## 📦 Data Summary
+- **Data Source**: [Kaggle – Project Management Risk Dataset](https://www.kaggle.com/datasets/ka66ledata/project-management-risk-raw)
+- **Total Records:** 4,000
+- **Features:** 51 columns including budget, team size, risk level, methodology, and stakeholder data
+- **Key Quantitative Variables:**  
   - `Project_Budget_USD` → Defines tiers via 33rd and 67th percentiles (Low / Mid / High).  
   - `Complexity_Score` → 0–10 scale (dependent variable).  
   - `Methodology_Group` → Agile vs. Non-Agile.
 
-### Budget Tiers and Summary Statistics
+## 🗂️ Data Groupings 
+
+### Project Methodologies
+
+  - All projects are grouped into **Agile** vs. **Non-Agile** for analysis, and further stratified by budget tier (Low, Mid, High).
+    - **Agile** includes projects using Agile, Scrum, or Kanban methodologies.  
+    - **Non-Agile** includes Waterfall and Hybrid approaches.  
+
+### Budget Tiers
+
+  - Project budgets were divided into three tiers using the 33rd and 67th percentiles of the full portfolio.  
+    - **Low (≤33rd percentile):** Smallest third of projects by budget  
+    - **Mid (33rd–67th percentile):** Middle third  
+    - **High (>67th percentile):** Largest third  
+  - This approach balances group sizes despite the right-skewed distribution, ensuring fair comparisons of complexity and methodology across budget levels.
+
+## 📊 Summary Statistics
 
 | **Budget Tier**     | **Budget Range (USD)**          | **Project Count** | **Mean Complexity (Agile)** | **Mean Complexity (Non-Agile)** |
 |---------------------|---------------------------------|-------------------|------------------------------|----------------------------------|
@@ -27,7 +46,7 @@ Determine how **project budget** relates to **project complexity** and whether *
 
 ---
 
-## 📈 Visualizations
+## 📉 Visualizations
 
 ### Budget Distribution (Histogram)
 
@@ -168,7 +187,7 @@ The **gap widens** from Low to High tiers, implying methodology differences inte
 
 ---
 
-## 🧠 Interpretation
+## 🧩 Interpretation
 
 - **Budget vs. Complexity:** The histogram, scatterplots, and **trend lines** indicate a **right-skewed** budget distribution and a **positive association** between budget and complexity.  
 - **Methodology Effect:** Across tiers and at similar budgets, **Agile** projects show **higher complexity** than Non-Agile, suggesting either selection (Agile chosen for difficult problems) or capability (Agile better supports uncertainty).  
@@ -185,7 +204,7 @@ The **gap widens** from Low to High tiers, implying methodology differences inte
 
 ---
 
-## ✅ Conclusion
+## 🏁 Conclusion
 
 1. **Budgets are right-skewed**; percentile tiers produce balanced groups suitable for comparison.  
 2. **Complexity rises with budget** across the portfolio.  
@@ -207,7 +226,7 @@ The **gap widens** from Low to High tiers, implying methodology differences inte
 
 ---
 
-## 📂 Supporting Files
+## 📁 Supporting Files
 
 - **Excel Summary Workbook:** [Download](/assets/files/M7.3%20Final%20Project%20Phase%203.xlsx)
 
