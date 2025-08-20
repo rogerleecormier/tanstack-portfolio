@@ -4,7 +4,6 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import fm from 'front-matter'
 import slugify from 'slugify'
-import { useLocation } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
@@ -12,7 +11,7 @@ import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer } from "recharts";
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -49,12 +48,11 @@ export default function MarkdownPage({ file }: { file: string }) {
   const [content, setContent] = React.useState<string>('')
   const [frontmatter, setFrontmatter] = React.useState<Frontmatter>({})
   const [isLoading, setIsLoading] = React.useState(true)
-  const location = useLocation()
 
   // Scroll to top on route change
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [location.pathname]);
+  }, [file]); // Use [file] as dependency instead of location.pathname
 
   // Determine content type based on file
   const getContentType = (file: string): 'website' | 'article' | 'profile' => {
@@ -86,7 +84,7 @@ export default function MarkdownPage({ file }: { file: string }) {
     description: frontmatter.description,
     keywords: getPageKeywords(file, frontmatter.keywords || frontmatter.tags),
     image: frontmatter.image,
-    url: location.pathname,
+    url: window.location.pathname, // Use window.location instead of location.pathname
     type: getContentType(file),
     author: frontmatter.author,
     publishedTime: frontmatter.date
@@ -277,8 +275,13 @@ export default function MarkdownPage({ file }: { file: string }) {
                 const match = /language-(\w+)/.exec(className || "");
                 const language = match ? match[1] : "";
 
-                // SCATTER-TREND: scatterplot with optional trend line
-                if (language === "scatter-trend" || language === "scattertrend") {
+                // SCATTER/BUBBLE CHARTS WITH GROUPING AND BUBBLE SIZE
+                if (
+                  language === "scatter-plot" ||
+                  language === "scatterplot" ||
+                  language === "scatter-trend" ||
+                  language === "scattertrend"
+                ) {
                   const chartData = parseChartData(String(children));
                   if (!Array.isArray(chartData) || chartData.length === 0) {
                     return <div className="text-red-500">Invalid chart data</div>;
@@ -290,7 +293,6 @@ export default function MarkdownPage({ file }: { file: string }) {
                     if (!groups[key]) groups[key] = [];
                     groups[key].push(d);
                   }
-                  // Compute domains
                   const xs = chartData.map(d => Number(d.x));
                   const ys = chartData.map(d => Number(d.y));
                   const xMin = Math.min(...xs), xMax = Math.max(...xs);
@@ -299,6 +301,10 @@ export default function MarkdownPage({ file }: { file: string }) {
                   const yPad = (yMax - yMin) * 0.05 || 1;
                   const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"];
                   const seriesNames = Object.keys(groups);
+                  // Total n per series for legend formatting
+                  const seriesTotals: Record<string, number> = Object.fromEntries(
+                    seriesNames.map((name) => [name, groups[name].reduce((acc, d) => acc + (Number(d.n) || 0), 0)])
+                  );
 
                   // Simple linear regression for each series (least squares)
                   function getTrendLine(data: any[]) {
@@ -312,7 +318,6 @@ export default function MarkdownPage({ file }: { file: string }) {
                     const meanY = sumY / n;
                     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
                     const intercept = meanY - slope * meanX;
-                    // Trend line points: use min/max x
                     const xVals = data.map(d => d.x);
                     const xStart = Math.min(...xVals);
                     const xEnd = Math.max(...xVals);
@@ -322,7 +327,6 @@ export default function MarkdownPage({ file }: { file: string }) {
                     ];
                   }
 
-                  // Format currency for axis labels
                   function formatCurrency(value: number) {
                     if (value >= 1000000) {
                       return `$${(value / 1000000).toFixed(2)}M`;
@@ -332,10 +336,11 @@ export default function MarkdownPage({ file }: { file: string }) {
                     }
                     return `$${value.toFixed(0)}`;
                   }
-
-                  // Format y axis for complexity (max 2 decimals)
                   function formatComplexity(value: number) {
                     return value.toFixed(2);
+                  }
+                  function formatCount(value: number) {
+                    return `${value} projects`;
                   }
 
                   return (
@@ -353,7 +358,7 @@ export default function MarkdownPage({ file }: { file: string }) {
                             tickMargin={8}
                             minTickGap={32}
                           >
-                            <Label value="Budget (USD)" offset={-50} position="insideBottom" />
+                            <Label value="Mean Budget (USD)" offset={-50} position="insideBottom" />
                           </XAxis>
                           <YAxis
                             type="number"
@@ -364,34 +369,36 @@ export default function MarkdownPage({ file }: { file: string }) {
                             axisLine={false}
                             tickMargin={8}
                           >
-                            <Label value="Complexity" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                            <Label value="Mean Complexity" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
                           </YAxis>
-                          <Legend />
+                          <Legend formatter={(value: string) => {
+                            const total = seriesTotals?.[value];
+                            return total ? `${value} (n=${total})` : value;
+                          }} />
                           <RechartsTooltip
-                            formatter={(value: any, name: string) =>
-                              name === "x"
-                                ? formatCurrency(value)
-                                : formatComplexity(value)
-                            }
+                            formatter={(value: any, name: string) => {
+                              if (name === "x") return formatCurrency(value);
+                              if (name === "y") return formatComplexity(value);
+                              if (name === "n") return formatCount(value);
+                              return value;
+                            }}
                             labelFormatter={(label) => formatCurrency(label)}
                           />
                           {seriesNames.map((name, i) => (
-                            <Scatter key={name} name={name} data={groups[name]} fill={colors[i % colors.length]} />
+                            <Scatter key={name} name={name} data={groups[name]} fill={colors[i % colors.length]}>
+                              <ZAxis dataKey="n" range={[60, 300]} />
+                            </Scatter>
                           ))}
-                          {/* Trend lines */}
-                          {seriesNames.map((name, i) => {
+                          {/* Trend lines for scatter-trend/scattertrend */}
+                          {(language === "scatter-trend" || language === "scattertrend") && seriesNames.map((name, i) => {
                             const trend = getTrendLine(groups[name]);
                             return trend.length === 2 ? (
-                              <Line
+                              <Scatter
                                 key={name + "-trend"}
                                 data={trend}
-                                dataKey="y"
-                                type="linear"
-                                stroke={colors[i % colors.length]}
-                                strokeDasharray="5 5"
-                                dot={false}
+                                line
+                                fill={colors[i % colors.length]}
                                 legendType="none"
-                                isAnimationActive={false}
                               />
                             ) : null;
                           })}
@@ -480,7 +487,16 @@ export default function MarkdownPage({ file }: { file: string }) {
                             <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
                           </YAxis>
                           <Legend />
-                          <RechartsTooltip />
+                          <RechartsTooltip
+                            formatter={(value: any, name: string, props: any) => {
+                              // If per-series count is provided (e.g., Agile_n), show alongside value
+                              const perSeriesN = props?.payload?.[`${name}_n`];
+                              const globalN = props?.payload?.n;
+                              if (perSeriesN != null) return [`${value} (n=${perSeriesN})`, name];
+                              if (globalN != null) return [`${value} (n=${globalN})`, name];
+                              return [value, name];
+                            }}
+                          />
                           {seriesKeys.map((key, i) => (
                             <Bar
                               key={key}
@@ -538,7 +554,16 @@ export default function MarkdownPage({ file }: { file: string }) {
                             <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
                           </YAxis>
                           <Legend />
-                          <RechartsTooltip />
+                          <RechartsTooltip
+                            formatter={(value: any, name: string, props: any) => {
+                              // If per-series count is provided (e.g., Agile_n), show alongside value
+                              const perSeriesN = props?.payload?.[`${name}_n`];
+                              const globalN = props?.payload?.n;
+                              if (perSeriesN != null) return [`${value} (n=${perSeriesN})`, name];
+                              if (globalN != null) return [`${value} (n=${globalN})`, name];
+                              return [value, name];
+                            }}
+                          />
                           {seriesKeys.map((key, i) => (
                             <Line
                               key={key}

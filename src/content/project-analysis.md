@@ -58,7 +58,7 @@ Budgets are **right-skewed**, with most projects under ~$1.5M. Percentile-based 
 
 ### Complexity vs. Budget (Scatterplot – All Projects)
 
-```scattertrend
+```scatterplot
 [
   { "x": 159356, "y": 4.1 },
   { "x": 408000, "y": 3.9 },
@@ -91,7 +91,7 @@ The fitted trend indicates a **monotonic increase** in complexity with budget, s
 
 ### Complexity vs. Budget (Scatterplot – By Methodology)
 
-```scattertrend
+```scatterplot
 [
   { "x": 450000, "y": 4.5, "series": "Agile" },
   { "x": 800000, "y": 5.8, "series": "Agile" },
