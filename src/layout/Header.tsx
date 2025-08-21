@@ -1,30 +1,15 @@
-import { Briefcase, ChevronRight } from 'lucide-react'
-import { Link, useRouterState } from '@tanstack/react-router'
-import Search from '../components/Search'
-import { navigationItems } from '@/config/navigation'
-import { SidebarTrigger } from '@/components/ui/sidebar'
+import React, { useState } from "react";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Briefcase } from "lucide-react";
+import Search from "../components/Search";
+import LoginPage from "../components/LoginPage";
+import Breadcrumbs from "../components/Breadcrumbs";
 
-// Use navigationItems as the source for allPages
-const allPages = navigationItems
+const Header: React.FC = () => {
+  const [showLogin, setShowLogin] = useState(false);
 
-export default function Header() {
-  const { location } = useRouterState()
-  const currentPath = location.pathname.replace(/^\//, "")
-
-  // Generate breadcrumbs
-  const getBreadcrumbs = () => {
-    const breadcrumbs = [{ title: 'Home', path: "/" }]
-    if (currentPath === "") return breadcrumbs
-
-    // Find the matching page
-    const page = allPages.find(p => p.url === currentPath)
-    if (page) {
-      breadcrumbs.push({ title: page.title, path: `/${page.url}` })
-    }
-    return breadcrumbs
-  }
-
-  const breadcrumbs = getBreadcrumbs()
+  const handleLoginClick = () => setShowLogin(true);
+  const handleCloseLogin = () => setShowLogin(false);
 
   return (
     <header className="sticky top-0 z-[100] bg-teal-600 shadow-md border-b border-teal-500">
@@ -34,7 +19,19 @@ export default function Header() {
           <div className="flex items-center gap-3 mb-3 px-4 sm:px-6">
             <div className="w-5 h-5 flex-shrink-0">
               <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu h-8 w-8" aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-menu h-8 w-8"
+                  aria-hidden="true"
+                >
                   <path d="M4 12h16"></path>
                   <path d="M4 18h16"></path>
                   <path d="M4 6h16"></path>
@@ -48,8 +45,22 @@ export default function Header() {
               Roger Lee Cormier Portfolio
             </h1>
           </div>
-          <div className="w-full h-10 flex-shrink-0 px-4 sm:px-6">
-            <Search />
+          <div className="w-full flex items-center gap-2 px-4 sm:px-6">
+            <div className="flex-1 min-w-0">
+              <div className="w-full max-w-[340px]">
+                <Search />
+              </div>
+            </div>
+            <button
+              className="px-3 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition"
+              onClick={handleLoginClick}
+            >
+              Login
+            </button>
+          </div>
+          {/* Breadcrumbs below search on mobile */}
+          <div className="mt-2 px-6">
+            <Breadcrumbs />
           </div>
         </div>
 
@@ -58,7 +69,19 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 pl-3">
             <div className="w-12 h-12 flex-shrink-0">
               <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu h-8 w-8" aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-menu h-8 w-8"
+                  aria-hidden="true"
+                >
                   <path d="M4 12h16"></path>
                   <path d="M4 18h16"></path>
                   <path d="M4 6h16"></path>
@@ -69,33 +92,49 @@ export default function Header() {
             </div>
             <Briefcase className="h-6 w-6 text-white flex-shrink-0" />
             <h1 className="text-xl font-bold text-white truncate">
-              Roger Lee Cormier Portfolio
+              Roger Lee Cormier - Portfolio
             </h1>
           </div>
-          <div className="h-10 sm:w-48 md:w-56 lg:w-64 flex-shrink-0">
-            <Search />
+          {/* Search and Login button row */}
+          <div className="flex items-center gap-2 h-10 flex-shrink-0 ml-auto">
+            <div className="flex-1 min-w-0">
+              <Search />
+            </div>
+            <button
+              className="px-4 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition"
+              onClick={handleLoginClick}
+            >
+              Login
+            </button>
           </div>
         </div>
 
-        {/* Breadcrumbs */}
-        <div className="hidden lg:flex items-center gap-2 text-sm text-teal-100 h-6 px-6">
-          {breadcrumbs.map((crumb, index) => (
-            <div key={`breadcrumb-${index}-${crumb.path}`} className="flex items-center gap-2">
-              {index > 0 && <ChevronRight className="h-3 w-3" />}
-              {index === breadcrumbs.length - 1 ? (
-                <span className="text-white font-medium">{crumb.title}</span>
-              ) : (
-                <Link
-                  to={crumb.path}
-                  className="hover:text-white transition-colors"
-                >
-                  {crumb.title}
-                </Link>
-              )}
-            </div>
-          ))}
+        {/* Breadcrumbs below header on desktop */}
+        <div className="hidden lg:block px-6">
+          <Breadcrumbs />
         </div>
       </div>
+      {/* Login modal */}
+      {showLogin && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          aria-modal="true"
+          role="dialog"
+        >
+          <div className="bg-white rounded shadow-lg p-6 relative overflow-y-auto">
+            <button
+              className="absolute top-2 right-2 text-teal-700"
+              onClick={handleCloseLogin}
+              aria-label="Close login modal"
+            >
+              ✕
+            </button>
+            <LoginPage />
+          </div>
+        </div>
+      )}
     </header>
-  )
-}
+  );
+};
+
+export default Header;
