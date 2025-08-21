@@ -8,6 +8,7 @@ import AppLayout from './layout/AppLayout'
 import MarkdownPage from './pages/MarkdownPage'
 import NotFound from './pages/NotFound'
 import HealthBridgePage from './pages/HealthBridge'
+import ProtectedPage from './components/ProtectedPage'
 
 console.count('[router] module evaluated');
 
@@ -82,9 +83,16 @@ const healthBridgeAnalysisRoute = createRoute({
   component: HealthBridgePage,
 })
 
+// Protected route
+const protectedRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'protected',
+  component: ProtectedPage,
+})
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
-  indexRoute,              // <-- include this for About at root
+  indexRoute,
   strategyRoute,
   leadershipRoute,
   talentRoute,
@@ -93,6 +101,7 @@ const routeTree = rootRoute.addChildren([
   analyticsRoute,
   projectAnalysisRoute,
   healthBridgeAnalysisRoute,
+  protectedRoute, // ⬅️ Add this line
 ])
 
 // Create router instance

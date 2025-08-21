@@ -13,8 +13,11 @@ export const initiateGoogleLogin = () => {
 };
 
 export const handleOAuthCallback = async () => {
-  if (window.location.hash) {
-    const params = new URLSearchParams(window.location.hash.substring(1));
+  // Check for access_token in hash fragment
+  if (window.location.hash && window.location.hash.includes('access_token')) {
+    // Remove leading # or #/
+    const hash = window.location.hash.replace(/^#\/?/, '');
+    const params = new URLSearchParams(hash);
     const accessToken = params.get('access_token');
     if (accessToken) {
       localStorage.setItem('access_token', accessToken);
@@ -22,13 +25,11 @@ export const handleOAuthCallback = async () => {
       // Fetch user info from Google or Microsoft
       let userInfo = null;
       if (window.location.href.includes('google')) {
-        // Google user info endpoint
         const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         userInfo = await res.json();
       } else {
-        // Microsoft user info endpoint
         const res = await fetch('https://graph.microsoft.com/v1.0/me', {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -36,7 +37,7 @@ export const handleOAuthCallback = async () => {
       }
 
       localStorage.setItem('user_info', JSON.stringify(userInfo));
-      window.location.replace('/protected');
+      window.location.replace(`${REDIRECT_URI}#/protected`);
     }
   }
 };
