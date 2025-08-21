@@ -19,8 +19,8 @@ const useAuth = () => {
     checkAuth();
   }, []);
 
-  const login = async (provider: string) => {
-    const userData = await getOAuthTokens(provider);
+  const login = async () => {
+    const userData = await getOAuthTokens();
     setUser(userData);
   };
 
@@ -34,7 +34,12 @@ const useAuth = () => {
 
 export default useAuth;
 
-function getOAuthTokens(provider?: string): any {
-    // Replace this with actual logic to fetch user data from OAuth provider
-    return Promise.resolve({ name: 'Demo User', provider });
+const allowedEmail = 'rogerleecormier@gmail.com';
+
+function getOAuthTokens(): any {
+    const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}');
+    if (userInfo.email !== allowedEmail) {
+        return null; // Deny access
+    }
+    return userInfo;
 }

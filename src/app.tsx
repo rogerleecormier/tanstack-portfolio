@@ -2,6 +2,7 @@ import { RouterProvider, createRouter, Route, RootRoute } from '@tanstack/react-
 import LoginPage from './components/LoginPage';
 import ProtectedPage from './components/ProtectedPage';
 import useAuth from './hooks/useAuth';
+import { handleOAuthCallback } from './utils/oauth';
 
 // Wrapper for protected route
 function ProtectedPageWrapper() {
@@ -28,6 +29,8 @@ const routeTree = rootRoute.addChildren([loginRoute, protectedRoute]);
 
 // Create the router
 const router = createRouter({ routeTree });
+
+handleOAuthCallback(); // Add this at the top-level (outside component)
 
 const App = () => {
   return <RouterProvider router={router} />;
