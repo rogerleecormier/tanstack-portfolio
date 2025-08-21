@@ -57,11 +57,11 @@ const projectItems = [
     url: "project-analysis",
     icon: BarChart3,
   },
-  {
-    title: "HealthBridge Analysis",
-    url: "healthbridge-analysis",
-    icon: BarChart3,
-  },
+  //{
+  //  title: "HealthBridge Analysis",
+  //  url: "healthbridge-analysis",
+  //  icon: BarChart3,
+  //},
   // Add more projects here as needed
 ];
 
