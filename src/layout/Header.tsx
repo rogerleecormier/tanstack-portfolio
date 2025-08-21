@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Briefcase, Menu } from "lucide-react";
+import { Briefcase, Menu, User, LogOut } from "lucide-react";
 import Search from "../components/Search";
-import LoginPage from "../components/LoginPage";
+import { LoginPage } from "../components/LoginPage";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { useAuth } from "../hooks/useAuth";
 
 const Header: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
 
   const handleLoginClick = () => setShowLogin(true);
   const handleCloseLogin = () => setShowLogin(false);
+  const handleLogout = () => {
+    logout();
+    setShowLogin(false);
+  };
 
   return (
     <header className="sticky top-0 z-[100] bg-teal-600 shadow-md border-b border-teal-500">
@@ -35,12 +41,28 @@ const Header: React.FC = () => {
                 <Search />
               </div>
             </div>
-            <button
-              className="px-3 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition"
-              onClick={handleLoginClick}
-            >
-              Login
-            </button>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 text-white text-sm">
+                  <User className="h-4 w-4" />
+                  <span className="hidden xs:inline">{user?.email}</span>
+                </div>
+                <button
+                  className="px-3 py-2 bg-red-600 text-white font-semibold rounded shadow hover:bg-red-700 transition flex items-center gap-1"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden xs:inline">Logout</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                className="px-3 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition"
+                onClick={handleLoginClick}
+              >
+                Login
+              </button>
+            )}
           </div>
           {/* Breadcrumbs below search on mobile */}
           <div className="mt-2 px-6">
@@ -68,12 +90,28 @@ const Header: React.FC = () => {
             <div className="flex-1 min-w-0">
               <Search />
             </div>
-            <button
-              className="px-4 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition"
-              onClick={handleLoginClick}
-            >
-              Login
-            </button>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 text-white text-sm">
+                  <User className="h-4 w-4" />
+                  <span>{user?.email}</span>
+                </div>
+                <button
+                  className="px-4 py-2 bg-red-600 text-white font-semibold rounded shadow hover:bg-red-700 transition flex items-center gap-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <button
+                className="px-4 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition"
+                onClick={handleLoginClick}
+              >
+                Login
+              </button>
+            )}
           </div>
         </div>
 
@@ -83,7 +121,7 @@ const Header: React.FC = () => {
         </div>
       </div>
       {/* Login modal */}
-      {showLogin && (
+      {showLogin && !isAuthenticated && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           aria-modal="true"
@@ -97,7 +135,7 @@ const Header: React.FC = () => {
             >
               ✕
             </button>
-            <LoginPage />
+            <LoginPage onClose={handleCloseLogin} />
           </div>
         </div>
       )}

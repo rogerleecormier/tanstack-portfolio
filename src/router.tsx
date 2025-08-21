@@ -7,8 +7,8 @@ import { createBrowserHistory } from '@tanstack/history'
 import AppLayout from './layout/AppLayout'
 import MarkdownPage from './pages/MarkdownPage'
 import NotFound from './pages/NotFound'
-import HealthBridgePage from './pages/HealthBridge'
-import ProtectedPage from './components/ProtectedPage'
+import { HealthBridge } from './pages/HealthBridge'
+import { ProtectedPage } from './components/ProtectedPage'
 
 console.count('[router] module evaluated');
 
@@ -80,7 +80,7 @@ const projectAnalysisRoute = createRoute({
 const healthBridgeAnalysisRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'healthbridge-analysis',
-  component: HealthBridgePage,
+  component: HealthBridge,
 })
 
 // Protected route

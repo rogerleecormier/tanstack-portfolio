@@ -1,64 +1,65 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
-import { Separator } from './ui/separator';
-import { initiateM365Login, initiateGoogleLogin } from '../utils/oauth';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Shield, Mail, ArrowRight } from 'lucide-react';
 
-const LoginPage: React.FC = () => {
-  // const router = useRouter();
+interface LoginPageProps {
+  onClose: () => void;
+}
 
-  const handleLogin = (provider: 'm365' | 'google') => {
-    if (provider === 'm365') {
-      initiateM365Login();
-    } else {
-      initiateGoogleLogin();
-    }
+export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
+  const handleCloudflareLogin = () => {
+    // Close the modal first
+    onClose();
+    
+    // Redirect to a protected route that will trigger Cloudflare Access OTP
+    // Cloudflare Access will automatically show the OTP login form
+    window.location.href = '/protected';
   };
 
   return (
-    <div>
-      {/* Development warning */}
-      <div className="w-full text-center my-2">
-        <span className="text-red-600 font-semibold">
-          This module is not yet working and is under development.
-        </span>
-      </div>
-      <Card className="w-full max-w-sm mx-auto">
-        <CardHeader>
-          <CardTitle className="text-center">Sign in to your account</CardTitle>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <Card className="w-full max-w-md mx-4">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 p-3 bg-teal-100 rounded-full w-fit">
+            <Shield className="h-8 w-8 text-teal-600" />
+          </div>
+          <CardTitle className="text-xl">Cloudflare Access</CardTitle>
+          <CardDescription>
+            Secure One-Time PIN Authentication
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-4">
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 justify-center"
-              onClick={() => handleLogin('m365')}
-            >
-              <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" className="h-5 w-5" />
-              Sign in with Microsoft 365
-            </Button>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 justify-center"
-              onClick={() => handleLogin('google')}
-            >
-              <img
-                src="https://www.gstatic.com/images/branding/product/1x/gsa_64dp.png"
-                alt="Google"
-                className="h-8 w-8"
-                style={{ display: 'inline-block' }}
-              />
-              Sign in with Google
-            </Button>
-            <Separator />
-            <div className="text-xs text-center text-muted-foreground">
-              Your credentials are never stored. OAuth is handled securely via Microsoft or Google.
+        <CardContent className="space-y-4">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground mb-4">
+              <Mail className="h-4 w-4" />
+              <span>OTP will be sent to your email</span>
             </div>
+            <p className="text-sm text-muted-foreground">
+              Click below to start the Cloudflare Access authentication flow. 
+              You'll receive a One-Time PIN via email to securely access your portfolio.
+            </p>
+            <Button 
+              onClick={handleCloudflareLogin} 
+              className="w-full bg-teal-600 hover:bg-teal-700"
+              size="lg"
+            >
+              <span>Continue to Cloudflare Access</span>
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
+          
+          <div className="text-center">
+            <Button 
+              variant="ghost" 
+              onClick={onClose}
+              className="text-sm"
+            >
+              Cancel
+            </Button>
           </div>
         </CardContent>
       </Card>
     </div>
   );
 };
-
-export default LoginPage;

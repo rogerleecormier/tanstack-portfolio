@@ -1,45 +1,56 @@
 import { useState, useEffect } from 'react';
-import { isAuthenticated as checkAuthenticated } from '../utils/oauth';
-// import getOAuthTokens if it exists, otherwise remove or replace with correct function
+import { 
+  isAuthenticated as checkIsAuthenticated, 
+  getUserInfo, 
+  setUserInfo, 
+  clearUserInfo, 
+  login as cloudflareLogin, 
+  logout as cloudflareLogout 
+} from '../utils/cloudflareAuth';
 
-const useAuth = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+export const useAuth = () => {
+  const [user, setUser] = useState(getUserInfo());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const checkAuth = () => {
+    const authenticated = checkIsAuthenticated();
+    const userInfo = getUserInfo();
+    
+    setIsAuthenticated(authenticated);
+    setUser(userInfo);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const authenticated = await checkAuthenticated();
-      if (authenticated) {
-        const userData = await getOAuthTokens();
-        setUser(userData);
-      }
-      setLoading(false);
-    };
-
     checkAuth();
   }, []);
 
-  const login = async () => {
-    const userData = await getOAuthTokens();
-    setUser(userData);
+  useEffect(() => {
+    // Listen for storage changes (e.g., logout from another tab)
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const login = () => {
+    cloudflareLogin();
   };
 
   const logout = () => {
+    cloudflareLogout();
     setUser(null);
-    // Add any additional logout logic here, such as clearing tokens
+    setIsAuthenticated(false);
   };
 
-  return { user, loading, login, logout, isAuthenticated: !!user };
+  return {
+    user,
+    isAuthenticated,
+    isLoading,
+    login,
+    logout
+  };
 };
-
-export default useAuth;
-
-const allowedEmail = 'rogerleecormier@gmail.com';
-
-function getOAuthTokens(): any {
-    const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}');
-    if (userInfo.email !== allowedEmail) {
-        return null; // Deny access
-    }
-    return userInfo;
-}
