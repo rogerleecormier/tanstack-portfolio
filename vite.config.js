@@ -10,11 +10,4 @@ export default defineConfig({
             "@": path.resolve(__dirname, "./src"),
         },
     },
-    build: {
-        rollupOptions: {
-            output: {
-                manualChunks: undefined, // Ensures single bundle for SPA routing
-            },
-        },
-    },
 });

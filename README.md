@@ -9,24 +9,10 @@ This application uses **normal routing** (not hash routing) for clean, SEO-frien
 - **Development**: Clean URLs like `http://localhost:5174/strategy`, `http://localhost:5174/leadership`
 - **Production**: Clean URLs like `yoursite.com/strategy`, `yoursite.com/leadership`
 
-### Hosting Platform Compatibility
+### Current Deployment
 
-The app includes intelligent routing support for different hosting platforms:
-
-- **Cloudflare Pages**: Native SPA routing support (no workarounds needed)
-- **Netlify**: Uses the `public/_redirects` file
-- **Vercel**: Uses the `vercel.json` configuration
-- **GitHub Pages**: Uses the included routing scripts (only on github.io domains)
-- **Other platforms**: Most modern hosting platforms support SPA routing natively
-
-### Routing Script Logic
-
-The routing script in `index.html` only runs on GitHub Pages domains (`*.github.io`) and excludes:
-- Localhost (development)
-- Cloudflare Pages (`*.pages.dev`, `*.cloudflare.com`)
-- Netlify (`*.netlify.app`, `*.netlify.com`)
-- Vercel (`*.vercel.app`, `*.vercel.com`)
-- Firebase (`*.firebaseapp.com`, `*.web.app`)
+- **Cloudflare Pages**: Native SPA routing support
+- **Future**: Ready for potential SSR conversion
 
 ## Development
 
@@ -40,10 +26,10 @@ npm run dev
 npm run build
 ```
 
-## Deploy
+## Preview Build
 
 ```bash
-npm run deploy
+npm run preview
 ```
 
 ---
