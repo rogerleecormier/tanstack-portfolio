@@ -17,10 +17,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Roger Lee Cormier Portfolio</title>
     
-    <!-- GitHub Pages SPA Routing Support - Only run in production -->
+    <!-- GitHub Pages SPA Routing Support - Only run on GitHub Pages -->
     <script type="text/javascript">
-      // Only run this script in production (not in development)
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      // Only run this script on GitHub Pages (not on modern hosting platforms)
+      var hostname = window.location.hostname;
+      var isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+      var isCloudflarePages = hostname.includes('pages.dev') || hostname.includes('cloudflare.com');
+      var isNetlify = hostname.includes('netlify.app') || hostname.includes('netlify.com');
+      var isVercel = hostname.includes('vercel.app') || hostname.includes('vercel.com');
+      var isFirebase = hostname.includes('firebaseapp.com') || hostname.includes('web.app');
+      
+      // Only run on GitHub Pages (github.io domains)
+      if (!isLocalhost && !isCloudflarePages && !isNetlify && !isVercel && !isFirebase && hostname.includes('github.io')) {
         // Single Page Apps for GitHub Pages
         // MIT License
         // https://github.com/rafgraph/spa-github-pages
