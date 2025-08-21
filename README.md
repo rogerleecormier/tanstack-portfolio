@@ -1,7 +1,45 @@
 # TanStack Portfolio
 
-A personal portfolio and project dashboard built with React, TanStack Router, and Vite.  
-Easily organize, analyze, and visualize your projects and data—including health tracking via HealthBridge.
+A modern portfolio website built with React, TanStack Router, and Vite.
+
+## Routing Setup
+
+This application uses **normal routing** (not hash routing) for clean, SEO-friendly URLs:
+
+- **Development**: Clean URLs like `http://localhost:5174/strategy`, `http://localhost:5174/leadership`
+- **Production**: Clean URLs like `yoursite.com/strategy`, `yoursite.com/leadership`
+
+### GitHub Pages Compatibility
+
+The app includes special handling for GitHub Pages deployment:
+- **404.html**: Fallback page for direct navigation
+- **index.html**: Contains routing script that only runs in production
+- **Router**: Uses `createBrowserHistory()` for normal routing
+
+### Deployment Options
+
+1. **GitHub Pages**: Works with the included routing scripts
+2. **Netlify**: Use the `public/_redirects` file
+3. **Vercel**: Use the `vercel.json` configuration
+4. **Other platforms**: Most modern hosting platforms support SPA routing natively
+
+## Development
+
+```bash
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Deploy
+
+```bash
+npm run deploy
+```
 
 ---
 

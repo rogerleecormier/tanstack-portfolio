@@ -3,7 +3,7 @@ import {
   createRoute,
   createRouter,
 } from '@tanstack/react-router'
-import { createHashHistory } from '@tanstack/history'
+import { createBrowserHistory } from '@tanstack/history'
 import AppLayout from './layout/AppLayout'
 import MarkdownPage from './pages/MarkdownPage'
 import NotFound from './pages/NotFound'
@@ -107,7 +107,7 @@ const routeTree = rootRoute.addChildren([
 // Create router instance
 export const router = createRouter({
   routeTree,
-  history: createHashHistory(),     // ⬅️ hash routing for GitHub Pages
+  history: createBrowserHistory(),
   defaultPreload: 'intent',
   defaultNotFoundComponent: NotFound,
 })
