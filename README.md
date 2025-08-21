@@ -9,19 +9,24 @@ This application uses **normal routing** (not hash routing) for clean, SEO-frien
 - **Development**: Clean URLs like `http://localhost:5174/strategy`, `http://localhost:5174/leadership`
 - **Production**: Clean URLs like `yoursite.com/strategy`, `yoursite.com/leadership`
 
-### GitHub Pages Compatibility
+### Hosting Platform Compatibility
 
-The app includes special handling for GitHub Pages deployment:
-- **404.html**: Fallback page for direct navigation
-- **index.html**: Contains routing script that only runs in production
-- **Router**: Uses `createBrowserHistory()` for normal routing
+The app includes intelligent routing support for different hosting platforms:
 
-### Deployment Options
+- **Cloudflare Pages**: Native SPA routing support (no workarounds needed)
+- **Netlify**: Uses the `public/_redirects` file
+- **Vercel**: Uses the `vercel.json` configuration
+- **GitHub Pages**: Uses the included routing scripts (only on github.io domains)
+- **Other platforms**: Most modern hosting platforms support SPA routing natively
 
-1. **GitHub Pages**: Works with the included routing scripts
-2. **Netlify**: Use the `public/_redirects` file
-3. **Vercel**: Use the `vercel.json` configuration
-4. **Other platforms**: Most modern hosting platforms support SPA routing natively
+### Routing Script Logic
+
+The routing script in `index.html` only runs on GitHub Pages domains (`*.github.io`) and excludes:
+- Localhost (development)
+- Cloudflare Pages (`*.pages.dev`, `*.cloudflare.com`)
+- Netlify (`*.netlify.app`, `*.netlify.com`)
+- Vercel (`*.vercel.app`, `*.vercel.com`)
+- Firebase (`*.firebaseapp.com`, `*.web.app`)
 
 ## Development
 
