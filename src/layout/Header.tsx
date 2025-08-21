@@ -18,7 +18,7 @@ const Header: React.FC = () => {
         <div className="sm:hidden">
           <div className="flex items-center gap-3 mb-3 px-4 sm:px-6">
             <div className="w-8 h-8 flex-shrink-0">
-              <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center">
+              <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center [&_svg]:size-6">
                 <Menu className="h-5 w-5" aria-hidden="true" />
                 <span className="sr-only">Toggle navigation menu</span>
                 <span className="sr-only">Toggle Sidebar</span>
@@ -52,8 +52,8 @@ const Header: React.FC = () => {
         <div className="hidden sm:flex items-center justify-between gap-3 mb-3 pr-4">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 pl-3">
             <div className="w-10 h-10 flex-shrink-0">
-              <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center">
-                <Menu className="h-10 w-10" aria-hidden="true" />
+              <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center [&_svg]:size-6">
+                <Menu aria-hidden="true" />
                 <span className="sr-only">Toggle navigation menu</span>
                 <span className="sr-only">Toggle Sidebar</span>
               </SidebarTrigger>
