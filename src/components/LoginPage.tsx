@@ -16,40 +16,48 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-sm mx-auto">
-      <CardHeader>
-        <CardTitle className="text-center">Sign in to your account</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-4">
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 justify-center"
-            onClick={() => handleLogin('m365')}
-          >
-            <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" className="h-5 w-5" />
-            Sign in with Microsoft 365
-          </Button>
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 justify-center"
-            onClick={() => handleLogin('google')}
-          >
-            <img
-              src="https://www.gstatic.com/images/branding/product/1x/gsa_64dp.png"
-              alt="Google"
-              className="h-8 w-8"
-              style={{ display: 'inline-block' }}
-            />
-            Sign in with Google
-          </Button>
-          <Separator />
-          <div className="text-xs text-center text-muted-foreground">
-            Your credentials are never stored. OAuth is handled securely via Microsoft or Google.
+    <div>
+      {/* Development warning */}
+      <div className="w-full text-center my-2">
+        <span className="text-red-600 font-semibold">
+          This module is not yet working and is under development.
+        </span>
+      </div>
+      <Card className="w-full max-w-sm mx-auto">
+        <CardHeader>
+          <CardTitle className="text-center">Sign in to your account</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-4">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 justify-center"
+              onClick={() => handleLogin('m365')}
+            >
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" className="h-5 w-5" />
+              Sign in with Microsoft 365
+            </Button>
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 justify-center"
+              onClick={() => handleLogin('google')}
+            >
+              <img
+                src="https://www.gstatic.com/images/branding/product/1x/gsa_64dp.png"
+                alt="Google"
+                className="h-8 w-8"
+                style={{ display: 'inline-block' }}
+              />
+              Sign in with Google
+            </Button>
+            <Separator />
+            <div className="text-xs text-center text-muted-foreground">
+              Your credentials are never stored. OAuth is handled securely via Microsoft or Google.
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
