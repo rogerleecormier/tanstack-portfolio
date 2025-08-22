@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Shield, ArrowRight, Loader2 } from 'lucide-react';
-import { handleOTPFlow } from '../utils/cloudflareAuth';
+import { login } from '../utils/cloudflareAuth';
 
 interface LoginPageProps {
   onClose: () => void;
@@ -18,10 +18,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
       // Close the modal first
       onClose();
       
-      // Use the improved OTP flow handler
-      handleOTPFlow();
+      // Use the correct Cloudflare Access login function
+      login();
     } catch (error) {
-      console.error('Error initiating OTP flow:', error);
+      console.error('Error initiating Cloudflare Access login:', error);
       setIsLoading(false);
     }
   };

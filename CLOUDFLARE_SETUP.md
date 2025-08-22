@@ -38,14 +38,22 @@ Your portfolio site uses Cloudflare Access with One-Time PIN (OTP) authenticatio
 
 1. **In Cloudflare Zero Trust Dashboard:**
    - Go to **Zero Trust** → **Settings** → **Authentication**
-   - Click **Add identity provider**
+   - Under **Login methods**, select **Add new**
    - Select **One-time PIN**
 
 2. **Configure One-Time PIN:**
-   - **Provider name**: "iCloud PIN Auth"
+   - **Provider name**: "Portfolio OTP Auth"
    - **Email domain**: `rcormier.dev`
-   - **PIN length**: 6 digits
-   - **PIN expiration**: 10 minutes
+   - **PIN length**: 6 digits (default)
+   - **PIN expiration**: 10 minutes (default)
+
+:::tip **Important**: If your organization uses a third-party email scanning service (for example, Mimecast or Barracuda), add `noreply@notify.cloudflare.com` to the email scanning allowlist to ensure OTP emails are delivered. :::
+
+3. **How OTP Works:**
+   - Users enter their email address on the Access login page
+   - If the email is allowed by an Access policy, they receive a 6-digit PIN
+   - The PIN expires after 10 minutes for security
+   - Users paste the PIN to gain access to protected content
 
 ## Step 3: Create Zero Trust Application
 
@@ -110,6 +118,32 @@ If you prefer to be more specific:
 - Check email for PIN code
 - Enter PIN to access
 
+## Step 6: OTP Login Process
+
+### How Users Log In with OTP
+
+1. **Access the Protected Application:**
+   - Users navigate to any protected route (e.g., `/protected`, `/healthbridge-analysis`)
+   - They are automatically redirected to the Cloudflare Access login page
+
+2. **Request One-Time PIN:**
+   - On the Access login page, users enter their email address
+   - Click **"Send me a code"** to request the OTP
+   - If the email is allowed by an Access policy, they receive a PIN in their inbox
+
+3. **Enter PIN and Sign In:**
+   - Users paste the 6-digit PIN into the Access login page
+   - Click **"Sign in"** to authenticate
+   - If valid, they are redirected to the protected application
+   - If invalid, they see "That account does not have access"
+
+### Important OTP Notes
+
+- **PIN Expiration**: Each PIN expires after 10 minutes for security
+- **Email Delivery**: Blocked users won't receive emails (for security)
+- **Audit Logging**: Access only logs authentication attempts after PIN submission
+- **No Email Received**: If no email arrives, check spam folders and email allowlists
+
 ## Policy Order is Critical
 
 According to Cloudflare documentation, policies are evaluated in this order:
@@ -144,6 +178,18 @@ Make sure your policies are in this exact order:
 2. Test your main site - should work
 3. Re-enable and create Bypass policy first
 4. Check policy order - Bypass must come before Allow
+
+### OTP Emails Not Delivered
+**Problem**: Users don't receive OTP emails
+**Solution**:
+1. **Check spam/junk folders** - OTP emails might be filtered
+2. **Email scanning services**: Add `noreply@notify.cloudflare.com` to allowlists for:
+   - Mimecast
+   - Barracuda
+   - Proofpoint
+   - Other enterprise email security services
+3. **Domain reputation**: Ensure `rcormier.dev` has good email reputation
+4. **Email provider**: Verify iCloud can receive emails from Cloudflare
 
 ### Authentication Loop
 **Problem**: Users get stuck in authentication loop
@@ -192,3 +238,19 @@ Your TanStack Portfolio application is configured to work with Cloudflare Access
 - **User Information**: Retrieved from Cloudflare Access cookies
 
 The authentication flow is handled entirely by Cloudflare Access, providing enterprise-grade security for your protected content while keeping your portfolio publicly accessible.
+
+## Benefits of OTP Authentication
+
+### **For Your Portfolio Use Case**
+- **Simple Setup**: No complex identity provider integration required
+- **Guest Access**: Perfect for sharing protected content with external collaborators
+- **Email-Based**: Users only need their email address to authenticate
+- **Secure**: 10-minute PIN expiration provides strong security
+- **Audit Trail**: Complete logging of authentication attempts
+
+### **Future Expansion Options**
+You can simultaneously configure OTP login and other identity providers (like Okta, Google, or Microsoft 365) to allow users to select their preferred authentication method. This is useful if you later want to:
+- Add SSO for your organization
+- Integrate with existing identity systems
+- Provide multiple authentication options
+- Maintain OTP for guest access while adding enterprise SSO
