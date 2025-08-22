@@ -1,6 +1,6 @@
 # TanStack Portfolio
 
-A modern portfolio website built with React, TanStack Router, and Vite.
+A modern portfolio website built with React, TanStack Router, and Vite, featuring Cloudflare Access authentication and shadcn/ui components.
 
 ## Routing Setup
 
@@ -11,7 +11,7 @@ This application uses **normal routing** (not hash routing) for clean, SEO-frien
 
 ### Current Deployment
 
-- **Cloudflare Pages**: Native SPA routing support
+- **Cloudflare Pages**: Native SPA routing support with Cloudflare Access authentication
 - **Future**: Ready for potential SSR conversion
 
 ## Development
@@ -36,14 +36,17 @@ npm run preview
 
 ## 🚀 Features
 
+- **Cloudflare Access Authentication:**  
+  Secure One-Time PIN (OTP) authentication for protected content using Cloudflare Zero Trust.
+
 - **Project Navigation:**  
   Organize all your projects under a dedicated sidebar section with icons and quick access.
 
 - **Analytics & Insights:**  
-  Top-level analytics page and per-project analysis (e.g., HealthBridge Analysis, Projects Analysis).
+  Top-level analytics page and per-project analysis with interactive charts.
 
 - **HealthBridge Integration:**  
-  Sync and visualize health data from external sources, with dynamic charting and filtering.
+  Protected health data analysis with dynamic charting and filtering capabilities.
 
 - **Dynamic Filtering:**  
   Filter data by quick ranges (7, 14, 30 days, 3/6 months, all), custom date ranges, and more.
@@ -57,12 +60,22 @@ npm run preview
 - **Responsive Sidebar:**  
   Portfolio and Projects navigation with collapsible groups and icons.
 
-- **GitHub Pages Deployment:**  
-  Automated CI/CD workflow for static site deployment.
+- **Search Functionality:**  
+  Global search across all content with fuzzy matching and keyboard navigation.
+
+- **Table of Contents:**  
+  Automatic TOC generation for markdown content with smooth scrolling.
 
 ---
 
 ## ⚙️ Configuration
+
+### Authentication
+
+- **Cloudflare Access**: One-Time PIN (OTP) authentication for protected routes
+- **Protected Routes**: `/protected`, `/healthbridge-analysis`
+- **Public Routes**: All other portfolio pages
+- **Identity Provider**: Configured for `rcormier.dev` domain
 
 ### Sidebar Navigation
 
@@ -80,17 +93,28 @@ npm run preview
   - `/` — About
   - `/analytics` — Analytics & Insights
   - `/project-analysis` — Projects Analysis
-  - `/healthbridge-analysis` — HealthBridge Analysis
+  - `/healthbridge-analysis` — HealthBridge Analysis (Protected)
+  - `/protected` — Protected Content (Protected)
 
 ### Charting
 
-- HealthBridge uses [Mermaid](https://mermaid-js.github.io/mermaid/#/) for data visualization.
-- Chart colors and aggregation logic are configurable in code.
+- Uses [Recharts](https://recharts.org/) with shadcn/ui chart components for data visualization
+- Supports Bar, Line, Scatter, and other chart types
+- Responsive design with proper theming
+- Chart colors and aggregation logic are configurable in code
+
+### UI Components
+
+- **shadcn/ui**: Modern, accessible React components
+- **Tailwind CSS**: Utility-first CSS framework
+- **Radix UI**: Headless UI primitives
+- **Lucide React**: Beautiful, customizable icons
 
 ### Deployment
 
-- **GitHub Actions** workflow (`.github/workflows/deploy.yml`) automates build and deploy to GitHub Pages.
-- Uses Node.js 20, Vite, and [peaceiris/actions-gh-pages](https://github.com/peaceiris/actions-gh-pages).
+- **Cloudflare Pages** with Cloudflare Access integration
+- **GitHub Actions** workflow (`.github/workflows/deploy.yml`) automates build and deploy
+- Uses Node.js 20, Vite, and Cloudflare Pages deployment
 
 ---
 
@@ -120,13 +144,37 @@ npm run preview
 
 ```
 src/
-  components/      # Sidebar, layout, charts, etc.
-  pages/           # MarkdownPage, HealthBridge, analysis pages
-  router.tsx       # Route definitions
+  components/          # React components
+    ui/               # shadcn/ui components
+      chart.tsx       # Recharts integration
+      sidebar.tsx     # Responsive sidebar
+      button.tsx      # Button components
+      ...
+    AppSidebar.tsx    # Main navigation sidebar
+    Search.tsx        # Global search functionality
+    TableOfContents.tsx # Auto-generated TOC
+    ProtectedPage.tsx # Authentication wrapper
+    LoginPage.tsx     # Cloudflare Access login
+    ...
+  pages/              # Page components
+    MarkdownPage.tsx  # Markdown content renderer
+    HealthBridge.tsx  # Protected health analysis
+    NotFound.tsx      # 404 page
+  content/            # Markdown content files
+    about.md          # About page content
+    analytics.md      # Analytics content
+    ...
+  hooks/              # Custom React hooks
+    useAuth.ts        # Authentication state
+    use-mobile.tsx    # Mobile detection
+  utils/              # Utility functions
+    cloudflareAuth.ts # Cloudflare Access integration
+    searchIndex.ts    # Search functionality
+  router.tsx          # TanStack Router configuration
   ...
 .github/
   workflows/
-    deploy.yml     # GitHub Pages deployment workflow
+    deploy.yml        # Cloudflare Pages deployment workflow
 ```
 
 ---
@@ -138,17 +186,56 @@ src/
 - **Add analysis pages:**  
   Create new Markdown files and add corresponding routes.
 - **Change chart colors:**  
-  Edit theme variables in HealthBridge chart config.
+  Edit theme variables in chart components.
+- **Modify authentication:**  
+  Update Cloudflare Access policies in the dashboard.
+
+---
+
+## 🔐 Authentication Setup
+
+### Cloudflare Access Configuration
+
+1. **Enable Zero Trust** in Cloudflare dashboard
+2. **Create One-Time PIN identity provider** for your domain
+3. **Configure application policies**:
+   - Public Access (Bypass) for portfolio pages
+   - Protected Routes (Allow) for sensitive content
+4. **Set up email restrictions** for protected content
+
+See `CLOUDFLARE_ACCESS_QUICK_SETUP.md` for detailed configuration instructions.
 
 ---
 
 ## 📦 Dependencies
 
-- React
+### Core
+- React 19
 - TanStack Router
 - Vite
-- Mermaid
-- Lucide React (icons)
+- TypeScript
+
+### UI & Styling
+- shadcn/ui components
+- Tailwind CSS
+- Radix UI primitives
+- Lucide React icons
+
+### Charts & Data
+- Recharts (with shadcn/ui integration)
+- Fuse.js (fuzzy search)
+
+### Authentication
+- Cloudflare Access (Zero Trust)
+
+### Content
+- React Markdown
+- Gray Matter (frontmatter parsing)
+- Remark/Rehype plugins
+
+### Development
+- ESLint
+- TypeScript
 - GitHub Actions
 
 ---
