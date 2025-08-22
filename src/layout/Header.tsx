@@ -8,7 +8,7 @@ import { useAuth } from "../hooks/useAuth";
 
 const Header: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
 
   const handleLoginClick = () => setShowLogin(true);
   const handleCloseLogin = () => setShowLogin(false);
@@ -57,10 +57,11 @@ const Header: React.FC = () => {
               </div>
             ) : (
               <button
-                className="px-3 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition"
+                className="px-3 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition disabled:opacity-50"
                 onClick={handleLoginClick}
+                disabled={isLoading}
               >
-                Login
+                {isLoading ? 'Loading...' : 'Login'}
               </button>
             )}
           </div>
@@ -106,10 +107,11 @@ const Header: React.FC = () => {
               </div>
             ) : (
               <button
-                className="px-4 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition"
+                className="px-4 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition disabled:opacity-50"
                 onClick={handleLoginClick}
+                disabled={isLoading}
               >
-                Login
+                {isLoading ? 'Loading...' : 'Login'}
               </button>
             )}
           </div>

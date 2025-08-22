@@ -4,8 +4,9 @@ import {
   getUserInfo, 
   setUserInfo, 
   clearUserInfo, 
-  login as cloudflareLogin, 
-  logout as cloudflareLogout 
+  logout as cloudflareLogout,
+  initAuth,
+  handleOTPFlow
 } from '../utils/cloudflareAuth';
 
 export const useAuth = () => {
@@ -14,15 +15,24 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const checkAuth = () => {
-    const authenticated = checkIsAuthenticated();
-    const userInfo = getUserInfo();
-    
-    setIsAuthenticated(authenticated);
-    setUser(userInfo);
-    setIsLoading(false);
+    try {
+      const authenticated = checkIsAuthenticated();
+      const userInfo = getUserInfo();
+      
+      setIsAuthenticated(authenticated);
+      setUser(userInfo);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+      setIsAuthenticated(false);
+      setUser(null);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
+    // Initialize authentication state
+    initAuth();
     checkAuth();
   }, []);
 
@@ -32,27 +42,59 @@ export const useAuth = () => {
       checkAuth();
     };
 
+    // Listen for URL changes (e.g., returning from OTP flow)
+    const handleUrlChange = () => {
+      checkAuth();
+    };
+
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('popstate', handleUrlChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('popstate', handleUrlChange);
+    };
   }, []);
 
-  const login = () => {
-    cloudflareLogin();
+  const login = async () => {
+    try {
+      setIsLoading(true);
+      await handleOTPFlow();
+    } catch (error) {
+      console.error('Error during login:', error);
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
-    clearUserInfo(); // Use the imported function to clear user data
-    cloudflareLogout();
-    setUser(null);
-    setIsAuthenticated(false);
+    try {
+      clearUserInfo();
+      cloudflareLogout();
+      setUser(null);
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   // Update user info in both state and localStorage
   const updateUser = (userInfo: any) => {
-    setUser(userInfo);
-    if (userInfo) {
-      setUserInfo(userInfo); // Use the imported function to store user data
+    try {
+      setUser(userInfo);
+      if (userInfo) {
+        setUserInfo(userInfo);
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
     }
+  };
+
+  // Refresh authentication state
+  const refreshAuth = () => {
+    checkAuth();
   };
 
   return {
@@ -61,6 +103,7 @@ export const useAuth = () => {
     isLoading,
     login,
     logout,
-    updateUser
+    updateUser,
+    refreshAuth
   };
 };
