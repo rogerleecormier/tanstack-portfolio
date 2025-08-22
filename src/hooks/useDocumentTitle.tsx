@@ -36,7 +36,7 @@ export function useDocumentTitle({
 
     // Helper function to update or create meta tag
     const updateMetaTag = (selector: string, content: string, attribute: string = 'content') => {
-      let metaTag = document.querySelector(selector)
+      const metaTag = document.querySelector(selector)
       if (metaTag) {
         metaTag.setAttribute(attribute, content)
       } else {
@@ -59,7 +59,7 @@ export function useDocumentTitle({
 
     // Helper function to update or create link tag
     const updateLinkTag = (selector: string, href: string) => {
-      let linkTag = document.querySelector(selector) as HTMLLinkElement
+      const linkTag = document.querySelector(selector) as HTMLLinkElement
       if (linkTag) {
         linkTag.href = href
       } else {

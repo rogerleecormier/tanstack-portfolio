@@ -3,7 +3,7 @@ import type { SearchItem } from '../types/search'
 interface MarkdownFile {
   path: string
   content: string
-  frontmatter?: Record<string, any>
+  frontmatter?: Record<string, string | string[]>
 }
 
 // Function to extract text content from markdown
@@ -42,14 +42,14 @@ export const extractHeadingsFromMarkdown = (markdown: string): string[] => {
 }
 
 // Function to extract frontmatter
-export const extractFrontmatter = (markdown: string): Record<string, any> => {
+export const extractFrontmatter = (markdown: string): Record<string, string | string[]> => {
   const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---/
   const match = markdown.match(frontmatterRegex)
   
   if (!match) return {}
   
   const frontmatterText = match[1]
-  const frontmatter: Record<string, any> = {}
+  const frontmatter: Record<string, string | string[]> = {}
   
   frontmatterText.split('\n').forEach(line => {
     const colonIndex = line.indexOf(':')
@@ -76,16 +76,16 @@ export const convertMarkdownToSearchItems = (markdownFiles: MarkdownFile[]): Sea
     const filename = file.path.split('/').pop()?.replace('.md', '') || `page-${index}`
     
     // Use frontmatter title if available, otherwise use capitalized filename
-    const title = frontmatter.title || filename.charAt(0).toUpperCase() + filename.slice(1)
+    const title = (Array.isArray(frontmatter.title) ? frontmatter.title[0] : frontmatter.title) || filename.charAt(0).toUpperCase() + filename.slice(1)
     
     // Use frontmatter description if available
-    const description = frontmatter.description || ''
+    const description = (Array.isArray(frontmatter.description) ? frontmatter.description[0] : frontmatter.description) || ''
     
     // Create URL from filename
     const url = `/${filename}`
     
     // Extract section from frontmatter or use filename
-    const section = frontmatter.section || filename.charAt(0).toUpperCase() + filename.slice(1)
+    const section = (Array.isArray(frontmatter.section) ? frontmatter.section[0] : frontmatter.section) || filename.charAt(0).toUpperCase() + filename.slice(1)
     
     return {
       id: `page-${filename}`,
@@ -95,7 +95,7 @@ export const convertMarkdownToSearchItems = (markdownFiles: MarkdownFile[]): Sea
       url,
       section,
       headings,
-      tags: frontmatter.tags || []
+      tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : (frontmatter.tags ? [frontmatter.tags] : [])
     }
   })
 }

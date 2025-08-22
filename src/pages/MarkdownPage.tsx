@@ -38,7 +38,12 @@ function parseChartData(code: string) {
   }
 }
 
-function getSeriesKeys(data: any[]) {
+interface ChartDataPoint {
+  date: string;
+  [key: string]: string | number;
+}
+
+function getSeriesKeys(data: ChartDataPoint[]) {
   if (!Array.isArray(data) || data.length === 0) return [];
   // Exclude 'date' key
   return Object.keys(data[0]).filter((key) => key !== "date");
@@ -287,7 +292,7 @@ export default function MarkdownPage({ file }: { file: string }) {
                     return <div className="text-red-500">Invalid chart data</div>;
                   }
                   // Group by series (optional). If no 'series', treat as single series named 'Data'.
-                  const groups: Record<string, any[]> = {};
+                  const groups: Record<string, ChartDataPoint[]> = {};
                   for (const d of chartData) {
                     const key = d.series ?? "Data";
                     if (!groups[key]) groups[key] = [];
@@ -306,8 +311,13 @@ export default function MarkdownPage({ file }: { file: string }) {
                     seriesNames.map((name) => [name, groups[name].reduce((acc, d) => acc + (Number(d.n) || 0), 0)])
                   );
 
+                  interface TrendDataPoint {
+                    x: number;
+                    y: number;
+                  }
+
                   // Simple linear regression for each series (least squares)
-                  function getTrendLine(data: any[]) {
+                  function getTrendLine(data: TrendDataPoint[]) {
                     const n = data.length;
                     if (n < 2) return [];
                     const sumX = data.reduce((acc, d) => acc + d.x, 0);
@@ -376,7 +386,7 @@ export default function MarkdownPage({ file }: { file: string }) {
                             return total ? `${value} — Mean Complexity (n=${total})` : `${value} — Mean Complexity`;
                           }} />
                           <RechartsTooltip
-                            formatter={(value: any, name: string) => {
+                            formatter={(value: number, name: string) => {
                               if (name === "x") return formatCurrency(value);
                               if (name === "y") return [`${formatComplexity(value)}`, "Mean Complexity"];
                               if (name === "n") return formatCount(value);
@@ -492,7 +502,7 @@ export default function MarkdownPage({ file }: { file: string }) {
                           </YAxis>
                           <Legend />
                           <RechartsTooltip
-                            formatter={(value: any, name: string, props: any) => {
+                            formatter={(value: number, name: string, props: { payload?: Record<string, unknown> }) => {
                               // If per-series count is provided (e.g., Agile_n), show alongside value
                               const perSeriesN = props?.payload?.[`${name}_n`];
                               const globalN = props?.payload?.n;
@@ -559,7 +569,7 @@ export default function MarkdownPage({ file }: { file: string }) {
                           </YAxis>
                           <Legend />
                           <RechartsTooltip
-                            formatter={(value: any, name: string, props: any) => {
+                            formatter={(value: number, name: string, props: { payload?: Record<string, unknown> }) => {
                               // If per-series count is provided (e.g., Agile_n), show alongside value
                               const perSeriesN = props?.payload?.[`${name}_n`];
                               const globalN = props?.payload?.n;

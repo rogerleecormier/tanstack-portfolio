@@ -6,7 +6,8 @@ import {
   clearUserInfo, 
   logout as cloudflareLogout,
   initAuth,
-  handleOTPFlow
+  handleOTPFlow,
+  CloudflareUser
 } from '../utils/cloudflareAuth';
 
 export const useAuth = () => {
@@ -78,7 +79,7 @@ export const useAuth = () => {
   };
 
   // Update user info in both state and localStorage
-  const updateUser = (userInfo: any) => {
+  const updateUser = (userInfo: CloudflareUser | null) => {
     try {
       setUser(userInfo);
       if (userInfo) {
