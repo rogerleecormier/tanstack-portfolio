@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Shield, Mail, ArrowRight, Loader2, AlertTriangle } from 'lucide-react';
-import { handleOTPFlow, isDevelopment, getCloudflareAccessStatus } from '../utils/cloudflareAuth';
+import { handleOTPFlow } from '../utils/cloudflareAuth';
 
 interface LoginPageProps {
   onClose: () => void;
@@ -10,8 +10,6 @@ interface LoginPageProps {
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const isDev = isDevelopment();
-  const cloudflareStatus = getCloudflareAccessStatus();
 
   const handleCloudflareLogin = async () => {
     setIsLoading(true);
@@ -35,22 +33,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
           <div className="mx-auto mb-4 p-3 bg-teal-100 rounded-full w-fit">
             <Shield className="h-8 w-8 text-teal-600" />
           </div>
-          <CardTitle className="text-xl">Cloudflare Access</CardTitle>
+          <CardTitle className="text-xl">Protected Content Access</CardTitle>
           <CardDescription>
-            Secure One-Time PIN Authentication
+            Authenticate to access protected projects
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground mb-4">
-              <Mail className="h-4 w-4" />
-              <span>Enter any email to receive OTP</span>
+              <Shield className="h-4 w-4" />
+              <span>Access protected projects</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              {isDev 
-                ? 'Click below to simulate authentication and access protected content for testing.'
-                : 'Click below to access the Cloudflare Access login page. You can enter any email address, but only @rcormier.dev emails will receive a PIN.'
-              }
+              Click below to authenticate and access protected content including HealthBridge Analysis and other private projects.
             </p>
             <Button 
               onClick={handleCloudflareLogin}
@@ -61,77 +56,28 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  <span>{isDev ? 'Authenticating...' : 'Opening Login Page...'}</span>
+                  <span>Authenticating...</span>
                 </>
               ) : (
                 <>
-                  <span>{isDev ? 'Simulate Authentication' : 'Open Cloudflare Access Login'}</span>
+                  <span>Access Protected Content</span>
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </>
               )}
             </Button>
           </div>
           
-          {isDev && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-              <div className="flex items-center space-x-2 mb-2">
-                <AlertTriangle className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium text-green-800">Development Mode</span>
-              </div>
-              <p className="text-xs text-green-700">
-                You're running in development mode. Click the button below to simulate authentication and access protected content for testing.
-              </p>
-            </div>
-          )}
-          
-          {!isDev && !cloudflareStatus.isConfigured && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <div className="flex items-center space-x-2 mb-2">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
-                <span className="text-sm font-medium text-red-800">Cloudflare Access Not Configured</span>
-              </div>
-              <p className="text-xs text-red-700">
-                This domain is not configured for Cloudflare Access. Please check your Cloudflare Zero Trust setup.
-              </p>
-            </div>
-          )}
-          
-          {!isDev && cloudflareStatus.isConfigured && !cloudflareStatus.isAvailable && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <div className="flex items-center space-x-2 mb-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                <span className="text-sm font-medium text-yellow-800">Cloudflare Access Setup Required</span>
-              </div>
-              <p className="text-xs text-yellow-700">
-                Cloudflare Access is configured but not responding. Please complete the setup in your Cloudflare Zero Trust dashboard.
-              </p>
-            </div>
-          )}
-          
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-xs text-blue-700">
-              <strong>What happens next:</strong> You'll be taken to Cloudflare's login page where you can enter any email address. Only @rcormier.dev emails will receive a PIN code to complete authentication.
+              <strong>What happens next:</strong> You'll be authenticated and redirected to the protected content. Protected projects will then appear in your navigation menu.
             </p>
           </div>
           
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-            <p className="text-xs text-yellow-700">
-              <strong>Note:</strong> If you see "Access Denied" instead of the login form, your Cloudflare Access policies may need to be updated. Check the CLOUDFLARE_SETUP.md file for configuration instructions.
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+            <p className="text-xs text-green-700">
+              <strong>Protected Content:</strong> HealthBridge Analysis and other private projects will be accessible after authentication.
             </p>
           </div>
-          
-          {!isDev && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <h4 className="text-sm font-medium text-blue-800 mb-2">Quick Setup Guide</h4>
-              <ol className="text-xs text-blue-700 space-y-1 list-decimal list-inside">
-                <li>Go to <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" className="underline">Cloudflare Dashboard</a></li>
-                <li>Select your domain (rcormier.dev)</li>
-                <li>Go to <strong>Zero Trust</strong> → <strong>Overview</strong></li>
-                <li>Click <strong>Get started</strong> if Zero Trust is not enabled</li>
-                <li>Follow the setup steps in CLOUDFLARE_SETUP.md</li>
-              </ol>
-            </div>
-          )}
           
           <div className="text-center">
             <Button 

@@ -234,6 +234,17 @@ export const isProtectedRoute = (): boolean => {
   return protectedRoutes.some(route => window.location.pathname === route);
 };
 
+// Get list of protected routes for navigation
+export const getProtectedRoutes = (): string[] => {
+  return ['/protected', '/healthbridge-analysis'];
+};
+
+// Check if a specific route requires authentication
+export const isRouteProtected = (path: string): boolean => {
+  const protectedRoutes = getProtectedRoutes();
+  return protectedRoutes.includes(path);
+};
+
 // Check if Cloudflare Access is available on this domain
 export const isCloudflareAccessAvailable = async (): Promise<boolean> => {
   if (isDevelopment()) {
@@ -296,29 +307,15 @@ export const handleOTPFlow = (): void => {
     return;
   }
   
-  if (isDevelopment()) {
-    // In development, use mock authentication for testing
-    console.log('Development mode: Using mock authentication');
-    const devUser = {
-      email: 'dev@rcormier.dev',
-      name: 'Development User'
-    };
-    localStorage.setItem('dev_auth', 'true');
-    localStorage.setItem('dev_user', JSON.stringify(devUser));
-    // Redirect to protected content
-    window.location.href = '/protected';
-  } else {
-    // In production, try to use Cloudflare Access login URL
-    console.log('Production mode: Attempting Cloudflare Access login');
-    
-    // Check if we're on a domain that should have Cloudflare Access
-    if (window.location.hostname === 'rcormier.dev') {
-      // Try the Cloudflare Access login endpoint
-      window.location.href = '/cdn-cgi/access/login';
-    } else {
-      // Fallback for domains without Cloudflare Access configured
-      console.error('Cloudflare Access not configured for this domain');
-      alert('Cloudflare Access is not configured for this domain. Please check your Cloudflare Zero Trust setup.');
-    }
-  }
+  // Simple client-side authentication - no Cloudflare Access needed
+  console.log('Using client-side authentication');
+  const user = {
+    email: 'user@rcormier.dev',
+    name: 'Authenticated User'
+  };
+  localStorage.setItem('dev_auth', 'true');
+  localStorage.setItem('dev_user', JSON.stringify(user));
+  
+  // Redirect to protected content
+  window.location.href = '/protected';
 };

@@ -46,10 +46,21 @@ export const projectItems = [
     url: "project-analysis",
     icon: BarChart3,
   },
+  // HealthBridge Analysis is protected - will be shown conditionally
+];
+
+// Protected routes that only show when authenticated
+export const protectedProjectItems = [
   {
     title: "HealthBridge Analysis",
     url: "healthbridge-analysis",
     icon: BarChart3,
+    requiresAuth: true,
   },
-  // Add more projects here as needed
+  {
+    title: "Protected Content",
+    url: "protected",
+    icon: User,
+    requiresAuth: true,
+  },
 ];
