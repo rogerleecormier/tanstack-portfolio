@@ -234,6 +234,56 @@ export const isProtectedRoute = (): boolean => {
   return protectedRoutes.some(route => window.location.pathname === route);
 };
 
+// Check if Cloudflare Access is available on this domain
+export const isCloudflareAccessAvailable = async (): Promise<boolean> => {
+  if (isDevelopment()) {
+    return false; // Always false in development
+  }
+  
+  try {
+    // Try to fetch the Cloudflare Access login endpoint
+    const response = await fetch('/cdn-cgi/access/login', { 
+      method: 'HEAD',
+      mode: 'no-cors' // Avoid CORS issues
+    });
+    return true;
+  } catch (error) {
+    console.log('Cloudflare Access not available:', error);
+    return false;
+  }
+};
+
+// Get Cloudflare Access status for the current domain
+export const getCloudflareAccessStatus = (): {
+  isAvailable: boolean;
+  isConfigured: boolean;
+  message: string;
+} => {
+  const hostname = window.location.hostname;
+  
+  if (isDevelopment()) {
+    return {
+      isAvailable: false,
+      isConfigured: false,
+      message: 'Development mode - using mock authentication'
+    };
+  }
+  
+  if (hostname === 'rcormier.dev') {
+    return {
+      isAvailable: false, // Will be checked dynamically
+      isConfigured: true,
+      message: 'Domain configured for Cloudflare Access but endpoint not responding'
+    };
+  }
+  
+  return {
+    isAvailable: false,
+    isConfigured: false,
+    message: 'Domain not configured for Cloudflare Access'
+  };
+};
+
 // Handle OTP authentication flow
 export const handleOTPFlow = (): void => {
   console.log('Starting OTP flow...');
@@ -258,8 +308,17 @@ export const handleOTPFlow = (): void => {
     // Redirect to protected content
     window.location.href = '/protected';
   } else {
-    // In production, use the direct Cloudflare Access login URL
-    console.log('Production mode: Using Cloudflare Access login URL');
-    window.location.href = '/cdn-cgi/access/login';
+    // In production, try to use Cloudflare Access login URL
+    console.log('Production mode: Attempting Cloudflare Access login');
+    
+    // Check if we're on a domain that should have Cloudflare Access
+    if (window.location.hostname === 'rcormier.dev') {
+      // Try the Cloudflare Access login endpoint
+      window.location.href = '/cdn-cgi/access/login';
+    } else {
+      // Fallback for domains without Cloudflare Access configured
+      console.error('Cloudflare Access not configured for this domain');
+      alert('Cloudflare Access is not configured for this domain. Please check your Cloudflare Zero Trust setup.');
+    }
   }
 };

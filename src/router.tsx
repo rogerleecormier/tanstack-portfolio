@@ -9,6 +9,7 @@ import MarkdownPage from './pages/MarkdownPage'
 import NotFound from './pages/NotFound'
 import { HealthBridge } from './pages/HealthBridge'
 import { ProtectedPage } from './components/ProtectedPage'
+import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 
 console.count('[router] module evaluated');
 
@@ -90,6 +91,13 @@ const protectedRoute = createRoute({
   component: ProtectedPage,
 })
 
+// Cloudflare status checker route
+const cloudflareStatusRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'cloudflare-status',
+  component: CloudflareStatusChecker,
+})
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -101,7 +109,8 @@ const routeTree = rootRoute.addChildren([
   analyticsRoute,
   projectAnalysisRoute,
   healthBridgeAnalysisRoute,
-  protectedRoute, // ⬅️ Add this line
+  protectedRoute,
+  cloudflareStatusRoute,
 ])
 
 // Create router instance
