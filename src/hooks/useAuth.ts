@@ -41,9 +41,18 @@ export const useAuth = () => {
   };
 
   const logout = () => {
+    clearUserInfo(); // Use the imported function to clear user data
     cloudflareLogout();
     setUser(null);
     setIsAuthenticated(false);
+  };
+
+  // Update user info in both state and localStorage
+  const updateUser = (userInfo: any) => {
+    setUser(userInfo);
+    if (userInfo) {
+      setUserInfo(userInfo); // Use the imported function to store user data
+    }
   };
 
   return {
@@ -51,6 +60,7 @@ export const useAuth = () => {
     isAuthenticated,
     isLoading,
     login,
-    logout
+    logout,
+    updateUser
   };
 };
