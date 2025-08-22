@@ -40,7 +40,11 @@ function parseChartData(code: string) {
 
 interface ChartDataPoint {
   date: string;
-  [key: string]: string | number;
+  x?: number;
+  y?: number;
+  series?: string;
+  n?: number;
+  [key: string]: string | number | undefined;
 }
 
 function getSeriesKeys(data: ChartDataPoint[]) {
@@ -311,24 +315,19 @@ export default function MarkdownPage({ file }: { file: string }) {
                     seriesNames.map((name) => [name, groups[name].reduce((acc, d) => acc + (Number(d.n) || 0), 0)])
                   );
 
-                  interface TrendDataPoint {
-                    x: number;
-                    y: number;
-                  }
-
                   // Simple linear regression for each series (least squares)
-                  function getTrendLine(data: TrendDataPoint[]) {
+                  function getTrendLine(data: ChartDataPoint[]) {
                     const n = data.length;
                     if (n < 2) return [];
-                    const sumX = data.reduce((acc, d) => acc + d.x, 0);
-                    const sumY = data.reduce((acc, d) => acc + d.y, 0);
-                    const sumXY = data.reduce((acc, d) => acc + d.x * d.y, 0);
-                    const sumXX = data.reduce((acc, d) => acc + d.x * d.x, 0);
+                    const sumX = data.reduce((acc, d) => acc + (d.x || 0), 0);
+                    const sumY = data.reduce((acc, d) => acc + (d.y || 0), 0);
+                    const sumXY = data.reduce((acc, d) => acc + (d.x || 0) * (d.y || 0), 0);
+                    const sumXX = data.reduce((acc, d) => acc + (d.x || 0) * (d.x || 0), 0);
                     const meanX = sumX / n;
                     const meanY = sumY / n;
                     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
                     const intercept = meanY - slope * meanX;
-                    const xVals = data.map(d => d.x);
+                    const xVals = data.map(d => d.x || 0);
                     const xStart = Math.min(...xVals);
                     const xEnd = Math.max(...xVals);
                     return [
