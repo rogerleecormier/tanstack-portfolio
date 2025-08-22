@@ -203,7 +203,7 @@ src/
    - Protected Routes (Allow) for sensitive content
 4. **Set up email restrictions** for protected content
 
-See `CLOUDFLARE_ACCESS_QUICK_SETUP.md` for detailed configuration instructions.
+See `CLOUDFLARE_SETUP.md` for detailed configuration instructions.
 
 ---
 
