@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Shield, Mail, ArrowRight, Loader2, AlertTriangle } from 'lucide-react';
+import { Shield, ArrowRight, Loader2 } from 'lucide-react';
 import { handleOTPFlow } from '../utils/cloudflareAuth';
 
 interface LoginPageProps {
