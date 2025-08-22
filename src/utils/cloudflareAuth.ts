@@ -242,7 +242,7 @@ export const isCloudflareAccessAvailable = async (): Promise<boolean> => {
   
   try {
     // Try to fetch the Cloudflare Access login endpoint
-    const response = await fetch('/cdn-cgi/access/login', { 
+    await fetch('/cdn-cgi/access/login', { 
       method: 'HEAD',
       mode: 'no-cors' // Avoid CORS issues
     });
