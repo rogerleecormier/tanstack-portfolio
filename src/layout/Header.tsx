@@ -92,19 +92,13 @@ const Header: React.FC = () => {
               <Search />
             </div>
             {isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 text-white text-sm">
-                  <User className="h-4 w-4" />
-                  <span>{user?.email}</span>
-                </div>
-                <button
-                  className="px-4 py-2 bg-red-600 text-white font-semibold rounded shadow hover:bg-red-700 transition flex items-center gap-2"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </button>
-              </div>
+              <button
+                className="px-4 py-2 bg-red-600 text-white font-semibold rounded shadow hover:bg-red-700 transition flex items-center gap-2"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
             ) : (
               <button
                 className="px-4 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition disabled:opacity-50"
@@ -119,7 +113,15 @@ const Header: React.FC = () => {
 
         {/* Breadcrumbs below header on desktop */}
         <div className="hidden lg:block px-6">
-          <Breadcrumbs />
+          <div className="flex items-center justify-between">
+            <Breadcrumbs />
+            {isAuthenticated && (
+              <div className="flex items-center gap-2 text-white text-sm">
+                <User className="h-4 w-4" />
+                <span className="text-xs">{user?.email}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       {/* Login modal */}
