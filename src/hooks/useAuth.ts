@@ -92,13 +92,20 @@ const productionAuth = {
         return user;
       }
       
-      // Check for stored user data
+      // Check for stored user data (but validate it's not the fallback)
       const storedUser = localStorage.getItem('cf_user');
       if (storedUser) {
-        return JSON.parse(storedUser);
+        const user = JSON.parse(storedUser);
+        // Don't return fallback users, force re-detection
+        if (user.email !== 'authenticated@rcormier.dev') {
+          return user;
+        }
       }
       
-      // Try to get user from Cloudflare Access cookies
+      // Try to get user info from Cloudflare Access identity endpoint
+      productionAuth.fetchUserFromIdentityEndpoint();
+      
+      // Try to get user from Cloudflare Access JWT token
       const authCookie = document.cookie
         .split('; ')
         .find(row => row.startsWith('CF_Authorization='));
@@ -107,47 +114,76 @@ const productionAuth = {
         try {
           const token = authCookie.split('=')[1];
           const payload = JSON.parse(atob(token.split('.')[1]));
-          const user = {
-            email: payload.email,
-            name: payload.name || 'Authenticated User',
-            sub: payload.sub
-          };
-          localStorage.setItem('cf_user', JSON.stringify(user));
-          return user;
+          if (payload.email) {
+            const user = {
+              email: payload.email,
+              name: payload.name || payload.given_name || payload.family_name || 'Authenticated User',
+              sub: payload.sub
+            };
+            localStorage.setItem('cf_user', JSON.stringify(user));
+            return user;
+          }
         } catch (error) {
           console.error('Error decoding JWT token:', error);
         }
       }
       
-      // Check for email cookie
-      const emailCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('CF_Access_Email='));
+      // Check for various email cookies
+      const emailCookiePatterns = [
+        'CF_Access_Email=',
+        'CF_Access_User=', 
+        'CF_Access_Identity=',
+        'CF_Authorization_Email='
+      ];
       
-      if (emailCookie) {
-        const email = emailCookie.split('=')[1];
-        const user = {
-          email: decodeURIComponent(email),
-          name: 'Authenticated User'
-        };
-        localStorage.setItem('cf_user', JSON.stringify(user));
-        return user;
-      }
-      
-      // If we're on a protected route and have any auth indicators, create a default user
-      if (window.location.pathname === '/protected' || window.location.pathname === '/healthbridge-analysis') {
-        const user = {
-          email: 'authenticated@rcormier.dev',
-          name: 'Authenticated User'
-        };
-        localStorage.setItem('cf_user', JSON.stringify(user));
-        return user;
+      for (const pattern of emailCookiePatterns) {
+        const emailCookie = document.cookie
+          .split('; ')
+          .find(row => row.startsWith(pattern));
+        
+        if (emailCookie) {
+          const email = emailCookie.split('=')[1];
+          if (email && email !== '') {
+            const user = {
+              email: decodeURIComponent(email),
+              name: 'Authenticated User'
+            };
+            localStorage.setItem('cf_user', JSON.stringify(user));
+            return user;
+          }
+        }
       }
       
       return null;
     } catch (error) {
       console.error('Error getting production user info:', error);
       return null;
+    }
+  },
+
+  fetchUserFromIdentityEndpoint: async (): Promise<void> => {
+    try {
+      const response = await fetch('/cdn-cgi/access/get-identity', {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const identity = await response.json();
+        if (identity.email) {
+          const user = {
+            email: identity.email,
+            name: identity.name || identity.given_name || identity.family_name || 'Authenticated User',
+            sub: identity.sub || identity.user_uuid
+          };
+          localStorage.setItem('cf_user', JSON.stringify(user));
+        }
+      }
+    } catch (error) {
+      // Silent fail - this is a fallback method
+      console.debug('Could not fetch from identity endpoint:', error);
     }
   },
 
@@ -167,6 +203,11 @@ const productionAuth = {
     
     // Redirect to Cloudflare Access logout
     window.location.href = environment.cloudflareAccess.logoutUrl;
+  },
+
+  clearCachedUser: (): void => {
+    localStorage.removeItem('cf_user');
+    localStorage.removeItem('cf_access_token');
   }
 };
 

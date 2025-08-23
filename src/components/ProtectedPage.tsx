@@ -74,6 +74,18 @@ export const ProtectedPage: React.FC = () => {
                     <div><strong>Path:</strong> {window.location.pathname}</div>
                     <div><strong>Search:</strong> {window.location.search || 'None'}</div>
                   </div>
+                  <Button
+                    onClick={() => {
+                      localStorage.removeItem('cf_user');
+                      localStorage.removeItem('cf_access_token');
+                      window.location.reload();
+                    }}
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 text-amber-700 border-amber-300 hover:bg-amber-100"
+                  >
+                    Clear Cached Data & Reload
+                  </Button>
                 </div>
               )}
               
@@ -149,6 +161,31 @@ export const ProtectedPage: React.FC = () => {
               }
             </P>
           </div>
+          
+          {/* Show refresh button if user email is the fallback */}
+          {user?.email === 'authenticated@rcormier.dev' && isProduction && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <Info className="h-4 w-4 text-amber-600" />
+                <span className="font-semibold text-amber-800">Email Detection Issue</span>
+              </div>
+              <P className="text-sm text-amber-700 mb-3">
+                Your actual email wasn't detected from Cloudflare Access. This is likely a caching issue.
+              </P>
+              <Button
+                onClick={() => {
+                  localStorage.removeItem('cf_user');
+                  localStorage.removeItem('cf_access_token');
+                  window.location.reload();
+                }}
+                variant="outline"
+                size="sm"
+                className="text-amber-700 border-amber-300 hover:bg-amber-100"
+              >
+                Refresh User Data
+              </Button>
+            </div>
+          )}
           
           <div className="flex justify-center pt-2">
             <Button 
