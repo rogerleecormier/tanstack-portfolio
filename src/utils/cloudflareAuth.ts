@@ -190,10 +190,9 @@ export const login = (): void => {
     console.log('Development mode: Redirecting to protected route for simulated authentication');
     window.location.href = '/protected';
   } else {
-    // In production, use the correct Cloudflare Access login URL
-    console.log('Production mode: Redirecting to Cloudflare Access login');
-    const loginUrl = `https://rcormier.cloudflareaccess.com/cdn-cgi/access/login/rcormier.dev?redirect_url=${encodeURIComponent('/protected')}`;
-    window.location.href = loginUrl;
+    // In production, redirect to protected page and let Cloudflare Access handle the login
+    console.log('Production mode: Redirecting to protected route - Cloudflare Access will intercept');
+    window.location.href = '/protected';
   }
 };
 

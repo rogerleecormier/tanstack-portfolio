@@ -2,12 +2,12 @@
 
 ## Problem Description
 
-The login button was pointing to a Cloudflare Access endpoint that was returning a 404 error:
+The login button was pointing to an incorrect Cloudflare Access endpoint that was returning a 404 error:
 ```
 https://rcormier.dev/cdn-cgi/access/login?redirect_url=%2Fprotected
 ```
 
-This suggested that Cloudflare Access was not properly configured on the domain, or the endpoint path was incorrect.
+Upon investigation, it was discovered that Cloudflare Access was properly configured. Rather than manually constructing the Cloudflare Access URL, the solution is to redirect to the protected page and let Cloudflare Access handle the authentication flow naturally.
 
 ## Solution Implemented
 
@@ -49,9 +49,9 @@ I've implemented a simplified authentication system that handles both developmen
    - Bypasses all production authentication checks
 
 2. **Production Mode** (rcormier.dev)
-   - Cloudflare Access OTP authentication
-   - Uses `/cdn-cgi/access/login` endpoint
-   - Handles SSO and OTP flows
+   - Cloudflare Access authentication
+   - Redirects to `/protected` and lets Cloudflare Access handle the login flow
+   - Supports Google SSO and OTP email authentication
 
 ## How It Works
 
@@ -63,9 +63,10 @@ I've implemented a simplified authentication system that handles both developmen
 
 ### Production Mode
 1. **Environment Detection**: Detects production domain (rcormier.dev)
-2. **Cloudflare Access**: Redirects to Cloudflare Access login
-3. **OTP Authentication**: Users receive PIN codes via email
-4. **Protected Access**: Authenticated users access protected content
+2. **Natural Redirect**: Redirects to `/protected` page
+3. **Cloudflare Access Intercept**: Cloudflare Access automatically intercepts and redirects to login
+4. **Multiple Auth Options**: Google SSO or OTP email authentication
+5. **Protected Access**: After authentication, users are redirected back to protected content
 
 ## Benefits
 
