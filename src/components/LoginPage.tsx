@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Shield, ArrowRight, Loader2 } from 'lucide-react';
-import { login } from '../utils/cloudflareAuth';
+import { Shield, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { login, isCloudflareAccessAvailable } from '../utils/cloudflareAuth';
+import { SimpleAuthFallback } from './SimpleAuthFallback';
 
 interface LoginPageProps {
   onClose: () => void;
@@ -10,6 +11,23 @@ interface LoginPageProps {
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [cloudflareAvailable, setCloudflareAvailable] = useState<boolean | null>(null);
+  const [showFallback, setShowFallback] = useState(false);
+
+  // Check Cloudflare Access availability when component mounts
+  React.useEffect(() => {
+    const checkAvailability = async () => {
+      try {
+        const available = await isCloudflareAccessAvailable();
+        setCloudflareAvailable(available);
+      } catch (error) {
+        console.error('Error checking Cloudflare Access availability:', error);
+        setCloudflareAvailable(false);
+      }
+    };
+    
+    checkAvailability();
+  }, []);
 
   const handleCloudflareLogin = async () => {
     setIsLoading(true);
@@ -24,13 +42,52 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
         login();
       } else {
         // Production: Use Cloudflare Access login with redirect
-        window.location.href = '/cdn-cgi/access/login?redirect_url=%2Fprotected';
+        login();
       }
     } catch (error) {
       console.error('Error initiating Cloudflare Access login:', error);
       setIsLoading(false);
     }
   };
+
+  const handleDirectProtectedAccess = () => {
+    // Fallback: directly navigate to protected route
+    // This will trigger Cloudflare Access if it's configured, or show an error if not
+    window.location.href = '/protected';
+  };
+
+  const handleFallbackAuth = () => {
+    setShowFallback(true);
+  };
+
+  const handleFallbackSuccess = (email: string) => {
+    // Store the authenticated user info
+    localStorage.setItem('fallback_auth', 'true');
+    localStorage.setItem('fallback_user', JSON.stringify({
+      email: email,
+      name: 'Authenticated User'
+    }));
+    
+    // Close modal and redirect to protected content
+    onClose();
+    window.location.href = '/protected';
+  };
+
+  const handleFallbackCancel = () => {
+    setShowFallback(false);
+  };
+
+  // Show fallback authentication if Cloudflare Access is not available
+  if (showFallback) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <SimpleAuthFallback 
+          onSuccess={handleFallbackSuccess}
+          onCancel={handleFallbackCancel}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -53,6 +110,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
             <p className="text-sm text-muted-foreground">
               Click below to authenticate and access protected content including HealthBridge Analysis and other private projects.
             </p>
+            
+            {/* Cloudflare Access Status */}
+            {cloudflareAvailable === false && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                <div className="flex items-center gap-2 text-yellow-700 mb-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <span className="text-sm font-medium">Cloudflare Access Not Available</span>
+                </div>
+                <p className="text-xs text-yellow-600">
+                  Cloudflare Access authentication is not configured on this domain. You may need to configure it in your Cloudflare dashboard.
+                </p>
+              </div>
+            )}
+
+            {/* Primary Login Button */}
             <Button 
               onClick={handleCloudflareLogin}
               disabled={isLoading}
@@ -71,6 +143,29 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
                 </>
               )}
             </Button>
+
+            {/* Fallback Options for when Cloudflare Access is not available */}
+            {cloudflareAvailable === false && (
+              <div className="space-y-2">
+                <Button 
+                  onClick={handleFallbackAuth}
+                  variant="outline"
+                  className="w-full border-yellow-300 text-yellow-700 hover:bg-yellow-50"
+                  size="lg"
+                >
+                  Use Alternative Authentication
+                </Button>
+                
+                <Button 
+                  onClick={handleDirectProtectedAccess}
+                  variant="ghost"
+                  className="w-full text-gray-600 hover:bg-gray-50"
+                  size="sm"
+                >
+                  Try Direct Access
+                </Button>
+              </div>
+            )}
           </div>
           
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">

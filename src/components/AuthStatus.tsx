@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Shield, User, UserCheck, UserX, Lock } from 'lucide-react';
+import { Shield, User, UserCheck, UserX } from 'lucide-react';
 import { Badge } from './ui/badge';
 
 export const AuthStatus: React.FC = () => {
