@@ -50,9 +50,6 @@ export const isAuthenticated = (): boolean => {
   // Check for stored user data
   const hasStoredUser = localStorage.getItem('cf_user') !== null;
   
-  // Check for fallback authentication
-  const hasFallbackAuth = localStorage.getItem('fallback_auth') === 'true';
-  
   // Check for access token in URL (returning from OTP flow)
   const urlParams = new URLSearchParams(window.location.search);
   const hasAccessToken = urlParams.get('access_token') !== null;
@@ -60,7 +57,7 @@ export const isAuthenticated = (): boolean => {
   // Check for Cloudflare Access identity endpoint response
   const hasAccessIdentity = document.cookie.includes('CF_Access_Identity');
   
-  return hasAuthCookie || hasStoredUser || hasAccessToken || hasAccessIdentity || hasFallbackAuth;
+  return hasAuthCookie || hasStoredUser || hasAccessToken || hasAccessIdentity;
 };
 
 // Get user information from Cloudflare Access
@@ -161,16 +158,6 @@ export const getUserInfo = (): CloudflareUser | null => {
       }
     }
     
-    // Check for fallback authentication
-    const fallbackUser = localStorage.getItem('fallback_user');
-    if (fallbackUser) {
-      try {
-        return JSON.parse(fallbackUser);
-      } catch (error) {
-        console.error('Error parsing fallback user data:', error);
-      }
-    }
-    
     return null;
   } catch (error) {
     console.error('Error getting user info:', error);
@@ -190,9 +177,6 @@ export const clearUserInfo = (): void => {
   // Clear development auth data
   localStorage.removeItem('dev_auth');
   localStorage.removeItem('dev_user');
-  // Clear fallback authentication data
-  localStorage.removeItem('fallback_auth');
-  localStorage.removeItem('fallback_user');
   // Clear any other auth-related data
   document.cookie = 'CF_Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   document.cookie = 'CF_Access_JWT=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -202,29 +186,14 @@ export const clearUserInfo = (): void => {
 // Redirect to Cloudflare Access login (OTP)
 export const login = (): void => {
   if (isDevelopment()) {
-    // In development, redirect to protected route to trigger OTP flow
-    console.log('Development mode: Redirecting to protected route');
+    // In development, redirect to protected route to trigger simulated authentication
+    console.log('Development mode: Redirecting to protected route for simulated authentication');
     window.location.href = '/protected';
   } else {
-    // In production, try Cloudflare Access login first
-    console.log('Production mode: Attempting Cloudflare Access login');
-    
-    // Try to redirect to Cloudflare Access login
+    // In production, use Cloudflare Access login
+    console.log('Production mode: Using Cloudflare Access login');
     const loginUrl = '/cdn-cgi/access/login?redirect_url=%2Fprotected';
-    
-    // Check if the endpoint exists before redirecting
-    fetch(loginUrl, { 
-      method: 'HEAD',
-      mode: 'no-cors' // Avoid CORS issues
-    }).then(() => {
-      // If we get here, the endpoint exists, so redirect
-      window.location.href = loginUrl;
-    }).catch((error) => {
-      console.error('Cloudflare Access login endpoint not available:', error);
-      // Fallback: redirect to protected route directly
-      // This will either work if Access is configured, or show an error
-      window.location.href = '/protected';
-    });
+    window.location.href = loginUrl;
   }
 };
 
@@ -334,93 +303,4 @@ export const getProtectedRoutes = (): string[] => {
 export const isRouteProtected = (path: string): boolean => {
   const protectedRoutes = getProtectedRoutes();
   return protectedRoutes.includes(path);
-};
-
-// Check if Cloudflare Access is available on this domain
-export const isCloudflareAccessAvailable = async (): Promise<boolean> => {
-  if (isDevelopment()) {
-    return false; // Always false in development
-  }
-  
-  try {
-    // Try to fetch the Cloudflare Access login endpoint
-    await fetch('/cdn-cgi/access/login', { 
-      method: 'HEAD',
-      mode: 'no-cors' // Avoid CORS issues
-    });
-    
-    // If we get a response (even an error), the endpoint exists
-    // We can't check the status code due to CORS, but if we get here, the endpoint exists
-    return true;
-  } catch (error) {
-    console.log('Cloudflare Access not available:', error);
-    
-    // Try alternative endpoints that might exist
-    try {
-      await fetch('/cdn-cgi/access/get-identity', { 
-        method: 'HEAD',
-        mode: 'no-cors'
-      });
-      return true;
-    } catch (identityError) {
-      console.log('Cloudflare Access identity endpoint also not available:', identityError);
-      return false;
-    }
-  }
-};
-
-// Get Cloudflare Access status for the current domain
-export const getCloudflareAccessStatus = (): {
-  isAvailable: boolean;
-  isConfigured: boolean;
-  message: string;
-} => {
-  const hostname = window.location.hostname;
-  
-  if (isDevelopment()) {
-    return {
-      isAvailable: false,
-      isConfigured: false,
-      message: 'Development mode - using mock authentication'
-    };
-  }
-  
-  if (hostname === 'rcormier.dev') {
-    return {
-      isAvailable: false, // Will be checked dynamically
-      isConfigured: true,
-      message: 'Domain configured for Cloudflare Access but endpoint not responding'
-    };
-  }
-  
-  return {
-    isAvailable: false,
-    isConfigured: false,
-    message: 'Domain not configured for Cloudflare Access'
-  };
-};
-
-// Handle OTP authentication flow
-export const handleOTPFlow = (): void => {
-  console.log('Starting OTP flow...');
-  debugAuthState();
-  
-  // If user is already authenticated, redirect to protected content
-  if (isAuthenticated()) {
-    console.log('User already authenticated, redirecting to protected content');
-    window.location.href = '/protected';
-    return;
-  }
-  
-  // Simple client-side authentication - no Cloudflare Access needed
-  console.log('Using client-side authentication');
-  const user = {
-    email: 'user@rcormier.dev',
-    name: 'Authenticated User'
-  };
-  localStorage.setItem('dev_auth', 'true');
-  localStorage.setItem('dev_user', JSON.stringify(user));
-  
-  // Redirect to protected content
-  window.location.href = '/protected';
 };

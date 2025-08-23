@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { AlertTriangle, CheckCircle, XCircle, Info, ExternalLink } from 'lucide-react';
-import { getCloudflareAccessStatus, isCloudflareAccessAvailable } from '../utils/cloudflareAuth';
+import { isDevelopment } from '../utils/cloudflareAuth';
 
 export const CloudflareStatusChecker: React.FC = () => {
-  const [status, setStatus] = useState(getCloudflareAccessStatus());
-  const [isChecking, setIsChecking] = useState(false);
   const [endpointStatus, setEndpointStatus] = useState<boolean | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
 
   const checkEndpoint = async () => {
     setIsChecking(true);
     try {
-      const available = await isCloudflareAccessAvailable();
-      setEndpointStatus(available);
-      setStatus(getCloudflareAccessStatus());
+      // Check if Cloudflare Access login endpoint is available
+      await fetch('/cdn-cgi/access/login', { 
+        method: 'HEAD',
+        mode: 'no-cors' // Avoid CORS issues
+      });
+      // If we get here, the endpoint exists
+      setEndpointStatus(true);
     } catch (error) {
       console.error('Error checking endpoint:', error);
       setEndpointStatus(false);
@@ -24,25 +27,44 @@ export const CloudflareStatusChecker: React.FC = () => {
   };
 
   useEffect(() => {
-    checkEndpoint();
+    if (!isDevelopment()) {
+      checkEndpoint();
+    }
   }, []);
 
   const getStatusIcon = () => {
-    if (status.isAvailable) return <CheckCircle className="h-6 w-6 text-green-600" />;
-    if (status.isConfigured) return <AlertTriangle className="h-6 w-6 text-yellow-600" />;
-    return <XCircle className="h-6 w-6 text-red-600" />;
+    if (isDevelopment()) return <CheckCircle className="h-6 w-6 text-blue-600" />;
+    if (endpointStatus === true) return <CheckCircle className="h-6 w-6 text-green-600" />;
+    if (endpointStatus === false) return <XCircle className="h-6 w-6 text-red-600" />;
+    return <AlertTriangle className="h-6 w-6 text-yellow-600" />;
   };
 
   const getStatusColor = () => {
-    if (status.isAvailable) return 'text-green-800';
-    if (status.isConfigured) return 'text-yellow-800';
-    return 'text-red-800';
+    if (isDevelopment()) return 'text-blue-800';
+    if (endpointStatus === true) return 'text-green-800';
+    if (endpointStatus === false) return 'text-red-800';
+    return 'text-yellow-800';
   };
 
   const getStatusBg = () => {
-    if (status.isAvailable) return 'bg-green-50 border-green-200';
-    if (status.isConfigured) return 'bg-yellow-50 border-yellow-200';
-    return 'bg-red-50 border-red-200';
+    if (isDevelopment()) return 'bg-blue-50 border-blue-200';
+    if (endpointStatus === true) return 'bg-green-50 border-green-200';
+    if (endpointStatus === false) return 'bg-red-50 border-red-200';
+    return 'bg-yellow-50 border-yellow-200';
+  };
+
+  const getStatusMessage = () => {
+    if (isDevelopment()) return 'Development mode - using simulated authentication';
+    if (endpointStatus === true) return 'Cloudflare Access is properly configured and available';
+    if (endpointStatus === false) return 'Cloudflare Access endpoint not responding - needs configuration';
+    return 'Checking Cloudflare Access status...';
+  };
+
+  const getStatusTitle = () => {
+    if (isDevelopment()) return 'Development Mode';
+    if (endpointStatus === true) return 'Fully Configured';
+    if (endpointStatus === false) return 'Not Configured';
+    return 'Checking Status';
   };
 
   return (
@@ -50,7 +72,7 @@ export const CloudflareStatusChecker: React.FC = () => {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Info className="h-6 w-6" />
-          <span>Cloudflare Access Status</span>
+          <span>Authentication System Status</span>
         </CardTitle>
         <CardDescription>
           Current authentication system status and configuration
@@ -63,11 +85,10 @@ export const CloudflareStatusChecker: React.FC = () => {
             {getStatusIcon()}
             <div>
               <h3 className={`font-medium ${getStatusColor()}`}>
-                {status.isAvailable ? 'Fully Configured' : 
-                 status.isConfigured ? 'Partially Configured' : 'Not Configured'}
+                {getStatusTitle()}
               </h3>
               <p className={`text-sm ${getStatusColor()}`}>
-                {status.message}
+                {getStatusMessage()}
               </p>
             </div>
           </div>
@@ -76,54 +97,60 @@ export const CloudflareStatusChecker: React.FC = () => {
         {/* Detailed Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium text-gray-800">Domain Configuration</h4>
+            <h4 className="font-medium text-gray-800">Environment</h4>
             <div className="text-sm space-y-1">
               <div className="flex justify-between">
                 <span>Current Domain:</span>
                 <span className="font-mono">{window.location.hostname}</span>
               </div>
               <div className="flex justify-between">
-                <span>Expected Domain:</span>
-                <span className="font-mono">rcormier.dev</span>
+                <span>Environment:</span>
+                <span className={isDevelopment() ? 'text-blue-600' : 'text-green-600'}>
+                  {isDevelopment() ? 'Development' : 'Production'}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span>Is Configured:</span>
-                <span className={status.isConfigured ? 'text-green-600' : 'text-red-600'}>
-                  {status.isConfigured ? 'Yes' : 'No'}
+                <span>Authentication:</span>
+                <span className={isDevelopment() ? 'text-blue-600' : 'text-green-600'}>
+                  {isDevelopment() ? 'Simulated' : 'Cloudflare Access'}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <h4 className="font-medium text-gray-800">Endpoint Status</h4>
-            <div className="text-sm space-y-1">
-              <div className="flex justify-between">
-                <span>Login Endpoint:</span>
-                <span className="font-mono">/cdn-cgi/access/login</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Status:</span>
-                <span className={endpointStatus === null ? 'text-gray-500' : 
-                               endpointStatus ? 'text-green-600' : 'text-red-600'}>
-                  {endpointStatus === null ? 'Checking...' : 
-                   endpointStatus ? 'Available' : 'Not Available'}
-                </span>
+          {!isDevelopment() && (
+            <div className="space-y-2">
+              <h4 className="font-medium text-gray-800">Cloudflare Access Status</h4>
+              <div className="text-sm space-y-1">
+                <div className="flex justify-between">
+                  <span>Login Endpoint:</span>
+                  <span className="font-mono">/cdn-cgi/access/login</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Status:</span>
+                  <span className={endpointStatus === null ? 'text-gray-500' : 
+                                 endpointStatus ? 'text-green-600' : 'text-red-600'}>
+                    {endpointStatus === null ? 'Checking...' : 
+                     endpointStatus ? 'Available' : 'Not Available'}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Actions */}
         <div className="flex space-x-3">
-          <Button 
-            onClick={checkEndpoint} 
-            disabled={isChecking}
-            variant="outline"
-            className="flex-1"
-          >
-            {isChecking ? 'Checking...' : 'Recheck Status'}
-          </Button>
+          {!isDevelopment() && (
+            <Button 
+              onClick={checkEndpoint} 
+              disabled={isChecking}
+              variant="outline"
+              className="flex-1"
+            >
+              {isChecking ? 'Checking...' : 'Recheck Status'}
+            </Button>
+          )}
           
           <Button 
             asChild 
@@ -142,7 +169,7 @@ export const CloudflareStatusChecker: React.FC = () => {
         </div>
 
         {/* Setup Instructions */}
-        {!status.isAvailable && (
+        {!isDevelopment() && endpointStatus === false && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h4 className="font-medium text-blue-800 mb-2">Next Steps</h4>
             <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
@@ -164,6 +191,19 @@ export const CloudflareStatusChecker: React.FC = () => {
                 </a>
               </Button>
             </div>
+          </div>
+        )}
+
+        {/* Development Mode Info */}
+        {isDevelopment() && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 className="font-medium text-blue-800 mb-2">Development Mode</h4>
+            <p className="text-sm text-blue-700 mb-2">
+              You're currently running in development mode. Authentication is simulated for testing purposes.
+            </p>
+            <p className="text-sm text-blue-700">
+              To test production authentication, deploy to rcormier.dev and configure Cloudflare Access.
+            </p>
           </div>
         )}
       </CardContent>

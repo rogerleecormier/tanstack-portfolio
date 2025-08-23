@@ -54,10 +54,7 @@ const productionAuth = {
                          document.cookie.includes('CF_Access_Email') ||
                          document.cookie.includes('CF_Access_Identity');
     
-    // Check for fallback authentication
-    const hasFallbackAuth = localStorage.getItem('fallback_auth') === 'true';
-    
-    return hasAuthCookie || hasFallbackAuth;
+    return hasAuthCookie;
   },
 
   getUser: (): CloudflareUser | null => {
@@ -92,12 +89,6 @@ const productionAuth = {
         };
       }
       
-      // Check for fallback authentication
-      const fallbackUser = localStorage.getItem('fallback_user');
-      if (fallbackUser) {
-        return JSON.parse(fallbackUser);
-      }
-      
       return null;
     } catch (error) {
       console.error('Error getting production user info:', error);
@@ -114,10 +105,6 @@ const productionAuth = {
 
   logout: (): void => {
     if (environment.isDevelopment()) return;
-    
-    // Clear fallback authentication
-    localStorage.removeItem('fallback_auth');
-    localStorage.removeItem('fallback_user');
     
     window.location.href = environment.cloudflareAccess.logoutUrl;
   }
