@@ -1,387 +1,231 @@
-# Cloudflare Access Authentication Overview
+# Authentication System Overview
 
-## Overview
+This portfolio application uses a dual-mode authentication system that automatically switches between development and production modes based on the environment.
 
-This document provides a comprehensive overview of the authentication system implemented for your TanStack Portfolio at `rcormier.dev`. The system uses **Cloudflare Access** with **One-Time PIN (OTP)** authentication to protect sensitive content while keeping your main portfolio pages publicly accessible.
+## How It Works
 
-## Authentication Architecture
+### Development Mode
+- **Triggered when**: Running on `localhost`, `127.0.0.1`, or any local network IP (e.g., `192.168.x.x`, `10.0.x.x`)
+- **Authentication**: Mock/simulated authentication using localStorage
+- **Benefits**: 
+  - No external dependencies
+  - Instant login/logout for testing
+  - Works offline
+  - Easy to toggle authentication state
 
-### Core Components
+### Production Mode
+- **Triggered when**: Running on production domains (e.g., `rcormier.dev`)
+- **Authentication**: Real Cloudflare Access authentication
+- **Benefits**:
+  - Secure enterprise-grade authentication
+  - SSO integration
+  - Audit logging
+  - Multi-factor authentication support
 
-1. **Cloudflare Access** - Enterprise-grade authentication service
-2. **One-Time PIN (OTP)** - Email-based authentication method
-3. **Protected Routes** - Secure content requiring authentication
-4. **Login Button** - User interface for initiating authentication
-5. **Authentication Hooks** - React hooks for managing auth state
+## Components
 
-### Protected Content
-
-- **HealthBridge Analysis** (`/healthbridge-analysis`) - Health analysis tools and data
-- **Protected Projects** (`/protected`) - General protected content
-- **Private Files** - Sensitive documents and resources
-
-### Public Content
-
-- **Main Portfolio** (`/`) - About page and introduction
-- **Strategy** (`/strategy`) - Strategic consulting content
-- **Leadership** (`/leadership`) - Leadership development content
-- **DevOps** (`/devops`) - DevOps and infrastructure content
-- **SaaS** (`/saas`) - Software-as-a-Service insights
-- **Talent** (`/talent`) - Talent management content
-- **Analytics** (`/analytics`) - Data analytics content
-- **Project Analysis** (`/project-analysis`) - Project management insights
-
-## How Authentication Works
-
-### 1. User Experience Flow
-
-```
-User visits protected route → Redirected to login → Enters email → Receives PIN → Enters PIN → Access granted
-```
-
-### 2. Technical Flow
-
-1. **Route Protection**: Protected routes are wrapped with `<ProtectedRoute>` component
-2. **Authentication Check**: `useAuth` hook verifies authentication status
-3. **Login Button**: Triggers Cloudflare Access OTP flow
-4. **OTP Verification**: User receives 6-digit PIN via email
-5. **Access Grant**: Upon successful verification, user gains access to protected content
-
-### 3. Authentication Methods
-
-#### Production (rcormier.dev)
-- **Cloudflare Access OTP**: Primary authentication method
-- **Email Domain**: Restricted to `@rcormier.dev` addresses
-- **Session Duration**: 24 hours
-- **Security**: Enterprise-grade with JWT tokens
-
-#### Development (localhost)
-- **Mock Authentication**: Simulated authentication for development
-- **Local Storage**: Authentication state stored locally
-- **Bypass**: No actual OTP required during development
-
-## Login Button Implementation
-
-### Component: `LoginPage.tsx`
-
-The login button is implemented as a modal component that:
-
-- **Triggers OTP Flow**: Calls `handleOTPFlow()` function
-- **User Experience**: Provides clear instructions and feedback
-- **Visual Design**: Uses teal color scheme with shield icon
-- **Responsive**: Works on both desktop and mobile devices
-
-### Key Features
-
+### Core Authentication Hook (`useAuth`)
 ```tsx
-<Button 
-  onClick={handleCloudflareLogin}
-  className="w-full bg-teal-600 hover:bg-teal-700"
-  size="lg"
->
-  <span>Access Protected Content</span>
-  <ArrowRight className="h-4 w-4 ml-2" />
-</Button>
+import { useAuth } from '../hooks/useAuth';
+
+const { 
+  user, 
+  isAuthenticated, 
+  isLoading, 
+  login, 
+  logout, 
+  isDevelopment, 
+  isProduction 
+} = useAuth();
 ```
 
-### Integration Points
-
-1. **Header Component**: Login button appears in site header
-2. **Protected Routes**: Automatically redirects unauthenticated users
-3. **Navigation**: Protected content appears in navigation after authentication
-4. **State Management**: Integrates with `useAuth` hook
-
-## Protected Route Implementation
-
-### Component: `ProtectedRoute.tsx`
-
-Protected routes use a wrapper component that:
-
-- **Authentication Check**: Verifies user authentication status
-- **Loading States**: Shows loading spinner during verification
-- **Fallback UI**: Displays authentication required message
-- **Seamless Integration**: Wraps protected content components
-
-### Usage Example
-
+### Protected Route Wrapper
 ```tsx
-export const HealthBridge: React.FC = () => {
-  return (
-    <ProtectedRoute>
-      <HealthBridgeContent />
-    </ProtectedRoute>
-  );
+import { ProtectedRoute } from '../components/ProtectedRoute';
+
+<ProtectedRoute>
+  <YourProtectedComponent />
+</ProtectedRoute>
+```
+
+### Development Authentication Toggle
+```tsx
+import { DevAuthToggle } from '../components/DevAuthToggle';
+
+// Only appears in development mode
+<DevAuthToggle />
+```
+
+### Authentication Status Indicator
+```tsx
+import { AuthStatus } from '../components/AuthStatus';
+
+// Shows current auth state and environment
+<AuthStatus />
+```
+
+## Usage Examples
+
+### Protecting a Route
+```tsx
+// In your router or component
+<ProtectedRoute>
+  <HealthBridge />
+</ProtectedRoute>
+```
+
+### Conditional Rendering Based on Auth
+```tsx
+const { isAuthenticated, user } = useAuth();
+
+if (isAuthenticated) {
+  return <div>Welcome, {user?.name}!</div>;
+} else {
+  return <div>Please log in</div>;
+}
+```
+
+### Environment-Aware Actions
+```tsx
+const { isDevelopment, login } = useAuth();
+
+const handleLogin = () => {
+  if (isDevelopment) {
+    // Simulate login
+    login();
+  } else {
+    // Redirect to Cloudflare Access
+    login();
+  }
 };
 ```
 
-### HealthBridge Protection
+## Development Workflow
 
-The HealthBridge analysis page is specifically protected:
+1. **Start Development Server**
+   ```bash
+   npm run dev
+   ```
 
-- **Route**: `/healthbridge-analysis`
-- **Content**: Health analysis tools and data
-- **Access**: Requires OTP authentication
-- **Security**: Enterprise-grade protection via Cloudflare Access
+2. **Access Protected Routes**
+   - Navigate to `/protected` or `/healthbridge-analysis`
+   - You'll see the "Development Authentication" toggle
 
-## Authentication State Management
+3. **Simulate Authentication**
+   - Click "Simulate Login" to authenticate
+   - Click "Simulate Logout" to de-authenticate
+   - Authentication state persists across page refreshes
 
-### Hook: `useAuth.ts`
+4. **Test Protected Content**
+   - Once authenticated, you can access all protected routes
+   - The `AuthStatus` component shows your current state
 
-The authentication state is managed through a custom React hook that:
+## Production Deployment
 
-- **Real-time Updates**: Monitors authentication status changes
-- **User Information**: Provides current user details
-- **Loading States**: Handles authentication verification
-- **Automatic Refresh**: Updates state when authentication changes
+1. **Build the Application**
+   ```bash
+   npm run build
+   ```
 
-### State Properties
+2. **Deploy to Cloudflare Pages**
+   - The app automatically detects production environment
+   - Authentication switches to Cloudflare Access
+   - No code changes needed
 
-```tsx
-interface AuthState {
-  isAuthenticated: boolean;
-  user: CloudflareUser | null;
-  isLoading: boolean;
-}
-```
+3. **Configure Cloudflare Access**
+   - Set up authentication policies in Cloudflare dashboard
+   - Configure allowed users/domains
+   - Set up SSO if needed
 
-### User Information
+## Environment Detection
 
-```tsx
-interface CloudflareUser {
-  email: string;
-  name?: string;
-  picture?: string;
-  sub?: string; // Subject identifier
-}
-```
-
-## Cloudflare Access Integration
-
-### Utility: `cloudflareAuth.ts`
-
-The authentication utilities handle:
-
-- **OTP Flow**: Manages One-Time PIN authentication process
-- **Cookie Management**: Handles Cloudflare Access cookies
-- **Token Storage**: Manages JWT tokens and user data
-- **Route Protection**: Checks if routes require authentication
-- **Development Mode**: Provides mock authentication for local development
-
-### Key Functions
-
-- `isAuthenticated()` - Check authentication status
-- `getUserInfo()` - Retrieve current user information
-- `handleOTPFlow()` - Initiate OTP authentication
-- `hasAccess()` - Verify user access permissions
-- `logout()` - Clear authentication and redirect
-
-## Security Features
-
-### 1. Email Domain Restriction
-
-- **Allowed Domains**: `rcormier.dev` only
-- **Specific Emails**: `roger@rcormier.dev` explicitly allowed
-- **Domain Validation**: Automatic domain verification
-
-### 2. Session Management
-
-- **JWT Tokens**: Secure token-based authentication
-- **Automatic Expiry**: 24-hour session duration
-- **Secure Cookies**: HTTP-only cookies for token storage
-
-### 3. Route Protection
-
-- **Automatic Redirects**: Unauthenticated users redirected to login
-- **Content Isolation**: Protected content completely separated from public
-- **Access Control**: Granular control over who can access what
-
-## Development vs Production
-
-### Development Mode (localhost)
+The system automatically detects the environment using:
 
 ```tsx
-if (isDevelopment()) {
-  // Mock authentication for development
-  localStorage.setItem('dev_auth', 'true');
-  localStorage.setItem('dev_user', JSON.stringify(user));
-}
+// Development triggers
+- import.meta.env.DEV (Vite environment variable)
+- localhost
+- 127.0.0.1
+- 192.168.x.x (local network)
+- 10.0.x.x (local network)
+
+// Production triggers
+- import.meta.env.PROD (Vite environment variable)
+- Any other domain
 ```
 
-**Features:**
-- No actual OTP required
-- Local storage-based authentication
-- Immediate access to protected content
-- Debug logging enabled
+## Security Considerations
 
-### Production Mode (rcormier.dev)
+### Development Mode
+- **Mock authentication is NOT secure**
+- **Only use for development/testing**
+- **Never deploy with mock auth enabled**
 
-```tsx
-// Production uses actual Cloudflare Access
-window.location.href = '/cdn-cgi/access/login';
-```
-
-**Features:**
-- Full Cloudflare Access OTP flow
-- Enterprise-grade security
-- Email-based authentication
-- 24-hour session management
+### Production Mode
+- **Full Cloudflare Access security**
+- **JWT token validation**
+- **Secure cookie handling**
+- **Enterprise-grade protection**
 
 ## Troubleshooting
 
-### Common Issues
+### Development Issues
+- **Authentication not working**: Check if you're on localhost/127.0.0.1
+- **State not persisting**: Check localStorage in browser dev tools
+- **Toggle not appearing**: Verify `isDevelopment()` returns true
 
-1. **Authentication Loop**
-   - Check policy order in Cloudflare Zero Trust
-   - Ensure Bypass policies come before Allow policies
+### Production Issues
+- **Cloudflare Access not working**: Check domain configuration
+- **Cookies not set**: Verify Cloudflare Access is properly configured
+- **Redirect loops**: Check authentication policies in Cloudflare dashboard
 
-2. **OTP Not Received**
-   - Verify email domain configuration
-   - Check spam/junk folders
-   - Ensure iCloud account can receive emails
+## Customization
 
-3. **Access Denied After Authentication**
-   - Verify email matches `roger@rcormier.dev`
-   - Check Cloudflare Access policies
-   - Clear browser cookies and retry
-
-### Debug Tools
-
+### Adding New Protected Routes
 ```tsx
-// Enable debug logging
-import { debugAuthState } from '../utils/cloudflareAuth';
+// In your router
+<Route path="/new-protected-route" element={
+  <ProtectedRoute>
+    <NewProtectedComponent />
+  </ProtectedRoute>
+} />
+```
 
-// Call in browser console
-debugAuthState();
+### Custom Authentication Logic
+```tsx
+// Extend the useAuth hook
+const { isAuthenticated, user } = useAuth();
+
+// Add your custom logic
+const hasSpecialAccess = user?.email === 'admin@rcormier.dev';
+```
+
+### Environment-Specific Features
+```tsx
+const { isDevelopment } = useAuth();
+
+if (isDevelopment) {
+  // Development-only features
+  console.log('Debug mode enabled');
+}
 ```
 
 ## Best Practices
 
-### 1. Security
-- Never store sensitive data in localStorage in production
-- Always use HTTPS for authentication
-- Implement proper session timeout handling
+1. **Always wrap protected content** with `<ProtectedRoute>`
+2. **Use the `useAuth` hook** for authentication state
+3. **Test both environments** before deploying
+4. **Keep development auth simple** - it's just for testing
+5. **Use environment detection** for conditional features
+6. **Handle loading states** properly in your components
 
-### 2. User Experience
-- Provide clear feedback during authentication
-- Show loading states during verification
-- Gracefully handle authentication errors
+## Migration from Old System
 
-### 3. Development
-- Use mock authentication for local development
-- Test both authenticated and unauthenticated states
-- Verify protected route behavior
+If you're upgrading from the previous authentication system:
 
-## Configuration Files
+1. **Replace old imports** with new `useAuth` hook
+2. **Update component props** to use new auth properties
+3. **Remove old Cloudflare auth utilities** (they're now integrated)
+4. **Test both development and production modes**
 
-### Cloudflare Zero Trust
-- **Application**: Portfolio App
-- **Identity Provider**: One-Time PIN
-- **Policies**: Public Access (Bypass) + Protected Routes (Allow)
-
-### Environment Variables
-- **Domain**: `rcormier.dev`
-- **Email**: `roger@rcormier.dev`
-- **Session Duration**: 24 hours
-
-## Integration Summary
-
-Your authentication system provides:
-
-✅ **Secure Access**: Enterprise-grade protection for sensitive content  
-✅ **Seamless UX**: Smooth authentication flow with clear feedback  
-✅ **Flexible Protection**: Granular control over what content is protected  
-✅ **Development Friendly**: Mock authentication for local development  
-✅ **Production Ready**: Full Cloudflare Access integration for live site  
-✅ **HealthBridge Security**: Protected access to health analysis tools  
-✅ **User Management**: Automatic user state management and persistence  
-
-The system automatically handles authentication challenges, provides a professional user experience, and ensures your sensitive content (like HealthBridge analysis) remains secure while keeping your portfolio publicly accessible.
-
-## Adding New Protected Routes
-
-To add a new protected route:
-
-1. **Add to navigation config** (`src/config/navigation.ts`):
-   ```typescript
-   export const protectedProjectItems = [
-     // ... existing items
-     {
-       title: "New Protected Page",
-       url: "new-protected-page",
-       icon: YourIcon,
-       requiresAuth: true,
-     },
-   ];
-   ```
-
-2. **Add route to router** (`src/router.tsx`):
-   ```typescript
-   const newProtectedRoute = createRoute({
-     getParentRoute: () => rootRoute,
-     path: 'new-protected-page',
-     component: NewProtectedPage,
-   });
-   ```
-
-3. **Wrap component with ProtectedRoute**:
-   ```typescript
-   export const NewProtectedPage: React.FC = () => {
-     return (
-       <ProtectedRoute>
-         <div>Your protected content here</div>
-       </ProtectedRoute>
-     );
-   };
-   ```
-
-4. **Update Cloudflare Access policies** (if needed):
-   - Add the new route to your "Protected Routes" policy in Cloudflare Zero Trust
-   - Ensure the route requires authentication
-
-## Testing Your Authentication System
-
-### Development Testing
-1. **Start your development server**
-2. **Visit any page** - protected routes should be hidden
-3. **Click "Login" button** in the header
-4. **Click "Access Protected Content"**
-5. **Check sidebar** - "Protected Projects" section should appear
-6. **Navigate to protected routes** - they should be accessible
-
-### Production Testing
-1. **Deploy to rcormier.dev**
-2. **Visit protected routes** - should redirect to Cloudflare Access login
-3. **Enter your email** (`roger@rcormier.dev`)
-4. **Check email for PIN** - should receive 6-digit code
-5. **Enter PIN** - should gain access to protected content
-6. **Verify session** - should remain authenticated for 24 hours
-
-## Additional Troubleshooting
-
-### **Protected routes not showing after login**
-- Check browser console for errors
-- Verify `localStorage` contains `dev_auth: "true"` (development)
-- Ensure `useAuth` hook is working properly
-- Check Cloudflare Access cookies (production)
-
-### **Login button not working**
-- Check if `handleOTPFlow` function is being called
-- Verify authentication state is being set
-- Check for JavaScript errors in console
-- Ensure Cloudflare Access is properly configured (production)
-
-### **Routes not accessible**
-- Ensure routes are properly configured in the router
-- Check that components are wrapped with `ProtectedRoute`
-- Verify the route paths match exactly
-- Check Cloudflare Access policies (production)
-
-### **Cloudflare Access Issues**
-- Verify policy order (Bypass → Allow)
-- Check identity provider configuration
-- Ensure email domain matches `rcormier.dev`
-- Clear browser cookies and retry
-
-## Implementation Summary
-
-Your authentication system provides enterprise-grade security through Cloudflare Access while maintaining a seamless user experience. The system automatically handles the complexity of OTP authentication, route protection, and user state management, allowing you to focus on your portfolio content rather than authentication infrastructure.
+The new system is backward-compatible and should work as a drop-in replacement for most use cases.

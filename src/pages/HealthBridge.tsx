@@ -32,6 +32,7 @@ import {
   YAxis,
   CartesianGrid
 } from "recharts";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 const PAGE_SIZE = 10;
 
@@ -623,302 +624,304 @@ export default function HealthBridgePage() {
   }
 
   return (
-    <div>
-      <H1 className="mb-4">Body Weight Analysis</H1>
-      <p className="text-xl text-muted-foreground mb-6">
-        Track, analyze, and visualize your body weight trends over time. Enter new measurements, explore summary statistics, and view progress with interactive charts and filters.
-      </p>
-      <AddWeightBox />
-      <hr className="my-6 border-t border-gray-300" />
-      <section className="mb-8">
-        <H2 className="mb-4">Summary Statistics</H2>
-        <div className="flex flex-wrap gap-4 mb-6">
-          {metrics && (
-            <>
-              <Card className="p-4 min-w-[160px]">
-                <div className="text-sm text-muted-foreground">
-                  Lbs Lost/Gained
-                </div>
-                <div className="text-xl font-bold">{metrics.lbsLost} lbs</div>
-              </Card>
-              <Card className="p-4 min-w-[160px]">
-                <div className="text-sm text-muted-foreground">
-                  Average Weight
-                </div>
-                <div className="text-xl font-bold">{metrics.avg} lbs</div>
-              </Card>
-              <Card className="p-4 min-w-[160px]">
-                <div className="text-sm text-muted-foreground">
-                  Lowest Weight
-                </div>
-                <div className="text-xl font-bold">{metrics.min} lbs</div>
-              </Card>
-              <Card className="p-4 min-w-[160px]">
-                <div className="text-sm text-muted-foreground">
-                  Highest Weight
-                </div>
-                <div className="text-xl font-bold">{metrics.max} lbs</div>
-              </Card>
-              <Card className="p-4 min-w-[160px]">
-                <div className="text-sm text-muted-foreground">Entries</div>
-                <div className="text-xl font-bold">{metrics.count}</div>
-              </Card>
-              <Card className="p-4 min-w-[160px]">
-                <div className="text-sm text-muted-foreground">Date Range</div>
-                <div className="text-xl font-bold">
-                  {metrics.startDate} - {metrics.endDate}
-                </div>
-              </Card>
-            </>
-          )}
-        </div>
-      </section>
-      <section className="mb-8">
-        <H2 className="mb-4">Weight Trend</H2>
-        <Card className="p-4 mb-6" style={{ width: "100%", maxWidth: "none" }}>
-          <ChartContainer
-            config={{
-              weight: {
-                label: "Weight",
-                color: "#14b8a6",
-              },
-            }}
-            className="aspect-auto h-[320px] w-full"
-          >
-            <LineChart
-              data={chartData}
-              margin={{
-                left: 12,
-                right: 12,
+    <ProtectedRoute>
+      <div>
+        <H1 className="mb-4">Body Weight Analysis</H1>
+        <p className="text-xl text-muted-foreground mb-6">
+          Track, analyze, and visualize your body weight trends over time. Enter new measurements, explore summary statistics, and view progress with interactive charts and filters.
+        </p>
+        <AddWeightBox />
+        <hr className="my-6 border-t border-gray-300" />
+        <section className="mb-8">
+          <H2 className="mb-4">Summary Statistics</H2>
+          <div className="flex flex-wrap gap-4 mb-6">
+            {metrics && (
+              <>
+                <Card className="p-4 min-w-[160px]">
+                  <div className="text-sm text-muted-foreground">
+                    Lbs Lost/Gained
+                  </div>
+                  <div className="text-xl font-bold">{metrics.lbsLost} lbs</div>
+                </Card>
+                <Card className="p-4 min-w-[160px]">
+                  <div className="text-sm text-muted-foreground">
+                    Average Weight
+                  </div>
+                  <div className="text-xl font-bold">{metrics.avg} lbs</div>
+                </Card>
+                <Card className="p-4 min-w-[160px]">
+                  <div className="text-sm text-muted-foreground">
+                    Lowest Weight
+                  </div>
+                  <div className="text-xl font-bold">{metrics.min} lbs</div>
+                </Card>
+                <Card className="p-4 min-w-[160px]">
+                  <div className="text-sm text-muted-foreground">
+                    Highest Weight
+                  </div>
+                  <div className="text-xl font-bold">{metrics.max} lbs</div>
+                </Card>
+                <Card className="p-4 min-w-[160px]">
+                  <div className="text-sm text-muted-foreground">Entries</div>
+                  <div className="text-xl font-bold">{metrics.count}</div>
+                </Card>
+                <Card className="p-4 min-w-[160px]">
+                  <div className="text-sm text-muted-foreground">Date Range</div>
+                  <div className="text-xl font-bold">
+                    {metrics.startDate} - {metrics.endDate}
+                  </div>
+                </Card>
+              </>
+            )}
+          </div>
+        </section>
+        <section className="mb-8">
+          <H2 className="mb-4">Weight Trend</H2>
+          <Card className="p-4 mb-6" style={{ width: "100%", maxWidth: "none" }}>
+            <ChartContainer
+              config={{
+                weight: {
+                  label: "Weight",
+                  color: "#14b8a6",
+                },
               }}
+              className="aspect-auto h-[320px] w-full"
             >
-              <CartesianGrid vertical={false} strokeDasharray="3 3" />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                minTickGap={32}
-                tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  });
+              <LineChart
+                data={chartData}
+                margin={{
+                  left: 12,
+                  right: 12,
                 }}
-              />
-              <YAxis domain={yDomain} />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    className="w-[150px]"
-                    nameKey="weight"
-                    labelFormatter={(value) =>
-                      new Date(value).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                    }
-                  />
-                }
-              />
-              <Line
-                dataKey="weight"
-                type="monotone"
-                stroke="#14b8a6"
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
-          </ChartContainer>
-        </Card>
-      </section>
-      {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
-      <section className="mb-8">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-2">
-              <FilterIcon className="w-4 h-4" />
-              Filters
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            className="p-4 w-full max-w-[500px] sm:max-w-[900px] min-w-[0] box-border"
-            side="bottom"
-            align="start"
-          >
-            <div className="flex flex-col sm:flex-row flex-wrap gap-8 w-full items-start justify-start">
-              {/* Quick Filters */}
-              <div className="flex-1 min-w-[220px]">
-                <div className="mb-2 font-semibold">Quick Filters</div>
-                <div className="mb-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 justify-start items-start w-full">
-                  <button
-                    className={`px-2 py-1 border rounded ${quickRange === "7" ? "bg-blue-100" : ""}`}
-                    onClick={() => handleQuickRange("7")}
-                  >
-                    Last 7 days
-                  </button>
-                  <button
-                    className={`px-2 py-1 border rounded ${quickRange === "14" ? "bg-blue-100" : ""}`}
-                    onClick={() => handleQuickRange("14")}
-                  >
-                    Last 14 days
-                  </button>
-                  <button
-                    className={`px-2 py-1 border rounded ${quickRange === "30" ? "bg-blue-100" : ""}`}
-                    onClick={() => handleQuickRange("30")}
-                  >
-                    Last 30 days
-                  </button>
-                  <button
-                    className={`px-2 py-1 border rounded ${quickRange === "3m" ? "bg-blue-100" : ""}`}
-                    onClick={() => handleQuickRange("3m")}
-                  >
-                    Last 3 months
-                  </button>
-                  <button
-                    className={`px-2 py-1 border rounded ${quickRange === "6m" ? "bg-blue-100" : ""}`}
-                    onClick={() => handleQuickRange("6m")}
-                  >
-                    Last 6 months
-                  </button>
-                  <button
-                    className={`px-2 py-1 border rounded ${quickRange === "all" ? "bg-blue-100" : ""}`}
-                    onClick={() => handleQuickRange("all")}
-                  >
-                    All
-                  </button>
+              >
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={32}
+                  tickFormatter={(value) => {
+                    const date = new Date(value);
+                    return date.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    });
+                  }}
+                />
+                <YAxis domain={yDomain} />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      className="w-[150px]"
+                      nameKey="weight"
+                      labelFormatter={(value) =>
+                        new Date(value).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })
+                      }
+                    />
+                  }
+                />
+                <Line
+                  dataKey="weight"
+                  type="monotone"
+                  stroke="#14b8a6"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ChartContainer>
+          </Card>
+        </section>
+        {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
+        <section className="mb-8">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2">
+                <FilterIcon className="w-4 h-4" />
+                Filters
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-4 w-full max-w-[500px] sm:max-w-[900px] min-w-[0] box-border"
+              side="bottom"
+              align="start"
+            >
+              <div className="flex flex-col sm:flex-row flex-wrap gap-8 w-full items-start justify-start">
+                {/* Quick Filters */}
+                <div className="flex-1 min-w-[220px]">
+                  <div className="mb-2 font-semibold">Quick Filters</div>
+                  <div className="mb-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 justify-start items-start w-full">
+                    <button
+                      className={`px-2 py-1 border rounded ${quickRange === "7" ? "bg-blue-100" : ""}`}
+                      onClick={() => handleQuickRange("7")}
+                    >
+                      Last 7 days
+                    </button>
+                    <button
+                      className={`px-2 py-1 border rounded ${quickRange === "14" ? "bg-blue-100" : ""}`}
+                      onClick={() => handleQuickRange("14")}
+                    >
+                      Last 14 days
+                    </button>
+                    <button
+                      className={`px-2 py-1 border rounded ${quickRange === "30" ? "bg-blue-100" : ""}`}
+                      onClick={() => handleQuickRange("30")}
+                    >
+                      Last 30 days
+                    </button>
+                    <button
+                      className={`px-2 py-1 border rounded ${quickRange === "3m" ? "bg-blue-100" : ""}`}
+                      onClick={() => handleQuickRange("3m")}
+                    >
+                      Last 3 months
+                    </button>
+                    <button
+                      className={`px-2 py-1 border rounded ${quickRange === "6m" ? "bg-blue-100" : ""}`}
+                      onClick={() => handleQuickRange("6m")}
+                    >
+                      Last 6 months
+                    </button>
+                    <button
+                      className={`px-2 py-1 border rounded ${quickRange === "all" ? "bg-blue-100" : ""}`}
+                      onClick={() => handleQuickRange("all")}
+                    >
+                      All
+                    </button>
+                  </div>
                 </div>
-              </div>
-              {/* Custom Range */}
-              <div className="flex-1 min-w-[220px] sm:ml-auto w-full">
-                <div className="font-semibold mb-2">Custom Range</div>
-                <div className="grid grid-cols-1 gap-4 w-full">
-                  {/* Start Label and Field */}
-                  <div className="flex items-center w-full">
-                    <label className="font-medium mr-2 text-left min-w-[60px]">
-                      Start:
-                    </label>
-                    <div className="flex-1 min-w-0">
-                      <ShadcnDatePicker
-                        value={dateRange.start}
-                        onChange={(val) => {
-                          setCustomRangeActive(true);
-                          setDateRange((prev) => ({ ...prev, start: val }));
-                          setQuickRange("all");
-                          setPage(1);
-                        }}
-                      />
+                {/* Custom Range */}
+                <div className="flex-1 min-w-[220px] sm:ml-auto w-full">
+                  <div className="font-semibold mb-2">Custom Range</div>
+                  <div className="grid grid-cols-1 gap-4 w-full">
+                    {/* Start Label and Field */}
+                    <div className="flex items-center w-full">
+                      <label className="font-medium mr-2 text-left min-w-[60px]">
+                        Start:
+                      </label>
+                      <div className="flex-1 min-w-0">
+                        <ShadcnDatePicker
+                          value={dateRange.start}
+                          onChange={(val) => {
+                            setCustomRangeActive(true);
+                            setDateRange((prev) => ({ ...prev, start: val }));
+                            setQuickRange("all");
+                            setPage(1);
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  {/* End Label and Field */}
-                  <div className="flex items-center w-full">
-                    <label className="font-medium mr-2 text-left min-w-[60px]">
-                      End:
-                    </label>
-                    <div className="flex-1 min-w-0">
-                      <ShadcnDatePicker
-                        value={dateRange.end}
-                        onChange={(val) => {
-                          setCustomRangeActive(true);
-                          setDateRange((prev) => ({ ...prev, end: val }));
-                          setQuickRange("all");
-                          setPage(1);
-                        }}
-                        disabled={!dateRange.start}
-                      />
+                    {/* End Label and Field */}
+                    <div className="flex items-center w-full">
+                      <label className="font-medium mr-2 text-left min-w-[60px]">
+                        End:
+                      </label>
+                      <div className="flex-1 min-w-0">
+                        <ShadcnDatePicker
+                          value={dateRange.end}
+                          onChange={(val) => {
+                            setCustomRangeActive(true);
+                            setDateRange((prev) => ({ ...prev, end: val }));
+                            setQuickRange("all");
+                            setPage(1);
+                          }}
+                          disabled={!dateRange.start}
+                        />
+                      </div>
                     </div>
+                    {/* Clear button and record count */}
+                    {customRangeActive && (
+                      <div className="flex items-center mt-2">
+                        <button
+                          className="px-2 py-1 border rounded bg-gray-100"
+                          onClick={() => {
+                            setCustomRangeActive(false);
+                            setDateRange({ start: "", end: "" });
+                          }}
+                        >
+                          Clear
+                        </button>
+                        <span className="ml-2 text-xs text-gray-400">
+                          ({filteredData.length} records)
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  {/* Clear button and record count */}
-                  {customRangeActive && (
-                    <div className="flex items-center mt-2">
-                      <button
-                        className="px-2 py-1 border rounded bg-gray-100"
-                        onClick={() => {
-                          setCustomRangeActive(false);
-                          setDateRange({ start: "", end: "" });
-                        }}
-                      >
-                        Clear
-                      </button>
-                      <span className="ml-2 text-xs text-gray-400">
-                        ({filteredData.length} records)
+                  {customRangeActive && filteredData.length === 500 && (
+                    <div className="w-full flex">
+                      <span className="text-sm text-orange-600 mb-1" style={{ minWidth: "240px" }}>
+                        Maximum of 500 records returned for the selected range.
                       </span>
                     </div>
                   )}
                 </div>
-                {customRangeActive && filteredData.length === 500 && (
-                  <div className="w-full flex">
-                    <span className="text-sm text-orange-600 mb-1" style={{ minWidth: "240px" }}>
-                      Maximum of 500 records returned for the selected range.
-                    </span>
-                  </div>
-                )}
               </div>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </section>
-      {/* Dynamic Table Header */}
-      <H2 className="mb-2">
-        {filteredData.length > 0
-          ? `Weight Changes (${metrics?.startDate} to ${metrics?.endDate})`
-          : "Weight Changes"}
-      </H2>
-      {paginatedData.length > 0 ? (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead
-                style={{ cursor: "pointer" }}
-                onClick={() => handleSort("date")}
-              >
-                Date {getArrow("date")}
-              </TableHead>
-              <TableHead
-                style={{ cursor: "pointer" }}
-                onClick={() => handleSort("weight")}
-              >
-                Weight (lbs) {getArrow("weight")}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedData.map((row) => (
-              <TableRow key={row.date}>
-                <TableCell>
-                  {new Date(row.date).toLocaleDateString()}
-                </TableCell>
-                <TableCell>{(row.kg * 2.20462).toFixed(2)}</TableCell>
+            </PopoverContent>
+          </Popover>
+        </section>
+        {/* Dynamic Table Header */}
+        <H2 className="mb-2">
+          {filteredData.length > 0
+            ? `Weight Changes (${metrics?.startDate} to ${metrics?.endDate})`
+            : "Weight Changes"}
+        </H2>
+        {paginatedData.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleSort("date")}
+                >
+                  Date {getArrow("date")}
+                </TableHead>
+                <TableHead
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleSort("weight")}
+                >
+                  Weight (lbs) {getArrow("weight")}
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <div>No data for selected filter.</div>
-      )}
-      {/* Pagination Controls */}
-      <div className="flex justify-center items-center gap-2 mt-4">
-        <button
-          className="px-2 py-1 border rounded disabled:opacity-50"
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-        >
-          Prev
-        </button>
-        <span>
-          Page {page} of {totalPages}
-        </span>
-        <button
-          className="px-2 py-1 border rounded disabled:opacity-50"
-          onClick={() => setPage(page + 1)}
-          disabled={page === totalPages || totalPages === 0}
-        >
-          Next
-        </button>
+            </TableHeader>
+            <TableBody>
+              {paginatedData.map((row) => (
+                <TableRow key={row.date}>
+                  <TableCell>
+                    {new Date(row.date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>{(row.kg * 2.20462).toFixed(2)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <div>No data for selected filter.</div>
+        )}
+        {/* Pagination Controls */}
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <button
+            className="px-2 py-1 border rounded disabled:opacity-50"
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+          >
+            Prev
+          </button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <button
+            className="px-2 py-1 border rounded disabled:opacity-50"
+            onClick={() => setPage(page + 1)}
+            disabled={page === totalPages || totalPages === 0}
+          >
+            Next
+          </button>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }
 
