@@ -161,7 +161,7 @@ function AddWeightBox() {
       queryClient.invalidateQueries({ queryKey: ["weights"] });
       setTimeout(() => setSuccess(false), 2000);
     },
-    onError: (err: any) => setError(err.message),
+    onError: (err: Error) => setError(err.message),
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -354,7 +354,7 @@ export default function HealthBridgePage() {
         setDateRange({ start: startDate, end: localEndDate });
       }
     }
-  }, [filteredData, customRangeActive]);
+  }, [filteredData, customRangeActive, dateRange.start, dateRange.end]);
 
   // Paginated data and total pages
   const paginatedData = useMemo(() => {

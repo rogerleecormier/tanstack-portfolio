@@ -45,7 +45,7 @@ export const SimpleAuthFallback: React.FC<SimpleAuthFallbackProps> = ({
       
       // Success - call the callback
       onSuccess(email);
-    } catch (error) {
+    } catch {
       setError('Authentication failed. Please try again.');
       setIsLoading(false);
     }
