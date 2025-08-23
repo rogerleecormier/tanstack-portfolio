@@ -25,6 +25,30 @@ export function H2(props: React.HTMLAttributes<HTMLHeadingElement>) {
   );
 }
 
+export function H3(props: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3
+      {...props}
+      className={[
+        "scroll-m-20 text-2xl font-semibold tracking-tight",
+        props.className,
+      ].join(" ")}
+    />
+  );
+}
+
+export function H4(props: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h4
+      {...props}
+      className={[
+        "scroll-m-20 text-xl font-semibold tracking-tight",
+        props.className,
+      ].join(" ")}
+    />
+  );
+}
+
 export function P(props: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
@@ -45,4 +69,4 @@ export function Blockquote(
   );
 }
 
-// Add Small, Muted, InlineCode, Table wrappers as needed using the docs’ classes
+// Add Small, Muted, InlineCode, Table wrappers as needed using the docs' classes

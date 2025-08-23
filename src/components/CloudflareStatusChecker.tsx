@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
+import { P, H3, H4 } from './ui/typography';
 import { AlertTriangle, CheckCircle, XCircle, Info, ExternalLink } from 'lucide-react';
 import { isDevelopment } from '../utils/cloudflareAuth';
 
@@ -33,24 +34,24 @@ export const CloudflareStatusChecker: React.FC = () => {
   }, []);
 
   const getStatusIcon = () => {
-    if (isDevelopment()) return <CheckCircle className="h-6 w-6 text-blue-600" />;
-    if (endpointStatus === true) return <CheckCircle className="h-6 w-6 text-green-600" />;
+    if (isDevelopment()) return <CheckCircle className="h-6 w-6 text-teal-600" />;
+    if (endpointStatus === true) return <CheckCircle className="h-6 w-6 text-teal-600" />;
     if (endpointStatus === false) return <XCircle className="h-6 w-6 text-red-600" />;
-    return <AlertTriangle className="h-6 w-6 text-yellow-600" />;
+    return <AlertTriangle className="h-6 w-6 text-amber-600" />;
   };
 
   const getStatusColor = () => {
-    if (isDevelopment()) return 'text-blue-800';
-    if (endpointStatus === true) return 'text-green-800';
+    if (isDevelopment()) return 'text-teal-800';
+    if (endpointStatus === true) return 'text-teal-800';
     if (endpointStatus === false) return 'text-red-800';
-    return 'text-yellow-800';
+    return 'text-amber-800';
   };
 
   const getStatusBg = () => {
-    if (isDevelopment()) return 'bg-blue-50 border-blue-200';
-    if (endpointStatus === true) return 'bg-green-50 border-green-200';
+    if (isDevelopment()) return 'bg-teal-50 border-teal-200';
+    if (endpointStatus === true) return 'bg-teal-50 border-teal-200';
     if (endpointStatus === false) return 'bg-red-50 border-red-200';
-    return 'bg-yellow-50 border-yellow-200';
+    return 'bg-amber-50 border-amber-200';
   };
 
   const getStatusMessage = () => {
@@ -68,13 +69,13 @@ export const CloudflareStatusChecker: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Info className="h-6 w-6" />
+    <Card className="w-full max-w-2xl mx-auto border-teal-200 shadow-lg">
+      <CardHeader className="text-center">
+        <CardTitle className="flex items-center justify-center space-x-2 text-teal-900">
+          <Info className="h-6 w-6 text-teal-600" />
           <span>Authentication System Status</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-teal-700">
           Current authentication system status and configuration
         </CardDescription>
       </CardHeader>
@@ -84,12 +85,12 @@ export const CloudflareStatusChecker: React.FC = () => {
           <div className="flex items-center space-x-3">
             {getStatusIcon()}
             <div>
-              <h3 className={`font-medium ${getStatusColor()}`}>
+              <H3 className={`font-medium ${getStatusColor()}`}>
                 {getStatusTitle()}
-              </h3>
-              <p className={`text-sm ${getStatusColor()}`}>
+              </H3>
+              <P className={`text-sm ${getStatusColor()}`}>
                 {getStatusMessage()}
-              </p>
+              </P>
             </div>
           </div>
         </div>
@@ -97,21 +98,21 @@ export const CloudflareStatusChecker: React.FC = () => {
         {/* Detailed Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium text-gray-800">Environment</h4>
+            <H4 className="font-medium text-teal-900">Environment</H4>
             <div className="text-sm space-y-1">
               <div className="flex justify-between">
-                <span>Current Domain:</span>
-                <span className="font-mono">{window.location.hostname}</span>
+                <span className="text-teal-700">Current Domain:</span>
+                <span className="font-mono text-teal-900">{window.location.hostname}</span>
               </div>
               <div className="flex justify-between">
-                <span>Environment:</span>
-                <span className={isDevelopment() ? 'text-blue-600' : 'text-green-600'}>
+                <span className="text-teal-700">Environment:</span>
+                <span className={isDevelopment() ? 'text-teal-600' : 'text-teal-600'}>
                   {isDevelopment() ? 'Development' : 'Production'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Authentication:</span>
-                <span className={isDevelopment() ? 'text-blue-600' : 'text-green-600'}>
+                <span className="text-teal-700">Authentication:</span>
+                <span className={isDevelopment() ? 'text-teal-600' : 'text-teal-600'}>
                   {isDevelopment() ? 'Simulated' : 'Cloudflare Access'}
                 </span>
               </div>
@@ -120,16 +121,16 @@ export const CloudflareStatusChecker: React.FC = () => {
 
           {!isDevelopment() && (
             <div className="space-y-2">
-              <h4 className="font-medium text-gray-800">Cloudflare Access Status</h4>
+              <H4 className="font-medium text-teal-900">Cloudflare Access Status</H4>
               <div className="text-sm space-y-1">
                 <div className="flex justify-between">
-                  <span>Login Endpoint:</span>
-                  <span className="font-mono">/cdn-cgi/access/login</span>
+                  <span className="text-teal-700">Login Endpoint:</span>
+                  <span className="font-mono text-teal-900">/cdn-cgi/access/login</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Status:</span>
-                  <span className={endpointStatus === null ? 'text-gray-500' : 
-                                 endpointStatus ? 'text-green-600' : 'text-red-600'}>
+                  <span className="text-teal-700">Status:</span>
+                  <span className={endpointStatus === null ? 'text-teal-500' : 
+                                 endpointStatus ? 'text-teal-600' : 'text-red-600'}>
                     {endpointStatus === null ? 'Checking...' : 
                      endpointStatus ? 'Available' : 'Not Available'}
                   </span>
@@ -146,7 +147,7 @@ export const CloudflareStatusChecker: React.FC = () => {
               onClick={checkEndpoint} 
               disabled={isChecking}
               variant="outline"
-              className="flex-1"
+              className="flex-1 border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800 transition-colors duration-200"
             >
               {isChecking ? 'Checking...' : 'Recheck Status'}
             </Button>
@@ -154,7 +155,7 @@ export const CloudflareStatusChecker: React.FC = () => {
           
           <Button 
             asChild 
-            className="flex-1"
+            className="flex-1 bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2 transition-all duration-200"
           >
             <a 
               href="https://dash.cloudflare.com/" 
@@ -170,9 +171,9 @@ export const CloudflareStatusChecker: React.FC = () => {
 
         {/* Setup Instructions */}
         {!isDevelopment() && endpointStatus === false && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="font-medium text-blue-800 mb-2">Next Steps</h4>
-            <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
+          <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+            <H4 className="font-medium text-teal-800 mb-2">Next Steps</H4>
+            <ol className="text-sm text-teal-700 space-y-1 list-decimal list-inside">
               <li>Enable Cloudflare Zero Trust in your dashboard</li>
               <li>Configure One-Time PIN identity provider</li>
               <li>Create Zero Trust application for rcormier.dev</li>
@@ -184,7 +185,7 @@ export const CloudflareStatusChecker: React.FC = () => {
                 asChild 
                 variant="outline" 
                 size="sm"
-                className="text-blue-700 border-blue-300 hover:bg-blue-100"
+                className="text-teal-700 border-teal-300 hover:bg-teal-100 transition-colors duration-200"
               >
                 <a href="/CLOUDFLARE_SETUP.md" target="_blank">
                   View Detailed Setup Guide
@@ -196,14 +197,14 @@ export const CloudflareStatusChecker: React.FC = () => {
 
         {/* Development Mode Info */}
         {isDevelopment() && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="font-medium text-blue-800 mb-2">Development Mode</h4>
-            <p className="text-sm text-blue-700 mb-2">
+          <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+            <H4 className="font-medium text-teal-800 mb-2">Development Mode</H4>
+            <P className="text-sm text-teal-700 mb-2">
               You're currently running in development mode. Authentication is simulated for testing purposes.
-            </p>
-            <p className="text-sm text-blue-700">
+            </P>
+            <P className="text-sm text-teal-700">
               To test production authentication, deploy to rcormier.dev and configure Cloudflare Access.
-            </p>
+            </P>
           </div>
         )}
       </CardContent>
