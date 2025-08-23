@@ -168,7 +168,7 @@ export const login = (): void => {
   } else {
     // In production, use the direct Cloudflare Access login URL
     console.log('Production mode: Using Cloudflare Access login URL');
-    window.location.href = '/cdn-cgi/access/login';
+    window.location.href = '/cdn-cgi/access/login?redirect_url=%2Fprotected';
   }
 };
 
