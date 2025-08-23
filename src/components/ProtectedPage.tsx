@@ -35,11 +35,12 @@ export const ProtectedPage: React.FC = () => {
             <p className="text-sm text-gray-600">
               This page is protected and requires One-Time PIN (OTP) authentication through Cloudflare Access.
             </p>
-            <Button asChild className="w-full">
-              <a href="/" className="flex items-center justify-center space-x-2">
-                <span>Go to Login</span>
-                <ArrowRight className="h-4 w-4" />
-              </a>
+            <Button 
+              onClick={() => window.location.href = '/cdn-cgi/access/login?redirect_url=%2Fprotected'}
+              className="w-full flex items-center justify-center space-x-2"
+            >
+              <span>Go to Login</span>
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </CardContent>
         </Card>

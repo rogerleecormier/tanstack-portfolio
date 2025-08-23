@@ -6,7 +6,7 @@ import {
   clearUserInfo, 
   logout as cloudflareLogout,
   initAuth,
-  handleOTPFlow,
+  checkCloudflareAccessIdentity,
   CloudflareUser
 } from '../utils/cloudflareAuth';
 
@@ -35,6 +35,16 @@ export const useAuth = () => {
     // Initialize authentication state
     initAuth();
     checkAuth();
+    
+    // Check Cloudflare Access identity periodically on protected routes
+    if (window.location.pathname === '/protected' || window.location.pathname === '/healthbridge-analysis') {
+      const interval = setInterval(async () => {
+        await checkCloudflareAccessIdentity();
+        checkAuth(); // Re-check authentication state
+      }, 5000); // Check every 5 seconds
+      
+      return () => clearInterval(interval);
+    }
   }, []);
 
   useEffect(() => {
@@ -60,7 +70,21 @@ export const useAuth = () => {
   const login = async () => {
     try {
       setIsLoading(true);
-      await handleOTPFlow();
+      // Use Cloudflare Access login directly
+      if (window.location.hostname === 'localhost') {
+        // Development mode - use mock authentication
+        const user = {
+          email: 'dev@rcormier.dev',
+          name: 'Development User'
+        };
+        setUserInfo(user);
+        setUser(user);
+        setIsAuthenticated(true);
+      } else {
+        // Production: Redirect to Cloudflare Access login
+        window.location.href = '/cdn-cgi/access/login?redirect_url=%2Fprotected';
+      }
+      setIsLoading(false);
     } catch (error) {
       console.error('Error during login:', error);
       setIsLoading(false);

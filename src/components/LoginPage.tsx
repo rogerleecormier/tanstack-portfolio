@@ -18,8 +18,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
       // Close the modal first
       onClose();
       
-      // Use the correct Cloudflare Access login function
-      login();
+      // Use the correct Cloudflare Access login URL with redirect
+      if (window.location.hostname === 'localhost') {
+        // Development mode
+        login();
+      } else {
+        // Production: Use Cloudflare Access login with redirect
+        window.location.href = '/cdn-cgi/access/login?redirect_url=%2Fprotected';
+      }
     } catch (error) {
       console.error('Error initiating Cloudflare Access login:', error);
       setIsLoading(false);

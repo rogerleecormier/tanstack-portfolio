@@ -40,10 +40,12 @@ export const isAuthenticated = (): boolean => {
     }
   }
   
-  // Check for Cloudflare Access authentication cookies
+  // Check for Cloudflare Access authentication cookies (updated for Pages Access)
   const hasAuthCookie = document.cookie.includes('CF_Authorization') || 
                        document.cookie.includes('CF_Access_JWT') ||
-                       document.cookie.includes('CF_Access_Email');
+                       document.cookie.includes('CF_Access_Email') ||
+                       document.cookie.includes('CF_Access_Identity') ||
+                       document.cookie.includes('CF_Access_User');
   
   // Check for stored user data
   const hasStoredUser = localStorage.getItem('cf_user') !== null;
@@ -52,7 +54,10 @@ export const isAuthenticated = (): boolean => {
   const urlParams = new URLSearchParams(window.location.search);
   const hasAccessToken = urlParams.get('access_token') !== null;
   
-  return hasAuthCookie || hasStoredUser || hasAccessToken;
+  // Check for Cloudflare Access identity endpoint response
+  const hasAccessIdentity = document.cookie.includes('CF_Access_Identity');
+  
+  return hasAuthCookie || hasStoredUser || hasAccessToken || hasAccessIdentity;
 };
 
 // Get user information from Cloudflare Access
@@ -132,6 +137,25 @@ export const getUserInfo = (): CloudflareUser | null => {
       };
       setUserInfo(user);
       return user;
+    }
+    
+    // Check for Cloudflare Access Identity cookie (Pages Access)
+    const identityCookie = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('CF_Access_Identity='));
+    
+    if (identityCookie) {
+      try {
+        const identity = identityCookie.split('=')[1];
+        const user = {
+          email: identity,
+          name: 'Authenticated User'
+        };
+        setUserInfo(user);
+        return user;
+      } catch (error) {
+        console.error('Error reading identity cookie:', error);
+      }
     }
     
     return null;
@@ -225,6 +249,30 @@ export const initAuth = (): void => {
     
     // Clean up URL
     window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  
+  // Check Cloudflare Access identity if we're on a protected route
+  if (isProtectedRoute()) {
+    checkCloudflareAccessIdentity();
+  }
+};
+
+// Check Cloudflare Access identity via API endpoint
+export const checkCloudflareAccessIdentity = async (): Promise<void> => {
+  try {
+    const response = await fetch('/cdn-cgi/access/get-identity');
+    if (response.ok) {
+      const data = await response.json();
+      if (data.email) {
+        const user = {
+          email: data.email,
+          name: data.name || 'Authenticated User'
+        };
+        setUserInfo(user);
+      }
+    }
+  } catch (error) {
+    console.log('Cloudflare Access identity check failed:', error);
   }
 };
 
