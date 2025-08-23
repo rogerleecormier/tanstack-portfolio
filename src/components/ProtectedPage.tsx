@@ -1,13 +1,13 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P, H3 } from './ui/typography';
-import { useAuth } from '../hooks/useAuth';
-import { User, Shield, ArrowRight, Loader2, Lock, UserCheck } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, Lock, UserCheck, Info, User } from 'lucide-react';
 import { DevAuthToggle } from './DevAuthToggle';
+import { useAuth } from '../hooks/useAuth';
 
 export const ProtectedPage: React.FC = () => {
-  const { isAuthenticated, user, isLoading, isDevelopment, logout } = useAuth();
+  const { isAuthenticated, user, isLoading, isDevelopment, logout, isProduction } = useAuth();
 
   if (isLoading) {
     return (
@@ -60,6 +60,22 @@ export const ProtectedPage: React.FC = () => {
                   }
                 </P>
               </div>
+              
+              {/* Debug Information for Production */}
+              {isProduction && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-left">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Info className="h-4 w-4 text-amber-600" />
+                    <span className="font-semibold text-amber-800">Debug Information</span>
+                  </div>
+                  <div className="text-xs text-amber-700 space-y-1">
+                    <div><strong>Cookies:</strong> {document.cookie || 'None'}</div>
+                    <div><strong>URL:</strong> {window.location.href}</div>
+                    <div><strong>Path:</strong> {window.location.pathname}</div>
+                    <div><strong>Search:</strong> {window.location.search || 'None'}</div>
+                  </div>
+                </div>
+              )}
               
               <Button 
                 onClick={() => window.location.href = '/'}
