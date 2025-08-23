@@ -46,12 +46,6 @@ export const projectItems = [
     url: "project-analysis",
     icon: BarChart3,
   },
-  {
-    title: "HealthBridge Analysis",
-    url: "healthbridge-analysis",
-    icon: BarChart3,
-    requiresAuth: true,
-  },
 ];
 
 // Protected routes that only show when authenticated

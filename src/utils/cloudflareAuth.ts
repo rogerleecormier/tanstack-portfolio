@@ -251,6 +251,17 @@ export const initAuth = (): void => {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
   
+  // Clean up Cloudflare Access URL parameters
+  if (urlParams.has('__cf_access_message') || urlParams.has('__cf_access_redirect')) {
+    // Remove Cloudflare Access specific parameters
+    urlParams.delete('__cf_access_message');
+    urlParams.delete('__cf_access_redirect');
+    
+    // Create clean URL
+    const cleanUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
+  
   // Check Cloudflare Access identity if we're on a protected route
   if (isProtectedRoute()) {
     checkCloudflareAccessIdentity();

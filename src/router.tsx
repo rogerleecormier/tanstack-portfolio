@@ -7,7 +7,7 @@ import { createBrowserHistory } from '@tanstack/history'
 import AppLayout from './layout/AppLayout'
 import MarkdownPage from './pages/MarkdownPage'
 import NotFound from './pages/NotFound'
-import { HealthBridge } from './pages/HealthBridge'
+import HealthBridge from './pages/HealthBridge'
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 
