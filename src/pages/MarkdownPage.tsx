@@ -12,6 +12,7 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
+import { MessageSquare, Calendar } from "lucide-react";
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -657,6 +658,37 @@ export default function MarkdownPage({ file }: { file: string }) {
           >
             {content}
           </ReactMarkdown>
+          
+          {/* Contact Section at bottom of every page */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <div className="text-center">
+              <H2 className="text-2xl font-semibold text-gray-900 mb-4">
+                Ready to discuss your next project?
+              </H2>
+              <P className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Whether you need enterprise integration expertise, DevOps transformation, 
+                or strategic technology leadership, I'm here to help bring your vision to life.
+              </P>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="/contact"
+                  className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  Get in Touch
+                </a>
+                <a
+                  href="https://calendly.com/roger-cormier"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-teal-700 border border-teal-300 px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Schedule a Meeting
+                </a>
+              </div>
+            </div>
+          </div>
         </article>
       </div>
     </div>

@@ -8,6 +8,7 @@ import AppLayout from './layout/AppLayout'
 import MarkdownPage from './pages/MarkdownPage'
 import NotFound from './pages/NotFound'
 import HealthBridge from './pages/HealthBridge'
+import ContactPage from './pages/ContactPage'
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -100,6 +101,13 @@ const protectedRoute = createRoute({
   ),
 })
 
+// Contact route
+const contactRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'contact',
+  component: () => <ContactPage />
+})
+
 // Cloudflare status checker route
 const cloudflareStatusRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -118,6 +126,7 @@ const routeTree = rootRoute.addChildren([
   analyticsRoute,
   projectAnalysisRoute,
   healthBridgeAnalysisRoute,
+  contactRoute,
   protectedRoute,
   cloudflareStatusRoute,
 ])

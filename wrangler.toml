@@ -1,0 +1,10 @@
+name = "tanstack-portfolio-email-worker"
+main = "functions/send-email.js"
+compatibility_date = "2024-01-01"
+
+# Environment-specific configurations
+[env.production]
+# Production environment - no additional config needed
+
+[env.development]
+# Development environment - no additional config needed

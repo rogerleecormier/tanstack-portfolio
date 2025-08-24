@@ -1,6 +1,6 @@
 # Roger Lee Cormier Portfolio
 
-A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, advanced search capabilities, and interactive data visualization.
+A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, advanced search capabilities, interactive data visualization, and a fully functional contact form with Resend email integration.
 
 ## 🚀 Tech Stack
 
@@ -35,6 +35,11 @@ A modern, professional portfolio website built with cutting-edge web technologie
 - **Email-based Access Control** - Configurable user access management
 - **Development Mock Auth** - Local development authentication simulation
 
+### **Email & Contact**
+- **Resend** - Modern email API for reliable email delivery
+- **Cloudflare Workers** - Serverless functions for email processing
+- **Contact Form** - Professional contact form with spam protection
+
 ## ✨ Key Features
 
 ### **🔐 Advanced Authentication System**
@@ -43,6 +48,14 @@ A modern, professional portfolio website built with cutting-edge web technologie
 - **Protected Routes**: Secure access to sensitive content and analysis tools
 - **Development Mode**: Mock authentication for local development and testing
 - **Email-based Access Control**: Configurable user permissions
+
+### **📧 Professional Contact System**
+- **Resend Integration**: Modern, reliable email delivery via Resend API
+- **Cloudflare Worker**: Serverless email processing to avoid CORS issues
+- **Spam Protection**: Built-in spam prevention and validation
+- **Professional Templates**: Beautiful HTML email templates with branding
+- **Reply-to Functionality**: Easy response handling for inquiries
+- **Contact Form**: Professional contact form with company, subject, and message fields
 
 ### **🔍 Intelligent Search System**
 - **Fuse.js Powered**: Fuzzy search with configurable relevance scoring
@@ -83,9 +96,11 @@ src/
 │   ├── Search.tsx      # Global search with Fuse.js
 │   ├── TableOfContents.tsx # Auto-generated TOC
 │   ├── ProtectedRoute.tsx  # Authentication wrapper
+│   ├── ContactPage.tsx     # Contact form with email integration
 │   └── HealthBridge.tsx    # Data analysis component
 ├── pages/               # Page components
 │   ├── MarkdownPage.tsx    # Markdown content renderer
+│   ├── ContactPage.tsx     # Contact form page
 │   ├── HealthBridge.tsx    # Protected health analysis
 │   └── NotFound.tsx        # 404 page
 ├── content/             # Markdown content files
@@ -93,6 +108,9 @@ src/
 │   ├── analytics.md     # Analytics content
 │   ├── strategy.md      # Strategy content
 │   └── ...              # Other content pages
+├── api/                 # API and service files
+│   ├── emailService.ts  # Email service for contact form
+│   └── healthBridge.ts  # Health data API
 ├── hooks/               # Custom React hooks
 │   ├── useAuth.ts       # Authentication state management
 │   └── use-mobile.tsx   # Mobile detection
@@ -103,6 +121,7 @@ src/
 ├── config/              # Configuration files
 │   ├── accessControl.ts # Email-based access control
 │   ├── environment.ts   # Environment configuration
+│   ├── resend.ts        # Resend email configuration
 │   └── securityHeaders.ts # Security headers
 ├── router.tsx           # TanStack Router configuration
 └── main.tsx             # Application entry point
@@ -114,6 +133,7 @@ src/
 - Node.js 18+ 
 - npm or yarn
 - Cloudflare account (for production deployment)
+- Resend account (for email functionality)
 
 ### **Installation**
 
@@ -171,6 +191,41 @@ Access is controlled by email addresses and domains configured in `src/config/ac
 - **rogerleecormier@gmail.com** - ✅ Allowed  
 - **any-email@rcormier.dev** - ✅ Allowed (domain access)
 - **other@gmail.com** - ❌ Denied (not in allowed list)
+
+## 📧 Contact Form & Email Setup
+
+### **Resend Integration**
+The contact form uses Resend for reliable email delivery:
+
+- **Modern Email API**: Resend provides a developer-friendly email service
+- **High Deliverability**: Built-in spam protection and email validation
+- **Professional Templates**: Beautiful HTML email templates with your branding
+- **Reply-to Support**: Easy response handling for inquiries
+
+### **Cloudflare Worker**
+Email processing is handled by a Cloudflare Worker to avoid CORS issues:
+
+- **Serverless Processing**: No backend server required
+- **CORS-Free**: Emails sent server-side via the worker
+- **Environment Support**: Separate development and production configurations
+- **Secure**: API keys stored as Cloudflare secrets
+
+### **Contact Form Features**
+- **Professional Design**: Clean, accessible form with validation
+- **Company Information**: Capture company/organization details
+- **Subject Line**: Clear categorization of inquiries
+- **Message Content**: Rich text support for detailed messages
+- **Spam Protection**: Built-in validation and rate limiting
+- **Success Feedback**: Clear confirmation when messages are sent
+
+### **Email Setup Requirements**
+1. **Resend Account**: Sign up at [resend.com](https://resend.com)
+2. **Domain Verification**: Verify your domain with Resend
+3. **API Key**: Get your Resend API key
+4. **Cloudflare Worker**: Deploy the email worker
+5. **Environment Variables**: Configure secrets in Cloudflare
+
+See `CLOUDFLARE_WORKERS_SETUP.md` for detailed email setup instructions.
 
 ## 🔍 Search Implementation
 
@@ -267,6 +322,15 @@ VITE_DEV_MODE=true
 VITE_CLOUDFLARE_DOMAIN=rcormier.dev
 ```
 
+### **Resend Configuration**
+```typescript
+// src/config/resend.ts
+export const RESEND_CONFIG = {
+  apiKey: 're_your_api_key_here',
+  fromEmail: 'noreply@rcormier.dev',
+}
+```
+
 ### **Tailwind Configuration**
 Custom design system with:
 - Extended color palette
@@ -328,6 +392,12 @@ Custom design system with:
 - Secure markdown rendering
 - Input validation
 
+### **Email Security**
+- API key stored as Cloudflare secrets
+- Input validation and sanitization
+- Rate limiting on contact form
+- Spam protection measures
+
 ### **Security Headers**
 - Content Security Policy (CSP)
 - X-Frame-Options
@@ -370,6 +440,8 @@ Custom design system with:
 - **Analytics Dashboard**: Enhanced data visualization
 - **Multi-language Support**: Internationalization
 - **PWA Features**: Progressive web app capabilities
+- **Email Templates**: Customizable email templates
+- **Contact Analytics**: Track contact form performance
 
 ### **Technology Upgrades**
 - **React 19 Features**: Concurrent rendering and suspense
@@ -395,6 +467,7 @@ For questions or support:
 - Open an issue on GitHub
 - Check the documentation
 - Review the Cloudflare setup guide
+- Check the email setup documentation
 
 ---
 

@@ -1,42 +1,50 @@
-# Cloudflare Access Setup Guide
+# Cloudflare Access & Email Setup Guide
 
-This guide explains how to set up Cloudflare Access with email-based authentication to protect your routes `/protected` and `/healthbridge-analysis`.
+This guide explains how to set up Cloudflare Access with email-based authentication and a fully functional contact form using Cloudflare Workers and Resend.
 
-## Overview
+## 🎯 Overview
 
-Cloudflare Access provides enterprise-grade authentication without requiring a backend server. It handles:
-- Email-based authentication
-- Route protection
-- User identity management
-- Session management
+This setup provides:
+- **Cloudflare Access**: Enterprise-grade Zero Trust authentication
+- **Contact Form**: Professional contact form with email integration
+- **Email Delivery**: Reliable email sending via Resend API
+- **Serverless Architecture**: No backend server required
 
-## Prerequisites
+## 🚀 Quick Start
 
-1. **Cloudflare Account** with Access enabled
-2. **Domain** pointing to Cloudflare
-3. **Identity Provider** (Google SSO, Microsoft, etc.)
+### **What You'll Get**
+✅ **Protected routes** with Cloudflare Access  
+✅ **Working contact form** that sends real emails  
+✅ **Professional email templates** with your branding  
+✅ **No CORS issues** - emails sent server-side  
+✅ **Free tier** - 100k requests/day on Cloudflare, 3k emails/month on Resend  
 
-## Step 1: Configure Cloudflare Access Application
+## 📋 Prerequisites
 
-### 1.1 Create Application
+1. **Cloudflare Account** with Access and Workers enabled
+2. **Resend Account** at [resend.com](https://resend.com)
+3. **Domain** pointing to Cloudflare (e.g., `rcormier.dev`)
+4. **Identity Provider** (Google SSO, Microsoft, etc.)
+
+## 🔐 Step 1: Cloudflare Access Authentication
+
+### **1.1 Create Access Application**
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
 2. Navigate to **Access** → **Applications**
 3. Click **Add an application**
 4. Choose **Self-hosted**
 
-### 1.2 Application Settings
+### **1.2 Application Settings**
 - **Application name**: `Portfolio App`
 - **Session Duration**: `24 hours` (or your preference)
 - **Application domain**: `yourdomain.com` (or subdomain)
 
-### 1.3 Protected Routes
+### **1.3 Protected Routes**
 Add these paths to protect:
 - `/protected`
 - `/healthbridge-analysis`
 
-## Step 2: Configure Identity Provider
-
-### 2.1 Google SSO Setup (Recommended)
+### **1.4 Configure Identity Provider**
 1. Go to [Google Cloud Console](https://console.cloud.google.com)
 2. Create a new project or select existing
 3. Enable **Google+ API**
@@ -46,52 +54,86 @@ Add these paths to protect:
    - `https://yourdomain.com/cdn-cgi/access/callback`
    - `https://yourdomain.com/cdn-cgi/access/callback/`
 
-### 2.2 Configure Cloudflare Access
-1. In your Access application, go to **Authentication**
-2. Add **Google** as an identity provider
-3. Enter your Google OAuth credentials:
-   - **Client ID**: From Google Cloud Console
-   - **Client Secret**: From Google Cloud Console
-4. Configure allowed domains (optional):
-   - `rcormier.dev`
-   - `gmail.com` (if allowing specific Gmail users)
+### **1.5 Access Policies**
+Create an access policy:
+- **Policy name**: `Authenticated Users`
+- **Action**: `Allow`
+- **Rules**: 
+  - **Include**: `Emails` → Add allowed emails:
+    - `roger@rcormier.dev`
+    - `rogerleecormier@gmail.com`
+  - **Include**: `Emails ending in` → `@rcormier.dev`
 
-## Step 3: Access Policies
+## 📧 Step 2: Contact Form & Email Setup
 
-### 3.1 Create Access Policy
-1. In your Access application, go to **Policies**
-2. Click **Add a policy**
-3. Configure:
-   - **Policy name**: `Authenticated Users`
-   - **Action**: `Allow`
-   - **Rules**: 
-     - **Include**: `Emails` → Add allowed emails:
-       - `roger@rcormier.dev`
-       - `rogerleecormier@gmail.com`
-     - **Include**: `Emails ending in` → `@rcormier.dev`
+### **2.1 Install Wrangler CLI**
+```bash
+npm install -g wrangler
+```
 
-### 3.2 Apply Policy to Routes
-1. Go to **Applications** → **Portfolio App**
-2. Under **Routes**, select each protected route
-3. Assign the **Authenticated Users** policy
+### **2.2 Login to Cloudflare**
+```bash
+wrangler login
+```
 
-## Step 4: DNS and Proxy Settings
+### **2.3 Create Resend Account**
+1. Go to [resend.com](https://resend.com)
+2. Sign up with your email
+3. Verify your email address
+4. Go to **API Keys** section
 
-### 4.1 DNS Configuration
-1. Ensure your domain points to Cloudflare
-2. Set DNS records to **Proxied** (orange cloud)
-3. Verify SSL/TLS is set to **Full (strict)**
+### **2.4 Get Resend API Key**
+1. In Resend dashboard, click **"Create API Key"**
+2. Give it a name (e.g., "Portfolio Contact Form")
+3. Copy the API key (starts with `re_`)
+4. **Keep this secure** - you'll need it for the next step
 
-### 4.2 Page Rules (Optional)
-Create page rules for better performance:
-- **URL**: `yourdomain.com/protected*`
-- **Settings**: 
-  - Cache Level: `Bypass`
-  - SSL: `Full (strict)`
+### **2.5 Verify Your Domain with Resend**
+1. In Resend dashboard, go to **"Domains"**
+2. Click **"Add Domain"**
+3. Enter your domain (e.g., `rcormier.dev`)
+4. Follow the DNS verification steps:
+   - Add the required TXT records to your domain
+   - Wait for verification (usually takes a few minutes)
+5. **Important**: Domain must be verified before you can send emails
 
-## Step 5: Application Configuration
+### **2.6 Configure Cloudflare Worker**
+Your `wrangler.toml` should look like this:
 
-### 5.1 Update Access Control
+```toml
+name = "tanstack-portfolio-email-worker"
+main = "functions/send-email.js"
+compatibility_date = "2024-01-01"
+
+# Environment-specific configurations
+[env.production]
+# Production environment - no additional config needed
+
+[env.development]
+# Development environment - no additional config needed
+```
+
+### **2.7 Set Resend API Key as Secret**
+```bash
+# For development environment
+wrangler secret put RESEND_API_KEY --env development
+
+# For production environment
+wrangler secret put RESEND_API_KEY --env production
+```
+
+### **2.8 Deploy Worker**
+```bash
+# Deploy to development
+wrangler deploy --env development
+
+# Deploy to production (when ready)
+wrangler deploy --env production
+```
+
+## 🔧 Step 3: Application Configuration
+
+### **3.1 Update Access Control**
 Edit `src/config/accessControl.ts` to match your Cloudflare Access policy:
 
 ```typescript
@@ -108,106 +150,258 @@ export const accessControl: AccessControlConfig = {
 };
 ```
 
-### 5.2 Environment Variables
+### **3.2 Environment Variables**
 Set these in your deployment environment:
 ```bash
 VITE_CLOUDFLARE_DOMAIN=yourdomain.com
 ```
 
-## Step 6: Testing
+### **3.3 Resend Configuration**
+```typescript
+// src/config/resend.ts
+export const RESEND_CONFIG = {
+  apiKey: 're_your_api_key_here',
+  fromEmail: 'noreply@rcormier.dev',
+}
+```
 
-### 6.1 Test Authentication Flow
+## 🧪 Step 4: Testing
+
+### **4.1 Test Authentication Flow**
 1. Visit `/protected` or `/healthbridge-analysis`
 2. Should redirect to Google SSO (or your identity provider)
 3. After authentication, should return to protected page
 4. No refresh should be needed
 
-### 6.2 Verify User Info
-1. Check browser console for authentication status
-2. Verify user email is displayed correctly
-3. Test logout functionality
+### **4.2 Test Contact Form**
+1. Fill out the contact form on your site
+2. Submit the form
+3. Check your email - you should receive a real email!
+4. Check browser console for success/error messages
 
-## Troubleshooting
+### **4.3 Test Worker Directly**
+```bash
+curl -X POST https://your-worker-url.workers.dev \
+  -H "Content-Type: application/json" \
+  -d '{
+    "from_name": "Test User",
+    "from_email": "test@example.com",
+    "subject": "Test",
+    "message": "Test message"
+  }'
+```
 
-### Common Issues
+## 🔍 How It All Works
 
-#### 1. Authentication Loop
+### **Authentication Flow**
+```
+User → Protected Route → Cloudflare Access → Google SSO → Authenticated → Access Granted
+```
+
+### **Contact Form Flow**
+```
+User → Contact Form → Validation → Cloudflare Worker → Resend API → Email Sent → Success
+```
+
+### **Email Processing**
+- **Frontend**: React component with validation
+- **Worker**: Serverless function for email processing
+- **Resend**: Modern email service for reliable delivery
+- **Domain**: Verified domain for professional email addresses
+
+## 🛠️ Troubleshooting
+
+### **Authentication Issues**
+
+#### **1. Authentication Loop**
 - Check redirect URIs in Google OAuth
 - Verify Cloudflare Access application domain
 - Clear browser cookies and cache
 
-#### 2. Route Not Protected
+#### **2. Route Not Protected**
 - Verify policy is assigned to routes
 - Check DNS proxy settings
 - Ensure SSL is properly configured
 
-#### 3. User Not Recognized
+#### **3. User Not Recognized**
 - Verify email is in allowed list in `accessControl.ts`
 - Check Google OAuth domain restrictions
 - Review Cloudflare Access logs
 
-### Debug Steps
-1. Check browser network tab for failed requests
-2. Verify Cloudflare Access logs in dashboard
-3. Test with different browsers/incognito mode
-4. Check browser console for JavaScript errors
+### **Email Issues**
 
-## Security Considerations
+#### **1. "Worker not found" Error**
+```bash
+# Check if worker is deployed
+wrangler deployments list --env development
 
-### 1. Session Management
-- Set appropriate session duration
-- Enable logout on all devices
-- Monitor access logs
+# Redeploy if needed
+wrangler deploy --env development
+```
 
-### 2. Rate Limiting
-- Configure rate limiting for authentication endpoints
-- Monitor for suspicious activity
+#### **2. "Invalid API key" Error**
+```bash
+# Verify secret is set
+wrangler secret list --env development
 
-### 3. Audit Logs
-- Enable comprehensive logging
-- Regular review of access patterns
-- Monitor for unauthorized access attempts
+# Reset the secret
+wrangler secret delete RESEND_API_KEY --env development
+wrangler secret put RESEND_API_KEY --env development
+```
 
-## Performance Optimization
+#### **3. "Domain not verified" Error**
+- Go to [resend.com/domains](https://resend.com/domains)
+- Verify your domain status
+- Complete DNS verification if pending
 
-### 1. Caching
-- Use Cloudflare's edge caching for static assets
-- Bypass cache for protected routes
-- Optimize authentication response times
+### **Debug Commands**
+```bash
+# Check worker logs
+wrangler tail --env development --format pretty
 
-### 2. CDN Settings
-- Enable Brotli compression
-- Use HTTP/3 when available
-- Optimize image delivery
+# Check worker status
+wrangler whoami
 
-## Maintenance
+# List deployments
+wrangler deployments list --env development
 
-### 1. Regular Updates
-- Keep OAuth credentials secure
-- Monitor Cloudflare Access updates
-- Review access policies quarterly
+# Check secrets
+wrangler secret list --env development
+```
 
-### 2. User Management
-- Regular review of allowed users in `accessControl.ts`
-- Remove access for departed users
-- Update policies as needed
+## 🔒 Security Features
 
-## Support
+### **Authentication Security**
+- Cloudflare Access Zero Trust
+- Email-based access control
+- Secure cookie handling
+- Rate limiting support
 
-For issues with:
-- **Cloudflare Access**: Contact Cloudflare Support
-- **Google OAuth**: Check Google Cloud Console
-- **Application Code**: Review this codebase
+### **Email Security**
+- API key stored as Cloudflare secrets
+- Input validation and sanitization
+- Rate limiting on contact form
+- Spam protection measures
 
-## Next Steps
+### **Content Security**
+- XSS protection
+- Content sanitization
+- Secure markdown rendering
+- Input validation
 
-After setup:
-1. Test all protected routes
-2. Verify user experience is seamless
-3. Monitor authentication logs
-4. Consider additional security measures
-5. Document any custom configurations
+### **Security Headers**
+- Content Security Policy (CSP)
+- X-Frame-Options
+- X-Content-Type-Options
+- Strict-Transport-Security
+
+## 📊 Monitoring & Analytics
+
+### **Cloudflare Access**
+- User authentication logs
+- Access policy violations
+- Session management
+- Route protection status
+
+### **Email System**
+- Worker logs and errors
+- Email delivery status
+- Bounce and spam reports
+- Send volume analytics
+
+## 🚀 Production Deployment
+
+### **1. Verify Everything Works**
+- Test authentication in production
+- Test contact form functionality
+- Verify email delivery
+
+### **2. Deploy to Production**
+```bash
+wrangler deploy --env production
+```
+
+### **3. Update DNS**
+- Ensure domain points to Cloudflare
+- Verify SSL/TLS settings
+- Check proxy status
+
+### **4. Monitor Performance**
+- Watch authentication logs
+- Monitor email delivery
+- Check worker performance
+
+## 💰 Cost Analysis
+
+### **Free Tier Limits**
+- **Cloudflare Access**: Included with Cloudflare plan
+- **Cloudflare Workers**: 100,000 requests/day
+- **Resend**: 3,000 emails/month
+- **Perfect for portfolio use**
+
+### **Paid Plans** (if needed)
+- **Cloudflare Workers**: $5/month for 10M requests
+- **Resend**: $20/month for 50k emails
+
+## 🔄 Maintenance
+
+### **Regular Tasks**
+1. **Monitor access logs** for suspicious activity
+2. **Check worker logs** for errors
+3. **Review email delivery** in Resend dashboard
+4. **Rotate API keys** quarterly
+5. **Update policies** as needed
+
+### **Updates**
+```bash
+# Update wrangler CLI
+npm update -g wrangler
+
+# Redeploy after code changes
+wrangler deploy --env development
+```
+
+## 📚 Additional Resources
+
+### **Documentation**
+- [Cloudflare Access](https://developers.cloudflare.com/access/)
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [Resend API](https://resend.com/docs)
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
+
+### **Support**
+- **Cloudflare**: [Community Forum](https://community.cloudflare.com/)
+- **Resend**: [Discord Community](https://discord.gg/resend)
+
+## ✅ Success Checklist
+
+- [ ] Cloudflare Access application created
+- [ ] Google OAuth configured
+- [ ] Access policies set up
+- [ ] Resend account created and verified
+- [ ] Domain verified with Resend
+- [ ] API key obtained from Resend
+- [ ] Worker deployed to development
+- [ ] Secrets configured in Cloudflare
+- [ ] Authentication tested and working
+- [ ] Contact form tested and working
+- [ ] Production deployment ready
+
+## 🎉 You're Done!
+
+Your portfolio now has:
+- ✅ **Enterprise-grade authentication** with Cloudflare Access
+- ✅ **Working contact form** that sends real emails
+- ✅ **Professional email templates** with your branding
+- ✅ **Protected routes** for sensitive content
+- ✅ **No CORS issues** - everything works server-side
+
+The system automatically handles:
+- **Authentication**: Cloudflare Access with Zero Trust
+- **Email delivery**: Resend API via Cloudflare Workers
+- **Route protection**: Automatic redirects to login
+- **Environment switching**: Dev vs prod configurations
 
 ---
 
-**Note**: This setup provides enterprise-grade authentication with minimal backend complexity. The application handles email-based access control while Cloudflare Access manages the authentication flow.
+**Need help?** Check the troubleshooting section or open an issue in your repository.

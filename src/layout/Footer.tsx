@@ -1,4 +1,4 @@
-import { MapPin, Mail, Calendar } from 'lucide-react'
+import { MapPin, Mail } from 'lucide-react'
 import { FaLinkedin, FaGithub } from 'react-icons/fa'
 
 export default function Footer() {
@@ -57,9 +57,9 @@ export default function Footer() {
             <a 
               href="/contact" 
               className="p-2 rounded-lg bg-teal-600 hover:bg-teal-500 transition-colors"
-              aria-label="Schedule Meeting"
+              aria-label="Contact"
             >
-              <Calendar className="h-5 w-5" />
+              <Mail className="h-5 w-5" />
             </a>
           </div>
 

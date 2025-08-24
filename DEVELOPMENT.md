@@ -14,6 +14,7 @@ Styling: Tailwind CSS 3.4 + shadcn/ui
 Search: Fuse.js
 Charts: Recharts + shadcn/ui Chart Components
 Authentication: Cloudflare Access (Zero Trust)
+Email: Resend API + Cloudflare Workers
 Deployment: Cloudflare Pages
 ```
 
@@ -25,12 +26,17 @@ src/
 │   ├── AppSidebar.tsx  # Main navigation sidebar
 │   ├── Search.tsx      # Global search implementation
 │   ├── ProtectedRoute.tsx # Authentication wrapper
+│   ├── ContactPage.tsx     # Contact form with email integration
 │   └── HealthBridge.tsx    # Data analysis component
 ├── pages/               # Page components
 │   ├── MarkdownPage.tsx    # Markdown content renderer
+│   ├── ContactPage.tsx     # Contact form page
 │   ├── HealthBridge.tsx    # Protected health analysis
 │   └── NotFound.tsx        # 404 page
 ├── content/             # Markdown content files
+├── api/                 # API and service files
+│   ├── emailService.ts  # Email service for contact form
+│   └── healthBridge.ts  # Health data API
 ├── hooks/               # Custom React hooks
 ├── utils/               # Utility functions
 ├── config/              # Configuration files
@@ -45,6 +51,8 @@ src/
 - npm 9+ or yarn 1.22+
 - Git
 - Modern browser with ES2020 support
+- Cloudflare account (for Workers)
+- Resend account (for email functionality)
 
 ### **Environment Setup**
 
@@ -135,6 +143,222 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
   
   return <>{children}</>;
 };
+```
+
+## 📧 Contact Form & Email System
+
+### **Architecture Overview**
+The contact form system uses a serverless architecture to avoid CORS issues:
+
+```
+Frontend Form → Cloudflare Worker → Resend API → Email Delivery
+```
+
+### **Email Service Implementation**
+```typescript
+// src/api/emailService.ts
+export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
+  try {
+    const response = await fetch(WORKER_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from_name: emailData.from_name,
+        from_email: emailData.from_email,
+        company: emailData.company,
+        subject: emailData.subject,
+        message: emailData.message,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to send email');
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to send email:', error);
+    return false;
+  }
+};
+```
+
+### **Contact Form Component**
+```tsx
+// src/pages/ContactPage.tsx
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setError(null);
+  
+  try {
+    const emailData = {
+      to_name: 'Roger',
+      from_name: formData.name,
+      from_email: formData.email,
+      company: formData.company || 'Not specified',
+      subject: formData.subject,
+      message: formData.message,
+      reply_to: formData.email,
+    };
+
+    const success = await sendEmail(emailData);
+    
+    if (success) {
+      setIsSubmitted(true);
+      // Reset form after successful submission
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+      }, 5000);
+    } else {
+      throw new Error('Failed to send message');
+    }
+  } catch (error) {
+    console.error('Form submission error:', error);
+    setError(error instanceof Error ? error.message : 'Failed to send message. Please try again or email me directly.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+```
+
+### **Cloudflare Worker Configuration**
+```javascript
+// functions/send-email.js
+export default {
+  async fetch(request, env, ctx) {
+    // Enable CORS
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
+
+    // Handle preflight OPTIONS request
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 200, headers: corsHeaders });
+    }
+
+    // Only allow POST requests
+    if (request.method !== 'POST') {
+      return new Response(
+        JSON.stringify({ error: 'Method not allowed' }),
+        { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    try {
+      const emailData = await request.json();
+      
+      // Validate required fields
+      if (!emailData.from_name || !emailData.from_email || !emailData.subject || !emailData.message) {
+        return new Response(
+          JSON.stringify({ error: 'Missing required fields' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Send email using Resend API
+      const resendResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'noreply@rcormier.dev',
+          to: ['roger@rcormier.dev'],
+          reply_to: emailData.from_email,
+          subject: `Portfolio Contact: ${emailData.subject}`,
+          html: generateEmailHTML(emailData),
+          text: generateEmailText(emailData),
+        }),
+      });
+
+      if (!resendResponse.ok) {
+        const errorData = await resendResponse.json();
+        return new Response(
+          JSON.stringify({ error: 'Failed to send email', details: errorData }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const result = await resendResponse.json();
+      return new Response(
+        JSON.stringify({ success: true, message: 'Email sent successfully', data: result }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ error: 'Internal server error', message: error.message }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+  },
+};
+```
+
+### **Email Template Generation**
+```typescript
+// Helper functions for email templates
+const generateEmailHTML = (emailData: EmailData): string => `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #1f2937; border-bottom: 2px solid #10b981; padding-bottom: 10px;">
+      New Contact Form Submission
+    </h2>
+    
+    <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <h3 style="color: #374151; margin-top: 0;">Contact Details</h3>
+      <p><strong>Name:</strong> ${emailData.from_name}</p>
+      <p><strong>Email:</strong> <a href="mailto:${emailData.from_email}">${emailData.from_email}</a></p>
+      <p><strong>Company:</strong> ${emailData.company || 'Not specified'}</p>
+      <p><strong>Subject:</strong> ${emailData.subject}</p>
+    </div>
+    
+    <div style="background: #ffffff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+      <h3 style="color: #374151; margin-top: 0;">Message</h3>
+      <p style="white-space: pre-wrap; line-height: 1.6;">${emailData.message}</p>
+    </div>
+    
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
+      <p>This message was sent from your portfolio contact form at rcormier.dev</p>
+      <p>Reply directly to: <a href="mailto:${emailData.from_email}">${emailData.from_email}</a></p>
+    </div>
+  </div>
+`;
+
+const generateEmailText = (emailData: EmailData): string => `
+New Contact Form Submission
+
+Contact Details:
+Name: ${emailData.from_name}
+Email: ${emailData.from_email}
+Company: ${emailData.company || 'Not specified'}
+Subject: ${emailData.subject}
+
+Message:
+${emailData.message}
+
+---
+This message was sent from your portfolio contact form at rcormier.dev
+Reply directly to: ${emailData.from_email}
+`;
+```
+
+### **Development vs Production Email Configuration**
+The worker automatically detects the environment and uses appropriate email addresses:
+
+```javascript
+// Environment detection
+const isProduction = request.url.includes('production') || env.ENVIRONMENT === 'production';
+
+// Email configuration
+const fromEmail = isProduction ? 'noreply@rcormier.dev' : 'onboarding@resend.dev';
+const toEmail = isProduction ? 'roger@rcormier.dev' : 'rogerleecormier@gmail.com';
 ```
 
 ## 🔍 Search System Implementation
@@ -287,6 +511,12 @@ const indexRoute = createRoute({
   component: () => <MarkdownPage file="about" />
 });
 
+const contactRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'contact',
+  component: ContactPage,
+});
+
 const healthBridgeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'healthbridge-analysis',
@@ -306,6 +536,7 @@ const protectedRoute = createRoute({
 
 ### **Navigation Structure**
 - **Portfolio Pages**: Public content (About, Strategy, Leadership, etc.)
+- **Contact Form**: Public contact page with email integration
 - **Project Analysis**: Public project documentation
 - **Protected Content**: Authentication required (HealthBridge, etc.)
 
@@ -326,6 +557,7 @@ xl: 1280px+  /* Extra large devices */
 - **Responsive sidebar**: Collapsible navigation for mobile
 - **Chart responsiveness**: Charts adapt to screen size
 - **Search interface**: Mobile-first search design
+- **Contact form**: Mobile-optimized form layout
 
 ### **Component Responsiveness**
 ```tsx
@@ -410,6 +642,21 @@ export default defineConfig({
 });
 ```
 
+### **Wrangler Configuration**
+```toml
+# wrangler.toml
+name = "tanstack-portfolio-email-worker"
+main = "functions/send-email.js"
+compatibility_date = "2024-01-01"
+
+# Environment-specific configurations
+[env.production]
+# Production environment - no additional config needed
+
+[env.development]
+# Development environment - no additional config needed
+```
+
 ## 🧪 Testing & Quality
 
 ### **Code Quality Tools**
@@ -487,6 +734,12 @@ export const extractFrontmatter = (content: string) => {
 - **Memory management**: Prevent memory leaks
 - **Responsive updates**: Efficient re-rendering
 
+### **Email Performance**
+- **Worker optimization**: Efficient Cloudflare Worker code
+- **Template caching**: Reusable email templates
+- **Rate limiting**: Prevent spam and abuse
+- **Error handling**: Graceful failure handling
+
 ## 🔒 Security Implementation
 
 ### **Authentication Security**
@@ -494,6 +747,12 @@ export const extractFrontmatter = (content: string) => {
 - **Email validation**: Access controlled by configured emails/domains
 - **Cookie security**: Secure authentication cookies
 - **Rate limiting**: API call throttling
+
+### **Email Security**
+- **API key storage**: Stored as Cloudflare secrets
+- **Input validation**: Strict validation and sanitization
+- **Rate limiting**: Contact form abuse prevention
+- **Spam protection**: Built-in Resend protection
 
 ### **Content Security**
 - **XSS prevention**: Content sanitization
@@ -527,6 +786,7 @@ export const extractFrontmatter = (content: string) => {
 - **Authentication testing**: Verify both modes
 - **Search testing**: Test Fuse.js functionality
 - **Chart testing**: Verify Recharts integration
+- **Email testing**: Test contact form functionality
 
 ## 🆘 Troubleshooting
 
@@ -553,6 +813,18 @@ console.log('Search data:', getSearchData());
 console.log('Fuse options:', fuseOptions);
 ```
 
+#### **Email Issues**
+```bash
+# Check worker status
+wrangler whoami
+
+# View worker logs
+wrangler tail --env development
+
+# Test worker directly
+curl -X POST your-worker-url
+```
+
 #### **Build Problems**
 ```bash
 # Clear build cache
@@ -570,6 +842,7 @@ npm run type-check
 - **React DevTools**: Component state inspection
 - **TanStack Query DevTools**: Query state management
 - **Cloudflare Dashboard**: Access policy verification
+- **Resend Dashboard**: Email delivery monitoring
 
 ## 📚 Additional Resources
 
@@ -579,12 +852,15 @@ npm run type-check
 - [shadcn/ui Components](https://ui.shadcn.com/)
 - [Fuse.js Search](https://fusejs.io/)
 - [Recharts Documentation](https://recharts.org/)
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [Resend API](https://resend.com/docs)
 
 ### **Development Tools**
 - [Vite Documentation](https://vitejs.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Cloudflare Zero Trust](https://developers.cloudflare.com/zero-trust/)
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
 
 ---
 
