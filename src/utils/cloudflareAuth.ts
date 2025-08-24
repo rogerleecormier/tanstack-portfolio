@@ -89,17 +89,10 @@ export const isAuthenticated = (): boolean => {
     console.log('===========================');
   }
   
-  // If we have Cloudflare Access parameters, we're likely authenticated
-  // But also check if we have actual cookies to confirm
+  // If we have Cloudflare Access parameters, trust that authentication is successful
+  // This prevents the "Access Required" page from flashing
   if (hasCfAccessParams) {
-    // If we have both parameters and cookies, definitely authenticated
-    if (hasAuthCookie) {
-      return true;
-    }
-    
-    // If we only have parameters but no cookies yet, might still be authenticating
-    // This will trigger a retry mechanism in the useAuth hook
-    return false;
+    return true;
   }
   
   return hasAuthCookie || hasStoredUser || hasAccessToken || hasAccessIdentity;
@@ -298,29 +291,28 @@ export const initAuth = (): void => {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
   
-  // If we have Cloudflare Access parameters, wait for cookies and update auth state
+  // If we have Cloudflare Access parameters, immediately trigger authentication update
   if (hasCfAccessParams) {
-    // Wait for cookies to be set, then check authentication
-    setTimeout(() => {
-      // Clean up URL parameters first
-      const currentUrlParams = new URLSearchParams(window.location.search);
-      if (currentUrlParams.has('__cf_access_message') || currentUrlParams.has('__cf_access_redirect')) {
-        currentUrlParams.delete('__cf_access_message');
-        currentUrlParams.delete('__cf_access_redirect');
-        
-        // Create clean URL
-        const cleanUrl = window.location.pathname + (currentUrlParams.toString() ? '?' + currentUrlParams.toString() : '');
-        window.history.replaceState({}, document.title, cleanUrl);
-      }
+    // Clean up URL parameters immediately
+    const currentUrlParams = new URLSearchParams(window.location.search);
+    if (currentUrlParams.has('__cf_access_message') || currentUrlParams.has('__cf_access_redirect')) {
+      currentUrlParams.delete('__cf_access_message');
+      currentUrlParams.delete('__cf_access_redirect');
       
-      // Force a fresh authentication check
-      if (typeof window !== 'undefined' && window.dispatchEvent) {
-        // Dispatch a custom event to trigger authentication update
-        window.dispatchEvent(new CustomEvent('cloudflare-auth-update', {
-          detail: { source: 'initAuth', hasCfAccessParams: true }
-        }));
-      }
-    }, 200); // Increased delay to ensure cookies are set
+      // Create clean URL
+      const cleanUrl = window.location.pathname + (currentUrlParams.toString() ? '?' + currentUrlParams.toString() : '');
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+    
+    // Immediately dispatch event to trigger authentication update
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent('cloudflare-auth-update', {
+        detail: { source: 'initAuth', hasCfAccessParams: true }
+      }));
+    }
+    
+    // Also try to get user info from cookies immediately
+    checkCloudflareAccessIdentity();
     return;
   }
   

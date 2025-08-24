@@ -305,8 +305,8 @@ export const useAuth = () => {
                                  urlParams.has('CF_Access_Redirect');
         
         if (hasCfAccessParams) {
-          // Small delay to ensure cookies are set, then check auth
-          setTimeout(checkAuth, 500);
+          // Immediate authentication check for Cloudflare Access return
+          checkAuth();
         } else {
           // Normal delay for other URL changes
           setTimeout(checkAuth, 1000);
@@ -318,7 +318,7 @@ export const useAuth = () => {
     const handleCloudflareAuthUpdate = (event: CustomEvent) => {
       if (environment.isProduction() && event.detail?.hasCfAccessParams) {
         // Immediate authentication check for Cloudflare Access return
-        setTimeout(checkAuth, 100);
+        checkAuth();
       }
     };
     
@@ -338,7 +338,7 @@ export const useAuth = () => {
         
         if (hasCfAccessParams) {
           // Immediate check for Cloudflare Access return
-          setTimeout(checkAuth, 100);
+          checkAuth();
         } else {
           // Normal delay for other visibility changes
           setTimeout(checkAuth, 500);
