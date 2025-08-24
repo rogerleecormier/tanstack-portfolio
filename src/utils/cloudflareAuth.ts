@@ -1,6 +1,8 @@
 // Cloudflare Access Authentication Utility
 // This handles authentication through Cloudflare Access with One-Time PIN (OTP)
 
+import { isEmailAllowed } from '../config/accessControl';
+
 export interface CloudflareUser {
   email: string;
   name?: string;
@@ -215,22 +217,8 @@ export const hasAccess = (): boolean => {
   const user = getUserInfo();
   if (!user) return false;
   
-  // Check access for rcormier.dev domain emails
-  const allowedEmails = ['roger@rcormier.dev'];
-  const allowedDomains = ['rcormier.dev'];
-  
-  // Check exact email match
-  if (allowedEmails.includes(user.email)) {
-    return true;
-  }
-  
-  // Check domain match (for additional rcormier.dev emails)
-  const userDomain = user.email.split('@')[1];
-  if (allowedDomains.includes(userDomain)) {
-    return true;
-  }
-  
-  return false;
+  // Use the centralized access control configuration
+  return isEmailAllowed(user.email);
 };
 
 // Initialize authentication state
