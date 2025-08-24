@@ -2,12 +2,64 @@ import React from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P, H3 } from './ui/typography';
-import { Shield, ArrowRight, Loader2, Lock, UserCheck, Info, User } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, Lock, UserCheck, Info, User, Key, Server } from 'lucide-react';
 import { DevAuthToggle } from './DevAuthToggle';
 import { useAuth } from '../hooks/useAuth';
+import { PassiveAuthWrapper } from './PassiveAuthWrapper';
+import { usePassiveAuth } from '../hooks/usePassiveAuth';
 
 export const ProtectedPage: React.FC = () => {
+  const [useNewAuth, setUseNewAuth] = React.useState(false);
   const { isAuthenticated, user, isLoading, isDevelopment, logout, isProduction } = useAuth();
+  const { user: passiveUser, isAuthenticated: passiveIsAuthenticated } = usePassiveAuth();
+
+  // Add authentication system toggle at the top
+  const authToggle = (
+    <div className="container mx-auto px-4 py-4">
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Server className="h-5 w-5" />
+            Authentication System Toggle
+          </CardTitle>
+          <CardDescription>
+            Choose between the old Cloudflare Access system and the new passive server-side system
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2">
+            <Button
+              variant={!useNewAuth ? "default" : "outline"}
+              onClick={() => setUseNewAuth(false)}
+              className="flex items-center gap-2"
+            >
+              <Shield className="h-4 w-4" />
+              Cloudflare Access (Old)
+            </Button>
+            <Button
+              variant={useNewAuth ? "default" : "outline"}
+              onClick={() => setUseNewAuth(true)}
+              className="flex items-center gap-2"
+            >
+              <Key className="h-4 w-4" />
+              Passive Server Auth (New)
+            </Button>
+          </div>
+          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <strong>Current System:</strong> {useNewAuth ? 'Passive Server Auth' : 'Cloudflare Access'}
+            </p>
+            <p className="text-sm text-blue-600 mt-1">
+              {useNewAuth 
+                ? 'No automatic checks, no refreshing, content loads instantly'
+                : 'Traditional cookie-based authentication with automatic checks'
+              }
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 
   if (isLoading) {
     return (
@@ -22,9 +74,128 @@ export const ProtectedPage: React.FC = () => {
     );
   }
 
+  // Show the appropriate authentication system
+  if (useNewAuth) {
+    // New Passive Authentication System
+    return (
+      <div>
+        {authToggle}
+        <PassiveAuthWrapper showLogin={false}>
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  Protected Content (New System)
+                </h1>
+                <p className="text-xl text-gray-600">
+                  This page uses the new passive authentication system
+                </p>
+                <p className="text-lg text-gray-500 mt-2">
+                  No automatic checks, no refreshing, content loads instantly!
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <User className="h-5 w-5" />
+                      User Information
+                    </CardTitle>
+                    <CardDescription>
+                      Your authenticated user details
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Name:</span>
+                      <span>{passiveUser?.name || 'Not authenticated'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Email:</span>
+                      <span>{passiveUser?.email || 'Not authenticated'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Role:</span>
+                      <span>{passiveUser?.role || 'Not authenticated'}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      Authentication Status
+                    </CardTitle>
+                    <CardDescription>
+                      Current authentication state
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Status:</span>
+                      <span className={passiveIsAuthenticated ? 'text-green-600 font-semibold' : 'text-gray-500'}>
+                        {passiveIsAuthenticated ? 'Authenticated' : 'Not Authenticated'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">System:</span>
+                      <span>Passive Server Auth</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Behavior:</span>
+                      <span>No Automatic Checks</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="mb-8">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Key className="h-5 w-5" />
+                    How This Works
+                  </CardTitle>
+                  <CardDescription>
+                    This page demonstrates completely passive authentication
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="border rounded-lg p-4">
+                      <h4 className="font-semibold text-green-700 mb-2">✅ What Happens</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Page loads instantly</li>
+                        <li>• No authentication checks</li>
+                        <li>• No automatic redirects</li>
+                        <li>• Content always visible</li>
+                      </ul>
+                    </div>
+                    <div className="border rounded-lg p-4">
+                      <h4 className="font-semibold text-blue-700 mb-2">🔧 Manual Controls</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Click "Check Auth" to verify token</li>
+                        <li>• Click "Sign In" to show login form</li>
+                        <li>• Authentication is completely optional</li>
+                        <li>• You control when auth happens</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </PassiveAuthWrapper>
+      </div>
+    );
+  }
+
+  // Old Cloudflare Access System
   if (!isAuthenticated) {
     return (
       <div className="container mx-auto px-4 py-8">
+        {authToggle}
         <DevAuthToggle />
         
         <div className="flex items-center justify-center">
