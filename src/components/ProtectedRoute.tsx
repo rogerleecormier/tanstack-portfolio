@@ -66,7 +66,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
               <p className="text-sm text-blue-700">
                 {isDevelopment 
                   ? 'You are running in development mode. Click the button below to simulate authentication and access protected content.'
-                  : 'This page is protected by Cloudflare Access. You\'ll need to authenticate using your credentials.'
+                  : 'This page is protected by Cloudflare Access. You\'ll need to authenticate using your Google SSO credentials.'
                 }
               </p>
             </div>
@@ -76,7 +76,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
               className="w-full flex items-center justify-center space-x-2"
             >
               <span>
-                {isDevelopment ? 'Simulate Login' : 'Go to Login'}
+                {isDevelopment ? 'Simulate Login' : 'Authenticate with Google'}
               </span>
               <ArrowRight className="h-4 w-4" />
             </Button>

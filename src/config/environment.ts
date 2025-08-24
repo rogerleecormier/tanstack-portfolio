@@ -38,13 +38,6 @@ export const environment = {
     loginUrl: '/cdn-cgi/access/login',
     logoutUrl: '/cdn-cgi/access/logout',
     identityUrl: '/cdn-cgi/access/get-identity'
-  },
-
-  // Development server settings
-  devServer: {
-    host: 'localhost',
-    port: 5173, // Default Vite port
-    protocol: 'http'
   }
 };
 
