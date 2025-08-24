@@ -191,8 +191,14 @@ const productionAuth = {
   login: (): void => {
     if (environment.isDevelopment()) return;
     
-    // Redirect to protected page and let Cloudflare Access handle the login
-    window.location.href = '/protected';
+    // Redirect to protected route - Cloudflare Access should intercept this
+    // and show the login page if not authenticated
+    console.log('Production login: Redirecting to /protected - Cloudflare Access should intercept');
+    console.log('Current cookies:', document.cookie);
+    console.log('Current URL:', window.location.href);
+    
+    // Try to force a fresh request to trigger Cloudflare Access
+    window.location.replace('/protected');
   },
 
   logout: (): void => {

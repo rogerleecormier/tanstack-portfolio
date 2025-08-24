@@ -190,7 +190,8 @@ export const login = (): void => {
     console.log('Development mode: Redirecting to protected route for simulated authentication');
     window.location.href = '/protected';
   } else {
-    // In production, redirect to protected page and let Cloudflare Access handle the login
+    // In production, redirect to protected route - Cloudflare Access should intercept this
+    // and show the login page if not authenticated
     console.log('Production mode: Redirecting to protected route - Cloudflare Access will intercept');
     window.location.href = '/protected';
   }
