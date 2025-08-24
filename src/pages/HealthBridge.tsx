@@ -1,3 +1,49 @@
+/**
+ * @fileoverview HealthBridge Weight Analysis Dashboard
+ * @description Interactive health data analysis tool for tracking weight changes over time
+ * @author Roger Lee Cormier
+ * @version 1.0.0
+ * @lastUpdated 2024
+ * 
+ * @features
+ * - Real-time weight data visualization with Recharts
+ * - Advanced filtering by date ranges, months, and years
+ * - Interactive charts with responsive design
+ * - Data aggregation and trend analysis
+ * - Protected route requiring authentication
+ * - Pagination for large datasets
+ * - Sortable data tables
+ * 
+ * @technologies
+ * - React 19 with TypeScript
+ * - TanStack React Query for data fetching
+ * - Recharts for data visualization
+ * - shadcn/ui components
+ * - Tailwind CSS for styling
+ * - Cloudflare Access authentication
+ * 
+ * @searchKeywords
+ * - health analysis
+ * - weight tracking
+ * - data visualization
+ * - health metrics
+ * - fitness dashboard
+ * - health data
+ * - weight changes
+ * - health trends
+ * - data filtering
+ * - health monitoring
+ * 
+ * @searchTags
+ * ["health", "fitness", "analytics", "data", "visualization", "tracking", "metrics", "dashboard", "protected", "authentication"]
+ * 
+ * @searchSection
+ * "Health Analysis"
+ * 
+ * @searchDescription
+ * "Interactive health data analysis dashboard for tracking weight changes over time with advanced filtering, real-time charts, and comprehensive data visualization capabilities."
+ */
+
 import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchWeights } from "../api/healthBridge";
@@ -36,7 +82,21 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 
 const PAGE_SIZE = 10;
 
-// Helper functions for date filtering
+/**
+ * Helper functions for date filtering and data processing
+ * These functions provide date range filtering capabilities for the HealthBridge dashboard
+ */
+
+/**
+ * Checks if a date is within a specified number of days from now
+ * @param dateStr - Date string to check
+ * @param days - Number of days to check within
+ * @returns {boolean} True if date is within specified days
+ * @example
+ * ```tsx
+ * const isRecent = isWithinDays("2024-01-01", 7); // Check if within last 7 days
+ * ```
+ */
 function isWithinDays(dateStr: string, days: number) {
   const date = new Date(dateStr);
   const now = new Date();
@@ -44,17 +104,50 @@ function isWithinDays(dateStr: string, days: number) {
   return diff <= days;
 }
 
+/**
+ * Checks if a date falls within a specific year and month
+ * @param dateStr - Date string to check
+ * @param year - Target year
+ * @param month - Target month (0-11, where 0 is January)
+ * @returns {boolean} True if date matches the specified year and month
+ * @example
+ * ```tsx
+ * const isInJanuary2024 = isWithinMonth("2024-01-15", 2024, 0); // January 2024
+ * ```
+ */
 function isWithinMonth(dateStr: string, year: number, month: number) {
   const date = new Date(dateStr);
   return date.getFullYear() === year && date.getMonth() === month;
 }
 
+/**
+ * Checks if a date falls within a specified date range
+ * @param dateStr - Date string to check
+ * @param start - Start date of the range
+ * @param end - End date of the range
+ * @returns {boolean} True if date is within the specified range (inclusive)
+ * @example
+ * ```tsx
+ * const startDate = new Date("2024-01-01");
+ * const endDate = new Date("2024-01-31");
+ * const isInRange = isWithinRange("2024-01-15", startDate, endDate); // True
+ * ```
+ */
 function isWithinRange(dateStr: string, start: Date, end: Date) {
   const date = new Date(dateStr);
   return date >= start && date <= end;
 }
 
-// Helper function for last N months
+/**
+ * Checks if a date falls within the last N months from now
+ * @param dateStr - Date string to check
+ * @param months - Number of months to look back
+ * @returns {boolean} True if date is within the last N months
+ * @example
+ * ```tsx
+ * const isLast3Months = isWithinMonths("2024-01-15", 3); // Check if within last 3 months
+ * ```
+ */
 function isWithinMonths(dateStr: string, months: number) {
   const date = new Date(dateStr);
   const now = new Date();
@@ -66,6 +159,33 @@ function isWithinMonths(dateStr: string, months: number) {
   return date >= past && date <= now;
 }
 
+/**
+ * Custom Date Picker Component using shadcn/ui Calendar
+ * 
+ * @component ShadcnDatePicker
+ * @description A reusable date picker component that integrates with the HealthBridge dashboard
+ * @param {Object} props - Component props
+ * @param {string} props.value - Current selected date value
+ * @param {function} props.onChange - Callback function when date changes
+ * @param {boolean} [props.disabled=false] - Whether the date picker is disabled
+ * 
+ * @example
+ * ```tsx
+ * <ShadcnDatePicker
+ *   value={dateRange.start}
+ *   onChange={(val) => setDateRange(prev => ({ ...prev, start: val }))}
+ *   disabled={false}
+ * />
+ * ```
+ * 
+ * @features
+ * - Integrates with shadcn/ui Calendar component
+ * - Supports disabled state
+ * - Triggers onChange callback on date selection
+ * - Responsive design with proper styling
+ * 
+ * @returns {JSX.Element} Rendered date picker component
+ */
 function ShadcnDatePicker({
   value,
   onChange,
@@ -113,6 +233,32 @@ function ShadcnDatePicker({
   );
 }
 
+/**
+ * Add Weight Form Component
+ * 
+ * @component AddWeightBox
+ * @description Form component for adding new weight entries to the HealthBridge system
+ * @features
+ * - Weight input with unit selection (lbs/kg)
+ * - Date and time picker for entry timestamp
+ * - Form validation and error handling
+ * - Integration with TanStack React Query mutations
+ * - Real-time data updates after submission
+ * 
+ * @state
+ * - weight: Current weight input value
+ * - unit: Selected weight unit (lb or kg)
+ * - date: Selected date and time for entry
+ * - error: Current error message
+ * - success: Success state indicator
+ * 
+ * @example
+ * ```tsx
+ * <AddWeightBox />
+ * ```
+ * 
+ * @returns {JSX.Element} Rendered weight input form
+ */
 function AddWeightBox() {
   const queryClient = useQueryClient();
   const [weight, setWeight] = useState("");
@@ -254,6 +400,34 @@ function AddWeightBox() {
   );
 }
 
+/**
+ * HealthBridge Weight Analysis Dashboard Component
+ * 
+ * @component HealthBridgePage
+ * @description Main component for the HealthBridge weight analysis dashboard
+ * @example
+ * ```tsx
+ * <HealthBridgePage />
+ * ```
+ * 
+ * @features
+ * - Fetches weight data using TanStack React Query
+ * - Provides advanced filtering and sorting capabilities
+ * - Renders interactive charts and data tables
+ * - Handles pagination for large datasets
+ * - Supports custom date range selection
+ * 
+ * @state
+ * - sortBy: Current sorting column (date or weight)
+ * - sortDir: Sorting direction (asc or desc)
+ * - selectedYear: Filtered year selection
+ * - selectedMonth: Filtered month selection
+ * - quickRange: Quick date range filter
+ * - dateRange: Custom date range selection
+ * - page: Current page for pagination
+ * 
+ * @returns {JSX.Element} Rendered HealthBridge dashboard
+ */
 export default function HealthBridgePage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["weights"],
@@ -591,11 +765,36 @@ export default function HealthBridgePage() {
 
 
 
-  // Sort arrow and handler
+  /**
+   * Utility functions for sorting and filtering
+   */
+
+  /**
+   * Gets the appropriate arrow symbol for sort direction indication
+   * @param col - Column name to check (date or weight)
+   * @returns {string} Arrow symbol indicating sort direction or empty string if not sorted
+   * @example
+   * ```tsx
+   * const arrow = getArrow("date"); // Returns "↑", "↓", or ""
+   * ```
+   */
   function getArrow(col: "date" | "weight") {
     if (sortBy !== col) return "";
     return sortDir === "asc" ? "↑" : "↓";
   }
+
+  /**
+   * Handles column sorting with toggle functionality
+   * @param col - Column to sort by (date or weight)
+   * @description
+   * - If clicking the same column, toggles between ascending and descending
+   * - If clicking a different column, sets it as the new sort column with descending order
+   * - Resets pagination to page 1 when sorting changes
+   * @example
+   * ```tsx
+   * <TableHead onClick={() => handleSort("date")}>Date {getArrow("date")}</TableHead>
+   * ```
+   */
   function handleSort(col: "date" | "weight") {
     if (sortBy === col) {
       setSortDir(sortDir === "asc" ? "desc" : "asc");
@@ -606,7 +805,23 @@ export default function HealthBridgePage() {
     setPage(1);
   }
 
-  // Handlers for filters
+  /**
+   * Filter handler functions
+   */
+
+  /**
+   * Handles quick range filter selection
+   * @param days - Quick range selection (all, 7, 14, 30, 3m, 6m)
+   * @description
+   * - Sets the quick range filter
+   * - Resets year and month filters to "all"
+   * - Deactivates custom date range
+   * - Resets pagination to page 1
+   * @example
+   * ```tsx
+   * <button onClick={() => handleQuickRange("7")}>Last 7 Days</button>
+   * ```
+   */
   const handleQuickRange = (days: "all" | "7" | "14" | "30" | "3m" | "6m") => {
     setQuickRange(days);
     setSelectedYear("all");

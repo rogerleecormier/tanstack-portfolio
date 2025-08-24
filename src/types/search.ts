@@ -7,6 +7,7 @@ export interface SearchItem {
   section: string
   headings: string[]
   tags?: string[]
+  searchKeywords?: string // Additional search keywords for enhanced search
 }
 
 export interface SearchResult {

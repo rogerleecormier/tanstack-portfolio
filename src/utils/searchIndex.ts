@@ -13,14 +13,28 @@ export const initializeSearchIndex = async (): Promise<void> => {
     const items: SearchItem[] = await loadAllSearchItems();
     searchData = items
     
-    // Configure Fuse.js search
+    // Debug: Log HealthBridge item specifically
+    const healthBridgeItem = items.find(item => item.url === '/healthbridge-analysis');
+    if (healthBridgeItem) {
+      console.log('HealthBridge search item loaded:', {
+        title: healthBridgeItem.title,
+        description: healthBridgeItem.description,
+        contentLength: healthBridgeItem.content?.length || 0,
+        headings: healthBridgeItem.headings,
+        tags: healthBridgeItem.tags,
+        searchKeywords: healthBridgeItem.searchKeywords
+      });
+    }
+    
+    // Configure Fuse.js search with enhanced fields
     const fuseOptions = {
       keys: [
         { name: 'title', weight: 0.3 },
         { name: 'description', weight: 0.25 },
         { name: 'content', weight: 0.2 },
         { name: 'headings', weight: 0.15 },
-        { name: 'tags', weight: 0.1 }
+        { name: 'tags', weight: 0.1 },
+        { name: 'searchKeywords', weight: 0.2 } // New field for enhanced search
       ],
       threshold: 0.4,
       includeScore: true,
