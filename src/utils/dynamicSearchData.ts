@@ -57,7 +57,7 @@ const extractComponentContent = (content: string, filename: string): Partial<Sea
   const featuresMatch = content.match(/@features\s+([\s\S]*?)(?=\n\s*\*\s*@|\n\s*$|\*\/)/);
   const searchKeywordsMatch = content.match(/@searchKeywords\s+([\s\S]*?)(?=\n\s*\*\s*@|\n\s*$|\*\/)/);
   const searchTagsMatch = content.match(/@searchTags\s+\[([\s\S]*?)\]/);
-  const searchSectionMatch = content.match(/@searchSection\s+"([^"]+)"/);
+  // const searchSectionMatch = content.match(/@searchSection\s+"([^"]+)"/); // Unused for now
   const searchDescriptionMatch = content.match(/@searchDescription\s+"([^"]+)"/);
   
   // Extract component descriptions from JSX comments or text content
@@ -109,7 +109,7 @@ const extractComponentContent = (content: string, filename: string): Partial<Sea
   if (searchTagsMatch) {
     try {
       tags = JSON.parse(`[${searchTagsMatch[1]}]`);
-    } catch (e) {
+    } catch {
       // Fallback: extract individual tags
       tags = searchTagsMatch[1].split(',').map(t => t.trim().replace(/"/g, ''));
     }
