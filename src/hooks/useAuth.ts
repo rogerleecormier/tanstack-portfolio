@@ -54,8 +54,13 @@ const productionAuth = {
                          document.cookie.includes('CF_Access_Email') ||
                          document.cookie.includes('CF_Access_Identity') ||
                          document.cookie.includes('CF_Access_User') ||
-                         document.cookie.includes('CF_Access_Email') ||
-                         document.cookie.includes('CF_Access_User_Email');
+                         // Google Auth (IDP) specific cookies
+                         document.cookie.includes('CF_Access_User_Email') ||
+                         document.cookie.includes('CF_Access_User_Name') ||
+                         document.cookie.includes('CF_Access_User_UUID') ||
+                         // Additional IDP cookie patterns
+                         document.cookie.includes('CF_Access_User_') ||
+                         document.cookie.includes('CF_Access_Identity_');
     
     // Also check for URL parameters that indicate successful authentication
     const urlParams = new URLSearchParams(window.location.search);
@@ -64,12 +69,19 @@ const productionAuth = {
                          urlParams.has('access_token') ||
                          urlParams.has('user_email');
     
-    // REMOVE THIS LINE - it's the security vulnerability:
-    // const isOnProtectedRoute = window.location.pathname === '/protected' || 
-    //                           window.location.pathname === '/healthbridge-analysis';
+    // Check for stored user data
+    const hasStoredUser = localStorage.getItem('cf_user') !== null;
+    
+    // Debug logging
+    console.log('=== Production Auth Debug ===');
+    console.log('All cookies:', document.cookie);
+    console.log('Has auth cookie:', hasAuthCookie);
+    console.log('Has auth params:', hasAuthParams);
+    console.log('Has stored user:', hasStoredUser);
+    console.log('===========================');
     
     // Only return true if we actually have authentication evidence
-    return hasAuthCookie || hasAuthParams;
+    return hasAuthCookie || hasAuthParams || hasStoredUser;
   },
 
   getUser: (): CloudflareUser | null => {

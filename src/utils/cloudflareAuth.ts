@@ -44,12 +44,19 @@ export const isAuthenticated = (): boolean => {
     }
   }
   
-  // Check for Cloudflare Access authentication cookies (updated for Pages Access)
+  // Check for Cloudflare Access authentication cookies (updated for Pages Access + IDP)
   const hasAuthCookie = document.cookie.includes('CF_Authorization') || 
                        document.cookie.includes('CF_Access_JWT') ||
                        document.cookie.includes('CF_Access_Email') ||
                        document.cookie.includes('CF_Access_Identity') ||
-                       document.cookie.includes('CF_Access_User');
+                       document.cookie.includes('CF_Access_User') ||
+                       // Google Auth (IDP) specific cookies
+                       document.cookie.includes('CF_Access_User_Email') ||
+                       document.cookie.includes('CF_Access_User_Name') ||
+                       document.cookie.includes('CF_Access_User_UUID') ||
+                       // Additional IDP cookie patterns
+                       document.cookie.includes('CF_Access_User_') ||
+                       document.cookie.includes('CF_Access_Identity_');
   
   // Check for stored user data
   const hasStoredUser = localStorage.getItem('cf_user') !== null;
@@ -60,6 +67,17 @@ export const isAuthenticated = (): boolean => {
   
   // Check for Cloudflare Access identity endpoint response
   const hasAccessIdentity = document.cookie.includes('CF_Access_Identity');
+  
+  // Debug logging for production
+  if (!isDevelopment()) {
+    console.log('=== Cloudflare Auth Debug ===');
+    console.log('All cookies:', document.cookie);
+    console.log('Has auth cookie:', hasAuthCookie);
+    console.log('Has stored user:', hasStoredUser);
+    console.log('Has access token:', hasAccessToken);
+    console.log('Has access identity:', hasAccessIdentity);
+    console.log('===========================');
+  }
   
   return hasAuthCookie || hasStoredUser || hasAccessToken || hasAccessIdentity;
 };
@@ -106,60 +124,70 @@ export const getUserInfo = (): CloudflareUser | null => {
       return user;
     }
     
-    // Try to get from Cloudflare Access cookies
-    const authCookie = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('CF_Authorization='));
+    // Try to get from Cloudflare Access cookies - check multiple patterns
+    const cookiePatterns = [
+      'CF_Authorization=',
+      'CF_Access_User_Email=',
+      'CF_Access_Email=',
+      'CF_Access_Identity=',
+      'CF_Access_User='
+    ];
     
-    if (authCookie) {
-      const token = authCookie.split('=')[1];
-      try {
-        // Decode JWT token to get user info
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const user = {
-          email: payload.email,
-          name: payload.name || 'Authenticated User',
-          sub: payload.sub
-        };
-        setUserInfo(user);
-        return user;
-      } catch (error) {
-        console.error('Error decoding JWT token:', error);
+    for (const pattern of cookiePatterns) {
+      const cookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith(pattern));
+      
+      if (cookie) {
+        const value = cookie.split('=')[1];
+        
+        // Handle JWT token (CF_Authorization)
+        if (pattern === 'CF_Authorization=') {
+          try {
+            const payload = JSON.parse(atob(value.split('.')[1]));
+            if (payload.email) {
+              const user = {
+                email: payload.email,
+                name: payload.name || payload.given_name || payload.family_name || 'Authenticated User',
+                sub: payload.sub
+              };
+              setUserInfo(user);
+              return user;
+            }
+          } catch (error) {
+            console.error('Error decoding JWT token:', error);
+          }
+        }
+        
+        // Handle email cookies directly
+        if (pattern === 'CF_Access_User_Email=' || pattern === 'CF_Access_Email=') {
+          if (value && value !== '') {
+            const user = {
+              email: decodeURIComponent(value),
+              name: 'Authenticated User'
+            };
+            setUserInfo(user);
+            return user;
+          }
+        }
+        
+        // Handle identity cookies
+        if (pattern === 'CF_Access_Identity=') {
+          if (value && value !== '') {
+            const user = {
+              email: decodeURIComponent(value),
+              name: 'Authenticated User'
+            };
+            setUserInfo(user);
+            return user;
+          }
+        }
       }
     }
     
-    // Check for OTP authentication email cookie
-    const emailCookie = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('CF_Access_Email='));
-    
-    if (emailCookie) {
-      const email = emailCookie.split('=')[1];
-      const user = {
-        email: decodeURIComponent(email),
-        name: 'Authenticated User'
-      };
-      setUserInfo(user);
-      return user;
-    }
-    
-    // Check for Cloudflare Access Identity cookie (Pages Access)
-    const identityCookie = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('CF_Access_Identity='));
-    
-    if (identityCookie) {
-      try {
-        const identity = identityCookie.split('=')[1];
-        const user = {
-          email: identity,
-          name: 'Authenticated User'
-        };
-        setUserInfo(user);
-        return user;
-      } catch (error) {
-        console.error('Error reading identity cookie:', error);
-      }
+    // Try to get user info from Cloudflare Access identity endpoint
+    if (!isDevelopment()) {
+      checkCloudflareAccessIdentity();
     }
     
     return null;

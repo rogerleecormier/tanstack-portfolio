@@ -1,210 +1,318 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { P, H3, H4 } from './ui/typography';
-import { AlertTriangle, CheckCircle, XCircle, Info, ExternalLink } from 'lucide-react';
-import { isDevelopment } from '../utils/cloudflareAuth';
+import { P, H3 } from './ui/typography';
+import { Shield, RefreshCw, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
+import { environment } from '../config/environment';
+
+interface StatusDetails {
+  cookies: {
+    all: string;
+    cfAuth: boolean;
+    cfAccessJWT: boolean;
+    cfAccessEmail: boolean;
+    cfAccessIdentity: boolean;
+    cfAccessUser: boolean;
+    cfAccessUserEmail: boolean;
+    cfAccessUserName: boolean;
+    cfAccessUserUUID: boolean;
+    cfAccessUserPattern: boolean;
+    cfAccessIdentityPattern: boolean;
+  };
+  localStorage: {
+    storedUser: string | null;
+    accessToken: string | null;
+  };
+  urlParams: {
+    cfAccessMessage: boolean;
+    cfAccessRedirect: boolean;
+    accessToken: boolean;
+    userEmail: boolean;
+  };
+  identityEndpoint: {
+    success: boolean;
+    data?: Record<string, unknown>;
+    status?: number;
+    statusText?: string;
+    error?: string;
+  } | null;
+  timestamp: string;
+  message?: string;
+  error?: string;
+}
 
 export const CloudflareStatusChecker: React.FC = () => {
-  const [endpointStatus, setEndpointStatus] = useState<boolean | null>(null);
-  const [isChecking, setIsChecking] = useState(false);
+  const [status, setStatus] = useState<'checking' | 'connected' | 'disconnected' | 'error'>('checking');
+  const [details, setDetails] = useState<StatusDetails | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  const checkEndpoint = async () => {
-    setIsChecking(true);
+  const checkStatus = async () => {
+    setStatus('checking');
     try {
-      // Check if Cloudflare Access login endpoint is available
-      await fetch('/cdn-cgi/access/login', { 
-        method: 'HEAD',
-        mode: 'no-cors' // Avoid CORS issues
-      });
-      // If we get here, the endpoint exists
-      setEndpointStatus(true);
+      // Check if we're in production
+      if (!environment.isProduction()) {
+        setStatus('disconnected');
+        setDetails({
+          cookies: { all: '', cfAuth: false, cfAccessJWT: false, cfAccessEmail: false, cfAccessIdentity: false, cfAccessUser: false, cfAccessUserEmail: false, cfAccessUserName: false, cfAccessUserUUID: false, cfAccessUserPattern: false, cfAccessIdentityPattern: false },
+          localStorage: { storedUser: null, accessToken: null },
+          urlParams: { cfAccessMessage: false, cfAccessRedirect: false, accessToken: false, userEmail: false },
+          identityEndpoint: null,
+          timestamp: new Date().toISOString(),
+          message: 'Not in production mode'
+        });
+        return;
+      }
+
+      // Check for Cloudflare Access cookies
+      const cookies = document.cookie;
+      const cookieDetails = {
+        all: cookies,
+        cfAuth: cookies.includes('CF_Authorization'),
+        cfAccessJWT: cookies.includes('CF_Access_JWT'),
+        cfAccessEmail: cookies.includes('CF_Access_Email'),
+        cfAccessIdentity: cookies.includes('CF_Access_Identity'),
+        cfAccessUser: cookies.includes('CF_Access_User'),
+        cfAccessUserEmail: cookies.includes('CF_Access_User_Email'),
+        cfAccessUserName: cookies.includes('CF_Access_User_Name'),
+        cfAccessUserUUID: cookies.includes('CF_Access_User_UUID'),
+        cfAccessUserPattern: cookies.includes('CF_Access_User_'),
+        cfAccessIdentityPattern: cookies.includes('CF_Access_Identity_')
+      };
+
+      // Check for stored user data
+      const storedUser = localStorage.getItem('cf_user');
+      const accessToken = localStorage.getItem('cf_access_token');
+
+      // Check URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlDetails = {
+        cfAccessMessage: urlParams.has('__cf_access_message'),
+        cfAccessRedirect: urlParams.has('__cf_access_redirect'),
+        accessToken: urlParams.has('access_token'),
+        userEmail: urlParams.has('user_email')
+      };
+
+      // Try to fetch from identity endpoint
+      let identityEndpoint = null;
+      try {
+        const response = await fetch('/cdn-cgi/access/get-identity', {
+          credentials: 'include'
+        });
+        if (response.ok) {
+          const data = await response.json();
+          identityEndpoint = { success: true, data };
+        } else {
+          identityEndpoint = { success: false, status: response.status, statusText: response.statusText };
+        }
+      } catch (error) {
+        identityEndpoint = { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      }
+
+      const allDetails = {
+        cookies: cookieDetails,
+        localStorage: { storedUser, accessToken },
+        urlParams: urlDetails,
+        identityEndpoint,
+        timestamp: new Date().toISOString()
+      };
+
+      setDetails(allDetails);
+
+      // Determine status based on evidence
+      const hasAuthEvidence = cookieDetails.cfAuth || 
+                             cookieDetails.cfAccessJWT || 
+                             cookieDetails.cfAccessEmail || 
+                             cookieDetails.cfAccessIdentity || 
+                             cookieDetails.cfAccessUser ||
+                             cookieDetails.cfAccessUserEmail ||
+                             cookieDetails.cfAccessUserName ||
+                             cookieDetails.cfAccessUserUUID ||
+                             storedUser ||
+                             urlDetails.accessToken ||
+                             urlDetails.userEmail;
+
+      if (hasAuthEvidence) {
+        setStatus('connected');
+      } else {
+        setStatus('disconnected');
+      }
+
     } catch (error) {
-      console.error('Error checking endpoint:', error);
-      setEndpointStatus(false);
-    } finally {
-      setIsChecking(false);
+      setStatus('error');
+      setDetails({ 
+        cookies: { all: '', cfAuth: false, cfAccessJWT: false, cfAccessEmail: false, cfAccessIdentity: false, cfAccessUser: false, cfAccessUserEmail: false, cfAccessUserName: false, cfAccessUserUUID: false, cfAccessUserPattern: false, cfAccessIdentityPattern: false },
+        localStorage: { storedUser: null, accessToken: null },
+        urlParams: { cfAccessMessage: false, cfAccessRedirect: false, accessToken: false, userEmail: false },
+        identityEndpoint: null,
+        timestamp: new Date().toISOString(),
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   };
 
   useEffect(() => {
-    if (!isDevelopment()) {
-      checkEndpoint();
-    }
+    checkStatus();
   }, []);
 
   const getStatusIcon = () => {
-    if (isDevelopment()) return <CheckCircle className="h-6 w-6 text-teal-600" />;
-    if (endpointStatus === true) return <CheckCircle className="h-6 w-6 text-teal-600" />;
-    if (endpointStatus === false) return <XCircle className="h-6 w-6 text-red-600" />;
-    return <AlertTriangle className="h-6 w-6 text-amber-600" />;
+    switch (status) {
+      case 'connected':
+        return <CheckCircle className="h-6 w-6 text-green-600" />;
+      case 'disconnected':
+        return <XCircle className="h-6 w-6 text-red-600" />;
+      case 'error':
+        return <AlertTriangle className="h-6 w-6 text-yellow-600" />;
+      default:
+        return <RefreshCw className="h-6 w-6 text-blue-600 animate-spin" />;
+    }
+  };
+
+  const getStatusText = () => {
+    switch (status) {
+      case 'connected':
+        return 'Cloudflare Access Connected';
+      case 'disconnected':
+        return 'Cloudflare Access Disconnected';
+      case 'error':
+        return 'Error Checking Status';
+      default:
+        return 'Checking Status...';
+    }
   };
 
   const getStatusColor = () => {
-    if (isDevelopment()) return 'text-teal-800';
-    if (endpointStatus === true) return 'text-teal-800';
-    if (endpointStatus === false) return 'text-red-800';
-    return 'text-amber-800';
+    switch (status) {
+      case 'connected':
+        return 'text-green-600';
+      case 'disconnected':
+        return 'text-red-600';
+      case 'error':
+        return 'text-yellow-600';
+      default:
+        return 'text-blue-600';
+    }
   };
 
-  const getStatusBg = () => {
-    if (isDevelopment()) return 'bg-teal-50 border-teal-200';
-    if (endpointStatus === true) return 'bg-teal-50 border-teal-200';
-    if (endpointStatus === false) return 'bg-red-50 border-red-200';
-    return 'bg-amber-50 border-amber-200';
-  };
-
-  const getStatusMessage = () => {
-    if (isDevelopment()) return 'Development mode - using simulated authentication';
-    if (endpointStatus === true) return 'Cloudflare Access is properly configured and available';
-    if (endpointStatus === false) return 'Cloudflare Access endpoint not responding - needs configuration';
-    return 'Checking Cloudflare Access status...';
-  };
-
-  const getStatusTitle = () => {
-    if (isDevelopment()) return 'Development Mode';
-    if (endpointStatus === true) return 'Fully Configured';
-    if (endpointStatus === false) return 'Not Configured';
-    return 'Checking Status';
-  };
+  if (!environment.isProduction()) {
+    return null;
+  }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto border-teal-200 shadow-lg">
+    <Card className="w-full max-w-4xl mx-auto border-teal-200 shadow-lg">
       <CardHeader className="text-center">
-        <CardTitle className="flex items-center justify-center space-x-2 text-teal-900">
-          <Info className="h-6 w-6 text-teal-600" />
-          <span>Authentication System Status</span>
-        </CardTitle>
+        <div className="flex items-center justify-center space-x-2">
+          <Shield className="h-6 w-6 text-teal-600" />
+          <CardTitle className="text-xl font-bold text-teal-900">Cloudflare Access Status</CardTitle>
+        </div>
         <CardDescription className="text-teal-700">
-          Current authentication system status and configuration
+          Monitor your Cloudflare Access authentication status
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Status Overview */}
-        <div className={`p-4 rounded-lg border ${getStatusBg()}`}>
-          <div className="flex items-center space-x-3">
-            {getStatusIcon()}
-            <div>
-              <H3 className={`font-medium ${getStatusColor()}`}>
-                {getStatusTitle()}
-              </H3>
-              <P className={`text-sm ${getStatusColor()}`}>
-                {getStatusMessage()}
-              </P>
-            </div>
-          </div>
+        {/* Status Display */}
+        <div className="flex items-center justify-center space-x-3 p-4 bg-teal-50 rounded-lg border border-teal-200">
+          {getStatusIcon()}
+          <span className={`font-semibold text-lg ${getStatusColor()}`}>
+            {getStatusText()}
+          </span>
         </div>
 
-        {/* Detailed Status */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <H4 className="font-medium text-teal-900">Environment</H4>
-            <div className="text-sm space-y-1">
-              <div className="flex justify-between">
-                <span className="text-teal-700">Current Domain:</span>
-                <span className="font-mono text-teal-900">{window.location.hostname}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-teal-700">Environment:</span>
-                <span className={isDevelopment() ? 'text-teal-600' : 'text-teal-600'}>
-                  {isDevelopment() ? 'Development' : 'Production'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-teal-700">Authentication:</span>
-                <span className={isDevelopment() ? 'text-teal-600' : 'text-teal-600'}>
-                  {isDevelopment() ? 'Simulated' : 'Cloudflare Access'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {!isDevelopment() && (
-            <div className="space-y-2">
-              <H4 className="font-medium text-teal-900">Cloudflare Access Status</H4>
-              <div className="text-sm space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-teal-700">Login Endpoint:</span>
-                  <span className="font-mono text-teal-900">/cdn-cgi/access/login</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-teal-700">Status:</span>
-                  <span className={endpointStatus === null ? 'text-teal-500' : 
-                                 endpointStatus ? 'text-teal-600' : 'text-red-600'}>
-                    {endpointStatus === null ? 'Checking...' : 
-                     endpointStatus ? 'Available' : 'Not Available'}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="flex space-x-3">
-          {!isDevelopment() && (
-            <Button 
-              onClick={checkEndpoint} 
-              disabled={isChecking}
-              variant="outline"
-              className="flex-1 border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800 transition-colors duration-200"
-            >
-              {isChecking ? 'Checking...' : 'Recheck Status'}
-            </Button>
-          )}
-          
-          <Button 
-            asChild 
-            className="flex-1 bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2 transition-all duration-200"
+        {/* Action Buttons */}
+        <div className="flex justify-center space-x-3">
+          <Button
+            onClick={checkStatus}
+            disabled={status === 'checking'}
+            className="bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2"
           >
-            <a 
-              href="https://dash.cloudflare.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center justify-center space-x-2"
-            >
-              <span>Cloudflare Dashboard</span>
-              <ExternalLink className="h-4 w-4" />
-            </a>
+            <RefreshCw className={`h-4 w-4 mr-2 ${status === 'checking' ? 'animate-spin' : ''}`} />
+            Refresh Status
+          </Button>
+          <Button
+            onClick={() => setIsExpanded(!isExpanded)}
+            variant="outline"
+            className="border-teal-300 text-teal-700 hover:bg-teal-50"
+          >
+            <Info className="h-4 w-4 mr-2" />
+            {isExpanded ? 'Hide Details' : 'Show Details'}
           </Button>
         </div>
 
-        {/* Setup Instructions */}
-        {!isDevelopment() && endpointStatus === false && (
-          <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-            <H4 className="font-medium text-teal-800 mb-2">Next Steps</H4>
-            <ol className="text-sm text-teal-700 space-y-1 list-decimal list-inside">
-              <li>Enable Cloudflare Zero Trust in your dashboard</li>
-              <li>Configure One-Time PIN identity provider</li>
-              <li>Create Zero Trust application for rcormier.dev</li>
-              <li>Set up access policies (Bypass for public, Allow for protected)</li>
-              <li>Test the configuration</li>
-            </ol>
-            <div className="mt-3">
-              <Button 
-                asChild 
-                variant="outline" 
-                size="sm"
-                className="text-teal-700 border-teal-300 hover:bg-teal-100 transition-colors duration-200"
-              >
-                <a href="/CLOUDFLARE_SETUP.md" target="_blank">
-                  View Detailed Setup Guide
-                </a>
-              </Button>
+        {/* Detailed Information */}
+        {isExpanded && details && (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4">
+            <H3 className="font-semibold text-gray-800">Detailed Status Information</H3>
+            
+            {/* Cookies Section */}
+            <div className="space-y-2">
+              <P className="font-semibold text-gray-700">Authentication Cookies:</P>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="flex items-center space-x-2">
+                  <span className={`w-3 h-3 rounded-full ${details.cookies?.cfAuth ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  <span>CF_Authorization: {details.cookies?.cfAuth ? '✅' : '❌'}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessUserEmail ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  <span>CF_Access_User_Email: {details.cookies?.cfAccessUserEmail ? '✅' : '❌'}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessIdentity ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  <span>CF_Access_Identity: {details.cookies?.cfAccessIdentity ? '✅' : '❌'}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessUser ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  <span>CF_Access_User: {details.cookies?.cfAccessUser ? '✅' : '❌'}</span>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* Development Mode Info */}
-        {isDevelopment() && (
-          <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-            <H4 className="font-medium text-teal-800 mb-2">Development Mode</H4>
-            <P className="text-sm text-teal-700 mb-2">
-              You're currently running in development mode. Authentication is simulated for testing purposes.
-            </P>
-            <P className="text-sm text-teal-700">
-              To test production authentication, deploy to rcormier.dev and configure Cloudflare Access.
-            </P>
+            {/* Local Storage Section */}
+            <div className="space-y-2">
+              <P className="font-semibold text-gray-700">Local Storage:</P>
+              <div className="text-sm space-y-1">
+                <div>Stored User: {details.localStorage?.storedUser ? '✅' : '❌'}</div>
+                <div>Access Token: {details.localStorage?.accessToken ? '✅' : '❌'}</div>
+              </div>
+            </div>
+
+            {/* URL Parameters Section */}
+            <div className="space-y-2">
+              <P className="font-semibold text-gray-700">URL Parameters:</P>
+              <div className="text-sm space-y-1">
+                <div>CF Access Message: {details.urlParams?.cfAccessMessage ? '✅' : '❌'}</div>
+                <div>CF Access Redirect: {details.urlParams?.cfAccessRedirect ? '✅' : '❌'}</div>
+                <div>Access Token: {details.urlParams?.accessToken ? '✅' : '❌'}</div>
+                <div>User Email: {details.urlParams?.userEmail ? '✅' : '❌'}</div>
+              </div>
+            </div>
+
+            {/* Identity Endpoint Section */}
+            <div className="space-y-2">
+              <P className="font-semibold text-gray-700">Identity Endpoint:</P>
+              <div className="text-sm">
+                {details.identityEndpoint?.success ? (
+                  <div className="text-green-700">
+                    ✅ Success: {JSON.stringify(details.identityEndpoint.data, null, 2)}
+                  </div>
+                ) : (
+                  <div className="text-red-700">
+                    ❌ Failed: {JSON.stringify(details.identityEndpoint, null, 2)}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Raw Cookie Data */}
+            <div className="space-y-2">
+              <P className="font-semibold text-gray-700">All Cookies:</P>
+              <div className="bg-white border border-gray-300 rounded p-2 text-xs font-mono overflow-x-auto">
+                {details.cookies?.all || 'No cookies found'}
+              </div>
+            </div>
+
+            {/* Timestamp */}
+            <div className="text-xs text-gray-500 text-center">
+              Last checked: {details.timestamp}
+            </div>
           </div>
         )}
       </CardContent>
