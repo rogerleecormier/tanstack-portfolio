@@ -146,7 +146,8 @@ export const getUserInfo = (): CloudflareUser | null => {
                              urlParams.has('CF_Access_Message') ||
                              urlParams.has('CF_Access_Redirect');
     
-    // If we have Cloudflare Access parameters, immediately try to get user info from cookies
+    // If we have Cloudflare Access parameters, we're definitely authenticated
+    // Return user info immediately without waiting for cookies
     if (hasCfAccessParams) {
       // Try to get user info from cookies immediately
       const cookiePatterns = [
@@ -210,15 +211,16 @@ export const getUserInfo = (): CloudflareUser | null => {
       }
       
       // If no cookies found yet but we have Cloudflare Access params,
-      // trigger a background fetch and return a basic authenticated user
+      // return an authenticated user immediately and fetch real info in background
       if (!isDevelopment()) {
         // Trigger background fetch of user info
         setTimeout(() => {
           checkCloudflareAccessIdentity();
-        }, 100);
+        }, 50);
       }
       
-      // Return a basic authenticated user to prevent "Access Required" state
+      // Return an authenticated user immediately to prevent "Access Required" state
+      // This is the key change - we trust Cloudflare Access completely
       return {
         email: 'authenticated@cloudflare.access',
         name: 'Authenticated User'
@@ -392,12 +394,25 @@ export const initAuth = (): void => {
     // Immediately try to get user info from cookies
     checkCloudflareAccessIdentity();
     
-    // Dispatch event to trigger authentication update
+    // Dispatch event to trigger authentication update IMMEDIATELY
     if (typeof window !== 'undefined' && window.dispatchEvent) {
       window.dispatchEvent(new CustomEvent('cloudflare-auth-update', {
         detail: { source: 'initAuth', hasCfAccessParams: true }
       }));
     }
+    
+    // Also trigger multiple authentication checks to ensure we get user info
+    setTimeout(() => {
+      checkCloudflareAccessIdentity();
+    }, 10);
+    
+    setTimeout(() => {
+      checkCloudflareAccessIdentity();
+    }, 100);
+    
+    setTimeout(() => {
+      checkCloudflareAccessIdentity();
+    }, 500);
     
     return;
   }

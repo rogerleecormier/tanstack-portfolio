@@ -319,6 +319,11 @@ export const useAuth = () => {
       if (environment.isProduction() && event.detail?.hasCfAccessParams) {
         // Immediate authentication check for Cloudflare Access return
         checkAuth();
+        
+        // Also trigger multiple checks to ensure we get user info quickly
+        setTimeout(checkAuth, 10);
+        setTimeout(checkAuth, 50);
+        setTimeout(checkAuth, 150);
       }
     };
     
