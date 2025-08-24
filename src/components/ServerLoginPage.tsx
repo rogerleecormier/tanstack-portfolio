@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
-import { Loader2, AlertCircle, Briefcase } from 'lucide-react';
+import { Loader2, AlertCircle, Briefcase, Shield } from 'lucide-react';
 
 export const ServerLoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -26,13 +26,23 @@ export const ServerLoginPage: React.FC = () => {
     }
   };
 
+  // Remove hardcoded demo login for security
   const handleDemoLogin = async () => {
-    setEmail('dev@rcormier.dev');
-    setPassword('password');
-    // Small delay to show the form being populated
-    setTimeout(async () => {
-      await login('dev@rcormier.dev', 'password');
-    }, 100);
+    // In production, this should not be available
+    if (import.meta.env.PROD) {
+      clearError();
+      return;
+    }
+    
+    // Only allow in development with proper validation
+    if (import.meta.env.DEV) {
+      setEmail('dev@rcormier.dev');
+      setPassword('password');
+      // Small delay to show the form being populated
+      setTimeout(async () => {
+        await login('dev@rcormier.dev', 'password');
+      }, 100);
+    }
   };
 
   return (
@@ -80,6 +90,8 @@ export const ServerLoginPage: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 border-teal-200 focus:border-teal-500 focus:ring-teal-500"
                   placeholder="Enter your email"
+                  maxLength={100}
+                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                 />
               </div>
               
@@ -97,6 +109,8 @@ export const ServerLoginPage: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="mt-1 border-teal-200 focus:border-teal-500 focus:ring-teal-500"
                   placeholder="Enter your password"
+                  maxLength={128}
+                  minLength={8}
                 />
               </div>
               
@@ -116,23 +130,48 @@ export const ServerLoginPage: React.FC = () => {
                   )}
                 </Button>
                 
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleDemoLogin}
-                  disabled={isLoading}
-                  className="w-full border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                >
-                  Demo Login (dev@rcormier.dev)
-                </Button>
+                {/* Only show demo login in development */}
+                {import.meta.env.DEV && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleDemoLogin}
+                    disabled={isLoading}
+                    className="w-full border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
+                  >
+                    Demo Login (Development Only)
+                  </Button>
+                )}
               </div>
             </form>
             
-            <div className="mt-6 text-center">
-              <p className="text-xs text-teal-600">
-                Demo credentials: dev@rcormier.dev / password
-              </p>
+            {/* Security notice */}
+            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-start space-x-2">
+                <Shield className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="text-xs text-blue-800">
+                  <p className="font-medium mb-1">Security Notice:</p>
+                  <ul className="space-y-1">
+                    <li>• All login attempts are logged and monitored</li>
+                    <li>• Multiple failed attempts may result in temporary lockout</li>
+                    <li>• Passwords are transmitted securely using HTTPS</li>
+                    <li>• Session timeout is enforced for security</li>
+                  </ul>
+                </div>
+              </div>
             </div>
+            
+            {/* Only show demo credentials in development */}
+            {import.meta.env.DEV && (
+              <div className="mt-6 text-center">
+                <p className="text-xs text-teal-600">
+                  Demo credentials: dev@rcormier.dev / password
+                </p>
+                <p className="text-xs text-teal-500 mt-1">
+                  (Only available in development mode)
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

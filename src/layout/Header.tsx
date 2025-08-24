@@ -17,6 +17,14 @@ const Header: React.FC = () => {
     setShowLogin(false);
   };
 
+  // Helper function to safely get user email
+  const getUserEmail = (): string => {
+    if (user && typeof user === 'object' && 'email' in user) {
+      return user.email || '';
+    }
+    return '';
+  };
+
   return (
     <header className="sticky top-0 z-[100] bg-teal-600 shadow-md border-b border-teal-500">
       <div className="py-3 sm:py-4">
@@ -45,7 +53,7 @@ const Header: React.FC = () => {
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 text-white text-sm">
                   <User className="h-4 w-4" />
-                  <span className="hidden xs:inline">{user?.email}</span>
+                  <span className="hidden xs:inline">{getUserEmail()}</span>
                 </div>
                 <button
                   className="px-3 py-2 bg-red-600 text-white font-semibold rounded shadow hover:bg-red-700 transition flex items-center gap-1"
@@ -118,7 +126,7 @@ const Header: React.FC = () => {
             {isAuthenticated && (
               <div className="flex items-center gap-2 text-white text-sm">
                 <User className="h-4 w-4" />
-                <span className="text-xs">{user?.email}</span>
+                <span className="text-xs">{getUserEmail()}</span>
               </div>
             )}
           </div>

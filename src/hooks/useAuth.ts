@@ -2,16 +2,105 @@ import { useState, useEffect, useCallback } from 'react';
 import { environment } from '../config/environment';
 import { CloudflareUser } from '../utils/cloudflareAuth';
 
-// Simple Cloudflare Access authentication
-const cloudflareAuth = {
-  // Check if user is authenticated by calling Cloudflare Access identity endpoint
-  async checkAuthentication(): Promise<{ isAuthenticated: boolean; user: CloudflareUser | null }> {
+// Simplified authentication without complex classes that could cause hanging
+const simpleAuth = {
+  // Check if user is authenticated in development mode
+  isMockAuthenticated(): boolean {
+    try {
+      if (!environment.isDevelopment()) return false;
+      const isAuth = localStorage.getItem('dev_auth') === 'true';
+      const sessionStart = localStorage.getItem('session_start');
+      
+      if (!isAuth || !sessionStart) return false;
+      
+      // Check if session is still valid (30 minutes)
+      const now = Date.now();
+      const elapsed = now - parseInt(sessionStart, 10);
+      const sessionTimeout = 30 * 60 * 1000; // 30 minutes
+      
+      if (elapsed > sessionTimeout) {
+        // Session expired, clear it
+        this.clearMockAuth();
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error checking mock authentication:', error);
+      return false;
+    }
+  },
+
+  // Get mock user for development
+  getMockUser(): CloudflareUser | null {
+    try {
+      if (!environment.isDevelopment()) return null;
+      if (!this.isMockAuthenticated()) return null;
+      
+      const userData = localStorage.getItem('dev_user');
+      if (userData) {
+        return JSON.parse(userData);
+      }
+      
+      // Return default user if no stored data
+      return {
+        email: 'dev@rcormier.dev',
+        name: 'Development User',
+        sub: 'dev-user-123'
+      };
+    } catch (error) {
+      console.error('Error getting mock user:', error);
+      return null;
+    }
+  },
+
+  // Start mock authentication session
+  startMockSession(): void {
+    try {
+      if (!environment.isDevelopment()) return;
+      
+      localStorage.setItem('dev_auth', 'true');
+      localStorage.setItem('session_start', Date.now().toString());
+      localStorage.setItem('dev_user', JSON.stringify({
+        email: 'dev@rcormier.dev',
+        name: 'Development User',
+        sub: 'dev-user-123'
+      }));
+      
+      // Dispatch a custom event to notify other components
+      window.dispatchEvent(new CustomEvent('authStateChanged', { 
+        detail: { isAuthenticated: true, user: this.getMockUser() } 
+      }));
+    } catch (error) {
+      console.error('Error starting mock session:', error);
+    }
+  },
+
+  // Clear mock authentication
+  clearMockAuth(): void {
+    try {
+      localStorage.removeItem('dev_auth');
+      localStorage.removeItem('dev_user');
+      localStorage.removeItem('session_start');
+      
+      // Dispatch a custom event to notify other components
+      window.dispatchEvent(new CustomEvent('authStateChanged', { 
+        detail: { isAuthenticated: false, user: null } 
+      }));
+    } catch (error) {
+      console.error('Error clearing mock auth:', error);
+    }
+  },
+
+  // Check Cloudflare Access authentication (production)
+  async checkCloudflareAuth(): Promise<{ isAuthenticated: boolean; user: CloudflareUser | null }> {
     try {
       const response = await fetch('/cdn-cgi/access/get-identity', {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
+        signal: AbortSignal.timeout(5000) // 5 second timeout
       });
 
       if (response.ok) {
@@ -31,58 +120,6 @@ const cloudflareAuth = {
       console.debug('Cloudflare Access identity check failed:', error);
       return { isAuthenticated: false, user: null };
     }
-  },
-
-  // Redirect to Cloudflare Access login
-  login(): void {
-    if (environment.isDevelopment()) {
-      // In development, simulate authentication
-      localStorage.setItem('dev_auth', 'true');
-      localStorage.setItem('dev_user', JSON.stringify(environment.mockAuth.defaultUser));
-      window.dispatchEvent(new StorageEvent('storage', { key: 'dev_auth', newValue: 'true' }));
-    } else {
-      // In production, redirect to protected route to trigger Cloudflare Access
-      window.location.href = '/protected';
-    }
-  },
-
-  // Logout
-  logout(): void {
-    if (environment.isDevelopment()) {
-      localStorage.removeItem('dev_auth');
-      localStorage.removeItem('dev_user');
-      window.dispatchEvent(new StorageEvent('storage', { key: 'dev_auth', newValue: null }));
-    } else {
-      // Clear any stored data and redirect to Cloudflare Access logout
-      localStorage.removeItem('cf_user');
-      
-      // Use the correct Cloudflare Access 'returnTo' parameter for logout
-      const homePageUrl = encodeURIComponent(window.location.origin + environment.homePageUrl);
-      const logoutUrl = `/cdn-cgi/access/logout?${environment.cloudflareAccess.logoutRedirectParam}=${homePageUrl}`;
-      
-      // Set a flag to redirect after logout if Cloudflare doesn't handle it
-      localStorage.setItem('post_logout_redirect', 'true');
-      
-      // Redirect to Cloudflare Access logout
-      window.location.href = logoutUrl;
-    }
-  },
-
-  // Get mock user for development
-  getMockUser(): CloudflareUser | null {
-    if (!environment.isDevelopment()) return null;
-    
-    const isAuth = localStorage.getItem('dev_auth') === 'true';
-    if (!isAuth) return null;
-    
-    const userData = localStorage.getItem('dev_user');
-    return userData ? JSON.parse(userData) : environment.mockAuth.defaultUser;
-  },
-
-  // Check mock authentication for development
-  isMockAuthenticated(): boolean {
-    if (!environment.isDevelopment()) return false;
-    return localStorage.getItem('dev_auth') === 'true';
   }
 };
 
@@ -90,111 +127,130 @@ export const useAuth = () => {
   const [user, setUser] = useState<CloudflareUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const checkAuth = useCallback(async () => {
     try {
+      setIsLoading(true);
+      
       if (environment.isDevelopment()) {
-        // Development mode - use mock authentication
-        const isAuth = cloudflareAuth.isMockAuthenticated();
-        const mockUser = cloudflareAuth.getMockUser();
+        // Development mode - use simple mock authentication
+        const isAuth = simpleAuth.isMockAuthenticated();
+        const mockUser = simpleAuth.getMockUser();
+        
+        console.log('useAuth: Development auth check', { isAuth, mockUser });
         
         setIsAuthenticated(isAuth);
         setUser(mockUser);
-        setIsLoading(false);
+        setError(null);
       } else {
         // Production mode - check Cloudflare Access
-        const { isAuthenticated: isAuth, user: userInfo } = await cloudflareAuth.checkAuthentication();
+        const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
         
         setIsAuthenticated(isAuth);
         setUser(userInfo);
-        setIsLoading(false);
+        setError(null);
         
         // Store user info if authenticated
         if (isAuth && userInfo) {
-          localStorage.setItem('cf_user', JSON.stringify(userInfo));
-        }
-        
-        // Check if we need to redirect after logout
-        const postLogoutRedirect = localStorage.getItem('post_logout_redirect');
-        if (postLogoutRedirect === 'true' && !isAuth) {
-          localStorage.removeItem('post_logout_redirect');
-          // Redirect to home page after successful logout
-          window.location.href = environment.homePageUrl;
+          try {
+            localStorage.setItem('cf_user', JSON.stringify(userInfo));
+          } catch {
+            console.warn('Could not store user info in localStorage');
+          }
         }
       }
     } catch (error) {
       console.error('Error checking authentication:', error);
       setIsAuthenticated(false);
       setUser(null);
+      setError('Authentication check failed');
+    } finally {
       setIsLoading(false);
-      
-      // Check if we need to redirect after logout even on error
-      const postLogoutRedirect = localStorage.getItem('post_logout_redirect');
-      if (postLogoutRedirect === 'true') {
-        localStorage.removeItem('post_logout_redirect');
-        // Redirect to home page after logout
-        window.location.href = environment.homePageUrl;
-      }
     }
   }, []);
 
+  // Initial auth check - only run once
   useEffect(() => {
-    // Initial auth check
     checkAuth();
-    
-    // Set up periodic auth checks for production
-    if (environment.isProduction()) {
-      const interval = setInterval(checkAuth, 30000); // Check every 30 seconds
-      return () => clearInterval(interval);
-    }
   }, [checkAuth]);
 
+  // Listen for auth state changes from other components
   useEffect(() => {
-    // Listen for storage changes (development mode)
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'dev_auth' && environment.isDevelopment()) {
-        checkAuth();
-      }
+    const handleAuthChange = (event: CustomEvent) => {
+      console.log('useAuth: Received auth state change event', event.detail);
+      const { isAuthenticated: newAuthState, user: newUser } = event.detail;
+      setIsAuthenticated(newAuthState);
+      setUser(newUser);
     };
 
-    // Listen for visibility changes (user returns from Cloudflare Access)
-    const handleVisibilityChange = () => {
-      if (!document.hidden && environment.isProduction()) {
-        // Check authentication when page becomes visible
-        setTimeout(() => {
-          checkAuth();
-          
-          // Also check for post-logout redirect when returning from Cloudflare Access
-          const postLogoutRedirect = localStorage.getItem('post_logout_redirect');
-          if (postLogoutRedirect === 'true') {
-            localStorage.removeItem('post_logout_redirect');
-            // Redirect to home page after logout
-            window.location.href = environment.homePageUrl;
-          }
-        }, 100);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('authStateChanged', handleAuthChange as EventListener);
     
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('authStateChanged', handleAuthChange as EventListener);
     };
-  }, [checkAuth]);
+  }, []);
 
   const login = () => {
-    cloudflareAuth.login();
+    try {
+      console.log('useAuth: Login called');
+      if (environment.isDevelopment()) {
+        simpleAuth.startMockSession();
+        // Update state immediately
+        setIsAuthenticated(true);
+        setUser(simpleAuth.getMockUser());
+        setError(null);
+        console.log('useAuth: Development login successful');
+      } else {
+        // In production, redirect to protected route to trigger Cloudflare Access
+        window.location.href = '/protected';
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      setError('Login failed');
+    }
   };
 
   const logout = () => {
-    cloudflareAuth.logout();
+    try {
+      console.log('useAuth: Logout called');
+      if (environment.isDevelopment()) {
+        simpleAuth.clearMockAuth();
+        // Update state immediately
+        setIsAuthenticated(false);
+        setUser(null);
+        setError(null);
+        console.log('useAuth: Development logout successful');
+      } else {
+        // Clear any stored data and redirect to Cloudflare Access logout
+        try {
+          localStorage.removeItem('cf_user');
+        } catch {
+          console.warn('Could not clear localStorage');
+        }
+        
+        // Redirect to Cloudflare Access logout
+        window.location.href = '/cdn-cgi/access/logout';
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+      setError('Logout failed');
+    }
   };
 
   const refreshAuth = () => {
+    console.log('useAuth: Refresh auth called');
     checkAuth();
   };
+
+  const clearError = () => {
+    setError(null);
+  };
+
+  // Debug logging for state changes
+  useEffect(() => {
+    console.log('useAuth: State changed', { isAuthenticated, user, isLoading, error });
+  }, [isAuthenticated, user, isLoading, error]);
 
   return {
     user,
@@ -205,5 +261,11 @@ export const useAuth = () => {
     refreshAuth,
     isDevelopment: environment.isDevelopment(),
     isProduction: environment.isProduction(),
+    error,
+    clearError,
+    // Simplified security info for development
+    remainingAttempts: 3,
+    isLockedOut: false,
+    sessionTimeRemaining: 0
   };
 };

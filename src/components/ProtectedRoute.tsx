@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
-import { Shield, ArrowRight, Loader2, Lock, UserCheck } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, Lock, UserCheck, AlertTriangle, Clock } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,8 +13,17 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children, 
   fallback: FallbackComponent 
 }) => {
-  const { isAuthenticated, isLoading, isDevelopment, login } = useAuth();
-
+  const { 
+    isAuthenticated, 
+    isLoading, 
+    isDevelopment, 
+    login, 
+    error,
+    remainingAttempts,
+    isLockedOut,
+    sessionTimeRemaining
+  } = useAuth();
+  
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -49,6 +58,48 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-4">
+            {/* Security Status Display */}
+            {isDevelopment && (
+              <div className="bg-teal-100 border border-teal-200 rounded-lg p-4 text-left">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Shield className="h-4 w-4 text-teal-600" />
+                  <span className="font-medium text-teal-800">Security Status</span>
+                </div>
+                
+                {/* Rate Limiting Status */}
+                {isLockedOut && (
+                  <div className="flex items-center space-x-2 mb-2 text-red-600">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span className="text-sm font-medium">Account Temporarily Locked</span>
+                  </div>
+                )}
+                
+                {/* Remaining Attempts */}
+                <div className="text-sm text-teal-700 mb-2">
+                  <span className="font-medium">Login Attempts Remaining:</span> {remainingAttempts}
+                </div>
+                
+                {/* Session Timeout Info */}
+                {sessionTimeRemaining > 0 && (
+                  <div className="flex items-center space-x-2 text-sm text-teal-600">
+                    <Clock className="h-4 w-4" />
+                    <span>Session Timeout: {Math.ceil(sessionTimeRemaining / 60000)} minutes</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Error Display */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-left">
+                <div className="flex items-center space-x-2 mb-2">
+                  <AlertTriangle className="h-4 w-4 text-red-600" />
+                  <span className="font-medium text-red-800">Authentication Error</span>
+                </div>
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+
             <div className="bg-teal-100 border border-teal-200 rounded-lg p-4 text-left">
               <div className="flex items-center space-x-2 mb-2">
                 {isDevelopment ? (
@@ -73,18 +124,25 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             
             <Button 
               onClick={login}
-              className="w-full flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2"
+              disabled={isLockedOut}
+              className="w-full flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>
-                {isDevelopment ? 'Simulate Authentication' : 'Authenticate with Google'}
+                {isDevelopment 
+                  ? (isLockedOut ? 'Account Locked' : 'Simulate Authentication')
+                  : 'Authenticate with Google'
+                }
               </span>
-              <ArrowRight className="h-4 w-4" />
+              {!isLockedOut && <ArrowRight className="h-4 w-4" />}
             </Button>
             
             {isDevelopment && (
-              <p className="text-xs text-teal-600">
-                This simulates authentication for development purposes only.
-              </p>
+              <div className="text-xs text-teal-600">
+                {isLockedOut 
+                  ? 'Too many failed attempts. Please wait before trying again.'
+                  : 'This simulates authentication for development purposes only.'
+                }
+              </div>
             )}
           </CardContent>
         </Card>

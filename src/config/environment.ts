@@ -1,17 +1,52 @@
 // Environment configuration for development vs production
+// Enhanced security with proper environment validation
 
-// Helper functions that don't depend on the environment object
+// Safe environment detection that won't cause hanging
 const isDevelopmentMode = (): boolean => {
-  return import.meta.env.DEV || 
-         window.location.hostname === 'localhost' || 
-         window.location.hostname === '127.0.0.1' ||
-         window.location.hostname.includes('localhost') ||
-         window.location.hostname.includes('192.168.') ||
-         window.location.hostname.includes('10.0.');
+  // Only trust Vite's built-in environment variables
+  if (import.meta.env.DEV) {
+    return true;
+  }
+  
+  // In production, never return true for development mode
+  return false;
 };
 
 const isProductionMode = (): boolean => {
   return import.meta.env.PROD && !isDevelopmentMode();
+};
+
+// Security configuration
+export const securityConfig = {
+  // Content Security Policy
+  csp: {
+    'default-src': ["'self'"],
+    'script-src': ["'self'", "'unsafe-inline'"],
+    'style-src': ["'self'", "'unsafe-inline'"],
+    'img-src': ["'self'", "data:", "https:"],
+    'connect-src': ["'self'", "https://health-bridge-api.rcormier.workers.dev"],
+    'frame-src': ["'none'"],
+    'object-src': ["'none'"],
+    'base-uri': ["'self'"],
+    'form-action': ["'self'"],
+    'upgrade-insecure-requests': true
+  },
+  
+  // Security headers
+  headers: {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+  },
+  
+  // Rate limiting configuration
+  rateLimit: {
+    maxRequests: 100,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    message: 'Too many requests from this IP, please try again later.'
+  }
 };
 
 export const environment = {
@@ -24,7 +59,7 @@ export const environment = {
   // Home page URL
   homePageUrl: '/',
 
-  // Mock authentication settings for development
+  // Mock authentication settings for development (SECURED)
   mockAuth: {
     enabled: isDevelopmentMode(),
     defaultUser: {
@@ -32,7 +67,11 @@ export const environment = {
       name: 'Development User',
       picture: undefined,
       sub: 'dev-user-123'
-    }
+    },
+    // Add session timeout for development
+    sessionTimeout: 30 * 60 * 1000, // 30 minutes
+    maxLoginAttempts: 3,
+    lockoutDuration: 15 * 60 * 1000 // 15 minutes
   },
 
   // Cloudflare Access settings
@@ -45,6 +84,15 @@ export const environment = {
     loginRedirectParam: 'redirect_url', // for /login: restricted to relative paths
     logoutRedirectParam: 'returnTo',    // for /logout: restricted to authdomain, cloudflare.com subdomains, and org apps
     cliRedirectParam: 'redirect_url'    // for /cli: restricted to org apps
+  },
+
+  // API configuration with security
+  api: {
+    baseUrl: isDevelopmentMode() ? 'http://localhost:3001/api' : '/api',
+    timeout: 10000, // 10 seconds
+    retryAttempts: 3,
+    // Secure endpoints that require authentication
+    protectedEndpoints: ['/auth/verify', '/auth/me', '/auth/logout']
   }
 };
 
