@@ -53,10 +53,18 @@ const cloudflareAuth = {
       localStorage.removeItem('dev_user');
       window.dispatchEvent(new StorageEvent('storage', { key: 'dev_auth', newValue: null }));
     } else {
-      // Clear any stored data and redirect to Cloudflare Access logout with redirect to home page
+      // Clear any stored data and redirect to Cloudflare Access logout
       localStorage.removeItem('cf_user');
+      
+      // Try to use Cloudflare Access redirect parameter first
       const homePageUrl = encodeURIComponent(window.location.origin + environment.homePageUrl);
-      window.location.href = `/cdn-cgi/access/logout?redirect=${homePageUrl}`;
+      const logoutUrl = `/cdn-cgi/access/logout?redirect=${homePageUrl}`;
+      
+      // Set a flag to redirect after logout if Cloudflare doesn't handle it
+      localStorage.setItem('post_logout_redirect', 'true');
+      
+      // Redirect to Cloudflare Access logout
+      window.location.href = logoutUrl;
     }
   },
 
@@ -105,12 +113,28 @@ export const useAuth = () => {
         if (isAuth && userInfo) {
           localStorage.setItem('cf_user', JSON.stringify(userInfo));
         }
+        
+        // Check if we need to redirect after logout
+        const postLogoutRedirect = localStorage.getItem('post_logout_redirect');
+        if (postLogoutRedirect === 'true' && !isAuth) {
+          localStorage.removeItem('post_logout_redirect');
+          // Redirect to home page after successful logout
+          window.location.href = environment.homePageUrl;
+        }
       }
     } catch (error) {
       console.error('Error checking authentication:', error);
       setIsAuthenticated(false);
       setUser(null);
       setIsLoading(false);
+      
+      // Check if we need to redirect after logout even on error
+      const postLogoutRedirect = localStorage.getItem('post_logout_redirect');
+      if (postLogoutRedirect === 'true') {
+        localStorage.removeItem('post_logout_redirect');
+        // Redirect to home page after logout
+        window.location.href = environment.homePageUrl;
+      }
     }
   }, []);
 
@@ -137,7 +161,17 @@ export const useAuth = () => {
     const handleVisibilityChange = () => {
       if (!document.hidden && environment.isProduction()) {
         // Check authentication when page becomes visible
-        setTimeout(checkAuth, 100);
+        setTimeout(() => {
+          checkAuth();
+          
+          // Also check for post-logout redirect when returning from Cloudflare Access
+          const postLogoutRedirect = localStorage.getItem('post_logout_redirect');
+          if (postLogoutRedirect === 'true') {
+            localStorage.removeItem('post_logout_redirect');
+            // Redirect to home page after logout
+            window.location.href = environment.homePageUrl;
+          }
+        }, 100);
       }
     };
 
