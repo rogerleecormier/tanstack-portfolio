@@ -314,8 +314,17 @@ export const useAuth = () => {
       }
     };
     
+    // Listen for custom Cloudflare Access authentication update events
+    const handleCloudflareAuthUpdate = (event: CustomEvent) => {
+      if (environment.isProduction() && event.detail?.hasCfAccessParams) {
+        // Immediate authentication check for Cloudflare Access return
+        setTimeout(checkAuth, 100);
+      }
+    };
+    
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('cloudflare-auth-update', handleCloudflareAuthUpdate as EventListener);
     
     // Also check when the page becomes visible (user returns from Cloudflare Access)
     const handleVisibilityChange = () => {
@@ -342,6 +351,7 @@ export const useAuth = () => {
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('cloudflare-auth-update', handleCloudflareAuthUpdate as EventListener);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);

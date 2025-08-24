@@ -90,8 +90,16 @@ export const isAuthenticated = (): boolean => {
   }
   
   // If we have Cloudflare Access parameters, we're likely authenticated
+  // But also check if we have actual cookies to confirm
   if (hasCfAccessParams) {
-    return true;
+    // If we have both parameters and cookies, definitely authenticated
+    if (hasAuthCookie) {
+      return true;
+    }
+    
+    // If we only have parameters but no cookies yet, might still be authenticating
+    // This will trigger a retry mechanism in the useAuth hook
+    return false;
   }
   
   return hasAuthCookie || hasStoredUser || hasAccessToken || hasAccessIdentity;
@@ -290,13 +298,29 @@ export const initAuth = (): void => {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
   
-  // If we have Cloudflare Access parameters, force a fresh authentication check
+  // If we have Cloudflare Access parameters, wait for cookies and update auth state
   if (hasCfAccessParams) {
-    // Small delay to ensure cookies are set, then check authentication
+    // Wait for cookies to be set, then check authentication
     setTimeout(() => {
-      // Force refresh the page to trigger proper authentication detection
-      window.location.reload();
-    }, 100);
+      // Clean up URL parameters first
+      const currentUrlParams = new URLSearchParams(window.location.search);
+      if (currentUrlParams.has('__cf_access_message') || currentUrlParams.has('__cf_access_redirect')) {
+        currentUrlParams.delete('__cf_access_message');
+        currentUrlParams.delete('__cf_access_redirect');
+        
+        // Create clean URL
+        const cleanUrl = window.location.pathname + (currentUrlParams.toString() ? '?' + currentUrlParams.toString() : '');
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+      
+      // Force a fresh authentication check
+      if (typeof window !== 'undefined' && window.dispatchEvent) {
+        // Dispatch a custom event to trigger authentication update
+        window.dispatchEvent(new CustomEvent('cloudflare-auth-update', {
+          detail: { source: 'initAuth', hasCfAccessParams: true }
+        }));
+      }
+    }, 200); // Increased delay to ensure cookies are set
     return;
   }
   
