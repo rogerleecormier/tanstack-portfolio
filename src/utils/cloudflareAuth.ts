@@ -56,7 +56,9 @@ export const isAuthenticated = (): boolean => {
                        document.cookie.includes('CF_Access_User_UUID') ||
                        // Additional IDP cookie patterns
                        document.cookie.includes('CF_Access_User_') ||
-                       document.cookie.includes('CF_Access_Identity_');
+                       document.cookie.includes('CF_Access_Identity_') ||
+                       // Check for any cookie that starts with CF_Access (catch-all for IDP)
+                       document.cookie.includes('CF_Access_');
   
   // Check for stored user data
   const hasStoredUser = localStorage.getItem('cf_user') !== null;
@@ -68,6 +70,12 @@ export const isAuthenticated = (): boolean => {
   // Check for Cloudflare Access identity endpoint response
   const hasAccessIdentity = document.cookie.includes('CF_Access_Identity');
   
+  // Check for Cloudflare Access URL parameters that indicate successful auth
+  const hasCfAccessParams = urlParams.has('__cf_access_message') || 
+                           urlParams.has('__cf_access_redirect') ||
+                           urlParams.has('CF_Access_Message') ||
+                           urlParams.has('CF_Access_Redirect');
+  
   // Debug logging for production
   if (!isDevelopment()) {
     console.log('=== Cloudflare Auth Debug ===');
@@ -76,7 +84,14 @@ export const isAuthenticated = (): boolean => {
     console.log('Has stored user:', hasStoredUser);
     console.log('Has access token:', hasAccessToken);
     console.log('Has access identity:', hasAccessIdentity);
+    console.log('Has CF Access params:', hasCfAccessParams);
+    console.log('URL params:', urlParams.toString());
     console.log('===========================');
+  }
+  
+  // If we have Cloudflare Access parameters, we're likely authenticated
+  if (hasCfAccessParams) {
+    return true;
   }
   
   return hasAuthCookie || hasStoredUser || hasAccessToken || hasAccessIdentity;
@@ -256,6 +271,12 @@ export const initAuth = (): void => {
   const accessToken = urlParams.get('access_token');
   const userEmail = urlParams.get('user_email');
   
+  // Check for Cloudflare Access specific parameters that indicate successful authentication
+  const hasCfAccessParams = urlParams.has('__cf_access_message') || 
+                           urlParams.has('__cf_access_redirect') ||
+                           urlParams.has('CF_Access_Message') ||
+                           urlParams.has('CF_Access_Redirect');
+  
   if (accessToken && userEmail) {
     // Store the authentication data
     const user = {
@@ -267,6 +288,16 @@ export const initAuth = (): void => {
     
     // Clean up URL
     window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  
+  // If we have Cloudflare Access parameters, force a fresh authentication check
+  if (hasCfAccessParams) {
+    // Small delay to ensure cookies are set, then check authentication
+    setTimeout(() => {
+      // Force refresh the page to trigger proper authentication detection
+      window.location.reload();
+    }, 100);
+    return;
   }
   
   // Clean up Cloudflare Access URL parameters

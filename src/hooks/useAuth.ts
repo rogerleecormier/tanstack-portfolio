@@ -60,14 +60,18 @@ const productionAuth = {
                          document.cookie.includes('CF_Access_User_UUID') ||
                          // Additional IDP cookie patterns
                          document.cookie.includes('CF_Access_User_') ||
-                         document.cookie.includes('CF_Access_Identity_');
+                         document.cookie.includes('CF_Access_Identity_') ||
+                         // Check for any cookie that starts with CF_Access (catch-all for IDP)
+                         document.cookie.includes('CF_Access_');
     
     // Also check for URL parameters that indicate successful authentication
     const urlParams = new URLSearchParams(window.location.search);
     const hasAuthParams = urlParams.has('__cf_access_message') || 
                          urlParams.has('__cf_access_redirect') ||
                          urlParams.has('access_token') ||
-                         urlParams.has('user_email');
+                         urlParams.has('user_email') ||
+                         urlParams.has('CF_Access_Message') ||
+                         urlParams.has('CF_Access_Redirect');
     
     // Check for stored user data
     const hasStoredUser = localStorage.getItem('cf_user') !== null;
@@ -78,10 +82,16 @@ const productionAuth = {
     console.log('Has auth cookie:', hasAuthCookie);
     console.log('Has auth params:', hasAuthParams);
     console.log('Has stored user:', hasStoredUser);
+    console.log('URL params:', urlParams.toString());
     console.log('===========================');
     
+    // If we have Cloudflare Access URL parameters, we're likely authenticated
+    if (hasAuthParams) {
+      return true;
+    }
+    
     // Only return true if we actually have authentication evidence
-    return hasAuthCookie || hasAuthParams || hasStoredUser;
+    return hasAuthCookie || hasStoredUser;
   },
 
   getUser: (): CloudflareUser | null => {
@@ -287,18 +297,43 @@ export const useAuth = () => {
     // Listen for URL changes (production mode - returning from auth flow)
     const handleUrlChange = () => {
       if (environment.isProduction()) {
-        // Small delay to ensure cookies are set
-        setTimeout(checkAuth, 1000);
+        // Check for Cloudflare Access parameters that indicate successful authentication
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasCfAccessParams = urlParams.has('__cf_access_message') || 
+                                 urlParams.has('__cf_access_redirect') ||
+                                 urlParams.has('CF_Access_Message') ||
+                                 urlParams.has('CF_Access_Redirect');
+        
+        if (hasCfAccessParams) {
+          // Small delay to ensure cookies are set, then check auth
+          setTimeout(checkAuth, 500);
+        } else {
+          // Normal delay for other URL changes
+          setTimeout(checkAuth, 1000);
+        }
       }
     };
-
+    
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('popstate', handleUrlChange);
     
     // Also check when the page becomes visible (user returns from Cloudflare Access)
     const handleVisibilityChange = () => {
       if (environment.isProduction() && !document.hidden) {
-        setTimeout(checkAuth, 500);
+        // Check for Cloudflare Access parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasCfAccessParams = urlParams.has('__cf_access_message') || 
+                                 urlParams.has('__cf_access_redirect') ||
+                                 urlParams.has('CF_Access_Message') ||
+                                 urlParams.has('CF_Access_Redirect');
+        
+        if (hasCfAccessParams) {
+          // Immediate check for Cloudflare Access return
+          setTimeout(checkAuth, 100);
+        } else {
+          // Normal delay for other visibility changes
+          setTimeout(checkAuth, 500);
+        }
       }
     };
     
