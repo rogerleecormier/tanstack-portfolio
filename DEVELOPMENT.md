@@ -13,8 +13,7 @@ Build Tool: Vite 7
 Styling: Tailwind CSS 3.4 + shadcn/ui
 Search: Fuse.js
 Charts: Recharts + shadcn/ui Chart Components
-Authentication: JWT-based server authentication
-Backend: Express.js with Node.js
+Authentication: Cloudflare Access (Zero Trust)
 Deployment: Cloudflare Pages
 ```
 
@@ -34,13 +33,9 @@ src/
 ├── content/             # Markdown content files
 ├── hooks/               # Custom React hooks
 ├── utils/               # Utility functions
+├── config/              # Configuration files
 ├── router.tsx           # TanStack Router configuration
 └── main.tsx             # Application entry point
-
-server/                  # Backend server
-├── index.js            # Express server entry point
-├── middleware/         # Authentication middleware
-└── routes/             # API routes
 ```
 
 ## 🚀 Development Setup
@@ -65,26 +60,21 @@ server/                  # Backend server
    ```
 
 3. **Environment variables**
-   Create `.env` file for local development:
+   Create `.env.local` for local development:
    ```bash
-   PORT=3001
-   NODE_ENV=development
-   JWT_SECRET=your-super-secret-jwt-key-change-in-production
+   VITE_DEV_MODE=true
+   VITE_CLOUDFLARE_DOMAIN=rcormier.dev
    ```
 
-4. **Start development servers**
+4. **Start development server**
    ```bash
-   npm run dev              # Both frontend and backend
-   npm run dev:frontend     # Frontend only (port 5173)
-   npm run dev:backend      # Backend only (port 3001)
+   npm run dev
    ```
 
 ### **Development Commands**
 ```bash
-# Development servers
-npm run dev              # Start both frontend and backend
-npm run dev:frontend     # Start Vite dev server only
-npm run dev:backend      # Start Express backend only
+# Development server
+npm run dev              # Start Vite dev server
 npm run build            # Build for production
 npm run preview          # Preview production build
 npm run type-check       # TypeScript type checking
@@ -93,60 +83,54 @@ npm run lint             # ESLint linting
 
 ## 🔐 Authentication System
 
-### **Server-Side JWT Architecture**
-The application uses a modern JWT-based authentication system:
+### **Dual-Mode Architecture**
+The application automatically switches between authentication modes based on the environment:
 
 ```typescript
-// src/hooks/useServerAuth.ts
-export const useServerAuth = () => {
-  const [user, setUser] = useState<CloudflareUser | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+// src/utils/cloudflareAuth.ts
+export const isDevelopment = (): boolean => {
+  return window.location.hostname === 'localhost' || 
+         window.location.hostname === '127.0.0.1' ||
+         window.location.hostname.includes('localhost');
+};
 
-  // JWT token management
-  const login = async (email: string, password: string) => {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    
-    if (response.ok) {
-      const { token, user } = await response.json();
-      localStorage.setItem('jwt_token', token);
-      setIsAuthenticated(true);
-      setUser(user);
-      return true;
-    }
-    return false;
-  };
+export const isAuthenticated = async (): Promise<boolean> => {
+  if (isDevelopment()) {
+    const devAuth = localStorage.getItem('dev_auth');
+    return devAuth === 'true';
+  }
+  
+  // Production: Check Cloudflare Access cookies
+  const hasAuthCookie = document.cookie.includes('CF_Authorization') || 
+                       document.cookie.includes('CF_Access_JWT');
+  return hasAuthCookie;
 };
 ```
 
 ### **Development Authentication**
-- **Mock Authentication**: Simulated using localStorage and JWT tokens
-- **Demo Users**: Pre-configured test accounts for development
+- **Mock Authentication**: Simulated using localStorage
+- **Toggle Component**: `DevAuthToggle` for testing
 - **Protected Routes**: Automatically work in development mode
 - **State Persistence**: Auth state persists across page refreshes
 
 ### **Production Authentication**
-- **JWT Tokens**: Secure token-based authentication
-- **Server Validation**: All tokens validated server-side
-- **Role-based Access**: Admin and user roles with different permissions
+- **Cloudflare Access**: Zero Trust with email-based authentication
+- **Email Validation**: Access controlled by configured email addresses and domains
+- **Cookie Handling**: Secure authentication cookies
 - **Route Protection**: Automatic redirects to login
 
 ### **Protected Route Implementation**
 ```tsx
-// src/components/ServerProtectedRoute.tsx
-export const ServerProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useServerAuth();
+// src/components/ProtectedRoute.tsx
+export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth();
   
   if (isLoading) {
     return <div>Loading...</div>;
   }
   
   if (!isAuthenticated) {
-    return <ServerLoginPage />;
+    return <LoginPage />;
   }
   
   return <>{children}</>;
@@ -506,9 +490,9 @@ export const extractFrontmatter = (content: string) => {
 ## 🔒 Security Implementation
 
 ### **Authentication Security**
-- **JWT validation**: Secure token handling
-- **Token storage**: Secure localStorage management
-- **CSRF protection**: Built-in protection
+- **Cloudflare Access**: Zero Trust authentication
+- **Email validation**: Access controlled by configured emails/domains
+- **Cookie security**: Secure authentication cookies
 - **Rate limiting**: API call throttling
 
 ### **Content Security**
@@ -556,8 +540,8 @@ console.log('Development mode:', isDevelopment());
 # Check authentication state
 console.log('Auth state:', isAuthenticated());
 
-# Debug JWT tokens
-console.log('JWT token:', localStorage.getItem('jwt_token'));
+# Debug Cloudflare cookies
+console.log('Cookies:', document.cookie);
 ```
 
 #### **Search Issues**
@@ -585,7 +569,7 @@ npm run type-check
 - **Browser DevTools**: Console and network monitoring
 - **React DevTools**: Component state inspection
 - **TanStack Query DevTools**: Query state management
-- **Express DevTools**: Backend debugging
+- **Cloudflare Dashboard**: Access policy verification
 
 ## 📚 Additional Resources
 
@@ -600,7 +584,7 @@ npm run type-check
 - [Vite Documentation](https://vitejs.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Express.js](https://expressjs.com/)
+- [Cloudflare Zero Trust](https://developers.cloudflare.com/zero-trust/)
 
 ---
 

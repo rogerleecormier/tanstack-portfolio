@@ -1,6 +1,6 @@
 # Roger Lee Cormier Portfolio
 
-A modern, professional portfolio website built with cutting-edge web technologies, featuring server-side JWT authentication, advanced search capabilities, and interactive data visualization.
+A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, advanced search capabilities, and interactive data visualization.
 
 ## 🚀 Tech Stack
 
@@ -31,19 +31,18 @@ A modern, professional portfolio website built with cutting-edge web technologie
 - **Gray Matter** - Frontmatter parsing for content metadata
 
 ### **Authentication & Security**
-- **JWT Authentication** - Secure server-side authentication system
-- **Express.js Backend** - Full-featured Node.js server
-- **Role-based Access Control** - Admin and user roles
-- **Rate Limiting** - API protection and security
+- **Cloudflare Access** - Enterprise-grade Zero Trust authentication
+- **Email-based Access Control** - Configurable user access management
+- **Development Mock Auth** - Local development authentication simulation
 
 ## ✨ Key Features
 
 ### **🔐 Advanced Authentication System**
-- **Server-Side JWT Authentication**: Secure, stateless authentication
+- **Cloudflare Access Integration**: Enterprise-grade security with Zero Trust
 - **Dual-Mode Architecture**: Automatically switches between development and production
 - **Protected Routes**: Secure access to sensitive content and analysis tools
 - **Development Mode**: Mock authentication for local development and testing
-- **Role-based Access**: Admin and user roles with different permissions
+- **Email-based Access Control**: Configurable user permissions
 
 ### **🔍 Intelligent Search System**
 - **Fuse.js Powered**: Fuzzy search with configurable relevance scoring
@@ -95,18 +94,18 @@ src/
 │   ├── strategy.md      # Strategy content
 │   └── ...              # Other content pages
 ├── hooks/               # Custom React hooks
-│   ├── useServerAuth.ts # Server authentication state management
+│   ├── useAuth.ts       # Authentication state management
 │   └── use-mobile.tsx   # Mobile detection
 ├── utils/               # Utility functions
+│   ├── cloudflareAuth.ts # Cloudflare Access integration
 │   ├── searchIndex.ts   # Fuse.js search implementation
 │   └── ...              # Other utilities
+├── config/              # Configuration files
+│   ├── accessControl.ts # Email-based access control
+│   ├── environment.ts   # Environment configuration
+│   └── securityHeaders.ts # Security headers
 ├── router.tsx           # TanStack Router configuration
 └── main.tsx             # Application entry point
-
-server/                  # Backend server
-├── index.js            # Express server entry point
-├── middleware/         # Authentication middleware
-└── routes/             # API routes
 ```
 
 ## 🚀 Getting Started
@@ -114,7 +113,7 @@ server/                  # Backend server
 ### **Prerequisites**
 - Node.js 18+ 
 - npm or yarn
-- Git
+- Cloudflare account (for production deployment)
 
 ### **Installation**
 
@@ -129,49 +128,23 @@ server/                  # Backend server
    npm install
    ```
 
-3. **Environment setup**
+3. **Start development server**
    ```bash
-   # Copy environment file
-   cp server.env.example .env
-   
-   # Edit with your values
-   PORT=3001
-   NODE_ENV=development
-   JWT_SECRET=your-super-secret-jwt-key-change-in-production
-   ```
-
-4. **Start development servers**
-   ```bash
-   # Start both frontend and backend
    npm run dev
-   
-   # Or start them separately:
-   npm run dev:frontend  # Frontend on port 5173
-   npm run dev:backend   # Backend on port 3001
    ```
 
-5. **Open your browser**
+4. **Open your browser**
    Navigate to `http://localhost:5173`
 
 ### **Development Commands**
 
 ```bash
-# Start development servers
-npm run dev              # Both frontend and backend
-npm run dev:frontend     # Frontend only
-npm run dev:backend      # Backend only
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Type checking
-npm run type-check
-
-# Linting
-npm run lint
+# Start development server
+npm run dev              # Start Vite dev server
+npm run build            # Build for production
+npm run preview          # Preview production build
+npm run type-check       # TypeScript type checking
+npm run lint             # ESLint linting
 ```
 
 ## 🔐 Authentication Setup
@@ -179,29 +152,25 @@ npm run lint
 ### **Development Mode**
 - Automatically detected when running on `localhost`
 - Mock authentication for testing protected routes
-- Demo credentials available for testing
 - No external dependencies required
+- Use the development authentication toggle for testing
 
 ### **Production Mode**
-- JWT-based server authentication
-- Secure token management
-- Role-based access control
+- Cloudflare Access with Zero Trust authentication
+- Email-based access control
 - Protected routes require valid credentials
-
-### **Demo Credentials**
-```
-Email: dev@rcormier.dev
-Password: password
-Role: user
-
-Email: rcormier@rcormier.dev
-Password: password
-Role: admin
-```
+- See `CLOUDFLARE_SETUP.md` for detailed configuration
 
 ### **Protected Routes**
 - `/protected` - General protected content
 - `/healthbridge-analysis` - Health data analysis tools
+
+### **Access Control**
+Access is controlled by email addresses and domains configured in `src/config/accessControl.ts`:
+- **roger@rcormier.dev** - ✅ Allowed
+- **rogerleecormier@gmail.com** - ✅ Allowed  
+- **any-email@rcormier.dev** - ✅ Allowed (domain access)
+- **other@gmail.com** - ❌ Denied (not in allowed list)
 
 ## 🔍 Search Implementation
 
@@ -272,7 +241,7 @@ The application is optimized for Cloudflare Pages deployment:
 
 - **SPA Routing**: Clean URLs without hash routing
 - **Edge Computing**: Global CDN distribution
-- **JWT Authentication**: Secure server-side authentication
+- **Zero Trust**: Integrated Cloudflare Access authentication
 - **GitHub Actions**: Automated deployment workflow
 
 ### **Build Configuration**
@@ -292,14 +261,10 @@ Configure in Cloudflare Pages dashboard
 ### **Environment Variables**
 ```bash
 # Development
-PORT=3001
-NODE_ENV=development
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
+VITE_DEV_MODE=true
 
 # Production
-NODE_ENV=production
-JWT_SECRET=your-production-secret-key
-CORS_ORIGINS=https://yourdomain.com
+VITE_CLOUDFLARE_DOMAIN=rcormier.dev
 ```
 
 ### **Tailwind Configuration**
@@ -352,9 +317,9 @@ Custom design system with:
 ## 🔒 Security Features
 
 ### **Authentication Security**
-- JWT token validation
-- Secure token storage
-- CSRF protection
+- Cloudflare Access Zero Trust
+- Email-based access control
+- Secure cookie handling
 - Rate limiting support
 
 ### **Content Security**
@@ -429,7 +394,7 @@ MIT License - see LICENSE file for details
 For questions or support:
 - Open an issue on GitHub
 - Check the documentation
-- Review the development guide
+- Review the Cloudflare setup guide
 
 ---
 

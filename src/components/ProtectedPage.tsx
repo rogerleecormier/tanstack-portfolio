@@ -3,7 +3,6 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P, H3 } from './ui/typography';
 import { Shield, ArrowRight, Loader2, UserCheck, Briefcase } from 'lucide-react';
-import { DevAuthToggle } from './DevAuthToggle';
 import { useAuth } from '../hooks/useAuth';
 
 export const ProtectedPage: React.FC = () => {
@@ -25,8 +24,6 @@ export const ProtectedPage: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <DevAuthToggle />
-        
         <div className="flex items-center justify-center">
           <Card className="w-full max-w-md border-teal-200 shadow-xl bg-teal-50/50">
             <CardHeader className="text-center space-y-3">
@@ -55,7 +52,7 @@ export const ProtectedPage: React.FC = () => {
                 </div>
                 <P className="text-sm text-teal-700">
                   {isDevelopment 
-                    ? 'This content is protected in development mode. Use the toggle above to simulate authentication.'
+                    ? 'This content is protected in development mode. Use the development authentication system to simulate authentication.'
                     : 'This content is protected by Cloudflare Access. Please authenticate to access your portfolio.'
                   }
                 </P>
@@ -77,8 +74,6 @@ export const ProtectedPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <DevAuthToggle />
-      
       <Card className="max-w-2xl mx-auto border-teal-200 shadow-lg bg-teal-50/50">
         <CardHeader className="text-center">
           <div className="mx-auto p-3 bg-teal-100 rounded-full w-fit border-2 border-teal-200 mb-4">
