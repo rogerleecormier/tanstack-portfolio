@@ -40,7 +40,11 @@ export const environment = {
     enabled: isProductionMode(),
     loginUrl: '/cdn-cgi/access/login',
     logoutUrl: '/cdn-cgi/access/logout',
-    identityUrl: '/cdn-cgi/access/get-identity'
+    identityUrl: '/cdn-cgi/access/get-identity',
+    // Cloudflare Access parameter names as per official documentation
+    loginRedirectParam: 'redirect_url', // for /login: restricted to relative paths
+    logoutRedirectParam: 'returnTo',    // for /logout: restricted to authdomain, cloudflare.com subdomains, and org apps
+    cliRedirectParam: 'redirect_url'    // for /cli: restricted to org apps
   }
 };
 

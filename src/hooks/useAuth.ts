@@ -56,9 +56,9 @@ const cloudflareAuth = {
       // Clear any stored data and redirect to Cloudflare Access logout
       localStorage.removeItem('cf_user');
       
-      // Try to use Cloudflare Access redirect parameter first
+      // Use the correct Cloudflare Access 'returnTo' parameter for logout
       const homePageUrl = encodeURIComponent(window.location.origin + environment.homePageUrl);
-      const logoutUrl = `/cdn-cgi/access/logout?redirect=${homePageUrl}`;
+      const logoutUrl = `/cdn-cgi/access/logout?${environment.cloudflareAccess.logoutRedirectParam}=${homePageUrl}`;
       
       // Set a flag to redirect after logout if Cloudflare doesn't handle it
       localStorage.setItem('post_logout_redirect', 'true');
