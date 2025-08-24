@@ -193,9 +193,14 @@ export const useServerAuth = (): UseServerAuthReturn => {
     setError(null);
   };
 
-  // Initial auth check
+  // Initial auth check - only if there's a stored token
   useEffect(() => {
-    checkAuth();
+    const token = getStoredToken();
+    if (token) {
+      checkAuth();
+    } else {
+      setIsLoading(false);
+    }
   }, [checkAuth]);
 
   // Set up periodic token refresh (every 23 hours since token expires in 24 hours)

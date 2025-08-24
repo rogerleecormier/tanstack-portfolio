@@ -1,6 +1,5 @@
 import React from 'react';
 import { useServerAuth } from '../hooks/useServerAuth';
-import { ServerLoginPage } from './ServerLoginPage';
 import { Loader2 } from 'lucide-react';
 
 interface ServerProtectedRouteProps {
@@ -25,13 +24,13 @@ export const ServerProtectedRoute: React.FC<ServerProtectedRouteProps> = ({
     );
   }
 
+  // If not authenticated, show fallback or children (no automatic redirect)
   if (!isAuthenticated) {
-    return <ServerLoginPage />;
-  }
-
-  // If you want to show a custom fallback instead of the login page
-  if (fallback && !isAuthenticated) {
-    return <>{fallback}</>;
+    if (fallback) {
+      return <>{fallback}</>;
+    }
+    // Return children even if not authenticated - let the parent component handle auth
+    return <>{children}</>;
   }
 
   return (

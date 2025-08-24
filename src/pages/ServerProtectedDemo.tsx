@@ -1,21 +1,21 @@
-import React from 'react';
-import { ServerProtectedRoute } from '../components/ServerProtectedRoute';
+import React, { useState } from 'react';
+import { ControlledAuthWrapper } from '../components/ControlledAuthWrapper';
 import { useServerAuth } from '../hooks/useServerAuth';
-import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
-import { LogOut, User, Shield, Key } from 'lucide-react';
+import { User, Shield, Key } from 'lucide-react';
 
 export const ServerProtectedDemo: React.FC = () => {
-  const { user, logout } = useServerAuth();
+  const [showLogin, setShowLogin] = useState(false);
+  const { user } = useServerAuth();
 
-  const handleLogout = async () => {
-    await logout();
+  const toggleLogin = () => {
+    setShowLogin(!showLogin);
   };
 
   return (
-    <ServerProtectedRoute>
+    <ControlledAuthWrapper showLogin={showLogin} onToggleLogin={toggleLogin}>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
@@ -23,7 +23,10 @@ export const ServerProtectedDemo: React.FC = () => {
               Server-Side Authentication Demo
             </h1>
             <p className="text-xl text-gray-600">
-              This page is protected by server-side JWT authentication
+              This page shows content regardless of authentication status
+            </p>
+            <p className="text-lg text-gray-500 mt-2">
+              You can view this content without logging in, or sign in for additional features
             </p>
           </div>
 
@@ -129,21 +132,12 @@ export const ServerProtectedDemo: React.FC = () => {
 
           <div className="text-center">
             <Separator className="my-6" />
-            <Button 
-              onClick={handleLogout}
-              variant="outline"
-              size="lg"
-              className="flex items-center gap-2"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </Button>
-            <p className="text-sm text-gray-500 mt-2">
-              This will clear your JWT token and redirect you to the login page
+            <p className="text-sm text-gray-500">
+              Authentication controls are now in the header above. You can view this content without logging in!
             </p>
           </div>
         </div>
       </div>
-    </ServerProtectedRoute>
+    </ControlledAuthWrapper>
   );
 };
