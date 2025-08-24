@@ -8,6 +8,119 @@ export interface CloudflareUser {
   sub?: string; // Subject identifier
 }
 
+// Detect if we're in InPrivate/Incognito mode
+export const isInPrivateMode = (): boolean => {
+  try {
+    // Method 1: Check if localStorage is available (InPrivate mode often blocks it)
+    const test = 'test';
+    localStorage.setItem(test, test);
+    localStorage.removeItem(test);
+    
+    // Method 2: Check if cookies are working properly
+    document.cookie = 'test=1';
+    const hasCookie = document.cookie.includes('test=1');
+    document.cookie = 'test=1; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    
+    // Method 3: Check for InPrivate-specific indicators
+    const isInPrivate = !hasCookie || 
+                       navigator.webdriver || 
+                       (window as any).chrome?.webstore || 
+                       (window as any).sidebar || 
+                       (window as any).external;
+    
+    // Method 4: Check if we're getting redirected to protected content without auth
+    // This is a strong indicator of InPrivate mode issues
+    const currentPath = window.location.pathname;
+    const isOnProtectedRoute = currentPath === '/protected' || currentPath === '/healthbridge-analysis';
+    const hasNoAuthCookies = !document.cookie.includes('CF_') && !document.cookie.includes('cf_');
+    
+    if (isOnProtectedRoute && hasNoAuthCookies) {
+      console.log('InPrivate mode detected: On protected route without auth cookies');
+      return true;
+    }
+    
+    return isInPrivate;
+  } catch (error) {
+    // If localStorage fails, we're likely in InPrivate mode
+    console.log('InPrivate mode detected: localStorage access failed');
+    return true;
+  }
+};
+
+// Alternative authentication method for InPrivate mode
+export const inPrivateLogin = (): void => {
+  if (isDevelopment()) return;
+  
+  console.log('InPrivate mode detected - using alternative authentication method');
+  
+  // Method 1: Try to open Cloudflare Access in a new window/tab
+  const accessUrl = 'https://rcormier.cloudflareaccess.com';
+  const newWindow = window.open(accessUrl, '_blank', 'width=800,height=600');
+  
+  if (newWindow) {
+    // Set up a message listener for when authentication completes
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin === 'https://rcormier.cloudflareaccess.com' && event.data.authenticated) {
+        console.log('Authentication completed in InPrivate mode');
+        newWindow.close();
+        
+        // Try to redirect to protected content
+        setTimeout(() => {
+          window.location.href = '/protected';
+        }, 1000);
+      }
+    };
+    
+    window.addEventListener('message', handleMessage);
+    
+    // Fallback: Check if the window was closed (user completed auth)
+    const checkWindowClosed = setInterval(() => {
+      if (newWindow.closed) {
+        clearInterval(checkWindowClosed);
+        console.log('Access window closed - attempting to access protected content');
+        window.location.href = '/protected';
+      }
+    }, 1000);
+    
+    // Cleanup after 5 minutes
+    setTimeout(() => {
+      clearInterval(checkWindowClosed);
+      window.removeEventListener('message', handleMessage);
+    }, 300000);
+  } else {
+    // Method 2: Try direct navigation with a delay
+    console.log('Popup blocked - trying direct navigation with delay');
+    setTimeout(() => {
+      window.location.href = accessUrl;
+    }, 100);
+  }
+  
+  // Method 3: Show user instructions for InPrivate mode
+  setTimeout(() => {
+    const instructions = `
+      InPrivate Mode Authentication Instructions:
+      
+      1. A new window should have opened with Cloudflare Access
+      2. Complete authentication in that window
+      3. After successful login, return here and refresh the page
+      4. If no window opened, check your popup blocker settings
+      
+      Alternative: Copy and paste this URL into a new tab:
+      ${accessUrl}
+    `;
+    
+    console.log(instructions);
+    
+    // Show a user-friendly alert
+    if (confirm('InPrivate mode detected. A new window should open for authentication. Click OK to continue or Cancel to see instructions.')) {
+      // User clicked OK, continue with the flow
+    } else {
+      // User clicked Cancel, show detailed instructions
+      alert(instructions);
+    }
+  }, 2000);
+};
+
 // Debug function to log authentication state
 export const debugAuthState = (): void => {
   console.log('=== Cloudflare Auth Debug ===');
@@ -190,10 +303,15 @@ export const login = (): void => {
     console.log('Development mode: Redirecting to protected route for simulated authentication');
     window.location.href = '/protected';
   } else {
-    // In production, redirect to protected route - Cloudflare Access should intercept this
-    // and show the login page if not authenticated
-    console.log('Production mode: Redirecting to protected route - Cloudflare Access will intercept');
-    window.location.href = '/protected';
+    // Check if we're in InPrivate mode and use alternative method
+    if (isInPrivateMode()) {
+      console.log('InPrivate mode detected - using alternative authentication');
+      inPrivateLogin();
+    } else {
+      // Normal production mode - redirect to protected route
+      console.log('Production mode: Redirecting to protected route - Cloudflare Access will intercept');
+      window.location.href = '/protected';
+    }
   }
 };
 
@@ -292,6 +410,21 @@ export const checkCloudflareAccessIdentity = async (): Promise<void> => {
 export const isProtectedRoute = (): boolean => {
   const protectedRoutes = ['/protected', '/healthbridge-analysis'];
   return protectedRoutes.some(route => window.location.pathname === route);
+};
+
+// Handle InPrivate mode when already on protected route
+export const handleInPrivateProtectedRoute = (): void => {
+  if (isDevelopment()) return;
+  
+  if (isProtectedRoute() && isInPrivateMode()) {
+    console.log('InPrivate mode detected on protected route - redirecting to authentication');
+    
+    // Clear any stale data
+    clearUserInfo();
+    
+    // Redirect to authentication
+    inPrivateLogin();
+  }
 };
 
 // Get list of protected routes for navigation
