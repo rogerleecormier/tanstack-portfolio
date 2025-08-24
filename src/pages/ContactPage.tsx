@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,7 +9,6 @@ import { H1, H2, P } from '@/components/ui/typography'
 import { 
   Mail, 
   MapPin, 
-  Calendar, 
   Send, 
   CheckCircle,
   Linkedin,
@@ -23,7 +22,128 @@ import {
 import { FaLinkedin } from 'react-icons/fa'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { sendEmail } from '@/api/emailService'
-import { SchedulingForm } from '@/components/SchedulingForm'
+import { format } from 'date-fns'
+import { AIContactAnalysis } from '@/components/AIContactAnalysis'
+import { AIMeetingScheduler } from '@/components/AIMeetingScheduler'
+import { analyzeContactForm, type AIAnalysisResult } from '@/api/aiContactAnalyzer'
+
+// Dynamic Action Button Component
+interface DynamicActionButtonProps {
+  aiAnalysis: AIAnalysisResult | null
+  isAnalyzing: boolean
+  meetingScheduled: boolean
+  showMessageForm: boolean
+  isSubmitting: boolean
+  isScheduleMode?: boolean
+}
+
+function DynamicActionButton({
+  aiAnalysis,
+  isAnalyzing,
+  meetingScheduled,
+  showMessageForm,
+  isSubmitting,
+  isScheduleMode = false
+}: DynamicActionButtonProps) {
+  // Button is disabled until AI analysis is complete
+  if (isAnalyzing) {
+    return (
+      <Button
+        type="button"
+        disabled
+        className="w-full bg-gray-400 text-white py-3 cursor-not-allowed"
+      >
+        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+        Analyzing your message...
+      </Button>
+    )
+  }
+
+  // If AI recommends scheduling a meeting and no meeting is scheduled yet
+  if (aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && !showMessageForm) {
+    return null // No need to show anything since the meeting scheduler has its own instructions
+  }
+
+  // If user chose to send message instead
+  if (showMessageForm) {
+    return (
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+      >
+        {isSubmitting ? (
+          <>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+            Sending Message...
+          </>
+        ) : (
+          <>
+            <Send className="h-4 w-4 mr-2" />
+            Send Message
+          </>
+        )}
+      </Button>
+    )
+  }
+
+  // Default: Send message button or Submit meeting request button
+  if (isScheduleMode) {
+    return (
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+      >
+        {isSubmitting ? (
+          <>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+            Submitting...
+          </>
+        ) : (
+          <>
+            <Send className="h-4 w-4 mr-2" />
+            Submit Meeting Request
+          </>
+        )}
+      </Button>
+    )
+  }
+
+  // Show greyed-out button initially, only enable after AI analysis
+  if (!aiAnalysis) {
+    return (
+      <Button
+        type="button"
+        disabled
+        className="w-full bg-gray-400 text-white py-3 cursor-not-allowed"
+      >
+        <Send className="h-4 w-4 mr-2" />
+        Send Message (AI analysis required)
+      </Button>
+    )
+  }
+
+  return (
+    <Button
+      type="submit"
+      disabled={isSubmitting}
+      className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+    >
+      {isSubmitting ? (
+        <>
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+          Sending Message...
+        </>
+      ) : (
+        <>
+          <Send className="h-4 w-4 mr-2" />
+          Send Message
+        </>
+      )}
+    </Button>
+  )
+}
 
 interface ContactForm {
   name: string
@@ -33,7 +153,16 @@ interface ContactForm {
   message: string
 }
 
-type ContactMode = 'choice' | 'message' | 'schedule'
+interface MeetingData {
+  date: Date
+  time: string
+  duration: string
+  type: string
+  timezone: string
+  analysis: AIAnalysisResult
+}
+
+type ContactMode = 'choice' | 'message'
 
 export default function ContactPage() {
   const [contactMode, setContactMode] = useState<ContactMode>('choice')
@@ -47,6 +176,12 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [aiAnalysis, setAiAnalysis] = useState<AIAnalysisResult | null>(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [meetingScheduled, setMeetingScheduled] = useState(false)
+  const [meetingData, setMeetingData] = useState<MeetingData | null>(null)
+  const [showMessageForm, setShowMessageForm] = useState(false)
+  const [showMeetingScheduler, setShowMeetingScheduler] = useState(true)
 
   // Update document title and meta tags
   useDocumentTitle({
@@ -66,13 +201,56 @@ export default function ContactPage() {
     if (error) setError(null)
   }
 
+  const triggerAIAnalysis = useCallback(async () => {
+    // Progressive AI analysis - trigger with message, enhance with more fields
+    if (formData.message.length > 20) {
+      setIsAnalyzing(true)
+      setError(null) // Clear any previous errors
+      try {
+        const analysis = await analyzeContactForm({
+          name: formData.name || 'Anonymous User',
+          email: formData.email || 'user@example.com',
+          company: formData.company || '',
+          subject: formData.subject || 'General Inquiry',
+          message: formData.message
+        })
+        
+        if (analysis) {
+          setAiAnalysis(analysis)
+        } else {
+          throw new Error('AI analysis returned null')
+        }
+      } catch {
+        setError('AI analysis failed. You can still send your message, and I\'ll review it manually.')
+        // Don't block the form - user can still submit
+      } finally {
+        setIsAnalyzing(false)
+      }
+    }
+  }, [formData.name, formData.email, formData.company, formData.subject, formData.message])
+
+  // Retry AI analysis function
+  const retryAIAnalysis = useCallback(async () => {
+    if (formData.message.length > 20) {
+      setError(null)
+      await triggerAIAnalysis()
+    }
+  }, [formData.message.length, triggerAIAnalysis])
+
+  // Monitor message field length and trigger AI analysis when appropriate
+  useEffect(() => {
+    if (formData.message.length > 20 && !isAnalyzing && !aiAnalysis) {
+      triggerAIAnalysis()
+    }
+  }, [formData.message, isAnalyzing, aiAnalysis, triggerAIAnalysis])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError(null)
     
     try {
-      // Send email using our email service
+      // Send email using our email service with AI analysis
       const emailData = {
         to_name: 'Roger',
         from_name: formData.name,
@@ -81,33 +259,65 @@ export default function ContactPage() {
         subject: formData.subject,
         message: formData.message,
         reply_to: formData.email,
+        ai_analysis: aiAnalysis || undefined,
+        meeting_data: meetingData || undefined
       }
 
       const success = await sendEmail(emailData)
       
       if (success) {
         setIsSubmitted(true)
-        // Reset form after successful submission
-        setTimeout(() => {
-          setIsSubmitted(false)
-          setFormData({
-            name: '',
-            email: '',
-            company: '',
-            subject: '',
-            message: ''
-          })
-        }, 5000)
+        // Don't auto-reset - let user choose to send another message
       } else {
         throw new Error('Failed to send message')
       }
     } catch (error) {
-      console.error('Form submission error:', error)
       setError(error instanceof Error ? error.message : 'Failed to send message. Please try again or email me directly.')
     } finally {
       setIsSubmitting(false)
     }
   }
+
+  const handleMeetingScheduled = (meetingData: MeetingData) => {
+    setMeetingScheduled(true)
+    setMeetingData(meetingData)
+    
+    // Send confirmation email to user
+    sendConfirmationEmail(meetingData)
+  }
+
+  const sendConfirmationEmail = async (meetingData: MeetingData) => {
+    try {
+      const confirmationData = {
+        to_name: formData.name || 'User',
+        from_name: 'Roger Lee Cormier',
+        from_email: 'roger@rcormier.dev',
+        company: 'Roger Lee Cormier',
+        subject: `Meeting Confirmed: ${meetingData.type} on ${format(meetingData.date, 'MMM do, yyyy')}`,
+        message: `Hi ${formData.name || 'there'},
+
+Your meeting has been successfully scheduled!
+
+Meeting Details:
+- Date: ${format(meetingData.date, 'EEEE, MMMM do, yyyy')}
+- Time: ${meetingData.time} (${meetingData.timezone})
+- Duration: ${meetingData.duration}
+- Type: ${meetingData.type.replace('-', ' ')}
+
+I'll send you a calendar invite shortly. Looking forward to our discussion!
+
+Best regards,
+Roger Lee Cormier`,
+        reply_to: 'roger@rcormier.dev'
+      }
+
+      await sendEmail(confirmationData)
+    } catch {
+      // Silently handle confirmation email failure
+    }
+  }
+
+
 
   const resetToChoice = () => {
     setContactMode('choice')
@@ -120,6 +330,13 @@ export default function ContactPage() {
     })
     setError(null)
     setIsSubmitted(false)
+    setShowMessageForm(false)
+    setShowMeetingScheduler(true)
+  }
+
+  const handleSendMessageInstead = () => {
+    setShowMeetingScheduler(false)
+    setShowMessageForm(true)
   }
 
   const contactMethods = [
@@ -164,90 +381,70 @@ export default function ContactPage() {
               Let's Connect
             </H1>
             <P className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Ready to discuss your next strategic technology initiative? Choose how you'd like to get in touch.
+              Ready to discuss your next strategic technology initiative? Send me a message and I'll get back to you within 24 hours.
             </P>
           </div>
 
-                     {/* Main Contact Options - More Prominent */}
-           <div className="mb-12">
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-               {/* Quick Message Card - Enhanced for Clickability */}
-               <Card 
+          {/* Main Contact Option - Single Message Card */}
+          <div className="mb-12">
+            <div className="max-w-2xl mx-auto">
+                             <Card 
                  className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
-                 onClick={() => setContactMode('message')}
+                                   onClick={() => {
+                    // Reset all form state when transitioning to message form
+                    setFormData({
+                      name: '',
+                      email: '',
+                      company: '',
+                      subject: '',
+                      message: ''
+                    })
+                    setAiAnalysis(null)
+                    setIsAnalyzing(false)
+                    setMeetingScheduled(false)
+                    setMeetingData(null)
+                    setShowMessageForm(false)
+                    setShowMeetingScheduler(true)
+                    setError(null)
+                    setIsSubmitted(false)
+                    setContactMode('message')
+                  }}
                >
-                 <CardContent className="pt-8 pb-8">
-                   <div className="text-center">
-                     <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-teal-200 transition-colors">
-                       <MessageSquare className="h-10 w-10 text-teal-600" />
-                     </div>
-                     <H2 className="text-2xl font-semibold text-gray-900 mb-4">
-                       Quick Message
-                     </H2>
-                     <P className="text-gray-600 mb-6">
-                       Have a question or want to discuss a project? Send me a message and I'll get back to you within 24 hours.
-                     </P>
-                     <div className="space-y-3 text-sm text-gray-500 mb-6">
-                       <div className="flex items-center gap-2">
-                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                         <span>General inquiries</span>
-                       </div>
-                       <div className="flex items-center gap-2">
-                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                         <span>Project discussions</span>
-                       </div>
-                       <div className="flex items-center gap-2">
-                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                         <span>Quick questions</span>
-                       </div>
-                     </div>
-                     <div className="inline-flex items-center gap-2 text-teal-600 font-medium group-hover:text-teal-700 transition-colors">
-                       <span>Send Message</span>
-                       <div className="w-4 h-4 border-r-2 border-b-2 border-teal-600 rotate-45 group-hover:translate-x-1 transition-transform"></div>
-                     </div>
-                   </div>
-                 </CardContent>
-               </Card>
-
-               {/* Schedule Meeting Card - Enhanced for Clickability */}
-               <Card 
-                 className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
-                 onClick={() => setContactMode('schedule')}
-               >
-                 <CardContent className="pt-8 pb-8">
-                   <div className="text-center">
-                     <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-teal-200 transition-colors">
-                       <Calendar className="h-10 w-10 text-teal-600" />
-                     </div>
-                     <H2 className="text-2xl font-semibold text-gray-900 mb-4">
-                       Schedule Meeting
-                     </H2>
-                     <P className="text-gray-600 mb-6">
-                       Ready for a detailed consultation? Schedule a meeting and I'll get back to you to confirm the details.
-                     </P>
-                     <div className="space-y-3 text-sm text-gray-500 mb-6">
-                       <div className="flex items-center gap-2">
-                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                         <span>In-depth discussions</span>
-                       </div>
-                       <div className="flex items-center gap-2">
-                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                         <span>Project planning</span>
-                       </div>
-                       <div className="flex items-center gap-2">
-                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                         <span>Strategy sessions</span>
-                       </div>
-                     </div>
-                     <div className="inline-flex items-center gap-2 text-teal-600 font-medium group-hover:text-teal-700 transition-colors">
-                       <span>Book Meeting</span>
-                       <div className="w-4 h-4 border-r-2 border-b-2 border-teal-600 rotate-45 group-hover:translate-x-1 transition-transform"></div>
-                     </div>
-                   </div>
-                 </CardContent>
-               </Card>
-             </div>
-           </div>
+                <CardContent className="pt-8 pb-8">
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-teal-200 transition-colors">
+                      <MessageSquare className="h-10 w-10 text-teal-600" />
+                    </div>
+                    <H2 className="text-2xl font-semibold text-gray-900 mb-4">
+                      Send a Message
+                    </H2>
+                    <P className="text-gray-600 mb-6">
+                      Have a question or want to discuss a project? Send me a message and I'll get back to you within 24 hours. 
+                      The AI will analyze your message and recommend the best way to proceed.
+                    </P>
+                    <div className="space-y-3 text-sm text-gray-500 mb-6">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                        <span>General inquiries & project discussions</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                        <span>AI-powered analysis & recommendations</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                        <span>Meeting scheduling when appropriate</span>
+                      </div>
+                    </div>
+                    <div className="inline-flex items-center gap-2 text-teal-600 font-medium group-hover:text-teal-700 transition-colors">
+                      <span>Send Message</span>
+                      <div className="w-4 h-4 border-r-2 border-b-2 border-teal-600 rotate-45 group-hover:translate-x-1 transition-transform"></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
 
            {/* Supporting Information - More Compact */}
            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
@@ -387,7 +584,7 @@ export default function ContactPage() {
   if (contactMode === 'message') {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Back Button and Header */}
           <div className="mb-8">
             <Button
@@ -401,7 +598,7 @@ export default function ContactPage() {
             
             <div className="text-center">
               <H1 className="text-4xl font-bold text-gray-900 mb-4">
-                Send a Quick Message
+                Send a Message
               </H1>
               <P className="text-xl text-gray-600 max-w-2xl mx-auto">
                 Have a question or want to discuss a project? Fill out the form below and I'll get back to you within 24 hours.
@@ -409,169 +606,188 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Message Form */}
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="pt-6">
-              {isSubmitted ? (
-                <div className="text-center py-8">
-                  <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                  <H2 className="text-2xl font-semibold text-gray-900 mb-2">
-                    Message Sent Successfully!
-                  </H2>
-                  <P className="text-gray-600 mb-4">
-                    Thank you for reaching out. I'll review your message and get back to you soon.
-                  </P>
-                  <Button 
-                    onClick={resetToChoice}
-                    variant="outline"
-                  >
-                    Send Another Message
-                  </Button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name *
-                      </label>
-                      <Input
-                        id="name"
-                        name="name"
-                        type="text"
-                        required
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="Your full name"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address *
-                      </label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="your.email@company.com"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                        Company / Organization
-                      </label>
-                      <Input
-                        id="company"
-                        name="company"
-                        type="text"
-                        value={formData.company}
-                        onChange={handleInputChange}
-                        placeholder="Your company name"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                        Subject *
-                      </label>
-                      <Input
-                        id="subject"
-                        name="subject"
-                        type="text"
-                        required
-                        value={formData.subject}
-                        onChange={handleInputChange}
-                        placeholder="What can I help you with?"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      Message *
-                    </label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      required
-                      rows={6}
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      placeholder="Tell me about your project, challenge, or opportunity..."
-                      className="resize-none"
-                    />
-                  </div>
-                   
-                  {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                      <p className="text-red-600 text-sm flex items-center gap-2">
-                        <span className="text-red-500">⚠</span>
-                        {error}
-                      </p>
-                    </div>
-                  )}
-
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                        Sending Message...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Send Message
-                      </>
+          {/* Confirmation State - Show when message sent OR meeting scheduled */}
+          {(isSubmitted || meetingScheduled) ? (
+            <div className="max-w-2xl mx-auto">
+              <Card className="border-l-4 border-l-green-500">
+                <CardContent className="pt-6">
+                  <div className="text-center py-8">
+                    <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                    <H2 className="text-2xl font-semibold text-gray-900 mb-2">
+                      {isSubmitted ? 'Message Sent Successfully!' : 'Meeting Scheduled Successfully!'}
+                    </H2>
+                    <P className="text-gray-600 mb-4">
+                      {isSubmitted 
+                        ? "Thank you for reaching out. I'll review your message and get back to you soon."
+                        : "Your meeting has been scheduled! You'll receive a confirmation email with meeting details shortly."
+                      }
+                    </P>
+                    {meetingData && (
+                      <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                        <Badge variant="outline" className="text-sm mb-2">
+                          {format(meetingData.date, 'EEEE, MMMM do, yyyy')} at {meetingData.time}
+                        </Badge>
+                        <p className="text-sm text-green-700">
+                          {meetingData.duration} {meetingData.type.replace('-', ' ')} meeting
+                        </p>
+                      </div>
                     )}
-                  </Button>
-                </form>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    )
-  }
-
-  // Schedule Meeting Form
-  if (contactMode === 'schedule') {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Back Button and Header */}
-          <div className="mb-8">
-            <Button
-              variant="ghost"
-              onClick={resetToChoice}
-              className="mb-6 text-teal-600 hover:text-teal-700 hover:bg-teal-50"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Contact Options
-            </Button>
-            
-            <div className="text-center">
-              <H1 className="text-4xl font-bold text-gray-900 mb-4">
-                Schedule a Meeting
-              </H1>
-              <P className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Ready for a detailed consultation? Schedule a meeting and I'll get back to you within 24 hours to confirm the details.
-              </P>
+                    <Button 
+                      onClick={resetToChoice}
+                      variant="outline"
+                      className="bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100"
+                    >
+                      Send Another Message
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </div>
+          ) : (
+                         /* Message Form with AI Analysis and Meeting Scheduler - All in One Form */
+             <div className="max-w-7xl mx-auto">
+               <div className="max-w-4xl mx-auto">
+                 <Card>
+                   <CardContent className="pt-6">
+                     <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
+                       {/* Form Fields */}
+                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                         <div>
+                           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                             Full Name *
+                           </label>
+                           <Input
+                             id="name"
+                             name="name"
+                             type="text"
+                             required
+                             value={formData.name}
+                             onChange={handleInputChange}
+                             placeholder="Your full name"
+                           />
+                         </div>
+                         <div>
+                           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                             Email Address *
+                           </label>
+                           <Input
+                             id="email"
+                             name="email"
+                             type="email"
+                             required
+                             value={formData.email}
+                             onChange={handleInputChange}
+                             placeholder="your.email@company.com"
+                           />
+                         </div>
+                       </div>
+                       
+                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                         <div>
+                           <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                             Company / Organization
+                           </label>
+                           <Input
+                             id="company"
+                             name="company"
+                             type="text"
+                             value={formData.company}
+                             onChange={handleInputChange}
+                             placeholder="Your company name"
+                           />
+                         </div>
+                         <div>
+                           <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                             Subject *
+                           </label>
+                           <Input
+                             id="subject"
+                             name="subject"
+                             type="text"
+                             required
+                             value={formData.subject}
+                             onChange={handleInputChange}
+                             placeholder="What can I help you with?"
+                           />
+                         </div>
+                       </div>
+                       
+                       <div>
+                         <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                           Message *
+                         </label>
+                         <Textarea
+                           id="message"
+                           name="message"
+                           required
+                           rows={6}
+                           value={formData.message}
+                           onChange={handleInputChange}
+                           placeholder="Tell me about your project, challenge, or opportunity..."
+                           className="resize-none"
+                         />
+                         {formData.message.length > 0 && formData.message.length < 20 && (
+                           <p className="text-sm text-gray-500 mt-1">
+                             Type {20 - formData.message.length} more characters to get AI analysis
+                           </p>
+                         )}
+                         {formData.message.length >= 20 && !aiAnalysis && !isAnalyzing && (
+                           <p className="text-sm text-blue-600 mt-1">
+                             ✨ AI analysis available! Fill in more details for enhanced insights.
+                           </p>
+                         )}
+                       </div>
 
-          {/* Scheduling Form */}
-          <div className="max-w-2xl mx-auto">
-            <SchedulingForm />
-          </div>
+                       {/* AI Analysis - Above Meeting Scheduler */}
+                       {(aiAnalysis || isAnalyzing) && (
+                         <div className="pt-4 border-t border-gray-200">
+                           <AIContactAnalysis 
+                             analysis={aiAnalysis} 
+                             isLoading={isAnalyzing}
+                             className="border-l-4 border-l-teal-500"
+                             onRetry={retryAIAnalysis}
+                           />
+                         </div>
+                       )}
+
+                                               {/* AI Meeting Scheduler - Below AI Analysis */}
+                        {aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && showMeetingScheduler && !showMessageForm && (
+                          <div className="pt-4 border-t border-gray-200">
+                            <AIMeetingScheduler
+                              analysis={aiAnalysis}
+                              onMeetingScheduled={handleMeetingScheduled}
+                              onSendMessageInstead={handleSendMessageInstead}
+                              className="border-l-4 border-l-teal-500"
+                            />
+                          </div>
+                        )}
+
+                       {/* Dynamic Action Button - Always at the bottom */}
+                       <div className="pt-4 border-t border-gray-200">
+                         <DynamicActionButton
+                           aiAnalysis={aiAnalysis}
+                           isAnalyzing={isAnalyzing}
+                           meetingScheduled={meetingScheduled}
+                           showMessageForm={showMessageForm}
+                           isSubmitting={isSubmitting}
+                           isScheduleMode={false}
+                         />
+                       </div>
+                     </form>
+                   </CardContent>
+                 </Card>
+               </div>
+             </div>
+          )}
+
+          {error && (
+            <div className="mt-6 bg-red-50 border border-red-200 rounded-md p-3 max-w-2xl mx-auto">
+              <p className="text-red-600 text-sm flex items-center gap-2">
+                <span className="text-red-500">⚠</span>
+                {error}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     )

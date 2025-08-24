@@ -1,6 +1,17 @@
 // Email service for sending contact form submissions via Cloudflare Worker
 // This avoids CORS issues by using a serverless function
 
+import type { AIAnalysisResult } from './aiContactAnalyzer'
+
+interface MeetingData {
+  date: Date
+  time: string
+  duration: string
+  type: string
+  timezone: string
+  analysis: AIAnalysisResult
+}
+
 interface EmailData {
   to_name: string
   from_name: string
@@ -9,6 +20,8 @@ interface EmailData {
   subject: string
   message: string
   reply_to: string
+  ai_analysis?: AIAnalysisResult
+  meeting_data?: MeetingData
 }
 
 // Cloudflare Worker endpoints - use development by default

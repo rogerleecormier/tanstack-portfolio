@@ -1,0 +1,26 @@
+# Wrangler configuration for AI Contact Analyzer Worker
+name = "ai-contact-analyzer"
+main = "functions/ai-contact-analyzer.js"
+compatibility_date = "2024-01-01"
+
+# AI binding for Cloudflare AI
+[ai]
+binding = "ai"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "development"
+
+# Development environment
+[env.development]
+name = "ai-contact-analyzer-development"
+vars = { ENVIRONMENT = "development" }
+[env.development.ai]
+binding = "ai"
+
+# Production environment
+[env.production]
+name = "ai-contact-analyzer-production"
+vars = { ENVIRONMENT = "production" }
+[env.production.ai]
+binding = "ai"
