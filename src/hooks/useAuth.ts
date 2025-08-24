@@ -64,11 +64,12 @@ const productionAuth = {
                          urlParams.has('access_token') ||
                          urlParams.has('user_email');
     
-    // Check if we're on a protected route and have auth indicators
-    const isOnProtectedRoute = window.location.pathname === '/protected' || 
-                              window.location.pathname === '/healthbridge-analysis';
+    // REMOVE THIS LINE - it's the security vulnerability:
+    // const isOnProtectedRoute = window.location.pathname === '/protected' || 
+    //                           window.location.pathname === '/healthbridge-analysis';
     
-    return hasAuthCookie || hasAuthParams || isOnProtectedRoute;
+    // Only return true if we actually have authentication evidence
+    return hasAuthCookie || hasAuthParams;
   },
 
   getUser: (): CloudflareUser | null => {
