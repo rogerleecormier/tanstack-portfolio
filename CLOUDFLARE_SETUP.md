@@ -158,11 +158,8 @@ VITE_CLOUDFLARE_DOMAIN=yourdomain.com
 
 ### **3.3 Resend Configuration**
 ```typescript
-// src/config/resend.ts
-export const RESEND_CONFIG = {
-  apiKey: 're_your_api_key_here',
-  fromEmail: 'noreply@rcormier.dev',
-}
+// Configured via Cloudflare Workers secrets
+// No local config file needed - API keys stored securely
 ```
 
 ## 🧪 Step 4: Testing

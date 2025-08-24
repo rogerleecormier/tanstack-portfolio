@@ -678,9 +678,7 @@ export default function MarkdownPage({ file }: { file: string }) {
                   Get in Touch
                 </a>
                 <a
-                  href="https://calendly.com/roger-cormier"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/contact#scheduling"
                   className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-teal-700 border border-teal-300 px-6 py-3 rounded-lg font-medium transition-colors"
                 >
                   <Calendar className="h-4 w-4" />

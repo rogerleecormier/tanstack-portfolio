@@ -121,7 +121,6 @@ src/
 ├── config/              # Configuration files
 │   ├── accessControl.ts # Email-based access control
 │   ├── environment.ts   # Environment configuration
-│   ├── resend.ts        # Resend email configuration
 │   └── securityHeaders.ts # Security headers
 ├── router.tsx           # TanStack Router configuration
 └── main.tsx             # Application entry point
@@ -324,11 +323,8 @@ VITE_CLOUDFLARE_DOMAIN=rcormier.dev
 
 ### **Resend Configuration**
 ```typescript
-// src/config/resend.ts
-export const RESEND_CONFIG = {
-  apiKey: 're_your_api_key_here',
-  fromEmail: 'noreply@rcormier.dev',
-}
+// Configured via Cloudflare Workers secrets
+// No local config file needed - API keys stored securely
 ```
 
 ### **Tailwind Configuration**
