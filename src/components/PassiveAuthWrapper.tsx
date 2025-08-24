@@ -30,20 +30,20 @@ export const PassiveAuthWrapper: React.FC<PassiveAuthWrapperProps> = ({
   // If explicitly showing login, show the login page
   if (showLogin) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-teal-50">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Authentication Required
+            <h1 className="text-3xl font-bold text-teal-900 mb-4">
+              Portfolio Authentication Required
             </h1>
-            <p className="text-lg text-gray-600">
-              Please sign in to access this content
+            <p className="text-lg text-teal-700">
+              Please sign in to access protected portfolio content
             </p>
             {onToggleLogin && (
               <Button 
                 variant="outline" 
                 onClick={onToggleLogin}
-                className="mt-4"
+                className="mt-4 border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
               >
                 Skip Login
               </Button>
@@ -57,24 +57,24 @@ export const PassiveAuthWrapper: React.FC<PassiveAuthWrapperProps> = ({
 
   // Always show content first, with authentication status bar
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-teal-50">
       <div className="container mx-auto px-4 py-8">
         {/* Authentication Status Bar - Always Visible */}
-        <Card className="mb-6">
+        <Card className="mb-6 border-teal-200 bg-teal-50/50">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-blue-600" />
-                <span>Authentication Status</span>
+                <Shield className="h-5 w-5 text-teal-600" />
+                <span className="text-teal-900">Authentication Status</span>
               </div>
               <div className="flex gap-2">
                 {isAuthenticated && user && (
-                  <Badge variant="default" className="bg-green-600">
+                  <Badge variant="default" className="bg-teal-600 hover:bg-teal-700">
                     {user.role}
                   </Badge>
                 )}
                 {!isAuthenticated && (
-                  <Badge variant="secondary">
+                  <Badge variant="secondary" className="bg-teal-100 text-teal-800 border-teal-200">
                     Not Authenticated
                   </Badge>
                 )}
@@ -84,19 +84,19 @@ export const PassiveAuthWrapper: React.FC<PassiveAuthWrapperProps> = ({
           <CardContent>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <User className="h-5 w-5 text-blue-600" />
+                <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center border border-teal-200">
+                  <User className="h-5 w-5 text-teal-600" />
                 </div>
                 <div>
                   {isAuthenticated && user ? (
                     <>
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-sm text-gray-500">{user.email}</p>
+                      <p className="font-medium text-teal-900">{user.name}</p>
+                      <p className="text-sm text-teal-600">{user.email}</p>
                     </>
                   ) : (
                     <>
-                      <p className="font-medium">Guest User</p>
-                      <p className="text-sm text-gray-500">Not signed in</p>
+                      <p className="font-medium text-teal-800">Guest User</p>
+                      <p className="text-sm text-teal-600">Not signed in</p>
                     </>
                   )}
                 </div>
@@ -107,7 +107,7 @@ export const PassiveAuthWrapper: React.FC<PassiveAuthWrapperProps> = ({
                   variant="outline" 
                   onClick={handleCheckAuth}
                   disabled={isLoading}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
                 >
                   <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
                   Check Auth
@@ -118,6 +118,7 @@ export const PassiveAuthWrapper: React.FC<PassiveAuthWrapperProps> = ({
                   <Button 
                     variant="outline" 
                     onClick={onToggleLogin}
+                    className="border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
                   >
                     {isAuthenticated ? 'Switch Account' : 'Sign In'}
                   </Button>
@@ -128,7 +129,7 @@ export const PassiveAuthWrapper: React.FC<PassiveAuthWrapperProps> = ({
                   <Button 
                     variant="outline" 
                     onClick={handleLogout}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
                   >
                     <LogOut className="h-4 w-4" />
                     Sign Out

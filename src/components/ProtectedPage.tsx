@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P, H3 } from './ui/typography';
-import { Shield, ArrowRight, Loader2, Lock, UserCheck, Info, User, Key, Server } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, Lock, UserCheck, Info, User, Key, Server, Briefcase } from 'lucide-react';
 import { DevAuthToggle } from './DevAuthToggle';
 import { useAuth } from '../hooks/useAuth';
 import { PassiveAuthWrapper } from './PassiveAuthWrapper';
@@ -16,14 +16,14 @@ export const ProtectedPage: React.FC = () => {
   // Add authentication system toggle at the top
   const authToggle = (
     <div className="container mx-auto px-4 py-4">
-      <Card className="mb-6">
+      <Card className="mb-6 border-teal-200 bg-teal-50/50">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Server className="h-5 w-5" />
-            Authentication System Toggle
+          <CardTitle className="flex items-center gap-2 text-teal-900">
+            <Server className="h-5 w-5 text-teal-600" />
+            Authentication System Selection
           </CardTitle>
-          <CardDescription>
-            Choose between the old Cloudflare Access system and the new passive server-side system
+          <CardDescription className="text-teal-700">
+            Choose between Cloudflare Access and the new passive server-side authentication system
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -31,28 +31,28 @@ export const ProtectedPage: React.FC = () => {
             <Button
               variant={!useNewAuth ? "default" : "outline"}
               onClick={() => setUseNewAuth(false)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 border-teal-600"
             >
               <Shield className="h-4 w-4" />
-              Cloudflare Access (Old)
+              Cloudflare Access
             </Button>
             <Button
               variant={useNewAuth ? "default" : "outline"}
               onClick={() => setUseNewAuth(true)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 border-teal-600"
             >
               <Key className="h-4 w-4" />
-              Passive Server Auth (New)
+              Passive Server Auth
             </Button>
           </div>
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
-              <strong>Current System:</strong> {useNewAuth ? 'Passive Server Auth' : 'Cloudflare Access'}
+          <div className="mt-4 p-3 bg-teal-100 border border-teal-200 rounded-lg">
+            <p className="text-sm text-teal-800">
+              <strong>Current System:</strong> {useNewAuth ? 'Passive Server Authentication' : 'Cloudflare Access'}
             </p>
-            <p className="text-sm text-blue-600 mt-1">
+            <p className="text-sm text-teal-700 mt-1">
               {useNewAuth 
-                ? 'No automatic checks, no refreshing, content loads instantly'
-                : 'Traditional cookie-based authentication with automatic checks'
+                ? 'Streamlined authentication with instant content loading'
+                : 'Enterprise-grade authentication with automatic session management'
               }
             </p>
           </div>
@@ -67,7 +67,7 @@ export const ProtectedPage: React.FC = () => {
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-teal-600 mx-auto mb-4" />
           <P className="text-teal-600">
-            {isDevelopment ? 'Checking development authentication...' : 'Verifying Cloudflare Access...'}
+            {isDevelopment ? 'Verifying development authentication...' : 'Authenticating with Cloudflare Access...'}
           </P>
         </div>
       </div>
@@ -84,101 +84,104 @@ export const ProtectedPage: React.FC = () => {
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  Protected Content (New System)
+                <div className="mx-auto p-4 bg-teal-100 rounded-full w-fit border-2 border-teal-200 mb-4">
+                  <Briefcase className="h-8 w-8 text-teal-700" />
+                </div>
+                <h1 className="text-4xl font-bold text-teal-900 mb-4">
+                  Protected Portfolio Content
                 </h1>
-                <p className="text-xl text-gray-600">
-                  This page uses the new passive authentication system
+                <p className="text-xl text-teal-700">
+                  Advanced authentication system for secure project access
                 </p>
-                <p className="text-lg text-gray-500 mt-2">
-                  No automatic checks, no refreshing, content loads instantly!
+                <p className="text-lg text-teal-600 mt-2">
+                  Seamless, instant loading with enterprise-grade security
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <Card>
+                <Card className="border-teal-200 bg-teal-50/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <User className="h-5 w-5" />
-                      User Information
+                    <CardTitle className="flex items-center gap-2 text-teal-900">
+                      <User className="h-5 w-5 text-teal-600" />
+                      User Profile
                     </CardTitle>
-                    <CardDescription>
-                      Your authenticated user details
+                    <CardDescription className="text-teal-700">
+                      Your authenticated portfolio access details
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="font-medium">Name:</span>
-                      <span>{passiveUser?.name || 'Not authenticated'}</span>
+                      <span className="font-medium text-teal-800">Name:</span>
+                      <span className="text-teal-700">{passiveUser?.name || 'Not authenticated'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-medium">Email:</span>
-                      <span>{passiveUser?.email || 'Not authenticated'}</span>
+                      <span className="font-medium text-teal-800">Email:</span>
+                      <span className="text-teal-700">{passiveUser?.email || 'Not authenticated'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-medium">Role:</span>
-                      <span>{passiveUser?.role || 'Not authenticated'}</span>
+                      <span className="font-medium text-teal-800">Access Level:</span>
+                      <span className="text-teal-700">{passiveUser?.role || 'Not authenticated'}</span>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="border-teal-200 bg-teal-50/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="h-5 w-5" />
-                      Authentication Status
+                    <CardTitle className="flex items-center gap-2 text-teal-900">
+                      <Shield className="h-5 w-5 text-teal-600" />
+                      Security Status
                     </CardTitle>
-                    <CardDescription>
-                      Current authentication state
+                    <CardDescription className="text-teal-700">
+                      Current authentication and access status
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="font-medium">Status:</span>
-                      <span className={passiveIsAuthenticated ? 'text-green-600 font-semibold' : 'text-gray-500'}>
+                      <span className="font-medium text-teal-800">Status:</span>
+                      <span className={passiveIsAuthenticated ? 'text-teal-600 font-semibold' : 'text-teal-500'}>
                         {passiveIsAuthenticated ? 'Authenticated' : 'Not Authenticated'}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-medium">System:</span>
-                      <span>Passive Server Auth</span>
+                      <span className="font-medium text-teal-800">System:</span>
+                      <span className="text-teal-700">Passive Server Authentication</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-medium">Behavior:</span>
-                      <span>No Automatic Checks</span>
+                      <span className="font-medium text-teal-800">Performance:</span>
+                      <span className="text-teal-700">Instant Loading</span>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              <Card className="mb-8">
+              <Card className="mb-8 border-teal-200 bg-teal-50/50">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Key className="h-5 w-5" />
-                    How This Works
+                  <CardTitle className="flex items-center gap-2 text-teal-900">
+                    <Key className="h-5 w-5 text-teal-600" />
+                    System Overview
                   </CardTitle>
-                  <CardDescription>
-                    This page demonstrates completely passive authentication
+                  <CardDescription className="text-teal-700">
+                    Advanced authentication technology for professional portfolio access
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="border rounded-lg p-4">
-                      <h4 className="font-semibold text-green-700 mb-2">✅ What Happens</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        <li>• Page loads instantly</li>
-                        <li>• No authentication checks</li>
-                        <li>• No automatic redirects</li>
-                        <li>• Content always visible</li>
+                    <div className="border border-teal-200 rounded-lg p-4 bg-teal-100/50">
+                      <h4 className="font-semibold text-teal-800 mb-2">✅ Performance Benefits</h4>
+                      <ul className="text-sm text-teal-700 space-y-1">
+                        <li>• Instant page loading</li>
+                        <li>• No authentication delays</li>
+                        <li>• Seamless user experience</li>
+                        <li>• Professional-grade performance</li>
                       </ul>
                     </div>
-                    <div className="border rounded-lg p-4">
-                      <h4 className="font-semibold text-blue-700 mb-2">🔧 Manual Controls</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        <li>• Click "Check Auth" to verify token</li>
-                        <li>• Click "Sign In" to show login form</li>
-                        <li>• Authentication is completely optional</li>
-                        <li>• You control when auth happens</li>
+                    <div className="border border-teal-200 rounded-lg p-4 bg-teal-100/50">
+                      <h4 className="font-semibold text-teal-800 mb-2">🔧 User Controls</h4>
+                      <ul className="text-sm text-teal-700 space-y-1">
+                        <li>• Manual authentication checks</li>
+                        <li>• Optional login forms</li>
+                        <li>• User-controlled security</li>
+                        <li>• Flexible access management</li>
                       </ul>
                     </div>
                   </div>
@@ -199,47 +202,47 @@ export const ProtectedPage: React.FC = () => {
         <DevAuthToggle />
         
         <div className="flex items-center justify-center">
-          <Card className="w-full max-w-md border-teal-200 shadow-xl">
+          <Card className="w-full max-w-md border-teal-200 shadow-xl bg-teal-50/50">
             <CardHeader className="text-center space-y-3">
               <div className="mx-auto p-3 bg-teal-100 rounded-full w-fit border-2 border-teal-200">
                 <Shield className="h-8 w-8 text-teal-700" />
               </div>
-              <CardTitle className="text-2xl font-bold text-teal-900">Access Required</CardTitle>
+              <CardTitle className="text-2xl font-bold text-teal-900">Portfolio Access Required</CardTitle>
               <CardDescription className="text-teal-700">
-                You need to authenticate to view this content
+                Authentication needed to view protected portfolio content
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-4">
-              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 text-left">
+              <div className="bg-teal-100 border border-teal-200 rounded-lg p-4 text-left">
                 <div className="flex items-center space-x-2 mb-2">
                   {isDevelopment ? (
                     <>
                       <UserCheck className="h-4 w-4 text-teal-600" />
-                      <span className="font-semibold text-teal-800">Development Mode</span>
+                      <span className="font-semibold text-teal-800">Development Environment</span>
                     </>
                   ) : (
                     <>
                       <Lock className="h-4 w-4 text-teal-600" />
-                      <span className="font-semibold text-teal-800">Production Mode</span>
+                      <span className="font-semibold text-teal-800">Production Security</span>
                     </>
                   )}
                 </div>
                 <P className="text-sm text-teal-700">
                   {isDevelopment 
-                    ? 'This page is protected in development mode. Use the toggle above to simulate authentication.'
-                    : 'This page is protected by Cloudflare Access. You\'ll need to authenticate using your credentials.'
+                    ? 'This content is protected in development mode. Use the toggle above to simulate authentication.'
+                    : 'This content is protected by Cloudflare Access. Please authenticate to access your portfolio.'
                   }
                 </P>
               </div>
               
               {/* Debug Information for Production */}
               {isProduction && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-left">
+                <div className="bg-teal-100 border border-teal-200 rounded-lg p-4 text-left">
                   <div className="flex items-center space-x-2 mb-2">
-                    <Info className="h-4 w-4 text-amber-600" />
-                    <span className="font-semibold text-amber-800">Debug Information</span>
+                    <Info className="h-4 w-4 text-teal-600" />
+                    <span className="font-semibold text-teal-800">Technical Information</span>
                   </div>
-                  <div className="text-xs text-amber-700 space-y-1">
+                  <div className="text-xs text-teal-700 space-y-1">
                     <div><strong>Cookies:</strong> {document.cookie || 'None'}</div>
                     <div><strong>URL:</strong> {window.location.href}</div>
                     <div><strong>Path:</strong> {window.location.pathname}</div>
@@ -253,7 +256,7 @@ export const ProtectedPage: React.FC = () => {
                     }}
                     variant="outline"
                     size="sm"
-                    className="mt-2 text-amber-700 border-amber-300 hover:bg-amber-100"
+                    className="mt-2 text-teal-700 border-teal-300 hover:bg-teal-100"
                   >
                     Clear Cached Data & Reload
                   </Button>
@@ -264,7 +267,7 @@ export const ProtectedPage: React.FC = () => {
                 onClick={() => window.location.href = '/'}
                 className="w-full bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center space-x-2"
               >
-                <span>Go to Home</span>
+                <span>Return to Portfolio</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </CardContent>
@@ -278,11 +281,13 @@ export const ProtectedPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <DevAuthToggle />
       
-      <Card className="max-w-2xl mx-auto border-teal-200 shadow-lg">
+      <Card className="max-w-2xl mx-auto border-teal-200 shadow-lg bg-teal-50/50">
         <CardHeader className="text-center">
+          <div className="mx-auto p-3 bg-teal-100 rounded-full w-fit border-2 border-teal-200 mb-4">
+            <Briefcase className="h-6 w-6 text-teal-700" />
+          </div>
           <CardTitle className="flex items-center justify-center space-x-2 text-teal-900">
-            <User className="h-6 w-6 text-teal-600" />
-            <span>Protected Content</span>
+            <span>Protected Portfolio Content</span>
           </CardTitle>
           <CardDescription className="text-teal-700">
             {isDevelopment 
@@ -292,23 +297,23 @@ export const ProtectedPage: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+          <div className="bg-teal-100 border border-teal-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <Shield className="h-5 w-5 text-teal-600" />
               <span className="font-semibold text-teal-800">
-                {isDevelopment ? 'Development Authentication Successful' : 'Authentication Successful'}
+                {isDevelopment ? 'Development Authentication Active' : 'Portfolio Access Granted'}
               </span>
             </div>
             <P className="text-sm text-teal-700 mt-2">
               {isDevelopment 
-                ? 'You are now viewing protected content using simulated authentication.'
-                : 'You are now viewing protected content that requires Cloudflare Access authentication.'
+                ? 'You are now viewing protected portfolio content using simulated authentication.'
+                : 'You are now viewing protected portfolio content that requires Cloudflare Access authentication.'
               }
             </P>
           </div>
           
-          <div className="bg-teal-100 border border-teal-300 rounded-lg p-4">
-            <H3 className="font-semibold text-teal-800 mb-2">User Information</H3>
+          <div className="bg-teal-100 border border-teal-200 rounded-lg p-4">
+            <H3 className="font-semibold text-teal-800 mb-2">User Profile</H3>
             <div className="space-y-2 text-sm text-teal-700">
               <div><strong>Email:</strong> {user?.email}</div>
               <div><strong>Name:</strong> {user?.name || 'Not provided'}</div>
@@ -321,26 +326,26 @@ export const ProtectedPage: React.FC = () => {
             </div>
           </div>
           
-          <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+          <div className="bg-teal-100 border border-teal-200 rounded-lg p-4">
             <H3 className="font-semibold text-teal-800 mb-2">
-              {isDevelopment ? 'About Development Mode' : 'About This Protection'}
+              {isDevelopment ? 'Development Mode Information' : 'Security Information'}
             </H3>
             <P className="text-sm text-teal-700">
               {isDevelopment 
                 ? 'This content is protected in development mode using simulated authentication. In production, this would be protected by Cloudflare Access.'
-                : 'This content is protected by Cloudflare Access. You authenticated using your credentials to verify your identity and access this page.'
+                : 'This content is protected by Cloudflare Access. You authenticated using your credentials to verify your identity and access this portfolio content.'
               }
             </P>
           </div>
           
           {/* Show refresh button if user email is the fallback */}
           {user?.email === 'authenticated@rcormier.dev' && isProduction && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div className="bg-teal-100 border border-teal-200 rounded-lg p-4">
               <div className="flex items-center space-x-2 mb-2">
-                <Info className="h-4 w-4 text-amber-600" />
-                <span className="font-semibold text-amber-800">Email Detection Issue</span>
+                <Info className="h-4 w-4 text-teal-600" />
+                <span className="font-semibold text-teal-800">Authentication Data Issue</span>
               </div>
-              <P className="text-sm text-amber-700 mb-3">
+              <P className="text-sm text-teal-700 mb-3">
                 Your actual email wasn't detected from Cloudflare Access. This is likely a caching issue.
               </P>
               <Button
@@ -351,9 +356,9 @@ export const ProtectedPage: React.FC = () => {
                 }}
                 variant="outline"
                 size="sm"
-                className="text-amber-700 border-amber-300 hover:bg-amber-100"
+                className="text-teal-700 border-teal-300 hover:bg-teal-100"
               >
-                Refresh User Data
+                Refresh Authentication Data
               </Button>
             </div>
           )}
@@ -364,7 +369,7 @@ export const ProtectedPage: React.FC = () => {
               variant="outline"
               className="flex items-center space-x-2 border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800 transition-colors duration-200"
             >
-              <span>Logout</span>
+              <span>Sign Out</span>
               <ArrowRight className="h-4 w-4" />
             </Button>
           </div>

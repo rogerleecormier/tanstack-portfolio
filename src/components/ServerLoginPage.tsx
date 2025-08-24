@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, Briefcase } from 'lucide-react';
 
 export const ServerLoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -36,35 +36,38 @@ export const ServerLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-teal-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+          <div className="mx-auto p-3 bg-teal-100 rounded-full w-fit border-2 border-teal-200 mb-4">
+            <Briefcase className="h-8 w-8 text-teal-700" />
+          </div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-teal-900">
+            Portfolio Authentication
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Use your credentials to access protected content
+          <p className="mt-2 text-center text-sm text-teal-700">
+            Sign in to access protected portfolio content
           </p>
         </div>
         
-        <Card>
+        <Card className="border-teal-200 bg-teal-50/50 shadow-lg">
           <CardHeader>
-            <CardTitle>Authentication</CardTitle>
-            <CardDescription>
-              Enter your email and password to continue
+            <CardTitle className="text-teal-900">Secure Access</CardTitle>
+            <CardDescription className="text-teal-700">
+              Enter your credentials to continue
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="border-red-200 bg-red-50">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
               
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-teal-800">
                   Email address
                 </label>
                 <Input
@@ -75,13 +78,13 @@ export const ServerLoginPage: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1"
+                  className="mt-1 border-teal-200 focus:border-teal-500 focus:ring-teal-500"
                   placeholder="Enter your email"
                 />
               </div>
               
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-medium text-teal-800">
                   Password
                 </label>
                 <Input
@@ -92,7 +95,7 @@ export const ServerLoginPage: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1"
+                  className="mt-1 border-teal-200 focus:border-teal-500 focus:ring-teal-500"
                   placeholder="Enter your password"
                 />
               </div>
@@ -101,7 +104,7 @@ export const ServerLoginPage: React.FC = () => {
                 <Button
                   type="submit"
                   disabled={isLoading || !email || !password}
-                  className="w-full"
+                  className="w-full bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2"
                 >
                   {isLoading ? (
                     <>
@@ -118,7 +121,7 @@ export const ServerLoginPage: React.FC = () => {
                   variant="outline"
                   onClick={handleDemoLogin}
                   disabled={isLoading}
-                  className="w-full"
+                  className="w-full border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
                 >
                   Demo Login (dev@rcormier.dev)
                 </Button>
@@ -126,7 +129,7 @@ export const ServerLoginPage: React.FC = () => {
             </form>
             
             <div className="mt-6 text-center">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-teal-600">
                 Demo credentials: dev@rcormier.dev / password
               </p>
             </div>
