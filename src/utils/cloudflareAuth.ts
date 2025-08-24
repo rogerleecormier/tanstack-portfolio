@@ -89,13 +89,13 @@ export const isAuthenticated = (): boolean => {
     console.log('===========================');
   }
   
-  // If we have Cloudflare Access parameters, trust that authentication is successful
-  // This prevents the "Access Required" page from flashing
-  if (hasCfAccessParams) {
+  // If we have Cloudflare Access parameters OR cookies, we're authenticated
+  // This is the key change - trust Cloudflare Access completely
+  if (hasCfAccessParams || hasAuthCookie) {
     return true;
   }
   
-  return hasAuthCookie || hasStoredUser || hasAccessToken || hasAccessIdentity;
+  return hasStoredUser || hasAccessToken || hasAccessIdentity;
 };
 
 // Get user information from Cloudflare Access
@@ -146,15 +146,8 @@ export const getUserInfo = (): CloudflareUser | null => {
                              urlParams.has('CF_Access_Message') ||
                              urlParams.has('CF_Access_Redirect');
     
-    // If we have Cloudflare Access parameters but no stored user, return a temporary user
-    // This prevents the "Access Required" state while we fetch actual user details
+    // If we have Cloudflare Access parameters, immediately try to get user info from cookies
     if (hasCfAccessParams) {
-      // Return a temporary authenticated user to prevent "Access Required" state
-      const tempUser = {
-        email: 'authenticating@cloudflare.access',
-        name: 'Authenticating...'
-      };
-      
       // Try to get user info from cookies immediately
       const cookiePatterns = [
         'CF_Authorization=',
@@ -216,7 +209,8 @@ export const getUserInfo = (): CloudflareUser | null => {
         }
       }
       
-      // If no cookies found yet, return temporary user and trigger background fetch
+      // If no cookies found yet but we have Cloudflare Access params,
+      // trigger a background fetch and return a basic authenticated user
       if (!isDevelopment()) {
         // Trigger background fetch of user info
         setTimeout(() => {
@@ -224,7 +218,11 @@ export const getUserInfo = (): CloudflareUser | null => {
         }, 100);
       }
       
-      return tempUser;
+      // Return a basic authenticated user to prevent "Access Required" state
+      return {
+        email: 'authenticated@cloudflare.access',
+        name: 'Authenticated User'
+      };
     }
     
     // Try to get from Cloudflare Access cookies - check multiple patterns
@@ -378,7 +376,7 @@ export const initAuth = (): void => {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
   
-  // If we have Cloudflare Access parameters, immediately trigger authentication update
+  // If we have Cloudflare Access parameters, clean up URL and trigger auth update
   if (hasCfAccessParams) {
     // Clean up URL parameters immediately
     const currentUrlParams = new URLSearchParams(window.location.search);
@@ -394,52 +392,12 @@ export const initAuth = (): void => {
     // Immediately try to get user info from cookies
     checkCloudflareAccessIdentity();
     
-    // Also try to extract user info from any existing cookies
-    const cookiePatterns = [
-      'CF_Authorization=',
-      'CF_Access_User_Email=',
-      'CF_Access_Email=',
-      'CF_Access_Identity=',
-      'CF_Access_User='
-    ];
-    
-    for (const pattern of cookiePatterns) {
-      const cookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith(pattern));
-      
-      if (cookie) {
-        const value = cookie.split('=')[1];
-        
-        // Handle email cookies directly
-        if (pattern === 'CF_Access_User_Email=' || pattern === 'CF_Access_Email=') {
-          if (value && value !== '') {
-            const user = {
-              email: decodeURIComponent(value),
-              name: 'Authenticated User'
-            };
-            setUserInfo(user);
-            break; // Found user info, no need to continue
-          }
-        }
-      }
-    }
-    
-    // Immediately dispatch event to trigger authentication update
+    // Dispatch event to trigger authentication update
     if (typeof window !== 'undefined' && window.dispatchEvent) {
       window.dispatchEvent(new CustomEvent('cloudflare-auth-update', {
         detail: { source: 'initAuth', hasCfAccessParams: true }
       }));
     }
-    
-    // Schedule additional checks to ensure we get user info
-    setTimeout(() => {
-      checkCloudflareAccessIdentity();
-    }, 50);
-    
-    setTimeout(() => {
-      checkCloudflareAccessIdentity();
-    }, 200);
     
     return;
   }
