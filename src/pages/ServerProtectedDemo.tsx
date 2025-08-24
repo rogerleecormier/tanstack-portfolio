@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ControlledAuthWrapper } from '../components/ControlledAuthWrapper';
-import { useServerAuth } from '../hooks/useServerAuth';
+import { PassiveAuthWrapper } from '../components/PassiveAuthWrapper';
+import { usePassiveAuth } from '../hooks/usePassiveAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
@@ -8,25 +8,25 @@ import { User, Shield, Key } from 'lucide-react';
 
 export const ServerProtectedDemo: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
-  const { user } = useServerAuth();
+  const { user } = usePassiveAuth();
 
   const toggleLogin = () => {
     setShowLogin(!showLogin);
   };
 
   return (
-    <ControlledAuthWrapper showLogin={showLogin} onToggleLogin={toggleLogin}>
+    <PassiveAuthWrapper showLogin={showLogin} onToggleLogin={toggleLogin}>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Server-Side Authentication Demo
+              Passive Authentication Demo
             </h1>
             <p className="text-xl text-gray-600">
-              This page shows content regardless of authentication status
+              This page shows content immediately with NO automatic authentication checks
             </p>
             <p className="text-lg text-gray-500 mt-2">
-              You can view this content without logging in, or sign in for additional features
+              Content loads instantly. Authentication is completely optional and manual.
             </p>
           </div>
 
@@ -132,12 +132,45 @@ export const ServerProtectedDemo: React.FC = () => {
 
           <div className="text-center">
             <Separator className="my-6" />
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  How This Works
+                </CardTitle>
+                <CardDescription>
+                  This page demonstrates completely passive authentication
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-left space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold text-green-700 mb-2">✅ What Happens</h4>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• Page loads instantly</li>
+                      <li>• No authentication checks</li>
+                      <li>• No automatic redirects</li>
+                      <li>• Content always visible</li>
+                    </ul>
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-700 mb-2">🔧 Manual Controls</h4>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• Click "Check Auth" to verify token</li>
+                      <li>• Click "Sign In" to show login form</li>
+                      <li>• Authentication is completely optional</li>
+                      <li>• You control when auth happens</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
             <p className="text-sm text-gray-500">
-              Authentication controls are now in the header above. You can view this content without logging in!
+              <strong>No more refreshing!</strong> This page loads exactly once and stays loaded.
             </p>
           </div>
         </div>
       </div>
-    </ControlledAuthWrapper>
+    </PassiveAuthWrapper>
   );
 };
