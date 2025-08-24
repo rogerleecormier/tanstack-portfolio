@@ -140,6 +140,93 @@ export const getUserInfo = (): CloudflareUser | null => {
       return user;
     }
     
+    // Check for Cloudflare Access URL parameters that indicate successful auth
+    const hasCfAccessParams = urlParams.has('__cf_access_message') || 
+                             urlParams.has('__cf_access_redirect') ||
+                             urlParams.has('CF_Access_Message') ||
+                             urlParams.has('CF_Access_Redirect');
+    
+    // If we have Cloudflare Access parameters but no stored user, return a temporary user
+    // This prevents the "Access Required" state while we fetch actual user details
+    if (hasCfAccessParams) {
+      // Return a temporary authenticated user to prevent "Access Required" state
+      const tempUser = {
+        email: 'authenticating@cloudflare.access',
+        name: 'Authenticating...'
+      };
+      
+      // Try to get user info from cookies immediately
+      const cookiePatterns = [
+        'CF_Authorization=',
+        'CF_Access_User_Email=',
+        'CF_Access_Email=',
+        'CF_Access_Identity=',
+        'CF_Access_User='
+      ];
+      
+      for (const pattern of cookiePatterns) {
+        const cookie = document.cookie
+          .split('; ')
+          .find(row => row.startsWith(pattern));
+        
+        if (cookie) {
+          const value = cookie.split('=')[1];
+          
+          // Handle JWT token (CF_Authorization)
+          if (pattern === 'CF_Authorization=') {
+            try {
+              const payload = JSON.parse(atob(value.split('.')[1]));
+              if (payload.email) {
+                const user = {
+                  email: payload.email,
+                  name: payload.name || payload.given_name || payload.family_name || 'Authenticated User',
+                  sub: payload.sub
+                };
+                setUserInfo(user);
+                return user;
+              }
+            } catch (error) {
+              console.error('Error decoding JWT token:', error);
+            }
+          }
+          
+          // Handle email cookies directly
+          if (pattern === 'CF_Access_User_Email=' || pattern === 'CF_Access_Email=') {
+            if (value && value !== '') {
+              const user = {
+                email: decodeURIComponent(value),
+                name: 'Authenticated User'
+              };
+              setUserInfo(user);
+              return user;
+            }
+          }
+          
+          // Handle identity cookies
+          if (pattern === 'CF_Access_Identity=') {
+            if (value && value !== '') {
+              const user = {
+                email: decodeURIComponent(value),
+                name: 'Authenticated User'
+              };
+              setUserInfo(user);
+              return user;
+            }
+          }
+        }
+      }
+      
+      // If no cookies found yet, return temporary user and trigger background fetch
+      if (!isDevelopment()) {
+        // Trigger background fetch of user info
+        setTimeout(() => {
+          checkCloudflareAccessIdentity();
+        }, 100);
+      }
+      
+      return tempUser;
+    }
+    
     // Try to get from Cloudflare Access cookies - check multiple patterns
     const cookiePatterns = [
       'CF_Authorization=',
@@ -304,6 +391,40 @@ export const initAuth = (): void => {
       window.history.replaceState({}, document.title, cleanUrl);
     }
     
+    // Immediately try to get user info from cookies
+    checkCloudflareAccessIdentity();
+    
+    // Also try to extract user info from any existing cookies
+    const cookiePatterns = [
+      'CF_Authorization=',
+      'CF_Access_User_Email=',
+      'CF_Access_Email=',
+      'CF_Access_Identity=',
+      'CF_Access_User='
+    ];
+    
+    for (const pattern of cookiePatterns) {
+      const cookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith(pattern));
+      
+      if (cookie) {
+        const value = cookie.split('=')[1];
+        
+        // Handle email cookies directly
+        if (pattern === 'CF_Access_User_Email=' || pattern === 'CF_Access_Email=') {
+          if (value && value !== '') {
+            const user = {
+              email: decodeURIComponent(value),
+              name: 'Authenticated User'
+            };
+            setUserInfo(user);
+            break; // Found user info, no need to continue
+          }
+        }
+      }
+    }
+    
     // Immediately dispatch event to trigger authentication update
     if (typeof window !== 'undefined' && window.dispatchEvent) {
       window.dispatchEvent(new CustomEvent('cloudflare-auth-update', {
@@ -311,8 +432,15 @@ export const initAuth = (): void => {
       }));
     }
     
-    // Also try to get user info from cookies immediately
-    checkCloudflareAccessIdentity();
+    // Schedule additional checks to ensure we get user info
+    setTimeout(() => {
+      checkCloudflareAccessIdentity();
+    }, 50);
+    
+    setTimeout(() => {
+      checkCloudflareAccessIdentity();
+    }, 200);
+    
     return;
   }
   
