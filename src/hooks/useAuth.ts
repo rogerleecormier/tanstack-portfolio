@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { environment } from '../config/environment';
-import { CloudflareUser, isInPrivateMode, inPrivateLogin, handleInPrivateProtectedRoute } from '../utils/cloudflareAuth';
+import { CloudflareUser } from '../utils/cloudflareAuth';
 
 // Mock authentication for development
 const mockAuth = {
@@ -191,19 +191,13 @@ const productionAuth = {
   login: (): void => {
     if (environment.isDevelopment()) return;
     
-    // Check if we're in InPrivate mode and use alternative method
-    if (isInPrivateMode()) {
-      console.log('InPrivate mode detected - using alternative authentication');
-      inPrivateLogin();
-    } else {
-      // Normal production mode - redirect to protected route
-      console.log('Production login: Redirecting to /protected - Cloudflare Access should intercept');
-      console.log('Current cookies:', document.cookie);
-      console.log('Current URL:', window.location.href);
-      
-      // Try to force a fresh request to trigger Cloudflare Access
-      window.location.replace('/protected');
-    }
+    // Normal production mode - redirect to protected route
+    console.log('Production login: Redirecting to /protected - Cloudflare Access should intercept');
+    console.log('Current cookies:', document.cookie);
+    console.log('Current URL:', window.location.href);
+    
+    // Try to force a fresh request to trigger Cloudflare Access
+    window.location.replace('/protected');
   },
 
   logout: (): void => {
@@ -261,10 +255,7 @@ export const useAuth = () => {
     // Initial auth check
     checkAuth();
     
-    // Handle InPrivate mode on protected routes
-    if (environment.isProduction()) {
-      handleInPrivateProtectedRoute();
-    }
+    // InPrivate mode handling removed to prevent unwanted behavior in production
     
     // Set up periodic auth checks for production
     if (environment.isProduction()) {
