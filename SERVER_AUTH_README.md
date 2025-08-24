@@ -1,16 +1,16 @@
 # Server-Side Authentication System
 
-This project now includes a complete server-side authentication system that replaces the cookie-based Cloudflare Access approach with JWT-based authentication.
+This project includes a complete server-side JWT authentication system that provides secure, stateless authentication with role-based access control.
 
 ## 🚀 Features
 
 - **JWT-based authentication** - Secure, stateless authentication
 - **Express.js backend** - Full-featured Node.js server
-- **No more cookie dependencies** - Eliminates refresh issues and console logs
-- **Automatic token refresh** - Seamless user experience
 - **Role-based access control** - Admin and user roles
+- **Automatic token refresh** - Seamless user experience
 - **Secure endpoints** - Protected routes with middleware
 - **Development and production ready** - Environment-based configuration
+- **Rate limiting** - API protection and security
 
 ## 📁 Project Structure
 
@@ -24,13 +24,13 @@ This project now includes a complete server-side authentication system that repl
 │       └── protected.js      # Protected route examples
 ├── src/
 │   ├── hooks/
-│   │   └── useServerAuth.ts  # New authentication hook
+│   │   └── useServerAuth.ts  # Authentication hook
 │   ├── components/
 │   │   ├── ServerLoginPage.tsx      # Login form
 │   │   └── ServerProtectedRoute.tsx # Route protection
 │   └── pages/
 │       └── ServerProtectedDemo.tsx  # Demo protected page
-└── server.env.example        # Environment configuration
+└── .env                      # Environment configuration
 ```
 
 ## 🛠️ Setup Instructions

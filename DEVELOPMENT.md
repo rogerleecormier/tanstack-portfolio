@@ -6,14 +6,15 @@ This document provides comprehensive technical information for developers workin
 
 ### **Technology Stack**
 ```
-Frontend Framework: React 19 + TypeScript
+Frontend Framework: React 19 + TypeScript 5.8
 Routing: TanStack Router v1
 State Management: TanStack React Query v5
 Build Tool: Vite 7
-Styling: Tailwind CSS + shadcn/ui
+Styling: Tailwind CSS 3.4 + shadcn/ui
 Search: Fuse.js
 Charts: Recharts + shadcn/ui Chart Components
-Authentication: Cloudflare Access (Zero Trust)
+Authentication: JWT-based server authentication
+Backend: Express.js with Node.js
 Deployment: Cloudflare Pages
 ```
 
@@ -35,6 +36,11 @@ src/
 ├── utils/               # Utility functions
 ├── router.tsx           # TanStack Router configuration
 └── main.tsx             # Application entry point
+
+server/                  # Backend server
+├── index.js            # Express server entry point
+├── middleware/         # Authentication middleware
+└── routes/             # API routes
 ```
 
 ## 🚀 Development Setup
@@ -43,7 +49,7 @@ src/
 - Node.js 18+ (LTS recommended)
 - npm 9+ or yarn 1.22+
 - Git
-- Modern browser with ES2022 support
+- Modern browser with ES2020 support
 
 ### **Environment Setup**
 
@@ -59,21 +65,26 @@ src/
    ```
 
 3. **Environment variables**
-   Create `.env.local` for local development:
+   Create `.env` file for local development:
    ```bash
-   VITE_DEV_MODE=true
-   VITE_CLOUDFLARE_DOMAIN=rcormier.dev
+   PORT=3001
+   NODE_ENV=development
+   JWT_SECRET=your-super-secret-jwt-key-change-in-production
    ```
 
-4. **Start development server**
+4. **Start development servers**
    ```bash
-   npm run dev
+   npm run dev              # Both frontend and backend
+   npm run dev:frontend     # Frontend only (port 5173)
+   npm run dev:backend      # Backend only (port 3001)
    ```
 
 ### **Development Commands**
 ```bash
-# Development server
-npm run dev              # Start Vite dev server
+# Development servers
+npm run dev              # Start both frontend and backend
+npm run dev:frontend     # Start Vite dev server only
+npm run dev:backend      # Start Express backend only
 npm run build            # Build for production
 npm run preview          # Preview production build
 npm run type-check       # TypeScript type checking
@@ -82,54 +93,60 @@ npm run lint             # ESLint linting
 
 ## 🔐 Authentication System
 
-### **Dual-Mode Architecture**
-The application automatically switches between authentication modes based on the environment:
+### **Server-Side JWT Architecture**
+The application uses a modern JWT-based authentication system:
 
 ```typescript
-// src/utils/cloudflareAuth.ts
-export const isDevelopment = (): boolean => {
-  return window.location.hostname === 'localhost' || 
-         window.location.hostname === '127.0.0.1' ||
-         window.location.hostname.includes('localhost');
-};
+// src/hooks/useServerAuth.ts
+export const useServerAuth = () => {
+  const [user, setUser] = useState<CloudflareUser | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-export const isAuthenticated = (): boolean => {
-  if (isDevelopment()) {
-    const devAuth = localStorage.getItem('dev_auth');
-    return devAuth === 'true';
-  }
-  
-  // Production: Check Cloudflare Access cookies
-  const hasAuthCookie = document.cookie.includes('CF_Authorization') || 
-                       document.cookie.includes('CF_Access_JWT');
-  return hasAuthCookie;
+  // JWT token management
+  const login = async (email: string, password: string) => {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    
+    if (response.ok) {
+      const { token, user } = await response.json();
+      localStorage.setItem('jwt_token', token);
+      setIsAuthenticated(true);
+      setUser(user);
+      return true;
+    }
+    return false;
+  };
 };
 ```
 
 ### **Development Authentication**
-- **Mock Authentication**: Simulated using localStorage
-- **Toggle Component**: `DevAuthToggle` for testing
+- **Mock Authentication**: Simulated using localStorage and JWT tokens
+- **Demo Users**: Pre-configured test accounts for development
 - **Protected Routes**: Automatically work in development mode
 - **State Persistence**: Auth state persists across page refreshes
 
 ### **Production Authentication**
-- **Cloudflare Access**: Zero Trust with One-Time PIN
-- **JWT Tokens**: Secure session management
-- **Cookie Handling**: Secure authentication cookies
+- **JWT Tokens**: Secure token-based authentication
+- **Server Validation**: All tokens validated server-side
+- **Role-based Access**: Admin and user roles with different permissions
 - **Route Protection**: Automatic redirects to login
 
 ### **Protected Route Implementation**
 ```tsx
-// src/components/ProtectedRoute.tsx
-export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+// src/components/ServerProtectedRoute.tsx
+export const ServerProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useServerAuth();
   
   if (isLoading) {
     return <div>Loading...</div>;
   }
   
   if (!isAuthenticated) {
-    return <LoginPage />;
+    return <ServerLoginPage />;
   }
   
   return <>{children}</>;
@@ -370,8 +387,8 @@ export default {
 // tsconfig.json
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -490,7 +507,7 @@ export const extractFrontmatter = (content: string) => {
 
 ### **Authentication Security**
 - **JWT validation**: Secure token handling
-- **Cookie security**: HttpOnly and Secure flags
+- **Token storage**: Secure localStorage management
 - **CSRF protection**: Built-in protection
 - **Rate limiting**: API call throttling
 
@@ -499,6 +516,12 @@ export const extractFrontmatter = (content: string) => {
 - **Input validation**: Strict type checking
 - **Markdown safety**: Secure rendering
 - **HTTPS enforcement**: Secure connections
+
+### **Security Headers**
+- **Content Security Policy**: XSS and injection protection
+- **X-Frame-Options**: Clickjacking prevention
+- **X-Content-Type-Options**: MIME type sniffing protection
+- **Strict-Transport-Security**: HTTPS enforcement
 
 ## 🔄 Development Workflow
 
@@ -533,8 +556,8 @@ console.log('Development mode:', isDevelopment());
 # Check authentication state
 console.log('Auth state:', isAuthenticated());
 
-# Debug Cloudflare cookies
-console.log('Cookies:', document.cookie);
+# Debug JWT tokens
+console.log('JWT token:', localStorage.getItem('jwt_token'));
 ```
 
 #### **Search Issues**
@@ -562,7 +585,7 @@ npm run type-check
 - **Browser DevTools**: Console and network monitoring
 - **React DevTools**: Component state inspection
 - **TanStack Query DevTools**: Query state management
-- **Cloudflare Dashboard**: Access policy verification
+- **Express DevTools**: Backend debugging
 
 ## 📚 Additional Resources
 
@@ -577,7 +600,7 @@ npm run type-check
 - [Vite Documentation](https://vitejs.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Cloudflare Zero Trust](https://developers.cloudflare.com/zero-trust/)
+- [Express.js](https://expressjs.com/)
 
 ---
 

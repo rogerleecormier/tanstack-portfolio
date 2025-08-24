@@ -1,8 +1,8 @@
-# 🔐 Controlled Authentication Usage Examples
+# 🔐 Authentication Usage Examples
 
-## 🎯 **No More Automatic Redirects!**
+## 🎯 **Controlled Authentication System**
 
-Your authentication system now gives you **full control** over when to show login forms and protected content. No more automatic refreshing or redirects!
+Your authentication system gives you **full control** over when to show login forms and protected content. No more automatic refreshing or redirects!
 
 ## 📱 **Basic Usage - No Authentication Required**
 
@@ -187,6 +187,51 @@ export const ManualAuthPage = () => {
 - Display different content based on `isAuthenticated` status
 - Use the authentication header for user info and controls
 - Keep login optional for better user experience
+
+## 🔐 **Authentication Methods**
+
+### **Server-Side JWT Authentication**
+```tsx
+import { useServerAuth } from './hooks/useServerAuth';
+
+export const AuthExample = () => {
+  const { login, logout, isAuthenticated, user } = useServerAuth();
+
+  const handleLogin = async () => {
+    const success = await login('user@example.com', 'password');
+    if (success) {
+      console.log('Login successful!');
+    }
+  };
+
+  return (
+    <div>
+      {isAuthenticated ? (
+        <div>
+          <p>Welcome, {user?.name}!</p>
+          <button onClick={logout}>Logout</button>
+        </div>
+      ) : (
+        <button onClick={handleLogin}>Login</button>
+      )}
+    </div>
+  );
+};
+```
+
+### **Protected Routes**
+```tsx
+import { ServerProtectedRoute } from './components/ServerProtectedRoute';
+
+export const ProtectedPage = () => (
+  <ServerProtectedRoute>
+    <div>
+      <h1>Protected Content</h1>
+      <p>Only authenticated users can see this.</p>
+    </div>
+  </ServerProtectedRoute>
+);
+```
 
 ---
 

@@ -1,22 +1,22 @@
 # Roger Lee Cormier Portfolio
 
-A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, advanced search capabilities, and interactive data visualization.
+A modern, professional portfolio website built with cutting-edge web technologies, featuring server-side JWT authentication, advanced search capabilities, and interactive data visualization.
 
 ## 🚀 Tech Stack
 
 ### **Frontend Framework**
-- **React 19** - Latest React with concurrent features
-- **TypeScript** - Full type safety and developer experience
-- **Vite** - Lightning-fast build tool and dev server
+- **React 19** - Latest React with concurrent features and suspense
+- **TypeScript 5.8** - Full type safety and developer experience
+- **Vite 7** - Lightning-fast build tool and dev server
 
 ### **Routing & State Management**
-- **TanStack Router** - Type-safe, file-based routing
-- **TanStack React Query** - Server state management and caching
+- **TanStack Router v1** - Type-safe, file-based routing
+- **TanStack React Query v5** - Server state management and caching
 - **TanStack History** - Browser history management
 
 ### **UI & Styling**
 - **shadcn/ui** - Beautiful, accessible React components
-- **Tailwind CSS** - Utility-first CSS framework with custom design system
+- **Tailwind CSS 3.4** - Utility-first CSS framework with custom design system
 - **Radix UI** - Headless UI primitives for accessibility
 - **Lucide React** - Beautiful, customizable icons
 - **Tailwind Typography** - Enhanced typography utilities
@@ -31,17 +31,19 @@ A modern, professional portfolio website built with cutting-edge web technologie
 - **Gray Matter** - Frontmatter parsing for content metadata
 
 ### **Authentication & Security**
-- **Cloudflare Access** - Enterprise-grade Zero Trust authentication
-- **One-Time PIN (OTP)** - Secure email-based authentication
-- **JWT Token Management** - Secure session handling
+- **JWT Authentication** - Secure server-side authentication system
+- **Express.js Backend** - Full-featured Node.js server
+- **Role-based Access Control** - Admin and user roles
+- **Rate Limiting** - API protection and security
 
 ## ✨ Key Features
 
 ### **🔐 Advanced Authentication System**
-- **Dual-Mode Authentication**: Automatically switches between development and production
-- **Cloudflare Access Integration**: Enterprise-grade security with OTP authentication
+- **Server-Side JWT Authentication**: Secure, stateless authentication
+- **Dual-Mode Architecture**: Automatically switches between development and production
 - **Protected Routes**: Secure access to sensitive content and analysis tools
 - **Development Mode**: Mock authentication for local development and testing
+- **Role-based Access**: Admin and user roles with different permissions
 
 ### **🔍 Intelligent Search System**
 - **Fuse.js Powered**: Fuzzy search with configurable relevance scoring
@@ -93,14 +95,18 @@ src/
 │   ├── strategy.md      # Strategy content
 │   └── ...              # Other content pages
 ├── hooks/               # Custom React hooks
-│   ├── useAuth.ts       # Authentication state management
+│   ├── useServerAuth.ts # Server authentication state management
 │   └── use-mobile.tsx   # Mobile detection
 ├── utils/               # Utility functions
-│   ├── cloudflareAuth.ts # Cloudflare Access integration
 │   ├── searchIndex.ts   # Fuse.js search implementation
 │   └── ...              # Other utilities
 ├── router.tsx           # TanStack Router configuration
 └── main.tsx             # Application entry point
+
+server/                  # Backend server
+├── index.js            # Express server entry point
+├── middleware/         # Authentication middleware
+└── routes/             # API routes
 ```
 
 ## 🚀 Getting Started
@@ -108,7 +114,7 @@ src/
 ### **Prerequisites**
 - Node.js 18+ 
 - npm or yarn
-- Cloudflare account (for production deployment)
+- Git
 
 ### **Installation**
 
@@ -123,19 +129,37 @@ src/
    npm install
    ```
 
-3. **Start development server**
+3. **Environment setup**
    ```bash
-   npm run dev
+   # Copy environment file
+   cp server.env.example .env
+   
+   # Edit with your values
+   PORT=3001
+   NODE_ENV=development
+   JWT_SECRET=your-super-secret-jwt-key-change-in-production
    ```
 
-4. **Open your browser**
+4. **Start development servers**
+   ```bash
+   # Start both frontend and backend
+   npm run dev
+   
+   # Or start them separately:
+   npm run dev:frontend  # Frontend on port 5173
+   npm run dev:backend   # Backend on port 3001
+   ```
+
+5. **Open your browser**
    Navigate to `http://localhost:5173`
 
 ### **Development Commands**
 
 ```bash
-# Start development server
-npm run dev
+# Start development servers
+npm run dev              # Both frontend and backend
+npm run dev:frontend     # Frontend only
+npm run dev:backend      # Backend only
 
 # Build for production
 npm run build
@@ -155,14 +179,25 @@ npm run lint
 ### **Development Mode**
 - Automatically detected when running on `localhost`
 - Mock authentication for testing protected routes
+- Demo credentials available for testing
 - No external dependencies required
-- Use the development authentication toggle for testing
 
 ### **Production Mode**
-- Cloudflare Access with One-Time PIN authentication
-- Secure email-based authentication
+- JWT-based server authentication
+- Secure token management
+- Role-based access control
 - Protected routes require valid credentials
-- See `CLOUDFLARE_SETUP.md` for detailed configuration
+
+### **Demo Credentials**
+```
+Email: dev@rcormier.dev
+Password: password
+Role: user
+
+Email: rcormier@rcormier.dev
+Password: password
+Role: admin
+```
 
 ### **Protected Routes**
 - `/protected` - General protected content
@@ -237,7 +272,7 @@ The application is optimized for Cloudflare Pages deployment:
 
 - **SPA Routing**: Clean URLs without hash routing
 - **Edge Computing**: Global CDN distribution
-- **Zero Trust**: Integrated Cloudflare Access authentication
+- **JWT Authentication**: Secure server-side authentication
 - **GitHub Actions**: Automated deployment workflow
 
 ### **Build Configuration**
@@ -257,10 +292,14 @@ Configure in Cloudflare Pages dashboard
 ### **Environment Variables**
 ```bash
 # Development
-VITE_DEV_MODE=true
+PORT=3001
+NODE_ENV=development
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
 
 # Production
-VITE_CLOUDFLARE_DOMAIN=rcormier.dev
+NODE_ENV=production
+JWT_SECRET=your-production-secret-key
+CORS_ORIGINS=https://yourdomain.com
 ```
 
 ### **Tailwind Configuration**
@@ -273,7 +312,7 @@ Custom design system with:
 ### **TypeScript Configuration**
 - Strict type checking
 - Path aliases for clean imports
-- Modern ES2022 target
+- Modern ES2020 target
 - React 19 JSX transform
 
 ## 📱 Responsive Design
@@ -314,7 +353,7 @@ Custom design system with:
 
 ### **Authentication Security**
 - JWT token validation
-- Secure cookie handling
+- Secure token storage
 - CSRF protection
 - Rate limiting support
 
@@ -323,6 +362,12 @@ Custom design system with:
 - Content sanitization
 - Secure markdown rendering
 - Input validation
+
+### **Security Headers**
+- Content Security Policy (CSP)
+- X-Frame-Options
+- X-Content-Type-Options
+- Strict-Transport-Security
 
 ## 🧪 Testing & Quality
 
@@ -364,7 +409,7 @@ Custom design system with:
 ### **Technology Upgrades**
 - **React 19 Features**: Concurrent rendering and suspense
 - **TanStack Router v2**: Latest routing features
-- **Vite 5**: Enhanced build performance
+- **Vite 7**: Enhanced build performance
 - **Tailwind CSS v4**: Latest styling features
 
 ## 🤝 Contributing
@@ -384,7 +429,7 @@ MIT License - see LICENSE file for details
 For questions or support:
 - Open an issue on GitHub
 - Check the documentation
-- Review the Cloudflare setup guide
+- Review the development guide
 
 ---
 

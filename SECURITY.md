@@ -14,9 +14,9 @@ This document outlines the security measures implemented in the TanStack Portfol
 - **Environment Validation**: Strict environment detection to prevent spoofing
 
 #### Production Mode Security
-- **Cloudflare Access**: Enterprise-grade authentication with Google SSO
-- **JWT Tokens**: Secure token-based authentication
-- **Automatic Logout**: Session management with proper cleanup
+- **JWT Authentication**: Secure token-based authentication
+- **Server-side Validation**: All tokens validated server-side
+- **Role-based Access Control**: Admin and user roles with different permissions
 - **HTTPS Enforcement**: All communications encrypted
 
 ### 2. Input Validation & Sanitization
@@ -210,5 +210,5 @@ If you discover a security vulnerability, please:
 ---
 
 **Last Updated**: December 2024  
-**Version**: 1.0  
+**Version**: 2.0  
 **Next Review**: March 2025

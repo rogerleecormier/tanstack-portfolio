@@ -1,17 +1,17 @@
-# 🚀 Quick Start: Server-Side Authentication
+# 🚀 Quick Start Guide
 
 ## What's New
 
-You now have a **complete server-side authentication system** that replaces the cookie-based approach. No more refreshing, no more console logs, and no more Cloudflare Access dependencies!
+You now have a **complete server-side JWT authentication system** that provides secure, stateless authentication with role-based access control.
 
 ## 🎯 Key Benefits
 
 - ✅ **JWT-based authentication** - Secure and stateless
-- ✅ **No more cookies** - Eliminates refresh issues
+- ✅ **Role-based access control** - Admin and user roles
 - ✅ **Automatic token refresh** - Seamless user experience
 - ✅ **Server-side validation** - More secure and reliable
-- ✅ **Role-based access** - Admin and user roles
 - ✅ **Clean, modern UI** - Professional login experience
+- ✅ **Development mode** - Mock authentication for testing
 
 ## 🚀 Get Started in 3 Steps
 
@@ -20,7 +20,18 @@ You now have a **complete server-side authentication system** that replaces the 
 npm install
 ```
 
-### 2. Start the Servers
+### 2. Environment Setup
+```bash
+# Copy the example file
+cp server.env.example .env
+
+# Edit with your values
+PORT=3001
+NODE_ENV=development
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+```
+
+### 3. Start the Servers
 ```bash
 # Start both frontend and backend
 npm run dev
@@ -28,12 +39,6 @@ npm run dev
 # Or start them separately:
 npm run dev:frontend  # Frontend on port 5173
 npm run dev:backend   # Backend on port 3001
-```
-
-### 3. Test the System
-```bash
-# Test the authentication endpoints
-node test-auth.js
 ```
 
 ## 🔐 Demo Credentials
@@ -53,9 +58,10 @@ Role: admin
 ## 🧪 Test the Authentication
 
 1. **Start the backend server** (`npm run dev:backend`)
-2. **Run the test script** (`node test-auth.js`)
+2. **Start the frontend** (`npm run dev:frontend`)
 3. **Check the frontend** - Visit `http://localhost:5173`
 4. **Try the demo page** - Navigate to the ServerProtectedDemo page
+5. **Test login** - Use the demo credentials above
 
 ## 📱 Frontend Usage
 
@@ -88,7 +94,6 @@ export const MyComponent = () => {
 ## 🔧 Configuration
 
 ### Environment Variables
-Create a `.env` file:
 ```bash
 PORT=3001
 NODE_ENV=development
@@ -124,13 +129,13 @@ JWT_SECRET=your-super-secret-jwt-key-change-in-production
 1. **Test the system** with the demo credentials
 2. **Explore the components** in `src/components/`
 3. **Check the demo page** at `src/pages/ServerProtectedDemo.tsx`
-4. **Read the full documentation** in `SERVER_AUTH_README.md`
+4. **Read the full documentation** in `DEVELOPMENT.md`
 5. **Customize for your needs** - add more users, roles, or endpoints
 
 ## 🎉 You're All Set!
 
-Your new server-side authentication system is ready to use. No more cookie headaches, no more refresh issues, and no more console logs cluttering your development experience!
+Your new server-side JWT authentication system is ready to use. Secure, reliable, and easy to develop with!
 
 ---
 
-**Need help?** Check the full documentation in `SERVER_AUTH_README.md` or run the test script to verify everything is working.
+**Need help?** Check the full documentation in `DEVELOPMENT.md` or review the authentication examples in `AUTH_USAGE_EXAMPLES.md`.
