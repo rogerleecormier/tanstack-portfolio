@@ -53,9 +53,10 @@ const cloudflareAuth = {
       localStorage.removeItem('dev_user');
       window.dispatchEvent(new StorageEvent('storage', { key: 'dev_auth', newValue: null }));
     } else {
-      // Clear any stored data and redirect to Cloudflare Access logout
+      // Clear any stored data and redirect to Cloudflare Access logout with redirect to home page
       localStorage.removeItem('cf_user');
-      window.location.href = '/cdn-cgi/access/logout';
+      const homePageUrl = encodeURIComponent(window.location.origin + environment.homePageUrl);
+      window.location.href = `/cdn-cgi/access/logout?redirect=${homePageUrl}`;
     }
   },
 

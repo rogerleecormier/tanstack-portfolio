@@ -21,6 +21,9 @@ export const environment = {
   // Check if we're in production mode
   isProduction: isProductionMode,
 
+  // Home page URL
+  homePageUrl: '/',
+
   // Mock authentication settings for development
   mockAuth: {
     enabled: isDevelopmentMode(),
