@@ -212,8 +212,8 @@ export const getUserInfo = (): CloudflareUser | null => {
       
       // If no cookies found yet but we have Cloudflare Access params,
       // return an authenticated user immediately and fetch real info in background
-      if (!isDevelopment()) {
-        // Trigger background fetch of user info
+      if (!isDevelopment() && isProtectedRoute()) {
+        // Trigger background fetch of user info only on protected routes
         setTimeout(() => {
           checkCloudflareAccessIdentity();
         }, 50);
@@ -289,7 +289,7 @@ export const getUserInfo = (): CloudflareUser | null => {
     }
     
     // Try to get user info from Cloudflare Access identity endpoint
-    if (!isDevelopment()) {
+    if (!isDevelopment() && isProtectedRoute()) {
       checkCloudflareAccessIdentity();
     }
     
@@ -391,9 +391,6 @@ export const initAuth = (): void => {
       window.history.replaceState({}, document.title, cleanUrl);
     }
     
-    // Immediately try to get user info from cookies
-    checkCloudflareAccessIdentity();
-    
     // Dispatch event to trigger authentication update IMMEDIATELY
     if (typeof window !== 'undefined' && window.dispatchEvent) {
       window.dispatchEvent(new CustomEvent('cloudflare-auth-update', {
@@ -401,18 +398,20 @@ export const initAuth = (): void => {
       }));
     }
     
-    // Also trigger multiple authentication checks to ensure we get user info
-    setTimeout(() => {
+    // Only check Cloudflare Access identity if we're on a protected route
+    if (isProtectedRoute()) {
+      // Immediately try to get user info from cookies
       checkCloudflareAccessIdentity();
-    }, 10);
-    
-    setTimeout(() => {
-      checkCloudflareAccessIdentity();
-    }, 100);
-    
-    setTimeout(() => {
-      checkCloudflareAccessIdentity();
-    }, 500);
+      
+      // Also trigger multiple authentication checks to ensure we get user info
+      setTimeout(() => {
+        checkCloudflareAccessIdentity();
+      }, 100);
+      
+      setTimeout(() => {
+        checkCloudflareAccessIdentity();
+      }, 500);
+    }
     
     return;
   }
@@ -428,7 +427,7 @@ export const initAuth = (): void => {
     window.history.replaceState({}, document.title, cleanUrl);
   }
   
-  // Check Cloudflare Access identity if we're on a protected route
+  // Only check Cloudflare Access identity if we're on a protected route
   if (isProtectedRoute()) {
     checkCloudflareAccessIdentity();
   }
