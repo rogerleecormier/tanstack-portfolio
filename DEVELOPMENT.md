@@ -26,11 +26,11 @@ src/
 │   ├── AppSidebar.tsx  # Main navigation sidebar
 │   ├── Search.tsx      # Global search implementation
 │   ├── ProtectedRoute.tsx # Authentication wrapper
-│   ├── ContactPage.tsx     # Contact form with email integration
+│   ├── ContactPage.tsx     # Smart contact flow with choice-based UX
 │   └── HealthBridge.tsx    # Data analysis component
 ├── pages/               # Page components
 │   ├── MarkdownPage.tsx    # Markdown content renderer
-│   ├── ContactPage.tsx     # Contact form page
+│   ├── ContactPage.tsx     # Smart contact flow page
 │   ├── HealthBridge.tsx    # Protected health analysis
 │   └── NotFound.tsx        # 404 page
 ├── content/             # Markdown content files
@@ -414,6 +414,70 @@ export interface SearchResult {
 - **Keyboard Shortcuts**: ⌘K to open search dialog
 - **Real-time Results**: Instant search as you type
 
+## 📧 Contact System Architecture
+
+### **Smart Contact Flow Design**
+The contact system implements a modern, choice-based user experience:
+
+```tsx
+// Contact mode state management
+type ContactMode = 'choice' | 'message' | 'schedule';
+
+const [contactMode, setContactMode] = useState<ContactMode>('choice');
+```
+
+### **Contact Choice Cards**
+Interactive cards that clearly distinguish between contact options:
+
+```tsx
+// Enhanced clickable contact cards
+<Card 
+  className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
+  onClick={() => setContactMode('message')}
+>
+  {/* Card content with visual feedback */}
+</Card>
+```
+
+### **Contact System Features**
+- **Choice-Based UX**: Users select between "Quick Message" or "Schedule Meeting"
+- **Enhanced Visual Feedback**: Hover effects, scale transforms, and color transitions
+- **Clear Interactive States**: Distinct styling for clickable vs. informational cards
+- **Supporting Information**: Contact methods, expertise areas, and social links
+- **Responsive Layout**: Optimized spacing and mobile-first design
+- **Native Scheduling**: Built-in meeting scheduling without third-party dependencies
+
+### **Contact Form Integration**
+```tsx
+// Email service integration
+const emailData = {
+  to_name: 'Roger',
+  from_name: formData.name,
+  from_email: formData.email,
+  company: formData.company || 'Not specified',
+  subject: formData.subject,
+  message: formData.message,
+  reply_to: formData.email,
+};
+
+const success = await sendEmail(emailData);
+```
+
+### **Meeting Scheduling Component**
+```tsx
+// src/components/SchedulingForm.tsx
+interface SchedulingData {
+  name: string;
+  email: string;
+  company?: string;
+  preferredDate: Date;
+  preferredTime: string;
+  duration: string;
+  topic: string;
+  description: string;
+}
+```
+
 ## 📊 Data Visualization
 
 ### **Recharts Integration**
@@ -477,10 +541,11 @@ import { Input } from "@/components/ui/input";
 ```
 
 ### **Custom Design System**
-- **Color Palette**: Professional portfolio aesthetic
+- **Color Palette**: Professional portfolio aesthetic with teal accent colors
 - **Typography**: Enhanced readability with Tailwind Typography
-- **Spacing**: Consistent spacing scale
+- **Spacing**: Consistent spacing scale with optimized contact page layout
 - **Animations**: Smooth transitions and micro-interactions
+- **Interactive States**: Enhanced hover effects and visual feedback for contact elements
 
 ### **Component Variants**
 ```typescript
@@ -491,6 +556,35 @@ import { Input } from "@/components/ui/input";
 <Button variant="secondary">Secondary</Button>
 <Button variant="ghost">Ghost</Button>
 <Button variant="link">Link</Button>
+```
+
+### **Contact Page Layout System**
+The contact page implements a sophisticated layout with clear visual hierarchy:
+
+```tsx
+// Main contact options - prominent placement
+<div className="mb-12">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    {/* Interactive contact choice cards */}
+  </div>
+</div>
+
+// Supporting information - compact 3-column grid
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+  {/* Contact methods, expertise areas, social links */}
+</div>
+```
+
+### **Enhanced Interactive Elements**
+```tsx
+// Hover effects and transforms
+className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
+
+// Visual feedback indicators
+<div className="inline-flex items-center gap-2 text-teal-600 font-medium group-hover:text-teal-700 transition-colors">
+  <span>Send Message</span>
+  <div className="w-4 h-4 border-r-2 border-b-2 border-teal-600 rotate-45 group-hover:translate-x-1 transition-transform"></div>
+</div>
 ```
 
 ## 🛣️ Routing Configuration
