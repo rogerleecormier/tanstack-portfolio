@@ -54,6 +54,7 @@ import {
   TableRow,
   TableCell,
   TableHead,
+  TableFooter,
 } from "../components/ui/table";
 import { Card } from "../components/ui/card";
 // Remove MermaidChart import
@@ -1146,18 +1147,113 @@ export default function HealthBridgePage() {
                 >
                   Weight (lbs) {getArrow("weight")}
                 </TableHead>
+                <TableHead className="hidden sm:table-cell">
+                  Change from Previous
+                </TableHead>
+                <TableHead className="hidden lg:table-cell">
+                  Change from Start
+                </TableHead>
+                <TableHead className="hidden xl:table-cell">
+                  BMI
+                </TableHead>
+                <TableHead className="hidden xl:table-cell">
+                  Trend
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedData.map((row) => (
-                <TableRow key={row.date}>
-                  <TableCell>
-                    {new Date(row.date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>{(row.kg * 2.20462).toFixed(2)}</TableCell>
-                </TableRow>
-              ))}
+              {paginatedData.map((row, index) => {
+                const currentWeight = row.kg * 2.20462;
+                const previousWeight = index < paginatedData.length - 1 
+                  ? paginatedData[index + 1].kg * 2.20462 
+                  : null;
+                const startWeight = filteredData[filteredData.length - 1].kg * 2.20462;
+                
+                const changeFromPrevious = previousWeight !== null 
+                  ? currentWeight - previousWeight 
+                  : null;
+                const changeFromStart = currentWeight - startWeight;
+                
+                // Calculate BMI (assuming average height of 5'9" / 175cm if not available)
+                const heightInMeters = 1.75; // Default height, could be made configurable
+                const bmi = (currentWeight / 2.20462) / (heightInMeters * heightInMeters);
+                
+                // Determine trend based on recent changes
+                const getTrendIcon = () => {
+                  if (changeFromPrevious === null) return "➖";
+                  if (changeFromPrevious > 0.5) return "📈";
+                  if (changeFromPrevious < -0.5) return "📉";
+                  return "➖";
+                };
+                
+                const getBMICategory = (bmi: number) => {
+                  if (bmi < 18.5) return "Underweight";
+                  if (bmi < 25) return "Normal";
+                  if (bmi < 30) return "Overweight";
+                  return "Obese";
+                };
+                
+                return (
+                  <TableRow key={row.date}>
+                    <TableCell className="font-medium">
+                      {new Date(row.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="font-semibold">
+                      {currentWeight.toFixed(1)}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {changeFromPrevious !== null ? (
+                        <span className={`font-medium ${
+                          changeFromPrevious > 0 ? 'text-red-600' : 
+                          changeFromPrevious < 0 ? 'text-green-600' : 'text-gray-600'
+                        }`}>
+                          {changeFromPrevious > 0 ? '+' : ''}{changeFromPrevious.toFixed(1)} lbs
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">
+                      <span className={`font-medium ${
+                        changeFromStart > 0 ? 'text-red-600' : 
+                        changeFromStart < 0 ? 'text-green-600' : 'text-gray-600'
+                      }`}>
+                        {changeFromStart > 0 ? '+' : ''}{changeFromStart.toFixed(1)} lbs
+                      </span>
+                    </TableCell>
+                    <TableCell className="hidden xl:table-cell">
+                      <div className="flex flex-col">
+                        <span className="font-medium">{bmi.toFixed(1)}</span>
+                        <span className="text-xs text-gray-500">
+                          {getBMICategory(bmi)}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden xl:table-cell">
+                      <span className="text-lg">{getTrendIcon()}</span>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
+            <TableFooter>
+              <TableRow className="bg-gray-50">
+                <TableCell className="font-semibold">Summary</TableCell>
+                <TableCell className="font-semibold">
+                  {metrics ? `${metrics.avg} lbs avg` : ''}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell text-center">
+                  {metrics ? `${metrics.lbsLost} lbs total` : ''}
+                </TableCell>
+                <TableCell className="hidden lg:table-cell text-center">
+                  {metrics ? `${metrics.count} entries` : ''}
+                </TableCell>
+                <TableCell className="hidden xl:table-cell text-center">
+                  {metrics ? `${metrics.min}-${metrics.max} lbs` : ''}
+                </TableCell>
+                <TableCell className="hidden xl:table-cell"></TableCell>
+              </TableRow>
+            </TableFooter>
           </Table>
         ) : (
           <div>No data for selected filter.</div>
