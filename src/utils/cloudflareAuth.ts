@@ -74,8 +74,53 @@ export const login = (): void => {
     // In development, redirect to protected route to trigger simulated authentication
     window.location.href = '/protected';
   } else {
-    // In production, redirect to protected route to trigger Cloudflare Access
-    window.location.href = '/protected';
+    // In production, redirect directly to Cloudflare Access login
+    // This should trigger the OAuth flow with Google
+    
+    // Check if we're on a mobile browser
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isEdge = /Edge/i.test(navigator.userAgent);
+    
+    console.log('Login redirect:', {
+      isMobile,
+      isEdge,
+      userAgent: navigator.userAgent,
+      currentUrl: window.location.href
+    });
+    
+    // For mobile Edge, we might need to handle the redirect differently
+    if (isMobile && isEdge) {
+      console.log('Mobile Edge detected - using alternative redirect method');
+      
+      // Try multiple redirect methods for mobile Edge
+      try {
+        // Method 1: Try window.location.replace first
+        window.location.replace('/cdn-cgi/access/login');
+        
+        // Method 2: Fallback to window.location.href after a short delay
+        setTimeout(() => {
+          if (window.location.pathname !== '/cdn-cgi/access/login') {
+            console.log('Fallback redirect for mobile Edge');
+            window.location.href = '/cdn-cgi/access/login';
+          }
+        }, 100);
+        
+        // Method 3: Final fallback to protected route
+        setTimeout(() => {
+          if (window.location.pathname !== '/cdn-cgi/access/login' && window.location.pathname !== '/protected') {
+            console.log('Final fallback to protected route for mobile Edge');
+            window.location.href = '/protected';
+          }
+        }, 500);
+      } catch (error) {
+        console.error('Mobile Edge redirect failed:', error);
+        // Fallback to protected route
+        window.location.href = '/protected';
+      }
+    } else {
+      // Standard redirect for other browsers
+      window.location.href = '/cdn-cgi/access/login';
+    }
   }
 };
 

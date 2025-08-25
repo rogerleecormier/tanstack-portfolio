@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
-import { Shield, ArrowRight, Loader2, Lock, UserCheck, AlertTriangle, Clock } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, Lock, UserCheck, AlertTriangle, Clock, Info } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -120,6 +120,32 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
                   : 'This page is protected by Cloudflare Access. You\'ll need to authenticate using your Google SSO credentials to access your portfolio.'
                 }
               </p>
+              
+              {/* Mobile Edge specific instructions */}
+              {!isDevelopment && (() => {
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                const isEdge = /Edge/i.test(navigator.userAgent);
+                
+                if (isMobile && isEdge) {
+                  return (
+                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Info className="h-4 w-4 text-blue-600" />
+                        <span className="font-medium text-blue-800">Mobile Edge Browser</span>
+                      </div>
+                      <p className="text-xs text-blue-700">
+                        If the authentication doesn't work, try:
+                      </p>
+                      <ul className="text-xs text-blue-700 mt-1 list-disc list-inside space-y-1">
+                        <li>Allow popups for this site</li>
+                        <li>Try refreshing the page</li>
+                        <li>Use a different browser if available</li>
+                      </ul>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
             </div>
             
             <Button 

@@ -202,8 +202,29 @@ export const useAuth = () => {
         setError(null);
         console.log('useAuth: Development login successful');
       } else {
-        // In production, redirect to protected route to trigger Cloudflare Access
-        window.location.href = '/protected';
+        // In production, redirect directly to Cloudflare Access login
+        // This should trigger the OAuth flow with Google
+        
+        // Check if we're on a mobile browser
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isEdge = /Edge/i.test(navigator.userAgent);
+        
+        console.log('useAuth: Login redirect:', {
+          isMobile,
+          isEdge,
+          userAgent: navigator.userAgent,
+          currentUrl: window.location.href
+        });
+        
+        // For mobile Edge, we might need to handle the redirect differently
+        if (isMobile && isEdge) {
+          console.log('useAuth: Mobile Edge detected - using alternative redirect method');
+          // Try using window.location.replace for mobile Edge
+          window.location.replace('/cdn-cgi/access/login');
+        } else {
+          // Standard redirect for other browsers
+          window.location.href = '/cdn-cgi/access/login';
+        }
       }
     } catch (error) {
       console.error('Login failed:', error);
