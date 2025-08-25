@@ -336,9 +336,7 @@ export default function ContactPage() {
         from_email: 'roger@rcormier.dev',
         company: 'Roger Lee Cormier',
         subject: `Meeting Confirmed: ${meetingData.type} on ${format(meetingData.date, 'MMM do, yyyy')}`,
-        message: `Hi ${formData.name || 'there'},
-
-Your meeting has been successfully scheduled!
+                 message: `Meeting Request from ${formData.name || 'User'}
 
 Meeting Details:
 - Date: ${format(meetingData.date, 'EEEE, MMMM do, yyyy')}
@@ -346,10 +344,15 @@ Meeting Details:
 - Duration: ${meetingData.duration}
 - Type: ${meetingData.type.replace('-', ' ')}
 
-I'll send you a calendar invite shortly. Looking forward to our discussion!
+Original Message:
+${formData.message}
 
-Best regards,
-Roger Lee Cormier`,
+Contact Information:
+- Name: ${formData.name}
+- Email: ${formData.email}
+- Company: ${formData.company || 'Not specified'}
+
+This meeting request was generated based on AI analysis of their contact form submission.`,
         reply_to: 'roger@rcormier.dev'
       }
 

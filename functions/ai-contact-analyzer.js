@@ -700,7 +700,8 @@ JSON only:`
         originalMessage: '[CONTENT_ANALYZED]', // Don't store original message
         wordCount: scrubbedMessage.split(' ').length,
         hasCompany: !!company,
-        emailDomain: email.split('@')[1] || 'unknown'
+        emailDomain: email.split('@')[1] || 'unknown',
+        fallback: false // Explicitly mark as successful AI analysis
       }
       
       // ALWAYS calculate confidence based on actual data quality, overriding any AI-set value

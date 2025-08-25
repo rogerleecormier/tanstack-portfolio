@@ -54,6 +54,9 @@ export default {
       // Always send to your domain email - domain is verified with Resend
       const toEmail = 'roger@rcormier.dev';
 
+      // Determine if this is a meeting confirmation email
+      const isMeetingConfirmation = emailData.subject && emailData.subject.includes('Meeting Confirmed');
+      
       // Send email using Resend API
       const resendResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -65,11 +68,11 @@ export default {
           from: fromEmail,
           to: [toEmail],
           reply_to: emailData.from_email,
-          subject: `Portfolio Contact: ${emailData.subject}`,
+          subject: isMeetingConfirmation ? emailData.subject : `Portfolio Contact: ${emailData.subject}`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <h2 style="color: #1f2937; border-bottom: 2px solid #10b981; padding-bottom: 10px;">
-                New Contact Form Submission
+                ${isMeetingConfirmation ? 'Meeting Confirmation' : 'New Contact Form Submission'}
               </h2>
               
               <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -81,7 +84,7 @@ export default {
               </div>
               
               <div style="background: #ffffff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
-                <h3 style="color: #374151; margin-top: 0;">Message</h3>
+                <h3 style="color: #374151; margin-top: 0;">${isMeetingConfirmation ? 'Meeting Details & Original Message' : 'Message'}</h3>
                 <p style="white-space: pre-wrap; line-height: 1.6;">${emailData.message}</p>
               </div>
               
@@ -92,7 +95,7 @@ export default {
             </div>
           `,
           text: `
-New Contact Form Submission
+${isMeetingConfirmation ? 'Meeting Confirmation' : 'New Contact Form Submission'}
 
 Contact Details:
 Name: ${emailData.from_name}
@@ -100,7 +103,7 @@ Email: ${emailData.from_email}
 Company: ${emailData.company || 'Not specified'}
 Subject: ${emailData.subject}
 
-Message:
+${isMeetingConfirmation ? 'Meeting Details & Original Message:' : 'Message:'}
 ${emailData.message}
 
 ---
