@@ -74,8 +74,8 @@ export const login = (): void => {
     // In development, redirect to protected route to trigger simulated authentication
     window.location.href = '/protected';
   } else {
-    // In production, redirect directly to Cloudflare Access login
-    // This should trigger the OAuth flow with Google
+    // In production, redirect to protected route to trigger Cloudflare Access
+    // Cloudflare will automatically intercept this and redirect to authentication
     
     // Check if we're on a mobile browser
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -95,21 +95,21 @@ export const login = (): void => {
       // Try multiple redirect methods for mobile Edge
       try {
         // Method 1: Try window.location.replace first
-        window.location.replace('/cdn-cgi/access/login');
+        window.location.replace('/protected');
         
         // Method 2: Fallback to window.location.href after a short delay
         setTimeout(() => {
-          if (window.location.pathname !== '/cdn-cgi/access/login') {
+          if (window.location.pathname !== '/protected') {
             console.log('Fallback redirect for mobile Edge');
-            window.location.href = '/cdn-cgi/access/login';
+            window.location.href = '/protected';
           }
         }, 100);
         
-        // Method 3: Final fallback to protected route
+        // Method 3: Final fallback with a different approach
         setTimeout(() => {
-          if (window.location.pathname !== '/cdn-cgi/access/login' && window.location.pathname !== '/protected') {
-            console.log('Final fallback to protected route for mobile Edge');
-            window.location.href = '/protected';
+          if (window.location.pathname !== '/protected') {
+            console.log('Final fallback for mobile Edge - using location.assign');
+            window.location.assign('/protected');
           }
         }, 500);
       } catch (error) {
@@ -119,7 +119,7 @@ export const login = (): void => {
       }
     } else {
       // Standard redirect for other browsers
-      window.location.href = '/cdn-cgi/access/login';
+      window.location.href = '/protected';
     }
   }
 };

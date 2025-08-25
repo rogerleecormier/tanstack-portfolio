@@ -133,14 +133,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
                         <Info className="h-4 w-4 text-blue-600" />
                         <span className="font-medium text-blue-800">Mobile Edge Browser</span>
                       </div>
-                      <p className="text-xs text-blue-700">
-                        If the authentication doesn't work, try:
-                      </p>
-                      <ul className="text-xs text-blue-700 mt-1 list-disc list-inside space-y-1">
-                        <li>Allow popups for this site</li>
-                        <li>Try refreshing the page</li>
-                        <li>Use a different browser if available</li>
-                      </ul>
+                                             <p className="text-xs text-blue-700">
+                         If the authentication doesn't work, try:
+                       </p>
+                       <ul className="text-xs text-blue-700 mt-1 list-disc list-inside space-y-1">
+                         <li>Allow popups for this site</li>
+                         <li>Try refreshing the page</li>
+                         <li>Check if you're already logged into Google</li>
+                         <li>Use a different browser if available</li>
+                       </ul>
                     </div>
                   );
                 }
