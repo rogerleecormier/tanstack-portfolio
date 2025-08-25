@@ -231,24 +231,9 @@ export const useAuth = () => {
     // Listen for window focus (when user returns to browser)
     window.addEventListener('focus', handleFocus);
     
-    // For mobile browsers, also check auth periodically to catch logout redirects
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    let intervalId: NodeJS.Timeout | null = null;
-    
-    if (isMobile && !environment.isDevelopment()) {
-      // Check auth every 5 seconds on mobile to catch logout redirects
-      intervalId = setInterval(() => {
-        console.log('useAuth: Periodic auth check for mobile');
-        checkAuth();
-      }, 5000);
-    }
-    
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleFocus);
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
     };
   }, [checkAuth]);
 
