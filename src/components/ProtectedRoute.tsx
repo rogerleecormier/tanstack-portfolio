@@ -23,6 +23,16 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     isLockedOut,
     sessionTimeRemaining
   } = useAuth();
+
+  // Debug: Log when component mounts to test console
+  React.useEffect(() => {
+    console.log('ProtectedRoute: Component mounted', {
+      isAuthenticated,
+      isLoading,
+      isDevelopment,
+      userAgent: navigator.userAgent
+    });
+  }, [isAuthenticated, isLoading, isDevelopment]);
   
   if (isLoading) {
     return (

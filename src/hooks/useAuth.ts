@@ -115,9 +115,25 @@ const simpleAuth = {
         }
       }
       
+      // If we get here, user is not authenticated
+      // Clear any stored user data to ensure consistency
+      try {
+        localStorage.removeItem('cf_user');
+      } catch {
+        console.warn('Could not clear localStorage during auth check');
+      }
+      
       return { isAuthenticated: false, user: null };
     } catch (error) {
       console.debug('Cloudflare Access identity check failed:', error);
+      
+      // On error, assume not authenticated and clear stored data
+      try {
+        localStorage.removeItem('cf_user');
+      } catch {
+        console.warn('Could not clear localStorage during auth check error');
+      }
+      
       return { isAuthenticated: false, user: null };
     }
   }
@@ -173,6 +189,67 @@ export const useAuth = () => {
   // Initial auth check - only run once
   useEffect(() => {
     checkAuth();
+    
+    // Check if we're returning from a logout redirect (common on mobile)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isLogoutRedirect = urlParams.get('logout') === 'true' || 
+                           window.location.pathname.includes('logout') ||
+                           document.referrer.includes('logout');
+    
+    if (isLogoutRedirect) {
+      console.log('useAuth: Detected logout redirect, clearing auth state');
+      setIsAuthenticated(false);
+      setUser(null);
+      setError(null);
+      
+      // Clean up the URL
+      if (urlParams.get('logout') === 'true') {
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete('logout');
+        window.history.replaceState({}, '', newUrl.toString());
+      }
+    }
+  }, [checkAuth]);
+
+  // Additional auth check when page becomes visible (for mobile logout redirects)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('useAuth: Page became visible, checking auth status');
+        checkAuth();
+      }
+    };
+
+    const handleFocus = () => {
+      console.log('useAuth: Window focused, checking auth status');
+      checkAuth();
+    };
+
+    // Listen for visibility changes (when user returns to tab)
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Listen for window focus (when user returns to browser)
+    window.addEventListener('focus', handleFocus);
+    
+    // For mobile browsers, also check auth periodically to catch logout redirects
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    let intervalId: NodeJS.Timeout | null = null;
+    
+    if (isMobile && !environment.isDevelopment()) {
+      // Check auth every 5 seconds on mobile to catch logout redirects
+      intervalId = setInterval(() => {
+        console.log('useAuth: Periodic auth check for mobile');
+        checkAuth();
+      }, 5000);
+    }
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [checkAuth]);
 
   // Listen for auth state changes from other components
@@ -248,6 +325,17 @@ export const useAuth = () => {
           localStorage.removeItem('cf_user');
         } catch {
           console.warn('Could not clear localStorage');
+        }
+        
+        // Check if we're on a mobile browser
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+          console.log('useAuth: Mobile logout detected, clearing state immediately');
+          // For mobile, clear the state immediately before redirect
+          setIsAuthenticated(false);
+          setUser(null);
+          setError(null);
         }
         
         // Redirect to Cloudflare Access logout
