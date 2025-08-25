@@ -433,6 +433,10 @@ export default function HealthBridgePage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["weights"],
     queryFn: fetchWeights,
+    retry: 2,
+    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
   // Sort state
@@ -833,11 +837,47 @@ export default function HealthBridgePage() {
 
   // Now check loading/error AFTER all hooks
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <ProtectedRoute>
+        <div className="flex items-center justify-center min-h-screen p-4">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+            <p className="text-teal-600">Loading health data...</p>
+          </div>
+        </div>
+      </ProtectedRoute>
+    );
   }
   
   if (error) {
-    return <div className="text-red-500">Error loading data</div>;
+    console.error('HealthBridge error:', error);
+    return (
+      <ProtectedRoute>
+        <div className="flex items-center justify-center min-h-screen p-4">
+          <div className="text-center max-w-md">
+            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Data</h2>
+            <p className="text-gray-600 mb-4">
+              {error instanceof Error ? error.message : 'Unable to load health data'}
+            </p>
+            <div className="space-y-2 text-sm text-gray-500 mb-6">
+              <p>• Check your internet connection</p>
+              <p>• Try refreshing the page</p>
+              <p>• Ensure you're properly authenticated</p>
+              <p>• Mobile networks may be slower</p>
+            </div>
+            <div className="space-x-4">
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
+              >
+                Refresh Page
+              </button>
+            </div>
+          </div>
+        </div>
+      </ProtectedRoute>
+    );
   }
 
   return (

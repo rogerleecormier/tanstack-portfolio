@@ -81,11 +81,15 @@ export async function fetchWeights(): Promise<WeightRow[]> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), environment.api.timeout);
     
+    // Mobile-friendly fetch configuration
     const res = await fetch("https://health-bridge-api.rcormier.workers.dev/api/health/weight?limit=100000", {
       signal: controller.signal,
+      method: 'GET',
+      mode: 'cors',
+      credentials: 'omit',
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'Portfolio-App/1.0'
+        'Content-Type': 'application/json'
       }
     });
     
@@ -105,6 +109,10 @@ export async function fetchWeights(): Promise<WeightRow[]> {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
         throw new Error('API request timed out');
+      }
+      // More specific error messages for mobile debugging
+      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        throw new Error('Network error - please check your connection and try again');
       }
       throw error;
     }
