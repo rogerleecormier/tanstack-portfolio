@@ -85,7 +85,8 @@ export async function fetchWeights(): Promise<WeightRow[]> {
       signal: controller.signal,
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'Portfolio-App/1.0'
+        'User-Agent': 'Portfolio-App/1.0',
+        'Cache-Control': 'no-cache'
       }
     });
     
