@@ -1,20 +1,21 @@
-# Cloudflare Access & Email Setup Guide
+# Cloudflare Access & Workers Setup Guide
 
-This guide explains how to set up Cloudflare Access with email-based authentication and a fully functional contact form using Cloudflare Workers and Resend.
+This guide provides essential setup instructions for Cloudflare Access authentication and Workers deployment for the Roger Lee Cormier Portfolio.
 
 ## 🎯 Overview
 
 This setup provides:
 - **Cloudflare Access**: Enterprise-grade Zero Trust authentication
-- **Contact Form**: Professional contact form with email integration
+- **Contact Form**: Professional contact form with email integration via Resend
+- **AI Workers**: Serverless AI processing for intelligent contact analysis
 - **Email Delivery**: Reliable email sending via Resend API
-- **Serverless Architecture**: No backend server required
 
 ## 🚀 Quick Start
 
 ### **What You'll Get**
 ✅ **Protected routes** with Cloudflare Access  
 ✅ **Working contact form** that sends real emails  
+✅ **AI-powered contact analysis** with intelligent insights  
 ✅ **Professional email templates** with your branding  
 ✅ **No CORS issues** - emails sent server-side  
 ✅ **Free tier** - 100k requests/day on Cloudflare, 3k emails/month on Resend  
@@ -52,7 +53,6 @@ Add these paths to protect:
 5. Choose **Web application**
 6. Add authorized redirect URIs:
    - `https://yourdomain.com/cdn-cgi/access/callback`
-   - `https://yourdomain.com/cdn-cgi/access/callback/`
 
 ### **1.5 Access Policies**
 Create an access policy:
@@ -113,7 +113,7 @@ compatibility_date = "2024-01-01"
 # Development environment - no additional config needed
 ```
 
-### **2.7 Set Resend API Key as Secret**
+### **2.7 Set Your Resend API Key as a Secret**
 ```bash
 # For development environment
 wrangler secret put RESEND_API_KEY --env development
@@ -122,283 +122,146 @@ wrangler secret put RESEND_API_KEY --env development
 wrangler secret put RESEND_API_KEY --env production
 ```
 
-### **2.8 Deploy Worker**
+When prompted, paste your Resend API key.
+
+### **2.8 Deploy Your Worker**
 ```bash
 # Deploy to development
 wrangler deploy --env development
 
-# Deploy to production (when ready)
+# Deploy to production
 wrangler deploy --env production
 ```
 
-## 🔧 Step 3: Application Configuration
+## 🤖 Step 3: AI Workers Setup
 
-### **3.1 Update Access Control**
-Edit `src/config/accessControl.ts` to match your Cloudflare Access policy:
+### **3.1 AI Worker Configuration**
+The AI contact analyzer worker is configured in `wrangler-ai.toml`:
+
+```toml
+name = "tanstack-portfolio-ai-worker"
+main = "functions/ai-contact-analyzer.js"
+compatibility_date = "2024-01-01"
+
+# AI binding for Llama 2
+[[ai]]
+binding = "AI"
+```
+
+### **3.2 Deploy AI Worker**
+```bash
+# Deploy AI worker to development
+wrangler deploy --env development --config wrangler-ai.toml
+
+# Deploy AI worker to production
+wrangler deploy --env production --config wrangler-ai.toml
+```
+
+### **3.3 Update Worker URLs**
+After deployment, update the URLs in `src/api/aiContactAnalyzer.ts`:
+
+```typescript
+const AI_WORKER_ENDPOINT = import.meta.env.PROD 
+  ? 'https://YOUR-AI-WORKER-PRODUCTION-URL.workers.dev'
+  : 'https://YOUR-AI-WORKER-DEVELOPMENT-URL.workers.dev'
+```
+
+## 🔧 Step 4: Frontend Configuration
+
+### **4.1 Environment Variables**
+Create `.env.local` for local development:
+```bash
+VITE_DEV_MODE=true
+VITE_CLOUDFLARE_DOMAIN=rcormier.dev
+```
+
+### **4.2 Access Control Configuration**
+Edit `src/config/accessControl.ts` to manage user access:
 
 ```typescript
 export const accessControl: AccessControlConfig = {
   allowedEmails: [
     'roger@rcormier.dev',
-    'rogerleecormier@gmail.com',
-    // Add any additional emails here
+    'rogerleecormier@gmail.com'
   ],
   allowedDomains: [
-    'rcormier.dev',
-    // Add any additional domains here
+    'rcormier.dev'
   ]
 };
 ```
 
-### **3.2 Environment Variables**
-Set these in your deployment environment:
-```bash
-VITE_CLOUDFLARE_DOMAIN=yourdomain.com
-```
+## 🧪 Step 5: Testing
 
-### **3.3 Resend Configuration**
-```typescript
-// Configured via Cloudflare Workers secrets
-// No local config file needed - API keys stored securely
-```
+### **5.1 Test Authentication**
+1. Start your development server: `npm run dev`
+2. Navigate to a protected route (e.g., `/protected`)
+3. Verify authentication flow works correctly
 
-## 🧪 Step 4: Testing
+### **5.2 Test Contact Form**
+1. Go to `/contact` page
+2. Fill out the contact form
+3. Verify email is sent successfully
+4. Check AI analysis appears for messages >20 characters
 
-### **4.1 Test Authentication Flow**
-1. Visit `/protected` or `/healthbridge-analysis`
-2. Should redirect to Google SSO (or your identity provider)
-3. After authentication, should return to protected page
-4. No refresh should be needed
+### **5.3 Test AI Features**
+1. Type a substantial message in the contact form
+2. Verify AI analysis card appears
+3. Check that analysis provides relevant insights
+4. Test fallback mode by temporarily disabling AI worker
 
-### **4.2 Test Contact Form**
-1. Fill out the contact form on your site
-2. Submit the form
-3. Check your email - you should receive a real email!
-4. Check browser console for success/error messages
+## 🚨 Troubleshooting
 
-### **4.3 Test Worker Directly**
-```bash
-curl -X POST https://your-worker-url.workers.dev \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from_name": "Test User",
-    "from_email": "test@example.com",
-    "subject": "Test",
-    "message": "Test message"
-  }'
-```
+### **Common Issues**
 
-## 🔍 How It All Works
+1. **Authentication Not Working**
+   - Verify Cloudflare Access application is configured correctly
+   - Check that your domain is pointing to Cloudflare
+   - Ensure identity provider is properly configured
 
-### **Authentication Flow**
-```
-User → Protected Route → Cloudflare Access → Google SSO → Authenticated → Access Granted
-```
+2. **Emails Not Sending**
+   - Verify Resend domain verification is complete
+   - Check that API key is set as a Cloudflare secret
+   - Verify worker deployment was successful
 
-### **Contact Form Flow**
-```
-User → Contact Form → Validation → Cloudflare Worker → Resend API → Email Sent → Success
-```
+3. **AI Analysis Not Working**
+   - Check AI worker deployment status
+   - Verify AI binding is configured in wrangler-ai.toml
+   - Check browser console for network errors
 
-### **Email Processing**
-- **Frontend**: React component with validation
-- **Worker**: Serverless function for email processing
-- **Resend**: Modern email service for reliable delivery
-- **Domain**: Verified domain for professional email addresses
+4. **CORS Issues**
+   - Ensure emails are sent via Cloudflare Workers (server-side)
+   - Check that frontend is not making direct API calls to Resend
 
-## 🛠️ Troubleshooting
+### **Debug Steps**
+1. Check Cloudflare Worker logs in the dashboard
+2. Verify browser console for frontend errors
+3. Test worker endpoints directly using curl or Postman
+4. Check Cloudflare Access logs for authentication issues
 
-### **Authentication Issues**
+## 📊 Monitoring & Maintenance
 
-#### **1. Authentication Loop**
-- Check redirect URIs in Google OAuth
-- Verify Cloudflare Access application domain
-- Clear browser cookies and cache
+### **Performance Monitoring**
+- Monitor Cloudflare Worker performance in the dashboard
+- Track AI analysis response times and accuracy
+- Monitor email delivery rates and bounce rates
 
-#### **2. Route Not Protected**
-- Verify policy is assigned to routes
-- Check DNS proxy settings
-- Ensure SSL is properly configured
+### **Cost Management**
+- Cloudflare Workers: 100k requests/day free tier
+- Cloudflare AI: Pay-per-use inference pricing
+- Resend: 3k emails/month free tier
 
-#### **3. User Not Recognized**
-- Verify email is in allowed list in `accessControl.ts`
-- Check Google OAuth domain restrictions
-- Review Cloudflare Access logs
+### **Regular Maintenance**
+- Update worker dependencies regularly
+- Monitor Cloudflare Access policies and user access
+- Review and update allowed email addresses as needed
 
-### **Email Issues**
+## 🔗 Additional Resources
 
-#### **1. "Worker not found" Error**
-```bash
-# Check if worker is deployed
-wrangler deployments list --env development
-
-# Redeploy if needed
-wrangler deploy --env development
-```
-
-#### **2. "Invalid API key" Error**
-```bash
-# Verify secret is set
-wrangler secret list --env development
-
-# Reset the secret
-wrangler secret delete RESEND_API_KEY --env development
-wrangler secret put RESEND_API_KEY --env development
-```
-
-#### **3. "Domain not verified" Error**
-- Go to [resend.com/domains](https://resend.com/domains)
-- Verify your domain status
-- Complete DNS verification if pending
-
-### **Debug Commands**
-```bash
-# Check worker logs
-wrangler tail --env development --format pretty
-
-# Check worker status
-wrangler whoami
-
-# List deployments
-wrangler deployments list --env development
-
-# Check secrets
-wrangler secret list --env development
-```
-
-## 🔒 Security Features
-
-### **Authentication Security**
-- Cloudflare Access Zero Trust
-- Email-based access control
-- Secure cookie handling
-- Rate limiting support
-
-### **Email Security**
-- API key stored as Cloudflare secrets
-- Input validation and sanitization
-- Rate limiting on contact form
-- Spam protection measures
-
-### **Content Security**
-- XSS protection
-- Content sanitization
-- Secure markdown rendering
-- Input validation
-
-### **Security Headers**
-- Content Security Policy (CSP)
-- X-Frame-Options
-- X-Content-Type-Options
-- Strict-Transport-Security
-
-## 📊 Monitoring & Analytics
-
-### **Cloudflare Access**
-- User authentication logs
-- Access policy violations
-- Session management
-- Route protection status
-
-### **Email System**
-- Worker logs and errors
-- Email delivery status
-- Bounce and spam reports
-- Send volume analytics
-
-## 🚀 Production Deployment
-
-### **1. Verify Everything Works**
-- Test authentication in production
-- Test contact form functionality
-- Verify email delivery
-
-### **2. Deploy to Production**
-```bash
-wrangler deploy --env production
-```
-
-### **3. Update DNS**
-- Ensure domain points to Cloudflare
-- Verify SSL/TLS settings
-- Check proxy status
-
-### **4. Monitor Performance**
-- Watch authentication logs
-- Monitor email delivery
-- Check worker performance
-
-## 💰 Cost Analysis
-
-### **Free Tier Limits**
-- **Cloudflare Access**: Included with Cloudflare plan
-- **Cloudflare Workers**: 100,000 requests/day
-- **Resend**: 3,000 emails/month
-- **Perfect for portfolio use**
-
-### **Paid Plans** (if needed)
-- **Cloudflare Workers**: $5/month for 10M requests
-- **Resend**: $20/month for 50k emails
-
-## 🔄 Maintenance
-
-### **Regular Tasks**
-1. **Monitor access logs** for suspicious activity
-2. **Check worker logs** for errors
-3. **Review email delivery** in Resend dashboard
-4. **Rotate API keys** quarterly
-5. **Update policies** as needed
-
-### **Updates**
-```bash
-# Update wrangler CLI
-npm update -g wrangler
-
-# Redeploy after code changes
-wrangler deploy --env development
-```
-
-## 📚 Additional Resources
-
-### **Documentation**
-- [Cloudflare Access](https://developers.cloudflare.com/access/)
-- [Cloudflare Workers](https://developers.cloudflare.com/workers/)
-- [Resend API](https://resend.com/docs)
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
-
-### **Support**
-- **Cloudflare**: [Community Forum](https://community.cloudflare.com/)
-- **Resend**: [Discord Community](https://discord.gg/resend)
-
-## ✅ Success Checklist
-
-- [ ] Cloudflare Access application created
-- [ ] Google OAuth configured
-- [ ] Access policies set up
-- [ ] Resend account created and verified
-- [ ] Domain verified with Resend
-- [ ] API key obtained from Resend
-- [ ] Worker deployed to development
-- [ ] Secrets configured in Cloudflare
-- [ ] Authentication tested and working
-- [ ] Contact form tested and working
-- [ ] Production deployment ready
-
-## 🎉 You're Done!
-
-Your portfolio now has:
-- ✅ **Enterprise-grade authentication** with Cloudflare Access
-- ✅ **Working contact form** that sends real emails
-- ✅ **Professional email templates** with your branding
-- ✅ **Protected routes** for sensitive content
-- ✅ **No CORS issues** - everything works server-side
-
-The system automatically handles:
-- **Authentication**: Cloudflare Access with Zero Trust
-- **Email delivery**: Resend API via Cloudflare Workers
-- **Route protection**: Automatic redirects to login
-- **Environment switching**: Dev vs prod configurations
+- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - Comprehensive AI features documentation
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Development guide and architecture details
+- **[ACCESS_CONTROL.md](./ACCESS_CONTROL.md)** - Access control configuration
+- **[SECURITY.md](./SECURITY.md)** - Security features and best practices
 
 ---
 
-**Need help?** Check the troubleshooting section or open an issue in your repository.
+**Cloudflare Setup powered by Cloudflare Access & Workers** 🚀✨

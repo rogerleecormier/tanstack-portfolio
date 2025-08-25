@@ -1,6 +1,6 @@
 # Roger Lee Cormier Portfolio
 
-A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, advanced search capabilities, interactive data visualization, and a fully functional contact form with Resend email integration.
+A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, advanced AI-powered features, interactive data visualization, and a fully functional contact form with Resend email integration.
 
 ## 🚀 Tech Stack
 
@@ -40,7 +40,20 @@ A modern, professional portfolio website built with cutting-edge web technologie
 - **Cloudflare Workers** - Serverless functions for email processing
 - **Contact Form** - Professional contact form with spam protection
 
+### **AI & Machine Learning**
+- **Cloudflare AI Workers** - Serverless AI processing with Llama 2
+- **Real-time Analysis** - Intelligent contact form analysis
+- **Smart Recommendations** - AI-powered content suggestions
+
 ## ✨ Key Features
+
+### **🤖 AI-Powered Features**
+- **Intelligent Contact Analysis**: Real-time AI analysis of contact form submissions using Llama 2
+- **Dynamic Search Recommendations**: AI-powered search suggestions and content recommendations
+- **Smart Meeting Scheduler**: Intelligent meeting duration recommendations based on inquiry analysis
+- **Timezone Finder**: AI-assisted timezone detection and meeting scheduling
+- **Content Personalization**: AI-driven content recommendations based on user behavior
+- **Priority Classification**: Automatic inquiry prioritization and routing
 
 ### **🔐 Advanced Authentication System**
 - **Cloudflare Access Integration**: Enterprise-grade security with Zero Trust
@@ -51,27 +64,30 @@ A modern, professional portfolio website built with cutting-edge web technologie
 
 ### **📧 Professional Contact System**
 - **Smart Contact Flow**: Intuitive choice between "Quick Message" and "Schedule Meeting"
+- **AI-Powered Analysis**: Real-time analysis of inquiries with intelligent classification
 - **Resend Integration**: Modern, reliable email delivery via Resend API
 - **Cloudflare Worker**: Serverless email processing to avoid CORS issues
 - **Spam Protection**: Built-in spam prevention and validation
 - **Professional Templates**: Beautiful HTML email templates with branding
 - **Reply-to Functionality**: Easy response handling for inquiries
-- **Contact Form**: Professional contact form with company, subject, and message fields
-- **Meeting Scheduling**: Native meeting scheduling without third-party dependencies
+- **Meeting Scheduling**: Native meeting scheduling with AI recommendations
 - **Enhanced UX**: Clear visual hierarchy with interactive choice cards and supporting information
 
 ### **🔍 Intelligent Search System**
 - **Fuse.js Powered**: Fuzzy search with configurable relevance scoring
+- **AI-Enhanced Search**: Machine learning-powered search suggestions and content recommendations
 - **Global Content Search**: Search across all markdown content, pages, and documentation
 - **Real-time Results**: Debounced search with instant feedback
 - **Relevance Scoring**: Visual indicators showing match quality
 - **Keyboard Navigation**: ⌘K shortcut for quick access
+- **Dynamic Recommendations**: AI-powered content suggestions based on search patterns
 
 ### **📊 Interactive Data Analysis**
 - **HealthBridge Integration**: Protected health data analysis with dynamic filtering
 - **Advanced Charting**: Line charts, bar charts, and more with Recharts
 - **Dynamic Filtering**: Date ranges, custom periods, and real-time data aggregation
 - **Responsive Design**: Charts adapt to different screen sizes
+- **AI-Enhanced Insights**: Machine learning-powered data analysis and recommendations
 
 ### **📱 Modern User Experience**
 - **Responsive Sidebar**: Collapsible navigation with project organization
@@ -80,6 +96,7 @@ A modern, professional portfolio website built with cutting-edge web technologie
 - **Mobile-First Design**: Optimized for all device sizes
 - **Interactive Contact Flow**: Engaging choice-based contact experience
 - **Enhanced Visual Feedback**: Hover effects, transforms, and clear interactive states
+- **AI-Powered UX**: Intelligent interface adaptations based on user behavior
 
 ### **🎨 Professional Design System**
 - **shadcn/ui Components**: Consistent, accessible UI components
@@ -98,35 +115,26 @@ src/
 │   │   ├── card.tsx    # Card components
 │   │   └── ...         # Other UI components
 │   ├── AppSidebar.tsx  # Main navigation sidebar
-│   ├── Search.tsx      # Global search with Fuse.js
-│   ├── TableOfContents.tsx # Auto-generated TOC
-│   ├── ProtectedRoute.tsx  # Authentication wrapper
-│   ├── ContactPage.tsx     # Smart contact flow with choice-based UX
-│   └── HealthBridge.tsx    # Data analysis component
+│   ├── AIContactAnalysis.tsx # AI-powered contact analysis
+│   ├── AIMeetingScheduler.tsx # AI meeting scheduling
+│   ├── Search.tsx      # Global search with AI recommendations
+│   └── ...             # Other components
 ├── pages/               # Page components
 │   ├── MarkdownPage.tsx    # Markdown content renderer
-│   ├── ContactPage.tsx     # Smart contact flow page
+│   ├── ContactPage.tsx     # Smart contact flow with AI analysis
 │   ├── HealthBridge.tsx    # Protected health analysis
 │   └── NotFound.tsx        # 404 page
 ├── content/             # Markdown content files
-│   ├── about.md         # About page content
-│   ├── analytics.md     # Analytics content
-│   ├── strategy.md      # Strategy content
-│   └── ...              # Other content pages
 ├── api/                 # API and service files
+│   ├── aiContactAnalyzer.ts # AI contact analysis service
 │   ├── emailService.ts  # Email service for contact form
 │   └── healthBridge.ts  # Health data API
+├── functions/           # Cloudflare Workers
+│   ├── ai-contact-analyzer.js # AI analysis worker
+│   └── send-email.js    # Email processing worker
 ├── hooks/               # Custom React hooks
-│   ├── useAuth.ts       # Authentication state management
-│   └── use-mobile.tsx   # Mobile detection
 ├── utils/               # Utility functions
-│   ├── cloudflareAuth.ts # Cloudflare Access integration
-│   ├── searchIndex.ts   # Fuse.js search implementation
-│   └── ...              # Other utilities
 ├── config/              # Configuration files
-│   ├── accessControl.ts # Email-based access control
-│   ├── environment.ts   # Environment configuration
-│   └── securityHeaders.ts # Security headers
 ├── router.tsx           # TanStack Router configuration
 └── main.tsx             # Application entry point
 ```
@@ -134,36 +142,47 @@ src/
 ## 🚀 Getting Started
 
 ### **Prerequisites**
-- Node.js 18+ 
-- npm or yarn
-- Cloudflare account (for production deployment)
+- Node.js 18+ (LTS recommended)
+- npm 9+ or yarn 1.22+
+- Git
+- Modern browser with ES2020 support
+- Cloudflare account (for Workers and Access)
 - Resend account (for email functionality)
 
-### **Installation**
+### **Quick Start**
+```bash
+# Clone the repository
+git clone <repository-url>
+cd tanstack-portfolio
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd tanstack-portfolio
-   ```
+# Install dependencies
+npm install
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+# Start development server
+npm run dev
 
-3. **Start development server**
-   ```bash
-   npm run dev
-   ```
+# Build for production
+npm run build
+```
 
-4. **Open your browser**
-   Navigate to `http://localhost:5173`
+### **Environment Setup**
+Create `.env.local` for local development:
+```bash
+VITE_DEV_MODE=true
+VITE_CLOUDFLARE_DOMAIN=rcormier.dev
+```
 
-### **Development Commands**
+## 📚 Documentation
+
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive development guide and architecture details
+- **[CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)** - Cloudflare Access and Workers setup guide
+- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - Detailed AI features documentation
+- **[ACCESS_CONTROL.md](./ACCESS_CONTROL.md)** - Authentication and access control configuration
+- **[SECURITY.md](./SECURITY.md)** - Security features and best practices
+
+## 🔧 Development Commands
 
 ```bash
-# Start development server
 npm run dev              # Start Vite dev server
 npm run build            # Build for production
 npm run preview          # Preview production build
@@ -171,305 +190,32 @@ npm run type-check       # TypeScript type checking
 npm run lint             # ESLint linting
 ```
 
-## 🔐 Authentication Setup
+## 🌟 AI Features in Action
 
-### **Development Mode**
-- Automatically detected when running on `localhost`
-- Mock authentication for testing protected routes
-- No external dependencies required
-- Use the development authentication toggle for testing
+### **Contact Form Intelligence**
+- **Real-time Analysis**: AI analyzes contact form submissions as users type
+- **Smart Classification**: Automatically categorizes inquiries by type, priority, and industry
+- **Meeting Recommendations**: Suggests optimal meeting duration and scheduling
+- **Content Suggestions**: Recommends relevant portfolio content based on inquiry analysis
 
-### **Production Mode**
-- Cloudflare Access with Zero Trust authentication
-- Email-based access control
-- Protected routes require valid credentials
-- See `CLOUDFLARE_SETUP.md` for detailed configuration
+### **Search Enhancement**
+- **Dynamic Recommendations**: AI-powered search suggestions and content recommendations
+- **Intelligent Filtering**: Smart content filtering based on user search patterns
+- **Relevance Scoring**: Advanced relevance algorithms for better search results
 
-### **Protected Routes**
-- `/protected` - General protected content
-- `/healthbridge-analysis` - Health data analysis tools
-
-### **Access Control**
-Access is controlled by email addresses and domains configured in `src/config/accessControl.ts`:
-- **roger@rcormier.dev** - ✅ Allowed
-- **rogerleecormier@gmail.com** - ✅ Allowed  
-- **any-email@rcormier.dev** - ✅ Allowed (domain access)
-- **other@gmail.com** - ❌ Denied (not in allowed list)
-
-## 📧 Contact Form & Email Setup
-
-### **Resend Integration**
-The contact form uses Resend for reliable email delivery:
-
-- **Modern Email API**: Resend provides a developer-friendly email service
-- **High Deliverability**: Built-in spam protection and email validation
-- **Professional Templates**: Beautiful HTML email templates with your branding
-- **Reply-to Support**: Easy response handling for inquiries
-
-### **Cloudflare Worker**
-Email processing is handled by a Cloudflare Worker to avoid CORS issues:
-
-- **Serverless Processing**: No backend server required
-- **CORS-Free**: Emails sent server-side via the worker
-- **Environment Support**: Separate development and production configurations
-- **Secure**: API keys stored as Cloudflare secrets
-
-### **Contact Form Features**
-- **Professional Design**: Clean, accessible form with validation
-- **Company Information**: Capture company/organization details
-- **Subject Line**: Clear categorization of inquiries
-- **Message Content**: Rich text support for detailed messages
-- **Spam Protection**: Built-in validation and rate limiting
-- **Success Feedback**: Clear confirmation when messages are sent
-
-### **Email Setup Requirements**
-1. **Resend Account**: Sign up at [resend.com](https://resend.com)
-2. **Domain Verification**: Verify your domain with Resend
-3. **API Key**: Get your Resend API key
-4. **Cloudflare Worker**: Deploy the email worker
-5. **Environment Variables**: Configure secrets in Cloudflare
-
-See `CLOUDFLARE_WORKERS_SETUP.md` for detailed email setup instructions.
-
-## 🔍 Search Implementation
-
-### **Fuse.js Configuration**
-The search system uses Fuse.js with optimized settings for portfolio content:
-
-```typescript
-const fuseOptions = {
-  keys: [
-    { name: 'title', weight: 0.3 },      // Page titles
-    { name: 'description', weight: 0.25 }, // Frontmatter descriptions
-    { name: 'content', weight: 0.2 },    // Main content
-    { name: 'headings', weight: 0.15 },  // Section headings
-    { name: 'tags', weight: 0.1 }        // Content tags
-  ],
-  threshold: 0.4,                        // Fuzzy matching threshold
-  includeScore: true,                    // Include relevance scores
-  includeMatches: true,                  // Include match details
-  minMatchCharLength: 2                  // Minimum search length
-}
-```
-
-### **Search Features**
-- **Global Search**: Search across all content simultaneously
-- **Relevance Scoring**: Visual indicators showing match quality
-- **Context Preview**: Show search results with surrounding context
-- **Keyboard Shortcuts**: ⌘K to open search dialog
-- **Real-time Results**: Instant search as you type
-
-## 📊 Data Visualization
-
-### **Recharts Integration**
-The application uses Recharts with custom shadcn/ui chart components:
-
-- **Line Charts**: For time-series data visualization
-- **Bar Charts**: For categorical data comparison
-- **Responsive Design**: Charts adapt to container size
-- **Custom Theming**: Consistent with design system
-- **Interactive Elements**: Tooltips, zoom, and pan support
-
-### **Chart Features**
-- **Dynamic Filtering**: Date ranges and custom periods
-- **Data Aggregation**: Automatic grouping by time periods
-- **Real-time Updates**: Live data refresh capabilities
-- **Export Options**: Chart data export functionality
-
-## 🎨 UI Components
-
-### **shadcn/ui Integration**
-Built on shadcn/ui for consistent, accessible components:
-
-- **Button Variants**: Primary, secondary, outline, ghost
-- **Card Components**: Content containers with headers
-- **Form Elements**: Inputs, selects, checkboxes
-- **Navigation**: Sidebar, breadcrumbs, navigation menu
-- **Feedback**: Alerts, badges, tooltips
-
-### **Custom Design System**
-- **Color Palette**: Professional portfolio aesthetic
-- **Typography**: Enhanced readability with Tailwind Typography
-- **Spacing**: Consistent spacing scale
-- **Animations**: Smooth transitions and micro-interactions
-
-## 🌐 Deployment
-
-### **Cloudflare Pages**
-The application is optimized for Cloudflare Pages deployment:
-
-- **SPA Routing**: Clean URLs without hash routing
-- **Edge Computing**: Global CDN distribution
-- **Zero Trust**: Integrated Cloudflare Access authentication
-- **GitHub Actions**: Automated deployment workflow
-
-### **Build Configuration**
-```bash
-# Build command
-npm run build
-
-# Output directory
-dist/
-
-# Environment variables
-Configure in Cloudflare Pages dashboard
-```
-
-## 🔧 Configuration
-
-### **Environment Variables**
-```bash
-# Development
-VITE_DEV_MODE=true
-
-# Production
-VITE_CLOUDFLARE_DOMAIN=rcormier.dev
-```
-
-### **Resend Configuration**
-```typescript
-// Configured via Cloudflare Workers secrets
-// No local config file needed - API keys stored securely
-```
-
-### **Tailwind Configuration**
-Custom design system with:
-- Extended color palette
-- Custom spacing scale
-- Typography utilities
-- Animation keyframes
-
-### **TypeScript Configuration**
-- Strict type checking
-- Path aliases for clean imports
-- Modern ES2020 target
-- React 19 JSX transform
-
-## 📱 Responsive Design
-
-### **Breakpoint Strategy**
-- **Mobile First**: Base styles for mobile devices
-- **Tablet**: `sm:` prefix (640px+)
-- **Desktop**: `md:` prefix (768px+)
-- **Large Desktop**: `lg:` prefix (1024px+)
-- **Extra Large**: `xl:` prefix (1280px+)
-
-### **Mobile Optimizations**
-- Touch-friendly interactions
-- Optimized sidebar for mobile
-- Responsive chart sizing
-- Mobile-first search interface
-
-## 🚀 Performance Features
-
-### **Code Splitting**
-- Route-based code splitting
-- Lazy-loaded components
-- Optimized bundle sizes
-
-### **Search Performance**
-- Debounced search input
-- Efficient Fuse.js indexing
-- Result caching
-- Progressive result loading
-
-### **Chart Performance**
-- Optimized Recharts rendering
-- Data virtualization for large datasets
-- Efficient re-rendering
-- Memory leak prevention
-
-## 🔒 Security Features
-
-### **Authentication Security**
-- Cloudflare Access Zero Trust
-- Email-based access control
-- Secure cookie handling
-- Rate limiting support
-
-### **Content Security**
-- XSS protection
-- Content sanitization
-- Secure markdown rendering
-- Input validation
-
-### **Email Security**
-- API key stored as Cloudflare secrets
-- Input validation and sanitization
-- Rate limiting on contact form
-- Spam protection measures
-
-### **Security Headers**
-- Content Security Policy (CSP)
-- X-Frame-Options
-- X-Content-Type-Options
-- Strict-Transport-Security
-
-## 🧪 Testing & Quality
-
-### **Code Quality**
-- ESLint configuration
-- TypeScript strict mode
-- Prettier formatting
-- Git hooks
-
-### **Development Tools**
-- React DevTools integration
-- TanStack Query DevTools
-- Hot module replacement
-- Error boundary handling
-
-## 📚 Content Management
-
-### **Markdown Support**
-- Frontmatter metadata
-- Syntax highlighting
-- Table of contents generation
-- Image optimization
-
-### **Content Organization**
-- Hierarchical navigation
-- Tag-based categorization
-- Search indexing
-- Content versioning
-
-## 🔄 Future Enhancements
-
-### **Planned Features**
-- **SSR Migration**: Server-side rendering for better SEO
-- **CMS Integration**: Headless CMS for content management
-- **Analytics Dashboard**: Enhanced data visualization
-- **Multi-language Support**: Internationalization
-- **PWA Features**: Progressive web app capabilities
-- **Email Templates**: Customizable email templates
-- **Contact Analytics**: Track contact form performance
-
-### **Technology Upgrades**
-- **React 19 Features**: Concurrent rendering and suspense
-- **TanStack Router v2**: Latest routing features
-- **Vite 7**: Enhanced build performance
-- **Tailwind CSS v4**: Latest styling features
+### **Meeting Scheduler**
+- **AI Duration Suggestions**: Intelligent meeting duration recommendations
+- **Timezone Detection**: Automatic timezone detection and conversion
+- **Schedule Optimization**: AI-powered scheduling suggestions for optimal meeting times
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+This is a personal portfolio project, but suggestions and feedback are welcome. Please ensure any contributions align with the project's professional portfolio goals.
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
-
-## 🆘 Support
-
-For questions or support:
-- Open an issue on GitHub
-- Check the documentation
-- Review the Cloudflare setup guide
-- Check the email setup documentation
+This project is proprietary and confidential. All rights reserved.
 
 ---
 
-**Built with ❤️ using modern web technologies**
+**Built with ❤️ using React, TypeScript & TanStack Router**
