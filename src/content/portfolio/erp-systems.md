@@ -11,20 +11,13 @@ My portfolio includes **hands-on leadership of ERP systems**—designing, implem
 
 **Stack:** NetSuite • SuiteScript • Saved Searches  
 **Role:** Admin & Workflow Designer  
-**Scope:** Finance & Operations – 300+ users  
 
 ### Core Capabilities
-- **Permission Management:** Role-based access control and security frameworks
-- **Workflow Automation:** Conditional logic, approval routing, and automated processes
-- **Multi-Entity Support:** Cross-entity compliance and reporting
-- **Integration Management:** API connections and data synchronization
-- **Audit Trail Management:** Complete transaction tracking and compliance reporting
-
-### Key Achievements
-- Managed permissions, workflows, and integrations for 300+ users
-- Built conditional logic, approval routing, and saved searches for multi-entity compliance
-- Created reusable templates reducing new-entity setup time by 60%
-- **Results:** 300+ users supported; improved audit traceability; eliminated duplicate entry
+- Permission management with role-based access control  
+- Conditional logic, approval routing, and automated processes  
+- Cross-entity compliance and reporting  
+- API connections and data synchronization  
+- Transaction tracking and compliance reporting
 
 ---
 
@@ -53,37 +46,35 @@ My portfolio includes **hands-on leadership of ERP systems**—designing, implem
 - **Compliance Management:** Entity-specific compliance requirements
 
 ### Governance Framework
-- **Access Control:** Role-based permissions per entity
-- **Data Segregation:** Entity-specific data isolation
-- **Audit Compliance:** Entity-level audit trails
-- **Reporting Standards:** Consistent reporting across entities
+- Access control by entity  
+- Data segregation aligned to entities  
+- Audit trails at the entity level  
+- Consistent reporting standards
 
 ---
 
 ## 🔒 Security & Compliance
 
 ### Security Framework
-- **Role-Based Access:** Granular permission management
-- **Data Encryption:** End-to-end data protection
-- **Session Management:** Secure user session handling
-- **Audit Logging:** Comprehensive activity tracking
+- Role-based access  
+- Data encryption  
+- Session management  
+- Audit logging  
 
 ### Compliance Standards
-- **SOX Compliance:** Sarbanes-Oxley audit requirements
-- **GAAP Standards:** Generally Accepted Accounting Principles
-- **Industry Regulations:** Sector-specific compliance requirements
-- **Internal Controls:** Automated control monitoring
+- SOX-aligned controls  
+- GAAP-aligned reporting  
+- Industry regulations as applicable  
+- Internal control monitoring
 
 ---
 
-## 📈 Measured Impact
+## 📈 Focus Areas
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| User Support | 150 users | 300+ users | 100% increase |
-| Setup Time | 2-3 weeks | 3-5 days | 75% reduction |
-| Audit Compliance | Manual | Automated | 100% coverage |
-| Data Accuracy | 85% | 98% | 15% improvement |
+- Role design and permission models  
+- Approval flows and conditional logic  
+- Saved searches and reporting  
+- Integration and reconciliation patterns
 
 ---
 

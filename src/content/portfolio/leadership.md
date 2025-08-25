@@ -51,52 +51,12 @@ I give and receive feedback directly and constructively, fostering maturity and 
 
 ---
 
-## 📂 Signature Projects
+## 📂 Leadership Case Studies
 
-### Ramp + NetSuite Integration
-**Stack:** Ramp API • NetSuite • CSV imports  
-**Role:** Technical Project Manager  
-**Scope:** Finance + IT  
+Explore the detailed project summaries:
 
-- Rolled out Ramp's native NetSuite integration (Ramp Plus) to replace spreadsheet-based coding  
-- Coordinated GL mapping, vendor alignment, and sync validation  
-- Embedded data quality controls for AP governance  
-- **Results:** ↓ manual effort; ↑ AP accuracy; improved visibility into AP aging
-
----
-
-### Box → Vena Forecast Intake
-**Stack:** Box • Smartsheet • Vena  
-**Role:** Technical Project Manager / Systems Engineer  
-**Scope:** Finance Operations  
-
-- Introduced structured folder hierarchy and naming conventions for forecast files  
-- Built Smartsheet dashboards to track submissions and flag missing data  
-- Partnered with Finance to reduce reliance on email coordination  
-- **Results:** ↑ traceability; ↓ submission delays; better template compliance  
-
----
-
-### Financial Reporting QA Workflow
-**Stack:** Smartsheet • Box  
-**Role:** Technical Project Manager  
-**Scope:** FP&A Reporting  
-
-- Created Smartsheet-based review system for budget and forecast uploads  
-- Mapped file locations, submitters, and timestamps for audit visibility  
-- **Results:** Reduced missed submissions; streamlined ingestion into downstream systems  
-
----
-
-### GitHub Actions + Azure DevOps Enablement
-**Stack:** GitHub Actions • Azure Functions  
-**Role:** TPM / Systems Engineer  
-
-- Scoped, tested, and deployed CI/CD workflows for ETL jobs and monitoring  
-- Codified DevOps processes with engineers to reduce operational toil  
-- **Results:** Hardened deployment flows; faster, more reliable releases  
-
----
+- [Signature Projects](/portfolio/leadership/signature-projects)  
+- [Team Culture](/portfolio/leadership/team-culture)
 
 ## 🌱 Leadership Philosophy
 > *"Great leaders don't create followers—they create more leaders."*

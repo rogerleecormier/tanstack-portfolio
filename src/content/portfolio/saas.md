@@ -17,55 +17,12 @@ As a **NetSuite administrator and cross-platform integrator**, I build secure, l
 
 ---
 
-## 🎯 Signature Projects
+## 🎯 Selected Case Studies
 
-### NetSuite Governance & Workflow Automation
-**Stack:** NetSuite • SuiteScript • Saved Searches  
-**Role:** Admin & Workflow Designer  
-**Scope:** Finance & Operations – 300+ users  
-
-- Managed permissions, workflows, and integrations  
-- Built conditional logic, approval routing, and saved searches for multi-entity compliance  
-- Created reusable templates reducing new-entity setup time by 60%  
-- **Results:** 300+ users supported; improved audit traceability; eliminated duplicate entry  
-
----
-
-### Ramp + Checkbook.io Integration
-**Stack:** Power Automate • NetSuite • REST APIs  
-**Role:** Integration Lead  
-**Scope:** AP Operations  
-
-- Automated invoice syncing, card transaction imports, and payment dispatch  
-- Designed approval logic, GL alignment, and payment triggers  
-- Built reconciliation scripts to match payment confirmations with ERP records  
-- **Results:** Reduced AP cycle time 40%; improved governance; increased visibility  
-
----
-
-### Vena Forecasting Pipeline (Box → Vena)
-**Stack:** Box • Azure Functions • Vena • Java ETL  
-**Role:** Systems Integrator  
-**Scope:** FP&A / Forecast Intake  
-
-- Automated budget file ingestion from Box to Vena  
-- Implemented naming convention checks and folder structures  
-- Standardized templates and validated submissions  
-- **Results:** ↓ ingestion errors 50%; 1-day faster forecast cycles  
-
----
-
-### SaaS Workflow Unification
-**Stack:** Smartsheet • Asana • Box  
-**Role:** Workflow Designer  
-**Scope:** PMO Tool Onboarding & Integration  
-
-- Introduced Smartsheet for PMO status tracking  
-- Connected Box document storage with Smartsheet and NetSuite data  
-- Built API scripts for automated sync between systems  
-- **Results:** Faster onboarding; improved cross-tool alignment; SOPs codified  
-
----
+- [NetSuite governance and workflow automation](/erp-systems)  
+- [Ramp + Checkbook.io payment flow](/portfolio/devops/netsuite-ach-checkbook)  
+- [Vena forecasting pipeline](/portfolio/devops/box-to-vena-etl)  
+- [SaaS workflow unification](/analytics)
 
 ## 🔧 Integration Principles
 1. **Interoperability** – Clear data ownership per system  

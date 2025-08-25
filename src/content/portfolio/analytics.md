@@ -45,10 +45,9 @@ I use analytics to surface **delivery risks, inefficiencies, and opportunities**
 ## 🎓 Academic Projects
 
 ### Budget Risk Analysis
-- Dataset: 4,000 project records with budget, methodology, and complexity data  
-- Calculated descriptive statistics and built budget frequency distributions  
-- Visualized right-skew distribution using Mermaid chart  
-- **Insight:** Most budgets fall under $1.5M; large projects rare  
+- Dataset included project budget, methodology, and complexity data  
+- Calculated descriptive statistics and budget frequency distributions  
+- Visualized right-skew distribution  
 
 ### PainSmart – Wellness Strategy
 - Used public health data to model opioid reduction strategies  
@@ -59,10 +58,10 @@ I use analytics to surface **delivery risks, inefficiencies, and opportunities**
 ---
 
 ## 🔧 Tools
-- **Automation & ETL:** Python, SQL, Power Automate, Box API  
-- **Dashboards:** Smartsheet, Excel, Asana AI  
-- **Statistical Tools:** Excel Analysis ToolPak, regression models  
-- **Communication:** Stakeholder reports, embedded visual summaries  
+- Automation & ETL: Python, SQL, Power Automate, Box API  
+- Dashboards: Smartsheet, Excel, Asana AI  
+- Statistical tools: Excel Analysis ToolPak and regression models  
+- Communication: Stakeholder reports and embedded visual summaries  
 
 ---
 

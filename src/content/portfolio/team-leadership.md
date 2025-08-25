@@ -49,23 +49,12 @@ I give and receive feedback directly and constructively, fostering maturity and 
 
 ---
 
-## 📊 Leadership Impact
+## 🎯 Success Indicators
 
-| Area | Before | After | Improvement |
-|------|--------|-------|-------------|
-| Team Alignment | Fragmented goals | Unified vision | 60% improvement |
-| Decision Speed | 2-3 weeks | 2-3 days | 80% faster |
-| Stakeholder Satisfaction | 70% | 90% | 29% increase |
-| Project Delivery | 75% on-time | 92% on-time | 23% improvement |
-
----
-
-## 🎯 Success Metrics
-
-- **Team Performance:** Measurable improvements in delivery velocity and quality
-- **Stakeholder Alignment:** Clear communication and expectation management
-- **Risk Management:** Proactive identification and mitigation of project risks
-- **Continuous Improvement:** Systematic learning and process optimization
+- Team performance: improvements in delivery velocity and quality  
+- Stakeholder alignment: clear communication and expectation management  
+- Risk management: proactive identification and mitigation of project risks  
+- Continuous improvement: systematic learning and process optimization  
 
 ---
 

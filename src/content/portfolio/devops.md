@@ -19,49 +19,20 @@ I operate at the crossroads of **product leadership** and **hands-on engineering
 
 ---
 
-## 🔁 Portfolio Highlights
+## 🔁 Selected Case Studies
 
-### Box → Vena Serverless ETL
-**Stack:** Azure Functions • GitHub Actions • Java ETL • Box API  
-
-- Replaced brittle batch process with a serverless pipeline for finance file ingestion  
-- Added schema checks, retries, Key Vault secrets, and real-time alerts  
-- **Results:** ↓ integration failures 75%; retired legacy hardware; ↑ observability with App Insights  
+- [Box → Vena Serverless ETL](/portfolio/devops/box-to-vena-etl)  
+- [AI-Augmented Development](/portfolio/devops/ai-augmented-development)  
+- [NetSuite ACH → Checkbook.io](/portfolio/devops/netsuite-ach-checkbook)  
+- [Retail POS Automation at Scale](/portfolio/devops/retail-pos-automation)
 
 ---
 
-### AI-Augmented Development
-**Stack:** GitHub Codespaces • Copilot • Claude Sonnet • ChatGPT  
-
-- Integrated AI into SDLC for code generation, config writing, and debugging  
-- 5× faster Python, SuiteScript, and PowerShell delivery  
-- Saved ≈ 100 developer-hours/month via automation-assisted workflows  
-
----
-
-### NetSuite ACH Workflow to Checkbook.io
-**Stack:** NetSuite • SuiteScript • REST APIs  
-
-- Built native ACH workflow sending validated payments to Checkbook.io  
-- Enforced GL and entity logic; fully logged for audit  
-- **Results:** Zero duplicate/misrouted payments; 100% hands-off uploads  
-
----
-
-### Retail POS Automation at Scale
-**Stack:** Python • VBScript • Batch • VMware  
-
-- Created 30+ scripts to patch POS nodes, deploy fixes, and collect logs across 150+ stores  
-- Validated all in a 50-VM staging lab  
-- **Results:** Deployment 3× faster; ↓ support tickets 40%; ↑ first-pass install rate to 95%  
-
----
-
-## 📈 Measured Impact
-- 🕒 20+ hours/week eliminated via serverless ETL  
-- 🤖 100+ developer-hours/month saved through AI-assisted workflows  
-- 🧾 300+ finance users rely on automated AP pipelines  
-- 🌐 Static site builds in <10s, hosted for $0  
+## 📈 Focus Areas
+- Serverless ETL and event-driven automation  
+- CI/CD enablement and workflow hardening  
+- Secrets management, observability, and governance  
+- Documentation and docs-as-code practices  
 
 ---
 

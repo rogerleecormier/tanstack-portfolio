@@ -7,62 +7,40 @@ I specialize in **digital transformation initiatives** that modernize legacy pro
 
 ---
 
-## 💳 AP Transformation
+## 💳 AP Transformation (Overview)
 
-| Area              | Before                | After (Target)            |
-|-------------------|-----------------------|---------------------------|
-| Transaction Coding| Manual spreadsheets   | Coded at source in Ramp   |
-| ERP Sync          | CSV uploads           | Near real-time sync       |
-| AP Aging          | Static Excel tracker  | Ramp dashboard            |
-| Close Effort      | Heavy, error-prone    | ~40% reduction in effort  |
-
-**Contributions**
-- Ran requirements workshops and product research  
-- Mapped current-state workflows in Visio, highlighting pain points  
-- Built field-mapping documentation and sandbox integration plan  
-- Cleansing historical data and leading UAT for cutover  
+- Transaction coding at source (Ramp) and ERP synchronization  
+- Dashboards for AP aging and submission visibility  
+- Standardized templates and naming conventions  
 
 ---
 
-## 📦 Forecast Streamlining
+## 📦 Forecast Streamlining (Overview)
 
-| Metric                  | Result                        |
-|-------------------------|-------------------------------|
-| File-ingestion failures | ↓ ~50%                        |
-| Submission visibility   | Real-time Smartsheet dashboard|
-| Forecast cycle time     | Shortened by 1 business day   |
-
-**Contributions**
-- Visio diagram of intake flow and failure modes  
-- Standardized folder structure + naming conventions  
+- Intake flow design and failure-mode analysis  
 - Smartsheet dashboard for submission tracking  
-- Aligned templates between Box and Vena  
+- Template alignment between Box and Vena  
 
 ---
 
 ## 🔄 Process Modernization
 
 ### Legacy System Transformation
-- **Before:** Manual spreadsheet workflows, CSV uploads, static reporting
-- **After:** Automated APIs, real-time sync, dynamic dashboards
-- **Impact:** 40% reduction in manual effort, improved accuracy
+- Manual spreadsheet workflows to automated APIs, real-time sync, and dashboards
 
 ### Workflow Automation
-- **Document Processing:** Box → Smartsheet automated indexing
-- **Data Pipeline:** NetSuite CSV cleaning and transformation
-- **Communication:** Outlook → Smartsheet ticket creation
-- **Onboarding:** Teams/Outlook → Smartsheet automated tracking
+- Document processing via Box → Smartsheet indexing  
+- NetSuite CSV cleaning and transformation  
+- Outlook → Smartsheet ticket creation  
+- Onboarding tracking from Teams/Outlook  
 
 ---
 
-## 📊 Measured Impact
+## 📚 References
 
-| Transformation Area | Before | After | Improvement |
-|-------------------|--------|-------|-------------|
-| AP Processing Time | 3-5 days | 1-2 days | 60% faster |
-| Forecast Ingestion | 50% failure rate | 25% failure rate | 50% reduction |
-| Manual Data Entry | 20+ hours/week | 8 hours/week | 60% reduction |
-| Audit Compliance | Manual tracking | Automated trails | 100% coverage |
+- [ERP & SaaS Integration](/saas)  
+- [DevOps Case Studies](/devops)  
+- [Analytics & Insights](/analytics)  
 
 ---
 
