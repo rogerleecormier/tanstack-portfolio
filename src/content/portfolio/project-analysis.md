@@ -1,7 +1,7 @@
 ---
-title: "Project Analysis – Budget Tiers & Complexity"
+title: "Project Method Analysis – Budget Tiers & Complexity"
 description: "Percentile-based budget tiers (≤33rd, 33rd–67th, >67th) comparing Agile vs. Non-Agile complexity with pre-ANOVA visuals and two-way ANOVA insights."
-tags: ["Analytics", "Project Analysis", "Risk Analysis", "Budget Analysis"]
+tags: ["Analytics", "Project Method Analysis", "Risk Analysis", "Budget Analysis"]
 ---
 ## 📝 Project Overview
 This project analyzes a dataset of 4,000 real-world project records to explore how budget correlates with risk level and complexity. The goal is to surface patterns in budget allocation across projects and visualize how often projects fall into specific budget tiers.
@@ -216,7 +216,7 @@ The **gap widens** from Low to High tiers, implying methodology differences inte
 
 ---
 
-## ⏭️ Next Steps
+## ⏭️ Next
 
 - **Post-hoc analysis:** Tukey HSD to identify which tier pairs differ. Include **effect sizes** (η² / partial η²).  
 - **Assumptions:** Check residual normality and homoscedasticity (Levene’s). If violated, use **robust ANOVA** or **Kruskal–Wallis + Dunn’s**.  
@@ -226,19 +226,19 @@ The **gap widens** from Low to High tiers, implying methodology differences inte
 
 ---
 
-## 📁 Supporting Files
+## 📁 Files
 
 - **Excel Summary Workbook:** [Download](/assets/files/M7.3%20Final%20Project%20Phase%203.xlsx)
 
 ---
 
-## 🔗 Related Pages
+## 🔗 Related
 
-- [Analytics & Insights](/#/analytics) — Portfolio of applied analytics projects  
-- [Strategy & Vision](/#/strategy) — How this analytical approach supports transformation initiatives  
+- [Analytics & Insights](/analytics) — Portfolio of applied analytics projects
+- [Strategy & Vision](/strategy) — How this analytical approach supports transformation initiatives  
 
 ---
 
-📋 *Detailed methodology and code snippets available upon request. [Let's connect](/#/contact).*
+📋 *Detailed methodology and code snippets available upon request. [Let's connect](/contact).*
 
 

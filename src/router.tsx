@@ -10,6 +10,9 @@ import NotFound from './pages/NotFound'
 import HealthBridge from './pages/HealthBridge'
 import ContactPage from './pages/ContactPage'
 import PrivacyPage from './pages/PrivacyPage'
+import BlogListPage from './pages/BlogListPage'
+import BlogPostWrapper from './components/BlogPostWrapper'
+import PortfolioPage from './pages/PortfolioPage'
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -28,67 +31,126 @@ console.count('[router] createRootRoute called')
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/', // root path for About
-  component: () => <MarkdownPage file="about" />
+  component: () => <MarkdownPage file="portfolio/about" />
 })
 
-// Strategy route
-const strategyRoute = createRoute({
+// Blog list route
+const blogListRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'strategy',
-  component: () => <MarkdownPage file="strategy" />
+  path: 'blog',
+  component: () => <BlogListPage />
 })
 
-// Leadership route
-const leadershipRoute = createRoute({
+// Portfolio route
+const portfolioRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'leadership',
-  component: () => <MarkdownPage file="leadership" />
+  path: 'portfolio',
+  component: () => <PortfolioPage />
 })
 
-// DevOps route
-const devopsRoute = createRoute({
+// Blog post route
+const blogPostRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'devops',
-  component: () => <MarkdownPage file="devops" />
-})
-
-// SaaS route
-const saasRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'saas',
-  component: () => <MarkdownPage file="saas" />
-})
-
-// Talent route
-const talentRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'talent',
-  component: () => <MarkdownPage file="talent" />
+  path: 'blog/$slug',
+  component: BlogPostWrapper
 })
 
 // Analytics route
 const analyticsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'analytics',
-  component: () => <MarkdownPage file="analytics" />
+  component: () => <MarkdownPage file="portfolio/analytics" />
 })
 
-// Project Analysis route
+// Strategy route
+const strategyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'strategy',
+  component: () => <MarkdownPage file="portfolio/strategy" />
+})
+
+// Leadership route
+const leadershipRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'leadership',
+  component: () => <MarkdownPage file="portfolio/leadership" />
+})
+
+// Talent route
+const talentRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'talent',
+  component: () => <MarkdownPage file="portfolio/talent" />
+})
+
+// DevOps route
+const devopsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'devops',
+  component: () => <MarkdownPage file="portfolio/devops" />
+})
+
+// SaaS route
+const saasRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'saas',
+  component: () => <MarkdownPage file="portfolio/saas" />
+})
+
+// Project Analysis route (moved to projects)
 const projectAnalysisRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'project-analysis',
-  component: () => <MarkdownPage file="project-analysis" />
+  component: () => <MarkdownPage file="projects/project-analysis" />
 })
 
-// Health Bridge Analysis route - PROTECTED
+// Strategy & Consulting routes
+const strategicPlanningRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'strategic-planning',
+  component: () => <MarkdownPage file="portfolio/strategic-planning" />
+})
+
+const digitalTransformationRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'digital-transformation',
+  component: () => <MarkdownPage file="portfolio/digital-transformation" />
+})
+
+const projectPortfolioManagementRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'project-portfolio-management',
+  component: () => <MarkdownPage file="projects/project-analysis" />
+})
+
+// Leadership & Culture routes
+const teamLeadershipRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'team-leadership',
+  component: () => <MarkdownPage file="portfolio/team-leadership" />
+})
+
+// Technology & Operations routes
+const erpSystemsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'erp-systems',
+  component: () => <MarkdownPage file="portfolio/erp-systems" />
+})
+
+// Data & Analytics routes
+const dataAnalyticsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'data-analytics',
+  component: () => <MarkdownPage file="portfolio/data-analytics" />
+})
+
+
+
+// Health Bridge Analysis route
 const healthBridgeAnalysisRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'healthbridge-analysis',
-  component: () => (
-    <ProtectedRoute>
-      <HealthBridge />
-    </ProtectedRoute>
-  ),
+  component: () => <HealthBridge />
 })
 
 // Protected route - PROTECTED
@@ -126,13 +188,23 @@ const cloudflareStatusRoute = createRoute({
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  portfolioRoute,
+  analyticsRoute,
   strategyRoute,
   leadershipRoute,
   talentRoute,
   devopsRoute,
   saasRoute,
-  analyticsRoute,
   projectAnalysisRoute,
+  // New portfolio routes
+  strategicPlanningRoute,
+  digitalTransformationRoute,
+  projectPortfolioManagementRoute,
+  teamLeadershipRoute,
+  erpSystemsRoute,
+  dataAnalyticsRoute,
+  blogListRoute,
+  blogPostRoute,
   healthBridgeAnalysisRoute,
   contactRoute,
   privacyRoute,

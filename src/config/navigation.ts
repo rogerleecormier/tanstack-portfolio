@@ -1,6 +1,6 @@
 // Navigation config for TanStack Router and AppSidebar
 
-import { User, BarChart3, Briefcase, Users, Settings, Code, Target, Mail } from "lucide-react";
+import { User, BarChart3, Mail, FileText, Briefcase, Users, Settings, Code, Target } from "lucide-react";
 
 export const navigationItems = [
   {
@@ -8,6 +8,24 @@ export const navigationItems = [
     url: "", // root route
     icon: User,
   },
+  {
+    title: "Portfolio",
+    url: "portfolio",
+    icon: Briefcase,
+  },
+  {
+    title: "Blog",
+    url: "blog",
+    icon: FileText,
+  },
+  {
+    title: "Contact",
+    url: "contact",
+    icon: Mail,
+  },
+];
+
+export const portfolioItems = [
   {
     title: "Analytics & Insights",
     url: "analytics",
@@ -26,7 +44,7 @@ export const navigationItems = [
   {
     title: "Talent & Org Design",
     url: "talent",
-    icon: Briefcase,
+    icon: User,
   },
   {
     title: "DevOps & Automation",
@@ -39,28 +57,27 @@ export const navigationItems = [
     icon: Settings,
   },
   {
-    title: "Contact",
-    url: "contact",
-    icon: Mail,
+    title: "Project Method Analysis",
+    url: "project-analysis",
+    icon: BarChart3,
   },
 ];
 
 export const projectItems = [
   {
-    title: "Projects Analysis",
+    title: "Project Method Analysis",
     url: "project-analysis",
+    icon: BarChart3,
+  },
+  {
+    title: "HealthBridge Analysis",
+    url: "healthbridge-analysis",
     icon: BarChart3,
   },
 ];
 
 // Protected routes that only show when authenticated
 export const protectedProjectItems = [
-  {
-    title: "HealthBridge Analysis",
-    url: "healthbridge-analysis",
-    icon: BarChart3,
-    requiresAuth: true,
-  },
   {
     title: "Protected Content",
     url: "protected",

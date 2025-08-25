@@ -10,7 +10,7 @@
  * - Advanced filtering by date ranges, months, and years
  * - Interactive charts with responsive design
  * - Data aggregation and trend analysis
- * - Protected route requiring authentication
+ * - Public project with private weight entry (requires authentication)
  * - Pagination for large datasets
  * - Sortable data tables
  * 
@@ -35,13 +35,13 @@
  * - health monitoring
  * 
  * @searchTags
- * ["health", "fitness", "analytics", "data", "visualization", "tracking", "metrics", "dashboard", "protected", "authentication"]
+ * ["health", "fitness", "analytics", "data", "visualization", "tracking", "metrics", "dashboard", "public", "authentication"]
  * 
  * @searchSection
  * "Health Analysis"
  * 
  * @searchDescription
- * "Interactive health data analysis dashboard for tracking weight changes over time with advanced filtering, real-time charts, and comprehensive data visualization capabilities."
+ * "Public health data analysis dashboard for tracking weight changes over time with advanced filtering, real-time charts, and comprehensive data visualization. Weight entry requires authentication."
  */
 
 import { useState, useMemo, useEffect } from "react";
@@ -79,7 +79,7 @@ import {
   YAxis,
   CartesianGrid
 } from "recharts";
-import { ProtectedRoute } from "../components/ProtectedRoute";
+import { useAuth } from "../hooks/useAuth";
 
 const PAGE_SIZE = 10;
 
@@ -430,6 +430,36 @@ function AddWeightBox() {
  * @returns {JSX.Element} Rendered HealthBridge dashboard
  */
 export default function HealthBridgePage() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
+
+  // Generate TOC entries for the sidebar
+  useEffect(() => {
+    const tocEntries = [
+      { title: "📊 Summary Statistics", slug: "summary-statistics" },
+      { title: "📈 Weight Trend", slug: "weight-trend" },
+      { title: "🔍 Data Filters", slug: "data-filters" },
+      { title: "📋 Weight Data Table", slug: "weight-data-table" }
+    ];
+
+    // Dispatch custom event to update sidebar TOC
+    window.dispatchEvent(new CustomEvent('toc-updated', { 
+      detail: { toc: tocEntries, file: 'healthbridge' } 
+    }));
+
+    // Clean up event when component unmounts
+    return () => {
+      window.dispatchEvent(new CustomEvent('toc-updated', { 
+        detail: { toc: [], file: null } 
+      }));
+    };
+  }, []);
+
+  // Get authentication status
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["weights"],
     queryFn: fetchWeights,
@@ -834,61 +864,70 @@ export default function HealthBridgePage() {
   };
 
   // Now check loading/error AFTER all hooks
-  if (isLoading) {
-    return (
-      <ProtectedRoute>
-        <div className="flex items-center justify-center min-h-screen p-4">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
-            <p className="text-teal-600">Loading health data...</p>
-          </div>
-        </div>
-      </ProtectedRoute>
-    );
-  }
+     if (isLoading) {
+     return (
+       <div className="flex items-center justify-center min-h-screen p-4">
+         <div className="text-center">
+           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+           <p className="text-teal-600">Loading health data...</p>
+         </div>
+       </div>
+     );
+   }
   
-  if (error) {
-    console.error('HealthBridge error:', error);
-    return (
-      <ProtectedRoute>
-        <div className="flex items-center justify-center min-h-screen p-4">
-          <div className="text-center max-w-md">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Data</h2>
-            <p className="text-gray-600 mb-4">
-              {error instanceof Error ? error.message : 'Unable to load health data'}
-            </p>
-            <div className="space-y-2 text-sm text-gray-500 mb-6">
-              <p>• Check your internet connection</p>
-              <p>• Try refreshing the page</p>
-              <p>• Ensure you're properly authenticated</p>
-              <p>• Mobile networks may be slower</p>
-            </div>
-            <div className="space-x-4">
-              <button 
-                onClick={() => window.location.reload()} 
-                className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
-              >
-                Refresh Page
-              </button>
-            </div>
-          </div>
-        </div>
-      </ProtectedRoute>
-    );
-  }
+     if (error) {
+     console.error('HealthBridge error:', error);
+     return (
+       <div className="flex items-center justify-center min-h-screen p-4">
+         <div className="text-center max-w-md">
+           <div className="text-red-500 text-6xl mb-4">⚠️</div>
+           <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Data</h2>
+           <p className="text-gray-600 mb-4">
+             {error instanceof Error ? error.message : 'Unable to load health data'}
+           </p>
+           <div className="space-y-2 text-sm text-gray-500 mb-6">
+             <p>• Check your internet connection</p>
+             <p>• Try refreshing the page</p>
+             <p>• Mobile networks may be slower</p>
+           </div>
+           <div className="space-x-4">
+             <button 
+               onClick={() => window.location.reload()} 
+               className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
+             >
+               Refresh Page
+             </button>
+           </div>
+         </div>
+       </div>
+     );
+   }
 
-  return (
-    <ProtectedRoute>
-      <div>
+     return (
+     <div>
         <H1 className="mb-4">Body Weight Analysis</H1>
-        <p className="text-xl text-muted-foreground mb-6">
-          Track, analyze, and visualize your body weight trends over time. Enter new measurements, explore summary statistics, and view progress with interactive charts and filters.
-        </p>
-        <AddWeightBox />
-        <hr className="my-6 border-t border-gray-300" />
-        <section className="mb-8">
-          <H2 className="mb-4">Summary Statistics</H2>
+                 <p className="text-xl text-muted-foreground mb-6">
+           Track, analyze, and visualize your body weight trends over time. Explore summary statistics and view progress with interactive charts and filters.
+         </p>
+         
+         {/* Weight Entry Section - Only visible when authenticated */}
+         {isAuthenticated && (
+           <>
+             <AddWeightBox />
+             <hr className="my-6 border-t border-gray-300" />
+           </>
+         )}
+         
+         {/* Public Notice for Non-Authenticated Users */}
+         {!isAuthenticated && !authLoading && (
+           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+             <p className="text-blue-800 text-sm">
+               💡 <strong>Want to track your own weight?</strong> Sign in to add new measurements and track your progress over time.
+             </p>
+           </div>
+         )}
+                 <section className="mb-8">
+           <H2 id="summary-statistics" className="mb-4">📊 Summary Statistics</H2>
           <div className="flex flex-wrap gap-4 mb-6">
             {metrics && (
               <>
@@ -930,8 +969,8 @@ export default function HealthBridgePage() {
             )}
           </div>
         </section>
-        <section className="mb-8">
-          <H2 className="mb-4">Weight Trend</H2>
+                 <section className="mb-8">
+           <H2 id="weight-trend" className="mb-4">📈 Weight Trend</H2>
           <Card className="p-4 mb-6" style={{ width: "100%", maxWidth: "none" }}>
             <ChartContainer
               config={{
@@ -991,8 +1030,9 @@ export default function HealthBridgePage() {
             </ChartContainer>
           </Card>
         </section>
-        {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
-        <section className="mb-8">
+                 {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
+         <section className="mb-8">
+           <H2 id="data-filters" className="mb-4">🔍 Data Filters</H2>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2">
@@ -1117,12 +1157,13 @@ export default function HealthBridgePage() {
             </PopoverContent>
           </Popover>
         </section>
-        {/* Dynamic Table Header */}
-        <H2 className="mb-2">
+                 {/* Dynamic Table Header */}
+         <H2 id="weight-data-table" className="mb-4">📋 Weight Data Table</H2>
+        <p className="text-sm text-gray-600 mb-4">
           {filteredData.length > 0
-            ? `Weight Changes (${metrics?.startDate} to ${metrics?.endDate})`
-            : "Weight Changes"}
-        </H2>
+            ? `Showing weight changes from ${metrics?.startDate} to ${metrics?.endDate}`
+            : "No weight data available"}
+        </p>
         {paginatedData.length > 0 ? (
           <Table>
             <TableHeader>
@@ -1270,10 +1311,9 @@ export default function HealthBridgePage() {
             Next
           </button>
         </div>
-      </div>
-    </ProtectedRoute>
-  );
-}
+               </div>
+     );
+   }
 
 // function formatLocalDate(dateStr: string) {
 //   const d = new Date(dateStr);

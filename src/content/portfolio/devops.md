@@ -7,7 +7,7 @@ I operate at the crossroads of **product leadership** and **hands-on engineering
 
 ---
 
-## 🛠️ Core Tooling & Stack
+## 🛠️ Core Tools
 
 | Domain             | Primary Tools & Services |
 |--------------------|--------------------------|

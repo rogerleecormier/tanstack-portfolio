@@ -186,6 +186,11 @@ export default function ContactPage() {
   const [showMessageForm, setShowMessageForm] = useState(false)
   const analysisTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [])
+
   // Update document title and meta tags
   useDocumentTitle({
     title: 'Contact - Roger Lee Cormier',

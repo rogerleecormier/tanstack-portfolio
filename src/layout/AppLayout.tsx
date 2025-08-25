@@ -3,7 +3,6 @@ import { Outlet } from '@tanstack/react-router'
 import Header from './Header'
 import Footer from './Footer'
 import { AppSidebar } from '@/components/AppSidebar'
-import { TableOfContents } from '../components/TableOfContents'
 import { SidebarProvider } from '@/components/ui/sidebar'
 
 export default function AppLayout() {
@@ -11,7 +10,7 @@ export default function AppLayout() {
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex bg-gray-50">
         <AppSidebar />
-        {/* Main content and TOC fill the full height */}
+        {/* Main content fills the full height */}
         <div className="flex flex-col flex-1 min-w-0 min-h-screen">
           <Header />
           <div className="flex flex-1 min-h-0">
@@ -20,7 +19,6 @@ export default function AppLayout() {
                 <Outlet />
               </div>
             </main>
-            <TableOfContents />
           </div>
           {/* Footer is now INSIDE the main flex column, positioned between sidebar and right edge */}
           <Footer />

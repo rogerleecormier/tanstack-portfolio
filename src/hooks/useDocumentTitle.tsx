@@ -12,7 +12,7 @@ interface UseDocumentTitleProps {
 }
 
 const SITE_NAME = 'Roger Lee Cormier'
-const SITE_TITLE = 'Roger Lee Cormier - Technical Project Manager'
+const SITE_TITLE = 'Roger Lee Cormier - rcormier.dev'
 const SITE_DESCRIPTION = 'PMP-certified Technical Project Manager and U.S. Army veteran specializing in enterprise systems modernization, SaaS integrations, and cross-functional project delivery.'
 const SITE_URL = 'https://www.rcormier.dev'
 const DEFAULT_IMAGE = `${SITE_URL}/assets/images/roger-cormier-profile.jpg`

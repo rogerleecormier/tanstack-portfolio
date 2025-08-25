@@ -91,7 +91,7 @@ const Header: React.FC = () => {
             </div>
             <Briefcase className="h-6 w-6 text-white flex-shrink-0" />
             <h1 className="text-xl font-bold text-white truncate">
-              Roger Lee Cormier - Portfolio
+              Roger Lee Cormier
             </h1>
           </div>
           {/* Search and Login button row */}

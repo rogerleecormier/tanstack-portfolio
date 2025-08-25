@@ -21,7 +21,7 @@ Long-term, I aim to expand from tactical execution into **enterprise-level techn
 
 ---
 
-## 💳 AP Transformation (In Progress)
+## 💳 AP Transformation
 
 | Area              | Before                | After (Target)            |
 |-------------------|-----------------------|---------------------------|
@@ -38,7 +38,7 @@ Long-term, I aim to expand from tactical execution into **enterprise-level techn
 
 ---
 
-## 📦 Forecast Streamlining (Box → Vena)
+## 📦 Forecast Streamlining
 
 | Metric                  | Result                        |
 |-------------------------|-------------------------------|

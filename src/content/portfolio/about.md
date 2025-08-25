@@ -45,7 +45,7 @@ I served as a **Non-Commissioned Officer (NCO)** in the U.S. Army Signal Corps, 
 
 ---
 
-## 🎓 Education & Professional Development
+## 🎓 Education
 
 **Education**
 - **M.S. in Organizational Leadership** _(In Progress)_ – Excelsior University *(Concentration: Technology & Data Analytics)*  

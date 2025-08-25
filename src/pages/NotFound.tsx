@@ -1,7 +1,12 @@
 import { Link } from '@tanstack/react-router'
 import { Home, ArrowLeft } from 'lucide-react'
+import { useEffect } from 'react'
 
 export default function NotFound() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <div className="max-w-md mx-auto">

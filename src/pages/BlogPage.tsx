@@ -7,15 +7,15 @@ import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Calendar, Clock, User, Tag, ArrowLeft } from "lucide-react";
+import { Link } from '@tanstack/react-router'
 
 // Define proper types for frontmatter
-interface Frontmatter {
+interface BlogFrontmatter {
   title?: string
   description?: string
   tags?: string[]
@@ -23,10 +23,11 @@ interface Frontmatter {
   author?: string
   keywords?: string[]
   image?: string
+  readTime?: number
 }
 
 // Define TOCEntry type - export it so sidebar can use it
-export type TOCEntry = {
+export type BlogTOCEntry = {
   title: string
   slug: string
 }
@@ -54,48 +55,48 @@ function getSeriesKeys(data: ChartDataPoint[]) {
   return Object.keys(data[0]).filter((key) => key !== "date");
 }
 
-export default function MarkdownPage({ file }: { file: string }) {
+// Calculate reading time based on word count
+function calculateReadingTime(content: string): number {
+  const wordsPerMinute = 200;
+  const wordCount = content.split(/\s+/).length;
+  return Math.ceil(wordCount / wordsPerMinute);
+}
+
+// Format date for display
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+export default function BlogPage({ slug }: { slug: string }) {
   const [content, setContent] = React.useState<string>('')
-  const [frontmatter, setFrontmatter] = React.useState<Frontmatter>({})
+  const [frontmatter, setFrontmatter] = React.useState<BlogFrontmatter>({})
   const [isLoading, setIsLoading] = React.useState(true)
+  const [readingTime, setReadingTime] = React.useState(0)
 
   // Scroll to top on route change
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [file]); // Use [file] as dependency instead of location.pathname
-
-  // Determine content type based on file
-  const getContentType = (file: string): 'website' | 'article' | 'profile' => {
-    if (file === 'about') return 'profile'
-    if (['strategy', 'leadership', 'devops', 'saas', 'analytics', 'project-analysis'].includes(file)) return 'article'
-    return 'website'
-  }
+  }, [slug]);
 
   // Generate page-specific keywords
-  const getPageKeywords = (file: string, tags?: string[]): string[] => {
+  const getPageKeywords = (tags?: string[]): string[] => {
     const baseKeywords = tags || []
-    
-    const fileKeywords: Record<string, string[]> = {
-      about: ['About', 'Biography', 'Professional Background'],
-      strategy: ['Strategy', 'Strategic Planning', 'Business Strategy'],
-      leadership: ['Leadership', 'Team Management', 'Leadership Philosophy'],
-      devops: ['DevOps', 'CI/CD', 'Azure Functions', 'GitHub Actions'],
-      saas: ['SaaS', 'Software as a Service', 'Enterprise Software'],
-      analytics: ['Analytics', 'Data Analysis', 'Project Analytics'],
-      'project-analysis': ['Project Analysis', 'Risk Analysis', 'Budget Analysis']
-    }
-
-    return [...baseKeywords, ...(fileKeywords[file] || [])]
+    return [...baseKeywords, 'Blog', 'Article', 'Technical Writing']
   }
 
   // Update document title and meta tags with enhanced SEO
   useDocumentTitle({
     title: frontmatter.title,
     description: frontmatter.description,
-    keywords: getPageKeywords(file, frontmatter.keywords || frontmatter.tags),
+    keywords: getPageKeywords(frontmatter.keywords || frontmatter.tags),
     image: frontmatter.image,
-    url: window.location.pathname, // Use window.location instead of location.pathname
-    type: getContentType(file),
+    url: window.location.pathname,
+    type: 'article',
     author: frontmatter.author,
     publishedTime: frontmatter.date
   })
@@ -105,41 +106,25 @@ export default function MarkdownPage({ file }: { file: string }) {
     const loadMarkdown = async () => {
       setIsLoading(true)
       try {
-        // Import markdown directly from src/content
-        console.log('Loading markdown file:', file)
-        
-        // Handle nested directory structure by mapping file paths
-        let markdownModule
-        if (file.startsWith('portfolio/')) {
-          // Handle portfolio files
-          const fileName = file.replace('portfolio/', '')
-          markdownModule = await import(`../content/portfolio/${fileName}.md?raw`)
-        } else if (file.startsWith('projects/')) {
-          // Handle project files
-          const fileName = file.replace('projects/', '')
-          markdownModule = await import(`../content/projects/${fileName}.md?raw`)
-        } else if (file.startsWith('blog/')) {
-          // Handle blog files
-          const fileName = file.replace('blog/', '')
-          markdownModule = await import(`../content/blog/${fileName}.md?raw`)
-        } else {
-          // Handle root level files (fallback)
-          markdownModule = await import(`../content/${file}.md?raw`)
-        }
-        
+        // Import markdown directly from src/content/blog
+        const markdownModule = await import(`../content/blog/${slug}.md?raw`)
         const text = markdownModule.default
 
         // Parse frontmatter
         const { attributes, body } = fm(text)
-        setFrontmatter(attributes as Frontmatter)
+        setFrontmatter(attributes as BlogFrontmatter)
         
         // Remove import statements from markdown content
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
         setContent(cleanedBody)
 
+        // Calculate reading time
+        const calculatedReadingTime = calculateReadingTime(cleanedBody)
+        setReadingTime(frontmatter.readTime || calculatedReadingTime)
+
         // Extract headings for TOC - ONLY H2 headings
         const headingRegex = /^#{2}\s+(.+)$/gm
-        const headings: TOCEntry[] = []
+        const headings: BlogTOCEntry[] = []
         let match
 
         while ((match = headingRegex.exec(cleanedBody)) !== null) {
@@ -149,33 +134,32 @@ export default function MarkdownPage({ file }: { file: string }) {
         }
 
         // Dispatch custom event to update sidebar TOC
-        window.dispatchEvent(new CustomEvent('toc-updated', { 
-          detail: { toc: headings, file } 
+        window.dispatchEvent(new CustomEvent('blog-toc-updated', { 
+          detail: { toc: headings, slug } 
         }))
       } catch (error) {
-        console.error('Error loading markdown for file:', file, error)
-        console.error('Full error details:', error)
+        console.error('Error loading blog markdown:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
     loadMarkdown()
-  }, [file])
+  }, [slug, frontmatter.readTime])
 
   // Clean up event when component unmounts
   React.useEffect(() => {
     return () => {
-      window.dispatchEvent(new CustomEvent('toc-updated', { 
-        detail: { toc: [], file: null } 
+      window.dispatchEvent(new CustomEvent('blog-toc-updated', { 
+        detail: { toc: [], slug: null } 
       }))
     }
   }, [])
 
-  // Show loading skeleton to prevent layout shift - Optimized for sidebar layout
+  // Show loading skeleton
   if (isLoading) {
     return (
-      <div className="w-full">
+      <div className="w-full max-w-4xl mx-auto">
         {/* Header skeleton */}
         <header className="mb-8">
           <Skeleton className="h-12 w-3/4 mb-4" />
@@ -188,16 +172,8 @@ export default function MarkdownPage({ file }: { file: string }) {
           </div>
         </header>
 
-                 {/* Profile card skeleton for about page */}
-         {(file === 'about' || file === 'portfolio/about') && (
-           <div className="not-prose mb-12">
-             <Skeleton className="h-64 w-full rounded-lg" />
-           </div>
-         )}
-
-        {/* Content skeleton - Preserve space to prevent layout shift */}
+        {/* Content skeleton */}
         <div className="space-y-6 min-h-[1000px]">
-          {/* Simulate multiple sections */}
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className="space-y-4">
               <Skeleton className="h-8 w-1/2" />
@@ -213,23 +189,57 @@ export default function MarkdownPage({ file }: { file: string }) {
   }
 
   return (
-    <div className="w-full max-w-none">
+    <div className="w-full max-w-4xl mx-auto">
+      {/* Back to Blog Link */}
+      <div className="mb-6">
+        <Link 
+          to="/blog" 
+          className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-medium transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Blog
+        </Link>
+      </div>
+
       <div className="w-full">
-        {/* Header with h1 title */}
+        {/* Blog Header */}
         {frontmatter.title && (
           <header className="mb-8">
-            <H1 className="mb-4">
+            <H1 className="mb-4 text-4xl font-bold leading-tight">
               {frontmatter.title}
             </H1>
             {frontmatter.description && (
-              <P className="text-xl text-muted-foreground leading-7">
+              <P className="text-xl text-muted-foreground leading-7 mb-6">
                 {frontmatter.description}
               </P>
             )}
+            
+            {/* Blog Meta Information */}
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
+              {frontmatter.author && (
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  <span>{frontmatter.author}</span>
+                </div>
+              )}
+              {frontmatter.date && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>{formatDate(frontmatter.date)}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span>{readingTime} min read</span>
+              </div>
+            </div>
+
+            {/* Tags */}
             {frontmatter.tags && (
-              <div className="flex flex-wrap gap-2 mt-4">
+              <div className="flex flex-wrap gap-2">
                 {frontmatter.tags.map((tag: string) => (
-                  <Badge key={tag} variant="secondary">
+                  <Badge key={tag} variant="secondary" className="text-sm">
+                    <Tag className="h-3 w-3 mr-1" />
                     {tag}
                   </Badge>
                 ))}
@@ -238,27 +248,22 @@ export default function MarkdownPage({ file }: { file: string }) {
           </header>
         )}
 
-                 {/* Add the profile card for about page */}
-         {(file === 'about' || file === 'portfolio/about') && (
-           <div className="not-prose mb-12">
-             <AboutProfileCard />
-           </div>
-         )}
-
-        {/* Markdown Content */}
+        {/* Blog Content */}
         <article
           className={cn(
             "prose prose-neutral dark:prose-invert max-w-none w-full",
-            // REMOVE "prose-headings:scroll-m-20" from here!
             "prose-headings:tracking-tight",
             "prose-h1:text-4xl prose-h1:font-extrabold",
-            "prose-h2:text-3xl prose-h2:font-semibold prose-h2:border-b prose-h2:pb-2",
-            "prose-h3:text-2xl prose-h3:font-semibold",
-            "prose-h4:text-xl prose-h4:font-semibold",
-            "prose-p:leading-7",
-            "prose-blockquote:border-l-2 prose-blockquote:pl-6 prose-blockquote:italic",
+            "prose-h2:text-3xl prose-h2:font-semibold prose-h2:border-b prose-h2:pb-2 prose-h2:mt-12 prose-h2:mb-6",
+            "prose-h3:text-2xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-4",
+            "prose-h4:text-xl prose-h4:font-semibold prose-h4:mt-6 prose-h4:mb-3",
+            "prose-p:leading-7 prose-p:text-base",
+            "prose-blockquote:border-l-4 prose-blockquote:border-teal-500 prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:bg-teal-50 prose-blockquote:py-2 prose-blockquote:rounded-r",
             "prose-code:relative prose-code:rounded prose-code:bg-muted prose-code:px-[0.3rem] prose-code:py-[0.2rem] prose-code:font-mono prose-code:text-sm",
-            "prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:border prose-pre:bg-muted prose-pre:p-4"
+            "prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:border prose-pre:bg-muted prose-pre:p-4",
+            "prose-strong:font-semibold prose-strong:text-gray-900",
+            "prose-a:text-teal-600 prose-a:no-underline hover:prose-a:text-teal-700 hover:prose-a:underline",
+            "prose-img:rounded-lg prose-img:shadow-md"
           )}
         >
           <ReactMarkdown
@@ -680,25 +685,33 @@ export default function MarkdownPage({ file }: { file: string }) {
             {content}
           </ReactMarkdown>
           
-                     {/* Contact Section at bottom of every page */}
-           <div className="mt-16 pt-8 border-t border-gray-200">
-             <div className="text-center">
-               <H2 className="text-2xl font-semibold text-gray-900 mb-4">
-                 Ready to discuss your next project?
-               </H2>
-               <P className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                 Whether you need enterprise integration expertise, DevOps transformation, 
-                 or strategic technology leadership, I'm here to help bring your vision to life.
-               </P>
-               <a
-                 href="/contact"
-                 className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-               >
-                 <MessageSquare className="h-4 w-4" />
-                 Get in Touch
-               </a>
-             </div>
-           </div>
+          {/* Blog Footer */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <div className="text-center">
+              <H2 className="text-2xl font-semibold text-gray-900 mb-4">
+                Enjoyed this article?
+              </H2>
+              <P className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                If you found this helpful, consider sharing it with your network or reaching out to discuss how we can apply these concepts to your projects.
+              </P>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="/contact"
+                  className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  Get in Touch
+                </a>
+                <Link
+                  to="/blog"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-teal-700 border border-teal-300 px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Read More Articles
+                </Link>
+              </div>
+            </div>
+          </div>
         </article>
       </div>
     </div>

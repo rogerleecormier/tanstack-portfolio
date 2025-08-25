@@ -24,6 +24,19 @@ export function TableOfContents() {
     }
   }, [])
 
+  // Listen for blog TOC updates from BlogPage
+  useEffect(() => {
+    const handleBlogTocUpdate = (event: CustomEvent) => {
+      setCurrentToc(event.detail.toc || [])
+    }
+
+    window.addEventListener('blog-toc-updated', handleBlogTocUpdate as EventListener)
+    
+    return () => {
+      window.removeEventListener('blog-toc-updated', handleBlogTocUpdate as EventListener)
+    }
+  }, [])
+
   // Track which heading is currently visible
   useEffect(() => {
     const handleScroll = () => {
@@ -59,22 +72,22 @@ export function TableOfContents() {
   if (currentToc.length === 0) return null
 
   return (
-    <aside className="hidden xl:block w-96 min-w-[24rem] flex-shrink-0 p-8 border-l border-gray-200 bg-white/50 sticky top-[120px] max-h-[calc(100vh-120px)] overflow-y-auto">
-      <div className="z-10 bg-white/80 mb-4">
-        <h2 className="text-sm font-semibold text-gray-900 mb-3">
+    <div className="border-t border-teal-200 mt-4 pt-4">
+      <div className="px-4 mb-3">
+        <h3 className="text-sm font-semibold text-teal-900">
           On This Page
-        </h2>
+        </h3>
       </div>
       <nav>
-        <ul className="space-y-2 text-sm">
+        <ul className="space-y-1 text-sm">
           {currentToc.map((entry) => (
             <li key={entry.slug}>
               <a
                 href={`#${entry.slug}`}
-                className={`block py-1 px-2 rounded transition-colors ${
+                className={`block py-1 px-4 rounded-r transition-colors ${
                   activeId === entry.slug
-                    ? 'bg-teal-100 text-teal-800 font-medium'
-                    : 'text-gray-600 hover:text-teal-600 hover:bg-gray-50'
+                    ? 'bg-teal-200 text-teal-900 font-medium border-r-2 border-teal-600'
+                    : 'text-teal-800 hover:text-teal-900 hover:bg-teal-100'
                 }`}
                 onClick={e => {
                   e.preventDefault();
@@ -93,6 +106,6 @@ export function TableOfContents() {
           ))}
         </ul>
       </nav>
-    </aside>
+    </div>
   )
 }

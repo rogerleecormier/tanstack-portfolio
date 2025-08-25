@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"; // TanStack Router
 import { useAuth } from "../hooks/useAuth";
 import { navigationItems, projectItems, protectedProjectItems } from "../config/navigation";
+import { TableOfContents } from "./TableOfContents";
 
 import {
   Sidebar,
@@ -21,10 +22,10 @@ export function AppSidebar() {
   return (
     <Sidebar className="border-r border-teal-200 bg-teal-50" collapsible="icon">
       <SidebarContent className="pt-4">
-        {/* Portfolio Navigation Group */}
+        {/* Main Navigation Group */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">
-            Portfolio Navigation
+            Main Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
@@ -49,6 +50,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        
         {/* Projects Group */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">
@@ -106,6 +108,9 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
+
+        {/* Table of Contents - Only show when there's content */}
+        <TableOfContents />
       </SidebarContent>
     </Sidebar>
   );

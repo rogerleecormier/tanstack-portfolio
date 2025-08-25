@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { H1, P } from '@/components/ui/typography'
 import { Badge } from '@/components/ui/badge'
@@ -18,6 +19,11 @@ import {
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function PrivacyPage() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
+
   // Update document title and meta tags
   useDocumentTitle({
     title: 'Privacy Policy - Roger Lee Cormier',
