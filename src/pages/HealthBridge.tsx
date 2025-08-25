@@ -554,12 +554,10 @@ export default function HealthBridgePage() {
     const lbsArray = filteredData.map((row) => row.kg * 2.20462);
     const first = lbsArray[lbsArray.length - 1];
     const last = lbsArray[0];
-    const lbsLost = (last - first).toFixed(2);
-    const avg = (lbsArray.reduce((a, b) => a + b, 0) / lbsArray.length).toFixed(
-      2
-    );
-    const min = Math.min(...lbsArray).toFixed(2);
-    const max = Math.max(...lbsArray).toFixed(2);
+    const lbsLost = (last - first).toFixed(1);
+    const avg = (lbsArray.reduce((a, b) => a + b, 0) / lbsArray.length).toFixed(1);
+    const min = Math.min(...lbsArray).toFixed(1);
+    const max = Math.max(...lbsArray).toFixed(1);
     const startDate = new Date(
       filteredData[filteredData.length - 1].date
     ).toLocaleDateString();
@@ -582,7 +580,7 @@ export default function HealthBridgePage() {
       .reverse()
       .map((row) => ({
         date: new Date(row.date).toLocaleDateString(),
-        weight: Number((row.kg * 2.20462).toFixed(2)),
+        weight: Number((row.kg * 2.20462).toFixed(1)),
       }));
   }, [filteredData]);
 
