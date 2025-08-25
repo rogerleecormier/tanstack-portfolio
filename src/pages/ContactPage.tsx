@@ -61,7 +61,7 @@ function DynamicActionButton({
   }
 
   // If AI recommends scheduling a meeting and no meeting is scheduled yet
-  if (aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && !showMessageForm) {
+  if (aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled) {
     return (
       <Button
         type="button"
@@ -180,7 +180,6 @@ export default function ContactPage() {
   const [meetingScheduled, setMeetingScheduled] = useState(false)
   const [meetingData, setMeetingData] = useState<MeetingData | null>(null)
   const [showMessageForm, setShowMessageForm] = useState(false)
-  const [showMeetingScheduler, setShowMeetingScheduler] = useState(true)
   const analysisTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Update document title and meta tags
@@ -359,16 +358,14 @@ Roger Lee Cormier`,
       subject: '',
       message: ''
     })
-    setError(null)
-    setIsSubmitted(false)
-    setShowMessageForm(false)
-    setShowMeetingScheduler(true)
+         setError(null)
+     setIsSubmitted(false)
+     setShowMessageForm(false)
   }
 
-  const handleSendMessageInstead = () => {
-    setShowMeetingScheduler(false)
-    setShowMessageForm(true)
-  }
+     const handleSendMessageInstead = () => {
+     setShowMessageForm(true)
+   }
 
   const handleScheduleMeeting = async () => {
     if (!aiAnalysis) return
@@ -459,11 +456,10 @@ Roger Lee Cormier`,
                   })
                   setAiAnalysis(null)
                   setIsAnalyzing(false)
-                  setMeetingScheduled(false)
-                  setMeetingData(null)
-                  setShowMessageForm(false)
-                  setShowMeetingScheduler(true)
-                  setError(null)
+                                     setMeetingScheduled(false)
+                   setMeetingData(null)
+                   setShowMessageForm(false)
+                   setError(null)
                   setIsSubmitted(false)
                   setContactMode('message')
                 }}
@@ -823,7 +819,7 @@ Roger Lee Cormier`,
                        )}
 
                                                {/* Meeting Scheduler - Below Analysis */}
-                        {aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && showMeetingScheduler && !showMessageForm && (
+                        {aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && (
                           <div className="pt-3 sm:pt-4 border-t border-gray-200">
                             <AIMeetingScheduler
                               analysis={aiAnalysis}
@@ -843,18 +839,18 @@ Roger Lee Cormier`,
                            onScheduleMeeting={handleScheduleMeeting}
                          />
                          
-                         {/* Send Message Instead Link - Only show when meeting is recommended */}
-                         {aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && !showMessageForm && (
-                           <div className="text-center mt-3">
-                             <button
-                               onClick={handleSendMessageInstead}
-                               className="inline-flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 hover:underline transition-colors"
-                             >
-                               <MessageSquare className="h-4 w-4" />
-                               <span>Or just send a message instead</span>
-                             </button>
-                           </div>
-                         )}
+                                                   {/* Send Message Instead Link - Only show when meeting is recommended */}
+                          {aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && (
+                            <div className="text-center mt-3">
+                              <button
+                                onClick={handleSendMessageInstead}
+                                className="inline-flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 hover:underline transition-colors"
+                              >
+                                <MessageSquare className="h-4 w-4" />
+                                <span>Or just send a message instead</span>
+                              </button>
+                            </div>
+                          )}
                        </div>
                     </form>
                   </CardContent>

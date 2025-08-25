@@ -167,37 +167,29 @@ export default {
         aiResponse = await env.ai.run('@cf/meta/llama-2-7b-chat-int8', {
           messages: [{
             role: 'user',
-            content: `Analyze this contact form submission and provide a JSON response with the following structure:
-            {
-              "inquiryType": "consultation|project|partnership|general|urgent",
-              "priorityLevel": "high|medium|low",
-              "industry": "technology|healthcare|finance|manufacturing|other",
-              "projectScope": "small|medium|large|enterprise",
-              "urgency": "immediate|soon|flexible",
-              "suggestedResponse": "A personalized 2-3 sentence response that acknowledges their inquiry",
-              "relevantContent": ["suggested portfolio sections or case studies"],
-              "confidence": 0.0,
-              "shouldScheduleMeeting": true/false,
-              "meetingType": "consultation|project-planning|technical-review|strategy-session|general-discussion",
-              "recommendedTimeSlots": ["morning", "afternoon", "evening"],
-              "timezoneConsideration": "user's local timezone",
-              "followUpRequired": true/false
-            }
+            content: `Analyze this contact form and return JSON:
+{
+  "inquiryType": "consultation|project|partnership|general|urgent",
+  "priorityLevel": "high|medium|low", 
+  "industry": "technology|healthcare|finance|manufacturing|other",
+  "projectScope": "small|medium|large|enterprise",
+  "urgency": "immediate|soon|flexible",
+  "suggestedResponse": "2-3 sentence personalized response",
+  "relevantContent": ["portfolio sections"],
+  "shouldScheduleMeeting": true/false,
+  "meetingType": "consultation|project-planning|technical-review|strategy-session|general-discussion",
+  "recommendedTimeSlots": ["morning", "afternoon", "evening"],
+  "timezoneConsideration": "user's local timezone",
+  "followUpRequired": true/false
+}
 
-            IMPORTANT: 
-            - DO NOT include meetingDuration in your response - we will set this separately.
-            - Set shouldScheduleMeeting to true if this inquiry would benefit from a meeting (consultation, project planning, technical discussions).
-            - Recommend time slots based on urgency and project scope.
-            - Consider the user's context when determining meeting type.
-            - Set confidence to 0.0 initially - we will calculate it based on data quality.
+Set shouldScheduleMeeting=true for consultation/project/technical discussions.
 
-            Contact Details:
-            Name: ${name}
-            Company: ${company || 'Not specified'}
-            Subject: ${subject}
-            Message: ${message}
+Contact: ${name} (${company || 'Not specified'})
+Subject: ${subject}
+Message: ${message}
 
-            Respond only with valid JSON.`
+JSON only:`
           }]
         })
       } catch (aiError) {
