@@ -51,9 +51,9 @@ function DynamicActionButton({
       <Button
         type="button"
         disabled
-        className="w-full bg-gray-400 text-white py-3 cursor-not-allowed"
+        className="w-full bg-gray-400 text-white py-2 sm:py-3 cursor-not-allowed text-sm sm:text-base"
       >
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+        <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2" />
         Analyzing your message...
       </Button>
     )
@@ -70,16 +70,16 @@ function DynamicActionButton({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 sm:py-3 text-sm sm:text-base"
       >
         {isSubmitting ? (
           <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+            <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2" />
             Sending Message...
           </>
         ) : (
           <>
-            <Send className="h-4 w-4 mr-2" />
+            <Send className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
             Send Message
           </>
         )}
@@ -93,16 +93,16 @@ function DynamicActionButton({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 sm:py-3 text-sm sm:text-base"
       >
         {isSubmitting ? (
           <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+            <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2" />
             Submitting...
           </>
         ) : (
           <>
-            <Send className="h-4 w-4 mr-2" />
+            <Send className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
             Submit Meeting Request
           </>
         )}
@@ -116,9 +116,9 @@ function DynamicActionButton({
       <Button
         type="button"
         disabled
-        className="w-full bg-gray-400 text-white py-3 cursor-not-allowed"
+        className="w-full bg-gray-400 text-white py-2 sm:py-3 cursor-not-allowed text-sm sm:text-base"
       >
-        <Send className="h-4 w-4 mr-2" />
+        <Send className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
         Send Message (AI analysis required)
       </Button>
     )
@@ -128,16 +128,16 @@ function DynamicActionButton({
     <Button
       type="submit"
       disabled={isSubmitting}
-      className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+      className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 sm:py-3 text-sm sm:text-base"
     >
       {isSubmitting ? (
         <>
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+          <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2" />
           Sending Message...
         </>
       ) : (
         <>
-          <Send className="h-4 w-4 mr-2" />
+          <Send className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
           Send Message
         </>
       )}
@@ -374,20 +374,20 @@ Roger Lee Cormier`,
   if (contactMode === 'choice') {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
           {/* Header */}
-          <div className="text-center mb-12">
-            <H1 className="text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <H1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
               Let's Connect
             </H1>
-            <P className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <P className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-2">
               Ready to discuss your next strategic technology initiative? Send me a message and I'll get back to you within 24 hours.
             </P>
           </div>
 
           {/* Main Contact Option - Single Message Card */}
-          <div className="mb-12">
-            <div className="max-w-2xl mx-auto">
+          <div className="mb-8 sm:mb-12">
+            <div className="max-w-2xl mx-auto px-2">
                              <Card 
                  className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
                                    onClick={() => {
@@ -410,19 +410,19 @@ Roger Lee Cormier`,
                     setContactMode('message')
                   }}
                >
-                <CardContent className="pt-8 pb-8">
+                <CardContent className="pt-6 sm:pt-8 pb-6 sm:pb-8 px-4 sm:px-6">
                   <div className="text-center">
-                    <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-teal-200 transition-colors">
-                      <MessageSquare className="h-10 w-10 text-teal-600" />
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:bg-teal-200 transition-colors">
+                      <MessageSquare className="h-8 w-8 sm:h-10 sm:w-10 text-teal-600" />
                     </div>
-                    <H2 className="text-2xl font-semibold text-gray-900 mb-4">
+                    <H2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
                       Send a Message
                     </H2>
-                    <P className="text-gray-600 mb-6">
+                    <P className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
                       Have a question or want to discuss a project? Send me a message and I'll get back to you within 24 hours. 
                       The AI will analyze your message and recommend the best way to proceed.
                     </P>
-                    <div className="space-y-3 text-sm text-gray-500 mb-6">
+                    <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
                         <span>General inquiries & project discussions</span>
@@ -447,34 +447,34 @@ Roger Lee Cormier`,
           </div>
 
            {/* Supporting Information - More Compact */}
-           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
              {/* Contact Methods */}
              <Card className="border border-gray-200 bg-white">
-               <CardHeader className="pb-4">
-                 <CardTitle className="flex items-center gap-2 text-lg">
-                   <User className="h-5 w-5 text-teal-600" />
+               <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
+                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                   <User className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
                    Contact Methods
                  </CardTitle>
                </CardHeader>
-               <CardContent className="space-y-4">
+               <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
                  {contactMethods.map((method) => (
-                   <div key={method.title} className="flex items-start gap-3">
-                     <div className="flex-shrink-0 w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                       <method.icon className="h-5 w-5 text-teal-600" />
+                   <div key={method.title} className="flex items-start gap-2 sm:gap-3">
+                     <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                       <method.icon className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
                      </div>
                      <div className="flex-1 min-w-0">
-                       <h4 className="text-sm font-medium text-gray-900">{method.title}</h4>
+                       <h4 className="text-xs sm:text-sm font-medium text-gray-900">{method.title}</h4>
                        {method.href ? (
                          <a
                            href={method.href}
                            target="_blank"
                            rel="noopener noreferrer"
-                           className="text-sm text-teal-600 hover:text-teal-700 font-medium block"
+                           className="text-xs sm:text-sm text-teal-600 hover:text-teal-700 font-medium block break-all"
                          >
                            {method.value}
                          </a>
                        ) : (
-                         <p className="text-sm text-gray-600 font-medium">{method.value}</p>
+                         <p className="text-xs sm:text-sm text-gray-600 font-medium">{method.value}</p>
                        )}
                        <p className="text-xs text-gray-500 mt-1">{method.description}</p>
                      </div>
@@ -485,14 +485,14 @@ Roger Lee Cormier`,
 
              {/* Areas of Expertise - More Prominent */}
              <Card className="border border-gray-200 bg-white">
-               <CardHeader className="pb-4">
-                 <CardTitle className="flex items-center gap-2 text-lg">
-                   <Building className="h-5 w-5 text-teal-600" />
+               <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
+                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                   <Building className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
                    Areas of Expertise
                  </CardTitle>
                </CardHeader>
-               <CardContent>
-                 <div className="flex flex-wrap gap-2">
+               <CardContent className="px-4 sm:px-6">
+                 <div className="flex flex-wrap gap-1 sm:gap-2">
                    {expertiseAreas.map((area) => (
                      <Badge key={area} variant="secondary" className="text-xs bg-teal-100 text-teal-800 hover:bg-teal-200">
                        {area}
@@ -504,30 +504,30 @@ Roger Lee Cormier`,
 
              {/* Connect & Follow */}
              <Card className="border border-gray-200 bg-white">
-               <CardHeader className="pb-4">
-                 <CardTitle className="flex items-center gap-2 text-lg">
-                   <Linkedin className="h-5 w-5 text-teal-600" />
+               <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
+                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                   <Linkedin className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
                    Connect & Follow
                  </CardTitle>
                </CardHeader>
-               <CardContent>
-                 <div className="space-y-3">
+               <CardContent className="px-4 sm:px-6">
+                 <div className="space-y-2 sm:space-y-3">
                    <a
                      href="https://linkedin.com/in/rogerleecormier"
                      target="_blank"
                      rel="noopener noreferrer"
-                     className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
+                     className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-xs sm:text-sm"
                    >
-                     <FaLinkedin className="h-4 w-4" />
+                     <FaLinkedin className="h-3 w-3 sm:h-4 sm:w-4" />
                      LinkedIn
                    </a>
                    <a
                      href="https://github.com/rogerleecormier"
                      target="_blank"
                      rel="noopener noreferrer"
-                     className="w-full bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
+                     className="w-full bg-gray-800 hover:bg-gray-900 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-xs sm:text-sm"
                    >
-                     <Github className="h-4 w-4" />
+                     <Github className="h-3 w-3 sm:h-4 sm:w-4" />
                      GitHub
                    </a>
                  </div>
@@ -538,37 +538,37 @@ Roger Lee Cormier`,
 
 
           {/* Additional Information */}
-          <div className="mt-16">
-            <Separator className="mb-8" />
+          <div className="mt-12 sm:mt-16">
+            <Separator className="mb-6 sm:mb-8" />
             <div className="text-center">
-              <H2 className="text-2xl font-semibold text-gray-900 mb-4">
+              <H2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">
                 Why Choose to Work With Me?
               </H2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Building className="h-8 w-8 text-teal-600" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <Building className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Enterprise Experience</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Enterprise Experience</h3>
+                  <p className="text-gray-600 text-xs sm:text-sm">
                     Deep expertise in large-scale system modernization and cross-functional project delivery
                   </p>
                 </div>
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Clock className="h-8 w-8 text-teal-600" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Proven Results</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Proven Results</h3>
+                  <p className="text-gray-600 text-xs sm:text-sm">
                     Track record of delivering complex projects on time and within budget constraints
                   </p>
                 </div>
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <User className="h-8 w-8 text-teal-600" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <User className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Leadership Focus</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Leadership Focus</h3>
+                  <p className="text-gray-600 text-xs sm:text-sm">
                     Military-trained leadership philosophy emphasizing accountability and team success
                   </p>
                 </div>
@@ -584,23 +584,23 @@ Roger Lee Cormier`,
   if (contactMode === 'message') {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
           {/* Back Button and Header */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <Button
               variant="ghost"
               onClick={resetToChoice}
-              className="mb-6 text-teal-600 hover:text-teal-700 hover:bg-teal-50"
+              className="mb-4 sm:mb-6 text-teal-600 hover:text-teal-700 hover:bg-teal-50 text-sm sm:text-base"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Contact Options
             </Button>
             
             <div className="text-center">
-              <H1 className="text-4xl font-bold text-gray-900 mb-4">
+              <H1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
                 Send a Message
               </H1>
-              <P className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <P className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-2">
                 Have a question or want to discuss a project? Fill out the form below and I'll get back to you within 24 hours.
               </P>
             </div>
@@ -608,26 +608,26 @@ Roger Lee Cormier`,
 
           {/* Confirmation State - Show when message sent OR meeting scheduled */}
           {(isSubmitted || meetingScheduled) ? (
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto px-2">
               <Card className="border-l-4 border-l-green-500">
-                <CardContent className="pt-6">
-                  <div className="text-center py-8">
-                    <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                    <H2 className="text-2xl font-semibold text-gray-900 mb-2">
+                <CardContent className="pt-6 px-4 sm:px-6">
+                  <div className="text-center py-6 sm:py-8">
+                    <CheckCircle className="h-12 w-12 sm:h-16 sm:w-16 text-green-500 mx-auto mb-3 sm:mb-4" />
+                    <H2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">
                       {isSubmitted ? 'Message Sent Successfully!' : 'Meeting Scheduled Successfully!'}
                     </H2>
-                    <P className="text-gray-600 mb-4">
+                    <P className="text-gray-600 mb-4 text-sm sm:text-base">
                       {isSubmitted 
                         ? "Thank you for reaching out. I'll review your message and get back to you soon."
                         : "Your meeting has been scheduled! You'll receive a confirmation email with meeting details shortly."
                       }
                     </P>
                     {meetingData && (
-                      <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-                        <Badge variant="outline" className="text-sm mb-2">
+                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 rounded-lg border border-green-200">
+                        <Badge variant="outline" className="text-xs sm:text-sm mb-2">
                           {format(meetingData.date, 'EEEE, MMMM do, yyyy')} at {meetingData.time}
                         </Badge>
-                        <p className="text-sm text-green-700">
+                        <p className="text-xs sm:text-sm text-green-700">
                           {meetingData.duration} {meetingData.type.replace('-', ' ')} meeting
                         </p>
                       </div>
@@ -635,7 +635,7 @@ Roger Lee Cormier`,
                     <Button 
                       onClick={resetToChoice}
                       variant="outline"
-                      className="bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100"
+                      className="bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100 text-sm sm:text-base"
                     >
                       Send Another Message
                     </Button>
@@ -646,14 +646,14 @@ Roger Lee Cormier`,
           ) : (
                          /* Message Form with AI Analysis and Meeting Scheduler - All in One Form */
              <div className="max-w-7xl mx-auto">
-               <div className="max-w-4xl mx-auto">
+               <div className="max-w-4xl mx-auto px-2">
                  <Card>
-                   <CardContent className="pt-6">
-                     <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
+                   <CardContent className="pt-6 px-4 sm:px-6">
+                     <form id="contact-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                        {/* Form Fields */}
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                          <div>
-                           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                           <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                              Full Name *
                            </label>
                            <Input
@@ -664,10 +664,11 @@ Roger Lee Cormier`,
                              value={formData.name}
                              onChange={handleInputChange}
                              placeholder="Your full name"
+                             className="text-sm sm:text-base"
                            />
                          </div>
                          <div>
-                           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                           <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                              Email Address *
                            </label>
                            <Input
@@ -678,13 +679,14 @@ Roger Lee Cormier`,
                              value={formData.email}
                              onChange={handleInputChange}
                              placeholder="your.email@company.com"
+                             className="text-sm sm:text-base"
                            />
                          </div>
                        </div>
                        
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                          <div>
-                           <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                           <label htmlFor="company" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                              Company / Organization
                            </label>
                            <Input
@@ -694,10 +696,11 @@ Roger Lee Cormier`,
                              value={formData.company}
                              onChange={handleInputChange}
                              placeholder="Your company name"
+                             className="text-sm sm:text-base"
                            />
                          </div>
                          <div>
-                           <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                           <label htmlFor="subject" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                              Subject *
                            </label>
                            <Input
@@ -708,12 +711,13 @@ Roger Lee Cormier`,
                              value={formData.subject}
                              onChange={handleInputChange}
                              placeholder="What can I help you with?"
+                             className="text-sm sm:text-base"
                            />
                          </div>
                        </div>
                        
                        <div>
-                         <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                         <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                            Message *
                          </label>
                          <Textarea
@@ -724,15 +728,15 @@ Roger Lee Cormier`,
                            value={formData.message}
                            onChange={handleInputChange}
                            placeholder="Tell me about your project, challenge, or opportunity..."
-                           className="resize-none"
+                           className="resize-none text-sm sm:text-base"
                          />
                          {formData.message.length > 0 && formData.message.length < 20 && (
-                           <p className="text-sm text-gray-500 mt-1">
+                           <p className="text-xs sm:text-sm text-gray-500 mt-1">
                              Type {20 - formData.message.length} more characters to get AI analysis
                            </p>
                          )}
                          {formData.message.length >= 20 && !aiAnalysis && !isAnalyzing && (
-                           <p className="text-sm text-blue-600 mt-1">
+                           <p className="text-xs sm:text-sm text-blue-600 mt-1">
                              ✨ AI analysis available! Fill in more details for enhanced insights.
                            </p>
                          )}
@@ -740,7 +744,7 @@ Roger Lee Cormier`,
 
                        {/* AI Analysis - Above Meeting Scheduler */}
                        {(aiAnalysis || isAnalyzing) && (
-                         <div className="pt-4 border-t border-gray-200">
+                         <div className="pt-3 sm:pt-4 border-t border-gray-200">
                            <AIContactAnalysis 
                              analysis={aiAnalysis} 
                              isLoading={isAnalyzing}
@@ -752,7 +756,7 @@ Roger Lee Cormier`,
 
                                                {/* AI Meeting Scheduler - Below AI Analysis */}
                         {aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && showMeetingScheduler && !showMessageForm && (
-                          <div className="pt-4 border-t border-gray-200">
+                          <div className="pt-3 sm:pt-4 border-t border-gray-200">
                             <AIMeetingScheduler
                               analysis={aiAnalysis}
                               onMeetingScheduled={handleMeetingScheduled}
@@ -763,7 +767,7 @@ Roger Lee Cormier`,
                         )}
 
                        {/* Dynamic Action Button - Always at the bottom */}
-                       <div className="pt-4 border-t border-gray-200">
+                       <div className="pt-3 sm:pt-4 border-t border-gray-200">
                          <DynamicActionButton
                            aiAnalysis={aiAnalysis}
                            isAnalyzing={isAnalyzing}
@@ -781,8 +785,8 @@ Roger Lee Cormier`,
           )}
 
           {error && (
-            <div className="mt-6 bg-red-50 border border-red-200 rounded-md p-3 max-w-2xl mx-auto">
-              <p className="text-red-600 text-sm flex items-center gap-2">
+            <div className="mt-4 sm:mt-6 bg-red-50 border border-red-200 rounded-md p-3 max-w-2xl mx-auto">
+              <p className="text-red-600 text-xs sm:text-sm flex items-center gap-2">
                 <span className="text-red-500">⚠</span>
                 {error}
               </p>
