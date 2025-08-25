@@ -26,7 +26,7 @@ import { sendEmail } from '@/api/emailService'
 import { format } from 'date-fns'
 import { AIContactAnalysis } from '@/components/AIContactAnalysis'
 import { AIMeetingScheduler } from '@/components/AIMeetingScheduler'
-import { analyzeContactForm, type AIAnalysisResult } from '@/api/aiContactAnalyzer'
+import { analyzeContactForm, type AIAnalysisResult, AIAnalysisError } from '@/api/aiContactAnalyzer'
 
 // Dynamic Action Button Component
 interface DynamicActionButtonProps {
@@ -117,8 +117,8 @@ function DynamicActionButton({
         disabled
         className="w-full bg-gray-400 text-white py-2 sm:py-3 cursor-not-allowed text-sm sm:text-base"
       >
-        <Send className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-        Send Message (AI analysis required)
+               <Send className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+       Send Message (AI analysis in progress...)
       </Button>
     )
   }
@@ -150,6 +150,8 @@ interface ContactForm {
   company: string
   subject: string
   message: string
+  consent: boolean
+  honeypot: string // Hidden field for spam prevention
 }
 
 interface MeetingData {
@@ -170,7 +172,9 @@ export default function ContactPage() {
     email: '',
     company: '',
     subject: '',
-    message: ''
+    message: '',
+    consent: false,
+    honeypot: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -211,7 +215,9 @@ export default function ContactPage() {
           email: formData.email || 'user@example.com',
           company: formData.company || '',
           subject: formData.subject || 'General Inquiry',
-          message: formData.message
+          message: formData.message,
+          consent: formData.consent,
+          honeypot: formData.honeypot
         })
         
         if (analysis) {
@@ -219,10 +225,14 @@ export default function ContactPage() {
         } else {
           throw new Error('AI analysis returned null')
         }
-      } catch {
-        setError('AI analysis failed. You can still send your message, and I\'ll review it manually.')
-        // Don't block the form - user can still submit
-      } finally {
+             } catch (error: unknown) {
+         if (error instanceof AIAnalysisError) {
+           setError(error.message)
+         } else {
+           setError('AI analysis is required to send your message. Please try again or refresh the page.')
+         }
+         // Block the form since AI analysis is required
+       } finally {
         setIsAnalyzing(false)
       }
     }
@@ -356,7 +366,9 @@ Roger Lee Cormier`,
       email: '',
       company: '',
       subject: '',
-      message: ''
+      message: '',
+      consent: false,
+      honeypot: ''
     })
          setError(null)
      setIsSubmitted(false)
@@ -452,7 +464,9 @@ Roger Lee Cormier`,
                     email: '',
                     company: '',
                     subject: '',
-                    message: ''
+                    message: '',
+                    consent: false,
+                    honeypot: ''
                   })
                   setAiAnalysis(null)
                   setIsAnalyzing(false)
@@ -782,11 +796,11 @@ Roger Lee Cormier`,
                           placeholder="Tell me about your project, challenge, or opportunity..."
                           className="resize-none text-sm sm:text-base"
                         />
-                        {formData.message.length > 0 && formData.message.length < 20 && (
-                          <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                            Type {20 - formData.message.length} more characters to get AI analysis
-                          </p>
-                        )}
+                                                 {formData.message.length > 0 && formData.message.length < 20 && (
+                           <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                             Type {20 - formData.message.length} more characters to enable AI analysis
+                           </p>
+                         )}
                                                  {formData.message.length >= 20 && !aiAnalysis && !isAnalyzing && (
                            <p className="text-xs sm:text-sm text-blue-600 mt-1">
                              ✨ Analysis will start in 1.5 seconds after you stop typing...
@@ -804,6 +818,36 @@ Roger Lee Cormier`,
                              ✅ Analysis complete
                            </p>
                          )}
+                      </div>
+
+                      {/* Consent Checkbox */}
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          id="consent"
+                          name="consent"
+                          checked={formData.consent}
+                          onChange={(e) => setFormData(prev => ({ ...prev, consent: e.target.checked }))}
+                          className="mt-1 h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
+                          required
+                        />
+                                                 <label htmlFor="consent" className="text-xs sm:text-sm text-gray-700">
+                           I consent to AI analysis of my message to receive personalized recommendations and meeting scheduling options. 
+                           Your message content is processed securely and not stored. 
+                           <span className="text-red-500">*</span>
+                         </label>
+                      </div>
+
+                      {/* Honeypot field - hidden from users */}
+                      <div className="hidden">
+                        <input
+                          type="text"
+                          name="honeypot"
+                          value={formData.honeypot}
+                          onChange={handleInputChange}
+                          tabIndex={-1}
+                          autoComplete="off"
+                        />
                       </div>
 
                                              {/* Message Analysis - Above Meeting Scheduler */}
@@ -868,12 +912,14 @@ Roger Lee Cormier`,
              </div>
            )}
 
-           {/* AI Disclosure */}
-           <div className="mt-8 sm:mt-12 text-center">
-             <p className="text-xs text-gray-400">
-               This site uses artificial intelligence to enhance your experience and provide personalized recommendations.
-             </p>
-           </div>
+                       {/* AI Disclosure */}
+            <div className="mt-8 sm:mt-12 text-center">
+              <p className="text-xs text-gray-400">
+                This site uses AI to analyze messages and provide personalized recommendations. 
+                Message content is processed securely and not stored. 
+                <a href="/privacy" className="text-teal-600 hover:text-teal-700 ml-1">Privacy Policy</a>
+              </p>
+            </div>
         </div>
       </div>
     )

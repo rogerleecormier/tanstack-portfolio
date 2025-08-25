@@ -1,28 +1,11 @@
 // AI Contact Form Analyzer Service
 // Integrates with Cloudflare AI Worker for intelligent form analysis
+// HARDENED VERSION with security and privacy features
 
-export interface AIAnalysisResult {
-  inquiryType: 'consultation' | 'project' | 'partnership' | 'general' | 'urgent'
-  priorityLevel: 'high' | 'medium' | 'low'
-  industry: 'technology' | 'healthcare' | 'finance' | 'manufacturing' | 'other'
-  projectScope: 'small' | 'medium' | 'large' | 'enterprise'
-  urgency: 'immediate' | 'soon' | 'flexible'
-  suggestedResponse: string
-  meetingDuration: '30 minutes' | '1 hour' | '1.5 hours' | '2 hours'
-  relevantContent: string[]
-  confidence: number
-  shouldScheduleMeeting: boolean
-  meetingType: 'consultation' | 'project-planning' | 'technical-review' | 'strategy-session' | 'general-discussion'
-  recommendedTimeSlots: string[]
-  timezoneConsideration: string
-  followUpRequired: boolean
-  timestamp: string
-  originalMessage: string
-  wordCount: number
-  hasCompany: boolean
-  emailDomain: string
-  fallback?: boolean
-}
+import { safeValidateAIAnalysis, type AIAnalysisResult } from '@/lib/aiSchema'
+
+// Re-export the type for backward compatibility
+export type { AIAnalysisResult }
 
 export interface ContactFormData {
   name: string
@@ -30,6 +13,8 @@ export interface ContactFormData {
   company?: string
   subject: string
   message: string
+  consent: boolean
+  honeypot?: string // Hidden field for spam prevention
 }
 
 // AI Worker endpoints - Updated with actual deployed URLs
@@ -40,6 +25,17 @@ const AI_WORKER_ENDPOINT = import.meta.env.PROD
 // Retry configuration
 const MAX_RETRIES = 2
 const RETRY_DELAY = 1000 // 1 second
+
+// Enhanced error handling with specific error types
+export class AIAnalysisError extends Error {
+  constructor(
+    message: string,
+    public code: 'RATE_LIMIT' | 'CONSENT_REQUIRED' | 'VALIDATION_ERROR' | 'AI_UNAVAILABLE' | 'NETWORK_ERROR' = 'NETWORK_ERROR'
+  ) {
+    super(message)
+    this.name = 'AIAnalysisError'
+  }
+}
 
 // Fallback analysis when AI fails
 const createFallbackAnalysis = (formData: ContactFormData): AIAnalysisResult => {
@@ -87,6 +83,8 @@ const createFallbackAnalysis = (formData: ContactFormData): AIAnalysisResult => 
     recommendedTimeSlots: ['morning', 'afternoon'],
     timezoneConsideration: 'user\'s local timezone',
     followUpRequired: shouldScheduleMeeting,
+    redFlags: [],
+    followUps: [],
     timestamp: new Date().toISOString(),
     originalMessage: formData.message.substring(0, 200) + (formData.message.length > 200 ? '...' : ''),
     wordCount: formData.message.split(' ').length,
@@ -115,8 +113,25 @@ const retryWithBackoff = async <T>(
   }
 }
 
+// Enhanced AI analysis with security features
 export const analyzeContactForm = async (formData: ContactFormData): Promise<AIAnalysisResult | null> => {
   try {
+    // Validate consent before proceeding
+    if (!formData.consent) {
+      throw new AIAnalysisError(
+        'Explicit consent is required for AI analysis. Please check the consent checkbox.',
+        'CONSENT_REQUIRED'
+      )
+    }
+
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      throw new AIAnalysisError(
+        'All required fields must be completed before AI analysis.',
+        'VALIDATION_ERROR'
+      )
+    }
+
     // Try AI analysis with retry logic
     const result = await retryWithBackoff(async () => {
       const response = await fetch(AI_WORKER_ENDPOINT, {
@@ -130,21 +145,59 @@ export const analyzeContactForm = async (formData: ContactFormData): Promise<AIA
           company: formData.company || '',
           subject: formData.subject,
           message: formData.message,
+          consent: 'true', // Explicit consent
+          honeypot: formData.honeypot || '' // Hidden field for spam prevention
         }),
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `AI analysis failed with status ${response.status}`)
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        
+        // Handle specific error types
+        if (response.status === 429) {
+          throw new AIAnalysisError(
+            'Rate limit exceeded. Please wait a moment before trying again.',
+            'RATE_LIMIT'
+          )
+        }
+        
+        if (errorData.error?.includes('consent')) {
+          throw new AIAnalysisError(
+            'Consent is required for AI analysis.',
+            'CONSENT_REQUIRED'
+          )
+        }
+        
+        if (errorData.error?.includes('validation')) {
+          throw new AIAnalysisError(
+            errorData.error || 'Validation error occurred.',
+            'VALIDATION_ERROR'
+          )
+        }
+        
+        throw new AIAnalysisError(
+          errorData.error || `AI analysis failed with status ${response.status}`,
+          'AI_UNAVAILABLE'
+        )
       }
 
-      return await response.json()
+      const rawResult = await response.json()
+      
+      // Validate the response using Zod schema
+      return safeValidateAIAnalysis(rawResult)
     })
 
     return result
 
-  } catch {
-    // Return fallback analysis instead of null
+  } catch (error) {
+    // Handle specific error types
+    if (error instanceof AIAnalysisError) {
+      // Re-throw AI-specific errors
+      throw error
+    }
+    
+    // For other errors, return fallback analysis
+    console.warn('AI analysis failed, using fallback:', error)
     return createFallbackAnalysis(formData)
   }
 }
@@ -177,4 +230,27 @@ export const getUrgencyIndicator = (urgency: string): string => {
     case 'soon': return '🟡'
     default: return '🟢'
   }
+}
+
+// Get red flag indicator
+export const getRedFlagIndicator = (redFlags: string[]): string => {
+  if (redFlags.length === 0) return ''
+  if (redFlags.length === 1) return '⚠️'
+  return '🚨'
+}
+
+// Format red flags for display
+export const formatRedFlags = (redFlags: string[]): string[] => {
+  return redFlags.map(flag => {
+    switch (flag) {
+      case 'suspicious_content_detected':
+        return 'Suspicious content detected'
+      case 'rate_limit_exceeded':
+        return 'Rate limit exceeded'
+      case 'consent_required':
+        return 'Consent required'
+      default:
+        return flag.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    }
+  })
 }

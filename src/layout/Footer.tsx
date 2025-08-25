@@ -79,6 +79,16 @@ export default function Footer() {
               <span className="hidden sm:inline">•</span>
               <span>Built with ❤️ using React, TypeScript & TanStack Router</span>
             </div>
+            
+            {/* Legal Links */}
+            <div className="flex justify-center mt-2">
+              <a 
+                href="/privacy" 
+                className="text-xs text-teal-300 hover:text-white transition-colors underline"
+              >
+                Privacy Policy
+              </a>
+            </div>
           </div>
         </div>
       </div>
