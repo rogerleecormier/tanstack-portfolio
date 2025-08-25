@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,7 +17,8 @@ import {
   Building,
   User,
   MessageSquare,
-  ArrowLeft
+  ArrowLeft,
+  Calendar
 } from 'lucide-react'
 import { FaLinkedin } from 'react-icons/fa'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
@@ -34,7 +35,7 @@ interface DynamicActionButtonProps {
   meetingScheduled: boolean
   showMessageForm: boolean
   isSubmitting: boolean
-  isScheduleMode?: boolean
+  onScheduleMeeting?: () => void
 }
 
 function DynamicActionButton({
@@ -43,7 +44,7 @@ function DynamicActionButton({
   meetingScheduled,
   showMessageForm,
   isSubmitting,
-  isScheduleMode = false
+  onScheduleMeeting
 }: DynamicActionButtonProps) {
   // Button is disabled until AI analysis is complete
   if (isAnalyzing) {
@@ -61,7 +62,26 @@ function DynamicActionButton({
 
   // If AI recommends scheduling a meeting and no meeting is scheduled yet
   if (aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && !showMessageForm) {
-    return null // No need to show anything since the meeting scheduler has its own instructions
+    return (
+      <Button
+        type="button"
+        disabled={isSubmitting}
+        onClick={onScheduleMeeting}
+        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 sm:py-3 text-sm sm:text-base"
+      >
+        {isSubmitting ? (
+          <>
+            <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2" />
+            Scheduling Meeting...
+          </>
+        ) : (
+          <>
+            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+            Schedule Meeting
+          </>
+        )}
+      </Button>
+    )
   }
 
   // If user chose to send message instead
@@ -87,28 +107,7 @@ function DynamicActionButton({
     )
   }
 
-  // Default: Send message button or Submit meeting request button
-  if (isScheduleMode) {
-    return (
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 sm:py-3 text-sm sm:text-base"
-      >
-        {isSubmitting ? (
-          <>
-            <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-2" />
-            Submitting...
-          </>
-        ) : (
-          <>
-            <Send className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-            Submit Meeting Request
-          </>
-        )}
-      </Button>
-    )
-  }
+
 
   // Show greyed-out button initially, only enable after AI analysis
   if (!aiAnalysis) {
@@ -182,6 +181,7 @@ export default function ContactPage() {
   const [meetingData, setMeetingData] = useState<MeetingData | null>(null)
   const [showMessageForm, setShowMessageForm] = useState(false)
   const [showMeetingScheduler, setShowMeetingScheduler] = useState(true)
+  const analysisTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Update document title and meta tags
   useDocumentTitle({
@@ -227,7 +227,24 @@ export default function ContactPage() {
         setIsAnalyzing(false)
       }
     }
-  }, [formData.name, formData.email, formData.company, formData.subject, formData.message])
+  }, [formData])
+
+  // Debounced AI analysis function
+  const debouncedAIAnalysis = useCallback(() => {
+    // Clear any existing timeout
+    if (analysisTimeoutRef.current) {
+      clearTimeout(analysisTimeoutRef.current)
+    }
+
+    // Set new timeout for debounced analysis
+    const timeout = setTimeout(() => {
+      if (formData.message.length > 20) {
+        triggerAIAnalysis()
+      }
+    }, 1500) // 1.5 second delay for better mobile experience
+
+    analysisTimeoutRef.current = timeout
+  }, [formData.message, triggerAIAnalysis])
 
   // Retry AI analysis function
   const retryAIAnalysis = useCallback(async () => {
@@ -237,12 +254,28 @@ export default function ContactPage() {
     }
   }, [formData.message.length, triggerAIAnalysis])
 
-  // Monitor message field length and trigger AI analysis when appropriate
+  // Monitor message field length and trigger debounced AI analysis when appropriate
   useEffect(() => {
-    if (formData.message.length > 20 && !isAnalyzing && !aiAnalysis) {
-      triggerAIAnalysis()
+    if (formData.message.length > 20) {
+      debouncedAIAnalysis()
+    } else if (formData.message.length <= 20) {
+      // Clear analysis if message is too short
+      setAiAnalysis(null)
+      if (analysisTimeoutRef.current) {
+        clearTimeout(analysisTimeoutRef.current)
+        analysisTimeoutRef.current = null
+      }
     }
-  }, [formData.message, isAnalyzing, aiAnalysis, triggerAIAnalysis])
+  }, [formData.message, debouncedAIAnalysis])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (analysisTimeoutRef.current) {
+        clearTimeout(analysisTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -317,8 +350,6 @@ Roger Lee Cormier`,
     }
   }
 
-
-
   const resetToChoice = () => {
     setContactMode('choice')
     setFormData({
@@ -337,6 +368,33 @@ Roger Lee Cormier`,
   const handleSendMessageInstead = () => {
     setShowMeetingScheduler(false)
     setShowMessageForm(true)
+  }
+
+  const handleScheduleMeeting = async () => {
+    if (!aiAnalysis) return
+    
+    setIsSubmitting(true)
+    setError(null)
+    
+    try {
+      // Create meeting data with current form data
+      const meetingData: MeetingData = {
+        date: new Date(), // This will be set by the meeting scheduler
+        time: '09:00', // This will be set by the meeting scheduler
+        duration: aiAnalysis.meetingDuration,
+        type: aiAnalysis.meetingType,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        analysis: aiAnalysis
+      }
+      
+      // Call the meeting scheduled handler
+      handleMeetingScheduled(meetingData)
+      
+    } catch {
+      setError('Failed to schedule meeting. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const contactMethods = [
@@ -388,28 +446,28 @@ Roger Lee Cormier`,
           {/* Main Contact Option - Single Message Card */}
           <div className="mb-8 sm:mb-12">
             <div className="max-w-2xl mx-auto px-2">
-                             <Card 
-                 className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
-                                   onClick={() => {
-                    // Reset all form state when transitioning to message form
-                    setFormData({
-                      name: '',
-                      email: '',
-                      company: '',
-                      subject: '',
-                      message: ''
-                    })
-                    setAiAnalysis(null)
-                    setIsAnalyzing(false)
-                    setMeetingScheduled(false)
-                    setMeetingData(null)
-                    setShowMessageForm(false)
-                    setShowMeetingScheduler(true)
-                    setError(null)
-                    setIsSubmitted(false)
-                    setContactMode('message')
-                  }}
-               >
+              <Card 
+                className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
+                onClick={() => {
+                  // Reset all form state when transitioning to message form
+                  setFormData({
+                    name: '',
+                    email: '',
+                    company: '',
+                    subject: '',
+                    message: ''
+                  })
+                  setAiAnalysis(null)
+                  setIsAnalyzing(false)
+                  setMeetingScheduled(false)
+                  setMeetingData(null)
+                  setShowMessageForm(false)
+                  setShowMeetingScheduler(true)
+                  setError(null)
+                  setIsSubmitted(false)
+                  setContactMode('message')
+                }}
+              >
                 <CardContent className="pt-6 sm:pt-8 pb-6 sm:pb-8 px-4 sm:px-6">
                   <div className="text-center">
                     <div className="w-16 h-16 sm:w-20 sm:h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:bg-teal-200 transition-colors">
@@ -418,19 +476,19 @@ Roger Lee Cormier`,
                     <H2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
                       Send a Message
                     </H2>
-                    <P className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
-                      Have a question or want to discuss a project? Send me a message and I'll get back to you within 24 hours. 
-                      The AI will analyze your message and recommend the best way to proceed.
-                    </P>
+                                         <P className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
+                       Have a question or want to discuss a project? Send me a message and I'll get back to you within 24 hours. 
+                       I'll analyze your message and recommend the best way to proceed.
+                     </P>
                     <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
                         <span>General inquiries & project discussions</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                        <span>AI-powered analysis & recommendations</span>
-                      </div>
+                                             <div className="flex items-center gap-2">
+                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                         <span>Smart analysis & recommendations</span>
+                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
                         <span>Meeting scheduling when appropriate</span>
@@ -446,96 +504,94 @@ Roger Lee Cormier`,
             </div>
           </div>
 
-           {/* Supporting Information - More Compact */}
-           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
-             {/* Contact Methods */}
-             <Card className="border border-gray-200 bg-white">
-               <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
-                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                   <User className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
-                   Contact Methods
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
-                 {contactMethods.map((method) => (
-                   <div key={method.title} className="flex items-start gap-2 sm:gap-3">
-                     <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                       <method.icon className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
-                     </div>
-                     <div className="flex-1 min-w-0">
-                       <h4 className="text-xs sm:text-sm font-medium text-gray-900">{method.title}</h4>
-                       {method.href ? (
-                         <a
-                           href={method.href}
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           className="text-xs sm:text-sm text-teal-600 hover:text-teal-700 font-medium block break-all"
-                         >
-                           {method.value}
-                         </a>
-                       ) : (
-                         <p className="text-xs sm:text-sm text-gray-600 font-medium">{method.value}</p>
-                       )}
-                       <p className="text-xs text-gray-500 mt-1">{method.description}</p>
-                     </div>
-                   </div>
-                 ))}
-               </CardContent>
-             </Card>
+          {/* Supporting Information - More Compact */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
+            {/* Contact Methods */}
+            <Card className="border border-gray-200 bg-white">
+              <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
+                  Contact Methods
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
+                {contactMethods.map((method) => (
+                  <div key={method.title} className="flex items-start gap-2 sm:gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                      <method.icon className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs sm:text-sm font-medium text-gray-900">{method.title}</h4>
+                      {method.href ? (
+                        <a
+                          href={method.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs sm:text-sm text-teal-600 hover:text-teal-700 font-medium block break-all"
+                        >
+                          {method.value}
+                        </a>
+                      ) : (
+                        <p className="text-xs sm:text-sm text-gray-600 font-medium">{method.value}</p>
+                      )}
+                      <p className="text-xs text-gray-500 mt-1">{method.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
 
-             {/* Areas of Expertise - More Prominent */}
-             <Card className="border border-gray-200 bg-white">
-               <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
-                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                   <Building className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
-                   Areas of Expertise
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="px-4 sm:px-6">
-                 <div className="flex flex-wrap gap-1 sm:gap-2">
-                   {expertiseAreas.map((area) => (
-                     <Badge key={area} variant="secondary" className="text-xs bg-teal-100 text-teal-800 hover:bg-teal-200">
-                       {area}
-                     </Badge>
-                   ))}
-                 </div>
-               </CardContent>
-             </Card>
+            {/* Areas of Expertise - More Prominent */}
+            <Card className="border border-gray-200 bg-white">
+              <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <Building className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
+                  Areas of Expertise
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 sm:px-6">
+                <div className="flex flex-wrap gap-1 sm:gap-2">
+                  {expertiseAreas.map((area) => (
+                    <Badge key={area} variant="secondary" className="text-xs bg-teal-100 text-teal-800 hover:bg-teal-200">
+                      {area}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-             {/* Connect & Follow */}
-             <Card className="border border-gray-200 bg-white">
-               <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
-                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                   <Linkedin className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
-                   Connect & Follow
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="px-4 sm:px-6">
-                 <div className="space-y-2 sm:space-y-3">
-                   <a
-                     href="https://linkedin.com/in/rogerleecormier"
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-xs sm:text-sm"
-                   >
-                     <FaLinkedin className="h-3 w-3 sm:h-4 sm:w-4" />
-                     LinkedIn
-                   </a>
-                   <a
-                     href="https://github.com/rogerleecormier"
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="w-full bg-gray-800 hover:bg-gray-900 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-xs sm:text-sm"
-                   >
-                     <Github className="h-3 w-3 sm:h-4 sm:w-4" />
-                     GitHub
-                   </a>
-                 </div>
-               </CardContent>
-             </Card>
-           </div>
-
-
+            {/* Connect & Follow */}
+            <Card className="border border-gray-200 bg-white">
+              <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <Linkedin className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
+                  Connect & Follow
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 sm:px-6">
+                <div className="space-y-2 sm:space-y-3">
+                  <a
+                    href="https://linkedin.com/in/rogerleecormier"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-xs sm:text-sm"
+                  >
+                    <FaLinkedin className="h-3 w-3 sm:h-4 sm:w-4" />
+                    LinkedIn
+                  </a>
+                  <a
+                    href="https://github.com/rogerleecormier"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-gray-800 hover:bg-gray-900 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-xs sm:text-sm"
+                  >
+                    <Github className="h-3 w-3 sm:h-4 sm:w-4" />
+                    GitHub
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Additional Information */}
           <div className="mt-12 sm:mt-16">
@@ -644,105 +700,117 @@ Roger Lee Cormier`,
               </Card>
             </div>
           ) : (
-                         /* Message Form with AI Analysis and Meeting Scheduler - All in One Form */
-             <div className="max-w-7xl mx-auto">
-               <div className="max-w-4xl mx-auto px-2">
-                 <Card>
-                   <CardContent className="pt-6 px-4 sm:px-6">
-                     <form id="contact-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                       {/* Form Fields */}
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                         <div>
-                           <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                             Full Name *
-                           </label>
-                           <Input
-                             id="name"
-                             name="name"
-                             type="text"
-                             required
-                             value={formData.name}
-                             onChange={handleInputChange}
-                             placeholder="Your full name"
-                             className="text-sm sm:text-base"
-                           />
-                         </div>
-                         <div>
-                           <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                             Email Address *
-                           </label>
-                           <Input
-                             id="email"
-                             name="email"
-                             type="email"
-                             required
-                             value={formData.email}
-                             onChange={handleInputChange}
-                             placeholder="your.email@company.com"
-                             className="text-sm sm:text-base"
-                           />
-                         </div>
-                       </div>
-                       
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                         <div>
-                           <label htmlFor="company" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                             Company / Organization
-                           </label>
-                           <Input
-                             id="company"
-                             name="company"
-                             type="text"
-                             value={formData.company}
-                             onChange={handleInputChange}
-                             placeholder="Your company name"
-                             className="text-sm sm:text-base"
-                           />
-                         </div>
-                         <div>
-                           <label htmlFor="subject" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                             Subject *
-                           </label>
-                           <Input
-                             id="subject"
-                             name="subject"
-                             type="text"
-                             required
-                             value={formData.subject}
-                             onChange={handleInputChange}
-                             placeholder="What can I help you with?"
-                             className="text-sm sm:text-base"
-                           />
-                         </div>
-                       </div>
-                       
-                       <div>
-                         <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                           Message *
-                         </label>
-                         <Textarea
-                           id="message"
-                           name="message"
-                           required
-                           rows={6}
-                           value={formData.message}
-                           onChange={handleInputChange}
-                           placeholder="Tell me about your project, challenge, or opportunity..."
-                           className="resize-none text-sm sm:text-base"
-                         />
-                         {formData.message.length > 0 && formData.message.length < 20 && (
-                           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                             Type {20 - formData.message.length} more characters to get AI analysis
-                           </p>
-                         )}
-                         {formData.message.length >= 20 && !aiAnalysis && !isAnalyzing && (
+            /* Message Form with AI Analysis and Meeting Scheduler - All in One Form */
+            <div className="max-w-7xl mx-auto">
+              <div className="max-w-4xl mx-auto px-2">
+                <Card>
+                  <CardContent className="pt-6 px-4 sm:px-6">
+                    <form id="contact-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                      {/* Form Fields */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div>
+                          <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                            Full Name *
+                          </label>
+                          <Input
+                            id="name"
+                            name="name"
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            placeholder="Your full name"
+                            className="text-sm sm:text-base"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                            Email Address *
+                          </label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            required
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            placeholder="your.email@company.com"
+                            className="text-sm sm:text-base"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div>
+                          <label htmlFor="company" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                            Company / Organization
+                          </label>
+                          <Input
+                            id="company"
+                            name="company"
+                            type="text"
+                            value={formData.company}
+                            onChange={handleInputChange}
+                            placeholder="Your company name"
+                            className="text-sm sm:text-base"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="subject" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                            Subject *
+                          </label>
+                          <Input
+                            id="subject"
+                            name="subject"
+                            type="text"
+                            required
+                            value={formData.subject}
+                            onChange={handleInputChange}
+                            placeholder="What can I help you with?"
+                            className="text-sm sm:text-base"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                          Message *
+                        </label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          required
+                          rows={6}
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          placeholder="Tell me about your project, challenge, or opportunity..."
+                          className="resize-none text-sm sm:text-base"
+                        />
+                        {formData.message.length > 0 && formData.message.length < 20 && (
+                          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                            Type {20 - formData.message.length} more characters to get AI analysis
+                          </p>
+                        )}
+                                                 {formData.message.length >= 20 && !aiAnalysis && !isAnalyzing && (
                            <p className="text-xs sm:text-sm text-blue-600 mt-1">
-                             ✨ AI analysis available! Fill in more details for enhanced insights.
+                             ✨ Analysis will start in 1.5 seconds after you stop typing...
                            </p>
                          )}
-                       </div>
+                         {formData.message.length >= 20 && isAnalyzing && (
+                           <p className="text-xs sm:text-sm text-blue-600 mt-1 flex items-center gap-2">
+                             <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                             Analyzing your message...
+                           </p>
+                         )}
+                         {formData.message.length >= 20 && aiAnalysis && !isAnalyzing && (
+                           <p className="text-xs sm:text-sm text-green-600 mt-1 flex items-center gap-2">
+                             <CheckCircle className="h-3 w-3" />
+                             ✅ Analysis complete
+                           </p>
+                         )}
+                      </div>
 
-                       {/* AI Analysis - Above Meeting Scheduler */}
+                                             {/* Message Analysis - Above Meeting Scheduler */}
                        {(aiAnalysis || isAnalyzing) && (
                          <div className="pt-3 sm:pt-4 border-t border-gray-200">
                            <AIContactAnalysis 
@@ -754,19 +822,17 @@ Roger Lee Cormier`,
                          </div>
                        )}
 
-                                               {/* AI Meeting Scheduler - Below AI Analysis */}
+                                               {/* Meeting Scheduler - Below Analysis */}
                         {aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && showMeetingScheduler && !showMessageForm && (
                           <div className="pt-3 sm:pt-4 border-t border-gray-200">
                             <AIMeetingScheduler
                               analysis={aiAnalysis}
-                              onMeetingScheduled={handleMeetingScheduled}
-                              onSendMessageInstead={handleSendMessageInstead}
                               className="border-l-4 border-l-teal-500"
                             />
                           </div>
                         )}
 
-                       {/* Dynamic Action Button - Always at the bottom */}
+                                             {/* Dynamic Action Button - Always at the bottom */}
                        <div className="pt-3 sm:pt-4 border-t border-gray-200">
                          <DynamicActionButton
                            aiAnalysis={aiAnalysis}
@@ -774,24 +840,44 @@ Roger Lee Cormier`,
                            meetingScheduled={meetingScheduled}
                            showMessageForm={showMessageForm}
                            isSubmitting={isSubmitting}
-                           isScheduleMode={false}
+                           onScheduleMeeting={handleScheduleMeeting}
                          />
+                         
+                         {/* Send Message Instead Link - Only show when meeting is recommended */}
+                         {aiAnalysis && aiAnalysis.shouldScheduleMeeting && !meetingScheduled && !showMessageForm && (
+                           <div className="text-center mt-3">
+                             <button
+                               onClick={handleSendMessageInstead}
+                               className="inline-flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 hover:underline transition-colors"
+                             >
+                               <MessageSquare className="h-4 w-4" />
+                               <span>Or just send a message instead</span>
+                             </button>
+                           </div>
+                         )}
                        </div>
-                     </form>
-                   </CardContent>
-                 </Card>
-               </div>
-             </div>
-          )}
-
-          {error && (
-            <div className="mt-4 sm:mt-6 bg-red-50 border border-red-200 rounded-md p-3 max-w-2xl mx-auto">
-              <p className="text-red-600 text-xs sm:text-sm flex items-center gap-2">
-                <span className="text-red-500">⚠</span>
-                {error}
-              </p>
+                    </form>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           )}
+
+                     {error && (
+             <div className="mt-4 sm:mt-6 bg-red-50 border border-red-200 rounded-md p-3 max-w-2xl mx-auto">
+               <p className="text-red-600 text-xs sm:text-sm flex items-center gap-2">
+                 <span className="text-red-500">⚠</span>
+                 {error}
+               </p>
+             </div>
+           )}
+
+           {/* AI Disclosure */}
+           <div className="mt-8 sm:mt-12 text-center">
+             <p className="text-xs text-gray-400">
+               This site uses artificial intelligence to enhance your experience and provide personalized recommendations.
+             </p>
+           </div>
         </div>
       </div>
     )

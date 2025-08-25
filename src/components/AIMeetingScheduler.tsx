@@ -2,34 +2,22 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, CheckCircle, Calendar, MessageSquare, AlertCircle } from 'lucide-react'
+import { MapPin, AlertCircle } from 'lucide-react'
 import { format, addDays } from 'date-fns'
 import { cn } from '@/lib/utils'
 import type { AIAnalysisResult } from '@/api/aiContactAnalyzer'
 
 interface AIMeetingSchedulerProps {
   analysis: AIAnalysisResult
-  onMeetingScheduled: (meetingData: MeetingData) => void
-  onSendMessageInstead?: () => void
   className?: string
 }
 
-// Use the same interface as ContactPage to avoid conflicts
-interface MeetingData {
-  date: Date
-  time: string
-  duration: string
-  type: string
-  timezone: string
-  analysis: AIAnalysisResult
-}
 
-export function AIMeetingScheduler({ analysis, onMeetingScheduled, onSendMessageInstead, className }: AIMeetingSchedulerProps) {
+
+export function AIMeetingScheduler({ analysis, className }: AIMeetingSchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [userTimezone, setUserTimezone] = useState<string>('')
-  const [isScheduling, setIsScheduling] = useState(false)
-  const [scheduled, setScheduled] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Get user's timezone and recommend available slots
@@ -81,37 +69,7 @@ export function AIMeetingScheduler({ analysis, onMeetingScheduled, onSendMessage
     }
   }
 
-  const handleScheduleMeeting = async () => {
-    if (!selectedDate || !selectedTime) {
-      setError('Please select both date and time')
-      return
-    }
-    
-    setIsScheduling(true)
-    setError(null)
-    
-    try {
-      const meetingData: MeetingData = {
-        date: selectedDate,
-        time: selectedTime,
-        duration: analysis.meetingDuration,
-        type: analysis.meetingType,
-        timezone: userTimezone,
-        analysis
-      }
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      onMeetingScheduled(meetingData)
-      setScheduled(true)
-      
-    } catch {
-      setError('Failed to schedule meeting. Please try again.')
-    } finally {
-      setIsScheduling(false)
-    }
-  }
+
 
   // Validate business hours (basic validation) - can be used for future enhancements
   // const isValidTime = (time: string) => {
@@ -119,26 +77,7 @@ export function AIMeetingScheduler({ analysis, onMeetingScheduled, onSendMessage
   //   return hour >= 9 && hour <= 17 // 9 AM to 5 PM
   // }
 
-  if (scheduled) {
-    return (
-      <Card className={`border-l-4 border-l-green-500 ${className}`}>
-        <CardContent className="pt-6">
-          <div className="text-center py-6">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Meeting Scheduled Successfully!
-            </h3>
-            <p className="text-gray-600 mb-4">
-              You'll receive a confirmation email with meeting details shortly.
-            </p>
-            <Badge variant="outline" className="text-sm">
-              {format(selectedDate!, 'EEEE, MMMM do, yyyy')} at {selectedTime}
-            </Badge>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
+
 
   // Show error state
   if (error && !selectedDate && !selectedTime) {
@@ -173,7 +112,7 @@ export function AIMeetingScheduler({ analysis, onMeetingScheduled, onSendMessage
           <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
             📅
           </div>
-          AI-Recommended Meeting
+          Recommended Meeting
           <Badge variant="outline" className="text-xs">
             {analysis.meetingType.replace('-', ' ')}
           </Badge>
@@ -181,10 +120,10 @@ export function AIMeetingScheduler({ analysis, onMeetingScheduled, onSendMessage
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {/* AI Meeting Recommendation */}
+        {/* Meeting Recommendation */}
         <div className="p-3 bg-teal-50 rounded-lg border border-teal-200">
           <p className="text-sm text-teal-800">
-            <strong>AI Recommendation:</strong> Based on your inquiry, I recommend scheduling a{' '}
+            <strong>Recommendation:</strong> Based on your inquiry, I recommend scheduling a{' '}
             <strong>{analysis.meetingDuration}</strong> {analysis.meetingType.replace('-', ' ')} meeting.
           </p>
         </div>
@@ -265,42 +204,12 @@ export function AIMeetingScheduler({ analysis, onMeetingScheduled, onSendMessage
           <span>Your timezone: {userTimezone}</span>
         </div>
 
-        {/* Instructions */}
-        <div className="text-center p-3 bg-teal-50 rounded-lg border border-teal-200">
-          <p className="text-sm text-teal-800 mb-2">
-            <strong>Use the meeting scheduler above</strong> to select your preferred date and time, then click the "Schedule Meeting" button in the scheduler.
-          </p>
-        </div>
-
-        {/* Schedule Button */}
-        <Button
-          onClick={handleScheduleMeeting}
-          disabled={!selectedDate || !selectedTime || isScheduling}
-          className="w-full bg-teal-600 hover:bg-teal-700 text-white"
-        >
-          {isScheduling ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-              Scheduling Meeting...
-            </>
-          ) : (
-            <>
-              <Calendar className="h-4 w-4 mr-2" />
-              Schedule Meeting
-            </>
-          )}
-        </Button>
-
-        {/* Send Message Instead Link */}
-        <div className="text-center">
-          <button
-            onClick={onSendMessageInstead || (() => window.location.href = '#contact-form')}
-            className="inline-flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 hover:underline transition-colors"
-          >
-            <MessageSquare className="h-4 w-4" />
-            <span>Or just send a message instead</span>
-          </button>
-        </div>
+                 {/* Instructions */}
+         <div className="text-center p-3 bg-teal-50 rounded-lg border border-teal-200">
+           <p className="text-sm text-teal-800 mb-2">
+             <strong>Use the meeting scheduler above</strong> to select your preferred date and time, then use the button below to schedule your meeting.
+           </p>
+         </div>
       </CardContent>
     </Card>
   )

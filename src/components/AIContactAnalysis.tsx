@@ -92,10 +92,10 @@ export function AIContactAnalysis({ analysis, isLoading, className, onRetry }: A
         clearTimeout(searchTimeoutRef.current)
       }
       
-      // Set new timeout for debounced search
+      // Set new timeout for debounced search - longer delay for better UX
       searchTimeoutRef.current = setTimeout(() => {
         performSearch(analysis)
-      }, 300)
+      }, 500) // Increased from 300ms to 500ms for smoother experience
     }
     
     // Cleanup timeout on unmount
@@ -185,12 +185,12 @@ export function AIContactAnalysis({ analysis, isLoading, className, onRetry }: A
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-            🤖
+            📊
           </div>
-          AI Analysis Results
+          Message Analysis
           {analysis.fallback && (
             <Badge variant="outline" className="text-xs">
-              Fallback Mode
+              Basic Analysis
             </Badge>
           )}
         </CardTitle>
@@ -272,7 +272,7 @@ export function AIContactAnalysis({ analysis, isLoading, className, onRetry }: A
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <CheckCircle className="w-4 h-4" />
-                AI-Recommended Portfolio Pages
+                Recommended Portfolio Pages
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {relevantPortfolioContent.map((content, index) => (
@@ -336,11 +336,11 @@ export function AIContactAnalysis({ analysis, isLoading, className, onRetry }: A
             <div className="flex items-center gap-2 text-yellow-800">
               <AlertCircle className="w-4 h-4" />
               <span className="text-sm font-medium">
-                AI Analysis Unavailable
+                Advanced Analysis Unavailable
               </span>
             </div>
             <p className="text-xs text-yellow-700 mt-1">
-              Using fallback analysis. AI features may be limited.
+              Using basic analysis. Some features may be limited.
             </p>
           </div>
         )}
