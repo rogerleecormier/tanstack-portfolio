@@ -22,10 +22,10 @@ export default function AppLayout() {
             </main>
             <TableOfContents />
           </div>
+          {/* Footer is now INSIDE the main flex column, positioned between sidebar and right edge */}
+          <Footer />
         </div>
       </div>
-      {/* Footer is now OUTSIDE the main flex column */}
-      <Footer />
     </SidebarProvider>
   )
 }

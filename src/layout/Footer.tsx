@@ -3,9 +3,9 @@ import { FaLinkedin, FaGithub } from 'react-icons/fa'
 
 export default function Footer() {
   return (
-    <footer className="bg-teal-700 text-teal-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <div className="text-center space-y-6">
+    <footer className="bg-teal-700 text-teal-50 w-full">
+      <div className="w-full px-4 sm:px-6 py-8">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
           {/* Name and Title */}
           <div>
             <h3 className="text-xl font-bold text-white">Roger Lee Cormier</h3>
