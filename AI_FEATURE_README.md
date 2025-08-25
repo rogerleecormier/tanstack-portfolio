@@ -36,6 +36,12 @@ The portfolio leverages **Cloudflare AI Workers** with **Llama 2** to provide in
 - **Expertise Matching**: Connects inquiries with relevant portfolio expertise areas
 - **Case Study Suggestions**: Recommends relevant project examples and case studies
 
+### **5. Smart Email Integration**
+- **Meeting Confirmation Emails**: AI-generated meeting confirmation emails with original message content
+- **Intelligent Email Templates**: Dynamic email formatting based on inquiry type and meeting status
+- **Original Message Preservation**: Ensures user's original message content is included in meeting confirmations
+- **Professional Email Formatting**: Context-aware email templates that distinguish between contact submissions and meeting confirmations
+
 ## 🔧 **Technical Implementation**
 
 ### **AI Worker Architecture**
@@ -99,6 +105,12 @@ export const analyzeContactInquiry = async (message: string): Promise<AIAnalysis
 - **Technical Skills**: Relevant technical competencies
 - **Industry Experience**: Pertinent industry background
 
+### **Email Intelligence**
+- **Meeting Confirmation Format**: Structured meeting confirmation emails with all relevant details
+- **Original Message Inclusion**: Preserves and displays user's original message content
+- **Contact Information**: Comprehensive contact details for follow-up
+- **Context-Aware Templates**: Different email formats for contact submissions vs meeting confirmations
+
 ## 🎯 **Use Cases & Examples**
 
 ### **Enterprise Project Inquiry**
@@ -144,6 +156,18 @@ AI Analysis:
 - Urgency: immediate
 - Meeting Duration: 30 minutes
 - Recommendations: DevOps, Project Analysis sections
+```
+
+### **Meeting Confirmation Email**
+```
+Original Message: "I'd like to discuss implementing DevOps practices in our healthcare organization."
+
+Meeting Confirmation Email Content:
+- Meeting Request from [User Name]
+- Meeting Details: Date, time, duration, type
+- Original Message: [User's actual message content]
+- Contact Information: Name, email, company
+- Context: AI-generated meeting request
 ```
 
 ## 🚀 **Deployment & Configuration**

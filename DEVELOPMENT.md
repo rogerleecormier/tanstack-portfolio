@@ -303,36 +303,45 @@ export default {
 ```
 
 ### **Email Template Generation**
-```typescript
-// Helper functions for email templates
-const generateEmailHTML = (emailData: EmailData): string => `
-  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-    <h2 style="color: #1f2937; border-bottom: 2px solid #10b981; padding-bottom: 10px;">
-      New Contact Form Submission
-    </h2>
-    
-    <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-      <h3 style="color: #374151; margin-top: 0;">Contact Details</h3>
-      <p><strong>Name:</strong> ${emailData.from_name}</p>
-      <p><strong>Email:</strong> <a href="mailto:${emailData.from_email}">${emailData.from_email}</a></p>
-      <p><strong>Company:</strong> ${emailData.company || 'Not specified'}</p>
-      <p><strong>Subject:</strong> ${emailData.subject}</p>
-    </div>
-    
-    <div style="background: #ffffff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
-      <h3 style="color: #374151; margin-top: 0;">Message</h3>
-      <p style="white-space: pre-wrap; line-height: 1.6;">${emailData.message}</p>
-    </div>
-    
-    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-      <p>This message was sent from your portfolio contact form at rcormier.dev</p>
-      <p>Reply directly to: <a href="mailto:${emailData.from_email}">${emailData.from_email}</a></p>
-    </div>
-  </div>
-`;
+The email system now supports intelligent template generation with context-aware formatting:
 
-const generateEmailText = (emailData: EmailData): string => `
-New Contact Form Submission
+```typescript
+// Helper functions for email templates with meeting confirmation support
+const generateEmailHTML = (emailData: EmailData): string => {
+  const isMeetingConfirmation = emailData.subject && emailData.subject.includes('Meeting Confirmed');
+  
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #1f2937; border-bottom: 2px solid #10b981; padding-bottom: 10px;">
+        ${isMeetingConfirmation ? 'Meeting Confirmation' : 'New Contact Form Submission'}
+      </h2>
+      
+      <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="color: #374151; margin-top: 0;">Contact Details</h3>
+        <p><strong>Name:</strong> ${emailData.from_name}</p>
+        <p><strong>Email:</strong> <a href="mailto:${emailData.from_email}">${emailData.from_email}</a></p>
+        <p><strong>Company:</strong> ${emailData.company || 'Not specified'}</p>
+        <p><strong>Subject:</strong> ${emailData.subject}</p>
+      </div>
+      
+      <div style="background: #ffffff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+        <h3 style="color: #374151; margin-top: 0;">${isMeetingConfirmation ? 'Meeting Details & Original Message' : 'Message'}</h3>
+        <p style="white-space: pre-wrap; line-height: 1.6;">${emailData.message}</p>
+      </div>
+      
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
+        <p>This message was sent from your portfolio contact form at rcormier.dev</p>
+        <p>Reply directly to: <a href="mailto:${emailData.from_email}">${emailData.from_email}</a></p>
+      </div>
+    </div>
+  `;
+};
+
+const generateEmailText = (emailData: EmailData): string => {
+  const isMeetingConfirmation = emailData.subject && emailData.subject.includes('Meeting Confirmed');
+  
+  return `
+${isMeetingConfirmation ? 'Meeting Confirmation' : 'New Contact Form Submission'}
 
 Contact Details:
 Name: ${emailData.from_name}
@@ -340,13 +349,55 @@ Email: ${emailData.from_email}
 Company: ${emailData.company || 'Not specified'}
 Subject: ${emailData.subject}
 
-Message:
+${isMeetingConfirmation ? 'Meeting Details & Original Message:' : 'Message:'}
 ${emailData.message}
 
 ---
 This message was sent from your portfolio contact form at rcormier.dev
 Reply directly to: ${emailData.from_email}
-`;
+  `;
+};
+```
+```
+
+### **Meeting Confirmation Email System**
+The contact form now includes intelligent meeting confirmation emails that preserve the original user message:
+
+```typescript
+// src/pages/ContactPage.tsx - Meeting confirmation email generation
+const sendConfirmationEmail = async (meetingData: MeetingData) => {
+  try {
+    const confirmationData = {
+      to_name: formData.name || 'User',
+      from_name: 'Roger Lee Cormier',
+      from_email: 'roger@rcormier.dev',
+      company: 'Roger Lee Cormier',
+      subject: `Meeting Confirmed: ${meetingData.type} on ${format(meetingData.date, 'MMM do, yyyy')}`,
+      message: `Meeting Request from ${formData.name || 'User'}
+
+Meeting Details:
+- Date: ${format(meetingData.date, 'EEEE, MMMM do, yyyy')}
+- Time: ${meetingData.time} (${meetingData.timezone})
+- Duration: ${meetingData.duration}
+- Type: ${meetingData.type.replace('-', ' ')}
+
+Original Message:
+${formData.message}
+
+Contact Information:
+- Name: ${formData.name}
+- Email: ${formData.email}
+- Company: ${formData.company || 'Not specified'}
+
+This meeting request was generated based on AI analysis of their contact form submission.`,
+      reply_to: 'roger@rcormier.dev'
+    };
+
+    await sendEmail(confirmationData);
+  } catch {
+    // Silently handle confirmation email failure
+  }
+};
 ```
 
 ### **Development vs Production Email Configuration**
