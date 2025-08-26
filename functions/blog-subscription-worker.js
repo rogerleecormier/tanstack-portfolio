@@ -118,13 +118,23 @@ async function handleSubscribe(env, email, name, preferences) {
   await env.BLOG_SUBSCRIPTIONS.put(subscriptionKey, JSON.stringify(subscription));
 
   // Send welcome email
-  await sendWelcomeEmail(env, subscription);
-
-  return {
-    success: true,
-    message: 'Successfully subscribed to our newsletter! Check your email for confirmation.',
-    subscription
-  };
+  try {
+    await sendWelcomeEmail(env, subscription);
+    return {
+      success: true,
+      message: 'Successfully subscribed to our newsletter! Check your email for confirmation.',
+      subscription
+    };
+  } catch (emailError) {
+    console.error('Failed to send welcome email, but subscription was stored:', emailError);
+    // Return success but with a warning about email
+    return {
+      success: true,
+      message: 'Successfully subscribed to our newsletter! However, there was an issue sending the confirmation email. Please check your spam folder or contact support.',
+      subscription,
+      emailWarning: true
+    };
+  }
 }
 
 // Handle unsubscription
@@ -148,13 +158,23 @@ async function handleUnsubscribe(env, email) {
   await env.BLOG_SUBSCRIPTIONS.put(subscriptionKey, JSON.stringify(subscription));
 
   // Send confirmation email
-  await sendUnsubscribeEmail(env, subscription);
-
-  return {
-    success: true,
-    message: 'Successfully unsubscribed from our newsletter.',
-    subscription
-  };
+  try {
+    await sendUnsubscribeEmail(env, subscription);
+    return {
+      success: true,
+      message: 'Successfully unsubscribed from our newsletter.',
+      subscription
+    };
+  } catch (emailError) {
+    console.error('Failed to send unsubscribe email, but unsubscription was processed:', emailError);
+    // Return success but with a warning about email
+    return {
+      success: true,
+      message: 'Successfully unsubscribed from our newsletter. However, there was an issue sending the confirmation email.',
+      subscription,
+      emailWarning: true
+    };
+  }
 }
 
 // Handle preference updates
@@ -211,6 +231,12 @@ async function handleCheckStatus(env, email) {
 // Send welcome email
 async function sendWelcomeEmail(env, subscription) {
   try {
+    // Check if RESEND_KEY is configured
+    if (!env.RESEND_KEY) {
+      console.error('RESEND_KEY is not configured in environment variables');
+      throw new Error('Email service not configured - missing API key');
+    }
+
     const emailData = {
       from: 'noreply@rcormier.dev',
       to: [subscription.email],
@@ -219,26 +245,44 @@ async function sendWelcomeEmail(env, subscription) {
       text: generateWelcomeEmailText(subscription),
     };
 
+    console.log('Attempting to send welcome email to:', subscription.email);
+    console.log('Using API key:', env.RESEND_KEY ? 'Configured' : 'Missing');
+
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Authorization': `Bearer ${env.RESEND_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(emailData),
     });
 
     if (!response.ok) {
-      console.error('Failed to send welcome email:', await response.json());
+      const errorData = await response.json();
+      console.error('Failed to send welcome email:', errorData);
+      console.error('Response status:', response.status);
+      console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+      throw new Error(`Resend API error: ${response.status} - ${JSON.stringify(errorData)}`);
+    } else {
+      const result = await response.json();
+      console.log('Welcome email sent successfully:', result);
     }
   } catch (error) {
     console.error('Error sending welcome email:', error);
+    // Re-throw the error so the calling function can handle it
+    throw error;
   }
 }
 
 // Send unsubscribe confirmation email
 async function sendUnsubscribeEmail(env, subscription) {
   try {
+    // Check if RESEND_KEY is configured
+    if (!env.RESEND_KEY) {
+      console.error('RESEND_KEY is not configured in environment variables');
+      throw new Error('Email service not configured - missing API key');
+    }
+
     const emailData = {
       from: 'noreply@rcormier.dev',
       to: [subscription.email],
@@ -247,20 +291,31 @@ async function sendUnsubscribeEmail(env, subscription) {
       text: generateUnsubscribeEmailText(subscription),
     };
 
+    console.log('Attempting to send unsubscribe email to:', subscription.email);
+
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Authorization': `Bearer ${env.RESEND_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(emailData),
     });
 
     if (!response.ok) {
-      console.error('Failed to send unsubscribe email:', await response.json());
+      const errorData = await response.json();
+      console.error('Failed to send unsubscribe email:', errorData);
+      console.error('Response status:', response.status);
+      console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+      throw new Error(`Resend API error: ${response.status} - ${JSON.stringify(errorData)}`);
+    } else {
+      const result = await response.json();
+      console.log('Unsubscribe email sent successfully:', result);
     }
   } catch (error) {
     console.error('Error sending unsubscribe email:', error);
+    // Re-throw the error so the calling function can handle it
+    throw error;
   }
 }
 

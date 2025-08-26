@@ -17,3 +17,7 @@ preview_id = "6d69753cb29f41e6a00b9fab9e301018"  # Preview KV namespace ID
 
 # Add Resend API key as a secret
 # Run: wrangler secret put RESEND_API_KEY --config wrangler-blog-subscription.toml
+
+# Environment variables
+[vars]
+RESEND_KEY = ""  # This will be overridden by the secret
