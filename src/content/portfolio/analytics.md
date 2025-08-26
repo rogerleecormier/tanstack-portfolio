@@ -58,7 +58,7 @@ I use analytics to surface **delivery risks, inefficiencies, and opportunities**
 
 ---
 
-## 🔧 Tools
+## 🔧 Tools & Platforms
 - **Automation & ETL:** Python, SQL, Power Automate, Box API  
 - **Dashboards:** Smartsheet, Excel, Asana AI  
 - **Statistical Tools:** Excel Analysis ToolPak, regression models  

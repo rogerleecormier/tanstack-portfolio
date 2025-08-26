@@ -4,8 +4,27 @@ import Header from './Header'
 import Footer from './Footer'
 import { AppSidebar } from '@/components/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import SiteAssistant from '@/components/AIPortfolioAssistant'
+import { loadPortfolioItems } from '@/utils/portfolioUtils'
+import { useEffect, useState } from 'react'
+import { PortfolioItem } from '@/utils/portfolioUtils'
 
 export default function AppLayout() {
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
+
+  useEffect(() => {
+    const loadItems = async () => {
+      try {
+        const items = await loadPortfolioItems()
+        setPortfolioItems(items)
+      } catch (error) {
+        console.error('Error loading portfolio items for AI assistant:', error)
+      }
+    }
+
+    loadItems()
+  }, [])
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex bg-gray-50">
@@ -24,6 +43,14 @@ export default function AppLayout() {
           <Footer />
         </div>
       </div>
+      
+      {/* Site Assistant - Available on all pages */}
+      <SiteAssistant 
+        portfolioItems={portfolioItems}
+        onItemSelect={(item) => {
+          window.location.href = `/${item.url}`
+        }}
+      />
     </SidebarProvider>
   )
 }

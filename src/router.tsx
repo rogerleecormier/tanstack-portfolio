@@ -55,46 +55,38 @@ const blogPostRoute = createRoute({
   component: BlogPostWrapper
 })
 
-// Analytics route
-const analyticsRoute = createRoute({
+// Dynamic portfolio route - handles all portfolio pages
+const portfolioItemRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'analytics',
-  component: () => <MarkdownPage file="portfolio/analytics" />
-})
-
-// Strategy route
-const strategyRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'strategy',
-  component: () => <MarkdownPage file="portfolio/strategy" />
-})
-
-// Leadership route
-const leadershipRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'leadership',
-  component: () => <MarkdownPage file="portfolio/leadership" />
-})
-
-// Talent route
-const talentRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'talent',
-  component: () => <MarkdownPage file="portfolio/talent" />
-})
-
-// DevOps route
-const devopsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'devops',
-  component: () => <MarkdownPage file="portfolio/devops" />
-})
-
-// SaaS route
-const saasRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'saas',
-  component: () => <MarkdownPage file="portfolio/saas" />
+  path: '$slug',
+  component: () => {
+    // Get the slug from the URL
+    const slug = window.location.pathname.slice(1) // Remove leading slash
+    
+    // Map slug to portfolio file
+    const fileMap: Record<string, string> = {
+      'strategy': 'portfolio/strategy',
+      'leadership': 'portfolio/leadership',
+      'talent': 'portfolio/talent',
+      'devops': 'portfolio/devops',
+      'saas': 'portfolio/saas',
+      'analytics': 'portfolio/analytics',
+      'risk-compliance': 'portfolio/risk-compliance',
+      'governance-pmo': 'portfolio/governance-pmo',
+      'product-ux': 'portfolio/product-ux',
+      'military-leadership': 'portfolio/military-leadership',
+      'education-certifications': 'portfolio/education-certifications',
+      'ai-automation': 'portfolio/ai-automation'
+    }
+    
+    const file = fileMap[slug]
+    if (file) {
+      return <MarkdownPage file={file} />
+    }
+    
+    // If not found, return 404
+    return <NotFound />
+  }
 })
 
 // Project Analysis route (moved to projects)
@@ -103,48 +95,6 @@ const projectAnalysisRoute = createRoute({
   path: 'project-analysis',
   component: () => <MarkdownPage file="projects/project-analysis" />
 })
-
-// Strategy & Consulting routes
-const strategicPlanningRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'strategic-planning',
-  component: () => <MarkdownPage file="portfolio/strategic-planning" />
-})
-
-const digitalTransformationRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'digital-transformation',
-  component: () => <MarkdownPage file="portfolio/digital-transformation" />
-})
-
-const projectPortfolioManagementRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'project-portfolio-management',
-  component: () => <MarkdownPage file="projects/project-analysis" />
-})
-
-// Leadership & Culture routes
-const teamLeadershipRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'team-leadership',
-  component: () => <MarkdownPage file="portfolio/team-leadership" />
-})
-
-// Technology & Operations routes
-const erpSystemsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'erp-systems',
-  component: () => <MarkdownPage file="portfolio/erp-systems" />
-})
-
-// Data & Analytics routes
-const dataAnalyticsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'data-analytics',
-  component: () => <MarkdownPage file="portfolio/data-analytics" />
-})
-
-
 
 // Health Bridge Analysis route
 const healthBridgeAnalysisRoute = createRoute({
@@ -189,23 +139,11 @@ const cloudflareStatusRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   portfolioRoute,
-  analyticsRoute,
-  strategyRoute,
-  leadershipRoute,
-  talentRoute,
-  devopsRoute,
-  saasRoute,
+  portfolioItemRoute,
   projectAnalysisRoute,
-  // New portfolio routes
-  strategicPlanningRoute,
-  digitalTransformationRoute,
-  projectPortfolioManagementRoute,
-  teamLeadershipRoute,
-  erpSystemsRoute,
-  dataAnalyticsRoute,
+  healthBridgeAnalysisRoute,
   blogListRoute,
   blogPostRoute,
-  healthBridgeAnalysisRoute,
   contactRoute,
   privacyRoute,
   protectedRoute,

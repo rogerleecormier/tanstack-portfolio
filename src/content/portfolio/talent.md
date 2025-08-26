@@ -7,7 +7,7 @@ I specialize in **organizational behavior, workforce design, and talent innovati
 
 ---
 
-## 🏥 Healthcare
+## 🏥 Healthcare & Government
 
 ### Army Health Clinic Modernization
 **Role:** Research Lead & Co-author  
@@ -21,7 +21,7 @@ I specialize in **organizational behavior, workforce design, and talent innovati
 
 ---
 
-## 💰 Compensation
+## 💰 Compensation & Acquisition
 
 ### Strategic Offer Design Simulation
 **Role:** Negotiation Lead  
@@ -34,7 +34,7 @@ I specialize in **organizational behavior, workforce design, and talent innovati
 
 ---
 
-## 📚 Learning
+## 📚 Learning & Development
 
 ### Workforce Capability Development
 **Role:** Program Architect  
@@ -72,7 +72,7 @@ I specialize in **organizational behavior, workforce design, and talent innovati
 
 ---
 
-## 🔄 Change
+## 🔄 Change & Consulting
 
 ### Microsoft IT Support Transformation
 **Role:** Strategy Designer & Analyst  
@@ -83,7 +83,7 @@ I specialize in **organizational behavior, workforce design, and talent innovati
 
 ---
 
-## 🤝 DEI
+## 🤝 Diversity, Equity & Inclusion
 
 ### Inclusive Leadership in Hybrid Environments
 **Focus:** Equitable Policy & Team Dynamics  
