@@ -11,7 +11,8 @@ import {
   User, 
   Tag, 
   BookOpen,
-  Filter
+  Filter,
+  X
 } from 'lucide-react'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { 
@@ -38,6 +39,7 @@ export default function BlogListPage() {
   const [postsPerPage] = useState(6)
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [isTagFilterOpen, setIsTagFilterOpen] = useState(false)
 
   // Load blog posts
   useEffect(() => {
@@ -97,6 +99,10 @@ export default function BlogListPage() {
     setSelectedTags([])
   }
 
+  const closeTagFilter = () => {
+    setIsTagFilterOpen(false)
+  }
+
   // Intersection Observer for infinite scroll
   const loadingRef = useCallback((node: HTMLDivElement | null) => {
     if (node !== null) {
@@ -147,6 +153,14 @@ export default function BlogListPage() {
               className="pl-10"
             />
           </div>
+          <Button 
+            variant="outline" 
+            onClick={() => setIsTagFilterOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Filter className="w-4 h-4" />
+            Tags {selectedTags.length > 0 && `(${selectedTags.length})`}
+          </Button>
           {(searchQuery || selectedTags.length > 0) && (
             <Button variant="outline" onClick={clearFilters}>
               Clear Filters
@@ -154,29 +168,80 @@ export default function BlogListPage() {
           )}
         </div>
 
-        {/* Tags Filter */}
-        {allTags.length > 0 && (
+        {/* Selected Tags Display */}
+        {selectedTags.length > 0 && (
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <Filter className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by tags:</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Active filters:</span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {allTags.map((tag) => (
+              {selectedTags.map((tag) => (
                 <Badge
                   key={tag}
-                  variant={selectedTags.includes(tag) ? 'default' : 'outline'}
-                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                  variant="default"
+                  className="cursor-pointer hover:bg-teal-700"
                   onClick={() => toggleTag(tag)}
                 >
                   <Tag className="h-3 w-3 mr-1" />
                   {tag}
+                  <X className="h-3 w-3 ml-1" />
                 </Badge>
               ))}
             </div>
           </div>
         )}
       </div>
+
+      {/* Tag Filter Modal */}
+      {isTagFilterOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Filter by Tags
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={closeTagFilter}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              <div className="flex flex-wrap gap-2">
+                {allTags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant={selectedTags.includes(tag) ? 'default' : 'outline'}
+                    className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    onClick={() => toggleTag(tag)}
+                  >
+                    <Tag className="h-3 w-3 mr-1" />
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between p-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {selectedTags.length} tag{selectedTags.length !== 1 ? 's' : ''} selected
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={clearFilters}>
+                  Clear All
+                </Button>
+                <Button onClick={closeTagFilter}>
+                  Apply Filters
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Blog Posts Grid */}
       {isLoading ? (
