@@ -1,7 +1,7 @@
 # Security Documentation
 
 ## Overview
-This document outlines the security measures implemented in the TanStack Portfolio application to protect against common web vulnerabilities and ensure secure authentication and data handling.
+This document outlines the comprehensive security measures implemented in the TanStack Portfolio application, including general security features, AI-specific security hardening, and best practices for protecting against common web vulnerabilities.
 
 ## Security Features Implemented
 
@@ -14,12 +14,74 @@ This document outlines the security measures implemented in the TanStack Portfol
 - **Environment Validation**: Strict environment detection to prevent spoofing
 
 #### Production Mode Security
-- **Cloudflare Access**: Enterprise-grade Zero Trust authentication
-- **Email-based Access Control**: Configurable user permissions
+- **Cloudflare Access**: Zero Trust with email-based authentication
+- **Email Validation**: Access controlled by configured email addresses and domains
 - **Automatic Logout**: Session management with proper cleanup
 - **HTTPS Enforcement**: All communications encrypted
 
-### 2. Input Validation & Sanitization
+### 2. AI Contact Form Security Hardening
+
+#### Input Validation & Sanitization
+- **Enhanced Input Validation**: Strict character limits for all form fields
+- **Format Validation**: Email format validation with regex patterns
+- **Content Filtering**: XSS prevention with angle bracket removal
+- **Honeypot Field**: Hidden field to catch automated spam submissions
+
+#### PII & Sensitive Data Scrubbing
+```javascript
+// Patterns detected and redacted:
+- Email addresses
+- Phone numbers  
+- Credit card numbers
+- Social Security numbers
+- API keys and tokens
+- OAuth credentials
+- URLs and suspicious links
+```
+
+#### Multi-Level Rate Limiting
+- **Per-Minute**: 5 requests per minute (reduced from 10)
+- **Per-Hour**: 20 requests per hour
+- **Burst Protection**: 3 requests maximum burst
+- **IP-Based Tracking**: Uses Cloudflare KV for persistent tracking
+
+#### Suspicious Content Detection
+- **Crypto/Spam Patterns**: Detects cryptocurrency, SEO spam, financial scams
+- **Content Heuristics**: Flags messages with >50% URL/emoji density
+- **Automated Blocking**: Rejects submissions with multiple red flags
+
+### 3. Privacy & Data Protection
+
+#### Zero Data Storage
+- **No Content Logging**: Only timing and status codes logged
+- **PII Redaction**: All sensitive data replaced with placeholders
+- **GDPR Compliance**: No personal data is stored or processed for training
+- **Encrypted Processing**: All AI requests use encrypted communication
+
+#### Consent Management
+- **Explicit Consent**: Required checkbox for AI analysis
+- **Clear Purpose**: Transparent explanation of AI usage
+- **Revocable**: Users can opt out of AI features
+
+### 4. AI Model Security
+
+#### Strict JSON Schema Validation
+```typescript
+// Zod schema ensures:
+- Type safety for all AI responses
+- Enum validation for classification fields
+- Array length limits
+- Confidence score bounds
+- Required field validation
+```
+
+#### Enhanced System Prompts
+- **Security Policy**: Explicit instructions to never include PII
+- **Low Temperature**: 0.1 for consistent, deterministic classification
+- **Structured Output**: Enforced JSON schema compliance
+- **Content Boundaries**: Clear limits on AI response scope
+
+### 5. Input Validation & Sanitization
 
 #### Search Security
 - **XSS Prevention**: Input sanitization removes dangerous HTML/JavaScript
@@ -32,7 +94,7 @@ This document outlines the security measures implemented in the TanStack Portfol
 - **Input Sanitization**: All user inputs are sanitized before processing
 - **Content Validation**: Markdown content validation and sanitization
 
-### 3. API Security
+### 6. API Security
 
 #### External API Protection
 - **Request Validation**: All API responses validated before processing
@@ -45,7 +107,7 @@ This document outlines the security measures implemented in the TanStack Portfol
 - **Range Validation**: Data bounds checking (e.g., weight values 0-1000kg)
 - **Format Validation**: Date format and structure validation
 
-### 4. Content Security Policy (CSP)
+### 7. Content Security Policy (CSP)
 
 #### CSP Directives
 - **default-src**: Restricts resources to same origin
@@ -62,7 +124,7 @@ This document outlines the security measures implemented in the TanStack Portfol
 - **Referrer-Policy**: Controls referrer information
 - **Permissions-Policy**: Restricts browser features
 
-### 5. Environment Security
+### 8. Environment Security
 
 #### Development vs Production
 - **Strict Environment Detection**: Cannot be spoofed by client-side manipulation
@@ -207,8 +269,15 @@ If you discover a security vulnerability, please:
 - [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 - [Security Headers](https://securityheaders.com/)
 
+## 🔗 Related Documentation
+
+- **[ACCESS_CONTROL.md](./ACCESS_CONTROL.md)** - Authentication and access control configuration
+- **[CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)** - Cloudflare security setup
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Development security practices
+- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - AI features with security considerations
+
 ---
 
 **Last Updated**: December 2024  
-**Version**: 3.0  
+**Version**: 4.0  
 **Next Review**: March 2025

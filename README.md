@@ -1,172 +1,67 @@
 # Roger Lee Cormier Portfolio
 
-A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, advanced AI-powered features, interactive data visualization, and a fully functional contact form with Resend email integration.
+A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, AI-powered features, interactive data visualization, and a fully functional contact form with Resend email integration.
 
-## 🚀 Tech Stack
+## 🚀 Quick Start
 
-### **Frontend Framework**
-- **React 19** - Latest React with concurrent features and suspense
-- **TypeScript 5.8** - Full type safety and developer experience
-- **Vite 7** - Lightning-fast build tool and dev server
+```bash
+# Clone and install
+git clone <repository-url>
+cd tanstack-portfolio
+npm install
 
-### **Routing & State Management**
-- **TanStack Router v1** - Type-safe, file-based routing
-- **TanStack React Query v5** - Server state management and caching
-- **TanStack History** - Browser history management
+# Start development
+npm run dev
 
-### **UI & Styling**
-- **shadcn/ui** - Beautiful, accessible React components
-- **Tailwind CSS 3.4** - Utility-first CSS framework with custom design system
-- **Radix UI** - Headless UI primitives for accessibility
-- **Lucide React** - Beautiful, customizable icons
-- **Tailwind Typography** - Enhanced typography utilities
-
-### **Data Visualization**
-- **Recharts** - Composable charting library
-- **shadcn/ui Chart Components** - Pre-built chart components with consistent theming
-
-### **Search & Content**
-- **Fuse.js** - Powerful fuzzy search with configurable relevance scoring
-- **React Markdown** - Markdown rendering with syntax highlighting
-- **Gray Matter** - Frontmatter parsing for content metadata
-
-### **Authentication & Security**
-- **Cloudflare Access** - Enterprise-grade Zero Trust authentication
-- **Email-based Access Control** - Configurable user access management
-- **Development Mock Auth** - Local development authentication simulation
-
-### **Email & Contact**
-- **Resend** - Modern email API for reliable email delivery
-- **Cloudflare Workers** - Serverless functions for email processing
-- **Contact Form** - Professional contact form with spam protection
-
-### **AI & Machine Learning**
-- **Cloudflare AI Workers** - Serverless AI processing with Llama 2
-- **Real-time Analysis** - Intelligent contact form analysis
-- **Smart Recommendations** - AI-powered content suggestions
+# Build for production
+npm run build
+```
 
 ## ✨ Key Features
 
-### **🤖 AI-Powered Features**
-- **Intelligent Contact Analysis**: Real-time AI analysis of contact form submissions using Llama 2
-- **Dynamic Search Recommendations**: AI-powered search suggestions and content recommendations
-- **Smart Meeting Scheduler**: Intelligent meeting duration recommendations based on inquiry analysis
-- **Timezone Finder**: AI-assisted timezone detection and meeting scheduling
-- **Content Personalization**: AI-driven content recommendations based on user behavior
-- **Priority Classification**: Automatic inquiry prioritization and routing
+- **🤖 AI-Powered Assistant** - Site-wide intelligent recommendations and insights
+- **🔐 Enterprise Authentication** - Cloudflare Access with Zero Trust security
+- **📧 Smart Contact System** - AI-analyzed contact form with meeting scheduling
+- **🔍 Intelligent Search** - Fuse.js powered search across all content
+- **📊 Data Visualization** - Interactive charts and analytics
+- **📱 Responsive Design** - Mobile-first, accessible interface
+- **⚡ Auto-Generated Content** - Dynamic portfolio from markdown files
 
-### **🔐 Advanced Authentication System**
-- **Cloudflare Access Integration**: Enterprise-grade security with Zero Trust
-- **Dual-Mode Architecture**: Automatically switches between development and production
-- **Protected Routes**: Secure access to sensitive content and analysis tools
-- **Development Mode**: Mock authentication for local development and testing
-- **Email-based Access Control**: Configurable user permissions
+## 🏗️ Tech Stack
 
-### **📧 Professional Contact System**
-- **Smart Contact Flow**: Intuitive choice between "Quick Message" and "Schedule Meeting"
-- **AI-Powered Analysis**: Real-time analysis of inquiries with intelligent classification
-- **Resend Integration**: Modern, reliable email delivery via Resend API
-- **Cloudflare Worker**: Serverless email processing to avoid CORS issues
-- **Spam Protection**: Built-in spam prevention and validation
-- **Professional Templates**: Beautiful HTML email templates with branding
-- **Reply-to Functionality**: Easy response handling for inquiries
-- **Meeting Scheduling**: Native meeting scheduling with AI recommendations
-- **Enhanced UX**: Clear visual hierarchy with interactive choice cards and supporting information
-- **Intelligent Email Templates**: Context-aware email formatting for contact submissions vs meeting confirmations
-- **Original Message Preservation**: Meeting confirmation emails include the user's original message content
-- **Professional Email Structure**: Structured meeting confirmation emails with comprehensive contact information
+- **Frontend**: React 19 + TypeScript 5.8 + Vite 7
+- **Routing**: TanStack Router v1
+- **UI**: shadcn/ui + Tailwind CSS 3.4
+- **Search**: Fuse.js with AI enhancements
+- **Authentication**: Cloudflare Access (Zero Trust)
+- **Email**: Resend API + Cloudflare Workers
+- **AI**: Cloudflare AI Workers with Llama 2
+- **Charts**: Recharts + shadcn/ui Chart Components
 
-### **🔍 Intelligent Search System**
-- **Fuse.js Powered**: Fuzzy search with configurable relevance scoring
-- **AI-Enhanced Search**: Machine learning-powered search suggestions and content recommendations
-- **Global Content Search**: Search across all markdown content, pages, and documentation
-- **Real-time Results**: Debounced search with instant feedback
-- **Relevance Scoring**: Visual indicators showing match quality
-- **Keyboard Navigation**: ⌘K shortcut for quick access
-- **Dynamic Recommendations**: AI-powered content suggestions based on search patterns
+## 📚 Documentation
 
-### **📊 Interactive Data Analysis**
-- **HealthBridge Integration**: Protected health data analysis with dynamic filtering
-- **Advanced Charting**: Line charts, bar charts, and more with Recharts
-- **Dynamic Filtering**: Date ranges, custom periods, and real-time data aggregation
-- **Responsive Design**: Charts adapt to different screen sizes
-- **AI-Enhanced Insights**: Machine learning-powered data analysis and recommendations
+### **Core Documentation**
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive development guide, architecture, and implementation details
+- **[CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)** - Cloudflare Access and Workers setup guide
+- **[EMAIL_SYSTEM.md](./EMAIL_SYSTEM.md)** - Email system and meeting confirmation documentation
 
-### **📱 Modern User Experience**
-- **Responsive Sidebar**: Collapsible navigation with project organization
-- **Table of Contents**: Auto-generated TOC for markdown content
-- **Breadcrumb Navigation**: Clear path indication
-- **Mobile-First Design**: Optimized for all device sizes
-- **Interactive Contact Flow**: Engaging choice-based contact experience
-- **Enhanced Visual Feedback**: Hover effects, transforms, and clear interactive states
-- **AI-Powered UX**: Intelligent interface adaptations based on user behavior
+### **Feature Documentation**
+- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - AI-powered features, portfolio enhancements, and intelligent analysis
 
-### **🎨 Professional Design System**
-- **shadcn/ui Components**: Consistent, accessible UI components
-- **Custom Color Scheme**: Professional portfolio aesthetic
-- **Typography System**: Enhanced readability and hierarchy
-- **Dark Mode Support**: Built-in theme switching
+### **Security & Access Control**
+- **[SECURITY.md](./SECURITY.md)** - Comprehensive security features and best practices
+- **[ACCESS_CONTROL.md](./ACCESS_CONTROL.md)** - Authentication and access control configuration
 
-## 🏗️ Project Structure
-
-```
-src/
-├── components/           # React components
-│   ├── ui/             # shadcn/ui components
-│   │   ├── chart.tsx   # Recharts integration
-│   │   ├── button.tsx  # Button variants
-│   │   ├── card.tsx    # Card components
-│   │   └── ...         # Other UI components
-│   ├── AppSidebar.tsx  # Main navigation sidebar
-│   ├── AIContactAnalysis.tsx # AI-powered contact analysis
-│   ├── AIMeetingScheduler.tsx # AI meeting scheduling
-│   ├── Search.tsx      # Global search with AI recommendations
-│   └── ...             # Other components
-├── pages/               # Page components
-│   ├── MarkdownPage.tsx    # Markdown content renderer
-│   ├── ContactPage.tsx     # Smart contact flow with AI analysis
-│   ├── HealthBridge.tsx    # Protected health analysis
-│   └── NotFound.tsx        # 404 page
-├── content/             # Markdown content files
-├── api/                 # API and service files
-│   ├── aiContactAnalyzer.ts # AI contact analysis service
-│   ├── emailService.ts  # Email service for contact form
-│   └── healthBridge.ts  # Health data API
-├── functions/           # Cloudflare Workers
-│   ├── ai-contact-analyzer.js # AI analysis worker
-│   └── send-email.js    # Email processing worker
-├── hooks/               # Custom React hooks
-├── utils/               # Utility functions
-├── config/              # Configuration files
-├── router.tsx           # TanStack Router configuration
-└── main.tsx             # Application entry point
-```
+### **Integration Guides**
+*No external integrations currently configured*
 
 ## 🚀 Getting Started
 
 ### **Prerequisites**
 - Node.js 18+ (LTS recommended)
 - npm 9+ or yarn 1.22+
-- Git
-- Modern browser with ES2020 support
 - Cloudflare account (for Workers and Access)
 - Resend account (for email functionality)
-
-### **Quick Start**
-```bash
-# Clone the repository
-git clone <repository-url>
-cd tanstack-portfolio
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-```
 
 ### **Environment Setup**
 Create `.env.local` for local development:
@@ -175,17 +70,7 @@ VITE_DEV_MODE=true
 VITE_CLOUDFLARE_DOMAIN=rcormier.dev
 ```
 
-## 📚 Documentation
-
-- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive development guide and architecture details
-- **[CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)** - Cloudflare Access and Workers setup guide
-- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - Detailed AI features documentation
-- **[EMAIL_SYSTEM.md](./EMAIL_SYSTEM.md)** - Email system and meeting confirmation documentation
-- **[ACCESS_CONTROL.md](./ACCESS_CONTROL.md)** - Authentication and access control configuration
-- **[SECURITY.md](./SECURITY.md)** - Security features and best practices
-
-## 🔧 Development Commands
-
+### **Development Commands**
 ```bash
 npm run dev              # Start Vite dev server
 npm run build            # Build for production
@@ -194,7 +79,35 @@ npm run type-check       # TypeScript type checking
 npm run lint             # ESLint linting
 ```
 
+## 🏗️ Project Structure
+
+```
+src/
+├── components/           # React components
+│   ├── ui/             # shadcn/ui components
+│   ├── SiteAssistant.tsx # AI-powered site assistant
+│   ├── Search.tsx      # Global search implementation
+│   └── ...             # Other components
+├── pages/               # Page components
+│   ├── PortfolioPage.tsx    # Auto-generated portfolio
+│   ├── ContactPage.tsx      # Smart contact flow
+│   └── ...                  # Other pages
+├── content/             # Markdown content files
+│   ├── portfolio/      # Auto-generated portfolio items
+│   └── blog/           # Blog posts
+├── api/                 # API and service files
+├── utils/               # Utility functions
+├── config/              # Configuration files
+└── router.tsx           # TanStack Router configuration
+```
+
 ## 🌟 AI Features in Action
+
+### **Site Assistant**
+- **Intelligent Recommendations**: AI-powered suggestions based on user queries
+- **Content Discovery**: Helps users find relevant portfolio sections and blog posts
+- **Smart Navigation**: Suggests appropriate pages and contact methods
+- **Confidence Scoring**: Each recommendation includes reliability metrics
 
 ### **Contact Form Intelligence**
 - **Real-time Analysis**: AI analyzes contact form submissions as users type
@@ -202,21 +115,51 @@ npm run lint             # ESLint linting
 - **Meeting Recommendations**: Suggests optimal meeting duration and scheduling
 - **Content Suggestions**: Recommends relevant portfolio content based on inquiry analysis
 
-### **Smart Email Integration**
-- **Meeting Confirmation Emails**: AI-generated meeting confirmation emails with original message content
-- **Context-Aware Templates**: Different email formats for contact submissions vs meeting confirmations
-- **Original Message Preservation**: Ensures user's original message content is included in meeting confirmations
-- **Professional Email Structure**: Structured meeting confirmation emails with comprehensive contact information
-
 ### **Search Enhancement**
-- **Dynamic Recommendations**: AI-powered search suggestions and content recommendations
-- **Intelligent Filtering**: Smart content filtering based on user search patterns
-- **Relevance Scoring**: Advanced relevance algorithms for better search results
+- **Fuzzy Search**: Typo-tolerant search with Fuse.js
+- **AI Recommendations**: Smart content suggestions based on search patterns
+- **Relevance Scoring**: Advanced algorithms for better search results
 
-### **Meeting Scheduler**
-- **AI Duration Suggestions**: Intelligent meeting duration recommendations
-- **Timezone Detection**: Automatic timezone detection and conversion
-- **Schedule Optimization**: AI-powered scheduling suggestions for optimal meeting times
+## 🔧 Configuration
+
+### **Access Control**
+Manage user access in `src/config/accessControl.ts`:
+```typescript
+export const accessControl = {
+  allowedEmails: ['roger@rcormier.dev', 'rogerleecormier@gmail.com'],
+  allowedDomains: ['rcormier.dev']
+};
+```
+
+### **Portfolio Content**
+Add new portfolio items by creating markdown files in `src/content/portfolio/` with front matter:
+```markdown
+---
+title: "Your Solution Title"
+description: "Brief description of your solution"
+tags: ["tag1", "tag2"]
+---
+```
+
+## 🚨 Troubleshooting
+
+### **Common Issues**
+- **Authentication Problems**: Check [ACCESS_CONTROL.md](./ACCESS_CONTROL.md)
+- **Email Issues**: See [EMAIL_SYSTEM.md](./EMAIL_SYSTEM.md)
+- **AI Features**: Review [AI_FEATURE_README.md](./AI_FEATURE_README.md)
+- **Cloudflare Setup**: Follow [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)
+
+### **Debug Commands**
+```bash
+# Check build errors
+npm run type-check
+
+# View worker logs
+wrangler tail --env development
+
+# Test worker endpoints
+curl -X POST your-worker-url
+```
 
 ## 🤝 Contributing
 
@@ -229,3 +172,5 @@ This project is proprietary and confidential. All rights reserved.
 ---
 
 **Built with ❤️ using React, TypeScript & TanStack Router**
+
+*For detailed technical information, see [DEVELOPMENT.md](./DEVELOPMENT.md)*

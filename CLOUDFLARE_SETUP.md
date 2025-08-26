@@ -64,6 +64,8 @@ Create an access policy:
     - `rogerleecormier@gmail.com`
   - **Include**: `Emails ending in` → `@rcormier.dev`
 
+**📖 For detailed access control configuration, see [ACCESS_CONTROL.md](./ACCESS_CONTROL.md)**
+
 ## 📧 Step 2: Contact Form & Email Setup
 
 ### **2.1 Install Wrangler CLI**
@@ -133,6 +135,8 @@ wrangler deploy --env development
 wrangler deploy --env production
 ```
 
+**📖 For detailed email system documentation, see [EMAIL_SYSTEM.md](./EMAIL_SYSTEM.md)**
+
 ## 🤖 Step 3: AI Workers Setup
 
 ### **3.1 AI Worker Configuration**
@@ -165,6 +169,8 @@ const AI_WORKER_ENDPOINT = import.meta.env.PROD
   ? 'https://YOUR-AI-WORKER-PRODUCTION-URL.workers.dev'
   : 'https://YOUR-AI-WORKER-DEVELOPMENT-URL.workers.dev'
 ```
+
+**📖 For comprehensive AI features documentation, see [AI_FEATURE_README.md](./AI_FEATURE_README.md)**
 
 ## 🔧 Step 4: Frontend Configuration
 
@@ -209,6 +215,12 @@ export const accessControl: AccessControlConfig = {
 3. Check that analysis provides relevant insights
 4. Test fallback mode by temporarily disabling AI worker
 
+### **5.4 Test Site Assistant**
+1. Navigate to any page on the site
+2. Look for the floating AI assistant button
+3. Click to open the assistant
+4. Test various queries and recommendations
+
 ## 🚨 Troubleshooting
 
 ### **Common Issues**
@@ -232,11 +244,30 @@ export const accessControl: AccessControlConfig = {
    - Ensure emails are sent via Cloudflare Workers (server-side)
    - Check that frontend is not making direct API calls to Resend
 
+5. **Site Assistant Not Loading**
+   - Check that SiteAssistant component is imported in AppLayout
+   - Verify portfolio items are loading correctly
+   - Check browser console for component errors
+
 ### **Debug Steps**
 1. Check Cloudflare Worker logs in the dashboard
 2. Verify browser console for frontend errors
 3. Test worker endpoints directly using curl or Postman
 4. Check Cloudflare Access logs for authentication issues
+
+### **Worker Debugging**
+```bash
+# View worker logs
+wrangler tail --env development
+
+# Test worker directly
+curl -X POST https://your-worker-url.workers.dev \
+  -H "Content-Type: application/json" \
+  -d '{"test": "data"}'
+
+# Check worker status
+wrangler whoami
+```
 
 ## 📊 Monitoring & Maintenance
 
@@ -244,23 +275,50 @@ export const accessControl: AccessControlConfig = {
 - Monitor Cloudflare Worker performance in the dashboard
 - Track AI analysis response times and accuracy
 - Monitor email delivery rates and bounce rates
+- Check Cloudflare Access usage and authentication patterns
 
 ### **Cost Management**
 - Cloudflare Workers: 100k requests/day free tier
 - Cloudflare AI: Pay-per-use inference pricing
 - Resend: 3k emails/month free tier
+- Cloudflare Access: Free for up to 50 users
 
 ### **Regular Maintenance**
 - Update worker dependencies regularly
 - Monitor Cloudflare Access policies and user access
 - Review and update allowed email addresses as needed
+- Check worker performance and error rates
+
+## 🔒 Security Considerations
+
+### **Worker Security**
+- **API Key Storage**: Store sensitive keys as Cloudflare secrets
+- **Input Validation**: Validate all incoming requests
+- **Rate Limiting**: Implement rate limiting to prevent abuse
+- **Error Handling**: Don't expose sensitive information in error messages
+
+### **Access Control Security**
+- **Email Validation**: Strict email-based access control
+- **Session Management**: Proper session handling and cleanup
+- **HTTPS Enforcement**: All communications encrypted
+- **Regular Review**: Periodically review access policies
+
+**📖 For comprehensive security documentation, see [SECURITY.md](./SECURITY.md)**
 
 ## 🔗 Additional Resources
 
-- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - Comprehensive AI features documentation
 - **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Development guide and architecture details
-- **[ACCESS_CONTROL.md](./ACCESS_CONTROL.md)** - Access control configuration
+- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - Comprehensive AI features documentation
+- **[EMAIL_SYSTEM.md](./EMAIL_SYSTEM.md)** - Email system and meeting confirmation documentation
+- **[ACCESS_CONTROL.md](./ACCESS_CONTROL.md)** - Authentication and access control configuration
 - **[SECURITY.md](./SECURITY.md)** - Security features and best practices
+
+## 📚 Cloudflare Documentation
+
+- [Cloudflare Access Documentation](https://developers.cloudflare.com/access/)
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [Cloudflare AI Documentation](https://developers.cloudflare.com/ai/)
+- [Wrangler CLI Documentation](https://developers.cloudflare.com/workers/wrangler/)
 
 ---
 

@@ -111,6 +111,8 @@ allowedEmails: [
 - Configure access policies to allow authenticated users
 - The application will handle email-based access control
 
+**📖 For detailed Cloudflare setup, see [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)**
+
 ## Security Best Practices
 
 1. **Regular Review**: Periodically review and update allowed emails/domains
@@ -137,6 +139,25 @@ allowedEmails: [
 - Ensure the file is saved
 - Check that the application is using the updated configuration
 - Verify no syntax errors in the TypeScript file
+
+### **Debug Steps**
+```typescript
+// Check current access control configuration
+console.log('Access Control Config:', accessControl);
+
+// Check user's email
+console.log('User Email:', userEmail);
+
+// Check if user has access
+const hasAccess = isUserAllowed(userEmail);
+console.log('Has Access:', hasAccess);
+```
+
+## 🔗 Related Documentation
+
+- **[CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)** - Cloudflare Access setup guide
+- **[SECURITY.md](./SECURITY.md)** - Comprehensive security features and best practices
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Development guide and authentication implementation
 
 ---
 

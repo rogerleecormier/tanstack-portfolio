@@ -15,6 +15,7 @@ Search: Fuse.js
 Charts: Recharts + shadcn/ui Chart Components
 Authentication: Cloudflare Access (Zero Trust)
 Email: Resend API + Cloudflare Workers
+AI: Cloudflare AI Workers with Llama 2
 Deployment: Cloudflare Pages
 ```
 
@@ -25,19 +26,18 @@ src/
 │   ├── ui/             # shadcn/ui component library
 │   ├── AppSidebar.tsx  # Main navigation sidebar
 │   ├── Search.tsx      # Global search implementation
+│   ├── SiteAssistant.tsx # AI-powered site assistant
 │   ├── ProtectedRoute.tsx # Authentication wrapper
-│   ├── ContactPage.tsx     # Smart contact flow with choice-based UX
-│   └── HealthBridge.tsx    # Data analysis component
+│   └── ...             # Other components
 ├── pages/               # Page components
 │   ├── MarkdownPage.tsx    # Markdown content renderer
-│   ├── ContactPage.tsx     # Smart contact flow page
-│   ├── HealthBridge.tsx    # Protected health analysis
-│   └── NotFound.tsx        # 404 page
+│   ├── PortfolioPage.tsx   # Auto-generated portfolio
+│   ├── ContactPage.tsx     # Smart contact flow
+│   └── ...                 # Other pages
 ├── content/             # Markdown content files
+│   ├── portfolio/      # Auto-generated portfolio items
+│   └── blog/           # Blog posts
 ├── api/                 # API and service files
-│   ├── emailService.ts  # Email service for contact form
-│   └── healthBridge.ts  # Health data API
-├── hooks/               # Custom React hooks
 ├── utils/               # Utility functions
 ├── config/              # Configuration files
 ├── router.tsx           # TanStack Router configuration
@@ -145,6 +145,8 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
 };
 ```
 
+**📖 For detailed authentication setup, see [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md) and [ACCESS_CONTROL.md](./ACCESS_CONTROL.md)**
+
 ## 📧 Contact Form & Email System
 
 ### **Architecture Overview**
@@ -226,191 +228,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 };
 ```
 
-### **Cloudflare Worker Configuration**
-```javascript
-// functions/send-email.js
-export default {
-  async fetch(request, env, ctx) {
-    // Enable CORS
-    const corsHeaders = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    };
-
-    // Handle preflight OPTIONS request
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 200, headers: corsHeaders });
-    }
-
-    // Only allow POST requests
-    if (request.method !== 'POST') {
-      return new Response(
-        JSON.stringify({ error: 'Method not allowed' }),
-        { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    try {
-      const emailData = await request.json();
-      
-      // Validate required fields
-      if (!emailData.from_name || !emailData.from_email || !emailData.subject || !emailData.message) {
-        return new Response(
-          JSON.stringify({ error: 'Missing required fields' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      // Send email using Resend API
-      const resendResponse = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'noreply@rcormier.dev',
-          to: ['roger@rcormier.dev'],
-          reply_to: emailData.from_email,
-          subject: `Portfolio Contact: ${emailData.subject}`,
-          html: generateEmailHTML(emailData),
-          text: generateEmailText(emailData),
-        }),
-      });
-
-      if (!resendResponse.ok) {
-        const errorData = await resendResponse.json();
-        return new Response(
-          JSON.stringify({ error: 'Failed to send email', details: errorData }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      const result = await resendResponse.json();
-      return new Response(
-        JSON.stringify({ success: true, message: 'Email sent successfully', data: result }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    } catch (error) {
-      return new Response(
-        JSON.stringify({ error: 'Internal server error', message: error.message }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-  },
-};
-```
-
-### **Email Template Generation**
-The email system now supports intelligent template generation with context-aware formatting:
-
-```typescript
-// Helper functions for email templates with meeting confirmation support
-const generateEmailHTML = (emailData: EmailData): string => {
-  const isMeetingConfirmation = emailData.subject && emailData.subject.includes('Meeting Confirmed');
-  
-  return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #1f2937; border-bottom: 2px solid #10b981; padding-bottom: 10px;">
-        ${isMeetingConfirmation ? 'Meeting Confirmation' : 'New Contact Form Submission'}
-      </h2>
-      
-      <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #374151; margin-top: 0;">Contact Details</h3>
-        <p><strong>Name:</strong> ${emailData.from_name}</p>
-        <p><strong>Email:</strong> <a href="mailto:${emailData.from_email}">${emailData.from_email}</a></p>
-        <p><strong>Company:</strong> ${emailData.company || 'Not specified'}</p>
-        <p><strong>Subject:</strong> ${emailData.subject}</p>
-      </div>
-      
-      <div style="background: #ffffff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
-        <h3 style="color: #374151; margin-top: 0;">${isMeetingConfirmation ? 'Meeting Details & Original Message' : 'Message'}</h3>
-        <p style="white-space: pre-wrap; line-height: 1.6;">${emailData.message}</p>
-      </div>
-      
-      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-        <p>This message was sent from your portfolio contact form at rcormier.dev</p>
-        <p>Reply directly to: <a href="mailto:${emailData.from_email}">${emailData.from_email}</a></p>
-      </div>
-    </div>
-  `;
-};
-
-const generateEmailText = (emailData: EmailData): string => {
-  const isMeetingConfirmation = emailData.subject && emailData.subject.includes('Meeting Confirmed');
-  
-  return `
-${isMeetingConfirmation ? 'Meeting Confirmation' : 'New Contact Form Submission'}
-
-Contact Details:
-Name: ${emailData.from_name}
-Email: ${emailData.from_email}
-Company: ${emailData.company || 'Not specified'}
-Subject: ${emailData.subject}
-
-${isMeetingConfirmation ? 'Meeting Details & Original Message:' : 'Message:'}
-${emailData.message}
-
----
-This message was sent from your portfolio contact form at rcormier.dev
-Reply directly to: ${emailData.from_email}
-  `;
-};
-```
-```
-
-### **Meeting Confirmation Email System**
-The contact form now includes intelligent meeting confirmation emails that preserve the original user message:
-
-```typescript
-// src/pages/ContactPage.tsx - Meeting confirmation email generation
-const sendConfirmationEmail = async (meetingData: MeetingData) => {
-  try {
-    const confirmationData = {
-      to_name: formData.name || 'User',
-      from_name: 'Roger Lee Cormier',
-      from_email: 'roger@rcormier.dev',
-      company: 'Roger Lee Cormier',
-      subject: `Meeting Confirmed: ${meetingData.type} on ${format(meetingData.date, 'MMM do, yyyy')}`,
-      message: `Meeting Request from ${formData.name || 'User'}
-
-Meeting Details:
-- Date: ${format(meetingData.date, 'EEEE, MMMM do, yyyy')}
-- Time: ${meetingData.time} (${meetingData.timezone})
-- Duration: ${meetingData.duration}
-- Type: ${meetingData.type.replace('-', ' ')}
-
-Original Message:
-${formData.message}
-
-Contact Information:
-- Name: ${formData.name}
-- Email: ${formData.email}
-- Company: ${formData.company || 'Not specified'}
-
-This meeting request was generated based on AI analysis of their contact form submission.`,
-      reply_to: 'roger@rcormier.dev'
-    };
-
-    await sendEmail(confirmationData);
-  } catch {
-    // Silently handle confirmation email failure
-  }
-};
-```
-
-### **Development vs Production Email Configuration**
-The worker automatically detects the environment and uses appropriate email addresses:
-
-```javascript
-// Environment detection
-const isProduction = request.url.includes('production') || env.ENVIRONMENT === 'production';
-
-// Email configuration
-const fromEmail = isProduction ? 'noreply@rcormier.dev' : 'onboarding@resend.dev';
-const toEmail = isProduction ? 'roger@rcormier.dev' : 'rogerleecormier@gmail.com';
-```
+**📖 For detailed email system documentation, see [EMAIL_SYSTEM.md](./EMAIL_SYSTEM.md)**
 
 ## 🔍 Search System Implementation
 
@@ -465,69 +283,39 @@ export interface SearchResult {
 - **Keyboard Shortcuts**: ⌘K to open search dialog
 - **Real-time Results**: Instant search as you type
 
-## 📧 Contact System Architecture
+## 🤖 AI Features Integration
 
-### **Smart Contact Flow Design**
-The contact system implements a modern, choice-based user experience:
+### **Site Assistant Implementation**
+The AI-powered site assistant provides intelligent recommendations across all pages:
 
-```tsx
-// Contact mode state management
-type ContactMode = 'choice' | 'message' | 'schedule';
-
-const [contactMode, setContactMode] = useState<ContactMode>('choice');
-```
-
-### **Contact Choice Cards**
-Interactive cards that clearly distinguish between contact options:
-
-```tsx
-// Enhanced clickable contact cards
-<Card 
-  className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
-  onClick={() => setContactMode('message')}
->
-  {/* Card content with visual feedback */}
-</Card>
-```
-
-### **Contact System Features**
-- **Choice-Based UX**: Users select between "Quick Message" or "Schedule Meeting"
-- **Enhanced Visual Feedback**: Hover effects, scale transforms, and color transitions
-- **Clear Interactive States**: Distinct styling for clickable vs. informational cards
-- **Supporting Information**: Contact methods, expertise areas, and social links
-- **Responsive Layout**: Optimized spacing and mobile-first design
-- **Native Scheduling**: Built-in meeting scheduling without third-party dependencies
-
-### **Contact Form Integration**
-```tsx
-// Email service integration
-const emailData = {
-  to_name: 'Roger',
-  from_name: formData.name,
-  from_email: formData.email,
-  company: formData.company || 'Not specified',
-  subject: formData.subject,
-  message: formData.message,
-  reply_to: formData.email,
-};
-
-const success = await sendEmail(emailData);
-```
-
-### **Meeting Scheduling Component**
-```tsx
-// src/components/SchedulingForm.tsx
-interface SchedulingData {
-  name: string;
-  email: string;
-  company?: string;
-  preferredDate: Date;
-  preferredTime: string;
-  duration: string;
-  topic: string;
-  description: string;
+```typescript
+// src/components/SiteAssistant.tsx
+interface Recommendation {
+  type: 'solution' | 'insight' | 'trend' | 'blog' | 'portfolio'
+  title: string
+  description: string
+  relatedItems: string[]
+  confidence: number
+  icon: React.ComponentType<{ className?: string }>
+  category?: string
 }
 ```
+
+### **AI Analysis Service**
+```typescript
+// src/api/aiContactAnalyzer.ts
+export const analyzeContactInquiry = async (message: string): Promise<AIAnalysis> => {
+  const response = await fetch(AI_WORKER_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message })
+  });
+  
+  return response.json();
+};
+```
+
+**📖 For comprehensive AI features documentation, see [AI_FEATURE_README.md](./AI_FEATURE_README.md)**
 
 ## 📊 Data Visualization
 
@@ -607,35 +395,6 @@ import { Input } from "@/components/ui/input";
 <Button variant="secondary">Secondary</Button>
 <Button variant="ghost">Ghost</Button>
 <Button variant="link">Link</Button>
-```
-
-### **Contact Page Layout System**
-The contact page implements a sophisticated layout with clear visual hierarchy:
-
-```tsx
-// Main contact options - prominent placement
-<div className="mb-12">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-    {/* Interactive contact choice cards */}
-  </div>
-</div>
-
-// Supporting information - compact 3-column grid
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
-  {/* Contact methods, expertise areas, social links */}
-</div>
-```
-
-### **Enhanced Interactive Elements**
-```tsx
-// Hover effects and transforms
-className="group cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl bg-gradient-to-br from-white to-teal-50"
-
-// Visual feedback indicators
-<div className="inline-flex items-center gap-2 text-teal-600 font-medium group-hover:text-teal-700 transition-colors">
-  <span>Send Message</span>
-  <div className="w-4 h-4 border-r-2 border-b-2 border-teal-600 rotate-45 group-hover:translate-x-1 transition-transform"></div>
-</div>
 ```
 
 ## 🛣️ Routing Configuration
@@ -860,6 +619,8 @@ export const extractFrontmatter = (content: string) => {
 };
 ```
 
+**📖 For auto-generated portfolio content details, see [AI_PORTFOLIO_ENHANCEMENTS.md](./AI_PORTFOLIO_ENHANCEMENTS.md)**
+
 ## 🚀 Performance Optimization
 
 ### **Code Splitting**
@@ -910,6 +671,8 @@ export const extractFrontmatter = (content: string) => {
 - **X-Frame-Options**: Clickjacking prevention
 - **X-Content-Type-Options**: MIME type sniffing protection
 - **Strict-Transport-Security**: HTTPS enforcement
+
+**📖 For comprehensive security documentation, see [SECURITY.md](./SECURITY.md) and [SECURITY_IMPROVEMENTS.md](./SECURITY_IMPROVEMENTS.md)**
 
 ## 🔄 Development Workflow
 

@@ -26,6 +26,12 @@ The portfolio uses a sophisticated email system that combines **Resend API** wit
 - **Reply-to Functionality**: Easy response handling for inquiries
 - **Error Handling**: Graceful degradation and user feedback
 
+### **4. AI-Enhanced Email Features**
+- **Smart Subject Lines**: AI-generated subject lines based on inquiry content
+- **Intelligent Categorization**: Automatic email categorization for better organization
+- **Priority Assessment**: AI-determined priority levels for email handling
+- **Content Analysis**: AI analysis of email content for better responses
+
 ## 🔧 **Technical Implementation**
 
 ### **Email Service Architecture**
@@ -289,6 +295,8 @@ npx wrangler deploy functions/send-email.js --name tanstack-portfolio-email-work
 - **From Address**: noreply@rcormier.dev
 - **Reply-to**: User's email address
 
+**📖 For detailed Cloudflare setup, see [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)**
+
 ## 🚨 **Recent Improvements (August 2024)**
 
 ### **1. Original Message Preservation**
@@ -340,6 +348,8 @@ npx wrangler deploy functions/send-email.js --name tanstack-portfolio-email-work
 - **Rate Limiting**: Protection against email spam and abuse
 - **Content Filtering**: Basic content validation and sanitization
 
+**📖 For comprehensive security details, see [SECURITY_IMPROVEMENTS.md](./SECURITY_IMPROVEMENTS.md)**
+
 ## 🚀 **Future Enhancements**
 
 ### **Planned Features**
@@ -354,6 +364,13 @@ npx wrangler deploy functions/send-email.js --name tanstack-portfolio-email-work
 - **CRM Integration**: Connect with customer relationship management systems
 - **Analytics Integration**: Email performance and engagement tracking
 - **Multi-language Support**: Internationalized email templates
+
+## 🔗 **Related Documentation**
+
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Development guide and architecture details
+- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - AI-powered features and analysis
+- **[CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)** - Cloudflare Workers setup
+- **[SECURITY.md](./SECURITY.md)** - Comprehensive security features and hardening
 
 ---
 
