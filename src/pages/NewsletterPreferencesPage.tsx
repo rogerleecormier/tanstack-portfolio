@@ -75,6 +75,20 @@ const NewsletterPreferencesPage = () => {
             setPreferences(result.subscription.preferences);
           }
         }
+        
+        if (action === 'subscribe' && result.subscription) {
+          setSubscriptionStatus(result.subscription);
+          if (result.subscription.preferences) {
+            setPreferences(result.subscription.preferences);
+          }
+        }
+        
+        if (action === 'unsubscribe' && result.subscription) {
+          setSubscriptionStatus(result.subscription);
+          if (result.subscription.preferences) {
+            setPreferences(result.subscription.preferences);
+          }
+        }
       } else {
         setResult({
           message: result.message,
@@ -127,7 +141,7 @@ const NewsletterPreferencesPage = () => {
     }
   };
 
-  const handleResubscribe = async () => {
+  const handleResubscribe = () => {
     if (!email) {
       setResult({
         message: 'Please enter your email address.',
@@ -192,38 +206,41 @@ const NewsletterPreferencesPage = () => {
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-slate-700">Newsletter Preferences:</h4>
-                  <div className="space-y-2">
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={preferences.weeklyDigest}
-                        onChange={(e) => setPreferences(prev => ({ ...prev, weeklyDigest: e.target.checked }))}
-                        className="rounded border-teal-300 text-teal-600 focus:ring-teal-500"
-                      />
-                      <span className="text-sm text-slate-600">Weekly Digest</span>
-                    </label>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={preferences.newPosts}
-                        onChange={(e) => setPreferences(prev => ({ ...prev, newPosts: e.target.checked }))}
-                        className="rounded border-teal-300 text-teal-600 focus:ring-teal-500"
-                      />
-                      <span className="text-sm text-slate-600">New Blog Posts</span>
-                    </label>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={preferences.specialOffers}
-                        onChange={(e) => setPreferences(prev => ({ ...prev, specialOffers: e.target.checked }))}
-                        className="rounded border-teal-300 text-teal-600 focus:ring-teal-500"
-                      />
-                      <span className="text-sm text-slate-600">Special Offers</span>
-                    </label>
+                {/* Preferences Section - Only show if subscribed or if no status checked yet */}
+                {subscriptionStatus?.isActive && (
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium text-slate-700">Newsletter Preferences:</h4>
+                    <div className="space-y-2">
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={preferences.weeklyDigest}
+                          onChange={(e) => setPreferences(prev => ({ ...prev, weeklyDigest: e.target.checked }))}
+                          className="rounded border-teal-300 text-teal-600 focus:ring-teal-500"
+                        />
+                        <span className="text-sm text-slate-600">Weekly Digest</span>
+                      </label>
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={preferences.newPosts}
+                          onChange={(e) => setPreferences(prev => ({ ...prev, newPosts: e.target.checked }))}
+                          className="rounded border-teal-300 text-teal-600 focus:ring-teal-500"
+                        />
+                        <span className="text-sm text-slate-600">New Blog Posts</span>
+                      </label>
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={preferences.specialOffers}
+                          onChange={(e) => setPreferences(prev => ({ ...prev, specialOffers: e.target.checked }))}
+                          className="rounded border-teal-300 text-teal-600 focus:ring-teal-500"
+                        />
+                        <span className="text-sm text-slate-600">Special Offers</span>
+                      </label>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="flex flex-wrap gap-2">
                   <Button
@@ -235,30 +252,36 @@ const NewsletterPreferencesPage = () => {
                     <UserCheck className="w-4 h-4 mr-2" />
                     Check Status
                   </Button>
-                  <Button
-                    onClick={handleUpdatePreferences}
-                    disabled={loading || !email}
-                    variant="outline"
-                    className="flex-1 min-w-[120px] border-teal-200 text-teal-700 hover:bg-teal-50 hover:border-teal-300"
-                  >
-                    <Settings className="w-4 h-4 mr-2" />
-                    Update Preferences
-                  </Button>
+                  {subscriptionStatus?.isActive && (
+                    <Button
+                      onClick={handleUpdatePreferences}
+                      disabled={loading || !email}
+                      variant="outline"
+                      className="flex-1 min-w-[120px] border-teal-200 text-teal-700 hover:bg-teal-50 hover:border-teal-300"
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Update Preferences
+                    </Button>
+                  )}
                 </div>
 
                 <Separator className="bg-teal-200" />
 
                 <div className="space-y-2">
-                  <Button
-                    onClick={handleUnsubscribe}
-                    disabled={loading || !email}
-                    variant="destructive"
-                    className="w-full"
-                  >
-                    <XCircle className="w-4 h-4 mr-2" />
-                    Unsubscribe
-                  </Button>
+                  {/* Show Unsubscribe button only if subscribed */}
+                  {subscriptionStatus?.isActive && (
+                    <Button
+                      onClick={handleUnsubscribe}
+                      disabled={loading || !email}
+                      variant="destructive"
+                      className="w-full"
+                    >
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Unsubscribe
+                    </Button>
+                  )}
                   
+                  {/* Show Resubscribe button only if unsubscribed */}
                   {subscriptionStatus && !subscriptionStatus.isActive && (
                     <Button
                       onClick={handleResubscribe}
@@ -328,7 +351,13 @@ const NewsletterPreferencesPage = () => {
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     <div className="flex items-center justify-between p-3 bg-teal-50 rounded-lg">
                       <span className="text-sm font-medium text-slate-700">Status:</span>
-                      <Badge variant={subscriptionStatus.isActive ? "default" : "secondary"} className="bg-teal-100 text-teal-800 border-teal-200">
+                      <Badge 
+                        variant={subscriptionStatus.isActive ? "default" : "destructive"} 
+                        className={subscriptionStatus.isActive 
+                          ? "bg-green-100 text-green-800 border-green-200" 
+                          : "bg-red-100 text-red-800 border-red-200"
+                        }
+                      >
                         {subscriptionStatus.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </div>
@@ -348,19 +377,37 @@ const NewsletterPreferencesPage = () => {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-slate-600">Weekly Digest</span>
-                            <Badge variant={subscriptionStatus.preferences.weeklyDigest ? "default" : "outline"} className="bg-teal-100 text-teal-800 border-teal-200">
+                            <Badge 
+                              variant={subscriptionStatus.preferences.weeklyDigest ? "default" : "destructive"} 
+                              className={subscriptionStatus.preferences.weeklyDigest 
+                                ? "bg-green-100 text-green-800 border-green-200" 
+                                : "bg-red-100 text-red-800 border-red-200"
+                              }
+                            >
                               {subscriptionStatus.preferences.weeklyDigest ? "On" : "Off"}
                             </Badge>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-slate-600">New Posts</span>
-                            <Badge variant={subscriptionStatus.preferences.newPosts ? "default" : "outline"} className="bg-teal-100 text-teal-800 border-teal-200">
+                            <Badge 
+                              variant={subscriptionStatus.preferences.newPosts ? "default" : "destructive"} 
+                              className={subscriptionStatus.preferences.newPosts 
+                                ? "bg-green-100 text-green-800 border-green-200" 
+                                : "bg-red-100 text-red-800 border-red-200"
+                              }
+                            >
                               {subscriptionStatus.preferences.newPosts ? "On" : "Off"}
                             </Badge>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-slate-600">Special Offers</span>
-                            <Badge variant={subscriptionStatus.preferences.specialOffers ? "default" : "outline"} className="bg-teal-100 text-teal-800 border-teal-200">
+                            <Badge 
+                              variant={subscriptionStatus.preferences.specialOffers ? "default" : "destructive"} 
+                              className={subscriptionStatus.preferences.specialOffers 
+                                ? "bg-green-100 text-green-800 border-green-200" 
+                                : "bg-red-100 text-red-800 border-red-200"
+                              }
+                            >
                               {subscriptionStatus.preferences.specialOffers ? "On" : "Off"}
                             </Badge>
                           </div>
