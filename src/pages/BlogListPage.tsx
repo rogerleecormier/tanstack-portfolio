@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
 import { 
   Search, 
   Calendar, 
   Clock, 
   User, 
   Tag, 
-  ArrowRight,
   BookOpen,
   Filter
 } from 'lucide-react'
@@ -36,6 +34,10 @@ export default function BlogListPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>([])
+  const [postsPerPage] = useState(6)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   // Load blog posts
   useEffect(() => {
@@ -70,7 +72,14 @@ export default function BlogListPage() {
     }
 
     setFilteredPosts(filtered)
+    setCurrentPage(1) // Reset to first page when filters change
   }, [blogPosts, searchQuery, selectedTags])
+
+  // Update displayed posts when filtered posts or current page changes
+  useEffect(() => {
+    const endIndex = currentPage * postsPerPage
+    setDisplayedPosts(filteredPosts.slice(0, endIndex))
+  }, [filteredPosts, currentPage, postsPerPage])
 
   // Get all unique tags from blog posts
   const allTags = getAllTags(blogPosts)
@@ -87,6 +96,31 @@ export default function BlogListPage() {
     setSearchQuery('')
     setSelectedTags([])
   }
+
+  // Intersection Observer for infinite scroll
+  const loadingRef = useCallback((node: HTMLDivElement | null) => {
+    if (node !== null) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const [entry] = entries
+          if (entry.isIntersecting && !isLoading && !isLoadingMore && displayedPosts.length < filteredPosts.length) {
+            setIsLoadingMore(true)
+            // Small delay to show loading state
+            setTimeout(() => {
+              setCurrentPage(prev => prev + 1)
+              setIsLoadingMore(false)
+            }, 300)
+          }
+        },
+        {
+          rootMargin: '100px', // Trigger 100px before the element comes into view
+          threshold: 0.1
+        }
+      )
+      observer.observe(node)
+      return () => observer.disconnect()
+    }
+  }, [isLoading, isLoadingMore, displayedPosts.length, filteredPosts.length])
 
   return (
     <div className="w-full">
@@ -180,32 +214,35 @@ export default function BlogListPage() {
         </Card>
       ) : (
         <>
-          {/* Featured/Recent Posts */}
+          {/* All Articles Grid */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
-              Recent Articles
+              Articles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPosts.slice(0, 5).map((post) => (
+              {displayedPosts.map((post) => (
                 <BlogPostCard key={post.slug} post={post} />
               ))}
             </div>
           </div>
 
-          {/* Show more posts if available */}
-          {filteredPosts.length > 5 && (
-            <>
-              <Separator className="my-8" />
-              <div className="text-center">
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  Showing {Math.min(5, filteredPosts.length)} of {filteredPosts.length} articles
-                </p>
-                <Button variant="outline">
-                  View All Articles
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </div>
-            </>
+                     {/* Loading indicator for infinite scroll */}
+           {displayedPosts.length < filteredPosts.length && (
+             <div ref={loadingRef} className="text-center py-8">
+               <div className="inline-flex items-center gap-2 text-gray-500">
+                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-teal-600"></div>
+                 <span>Loading more articles...</span>
+               </div>
+             </div>
+           )}
+
+          {/* End of articles indicator */}
+          {displayedPosts.length === filteredPosts.length && filteredPosts.length > 0 && (
+            <div className="text-center py-8">
+              <p className="text-gray-500 dark:text-gray-400">
+                You've reached the end of all articles
+              </p>
+            </div>
           )}
         </>
       )}
@@ -286,7 +323,6 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
           >
             <Link to={`/blog/${post.slug}`}>
               Read Article
-              <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
         </div>

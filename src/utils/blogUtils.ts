@@ -33,7 +33,8 @@ export function calculateReadingTime(content: string): number {
 
 // Format date for display
 export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
+  // Create date and adjust for timezone to ensure it displays as the intended date
+  const date = new Date(dateString + 'T00:00:00');
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -44,26 +45,19 @@ export function formatDate(dateString: string): string {
 // Load all blog posts dynamically from markdown files
 export async function loadAllBlogPosts(): Promise<BlogPost[]> {
   try {
-    // Define the blog post files we know about
-    const blogFiles = [
-      'getting-started-with-devops-automation.md',
-      'azure-functions-serverless-etl.md',
-      'ai-augmented-development-workflow.md',
-      'digital-transformation-saas-ecosystem.md',
-      'technical-leadership-governance.md',
-      'saas-innovation-landscape-2024.md'
-    ]
-
+    // Dynamically import all markdown files from the blog directory
+    const blogModules = import.meta.glob('../content/blog/*.md', { eager: true, query: '?raw', import: 'default' })
+    
     const posts: BlogPost[] = []
 
-    for (const fileName of blogFiles) {
+    for (const [filePath, content] of Object.entries(blogModules)) {
       try {
-        const fileNameWithoutExt = fileName.replace('.md', '')
-        const markdownModule = await import(`../content/blog/${fileNameWithoutExt}.md?raw`)
-        const text = markdownModule.default
+        // Extract filename from path
+        const fileName = filePath.split('/').pop()?.replace('.md', '')
+        if (!fileName) continue
 
         // Parse frontmatter
-        const { attributes, body } = fm(text)
+        const { attributes, body } = fm(content as string)
         const frontmatter = attributes as BlogFrontmatter
 
         // Remove import statements from markdown content
@@ -74,11 +68,11 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
 
         // Create blog post
         const post: BlogPost = {
-          slug: fileNameWithoutExt,
-          title: (frontmatter.title as string) || fileNameWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          slug: fileName,
+          title: (frontmatter.title as string) || fileName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
           description: (frontmatter.description as string) || 'No description available',
           date: (frontmatter.date as string) || new Date().toISOString(),
-          author: (frontmatter.author as string) || 'Ryan Cormier',
+          author: (frontmatter.author as string) || 'Roger Lee Cormier',
           tags: (frontmatter.tags as string[]) || (frontmatter.keywords as string[]) || [],
           readTime: (frontmatter.readTime as number) || calculatedReadingTime,
           content: cleanedBody,
@@ -88,7 +82,7 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
 
         posts.push(post)
       } catch (error) {
-        console.error(`Error loading blog file ${fileName}:`, error)
+        console.error(`Error loading blog file ${filePath}:`, error)
       }
     }
 

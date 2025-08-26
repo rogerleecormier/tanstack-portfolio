@@ -65,7 +65,8 @@ function calculateReadingTime(content: string): number {
 
 // Format date for display
 function formatDate(dateString: string): string {
-  const date = new Date(dateString);
+  // Create date and adjust for timezone to ensure it displays as the intended date
+  const date = new Date(dateString + 'T00:00:00');
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -206,6 +207,17 @@ export default function BlogPage({ slug }: { slug: string }) {
         {/* Blog Header */}
         {frontmatter.title && (
           <header className="mb-8">
+            {/* Header Image */}
+            {frontmatter.image && (
+              <div className="mb-6">
+                <img 
+                  src={frontmatter.image} 
+                  alt={frontmatter.title}
+                  className="w-full h-64 object-cover rounded-lg shadow-lg"
+                />
+              </div>
+            )}
+            
             <H1 className="mb-4 text-4xl font-bold leading-tight">
               {frontmatter.title}
             </H1>
