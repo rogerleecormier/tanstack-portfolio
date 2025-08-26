@@ -33,8 +33,9 @@ export default function AppLayout() {
         <div className="flex flex-col flex-1 min-w-0 min-h-screen">
           <Header />
           <div className="flex flex-1 min-h-0">
-            <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 xl:p-12">
-              <div className="w-full max-w-none">
+            <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+              {/* Consistent page width container for all pages */}
+              <div className="w-full max-w-7xl mx-auto">
                 <Outlet />
               </div>
             </main>

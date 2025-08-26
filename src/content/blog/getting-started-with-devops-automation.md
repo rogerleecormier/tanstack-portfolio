@@ -1,8 +1,8 @@
 ---
 title: "Getting Started with DevOps Automation: A Practical Guide"
 description: "Learn the fundamentals of DevOps automation and how to implement CI/CD pipelines that will transform your development workflow."
-date: "2024-01-15"
-author: "Ryan Cormier"
+date: "2025-08-25"
+author: "Roger Lee Cormier"
 tags: ["DevOps", "Automation", "CI/CD", "GitHub Actions", "Azure"]
 keywords: ["DevOps", "Continuous Integration", "Continuous Deployment", "Automation", "Development Workflow"]
 image: "/images/devops-automation.jpg"

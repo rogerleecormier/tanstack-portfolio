@@ -10,9 +10,9 @@ export const AIAnalysisSchema = z.object({
   suggestedResponse: z.string().min(10).max(500),
   meetingDuration: z.enum(['30 minutes', '1 hour', '1.5 hours', '2 hours']),
   relevantContent: z.array(z.string()).max(10),
-  confidence: z.number().min(0).max(1),
+  confidence: z.number().min(0).max(1).optional().default(0.8),
   shouldScheduleMeeting: z.boolean(),
-  meetingType: z.enum(['consultation', 'project-planning', 'technical-review', 'strategy-session', 'general-discussion']),
+  meetingType: z.enum(['consultation', 'project-planning', 'technical-review', 'strategy-session', 'general-discussion']).nullable().optional().default('general-discussion'),
   recommendedTimeSlots: z.array(z.string()).max(5),
   timezoneConsideration: z.string(),
   followUpRequired: z.boolean(),
@@ -46,8 +46,41 @@ export function validateAIAnalysis(data: unknown): AIAnalysisResult {
 export function safeValidateAIAnalysis(data: unknown): AIAnalysisResult {
   try {
     return validateAIAnalysis(data)
-  } catch {
-    // Return safe fallback data
+  } catch (error) {
+    console.warn('AI analysis validation failed, using fallback:', error)
+    
+    // Try to extract any valid fields from the response
+    if (typeof data === 'object' && data !== null) {
+      const partialData = data as Partial<AIAnalysisResult>
+      
+      // Return partial data with fallback defaults for missing fields
+      return {
+        inquiryType: partialData.inquiryType || 'general',
+        priorityLevel: partialData.priorityLevel || 'medium',
+        industry: partialData.industry || 'other',
+        projectScope: partialData.projectScope || 'medium',
+        urgency: partialData.urgency || 'flexible',
+        suggestedResponse: partialData.suggestedResponse || 'Thank you for your message. I\'ll review it and get back to you soon.',
+        meetingDuration: partialData.meetingDuration || '1 hour',
+        relevantContent: partialData.relevantContent || ['general portfolio'],
+        confidence: partialData.confidence || 0.6,
+        shouldScheduleMeeting: partialData.shouldScheduleMeeting || false,
+        meetingType: partialData.meetingType || 'general-discussion',
+        recommendedTimeSlots: partialData.recommendedTimeSlots || ['morning', 'afternoon'],
+        timezoneConsideration: partialData.timezoneConsideration || 'user\'s local timezone',
+        followUpRequired: partialData.followUpRequired || false,
+        redFlags: partialData.redFlags || [],
+        followUps: partialData.followUps || [],
+        timestamp: partialData.timestamp || new Date().toISOString(),
+        originalMessage: partialData.originalMessage || '[CONTENT_ANALYZED]',
+        wordCount: partialData.wordCount || 0,
+        hasCompany: partialData.hasCompany || false,
+        emailDomain: partialData.emailDomain || 'unknown',
+        fallback: true
+      }
+    }
+    
+    // Return safe fallback data if no partial data available
     return {
       inquiryType: 'general',
       priorityLevel: 'medium',

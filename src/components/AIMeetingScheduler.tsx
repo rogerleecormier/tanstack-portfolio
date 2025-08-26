@@ -114,7 +114,7 @@ export function AIMeetingScheduler({ analysis, className }: AIMeetingSchedulerPr
           </div>
           Recommended Meeting
           <Badge variant="outline" className="text-xs">
-            {analysis.meetingType.replace('-', ' ')}
+            {(analysis.meetingType || 'general-discussion').replace('-', ' ')}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -124,7 +124,7 @@ export function AIMeetingScheduler({ analysis, className }: AIMeetingSchedulerPr
         <div className="p-3 bg-teal-50 rounded-lg border border-teal-200">
           <p className="text-sm text-teal-800">
             <strong>Recommendation:</strong> Based on your inquiry, I recommend scheduling a{' '}
-            <strong>{analysis.meetingDuration}</strong> {analysis.meetingType.replace('-', ' ')} meeting.
+            <strong>{analysis.meetingDuration}</strong> {(analysis.meetingType || 'general-discussion').replace('-', ' ')} meeting.
           </p>
         </div>
 
@@ -174,7 +174,7 @@ export function AIMeetingScheduler({ analysis, className }: AIMeetingSchedulerPr
             <div>
               <span className="text-gray-600">Type:</span>
               <span className="ml-2 font-medium capitalize">
-                {analysis.meetingType.replace('-', ' ')}
+                {(analysis.meetingType || 'general-discussion').replace('-', ' ')}
               </span>
             </div>
             <div>

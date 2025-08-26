@@ -59,7 +59,7 @@ export default function PortfolioPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="w-full">
         <div className="text-center mb-12">
           <div className="animate-pulse">
             <div className="h-12 bg-gray-200 rounded mb-4"></div>
@@ -79,7 +79,7 @@ export default function PortfolioPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="w-full">
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">

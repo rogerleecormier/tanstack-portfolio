@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useScrollToTopOnMount, useScrollToTopOnSuccess } from '../hooks/useScrollToTop';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -6,6 +7,7 @@ import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { CheckCircle, XCircle, Mail, Settings, UserCheck, AlertTriangle } from 'lucide-react';
+
 
 // No props needed for this component
 
@@ -33,6 +35,12 @@ const NewsletterPreferencesPage = () => {
     newPosts: true,
     specialOffers: false,
   });
+
+  // Scroll to top when component mounts
+  useScrollToTopOnMount();
+
+  // Scroll to top after successful form submissions
+  useScrollToTopOnSuccess(result?.success || false);
 
   const API_URL = 'https://tanstack-portfolio-blog-subscription.rcormier.workers.dev';
 

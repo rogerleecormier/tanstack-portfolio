@@ -213,7 +213,7 @@ export default function MarkdownPage({ file }: { file: string }) {
   }
 
   return (
-    <div className="w-full max-w-none">
+    <div className="w-full">
       <div className="w-full">
         {/* Header with h1 title */}
         {frontmatter.title && (

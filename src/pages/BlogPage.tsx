@@ -160,7 +160,7 @@ export default function BlogPage({ slug }: { slug: string }) {
   // Show loading skeleton
   if (isLoading) {
     return (
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full">
         {/* Header skeleton */}
         <header className="mb-8">
           <Skeleton className="h-12 w-3/4 mb-4" />
@@ -178,9 +178,9 @@ export default function BlogPage({ slug }: { slug: string }) {
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className="space-y-4">
               <Skeleton className="h-8 w-1/2" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-3/4" />
               {i % 2 === 0 && <Skeleton className="h-32 w-full mt-4" />}
             </div>
           ))}
@@ -190,7 +190,7 @@ export default function BlogPage({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full">
       {/* Back to Blog Link */}
       <div className="mb-6">
         <Link 

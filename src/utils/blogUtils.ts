@@ -9,6 +9,8 @@ export interface BlogPost {
   tags: string[]
   readTime: number
   content: string
+  image?: string
+  keywords?: string[]
 }
 
 export interface BlogFrontmatter {
@@ -39,23 +41,56 @@ export function formatDate(dateString: string): string {
   });
 }
 
-// Load all blog posts
+// Load all blog posts dynamically from markdown files
 export async function loadAllBlogPosts(): Promise<BlogPost[]> {
   try {
-    // In a real implementation, this would dynamically import all markdown files
-    // For now, we'll return the known blog post
-    const posts: BlogPost[] = [
-      {
-        slug: 'getting-started-with-devops-automation',
-        title: 'Getting Started with DevOps Automation: A Practical Guide',
-        description: 'Learn the fundamentals of DevOps automation and how to implement CI/CD pipelines that will transform your development workflow.',
-        date: '2024-01-15',
-        author: 'Ryan Cormier',
-        tags: ['DevOps', 'Automation', 'CI/CD', 'GitHub Actions', 'Azure'],
-        readTime: 8,
-        content: ''
-      }
+    // Define the blog post files we know about
+    const blogFiles = [
+      'getting-started-with-devops-automation.md',
+      'azure-functions-serverless-etl.md',
+      'ai-augmented-development-workflow.md',
+      'digital-transformation-saas-ecosystem.md',
+      'technical-leadership-governance.md',
+      'saas-innovation-landscape-2024.md'
     ]
+
+    const posts: BlogPost[] = []
+
+    for (const fileName of blogFiles) {
+      try {
+        const fileNameWithoutExt = fileName.replace('.md', '')
+        const markdownModule = await import(`../content/blog/${fileNameWithoutExt}.md?raw`)
+        const text = markdownModule.default
+
+        // Parse frontmatter
+        const { attributes, body } = fm(text)
+        const frontmatter = attributes as BlogFrontmatter
+
+        // Remove import statements from markdown content
+        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+
+        // Calculate reading time
+        const calculatedReadingTime = calculateReadingTime(cleanedBody)
+
+        // Create blog post
+        const post: BlogPost = {
+          slug: fileNameWithoutExt,
+          title: (frontmatter.title as string) || fileNameWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          description: (frontmatter.description as string) || 'No description available',
+          date: (frontmatter.date as string) || new Date().toISOString(),
+          author: (frontmatter.author as string) || 'Ryan Cormier',
+          tags: (frontmatter.tags as string[]) || (frontmatter.keywords as string[]) || [],
+          readTime: (frontmatter.readTime as number) || calculatedReadingTime,
+          content: cleanedBody,
+          image: frontmatter.image as string,
+          keywords: frontmatter.keywords as string[]
+        }
+
+        posts.push(post)
+      } catch (error) {
+        console.error(`Error loading blog file ${fileName}:`, error)
+      }
+    }
 
     // Sort by date (most recent first)
     return posts.sort((a, b) => 
@@ -92,7 +127,9 @@ export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
       author: frontmatter.author || 'Ryan Cormier',
       tags: frontmatter.tags || [],
       readTime: frontmatter.readTime || calculatedReadingTime,
-      content: cleanedBody
+      content: cleanedBody,
+      image: frontmatter.image,
+      keywords: frontmatter.keywords
     }
   } catch (error) {
     console.error(`Error loading blog post ${slug}:`, error)
