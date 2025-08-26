@@ -14,6 +14,7 @@ import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as R
 import { MessageSquare, Calendar, Clock, User, Tag, ArrowLeft } from "lucide-react";
 import { Link } from '@tanstack/react-router'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import BlogRecommendations from '@/components/BlogRecommendations'
 
 // Define proper types for frontmatter
 interface BlogFrontmatter {
@@ -724,6 +725,15 @@ export default function BlogPage({ slug }: { slug: string }) {
                 </Link>
               </div>
             </div>
+          </div>
+
+          {/* AI-Powered Portfolio Recommendations */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <BlogRecommendations 
+              blogContent={content}
+              blogTitle={frontmatter.title || ''}
+              blogTags={frontmatter.tags}
+            />
           </div>
 
           {/* Newsletter Signup */}
