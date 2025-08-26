@@ -210,7 +210,7 @@ interface PortfolioCardProps {
 
 const PortfolioCard: React.FC<PortfolioCardProps> = ({ item }) => {
   const categoryColors = getCategoryColors()
-  const categoryColor = categoryColors[item.category] || "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+  const categoryColor = categoryColors[item.category] || "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
   
   return (
     <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-200 group">
@@ -237,13 +237,20 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({ item }) => {
         {/* Tags */}
         {item.tags && item.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-4">
-            {item.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs">
-                {tag}
-              </Badge>
-            ))}
+            {item.tags.slice(0, 3).map((tag, index) => {
+              const colors = [
+                'bg-teal-100 text-teal-800 border-teal-200 hover:bg-teal-200 dark:bg-teal-900 dark:text-teal-200 dark:hover:bg-teal-800',
+                'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:hover:bg-blue-800',
+                'bg-purple-100 text-purple-800 border-purple-200 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-200 dark:hover:bg-purple-800'
+              ];
+              return (
+                <Badge key={tag} variant="secondary" className={`text-xs ${colors[index % colors.length]} transition-colors`}>
+                  {tag}
+                </Badge>
+              );
+            })}
             {item.tags.length > 3 && (
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors">
                 +{item.tags.length - 3} more
               </Badge>
             )}
