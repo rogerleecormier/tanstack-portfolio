@@ -1,0 +1,19 @@
+name = "tanstack-portfolio-blog-subscription"
+main = "functions/blog-subscription-worker.js"
+compatibility_date = "2024-01-01"
+
+# KV namespace for storing blog subscriptions
+[[kv_namespaces]]
+binding = "BLOG_SUBSCRIPTIONS"
+id = "6d69753cb29f41e6a00b9fab9e301018"  # Production KV namespace ID
+preview_id = "6d69753cb29f41e6a00b9fab9e301018"  # Preview KV namespace ID
+
+# Environment-specific configurations
+[env.production]
+# Production environment - no additional config needed
+
+[env.development]
+# Development environment - no additional config needed
+
+# Add Resend API key as a secret
+# Run: wrangler secret put RESEND_API_KEY --config wrangler-blog-subscription.toml

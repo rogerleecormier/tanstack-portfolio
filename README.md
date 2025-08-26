@@ -22,6 +22,7 @@ npm run build
 - **🤖 AI-Powered Assistant** - Site-wide intelligent recommendations and insights
 - **🔐 Enterprise Authentication** - Cloudflare Access with Zero Trust security
 - **📧 Smart Contact System** - AI-analyzed contact form with meeting scheduling
+- **📧 Blog Newsletter** - Functional newsletter signups with email confirmations
 - **🔍 Intelligent Search** - Fuse.js powered search across all content
 - **📊 Data Visualization** - Interactive charts and analytics
 - **📱 Responsive Design** - Mobile-first, accessible interface
@@ -47,6 +48,7 @@ npm run build
 
 ### **Feature Documentation**
 - **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - AI-powered features, portfolio enhancements, and intelligent analysis
+- **[BLOG_SUBSCRIPTION_SYSTEM.md](./BLOG_SUBSCRIPTION_SYSTEM.md)** - Blog newsletter signups and subscription management
 
 ### **Security & Access Control**
 - **[SECURITY.md](./SECURITY.md)** - Comprehensive security features and best practices

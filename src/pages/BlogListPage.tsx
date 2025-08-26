@@ -15,6 +15,7 @@ import {
   BookOpen,
   Filter
 } from 'lucide-react'
+import NewsletterSignup from '@/components/NewsletterSignup'
 import { 
   loadAllBlogPosts, 
   searchBlogPosts, 
@@ -210,29 +211,7 @@ export default function BlogListPage() {
       )}
 
       {/* Newsletter Signup */}
-      <div className="mt-16 pt-8 border-t border-gray-200">
-        <Card className="text-center">
-          <CardContent className="py-8">
-            <BookOpen className="w-12 h-12 text-teal-600 mx-auto mb-4" />
-            <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-              Stay Updated
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
-              Get notified when new articles are published. No spam, just quality content.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1"
-              />
-              <Button>
-                Subscribe
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <NewsletterSignup />
     </div>
   )
 }

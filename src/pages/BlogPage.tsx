@@ -13,6 +13,7 @@ import { H1, H2, P, Blockquote } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
 import { MessageSquare, Calendar, Clock, User, Tag, ArrowLeft } from "lucide-react";
 import { Link } from '@tanstack/react-router'
+import NewsletterSignup from '@/components/NewsletterSignup'
 
 // Define proper types for frontmatter
 interface BlogFrontmatter {
@@ -688,10 +689,10 @@ export default function BlogPage({ slug }: { slug: string }) {
           {/* Blog Footer */}
           <div className="mt-16 pt-8 border-t border-gray-200">
             <div className="text-center">
-              <H2 className="text-2xl font-semibold text-gray-900 mb-4">
+              <H2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                 Enjoyed this article?
               </H2>
-              <P className="text-gray-600 mb-6 max-w-2xl mx-auto">
+              <P className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
                 If you found this helpful, consider sharing it with your network or reaching out to discuss how we can apply these concepts to your projects.
               </P>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -699,19 +700,25 @@ export default function BlogPage({ slug }: { slug: string }) {
                   href="/contact"
                   className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 >
-                  <MessageSquare className="h-4 w-4" />
-                  Get in Touch
+                  <MessageSquare className="h-4 w-4 text-white" />
+                  <span className="text-white">Get in Touch</span>
                 </a>
                 <Link
                   to="/blog"
-                  className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-teal-700 border border-teal-300 px-6 py-3 rounded-lg font-medium transition-colors"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-teal-700 border border-teal-300 px-6 py-3 rounded-lg font-medium transition-colors dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-teal-400 dark:border-teal-500"
                 >
-                  <Calendar className="h-4 w-4" />
-                  Read More Articles
+                  <Calendar className="h-4 w-4 text-teal-700 dark:text-teal-400" />
+                  <span className="text-teal-700 dark:text-teal-400">Read More Articles</span>
                 </Link>
               </div>
             </div>
           </div>
+
+          {/* Newsletter Signup */}
+          <NewsletterSignup 
+            title="Stay Updated"
+            description="Get notified when I publish new articles like this one."
+          />
         </article>
       </div>
     </div>
