@@ -179,7 +179,7 @@ async function generateRecommendations(blogContent, blogTitle, blogTags, env) {
   try {
     const sanitizedContent = sanitizeContent(blogContent)
     
-    // Create context for AI
+    // Create context for AI to analyze and recommend with confidence scores
     const context = `
 Blog Post: "${blogTitle}"
 Content: ${sanitizedContent}
@@ -193,23 +193,31 @@ ${PORTFOLIO_PAGES.map(page => `
   URL: ${page.url}
 `).join('\n')}
 
-Based on the blog post content, title, and tags, recommend the 3 most relevant portfolio pages that would be valuable for readers to explore. Consider:
-1. Topic similarity and thematic alignment
-2. Skill and expertise overlap
-3. Practical application of concepts discussed
-4. Complementary knowledge areas
+Based on the blog post content, title, and tags, analyze the relevance of each portfolio page and return exactly 2 recommendations with AI-calculated confidence scores.
 
-Return only the IDs of the 3 most relevant portfolio pages, separated by commas, in order of relevance.
-Example: military-leadership,leadership,strategy
+For each recommendation, provide:
+1. The portfolio page ID
+2. A confidence score between 0.6 and 0.98 based on your analysis of content relevance
+
+Consider:
+- Topic similarity and thematic alignment
+- Skill and expertise overlap  
+- Practical application of concepts discussed
+- Complementary knowledge areas
+
+Return your response in this exact format:
+ID1:CONFIDENCE1,ID2:CONFIDENCE2
+
+Example: military-leadership:0.87,leadership:0.76
 `
 
-    // Use Cloudflare AI to analyze and recommend
+    // Use Cloudflare AI to analyze and recommend with confidence scores
     const ai = env.AI
     const response = await ai.run('@cf/meta/llama-3.1-8b-instruct', {
       messages: [
         {
           role: 'system',
-          content: 'You are an expert content analyst. Analyze blog content and recommend the most relevant portfolio pages based on topic similarity, expertise overlap, and practical value to readers.'
+          content: 'You are an expert content analyst. Analyze blog content and recommend portfolio pages with AI-calculated confidence scores based on content relevance and thematic alignment.'
         },
         {
           role: 'user',
@@ -219,25 +227,61 @@ Example: military-leadership,leadership,strategy
       stream: false
     })
 
-    const recommendations = response.response.trim()
-    const recommendedIds = recommendations.split(',').map(id => id.trim()).filter(Boolean)
+    const aiResponse = response.response.trim()
     
-    // Map recommendations to full portfolio page data
-    const recommendedPages = recommendedIds
-      .map(id => PORTFOLIO_PAGES.find(page => page.id === id))
-      .filter(Boolean)
-      .slice(0, 3) // Ensure max 3 recommendations
+    // Parse AI response for recommendations with confidence scores
+    const recommendations = aiResponse.split(',').map(rec => {
+      const [id, confidenceStr] = rec.split(':')
+      const confidence = parseFloat(confidenceStr) || 0.75
+      return { id: id.trim(), confidence: Math.max(0.6, Math.min(0.98, confidence)) }
+    }).filter(rec => rec.id && !isNaN(rec.confidence))
     
-    // If AI didn't provide good recommendations, fall back to tag-based matching
-    if (recommendedPages.length === 0) {
-      return fallbackRecommendations(blogTags)
+    // Map to full portfolio page data
+    const recommendedPages = []
+    for (const rec of recommendations) {
+      const page = PORTFOLIO_PAGES.find(p => p.id === rec.id)
+      if (page) {
+        recommendedPages.push({
+          ...page,
+          confidence: rec.confidence
+        })
+      }
+      if (recommendedPages.length >= 2) break
     }
     
+    // If AI didn't provide enough recommendations, fill with additional ones
+    if (recommendedPages.length < 2) {
+      const remainingPages = PORTFOLIO_PAGES.filter(p => 
+        !recommendedPages.some(r => r.id === p.id)
+      )
+      const additionalPages = remainingPages.slice(0, 2 - recommendedPages.length)
+      
+      additionalPages.forEach(page => {
+        recommendedPages.push({
+          ...page,
+          confidence: 0.75 // Default confidence for fallback
+        })
+      })
+    }
+    
+    // Return exactly 2 recommendations sorted by confidence
     return recommendedPages
+      .slice(0, 2)
+      .sort((a, b) => b.confidence - a.confidence)
     
   } catch (error) {
     console.error('AI recommendation error:', error)
-    return fallbackRecommendations(blogTags)
+    // Fallback to default recommendations with confidence scores
+    return [
+      {
+        ...PORTFOLIO_PAGES.find(p => p.id === 'leadership'),
+        confidence: 0.75
+      },
+      {
+        ...PORTFOLIO_PAGES.find(p => p.id === 'strategy'),
+        confidence: 0.70
+      }
+    ].filter(Boolean)
   }
 }
 

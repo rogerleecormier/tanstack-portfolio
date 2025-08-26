@@ -5,6 +5,7 @@ export interface PortfolioRecommendation {
   tags: string[]
   category: string
   url: string
+  confidence: number
 }
 
 export interface BlogRecommendationsRequest {
