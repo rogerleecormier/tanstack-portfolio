@@ -344,6 +344,7 @@ function generateWelcomeEmailHTML(subscription) {
       
       <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
         <p>You can manage your preferences or unsubscribe anytime by visiting <a href="https://rcormier.dev/blog">my blog</a>.</p>
+        <p><a href="https://rcormier.dev/newsletter-preferences" style="color: #10b981; text-decoration: none;">📧 Manage Newsletter Preferences</a></p>
         <p>Best regards,<br>Roger Lee Cormier</p>
       </div>
     </div>
@@ -399,6 +400,7 @@ function generateUnsubscribeEmailHTML(subscription) {
       
       <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
         <p>If you change your mind, you can always resubscribe at <a href="https://rcormier.dev/blog">rcormier.dev/blog</a></p>
+        <p><a href="https://rcormier.dev/newsletter-preferences" style="color: #10b981; text-decoration: none;">📧 Manage Newsletter Preferences</a></p>
         <p>Best regards,<br>Roger Lee Cormier</p>
       </div>
     </div>

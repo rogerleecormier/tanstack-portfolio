@@ -13,6 +13,7 @@ import PrivacyPage from './pages/PrivacyPage'
 import BlogListPage from './pages/BlogListPage'
 import BlogPostWrapper from './components/BlogPostWrapper'
 import PortfolioPage from './pages/PortfolioPage'
+import NewsletterPreferencesPage from './pages/NewsletterPreferencesPage'
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -135,6 +136,13 @@ const cloudflareStatusRoute = createRoute({
   component: CloudflareStatusChecker,
 })
 
+// Newsletter preferences route
+const newsletterPreferencesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'newsletter-preferences',
+  component: NewsletterPreferencesPage,
+})
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -148,6 +156,7 @@ const routeTree = rootRoute.addChildren([
   privacyRoute,
   protectedRoute,
   cloudflareStatusRoute,
+  newsletterPreferencesRoute,
 ])
 
 // Create router instance

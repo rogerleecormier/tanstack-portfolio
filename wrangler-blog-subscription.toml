@@ -10,14 +10,15 @@ preview_id = "6d69753cb29f41e6a00b9fab9e301018"  # Preview KV namespace ID
 
 # Environment-specific configurations
 [env.production]
-# Production environment - no additional config needed
+# Production environment - RESEND_KEY should be set as a secret
 
 [env.development]
-# Development environment - no additional config needed
+# Development environment - can use local .dev.vars file
+# Create a .dev.vars file with: RESEND_KEY=your_api_key_here
 
 # Add Resend API key as a secret
 # Run: wrangler secret put RESEND_API_KEY --config wrangler-blog-subscription.toml
 
 # Environment variables
-[vars]
-RESEND_KEY = ""  # This will be overridden by the secret
+# RESEND_KEY is stored as a secret, not as a plaintext variable
+# To set it: wrangler secret put RESEND_KEY --config wrangler-blog-subscription.toml
