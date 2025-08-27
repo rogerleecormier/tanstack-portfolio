@@ -550,6 +550,9 @@ export default {
       // Analyze message content for deterministic meeting duration
       let deterministicDuration = '1 hour' // default
       
+      // Declare analysis variable at the top level
+      let analysis
+      
       // Check for urgency indicators
       const hasUrgentKeywords = /urgent|asap|immediately|emergency|critical|deadline|rush/i.test(messageLower + ' ' + subjectLower)
       const hasComplexKeywords = /complex|complicated|detailed|comprehensive|extensive|multiple|several|various/i.test(messageLower)
@@ -587,7 +590,7 @@ Return JSON:
   "urgency": "immediate|soon|flexible",
   "shouldScheduleMeeting": true/false,
   "meetingType": "consultation|project-planning|technical-review|strategy-session|general-discussion",
-  "followUps": ["2-3 specific questions about missing info"]
+  "followUpQuestions": ["2-3 specific questions about missing info"]
 }`
           }],
           temperature: 0.1,
@@ -603,6 +606,9 @@ Return JSON:
         let priorityLevel = 'medium'
         let shouldScheduleMeeting = false
         let meetingDuration = '1 hour'
+        
+        // Declare analysis variable at the top level
+        let analysis
         
         // Check for urgency
         const hasUrgentKeywords = /urgent|asap|immediately|emergency|critical|deadline|rush/i.test(messageLower + ' ' + subjectLower)
@@ -673,13 +679,21 @@ Return JSON:
            urgency: hasUrgentKeywords ? 'immediate' : 'flexible',
            suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
            relevantContent: ['general portfolio'],
+           confidence: 0.6,
            shouldScheduleMeeting,
            meetingType: shouldScheduleMeeting ? 'general-discussion' : 'consultation',
+           meetingDuration: '1 hour',
            recommendedTimeSlots: ['morning', 'afternoon'],
            timezoneConsideration: 'user\'s local timezone',
+           userTimezone: 'America/New_York',
            followUpRequired: shouldScheduleMeeting,
            redFlags,
-           followUps: basicFollowUps,
+           followUpQuestions: basicFollowUps,
+           timestamp: new Date().toISOString(),
+           originalMessage: '[CONTENT_ANALYZED]',
+           wordCount: scrubbedMessage.split(' ').length,
+           hasCompany: !!company,
+           emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown',
            fallback: true
          }
         
@@ -688,7 +702,6 @@ Return JSON:
       }
 
       // Parse AI response and extract JSON
-      let analysis
       if (aiResponse) {
         try {
           analysis = parseAIResponse(aiResponse.response)
@@ -705,15 +718,23 @@ Return JSON:
             projectScope: 'medium',
             urgency: 'flexible',
             messageType: 'meeting-request',
+            meetingDuration: '1 hour',
             suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
             relevantContent: ['general portfolio'],
+            confidence: 0.6,
             shouldScheduleMeeting: true,
             meetingType: 'general-discussion',
             recommendedTimeSlots: ['morning', 'afternoon'],
             timezoneConsideration: 'user\'s local timezone',
+            userTimezone: 'America/New_York',
             followUpRequired: true,
             redFlags,
             followUpQuestions: basicFollowUps,
+            timestamp: new Date().toISOString(),
+            originalMessage: '[CONTENT_ANALYZED]',
+            wordCount: scrubbedMessage.split(' ').length,
+            hasCompany: !!company,
+            emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown',
             fallback: true
           }
         }
@@ -728,15 +749,23 @@ Return JSON:
           projectScope: 'medium',
           urgency: 'flexible',
           messageType: 'message',
+          meetingDuration: '1 hour',
           suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
           relevantContent: ['general portfolio'],
+          confidence: 0.6,
           shouldScheduleMeeting: false,
           meetingType: 'general-discussion',
           recommendedTimeSlots: ['morning', 'afternoon'],
           timezoneConsideration: 'user\'s local timezone',
+          userTimezone: 'America/New_York',
           followUpRequired: false,
           redFlags,
           followUpQuestions: basicFollowUps,
+          timestamp: new Date().toISOString(),
+          originalMessage: '[CONTENT_ANALYZED]',
+          wordCount: scrubbedMessage.split(' ').length,
+          hasCompany: !!company,
+          emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown',
           fallback: true
         }
       }
@@ -752,13 +781,50 @@ Return JSON:
         meetingDuration: '1 hour',
         suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
         relevantContent: ['general portfolio'],
+        confidence: 0.8,
         shouldScheduleMeeting: false,
         meetingType: 'general-discussion',
         recommendedTimeSlots: ['morning', 'afternoon'],
         timezoneConsideration: 'user\'s local timezone',
+        userTimezone: 'America/New_York',
         followUpRequired: false,
         redFlags: [],
-        followUpQuestions: []
+        followUpQuestions: [],
+        timestamp: new Date().toISOString(),
+        originalMessage: '[CONTENT_ANALYZED]',
+        wordCount: scrubbedMessage.split(' ').length,
+        hasCompany: !!company,
+        emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown'
+      }
+      
+      // Ensure the AI response has all required fields by merging with defaults
+      if (analysis) {
+        // Ensure all required fields are present
+        analysis = {
+          ...defaultAnalysis,
+          ...analysis,
+          // Ensure these specific fields are always set
+          messageType: analysis.messageType || 'message',
+          meetingDuration: analysis.meetingDuration || '1 hour',
+          suggestedResponse: analysis.suggestedResponse || defaultAnalysis.suggestedResponse,
+          relevantContent: analysis.relevantContent || ['general portfolio'],
+          shouldScheduleMeeting: analysis.shouldScheduleMeeting !== undefined ? analysis.shouldScheduleMeeting : false,
+          meetingType: analysis.meetingType || 'general-discussion',
+          recommendedTimeSlots: analysis.recommendedTimeSlots || ['morning', 'afternoon'],
+          timezoneConsideration: analysis.timezoneConsideration || 'user\'s local timezone',
+          userTimezone: analysis.userTimezone || 'America/New_York',
+          followUpRequired: analysis.followUpRequired !== undefined ? analysis.followUpRequired : false,
+          redFlags: analysis.redFlags || [],
+          followUpQuestions: analysis.followUpQuestions || [],
+          timestamp: analysis.timestamp || new Date().toISOString(),
+          originalMessage: analysis.originalMessage || '[CONTENT_ANALYZED]',
+          wordCount: analysis.wordCount || scrubbedMessage.split(' ').length,
+          hasCompany: analysis.hasCompany !== undefined ? analysis.hasCompany : !!company,
+          emailDomain: analysis.emailDomain || (email ? email.split('@')[1] || 'unknown' : 'unknown')
+        }
+      } else {
+        // If no analysis object, use defaults
+        analysis = { ...defaultAnalysis }
       }
       
       // Remove any AI-set confidence to ensure our calculation takes precedence
