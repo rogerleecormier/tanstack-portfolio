@@ -1,4 +1,5 @@
 import fm from 'front-matter'
+import { logger } from './logger'
 
 export interface PortfolioItem {
   title: string
@@ -98,14 +99,14 @@ function determineCategory(filename: string, frontmatter: Record<string, unknown
 async function discoverPortfolioFiles(): Promise<string[]> {
   try {
     // Try to dynamically discover files using a different approach
-    console.log('Attempting dynamic file discovery...')
+    logger.portfolioLoading('Attempting dynamic file discovery...')
     
     // Method 1: Try to use dynamic imports with a pattern
     const possibleFiles = [
       'strategy', 'leadership', 'talent', 'devops', 'saas', 'analytics',
       'risk-compliance', 'governance-pmo', 'product-ux',
       'education-certifications', 'ai-automation', 'culture', 'capabilities',
-      'projects', 'test', 'new-service', 'consulting', 'technology'
+      'projects'
     ]
     
     const discoveredFiles: string[] = []
@@ -116,21 +117,21 @@ async function discoverPortfolioFiles(): Promise<string[]> {
         const module = await import(`../content/portfolio/${fileName}.md?raw`)
         if (module && module.default) {
           discoveredFiles.push(`${fileName}.md`)
-          console.log(`✓ Discovered: ${fileName}.md`)
+          logger.discovered(`${fileName}.md`)
         }
       } catch {
         // File doesn't exist, skip it
-        console.log(`✗ Not found: ${fileName}.md`)
+        logger.notFound(`${fileName}.md`)
       }
     }
     
     if (discoveredFiles.length > 0) {
-      console.log(`Successfully discovered ${discoveredFiles.length} portfolio files:`, discoveredFiles)
+      logger.portfolioLoading(`Successfully discovered ${discoveredFiles.length} portfolio files:`, discoveredFiles)
       return discoveredFiles
     }
     
     // Method 2: Fallback to known files if dynamic discovery fails
-    console.log('Dynamic discovery failed, using fallback list')
+    logger.portfolioLoading('Dynamic discovery failed, using fallback list')
     return [
       'strategy.md',
       'leadership.md',
@@ -149,7 +150,7 @@ async function discoverPortfolioFiles(): Promise<string[]> {
     ]
     
   } catch (error) {
-    console.error('Error in dynamic file discovery:', error)
+    logger.error('Error in dynamic file discovery:', error)
     // Final fallback
     return [
       'strategy.md',
@@ -167,6 +168,113 @@ async function discoverPortfolioFiles(): Promise<string[]> {
       'capabilities.md',
       'projects.md'
     ]
+  }
+}
+
+// Dynamic blog file discovery
+async function discoverBlogFiles(): Promise<string[]> {
+  try {
+    logger.portfolioLoading('Attempting blog file discovery...')
+    
+    const possibleBlogFiles = [
+      'pmbok-agile-methodology-blend',
+      'serverless-ai-workflows-azure-functions',
+      'power-automate-workflow-automation',
+      'asana-ai-status-reporting',
+      'mkdocs-github-actions-portfolio',
+      'internal-ethos-high-performing-organizations',
+      'digital-transformation-strategy-governance',
+      'military-leadership-be-know-do',
+      'ramp-agents-ai-finance-operations',
+      'pmp-digital-transformation-leadership'
+    ]
+    
+    const discoveredBlogFiles: string[] = []
+    
+    for (const fileName of possibleBlogFiles) {
+      try {
+        const module = await import(`../content/blog/${fileName}.md?raw`)
+        if (module && module.default) {
+          discoveredBlogFiles.push(`${fileName}.md`)
+          logger.discovered(`blog: ${fileName}.md`)
+        }
+      } catch {
+        logger.notFound(`blog: ${fileName}.md`)
+      }
+    }
+    
+    if (discoveredBlogFiles.length > 0) {
+      logger.portfolioLoading(`Successfully discovered ${discoveredBlogFiles.length} blog files:`, discoveredBlogFiles)
+      return discoveredBlogFiles
+    }
+    
+    return []
+  } catch (error) {
+    logger.error('Error in blog file discovery:', error)
+    return []
+  }
+}
+
+// Dynamic project file discovery
+async function discoverProjectFiles(): Promise<string[]> {
+  try {
+    logger.portfolioLoading('Attempting project file discovery...')
+    
+    const possibleProjectFiles = [
+      'project-analysis'
+    ]
+    
+    const discoveredProjectFiles: string[] = []
+    
+    for (const fileName of possibleProjectFiles) {
+      try {
+        const module = await import(`../content/projects/${fileName}.md?raw`)
+        if (module && module.default) {
+          discoveredProjectFiles.push(`${fileName}.md`)
+          logger.discovered(`project: ${fileName}.md`)
+        }
+      } catch {
+        logger.notFound(`project: ${fileName}.md`)
+      }
+    }
+    
+    if (discoveredProjectFiles.length > 0) {
+      logger.portfolioLoading(`Successfully discovered ${discoveredProjectFiles.length} project files:`, discoveredProjectFiles)
+      return discoveredProjectFiles
+    }
+    
+    return []
+  } catch (error) {
+    logger.error('Error in project file discovery:', error)
+    return []
+  }
+}
+
+// Get all discovered content items (portfolio, blog, projects)
+export async function getAllContentItems(): Promise<{
+  portfolio: string[],
+  blog: string[],
+  projects: string[]
+}> {
+  try {
+    const [portfolioFiles, blogFiles, projectFiles] = await Promise.all([
+      discoverPortfolioFiles(),
+      discoverBlogFiles(),
+      discoverProjectFiles()
+    ])
+    
+    return {
+      portfolio: portfolioFiles,
+      blog: blogFiles,
+      projects: projectFiles
+    }
+  } catch (error) {
+    logger.error('Error getting all content items:', error)
+    return {
+      portfolio: [],
+      blog: [],
+      projects: []
+    }
   }
 }
 
@@ -290,7 +398,7 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
   // Only load portfolio items at runtime, not during build
   if (typeof window === 'undefined') {
     // During build/SSR, return static items
-    console.log('Portfolio items loading skipped during build/SSR, using static data')
+    logger.portfolioLoading('Portfolio items loading skipped during build/SSR, using static data')
     return staticPortfolioItems.map(item => ({
       ...item,
       frontmatter: {}
@@ -301,11 +409,17 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
   try {
     const items: PortfolioItem[] = []
     
-    // Dynamically discover portfolio files
-    const portfolioFiles = await discoverPortfolioFiles()
+    // Dynamically discover all content files
+const [portfolioFiles, blogFiles, projectFiles] = await Promise.all([
+  discoverPortfolioFiles(),
+  discoverBlogFiles(),
+  discoverProjectFiles()
+])
+
+logger.contentSummary(portfolioFiles.length, blogFiles.length, projectFiles.length)
     
     if (portfolioFiles.length === 0) {
-      console.warn('No portfolio files discovered, using static data')
+      logger.warn('No portfolio files discovered, using static data')
       return staticPortfolioItems.map(item => ({
         ...item,
         frontmatter: {}
@@ -365,7 +479,7 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
 
         items.push(item)
       } catch (error) {
-        console.error(`Error loading portfolio file ${fileName}:`, error)
+        logger.error(`Error loading portfolio file ${fileName}:`, error)
         // Fall back to static item if available
         const staticItem = staticPortfolioItems.find(item => item.fileName === fileName.replace('.md', ''))
         if (staticItem) {
@@ -385,7 +499,7 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
       return a.title.localeCompare(b.title)
     })
   } catch (error) {
-    console.error('Error in dynamic portfolio loading, using static data:', error)
+    logger.error('Error in dynamic portfolio loading, using static data:', error)
     return staticPortfolioItems.map(item => ({
       ...item,
       frontmatter: {}

@@ -3,6 +3,7 @@
 // ENHANCED VERSION with industry identification, timezone analysis, and smart fallbacks
 
 import { safeValidateAIAnalysis, type AIAnalysisResult } from '@/lib/aiSchema'
+import { logger } from '../utils/logger'
 
 // Re-export the type for backward compatibility
 export type { AIAnalysisResult }
@@ -17,10 +18,8 @@ export interface ContactFormData {
   honeypot?: string // Hidden field for spam prevention
 }
 
-// AI Worker endpoints - Updated with actual deployed URLs
-const AI_WORKER_ENDPOINT = import.meta.env.PROD 
-  ? 'https://ai-contact-analyzer.rcormier.workers.dev'
-  : 'https://ai-contact-analyzer-development.rcormier.workers.dev'
+// AI Worker endpoint - Production only
+const AI_WORKER_ENDPOINT = 'https://ai-contact-analyzer.rcormier.workers.dev'
 
 // Retry configuration
 const MAX_RETRIES = 2
@@ -70,7 +69,7 @@ async function identifyIndustry(companyName: string, message: string): Promise<s
       return result.industry || 'other'
     }
   } catch (error) {
-    console.warn('AI industry detection failed, using fallback:', error)
+    logger.warn('AI industry detection failed, using fallback:', error)
   }
 
   // Fallback: keyword-based industry detection
@@ -110,7 +109,7 @@ async function analyzeMessageContent(
   message: string
 ): Promise<Partial<AIAnalysisResult>> {
   try {
-    console.log('🔍 Attempting AI analysis with worker:', AI_WORKER_ENDPOINT)
+    logger.aiWorker('Attempting AI analysis with worker:', AI_WORKER_ENDPOINT)
     
     const response = await fetch(AI_WORKER_ENDPOINT, {
       method: 'POST',
@@ -126,11 +125,11 @@ async function analyzeMessageContent(
       }),
     })
 
-    console.log('📡 AI Worker Response Status:', response.status, response.statusText)
+    logger.response('AI Worker Response Status:', response.status, response.statusText)
 
     if (response.ok) {
       const result = await response.json()
-      console.log('✅ AI Worker Response:', result)
+      logger.success('AI Worker Response:', result)
       
       // Mark as AI-available if we got a successful response
       return {
@@ -139,19 +138,19 @@ async function analyzeMessageContent(
         aiAvailable: true
       }
     } else {
-      console.error('❌ AI Worker returned error status:', response.status, response.statusText)
+      logger.error('AI Worker returned error status:', response.status, response.statusText)
       const errorText = await response.text()
-      console.error('❌ AI Worker error details:', errorText)
+      logger.error('AI Worker error details:', errorText)
     }
   } catch (error) {
-    console.error('❌ AI Worker request failed:', error)
-    console.error('❌ Error details:', {
+    logger.error('AI Worker request failed:', error)
+    logger.error('Error details:', {
       message: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined
     })
   }
 
-  console.log('🔄 Falling back to keyword-based analysis')
+  logger.info('Falling back to keyword-based analysis')
   
   // Fallback analysis
   return createFallbackAnalysis({ 
@@ -304,7 +303,7 @@ const retryWithBackoff = async <T>(
       throw error
     }
     
-    console.log(`🔄 Retrying... (${maxRetries} attempts left)`)
+          logger.info(`Retrying... (${maxRetries} attempts left)`)
     await new Promise(resolve => setTimeout(resolve, delay))
     
     return retryWithBackoff(fn, maxRetries - 1, delay * 2)
@@ -368,7 +367,7 @@ export const analyzeContactForm = async (formData: ContactFormData): Promise<AIA
         // Type assertion to ensure industry is valid
         analysis.industry = industry as AIAnalysisResult['industry']
       } catch (error) {
-        console.warn('Industry identification failed:', error)
+        logger.warn('Industry identification failed:', error)
         // Keep the industry from AI analysis or default to 'other'
       }
     }
@@ -378,12 +377,12 @@ export const analyzeContactForm = async (formData: ContactFormData): Promise<AIA
   } catch (error) {
     // Handle specific error types
     if (error instanceof AIAnalysisError) {
-      console.error('AI Analysis Error:', error.message, error.code)
+      logger.error('AI Analysis Error:', error.message, error.code)
       throw error
     }
 
     // For other errors, return fallback analysis
-    console.warn('AI analysis failed, using fallback:', error)
+    logger.warn('AI analysis failed, using fallback:', error)
     const fallbackAnalysis = createFallbackAnalysis(formData)
     
     // Try industry identification even in fallback mode
@@ -392,7 +391,7 @@ export const analyzeContactForm = async (formData: ContactFormData): Promise<AIA
       // Type assertion to ensure industry is valid
       fallbackAnalysis.industry = industry as AIAnalysisResult['industry']
     } catch (error) {
-      console.warn('Industry identification failed in fallback mode:', error)
+      logger.warn('Industry identification failed in fallback mode:', error)
     }
     
     return fallbackAnalysis
@@ -449,10 +448,10 @@ export const formatRedFlags = (redFlags: string[]): string[] => {
 // Test AI Worker connectivity
 export async function testAIWorker(): Promise<{ success: boolean; error?: string; details?: unknown }> {
   try {
-    console.log('🧪 Testing AI Worker connectivity...')
-    console.log('📍 Worker URL:', AI_WORKER_ENDPOINT)
-    console.log('🌐 Environment:', import.meta.env.PROD ? 'Production' : 'Development')
-    console.log('🔒 CORS Mode:', 'cors')
+    logger.test('Testing AI Worker connectivity...')
+    logger.location('Worker URL:', AI_WORKER_ENDPOINT)
+    logger.network('Environment:', import.meta.env.PROD ? 'Production' : 'Development')
+    logger.security('CORS Mode:', 'cors')
     
     const testData = {
       name: 'Test User',
@@ -463,7 +462,7 @@ export async function testAIWorker(): Promise<{ success: boolean; error?: string
       consent: 'true'
     }
     
-    console.log('📤 Sending test data:', testData)
+    logger.data('Sending test data:', testData)
     
     // Test with different fetch options
     const fetchOptions = {
@@ -477,16 +476,16 @@ export async function testAIWorker(): Promise<{ success: boolean; error?: string
       cache: 'no-cache' as RequestCache,
     }
     
-    console.log('📡 Fetch options:', fetchOptions)
+    logger.response('Fetch options:', fetchOptions)
     
     const response = await fetch(AI_WORKER_ENDPOINT, fetchOptions)
     
-    console.log('📡 Test Response Status:', response.status, response.statusText)
-    console.log('📡 Response Headers:', Object.fromEntries(response.headers.entries()))
+    logger.response('Test Response Status:', response.status, response.statusText)
+    logger.response('Response Headers:', Object.fromEntries(response.headers.entries()))
     
     if (response.ok) {
       const result = await response.json()
-      console.log('✅ AI Worker Test Successful:', result)
+      logger.success('AI Worker Test Successful:', result)
       return { 
         success: true, 
         details: { status: response.status, result } 
@@ -496,11 +495,11 @@ export async function testAIWorker(): Promise<{ success: boolean; error?: string
       try {
         errorText = await response.text()
       } catch (e) {
-        console.warn('Could not read error response:', e)
+        logger.warn('Could not read error response:', e)
       }
       
-      console.error('❌ AI Worker Test Failed:', response.status, errorText)
-      console.error('❌ Response Headers:', Object.fromEntries(response.headers.entries()))
+      logger.error('AI Worker Test Failed:', response.status, errorText)
+      logger.error('Response Headers:', Object.fromEntries(response.headers.entries()))
       
       return { 
         success: false, 
@@ -514,7 +513,7 @@ export async function testAIWorker(): Promise<{ success: boolean; error?: string
       }
     }
   } catch (error) {
-    console.error('❌ AI Worker Test Error:', error)
+    logger.error('AI Worker Test Error:', error)
     
     // More detailed error information
     let errorDetails = {
@@ -537,12 +536,12 @@ export async function testAIWorker(): Promise<{ success: boolean; error?: string
       }
     }
     
-    console.error('❌ Error details:', errorDetails)
+    logger.error('Error details:', errorDetails)
     
     // Check if it's a CORS issue
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      console.error('❌ This looks like a CORS or network issue')
-      console.error('❌ Check if the worker is running and accessible')
+      logger.error('This looks like a CORS or network issue')
+      logger.error('Check if the worker is running and accessible')
     }
     
     return { 

@@ -1,0 +1,19 @@
+# Email Worker Configuration for tanstack-portfolio
+# Handles contact form email submissions
+
+name = "tanstack-portfolio-email-worker"
+main = "functions/send-email.js"
+compatibility_date = "2024-01-01"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+
+# Secrets from Cloudflare Secrets Store
+secrets_store_secrets = [
+  { binding = "RESEND_API_KEY", store_id = "04a2a114b7dc4068a7e8aad556011a8e", secret_name = "ResendAPIKey" }
+]
+
+# Enable logging for production
+[observability.logs]
+enabled = true

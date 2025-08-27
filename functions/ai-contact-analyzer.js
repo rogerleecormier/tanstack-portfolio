@@ -28,7 +28,7 @@ const ANALYSIS_SCHEMA = {
   meetingType: ['consultation', 'project-planning', 'technical-review', 'strategy-session', 'general-discussion'],
   confidence: { min: 0, max: 1 },
   redFlags: { type: 'array', maxLength: 5 },
-  followUps: { type: 'array', maxLength: 3 }
+  followUpQuestions: { type: 'array', maxLength: 3 }
 }
 
 // CORS headers helper function
@@ -122,10 +122,15 @@ async function checkRateLimit(request, env) {
 
 // Validate and sanitize input data with enhanced security
 function validateInput(data) {
+  console.log('🔍 Validating input data:', JSON.stringify(data, null, 2))
+  
   const { name, email, company, subject, message, consent } = data
   
+  console.log('🔍 Extracted fields:', { name, email, company, subject, message, consent })
+  
   // Check required fields
-  if (!name || !email || !subject || !message) {
+  if (!name || !subject || !message) {
+    console.error('❌ Missing required fields:', { name: !!name, subject: !!subject, message: !!message })
     throw new Error('Missing required fields')
   }
   
@@ -134,10 +139,12 @@ function validateInput(data) {
     throw new Error('Explicit consent required for AI analysis')
   }
   
-  // Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) {
-    throw new Error('Invalid email format')
+  // Validate email format if provided
+  if (email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      throw new Error('Invalid email format')
+    }
   }
   
   // Check for honeypot field (hidden field that should be empty)
@@ -158,7 +165,7 @@ function validateInput(data) {
   
   const sanitized = {
     name: sanitize(name),
-    email: sanitize(email),
+    email: email ? sanitize(email) : '',
     company: company ? sanitize(company) : '',
     subject: sanitize(subject),
     message: sanitize(message)
@@ -230,11 +237,11 @@ function validateAIResponse(response) {
       response.redFlags = response.redFlags.slice(0, ANALYSIS_SCHEMA.redFlags.maxLength)
     }
     
-         if (!Array.isArray(response.followUps)) {
-       response.followUps = []
+         if (!Array.isArray(response.followUpQuestions)) {
+       response.followUpQuestions = []
      } else {
                // Filter out placeholder text and ensure actual questions
-        response.followUps = response.followUps
+        response.followUpQuestions = response.followUpQuestions
           .filter(question => {
             if (!question || typeof question !== 'string') return false
             
@@ -254,7 +261,7 @@ function validateAIResponse(response) {
             
             return question.trim().length > 0
           })
-          .slice(0, ANALYSIS_SCHEMA.followUps.maxLength)
+          .slice(0, ANALYSIS_SCHEMA.followUpQuestions.maxLength)
      }
     
     return response
@@ -286,7 +293,7 @@ function calculateConfidence({ name, email, company, subject, message, analysis 
   if (company && company.trim().length > 0) confidence += 0.10
   
   // Email domain quality (5%)
-  const emailDomain = email.split('@')[1] || ''
+  const emailDomain = email ? email.split('@')[1] || '' : ''
   if (emailDomain && emailDomain !== 'gmail.com' && emailDomain !== 'yahoo.com' && emailDomain !== 'hotmail.com') {
     confidence += 0.05
   }
@@ -328,7 +335,7 @@ function calculateConfidence({ name, email, company, subject, message, analysis 
   }
   
   if (subjectWords < 2) confidence -= 0.03
-  if (emailDomain === 'gmail.com' || emailDomain === 'yahoo.com' || emailDomain === 'hotmail.com') {
+  if (emailDomain && (emailDomain === 'gmail.com' || emailDomain === 'yahoo.com' || emailDomain === 'hotmail.com')) {
     confidence -= 0.02
   }
   
@@ -431,7 +438,7 @@ OUTPUT SCHEMA:
   "timezoneConsideration": "user's local timezone",
   "followUpRequired": true/false,
   "redFlags": ["array of security concerns if any"],
-  "followUps": ["specific question 1", "specific question 2", "specific question 3"]
+  "followUpQuestions": ["specific question 1", "specific question 2", "specific question 3"]
 }
 
 Set shouldScheduleMeeting=true for consultation/project/technical discussions.
@@ -478,6 +485,9 @@ export default {
       
       const rawData = await request.json()
       
+      // Debug: Log the received data
+      console.log('📥 Received data:', JSON.stringify(rawData, null, 2))
+      
       // Validate and sanitize input
       const { name, email, company, subject, message } = validateInput(rawData)
 
@@ -517,13 +527,13 @@ export default {
           timezoneConsideration: 'user\'s local timezone',
           followUpRequired: false,
           redFlags,
-          followUps: [],
+          followUpQuestions: [],
           confidence: 0.3,
           timestamp: new Date().toISOString(),
           originalMessage: '[CONTENT_REVIEWED]',
           wordCount: 0,
           hasCompany: !!company,
-          emailDomain: email.split('@')[1] || 'unknown',
+          emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown',
           fallback: true
         }), {
           status: 200,
@@ -685,29 +695,51 @@ Return JSON:
           analysis = validateAIResponse(analysis)
         } catch (parseError) {
           console.error('AI response parsing error:', parseError)
-                     // Fallback analysis if AI response parsing fails
-           const basicFollowUps = ["What specific challenge are you facing?", "How can I best help you achieve your goals?"]
-           
-           analysis = {
-             inquiryType: 'general',
-             priorityLevel: 'medium',
-             industry: 'other',
-             projectScope: 'medium',
-             urgency: 'flexible',
-             suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
-             relevantContent: ['general portfolio'],
-             shouldScheduleMeeting: true,
-             meetingType: 'general-discussion',
-             recommendedTimeSlots: ['morning', 'afternoon'],
-             timezoneConsideration: 'user\'s local timezone',
-             followUpRequired: true,
-             redFlags,
-             followUps: basicFollowUps,
-             fallback: true
-           }
+          // Fallback analysis if AI response parsing fails
+          const basicFollowUps = ["What specific challenge are you facing?", "How can I best help you achieve your goals?"]
+          
+          analysis = {
+            inquiryType: 'general',
+            priorityLevel: 'medium',
+            industry: 'other',
+            projectScope: 'medium',
+            urgency: 'flexible',
+            messageType: 'meeting-request',
+            suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
+            relevantContent: ['general portfolio'],
+            shouldScheduleMeeting: true,
+            meetingType: 'general-discussion',
+            recommendedTimeSlots: ['morning', 'afternoon'],
+            timezoneConsideration: 'user\'s local timezone',
+            followUpRequired: true,
+            redFlags,
+            followUpQuestions: basicFollowUps,
+            fallback: true
+          }
+        }
+      } else {
+        // If aiResponse is null, create fallback analysis
+        const basicFollowUps = ["What specific challenge are you facing?", "How can I best help you achieve your goals?"]
+        
+        analysis = {
+          inquiryType: 'general',
+          priorityLevel: 'medium',
+          industry: 'other',
+          projectScope: 'medium',
+          urgency: 'flexible',
+          messageType: 'message',
+          suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
+          relevantContent: ['general portfolio'],
+          shouldScheduleMeeting: false,
+          meetingType: 'general-discussion',
+          recommendedTimeSlots: ['morning', 'afternoon'],
+          timezoneConsideration: 'user\'s local timezone',
+          followUpRequired: false,
+          redFlags,
+          followUpQuestions: basicFollowUps,
+          fallback: true
         }
       }
-      // If aiResponse is null, we already have the fallback analysis from the catch block
 
       // Ensure all required fields exist with defaults
       const defaultAnalysis = {
@@ -716,7 +748,9 @@ Return JSON:
         industry: 'other',
         projectScope: 'medium',
         urgency: 'flexible',
+        messageType: 'message',
         meetingDuration: '1 hour',
+        suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
         relevantContent: ['general portfolio'],
         shouldScheduleMeeting: false,
         meetingType: 'general-discussion',
@@ -724,7 +758,7 @@ Return JSON:
         timezoneConsideration: 'user\'s local timezone',
         followUpRequired: false,
         redFlags: [],
-        followUps: []
+        followUpQuestions: []
       }
       
       // Remove any AI-set confidence to ensure our calculation takes precedence
@@ -755,7 +789,7 @@ Return JSON:
         originalMessage: '[CONTENT_ANALYZED]', // Don't store original message
         wordCount: scrubbedMessage.split(' ').length,
         hasCompany: !!company,
-        emailDomain: email.split('@')[1] || 'unknown',
+        emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown',
         fallback: false // Explicitly mark as successful AI analysis
       }
       

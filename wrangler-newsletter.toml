@@ -1,0 +1,24 @@
+# Newsletter Subscription Worker Configuration for tanstack-portfolio
+# Handles blog subscription management and email notifications
+
+name = "tanstack-portfolio-blog-subscription"
+main = "functions/blog-subscription-worker.js"
+compatibility_date = "2024-01-01"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+
+# Secrets from Cloudflare Secrets Store
+secrets_store_secrets = [
+  { binding = "RESEND_API_KEY", store_id = "04a2a114b7dc4068a7e8aad556011a8e", secret_name = "ResendAPIKey" }
+]
+
+# KV Namespace binding for blog subscriptions
+[[kv_namespaces]]
+binding = "BLOG_SUBSCRIPTIONS"
+id = "6d69753cb29f41e6a00b9fab9e301018"
+
+# Enable logging for production
+[observability.logs]
+enabled = true
