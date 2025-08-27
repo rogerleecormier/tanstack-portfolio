@@ -175,17 +175,22 @@ export default function PortfolioPage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-            {/* Compact Header */}
-      <div className="mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
-            <Briefcase className="h-6 w-6 text-teal-600 flex-shrink-0" />
-            <H1 className="text-2xl lg:text-3xl mb-0">Portfolio & Expertise</H1>
+            {/* Header */}
+      <div className="text-center mb-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
+              <Briefcase className="h-6 w-6 text-teal-600" />
+            </div>
+            <H1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              Portfolio & Expertise
+            </H1>
           </div>
-          <P className="text-sm lg:text-base text-gray-600 dark:text-gray-400 lg:max-w-md">
-            Professional expertise and strategic capabilities
+          <P className="text-sm lg:text-base text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Strategic technology leadership, enterprise modernization, and operational excellence across complex business environments
           </P>
         </div>
+      </div>
 
         {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
@@ -238,29 +243,28 @@ export default function PortfolioPage() {
           )}
         </div>
 
-                           {/* Selected Tags Display */}
-          {selectedTags.length > 0 && (
-            <div className="mt-3">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Selected filters:</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {selectedTags.map(tag => (
-                  <Badge
-                    key={tag}
-                    variant="default"
-                    className="bg-teal-600 hover:bg-teal-700 cursor-pointer"
-                    onClick={() => toggleTag(tag)}
-                  >
-                    <Tag className="h-3 w-3 mr-1" />
-                    {tag}
-                    <X className="h-3 w-3 ml-1" />
-                  </Badge>
-                ))}
-              </div>
+        {/* Selected Tags Display */}
+        {selectedTags.length > 0 && (
+          <div className="mt-3">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Selected filters:</span>
             </div>
-          )}
-        </div>
+            <div className="flex flex-wrap gap-2">
+              {selectedTags.map(tag => (
+                <Badge
+                  key={tag}
+                  variant="default"
+                  className="bg-teal-600 hover:bg-teal-700 cursor-pointer"
+                  onClick={() => toggleTag(tag)}
+                >
+                  <Tag className="h-3 w-3 mr-1" />
+                  {tag}
+                  <X className="h-3 w-3 ml-1" />
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
 
              {/* Results Count */}
        <div className="mb-6">

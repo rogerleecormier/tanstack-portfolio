@@ -140,17 +140,22 @@ export default function BlogListPage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      {/* Compact Header */}
-      <div className="mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
-            <BookOpen className="h-6 w-6 text-teal-600 flex-shrink-0" />
-            <H1 className="text-2xl lg:text-3xl mb-0">Insights & Articles</H1>
+      {/* Header */}
+      <div className="text-center mb-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
+              <BookOpen className="h-6 w-6 text-teal-600" />
+            </div>
+            <H1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              Insights & Articles
+            </H1>
           </div>
-          <P className="text-sm lg:text-base text-gray-600 dark:text-gray-400 lg:max-w-md">
-            Professional insights, tutorials, and strategic perspectives
+          <P className="text-sm lg:text-base text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Strategic insights, technical deep-dives, and leadership perspectives on enterprise technology transformation
           </P>
         </div>
+      </div>
 
         {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
@@ -200,8 +205,7 @@ export default function BlogListPage() {
               ))}
             </div>
           </div>
-                 )}
-       </div>
+        )}
 
        {/* Results Count */}
        <div className="mb-6">
