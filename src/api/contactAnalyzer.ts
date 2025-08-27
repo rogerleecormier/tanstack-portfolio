@@ -45,61 +45,7 @@ function getUserTimezone(): string {
   }
 }
 
-// AI-powered industry identification
-async function identifyIndustry(companyName: string, message: string): Promise<string> {
-  if (!companyName || companyName.trim() === '') {
-    return 'other'
-  }
-
-  try {
-    // Try AI-powered industry detection first
-    const response = await fetch(AI_WORKER_ENDPOINT + '/industry', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        company: companyName,
-        message: message.substring(0, 500) // Limit message size
-      }),
-    })
-
-    if (response.ok) {
-      const result = await response.json()
-      return result.industry || 'other'
-    }
-  } catch (error) {
-    logger.warn('AI industry detection failed, using fallback:', error)
-  }
-
-  // Fallback: keyword-based industry detection
-  const messageLower = message.toLowerCase()
-  const companyLower = companyName.toLowerCase()
-
-  // Industry keywords mapping
-  const industryKeywords = {
-    technology: ['tech', 'software', 'saas', 'platform', 'digital', 'ai', 'automation', 'cloud', 'api'],
-    healthcare: ['health', 'medical', 'hospital', 'clinic', 'patient', 'doctor', 'nurse', 'pharma', 'biotech'],
-    finance: ['bank', 'financial', 'investment', 'insurance', 'credit', 'loan', 'trading', 'fintech', 'payments'],
-    manufacturing: ['manufacturing', 'factory', 'production', 'industrial', 'machinery', 'supply chain', 'logistics'],
-    retail: ['retail', 'ecommerce', 'store', 'shopping', 'consumer', 'merchandise', 'sales'],
-    education: ['education', 'school', 'university', 'college', 'learning', 'training', 'academic'],
-    government: ['government', 'public', 'federal', 'state', 'municipal', 'agency', 'department'],
-    nonprofit: ['nonprofit', 'charity', 'foundation', 'ngo', 'volunteer', 'donation'],
-    startup: ['startup', 'venture', 'funding', 'accelerator', 'incubator', 'seed', 'series'],
-    enterprise: ['enterprise', 'corporate', 'fortune', 'global', 'multinational', 'conglomerate']
-  }
-
-  for (const [industry, keywords] of Object.entries(industryKeywords)) {
-    if (keywords.some(keyword => 
-      companyLower.includes(keyword) || messageLower.includes(keyword)
-    )) {
-      return industry
-    }
-  }
-
-  return 'other'
-}
+// Industry identification is now handled by the main AI analysis
 
 // Enhanced message analysis with AI
 async function analyzeMessageContent(
@@ -141,6 +87,17 @@ async function analyzeMessageContent(
       logger.error('AI Worker returned error status:', response.status, response.statusText)
       const errorText = await response.text()
       logger.error('AI Worker error details:', errorText)
+      
+      // Only fall back if AI worker returns an error
+      logger.info('Falling back to keyword-based analysis due to AI worker error')
+      return createFallbackAnalysis({ 
+        name, 
+        email: 'user@example.com', // Default email for fallback
+        company, 
+        subject, 
+        message,
+        consent: true // Default consent for fallback
+      })
     }
   } catch (error) {
     logger.error('AI Worker request failed:', error)
@@ -148,19 +105,18 @@ async function analyzeMessageContent(
       message: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined
     })
+    
+    // Only fall back if there's a network/request error
+    logger.info('Falling back to keyword-based analysis due to request failure')
+    return createFallbackAnalysis({ 
+      name, 
+      email: 'user@example.com', // Default email for fallback
+      company, 
+      subject, 
+      message,
+      consent: true // Default consent for fallback
+    })
   }
-
-  logger.info('Falling back to keyword-based analysis')
-  
-  // Fallback analysis
-  return createFallbackAnalysis({ 
-    name, 
-    email: 'user@example.com', // Default email for fallback
-    company, 
-    subject, 
-    message,
-    consent: true // Default consent for fallback
-  })
 }
 
 // Enhanced fallback analysis when AI fails
@@ -360,17 +316,7 @@ export const analyzeContactForm = async (formData: ContactFormData): Promise<AIA
       }
     })
 
-    // If AI analysis succeeded, try industry identification
-    if (analysis && !analysis.fallback) {
-      try {
-        const industry = await identifyIndustry(formData.company || '', formData.message)
-        // Type assertion to ensure industry is valid
-        analysis.industry = industry as AIAnalysisResult['industry']
-      } catch (error) {
-        logger.warn('Industry identification failed:', error)
-        // Keep the industry from AI analysis or default to 'other'
-      }
-    }
+    // Industry is already provided by the AI analysis, no need for separate call
 
     return analysis
 
@@ -385,14 +331,7 @@ export const analyzeContactForm = async (formData: ContactFormData): Promise<AIA
     logger.warn('AI analysis failed, using fallback:', error)
     const fallbackAnalysis = createFallbackAnalysis(formData)
     
-    // Try industry identification even in fallback mode
-    try {
-      const industry = await identifyIndustry(formData.company || '', formData.message)
-      // Type assertion to ensure industry is valid
-      fallbackAnalysis.industry = industry as AIAnalysisResult['industry']
-    } catch (error) {
-      logger.warn('Industry identification failed in fallback mode:', error)
-    }
+    // Industry is already set in fallback analysis
     
     return fallbackAnalysis
   }

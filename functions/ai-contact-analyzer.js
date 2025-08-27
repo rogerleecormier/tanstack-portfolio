@@ -220,8 +220,8 @@ function validateInput(data) {
     throw new Error('Missing required fields')
   }
   
-  // Check explicit consent for AI analysis
-  if (!consent || consent !== 'true') {
+  // Check explicit consent for AI analysis (accept both boolean true and string 'true')
+  if (!consent || (consent !== true && consent !== 'true')) {
     throw new Error('Explicit consent required for AI analysis')
   }
   
@@ -699,15 +699,37 @@ export default {
             // Use Cloudflare AI to analyze the message
       let aiResponse
       try {
-        // Try with the correct model name
-        // Streamlined AI prompt to reduce neuron usage
-        aiResponse = await env.ai.run('@cf/meta/llama-2-7b-chat-int8', {
-          messages: [{
-            role: 'user',
-            content: `Analyze: ${name} (${company || 'N/A'}) - ${scrubbedSubject}
+        console.log('🤖 Attempting AI service call...')
+        console.log('📝 Input data:', { name, company, subject: scrubbedSubject, messageLength: scrubbedMessage.length })
+        
+        // Try multiple AI models for better JSON compliance
+        const models = [
+          '@cf/meta/llama-2-7b-chat-int8',
+          '@cf/mistral/mistral-7b-instruct-v0.2',
+          '@cf/meta/llama-3.1-8b-instruct'
+        ]
+        
+        console.log('🚀 Starting AI model attempts...')
+        
+        for (const model of models) {
+          try {
+            console.log(`🤖 Attempting AI model: ${model}`)
+            aiResponse = await env.ai.run(model, {
+              messages: [{
+                role: 'system',
+                content: 'You are a JSON-only response bot. You must return ONLY valid JSON with no additional text, explanations, or formatting. Never use markdown, never add explanations.'
+              }, {
+                role: 'user',
+                content: `Analyze this contact form message and return ONLY a JSON object:
+
+Name: ${name}
+Company: ${company || 'N/A'}
+Subject: ${scrubbedSubject}
 Message: ${scrubbedMessage}
 
-Return JSON:
+IMPORTANT: Generate 2-3 intelligent follow-up questions that YOU would ask the client to better understand their needs. These should be questions FOR the client to answer, not statements about what the client said.
+
+Return this exact JSON structure (no other text):
 {
   "inquiryType": "consultation|project|partnership|general|urgent",
   "priorityLevel": "high|medium|low",
@@ -716,14 +738,52 @@ Return JSON:
   "urgency": "immediate|soon|flexible",
   "shouldScheduleMeeting": true/false,
   "meetingType": "consultation|project-planning|technical-review|strategy-session|general-discussion",
-  "followUpQuestions": ["2-3 specific questions about missing info"]
+  "followUpQuestions": ["What specific areas of your ERP system need modernization?", "What is your timeline for this project?", "What are your current pain points with existing systems?"]
 }`
-          }],
-          temperature: 0.1,
-          max_tokens: 300 // Limit response size to reduce neurons
-        })
+              }],
+              temperature: 0.1,
+              max_tokens: 400
+            })
+            
+            console.log(`✅ AI model ${model} successful`)
+            console.log(`📝 Raw AI response from ${model}:`, aiResponse)
+            break
+          } catch (modelError) {
+            console.log(`❌ AI model ${model} failed:`, modelError.message)
+            console.log(`🔍 Error details for ${model}:`, {
+              name: modelError.name,
+              message: modelError.message,
+              stack: modelError.stack
+            })
+            continue
+          }
+        }
+        
+        // If all models failed, throw an error
+        if (!aiResponse) {
+          throw new Error('All AI models failed to respond')
+        }
+        
+        console.log('✅ AI service call successful')
+        console.log('🤖 AI Response:', aiResponse)
+        console.log('🔍 AI Response type:', typeof aiResponse)
+        
+        if (typeof aiResponse === 'string') {
+          console.log('🔍 AI Response length:', aiResponse.length)
+          console.log('🔍 AI Response preview:', aiResponse.substring(0, 200) + '...')
+        } else if (typeof aiResponse === 'object' && aiResponse !== null) {
+          console.log('🔍 AI Response keys:', Object.keys(aiResponse))
+          console.log('🔍 AI Response preview:', JSON.stringify(aiResponse).substring(0, 200) + '...')
+        } else {
+          console.log('🔍 AI Response is:', aiResponse)
+        }
       } catch (aiError) {
-        console.error('AI service error:', aiError)
+        console.error('❌ AI service error:', aiError)
+        console.error('🔍 Error details:', {
+          message: aiError.message,
+          name: aiError.name,
+          stack: aiError.stack
+        })
         // Fall back to keyword-based analysis
         const messageLower = scrubbedMessage.toLowerCase()
         const subjectLower = scrubbedSubject.toLowerCase()
@@ -761,40 +821,47 @@ Return JSON:
           meetingDuration = '1 hour'
         }
 
-                 // Create fallback analysis with contextual follow-up questions based on missing information
-         const basicFollowUps = []
-         
-         // Analyze what information is missing from the message
-         const hasTimeline = /timeline|deadline|schedule|when|time|duration/i.test(messageLower)
-         const hasTeamSize = /team|team size|developers|staff|people|employees|users/i.test(messageLower)
-         const hasBudget = /budget|cost|price|investment|funding/i.test(messageLower)
-         const hasTechnicalDetails = /technology|tech stack|framework|platform|api|database|infrastructure/i.test(messageLower)
-         const hasBusinessContext = /business|company|industry|sector|market|customers/i.test(messageLower)
-         const hasSpecificGoals = /goals|objectives|outcomes|results|success|metrics/i.test(messageLower)
-         
-         // Ask about missing critical information
-         if (!hasTimeline) {
-           basicFollowUps.push("What's your timeline for this project?")
-         }
-         if (!hasTeamSize) {
-           basicFollowUps.push("How large is your team or organization?")
-         }
-         if (!hasTechnicalDetails && (hasProjectKeywords || hasTechnicalKeywords)) {
-           basicFollowUps.push("What technologies or platforms are you currently using?")
-         }
-         if (!hasBusinessContext) {
-           basicFollowUps.push("What industry or business context should I understand?")
-         }
-         if (!hasSpecificGoals) {
-           basicFollowUps.push("What specific outcomes are you looking to achieve?")
-         }
-         
-         // If we still don't have enough questions, add some general ones
-         if (basicFollowUps.length < 2) {
-           if (basicFollowUps.length === 0) {
-             basicFollowUps.push("What specific challenge are you facing?")
+                 // Create fallback analysis with intelligent follow-up questions
+         let basicFollowUps
+         try {
+           basicFollowUps = generateIntelligentFollowUpQuestions(scrubbedMessage, scrubbedSubject, company)
+         } catch (error) {
+           console.error('Error generating intelligent follow-up questions in fallback:', error.message)
+           // Fallback to basic questions if intelligent generation fails
+           basicFollowUps = []
+           
+           // Analyze what information is missing from the message
+           const hasTimeline = /timeline|deadline|schedule|when|time|duration/i.test(messageLower)
+           const hasTeamSize = /team|team size|developers|staff|people|employees|users/i.test(messageLower)
+           const hasBudget = /budget|cost|price|investment|funding/i.test(messageLower)
+           const hasTechnicalDetails = /technology|tech stack|framework|platform|api|database|infrastructure/i.test(messageLower)
+           const hasBusinessContext = /business|company|industry|sector|market|customers/i.test(messageLower)
+           const hasSpecificGoals = /goals|objectives|outcomes|results|success|metrics/i.test(messageLower)
+           
+           // Ask about missing critical information
+           if (!hasTimeline) {
+             basicFollowUps.push("What's your timeline for this project?")
            }
-           basicFollowUps.push("How can I best help you achieve your goals?")
+           if (!hasTeamSize) {
+             basicFollowUps.push("How large is your team or organization?")
+           }
+           if (!hasTechnicalDetails && (hasProjectKeywords || hasTechnicalKeywords)) {
+             basicFollowUps.push("What technologies or platforms are you currently using?")
+           }
+           if (!hasBusinessContext) {
+             basicFollowUps.push("What industry or business context should I understand?")
+           }
+           if (!hasSpecificGoals) {
+             basicFollowUps.push("What specific outcomes are you looking to achieve?")
+           }
+           
+           // If we still don't have enough questions, add some general ones
+           if (basicFollowUps.length < 2) {
+             if (basicFollowUps.length === 0) {
+               basicFollowUps.push("What specific challenge are you facing?")
+             }
+             basicFollowUps.push("How can I best help you achieve your goals?")
+           }
          }
          
                  analysis = {
@@ -830,13 +897,22 @@ Return JSON:
 
       // Parse AI response and extract JSON
       if (aiResponse) {
+        console.log('🔍 Processing AI response...')
         try {
           analysis = parseAIResponse(aiResponse.response)
+          console.log('📊 Parsed analysis:', analysis)
           analysis = validateAIResponse(analysis)
+          console.log('✅ AI analysis validated successfully')
         } catch (parseError) {
-          console.error('AI response parsing error:', parseError)
+          console.error('❌ AI response parsing error:', parseError)
           // Fallback analysis if AI response parsing fails
-          const basicFollowUps = ["What specific challenge are you facing?", "How can I best help you achieve your goals?"]
+          let basicFollowUps
+          try {
+            basicFollowUps = generateIntelligentFollowUpQuestions(scrubbedMessage, scrubbedSubject, company)
+          } catch (error) {
+            console.error('Error generating intelligent follow-up questions in parse error fallback:', error.message)
+            basicFollowUps = ["What specific challenge are you facing?", "How can I best help you achieve your goals?"]
+          }
           
           analysis = {
             inquiryType: 'general',
@@ -867,7 +943,13 @@ Return JSON:
         }
       } else {
         // If aiResponse is null, create fallback analysis
-        const basicFollowUps = ["What specific challenge are you facing?", "How can I best help you achieve your goals?"]
+        let basicFollowUps
+        try {
+          basicFollowUps = generateIntelligentFollowUpQuestions(scrubbedMessage, scrubbedSubject, company)
+        } catch (error) {
+          console.error('Error generating intelligent follow-up questions in null response fallback:', error.message)
+          basicFollowUps = ["What specific challenge are you facing?", "How can I best help you achieve your goals?"]
+        }
         
         analysis = {
           inquiryType: 'general',
