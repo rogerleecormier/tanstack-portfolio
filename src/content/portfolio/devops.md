@@ -1,80 +1,81 @@
 ---
 title: "DevOps & Automation"
-description: "Hands-on engineering turning fragmented SaaS ecosystems into automated, audit-ready pipelines using Azure Functions, GitHub Actions, and AI-assisted development."
+description: "AI-augmented DevOps pipelines using Azure Functions, GitHub Actions, and Cloudflare Workers—delivering speed, reliability, and auditability."
+tags: ["DevOps", "Automation", "CI/CD", "Serverless", "Cloudflare Workers", "Azure Functions", "GitHub Actions", "Vibe Coding", "Agentic Development"]
+keywords: ["DevOps automation", "CI/CD pipelines", "serverless ETL", "Cloudflare Workers", "Azure Functions", "GitHub Actions", "AI-assisted development", "agentic development", "vibe coding", "AI Workers"]
 ---
 
-I operate at the crossroads of **product leadership** and **hands-on engineering**, turning fragmented SaaS ecosystems into automated, audit-ready pipelines. My projects remove manual toil, harden release governance, and surface real-time insights for hundreds of users—while keeping compliance teams happy.
-
----
-
-## 🛠️ Core Tooling & Stack
-
-| Domain             | Primary Tools & Services |
-|--------------------|--------------------------|
-| **Cloud & CI/CD**  | Azure Functions, Azure Key Vault, Azure App Insights, GitHub Actions |
-| **Automation**     | Python, PowerShell, SuiteScript, Power Automate, Batch |
-| **SaaS Footprint** | NetSuite, Vena, Box, Ramp, Smartsheet |
-| **Docs-as-Code**   | MkDocs (Material), GitHub Pages, HTML/CSS |
-| **Environments**   | Git-first workflows, serverless architecture, VMware labs |
+I engineer **DevOps pipelines that move fast without breaking trust**. My approach blends serverless architecture, AI-augmented workflows, and governance-in-flow so every deployment is **observable, auditable, and recoverable**.
 
 ---
 
-## 🔁 Portfolio Highlights
+## 🛠 Core Stack
 
-### Box → Vena Serverless ETL
-**Stack:** Azure Functions • GitHub Actions • Java ETL • Box API  
-
-- Replaced brittle batch process with a serverless pipeline for finance file ingestion  
-- Added schema checks, retries, Key Vault secrets, and real-time alerts  
-- **Results:** ↓ integration failures 75%; retired legacy hardware; ↑ observability with App Insights  
-
----
-
-### AI-Augmented Development
-**Stack:** GitHub Codespaces • Copilot • Claude Sonnet • ChatGPT  
-
-- Integrated AI into SDLC for code generation, config writing, and debugging  
-- 5× faster Python, SuiteScript, and PowerShell delivery  
-- Saved ≈ 100 developer-hours/month via automation-assisted workflows  
+- **CI/CD** → GitHub Actions (builds, deploys, linting, security checks)  
+- **Serverless** → Azure Functions (ETL, API orchestration)  
+- **Edge-Native** → Cloudflare Workers, Pages, KV (cache), D1 (SQLite persistence), AI Workers (inference)  
+- **Frontend** → TanStack Router, React, shadcn/ui, TailwindCSS  
+- **Automation** → Python, PowerShell, SuiteScript, Power Automate  
+- **Observability** → App Insights, structured logging, rollback playbooks  
 
 ---
 
-### NetSuite ACH Workflow to Checkbook.io
-**Stack:** NetSuite • SuiteScript • REST APIs  
+## 📂 Representative Projects
 
-- Built native ACH workflow sending validated payments to Checkbook.io  
-- Enforced GL and entity logic; fully logged for audit  
-- **Results:** Zero duplicate/misrouted payments; 100% hands-off uploads  
-
----
-
-### Retail POS Automation at Scale
-**Stack:** Python • VBScript • Batch • VMware  
-
-- Created 30+ scripts to patch POS nodes, deploy fixes, and collect logs across 150+ stores  
-- Validated all in a 50-VM staging lab  
-- **Results:** Deployment 3× faster; ↓ support tickets 40%; ↑ first-pass install rate to 95%  
+### 📦 Box → Vena ETL (Serverless)
+- Replaced brittle batch jobs with Azure Functions + GitHub Actions  
+- Added schema validation, retries, Key Vault secrets, App Insights logging  
+- **Impact**: 75% fewer failures; retired legacy hardware; increased observability  
 
 ---
 
-## 📈 Measured Impact
-- 🕒 20+ hours/week eliminated via serverless ETL  
-- 🤖 100+ developer-hours/month saved through AI-assisted workflows  
-- 🧾 300+ finance users rely on automated AP pipelines  
-- 🌐 Static site builds in <10s, hosted for $0  
+### 🌐 Vertex Hub (Edge-Native)
+- Frontend: TanStack + shadcn/ui on Cloudflare Pages  
+- Workers handle request routing + KV caching; D1 stores structured metadata  
+- Unified service intake across Asana, Zendesk, ERP  
+- **Impact**: Faster SLA responses, reduced manual routing, single-pane-of-glass experience  
 
 ---
 
-## ⚡ DevOps Philosophy
-> *"Velocity without traceability is vanity; true DevOps balances shipped value with defensible compliance."*
-
-From serverless ETL to CI/CD workflow hardening, I focus on sustainable automation that teams can **trust, audit, and maintain**—not just one-off fixes.
+### 💳 NetSuite ACH → Checkbook.io
+- Designed native ACH workflow in NetSuite with SuiteScript + REST  
+- Enforced GL/entity validation and logged all transactions for audit  
+- **Impact**: Zero duplicate/misrouted payments; 100% compliant, hands-off uploads  
 
 ---
 
-**Related Pages:**  
-- [ERP & SaaS Integration](/saas)  
-- [Leadership & Culture](/leadership)  
-- [Analytics & Insights](/analytics)  
+### 🛒 Retail POS Automation (Legacy)
+- Built 30+ Python/PowerShell scripts for patching, deployments, log collection  
+- Validated in a 50-VM staging lab before rollout to 150+ stores  
+- **Impact**: 3× faster deployments; 40% fewer tickets; first-pass install ↑ to 95%  
 
-📋 *Detailed artifacts and case studies available upon request. [Let's connect](/contact).*
+---
+
+## 🤖 AI-Augmented DevOps
+
+I integrate AI copilots directly into the SDLC:  
+
+- **Vibe Coding (Cursor + Copilot)** → conversational code, config, and scripts co-created with AI  
+- **Agentic Development** → AI copilots propose architectures, generate test coverage, detect edge cases, and log rationale in PRs  
+- **AI Workers** → Cloudflare AI Workers run inference (classification, summarization) at the edge for low-latency workflows  
+
+**Impact:** ~100 developer-hours/month reclaimed; faster prototyping; resilient pipelines with audit evidence baked in.  
+
+---
+
+## 📈 DevOps Impact Metrics
+
+| Area              | Before              | After (My Work)         |
+|-------------------|---------------------|--------------------------|
+| Integration Failures | Frequent batch errors | ↓ 75% failures, +retry logic |
+| Deployment Speed  | Hours to manual patch | 3× faster with CI/CD + scripts |
+| AP ACH Process    | Semi-manual, error-prone | Fully automated, zero duplicates |
+| SLA Response      | Disconnected intake  | Unified, tracked at edge |
+
+---
+
+## 🌟 Closing Thought
+
+Velocity without **traceability** is vanity. True DevOps means **speed + evidence**.  
+
+> *“Move fast — measure faster — document as you go.”*

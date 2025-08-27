@@ -110,18 +110,18 @@ export default function Search() {
         </span>
       </Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl p-0">
+             <Dialog open={open} onOpenChange={setOpen}>
+         <DialogContent className="max-w-3xl p-0 z-[150]">
           <VisuallyHidden>
             <DialogTitle>Search</DialogTitle>
-            <DialogDescription>Search through documentation, pages, and content</DialogDescription>
+            <DialogDescription>Search through blog posts, portfolio, and projects</DialogDescription>
           </VisuallyHidden>
           
           {/* Search Input */}
           <div className="flex items-center px-4 py-3 border-b">
             <SearchIcon className="mr-2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search documentation, pages, and content..."
+              placeholder="Search blog posts, portfolio, and projects..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -133,7 +133,7 @@ export default function Search() {
           <div className="max-h-[500px] overflow-y-auto">
             {query.length < 2 && (
               <div className="py-6 text-center text-sm text-muted-foreground">
-                Start typing to search through your pages...
+                Start typing to search through your content...
               </div>
             )}
             
@@ -153,10 +153,13 @@ export default function Search() {
             {results.length > 0 && !isSearching && (
               <div className="p-3">
                 <div className="text-xs text-muted-foreground px-2 py-1 mb-3 flex items-center justify-between">
-                  <span>{results.length} pages found</span>
+                  <span>{results.filter(result => result.item.contentType !== 'page').length} content items found</span>
                   <span>Sorted by relevance</span>
                 </div>
-                {results.slice(0, 8).map((result, index) => {
+                {results
+                  .filter(result => result.item.contentType !== 'page')
+                  .slice(0, 8)
+                  .map((result, index) => {
                   const relevancePercentage = getRelevancePercentage(result.score)
                   const relevanceColor = getRelevanceColor(relevancePercentage)
                   const matchContext = getMatchContext(result.item.content, query)
@@ -176,8 +179,16 @@ export default function Search() {
                           <span className={`text-xs px-2 py-1 rounded-full ${relevanceColor}`}>
                             {relevancePercentage}% match
                           </span>
-                          <span className="text-xs bg-muted px-2 py-1 rounded">
-                            {result.item.section}
+                          {/* Content Type Badge */}
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            result.item.contentType === 'blog' ? 'bg-blue-100 text-blue-800' :
+                            result.item.contentType === 'portfolio' ? 'bg-green-100 text-green-800' :
+                            result.item.contentType === 'project' ? 'bg-purple-100 text-purple-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {result.item.contentType === 'blog' ? '📝 Blog' :
+                             result.item.contentType === 'portfolio' ? '💼 Portfolio' :
+                             result.item.contentType === 'project' ? '🚀 Project' : ''}
                           </span>
                         </div>
                       </div>

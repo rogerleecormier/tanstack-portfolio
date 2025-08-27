@@ -25,9 +25,9 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { useScrollToTopOnMount } from '@/hooks/useScrollToTop'
 import { sendEmail } from '@/api/emailService'
 import { format } from 'date-fns'
-import { AIContactAnalysis } from '@/components/AIContactAnalysis'
+import { ContactAnalysis } from '@/components/ContactAnalysis'
 import { AIMeetingScheduler } from '@/components/AIMeetingScheduler'
-import { analyzeContactForm, type AIAnalysisResult, AIAnalysisError } from '@/api/aiContactAnalyzer'
+import { analyzeContactForm, type AIAnalysisResult, AIAnalysisError } from '@/api/contactAnalyzer'
 
 // Dynamic Action Button Component
 interface DynamicActionButtonProps {
@@ -257,13 +257,7 @@ export default function ContactPage() {
     analysisTimeoutRef.current = timeout
   }, [formData.message, triggerAIAnalysis])
 
-  // Retry AI analysis function
-  const retryAIAnalysis = useCallback(async () => {
-    if (formData.message.length > 20) {
-      setError(null)
-      await triggerAIAnalysis()
-    }
-  }, [formData.message.length, triggerAIAnalysis])
+
 
   // Monitor message field length and trigger debounced AI analysis when appropriate
   useEffect(() => {
@@ -859,11 +853,10 @@ This meeting request was generated based on AI analysis of their contact form su
                   {/* Message Analysis - Above Meeting Scheduler */}
                   {(aiAnalysis || isAnalyzing) && (
                     <div className="pt-3 sm:pt-4 border-t border-gray-200">
-                      <AIContactAnalysis 
+                      <ContactAnalysis 
                         analysis={aiAnalysis} 
                         isLoading={isAnalyzing}
                         className="border-l-4 border-l-teal-500"
-                        onRetry={retryAIAnalysis}
                       />
                     </div>
                   )}

@@ -1,120 +1,68 @@
 ---
 title: "Talent & Org Design"
-description: "Systems-thinking approach to team development, strategic alignment, and culture-forward transformation through organizational behavior and workforce design."
+description: "Designing organizations with clarity, equity, and growth—building high-performing teams through structure, culture, and leadership pipelines."
+tags: ["Talent", "Org Design", "DEI", "Workforce Planning", "Leadership Development", "Mentorship"]
+keywords: ["organizational design", "talent strategy", "DEI frameworks", "leadership pipelines", "mentorship", "high-performing teams", "workforce planning"]
 ---
 
-I specialize in **organizational behavior, workforce design, and talent innovation**, integrating systems thinking, data-informed decision-making, and culture-forward transformation to drive measurable business outcomes.
+Technology alone doesn’t scale organizations — people do. I apply **systems-thinking to workforce design**, creating structures and practices that grow capability, embed equity, and sustain high performance.  
 
----
-
-## 🏥 Healthcare & Government
-
-### Army Health Clinic Modernization
-**Role:** Research Lead & Co-author  
-**Focus:** Talent Strategy & Organizational Development  
-
-- Analyzed process gaps, staff development needs, and clinical efficiency challenges  
-- Designed three strategic roles: Project Manager, Training Coordinator, Nurse Consultant  
-- Developed DEI-conscious hiring frameworks  
-- Built onboarding plans with patient-centric mission integration  
-- **Impact:** Actionable job descriptions, recruitment strategies, measurable assessments  
+I bring the discipline of a military leader and the empathy of a servant leader to design organizations that are **clear, inclusive, and future-ready**.  
 
 ---
 
-## 💰 Compensation & Acquisition
+## 🧭 Talent Principles
 
-### Strategic Offer Design Simulation
-**Role:** Negotiation Lead  
-**Focus:** Compensation Strategy  
-
-- Modeled realistic job offer scenarios with negotiation dynamics  
-- Integrated benefits optimization and flexible work considerations  
-- Designed evaluation criteria for role alignment and culture fit  
-- **Outcome:** Reusable frameworks for equitable compensation discussions  
+- **Clarity of Roles** — eliminate ambiguity through documented responsibilities and outcomes  
+- **Leadership Pipelines** — structured mentorship and coaching pathways that accelerate readiness  
+- **Feedback Systems** — normalize feedback loops across teams, projects, and leaders  
+- **Equity & Inclusion** — build frameworks that reduce bias in hiring, promotion, and evaluation  
+- **ROI on Talent** — align workforce planning with measurable outcomes (delivery, retention, engagement)  
 
 ---
 
-## 📚 Learning & Development
+## 📂 Talent in Action
 
-### Workforce Capability Development
-**Role:** Program Architect  
-**Focus:** Scalable Learning Systems  
-
-- Designed L&D program emphasizing critical thinking and career pathways  
-- Built promotion readiness frameworks  
-- Developed ROI models linking training to retention  
-- **Value:** Blueprint for measurable workforce growth  
+### 🪖 Military Mentorship → Enterprise Pipelines
+- Built mentorship programs that produced promotable leaders in compressed timelines  
+- Translated into enterprise by creating **structured leadership readiness frameworks**  
+- **Impact**: ↑ leadership bench strength, ↓ time-to-readiness  
 
 ---
 
-## 🚀 Product Strategy
-
-### BCG Forage Consulting Portfolio
-**Role:** Product Manager & Designer  
-**Focus:** Cross-Industry Problem Solving  
-
-- **AI Tools:** Personas and feature prioritization for SMB markets  
-- **Healthcare:** Patient-centered journey mapping  
-- **Retail Analytics:** Agile analytics implementation  
-- Applied design thinking, user research, MVP development  
+### 🎯 SaaS Rollout Teams
+- Designed **cross-functional squads** for Ramp and Vertex Hub rollouts  
+- Clarified roles (finance, ops, IT) with outcome-based definitions  
+- **Impact**: faster adoption, less cross-team friction  
 
 ---
 
-## 🌍 Global Leadership
-
-### International SaaS Rollout
-**Role:** Communication Strategist  
-**Focus:** Cross-Cultural Team Effectiveness  
-
-- Designed communication protocols for distributed teams  
-- Implemented collaboration cadences and conflict resolution methods  
-- **Results:** Improved clarity, performance, and predictability  
+### 🌐 Army Health Clinic → Civilian DEI
+- Applied DEI-conscious hiring practices tested in military contexts  
+- Implemented structured rubrics and onboarding playbooks  
+- **Impact**: ↑ diversity in hiring pipelines, ↑ engagement scores  
 
 ---
 
-## 🔄 Change & Consulting
+## 📈 Talent Impact Metrics
 
-### Microsoft IT Support Transformation
-**Role:** Strategy Designer & Analyst  
-**Focus:** Operational Excellence  
-
-- Developed 7-part transformation strategy including CSAT initiatives, role clarity, and retention programs  
-- Integrated operational data with feedback loops for redesign guidance  
-
----
-
-## 🤝 Diversity, Equity & Inclusion
-
-### Inclusive Leadership in Hybrid Environments
-**Focus:** Equitable Policy & Team Dynamics  
-
-- Researched systemic barriers in remote/hybrid organizations  
-- Designed hiring, evaluation, and performance frameworks  
-- Created policies supporting diverse team success  
+| Metric                     | Before               | After (My Work)        |
+|----------------------------|----------------------|-------------------------|
+| Leadership Readiness       | Informal, inconsistent | Structured pipeline, faster promotions |
+| Cross-Functional Clarity   | Role confusion       | Defined roles, smoother rollouts |
+| DEI Hiring Outcomes        | Variable             | Structured rubrics, ↑ diversity |
+| Retention & Engagement     | Flat/declining       | ↑ retention, ↑ engagement scores |
 
 ---
 
-## ⚡ Core Competencies
+## 🌱 Philosophy
 
-**Organizational Design**
-- Role architecture & workforce planning  
-- Change leadership & transformation strategy  
-- Stakeholder engagement  
-
-**Talent Strategy**
-- DEI-aware hiring & development  
-- Compensation design & negotiation  
-- Capability building  
-
-**Leadership Development**
-- Culture-driven transformation  
-- Global team management  
-- Psychological safety & performance optimization  
+Great organizations don’t just hire talent — they **design for it**. Structures, rituals, and feedback loops create cultures where people can thrive.  
 
 ---
 
-**Related Pages:**  
-- [Leadership & Culture](/leadership)  
-- [Strategy & Vision](/strategy)  
+## 🌟 Closing Thought
 
-📋 *Detailed artifacts and case studies available upon request. [Let's connect](/contact).*
+Organizations scale on people, not just tools. Culture and clarity turn individuals into high-performing teams.  
+
+> *“Skill is multiplied by systems and culture.”*

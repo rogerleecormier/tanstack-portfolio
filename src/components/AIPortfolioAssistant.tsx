@@ -63,8 +63,8 @@ export default function SiteAssistant({ portfolioItems, onItemSelect }: SiteAssi
       insights.push({
         type: 'solution',
         title: 'Leadership & Team Development',
-        description: 'Expertise in cross-functional team management, organizational development, and military leadership principles.',
-        relatedItems: ['leadership', 'talent', 'military-leadership'],
+        description: 'Expertise in cross-functional team management, organizational development, and leadership principles.',
+        relatedItems: ['leadership', 'talent', 'culture'],
         confidence: 0.92,
         icon: Users,
         category: 'Leadership'

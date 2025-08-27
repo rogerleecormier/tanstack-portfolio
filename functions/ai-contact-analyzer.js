@@ -331,25 +331,59 @@ function calculateConfidence({ name, email, company, subject, message, analysis 
 // Parse AI response more robustly
 function parseAIResponse(aiResponse) {
   try {
-    // First, try to parse the entire response as JSON
+    // Handle different response formats
+    let jsonText = aiResponse
+    
     if (typeof aiResponse === 'string') {
-      // Look for JSON content in the response
-      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/)
+      // Remove markdown code block formatting - handle both ```json and ``` blocks
+      const jsonMatch = aiResponse.match(/```(?:json)?\s*([\s\S]*?)\s*```/)
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0])
+        jsonText = jsonMatch[1].trim()
+      }
+      // Also try to extract JSON from the response if it's not in code blocks
+      else if (aiResponse.includes('{') && aiResponse.includes('}')) {
+        const startBrace = aiResponse.indexOf('{')
+        const endBrace = aiResponse.lastIndexOf('}')
+        if (startBrace !== -1 && endBrace !== -1 && endBrace > startBrace) {
+          jsonText = aiResponse.substring(startBrace, endBrace + 1)
+        }
       }
       
-      // If no JSON found, try parsing the entire string
-      return JSON.parse(aiResponse)
+      // If we still don't have valid JSON, try to find the first complete JSON object
+      if (!jsonText.match(/^\{.*\}$/s)) {
+        const jsonObjects = aiResponse.match(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g)
+        if (jsonObjects && jsonObjects.length > 0) {
+          // Use the longest JSON object found
+          jsonText = jsonObjects.reduce((longest, current) => 
+            current.length > longest.length ? current : longest
+          )
+        }
+      }
+      
+      // Clean up any remaining markdown artifacts
+      jsonText = jsonText.replace(/^```.*$/gm, '').replace(/^`.*`$/gm, '').trim()
+      
+      // Additional cleaning for common AI response artifacts
+      jsonText = jsonText.replace(/^Here's the analysis:/i, '')
+      jsonText = jsonText.replace(/^Analysis:/i, '')
+      jsonText = jsonText.replace(/^Response:/i, '')
+      jsonText = jsonText.replace(/^JSON:/i, '')
+      jsonText = jsonText.replace(/^Here is the JSON:/i, '')
+      jsonText = jsonText.trim()
     }
     
-    // If it's already an object, return it
-    if (typeof aiResponse === 'object' && aiResponse !== null) {
-      return aiResponse
+    // Attempt to parse the cleaned JSON text
+    const result = JSON.parse(jsonText)
+    
+    // Validate that we got a proper object
+    if (!result || typeof result !== 'object') {
+      throw new Error('AI response is not a valid object')
     }
     
-    throw new Error('Unexpected AI response format')
+    return result
   } catch (parseError) {
+    console.warn('Failed to parse AI response as JSON:', parseError.message)
+    console.warn('Raw AI response was:', aiResponse)
     throw new Error('Invalid AI response format')
   }
 }

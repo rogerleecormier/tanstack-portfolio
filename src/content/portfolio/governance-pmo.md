@@ -1,59 +1,72 @@
 ---
 title: "Governance & PMO"
-description: "Pragmatic governance that raises delivery quality without slowing teams—RAG/RAID, SOPs, approvals, and audit-ready ops."
+description: "Pragmatic governance that accelerates delivery—embedding structure, visibility, and audit evidence directly into the flow of work."
+tags: ["Governance", "PMO", "Portfolio Management", "Risk Registers", "Change Control", "UAT", "Audit Readiness"]
+keywords: ["project governance", "portfolio management", "risk registers", "RAID logs", "executive reporting", "change management", "UAT evidence", "governance frameworks"]
 ---
 
-I run **governance as an accelerator**—codifying just enough structure to reduce risk while keeping velocity high. My approach combines **RAG/RAID dashboards, SOPs, approval workflows, and automated validations** embedded directly in the tools teams already use.
+Governance is often misunderstood as red tape. In my work, governance is an **accelerator**: it reduces risk, increases predictability, and ensures evidence exists before auditors even ask.  
 
----
-
-## 🎯 What Governance Looks Like in Practice
-
-- **RAG / RAID at portfolio and workstream levels** with crisp, executive-ready rollups  
-- **Change control & approvals** enforced in systems (NetSuite, Smartsheet, Power Automate) rather than slideware  
-- **SOPs & templates** for scope, comms plans, risk registers, and rollout playbooks  
-- **Validation & reconciliation** as part of the delivery workflow, not after-the-fact audits  
-- **Traceability**: decisions, mappings, and data lineage captured where work happens
+I build **PMO frameworks** that are **lightweight but powerful** — right-sized to the organization, embedded in daily workflows, and designed to improve delivery confidence without slowing teams down.  
 
 ---
 
-## 🔎 Representative Artifacts
+## 🧭 Governance Principles
 
-- Scope & success measures one-pagers  
-- Risk register with owner, trigger, and response plan  
-- Stakeholder comms matrix (audience × message × cadence)  
-- UAT plan with pass/fail, evidence, and cutover checklist  
-- Post-deploy monitoring playbook (targets, alerts, rollback cues)
-
----
-
-## 🧪 Case Studies (Selected)
-
-### Ramp ↔ NetSuite (AP Governance)
-- GL mapping and sync validation embedded in platform workflows  
-- Result: **Reduced manual effort** and improved AP accuracy and visibility into AP aging
-
-### Box → Vena Forecast Intake (Portfolio Visibility)
-- Folder standards, naming conventions, and submission tracking dashboards  
-- Result: **Better traceability**, fewer delays, stronger template compliance
-
-### Financial Reporting QA (Review & Evidence)
-- Smartsheet review system for budget/forecast uploads with file locations and timestamps  
-- Result: **Reduced missed submissions** and faster ingestion downstream
+- **Right-Sized Controls** — no more process than is needed to reduce risk  
+- **Traceability by Default** — decisions, lineage, and scope captured automatically  
+- **Governance-in-Flow** — approvals and validations happen inside ERP and project tools  
+- **Transparency & Early Signals** — dashboards surface risk and exceptions early  
 
 ---
 
-## 📊 Operating Metrics I Emphasize
-- SLA adherence, backlog aging, and sprint predictability  
-- Exception rates (ingestion failures, mismatches), recovery time, and rework  
-- “Time to signal” for risks and issues; % with owner + response plan
+## 🛠 Frameworks & Artifacts
+
+- **RAG/RAID Dashboards** — live health indicators with drill-downs into risks, assumptions, issues, and dependencies  
+- **Risk Registers** — owners, triggers, mitigation plans embedded into project systems  
+- **Scope & Success One-Pagers** — lightweight docs clarifying objectives, KPIs, and guardrails  
+- **Change Control Logs** — tracked in Asana/Smartsheet with decision rationale  
+- **UAT Playbooks** — test evidence, rollback steps, and sign-off captured digitally  
+- **SOP Libraries** — standardization for recurring processes (AP, reporting, intake)  
 
 ---
 
-## 🧰 Tools & Systems
-Smartsheet, NetSuite (saved searches, approvals), Power Automate, Box, Asana, GitHub Actions.
+## 📂 Case Studies
+
+### 💳 Ramp ↔ NetSuite AP Governance
+- Embedded GL mapping and sync validation directly into workflows  
+- Created RAG dashboards to track rollout phases across clients  
+- **Impact**: fewer escalations, reduced reconciliation effort, faster close cycles  
 
 ---
 
-**Related Pages:**  
-- [Leadership & Culture](/leadership) · [ERP & SaaS Integration](/saas) · [Analytics & Insights](/analytics)
+### 📦 Box → Vena Forecast Intake
+- Introduced folder standards and schema validations  
+- Linked dashboards to submission deadlines and error flags  
+- **Impact**: stronger traceability, fewer missed submissions, faster reviews  
+
+---
+
+### 📊 Financial Reporting QA
+- Built Smartsheet-based review workflows for monthly financial reports  
+- Aligned evidence with audit requirements  
+- **Impact**: reduced reporting misses, smoother audit cycles  
+
+---
+
+## 📈 Governance Metrics
+
+| Measure                  | Before               | After (My Work)         |
+|--------------------------|----------------------|--------------------------|
+| Risk Transparency        | Ad hoc reports       | Live RAID dashboards    |
+| Audit Evidence           | Manual gathering     | Auto-delivered, timestamped |
+| Scope Alignment          | Variable, unclear    | One-pagers shared org-wide |
+| Change Visibility        | Decisions in silos   | Logged with rationale   |
+
+---
+
+## 🌟 Closing Thought
+
+Governance should never feel like red tape. Done right, it creates **clarity and confidence** for delivery teams and executives alike.  
+
+> *“Governance should lower cognitive load, not raise it.”*

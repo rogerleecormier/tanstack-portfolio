@@ -15,7 +15,7 @@ import {
   TrendingUp
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { blogRecommendationsService, PortfolioRecommendation } from '@/api/blogRecommendationsService'
+import { smartRecommendationsService, PortfolioItem } from '@/api/smartRecommendationsService'
 
 interface BlogRecommendationsProps {
   blogContent: string
@@ -32,7 +32,7 @@ export default function BlogRecommendations({
   className,
   variant = 'inline'
 }: BlogRecommendationsProps) {
-  const [recommendations, setRecommendations] = useState<PortfolioRecommendation[]>([])
+  const [recommendations, setRecommendations] = useState<PortfolioItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hasLoaded, setHasLoaded] = useState(false)
@@ -44,7 +44,7 @@ export default function BlogRecommendations({
     setError(null)
     
     try {
-      const response = await blogRecommendationsService.getRecommendations({
+      const response = await smartRecommendationsService.getRecommendations({
         content: blogContent,
         title: blogTitle,
         tags: blogTags
@@ -74,7 +74,7 @@ export default function BlogRecommendations({
     }
   }, [blogContent, blogTitle, hasLoaded, fetchRecommendations])
 
-  // Get confidence color based on AI-calculated confidence
+  // Get confidence color based on smart-calculated confidence
   const getConfidenceColor = (confidence: number): string => {
     if (confidence >= 0.9) return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-700'
     if (confidence >= 0.8) return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700'
@@ -185,9 +185,9 @@ export default function BlogRecommendations({
                   <div className="flex flex-col items-end gap-1">
                     <Badge 
                       variant="outline" 
-                      className={cn("text-xs font-medium", getConfidenceColor(recommendation.confidence))}
+                      className={cn("text-xs font-medium", getConfidenceColor(recommendation.confidence || 0.7))}
                     >
-                      {Math.round(recommendation.confidence * 100)}% match
+                      {Math.round((recommendation.confidence || 0.7) * 100)}% match
                     </Badge>
                   </div>
                 </div>
@@ -230,7 +230,7 @@ export default function BlogRecommendations({
         {/* Footer */}
         <div className="text-center pt-3 border-t border-border">
           <p className="text-xs text-muted-foreground">
-            AI-powered matching based on content analysis
+            Smart matching based on content analysis
           </p>
         </div>
       </div>
@@ -286,10 +286,10 @@ export default function BlogRecommendations({
                 <div className="flex flex-col items-end gap-2">
                   <Badge 
                     variant="outline" 
-                    className={cn("text-xs font-medium", getConfidenceColor(recommendation.confidence))}
+                    className={cn("text-xs font-medium", getConfidenceColor(recommendation.confidence || 0.7))}
                   >
                     <TrendingUp className="h-3 w-3 mr-1" />
-                    {Math.round(recommendation.confidence * 100)}% match
+                    {Math.round((recommendation.confidence || 0.7) * 100)}% match
                   </Badge>
                 </div>
               </div>
@@ -348,7 +348,7 @@ export default function BlogRecommendations({
       {/* Footer */}
       <div className="text-center pt-6 border-t border-border">
         <p className="text-xs text-muted-foreground">
-          Recommendations powered by AI analysis of this article's content and themes
+          Recommendations powered by smart content analysis
         </p>
         <p className="text-xs text-muted-foreground mt-1">
           Tags and content are analyzed to find the most relevant portfolio expertise

@@ -8,6 +8,7 @@ export interface SearchItem {
   headings: string[]
   tags?: string[]
   searchKeywords?: string // Additional search keywords for enhanced search
+  contentType: 'blog' | 'portfolio' | 'project' | 'page' // Content type for proper routing and display
 }
 
 export interface SearchResult {

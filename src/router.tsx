@@ -1,3 +1,12 @@
+/**
+ * Router Configuration for Portfolio Site
+ * 
+ * To add new portfolio pages:
+ * 1. Add your .md file to src/content/portfolio/
+ * 2. Add the slug (filename without .md) to the portfolioPages array below
+ * 3. The route will automatically work at /your-slug
+ */
+
 import {
   createRootRoute,
   createRoute,
@@ -32,7 +41,7 @@ console.count('[router] createRootRoute called')
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/', // root path for About
-  component: () => <MarkdownPage file="portfolio/about" />
+  component: () => <MarkdownPage file="about" />
 })
 
 // Blog list route
@@ -64,25 +73,28 @@ const portfolioItemRoute = createRoute({
     // Get the slug from the URL
     const slug = window.location.pathname.slice(1) // Remove leading slash
     
-    // Map slug to portfolio file
-    const fileMap: Record<string, string> = {
-      'strategy': 'portfolio/strategy',
-      'leadership': 'portfolio/leadership',
-      'talent': 'portfolio/talent',
-      'devops': 'portfolio/devops',
-      'saas': 'portfolio/saas',
-      'analytics': 'portfolio/analytics',
-      'risk-compliance': 'portfolio/risk-compliance',
-      'governance-pmo': 'portfolio/governance-pmo',
-      'product-ux': 'portfolio/product-ux',
-      'military-leadership': 'portfolio/military-leadership',
-      'education-certifications': 'portfolio/education-certifications',
-      'ai-automation': 'portfolio/ai-automation'
-    }
+    // List of all portfolio pages - easy to maintain
+    // To add a new portfolio page, just add the slug here (filename without .md extension)
+    const portfolioPages = [
+      'strategy',
+      'leadership', 
+      'culture',
+      'talent',
+      'devops',
+      'saas',
+      'analytics',
+      'risk-compliance',
+      'governance-pmo',
+      'product-ux',
+      'ai-automation',
+      'education-certifications',
+      'projects',
+      'capabilities'
+    ]
     
-    const file = fileMap[slug]
-    if (file) {
-      return <MarkdownPage file={file} />
+    // Check if this is a portfolio page
+    if (portfolioPages.includes(slug)) {
+      return <MarkdownPage file={`portfolio/${slug}`} />
     }
     
     // If not found, return 404

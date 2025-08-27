@@ -8,7 +8,8 @@ export const searchData: SearchItem[] = [
     content: 'PMP-certified Technical Project Manager and U.S. Army veteran cloud platforms SaaS ecosystems operational strategy DevOps ERP transformations',
     url: '/about',
     section: 'About',
-    headings: []
+    headings: [],
+    contentType: 'page'
   },
   {
     id: 'strategy',
@@ -17,7 +18,8 @@ export const searchData: SearchItem[] = [
     content: 'Digital transformation strategy and operational excellence',
     url: '/strategy',
     section: 'Strategy',
-    headings: []
+    headings: [],
+    contentType: 'portfolio'
   },
   {
     id: 'leadership',
@@ -26,7 +28,8 @@ export const searchData: SearchItem[] = [
     content: 'Technical project leadership and team management',
     url: '/leadership',
     section: 'Leadership',
-    headings: []
+    headings: [],
+    contentType: 'portfolio'
   },
   {
     id: 'devops',
@@ -35,7 +38,8 @@ export const searchData: SearchItem[] = [
     content: 'Cloud automation DevOps best practices Azure Functions GitHub Actions',
     url: '/devops',
     section: 'DevOps',
-    headings: []
+    headings: [],
+    contentType: 'portfolio'
   },
   {
     id: 'saas',
@@ -44,7 +48,8 @@ export const searchData: SearchItem[] = [
     content: 'SaaS integration NetSuite Ramp Vena enterprise systems',
     url: '/saas',
     section: 'SaaS',
-    headings: []
+    headings: [],
+    contentType: 'portfolio'
   },
   {
     id: 'talent',
@@ -53,7 +58,8 @@ export const searchData: SearchItem[] = [
     content: 'Organizational strategy and talent innovation',
     url: '/talent',
     section: 'Talent',
-    headings: []
+    headings: [],
+    contentType: 'portfolio'
   },
   {
     id: 'culture',
@@ -62,7 +68,8 @@ export const searchData: SearchItem[] = [
     content: 'Culture and leadership philosophy organizational development',
     url: '/culture',
     section: 'Culture',
-    headings: []
+    headings: [],
+    contentType: 'portfolio'
   },
   {
     id: 'analytics',
@@ -71,7 +78,8 @@ export const searchData: SearchItem[] = [
     content: 'Data analytics business intelligence reporting dashboards',
     url: '/analytics',
     section: 'Analytics',
-    headings: []
+    headings: [],
+    contentType: 'portfolio'
   },
   {
     id: 'vision',
@@ -80,6 +88,57 @@ export const searchData: SearchItem[] = [
     content: 'Strategic vision and career aspirations future planning',
     url: '/vision',
     section: 'Vision',
-    headings: []
+    headings: [],
+    contentType: 'portfolio'
+  },
+  {
+    id: 'product-ux',
+    title: 'Product & UX Design',
+    description: 'Product development and user experience design',
+    content: 'Product development UX design user experience',
+    url: '/product-ux',
+    section: 'Product',
+    headings: [],
+    contentType: 'portfolio'
+  },
+  {
+    id: 'ai-automation',
+    title: 'AI & Automation',
+    description: 'Artificial intelligence and automation solutions',
+    content: 'AI automation artificial intelligence machine learning',
+    url: '/ai-automation',
+    section: 'Technology',
+    headings: [],
+    contentType: 'portfolio'
+  },
+  {
+    id: 'capabilities',
+    title: 'Core Capabilities',
+    description: 'Core technical and business capabilities',
+    content: 'Core capabilities technical skills business expertise',
+    url: '/capabilities',
+    section: 'Capabilities',
+    headings: [],
+    contentType: 'portfolio'
+  },
+  {
+    id: 'projects',
+    title: 'Project Portfolio',
+    description: 'Portfolio of completed projects and case studies',
+    content: 'Project portfolio case studies completed work',
+    url: '/projects',
+    section: 'Projects',
+    headings: [],
+    contentType: 'project'
+  },
+  {
+    id: 'education-certifications',
+    title: 'Education & Certifications',
+    description: 'Educational background and professional certifications',
+    content: 'Education certifications PMP CompTIA degrees',
+    url: '/education-certifications',
+    section: 'Education',
+    headings: [],
+    contentType: 'portfolio'
   }
 ]

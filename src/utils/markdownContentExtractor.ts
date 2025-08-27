@@ -75,14 +75,26 @@ export const convertMarkdownToSearchItems = (markdownFiles: MarkdownFile[]): Sea
     // Extract filename without extension
     const filename = file.path.split('/').pop()?.replace('.md', '') || `page-${index}`
     
+    // Determine content type and URL based on file path
+    let contentType: 'blog' | 'portfolio' | 'project' | 'page' = 'page'
+    let url = `/${filename}`
+    
+    if (file.path.includes('/blog/')) {
+      contentType = 'blog'
+      url = `/blog/${filename}`
+    } else if (file.path.includes('/portfolio/')) {
+      contentType = 'portfolio'
+      url = `/portfolio/${filename}`
+    } else if (file.path.includes('/projects/')) {
+      contentType = 'project'
+      url = `/projects/${filename}`
+    }
+    
     // Use frontmatter title if available, otherwise use capitalized filename
     const title = (Array.isArray(frontmatter.title) ? frontmatter.title[0] : frontmatter.title) || filename.charAt(0).toUpperCase() + filename.slice(1)
     
     // Use frontmatter description if available
     const description = (Array.isArray(frontmatter.description) ? frontmatter.description[0] : frontmatter.description) || ''
-    
-    // Create URL from filename
-    const url = `/${filename}`
     
     // Extract section from frontmatter or use filename
     const section = (Array.isArray(frontmatter.section) ? frontmatter.section[0] : frontmatter.section) || filename.charAt(0).toUpperCase() + filename.slice(1)
@@ -95,7 +107,8 @@ export const convertMarkdownToSearchItems = (markdownFiles: MarkdownFile[]): Sea
       url,
       section,
       headings,
-      tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : (frontmatter.tags ? [frontmatter.tags] : [])
+      tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : (frontmatter.tags ? [frontmatter.tags] : []),
+      contentType
     }
   })
 }

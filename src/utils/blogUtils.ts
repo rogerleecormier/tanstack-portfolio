@@ -46,18 +46,21 @@ export function formatDate(dateString: string): string {
 export async function loadAllBlogPosts(): Promise<BlogPost[]> {
   try {
     // Dynamically import all markdown files from the blog directory
-    const blogModules = import.meta.glob('../content/blog/*.md', { eager: true, query: '?raw', import: 'default' })
+    const blogModules = import.meta.glob('../content/blog/*.md', { query: '?raw', import: 'default' })
     
     const posts: BlogPost[] = []
 
-    for (const [filePath, content] of Object.entries(blogModules)) {
+    for (const [filePath, importFn] of Object.entries(blogModules)) {
       try {
+        // Import the content dynamically
+        const content = await importFn() as string
+        
         // Extract filename from path
         const fileName = filePath.split('/').pop()?.replace('.md', '')
         if (!fileName) continue
 
         // Parse frontmatter
-        const { attributes, body } = fm(content as string)
+        const { attributes, body } = fm(content)
         const frontmatter = attributes as BlogFrontmatter
 
         // Remove import statements from markdown content

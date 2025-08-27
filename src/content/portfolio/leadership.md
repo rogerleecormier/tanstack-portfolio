@@ -1,113 +1,79 @@
 ---
-title: "Leadership & Culture"
-description: "Cross-functional leadership delivering complex initiatives across business and engineering domains, bridging SaaS tools, cloud infrastructure, and operational workflows."
+title: "Leadership"
+description: "Unified leadership philosophy blending military discipline and enterprise delivery—character, competence, execution, and culture that scales."
+tags: ["Leadership", "Military Leadership", "Servant Leadership", "Cross-Functional Delivery", "Organizational Culture", "Governance"]
+keywords: ["Be Know Do", "servant leadership", "cross-functional leadership", "digital transformation leadership", "program management", "governance frameworks", "military leadership philosophy"]
 ---
 
-As a Technical Project Manager, I lead cross-functional initiatives that blend **product delivery, system integration, and DevOps strategy**. My leadership style is pragmatic, systems-oriented, and focused on aligning people, platforms, and processes to deliver measurable business value—without unnecessary complexity.
+Leadership is the through-line of my career. From leading **U.S. Army Signal Corps communication teams** under high-pressure conditions to orchestrating **enterprise SaaS and ERP transformations**, I bring the same principles of clarity, accountability, and results.  
 
-I bring a **culture of clarity, ownership, and accountability** to every team, moving fluidly between engineers, analysts, product owners, and executive sponsors to turn ambiguity into structure.
-
----
-
-## 🧩 Core Competencies
-
-**Project & Program Management**
-- Deliver complex initiatives across Agile, Waterfall, and hybrid environments  
-- Lead backlog refinement, prioritization, and dependency resolution  
-- Define scope, success metrics, and delivery milestones  
-- Manage risks, constraints, and issue escalation across teams and vendors  
-- Provide executive-ready reporting via dashboards and RAG/RAID frameworks  
-
-**Cross-Functional & Technical Leadership**
-- Liaison between technical teams, product owners, Finance, and Operations  
-- Guide initiatives from ideation to production with adoption strategies  
-- Bridge SaaS, ERP, DevOps, and business workflows  
-- Lead vendor coordination and integration oversight  
-
-**Governance, Risk & Change Enablement**
-- Define process controls and SOPs to reduce operational risk  
-- Embed approval workflows and validation logic into tools like Smartsheet, NetSuite, and Power Automate  
-- Build stakeholder communications and rollout plans for adoption  
-- Manage post-deployment support and continuous improvement cycles  
+My compass is the Army’s timeless **Be • Know • Do** model:  
+- **BE** → Character and values: integrity, accountability, resilience  
+- **KNOW** → Technical competence and judgment: fluency across systems, stakeholders, and methods  
+- **DO** → Execution with urgency, clarity, and ownership of outcomes  
 
 ---
 
-## 🤝 Team Culture
+## 🎖️ Military Roots: Be • Know • Do
 
-**Radical Clarity**  
-I make ambiguity explicit, ensuring teams share a unified understanding of goals and constraints.
+As a Signal Corps Non-Commissioned Officer (NCO), I was responsible for **mission-critical communications and global readiness**.  
 
-**Ownership & Accountability**  
-I hold myself and others responsible for outcomes, not just activity.
+- **BE — Character**  
+  Led by example, instilling integrity, resilience, and servant leadership.  
 
-**Constructive Challenge**  
-I encourage respectful debate, believing the best ideas often emerge from healthy tension.
+- **KNOW — Competence**  
+  Mastered tactical networks (WIN-T), RF systems, and satellite comms. Directed **24/7 NOC operations** with 99.99% uptime.  
 
-**Cross-Functional Partnership**  
-I connect technical, operational, and executive perspectives to close gaps.
+- **DO — Execution**  
+  Built cross-functional teams capable of executing complex objectives under compressed timelines. Conducted after-action reviews (AARs) to codify lessons learned.  
 
-**Growth Through Feedback**  
-I give and receive feedback directly and constructively, fostering maturity and trust.
-
----
-
-## 📂 Signature Projects
-
-### Ramp + NetSuite Integration
-**Stack:** Ramp API • NetSuite • CSV imports  
-**Role:** Technical Project Manager  
-**Scope:** Finance + IT  
-
-- Rolled out Ramp's native NetSuite integration (Ramp Plus) to replace spreadsheet-based coding  
-- Coordinated GL mapping, vendor alignment, and sync validation  
-- Embedded data quality controls for AP governance  
-- **Results:** ↓ manual effort; ↑ AP accuracy; improved visibility into AP aging
+**Operational Impact:**  
+- Mission-critical comms deployed seamlessly across theaters  
+- Network disruptions resolved in minutes, preventing mission delays  
+- Mentorship pipelines increased certification pass rates well above baseline  
 
 ---
 
-### Box → Vena Forecast Intake
-**Stack:** Box • Smartsheet • Vena  
-**Role:** Technical Project Manager / Systems Engineer  
-**Scope:** Finance Operations  
+## 💼 Civilian Leadership: Cross-Functional Delivery
 
-- Introduced structured folder hierarchy and naming conventions for forecast files  
-- Built Smartsheet dashboards to track submissions and flag missing data  
-- Partnered with Finance to reduce reliance on email coordination  
-- **Results:** ↑ traceability; ↓ submission delays; better template compliance  
+In enterprise settings, I apply the same discipline to **ERP modernization, SaaS integrations, and digital transformation programs**.  
 
----
+- **Program & Portfolio Leadership** — Scope, dependencies, RAID transparency, multi-team orchestration across Agile, Hybrid, and Predictive.  
+- **Governance-in-Flow** — Approvals, validations, reconciliations embedded in NetSuite, Smartsheet, and Power Automate.  
+- **Stakeholder Alignment** — Translating technical complexity into executive clarity and business outcomes.  
+- **Culture Building** — Radical clarity, constructive challenge, feedback-driven growth.  
 
-### Financial Reporting QA Workflow
-**Stack:** Smartsheet • Box  
-**Role:** Technical Project Manager  
-**Scope:** FP&A Reporting  
-
-- Created Smartsheet-based review system for budget and forecast uploads  
-- Mapped file locations, submitters, and timestamps for audit visibility  
-- **Results:** Reduced missed submissions; streamlined ingestion into downstream systems  
+**Representative Outcomes:**  
+- **Ramp ↔ NetSuite AP Governance** — reduced manual AP effort, stronger audit trails, faster close cycles  
+- **Box → Vena Forecast Intake** — standardized submissions, schema validation, 50% fewer ingestion errors  
+- **Financial Reporting QA** — Smartsheet-based review workflows, fewer missed submissions  
+- **CI/CD Enablement** — hardened Azure + GitHub pipelines, faster deployments with rollback readiness  
 
 ---
 
-### GitHub Actions + Azure DevOps Enablement
-**Stack:** GitHub Actions • Azure Functions  
-**Role:** TPM / Systems Engineer  
+## 🤝 Leadership Behaviors
 
-- Scoped, tested, and deployed CI/CD workflows for ETL jobs and monitoring  
-- Codified DevOps processes with engineers to reduce operational toil  
-- **Results:** Hardened deployment flows; faster, more reliable releases  
+- Communicate complexity with calm and clarity  
+- Escalate early, but with **options not alarms**  
+- Build trust across functions and geographies  
+- Coach for autonomy and measurable impact  
+- Balance speed with governance and evidence  
 
 ---
 
 ## 🌱 Leadership Philosophy
-> *"Great leaders don't create followers—they create more leaders."*
 
-Whether managing integrations or large programs, I focus on empowering teams with clarity, removing blockers, and building systems that **outlast any single project**.
+> *“Great leaders don’t create followers — they create more leaders.”*  
+
+Whether leading a 24/7 military NOC or a cross-functional SaaS rollout, my philosophy is consistent:  
+- **BE** grounded in values  
+- **KNOW** with competence and curiosity  
+- **DO** with clarity, urgency, and accountability  
 
 ---
 
-**Related Pages:**  
-- [ERP & SaaS Integration](/saas)  
-- [Strategy & Vision](/strategy)  
-- [DevOps & Automation](/devops)  
+## 🌟 Closing Thought
 
-📋 *Detailed artifacts and case studies available upon request. [Let's connect](/contact).*
+Leadership is not a title — it’s a daily practice, expressed in decisions, behaviors, and results.  
+
+> *“Leadership is measured not by authority, but by the trust, clarity, and growth you leave behind.”*

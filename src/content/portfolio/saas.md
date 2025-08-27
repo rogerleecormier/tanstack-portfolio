@@ -1,93 +1,65 @@
 ---
 title: "ERP & SaaS Integration"
-description: "Designing and governing secure, low-friction workflows across NetSuite, Ramp, Vena, and enterprise systems with automated data flows and compliance controls."
+description: "API-first, audit-ready workflows across NetSuite, Ramp, Vena, and Box—extended with edge-native apps on Cloudflare Workers, D1, and KV."
+tags: ["ERP", "NetSuite", "Ramp", "Vena", "Integration", "Finance Automation", "Cloudflare Workers"]
+keywords: ["ERP modernization", "NetSuite governance", "Ramp automation", "AP transformation", "Vena forecasting", "Box ingestion automation", "Cloudflare Workers", "API-first architecture", "audit-ready integration"]
 ---
 
-My portfolio includes **hands-on leadership of ERP and financial SaaS ecosystems**—designing, integrating, and governing data flow between platforms like NetSuite, Ramp, Vena, Checkbook.io, Box, and Smartsheet.
+ERP and SaaS systems are the **backbone of enterprise operations**. But too often, they’re siloed, error-prone, and slow. I design and deliver **API-first, audit-ready integrations** that reduce manual effort, increase visibility, and produce compliance evidence automatically.  
 
-As a **NetSuite administrator and cross-platform integrator**, I build secure, low-friction workflows across teams, tools, and APIs.
-
----
-
-## 🛠️ Platforms Managed
-- **ERP Core:** NetSuite (financials, AP, workflows, integrations)  
-- **Finance Tools:** Ramp, Checkbook.io, Vena Solutions  
-- **Automation:** Power Automate, SuiteScript, Python connectors  
-- **Collaboration:** Smartsheet, Box, Asana  
+My philosophy: **Interoperability → Validation at Source → Reconciliation by Design → Observability**.
 
 ---
 
-## 🎯 Signature Projects
+## 🛠 Platforms & Tools
 
-### NetSuite Governance & Workflow Automation
-**Stack:** NetSuite • SuiteScript • Saved Searches  
-**Role:** Admin & Workflow Designer  
-**Scope:** Finance & Operations – 300+ users  
-
-- Managed permissions, workflows, and integrations  
-- Built conditional logic, approval routing, and saved searches for multi-entity compliance  
-- Created reusable templates reducing new-entity setup time by 60%  
-- **Results:** 300+ users supported; improved audit traceability; eliminated duplicate entry  
+- **ERP Core** → NetSuite (GL/AP workflows, SuiteScript automation, saved searches)  
+- **Finance & FP&A** → Ramp (AP, expense, procurement), Vena (forecasting), Checkbook.io (ACH)  
+- **Collaboration** → Box (document standards), Smartsheet (orchestration), Asana (intake/workflow)  
+- **Automation** → Azure Functions, Python, Power Automate, SuiteScript  
+- **Edge & Web** → Cloudflare Workers/Pages (API orchestration), KV (cache), D1 (persistence), AI Workers (light inference)  
 
 ---
 
-### Ramp + Checkbook.io Integration
-**Stack:** Power Automate • NetSuite • REST APIs  
-**Role:** Integration Lead  
-**Scope:** AP Operations  
+## 📂 Representative Projects
 
-- Automated invoice syncing, card transaction imports, and payment dispatch  
-- Designed approval logic, GL alignment, and payment triggers  
-- Built reconciliation scripts to match payment confirmations with ERP records  
-- **Results:** Reduced AP cycle time 40%; improved governance; increased visibility  
+### 💳 Ramp ↔ NetSuite AP Transformation
+- Automated GL mapping, approval routing, and sync validation  
+- Designed approval rules aligned to budget authority & segregation of duties  
+- Built real-time **saved searches** for audit visibility  
+- **Impact**: ↓ manual AP effort by 40%; ↑ close speed; ↑ audit readiness  
 
 ---
 
-### Vena Forecasting Pipeline (Box → Vena)
-**Stack:** Box • Azure Functions • Vena • Java ETL  
-**Role:** Systems Integrator  
-**Scope:** FP&A / Forecast Intake  
-
-- Automated budget file ingestion from Box to Vena  
-- Implemented naming convention checks and folder structures  
-- Standardized templates and validated submissions  
-- **Results:** ↓ ingestion errors 50%; 1-day faster forecast cycles  
+### 📦 Box → Vena Forecast Intake
+- Enforced **naming conventions and folder standards** in Box  
+- Automated ingestion pipelines with schema validation  
+- Smartsheet dashboards tracked submission status and errors  
+- **Impact**: 50% fewer ingestion errors; 1 day faster forecast cycles  
 
 ---
 
-### SaaS Workflow Unification
-**Stack:** Smartsheet • Asana • Box  
-**Role:** Workflow Designer  
-**Scope:** PMO Tool Onboarding & Integration  
-
-- Introduced Smartsheet for PMO status tracking  
-- Connected Box document storage with Smartsheet and NetSuite data  
-- Built API scripts for automated sync between systems  
-- **Results:** Faster onboarding; improved cross-tool alignment; SOPs codified  
+### 🌐 Vertex Hub (Service Requests)
+- Front-end: **TanStack Router + shadcn/ui** on Cloudflare Pages  
+- Middleware: **Cloudflare Workers** with KV caching and D1 persistence  
+- Integrated with Asana, Zendesk, and ERP backends for routing and SLA tracking  
+- **Impact**: Unified intake, faster SLA response, reduced operational overhead  
 
 ---
 
-## 🔧 Integration Principles
-1. **Interoperability** – Clear data ownership per system  
-2. **Validation** – Reconciliation built into workflows  
-3. **Governance** – Rules enforced at tool level  
-4. **Automation-First** – Minimize manual file handling  
+## 📈 Metrics & Results
+
+| Process Area          | Before               | After (My Work)            |
+|-----------------------|----------------------|-----------------------------|
+| AP Cycle Time         | 10+ days             | ~6 days (↓40%)              |
+| Forecast Ingestion    | Error-prone, delayed | 50% fewer errors, +1 day faster |
+| Audit Prep            | Manual data hunts    | Auto-delivered evidence     |
+| Request Intake        | Disconnected, opaque | Unified, SLA-tracked        |
 
 ---
 
-## 📈 Measured Impact
-| Metric                                | Outcome                                   |
-|---------------------------------------|-------------------------------------------|
-| Manual AP entries automated           | 3+ finance platforms integrated           |
-| End-user workflows improved           | 300+ staff supported across clients       |
-| Data handoffs made traceable          | Box, NetSuite, and Vena unified           |
-| Onboarding effort for new tools reduced| SOPs and templates codified               |
+## 🌟 Closing Thought
 
----
+Integrations should feel invisible — users just see faster results, fewer errors, and reliable compliance.  
 
-**Related Pages:**  
-- [Leadership & Culture](/leadership) – Project governance & stakeholder management  
-- [DevOps & Automation](/devops) – Azure Functions & CI/CD pipelines  
-- [Analytics & Insights](/analytics) – Operational dashboards & reporting  
-
-📋 *Detailed artifacts and case studies available upon request. [Let's connect](/contact).*
+> *“Automate the handoffs, illuminate the exceptions.”*

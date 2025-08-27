@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { MapPin, AlertCircle } from 'lucide-react'
 import { format, addDays } from 'date-fns'
 import { cn } from '@/lib/utils'
-import type { AIAnalysisResult } from '@/api/aiContactAnalyzer'
+import type { AIAnalysisResult } from '@/api/contactAnalyzer'
 
 interface AIMeetingSchedulerProps {
   analysis: AIAnalysisResult

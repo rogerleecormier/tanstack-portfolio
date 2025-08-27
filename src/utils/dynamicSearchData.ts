@@ -12,6 +12,14 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
     return cachedSearchItems
   }
 
+  // Only load markdown files at runtime, not during build
+  if (typeof window === 'undefined') {
+    console.log('Markdown loading skipped during build/SSR')
+    const { searchData } = await import('./searchData')
+    cachedSearchItems = searchData
+    return searchData
+  }
+
   try {
     // Use Vite's glob import to get all markdown files from src/content
     const markdownModules = import.meta.glob('/src/content/**/*.md', { 
@@ -226,7 +234,8 @@ export const loadTsxPages = async (): Promise<SearchItem[]> => {
           section,
           headings: extractedContent.headings || [],
           tags: extractedContent.tags || [],
-          searchKeywords: extractedContent.searchKeywords || ''
+          searchKeywords: extractedContent.searchKeywords || '',
+          contentType: 'page' as const
         };
       })
     );

@@ -1,74 +1,78 @@
 ---
 title: "Analytics & Insights"
-description: "Using analytics to identify delivery risks, expose inefficiencies, and improve cross-functional coordination through dashboards and automated reporting."
+description: "Embedding analytics into operations to surface risks, optimize performance, and inform executive decisions."
+tags: ["Analytics", "Insights", "Dashboards", "Risk Detection", "Governance Metrics"]
+keywords: ["operational analytics", "business intelligence", "executive dashboards", "project methodology analysis", "forecasting analytics", "governance metrics", "HealthBridge app"]
 ---
 
-I use analytics to surface **delivery risks, inefficiencies, and opportunities**—embedding dashboards and automated reporting directly into operational workflows.
-
----
-
-## 🛠 Applied Analytics
-
-### Asana AI Risk Reports
-- Surfaced risk indicators, missed deadlines, and velocity drops across workstreams  
-- Automated report exports for weekly executive reviews  
-- **Impact:** Early warnings improved sprint closure predictability  
-
-### Smartsheet Service Ops Dashboards
-- Visualized ticket volume, SLA compliance, and aging trends for NetSuite requests  
-- Enabled leaders to triage by urgency, reducing delays  
-- **Impact:** Improved SLA adherence and prioritization  
-
-### NetSuite Saved Searches & Reporting
-- Built searches with formula fields for AP aging, exception flags, and mismatch detection  
-- Embedded dashboards and scheduled report delivery  
-- **Impact:** Reduced ad-hoc reporting; improved self-service access for 300+ users  
-
-### Cross-Platform ETL Automation
-- Python-based Box → Vena ingestion with schema validation  
-- Power Automate pipelines for Outlook → Smartsheet and Teams → Smartsheet workflows  
-- **Impact:** Eliminated spreadsheet churn; improved data accuracy  
+Data without context is noise. I specialize in **turning fragmented operational data into actionable insights** that leaders can use to steer with confidence. My approach is to **embed analytics into daily workflows**, not silo them in slide decks — so risk is surfaced early and decisions are based on evidence.  
 
 ---
 
-## 📈 Governance Metrics
+## 🛠 Analytics Practices
 
-| Metric Type          | Use Case                                 |
-|----------------------|------------------------------------------|
-| Sprint velocity      | Detect bottlenecks                       |
-| Ticket backlog aging | Prevent SLA breaches                     |
-| Forecast accuracy    | Validate onboarding throughput           |
-| Reconciliation       | Detect ERP sync issues across platforms  |
+- **Operational Dashboards** — live status views of SLA adherence, backlog aging, and reconciliation status  
+- **Forecast & Financial Analytics** — NetSuite saved searches, Box→Vena ingestion checks, AP aging analysis  
+- **Project Health Monitoring** — Asana AI surfacing risks in delivery velocity, deadline adherence, and blockers  
+- **Governance Metrics** — risk registers, RAID dashboards, early-warning signals tied to project triggers  
 
 ---
 
-## 🎓 Academic Projects
+## 📂 Representative Analytics Projects
 
-### Budget Risk Analysis
-- Dataset: 4,000 project records with budget, methodology, and complexity data  
-- Calculated descriptive statistics and built budget frequency distributions  
-- Visualized right-skew distribution using Mermaid chart  
-- **Insight:** Most budgets fall under $1.5M; large projects rare  
-
-### PainSmart – Wellness Strategy
-- Used public health data to model opioid reduction strategies  
-- Ran t-tests and regression forecasts  
-- Built rollout plan with executive metrics  
-- **Outcome:** Data-supported proposal for policy change  
+### 📊 Asana AI Risk Dashboards
+- Surfaced risks automatically from project metadata  
+- Flagged velocity dips, missed milestones, and deadline risks  
+- **Impact**: fewer surprises for executives; faster mitigation  
 
 ---
 
-## 🔧 Tools & Platforms
-- **Automation & ETL:** Python, SQL, Power Automate, Box API  
-- **Dashboards:** Smartsheet, Excel, Asana AI  
-- **Statistical Tools:** Excel Analysis ToolPak, regression models  
-- **Communication:** Stakeholder reports, embedded visual summaries  
+### 📈 Smartsheet Service Ops Dashboards
+- Built SLA compliance tracking for service tickets  
+- Added backlog aging analytics to highlight capacity constraints  
+- **Impact**: improved prioritization; SLA adherence increased  
 
 ---
 
-**Related Pages:**  
-- [ERP & SaaS Integration](/saas)  
-- [DevOps & Automation](/devops)  
-- [Strategy & Vision](/strategy)  
+### 💳 NetSuite Analytics
+- Created formula-driven saved searches for AP aging, exception flags, and reconciliation status  
+- Scheduled delivery of reports to 300+ users across finance teams  
+- **Impact**: improved visibility; reduced reliance on manual reporting  
 
-📋 *Detailed workbooks and datasets available upon request. [Let's connect](/contact).*
+---
+
+## 🔬 Projects Methodology Analysis
+An academic and professional study comparing **Agile, Hybrid, and Predictive methodologies** across portfolio projects.  
+
+- Measured throughput, defect rates, adoption signals, and risk exposure  
+- Produced evidence-based playbooks for when to apply each methodology  
+- **Impact**: more context-aware methodology selection; better outcomes in hybrid delivery environments  
+
+---
+
+## 🏥 HealthBridge App (Analytics Sandbox)
+A personal initiative designed to test **engagement and wellness analytics**.  
+
+- Instrumented funnels for activation → retention  
+- Built content heatmaps and cohort analysis to track engagement  
+- Aligned analytics with backlog prioritization and feature selection  
+- **Impact**: reduced churn, informed roadmap priorities, validated engagement strategies  
+
+---
+
+## 📈 Analytics Metrics
+
+| Area                  | Before                   | After (My Work)           |
+|-----------------------|--------------------------|----------------------------|
+| Risk Detection        | Reactive, manual reviews | Proactive Asana AI dashboards |
+| SLA Tracking          | Static, after-the-fact   | Real-time Smartsheet dashboards |
+| Forecast Accuracy     | Error-prone, inconsistent | 50% fewer ingestion errors |
+| Methodology Selection | Based on preference      | Data-driven playbooks      |
+
+---
+
+## 🌟 Closing Thought
+
+Analytics should be more than reporting — it should be the **early warning system** that keeps organizations proactive, not reactive.  
+
+> *“Instrument everything; decide with data; iterate with intent.”*

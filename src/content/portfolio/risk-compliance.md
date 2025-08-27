@@ -1,41 +1,82 @@
 ---
 title: "Risk & Compliance"
-description: "Building validation, reconciliation, and audit evidence into day‑to‑day workflows across finance and operations."
+description: "Embedding validation, reconciliation, and audit evidence into ERP and SaaS workflows—making compliance invisible to users but undeniable to auditors."
+tags: ["Risk", "Compliance", "SOX", "Audit Readiness", "Governance", "Controls", "Reconciliation"]
+keywords: ["risk management", "compliance frameworks", "SOX controls", "audit readiness", "ERP approvals", "automated reconciliation", "change management", "traceability"]
 ---
 
-My risk posture is **controls-in-the-flow**: rules, validations, and reconciliation live inside the tools—producing **automatic audit evidence** and fewer surprises at month‑end.
+Risk and compliance aren’t just checkboxes—they are **strategic enablers**. Done well, they reduce surprises, accelerate audits, and strengthen trust across stakeholders.  
+
+My approach: **embed controls directly in the flow of work** so that evidence is produced automatically and governance feels like clarity, not bureaucracy.  
 
 ---
 
 ## 🧭 Core Principles
-1. **Interoperability**: clear system-of-record per data type  
-2. **Validation at source**: approvals, GL rules, and field checks where data is created  
-3. **Reconciliation by design**: scheduled cross-system checks, not ad hoc hunts  
-4. **Observability**: logs, alerts, dashboards wired to operational thresholds
+
+- **Controls-in-the-Flow** — no after-the-fact checks; validations happen where data is entered  
+- **Reconciliation by Design** — systems compare and confirm data before exceptions occur  
+- **Governance as Accelerator** — risk surfaced early → fewer escalations later  
+- **Military Precision** — Be • Know • Do applied to risk discipline: be clear, know the system, do the work right  
 
 ---
 
-## 🔐 Patterns I Implement
-- Saved searches and conditional logic in ERP for **multi-entity compliance**  
-- Approval routing that reflects actual authority paths (no shadow processes)  
-- Naming conventions and folder standards to prevent ingestion drift  
-- Scheduled report delivery for **evidence on cadence**
+## 🛠 Compliance Patterns
+
+- ERP approvals aligned to budget authority & segregation of duties  
+- NetSuite saved searches and formula-driven exception flags  
+- Automated reconciliations (Ramp ↔ NetSuite, Box ↔ Vena)  
+- SOPs and naming standards embedded in file and folder structures  
+- Change control tracked in Asana/Smartsheet with decision logs  
+- Lineage mapping and documentation auto-generated from workflows  
 
 ---
 
-## 📂 Examples
-- **Payments:** ACH workflow to an external provider with end‑to‑end logging and duplicate prevention  
-- **Forecasts:** Box → Vena pipelines with schema checks and file validation  
-- **AP:** Sync accuracy checks between card transactions, invoices, and GL coding
+## 📂 Case Studies
+
+### 💳 AP Controls (Ramp ↔ NetSuite)
+- Enforced GL mapping and validation during AP sync  
+- Built approval workflows aligned to budget thresholds  
+- **Impact**: fewer AP errors, faster audits, stronger compliance confidence  
 
 ---
 
-## 📈 What Gets Measured
-- Exceptions caught at source vs. downstream  
-- % automated approvals vs. manual escalations  
-- Time to reconcile + number of unreconciled items over time
+### 📦 Forecast Intake Compliance (Box → Vena)
+- Schema validation checks at the point of submission  
+- Smartsheet dashboards tracking on-time and late entries  
+- **Impact**: 50% fewer ingestion errors; 1-day faster forecast cycles  
 
 ---
 
-**Related Pages:**  
-- [ERP & SaaS Integration](/saas) · [DevOps & Automation](/devops) · [Governance & PMO](/governance-pmo)
+### 📊 Financial Reporting QA
+- Smartsheet-based timestamped reviews for report submissions  
+- Exceptions flagged automatically for rework before ingestion  
+- **Impact**: reduced missed reports, faster downstream processes  
+
+---
+
+## 📈 Operating Metrics
+
+| Metric                     | Before                  | After (My Work)           |
+|-----------------------------|-------------------------|----------------------------|
+| Approval Compliance         | Ad hoc                 | 100% mapped to authority  |
+| Reconciliation Errors       | Frequent downstream     | Exceptions flagged at source |
+| Audit Prep Time             | Weeks of manual hunting | Evidence auto-delivered   |
+| Forecast Error Rates        | High ingestion failures | ↓ 50% errors              |
+
+---
+
+## 🛡️ Compliance Domains
+
+- SOX & audit readiness  
+- Data integrity & lineage  
+- Access & Segregation of Duties  
+- Change management controls  
+- Continuous monitoring & reporting  
+
+---
+
+## 🌟 Closing Thought
+
+Risk management isn’t about slowing delivery — it’s about making delivery safer, faster, and more predictable.  
+
+> *“Make compliance invisible to users, and undeniable to auditors.”*
