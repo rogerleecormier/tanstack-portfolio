@@ -27,7 +27,7 @@ import { sendEmail } from '@/api/emailService'
 import { format } from 'date-fns'
 import { ContactAnalysis } from '@/components/ContactAnalysis'
 import { AIMeetingScheduler } from '@/components/AIMeetingScheduler'
-import { analyzeContactForm, type AIAnalysisResult, AIAnalysisError, testAIWorker } from '@/api/contactAnalyzer'
+import { analyzeContactForm, type AIAnalysisResult, AIAnalysisError } from '@/api/contactAnalyzer'
 
 // Dynamic Action Button Component
 interface DynamicActionButtonProps {
@@ -117,7 +117,7 @@ function DynamicActionButton({
         className="w-full bg-gray-400 text-white py-2 sm:py-3 cursor-not-allowed text-sm sm:text-base"
       >
         <Send className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-        Send Message (AI analysis in progress...)
+        {isAnalyzing ? 'AI analysis in progress...' : 'Send Message'}
       </Button>
     )
   }
@@ -850,26 +850,7 @@ This meeting request was generated based on AI analysis of their contact form su
                     />
                   </div>
 
-                  {/* AI Worker Test Button - Temporary for debugging */}
-                  <div className="pt-3 sm:pt-4 border-t border-gray-200">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={async () => {
-                        console.log('🧪 Testing AI Worker...')
-                        const result = await testAIWorker()
-                        if (result.success) {
-                          alert('✅ AI Worker is working! Check console for details.')
-                        } else {
-                          alert(`❌ AI Worker test failed: ${result.error}`)
-                        }
-                      }}
-                      className="w-full text-xs"
-                    >
-                      🧪 Test AI Worker
-                    </Button>
-                  </div>
+
 
                   {/* Message Analysis - Above Meeting Scheduler */}
                   {(aiAnalysis || isAnalyzing || formData.message.length >= 20) && (
