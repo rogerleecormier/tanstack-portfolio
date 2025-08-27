@@ -441,7 +441,18 @@ OUTPUT SCHEMA:
   "followUpQuestions": ["specific question 1", "specific question 2", "specific question 3"]
 }
 
-Set shouldScheduleMeeting=true for consultation/project/technical discussions.
+MEETING DETECTION RULES:
+- Set shouldScheduleMeeting=true if the message contains meeting-related keywords like: "meet", "schedule", "call", "discussion", "conversation", "consultation", "review", "planning", "appointment", "get together", "set up a meeting", "book a call"
+- Set shouldScheduleMeeting=true for consultation/project/technical discussions
+- Set shouldScheduleMeeting=true if the subject line contains meeting-related words
+- Set messageType to "meeting-request" when shouldScheduleMeeting=true
+
+EXAMPLES:
+- Message: "I need to schedule a meeting" → shouldScheduleMeeting: true, messageType: "meeting-request"
+- Message: "Can we set up a call?" → shouldScheduleMeeting: true, messageType: "meeting-request"
+- Subject: "Meeting Request" → shouldScheduleMeeting: true, messageType: "meeting-request"
+- Message: "Just a quick question" → shouldScheduleMeeting: false, messageType: "message"
+
 Return ONLY the JSON object, no additional text.`
 
 export default {
@@ -797,23 +808,45 @@ Return JSON:
         emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown'
       }
       
+      // Fallback meeting detection if AI didn't properly detect meeting requests
+      const fallbackMeetingDetection = (message, subject) => {
+        const messageLower = message.toLowerCase()
+        const subjectLower = subject.toLowerCase()
+        
+        const meetingKeywords = [
+          'meet', 'schedule', 'call', 'discussion', 'conversation', 'consultation',
+          'review', 'planning', 'appointment', 'get together', 'set up a meeting',
+          'book a call', 'meeting request', 'need to meet', 'would like to meet',
+          'can we meet', 'available for a call', 'set up a time'
+        ]
+        
+        const hasMeetingKeywords = meetingKeywords.some(keyword => 
+          messageLower.includes(keyword) || subjectLower.includes(keyword)
+        )
+        
+        return hasMeetingKeywords
+      }
+      
       // Ensure the AI response has all required fields by merging with defaults
       if (analysis) {
+        // Check if AI missed a meeting request and override if necessary
+        const shouldOverrideMeetingDetection = fallbackMeetingDetection(scrubbedMessage, scrubbedSubject)
+        
         // Ensure all required fields are present
         analysis = {
           ...defaultAnalysis,
           ...analysis,
           // Ensure these specific fields are always set
-          messageType: analysis.messageType || 'message',
+          messageType: shouldOverrideMeetingDetection ? 'meeting-request' : (analysis.messageType || 'message'),
           meetingDuration: analysis.meetingDuration || '1 hour',
           suggestedResponse: analysis.suggestedResponse || defaultAnalysis.suggestedResponse,
           relevantContent: analysis.relevantContent || ['general portfolio'],
-          shouldScheduleMeeting: analysis.shouldScheduleMeeting !== undefined ? analysis.shouldScheduleMeeting : false,
-          meetingType: analysis.meetingType || 'general-discussion',
+          shouldScheduleMeeting: shouldOverrideMeetingDetection ? true : (analysis.shouldScheduleMeeting !== undefined ? analysis.shouldScheduleMeeting : false),
+          meetingType: shouldOverrideMeetingDetection ? 'general-discussion' : (analysis.meetingType || 'general-discussion'),
           recommendedTimeSlots: analysis.recommendedTimeSlots || ['morning', 'afternoon'],
           timezoneConsideration: analysis.timezoneConsideration || 'user\'s local timezone',
           userTimezone: analysis.userTimezone || 'America/New_York',
-          followUpRequired: analysis.followUpRequired !== undefined ? analysis.followUpRequired : false,
+          followUpRequired: shouldOverrideMeetingDetection ? true : (analysis.followUpRequired !== undefined ? analysis.followUpRequired : false),
           redFlags: analysis.redFlags || [],
           followUpQuestions: analysis.followUpQuestions || [],
           timestamp: analysis.timestamp || new Date().toISOString(),
@@ -830,8 +863,22 @@ Return JSON:
       // Remove any AI-set confidence to ensure our calculation takes precedence
       delete analysis.confidence
       
+      // Store the fallback detection results before merging with defaults
+      const fallbackResults = {
+        messageType: analysis.messageType,
+        shouldScheduleMeeting: analysis.shouldScheduleMeeting,
+        meetingType: analysis.meetingType,
+        followUpRequired: analysis.followUpRequired
+      }
+      
       // Merge with defaults for missing fields
       analysis = { ...defaultAnalysis, ...analysis }
+      
+      // Restore the fallback detection results to ensure they're not overwritten
+      if (fallbackResults.messageType) analysis.messageType = fallbackResults.messageType
+      if (fallbackResults.shouldScheduleMeeting !== undefined) analysis.shouldScheduleMeeting = fallbackResults.shouldScheduleMeeting
+      if (fallbackResults.meetingType) analysis.meetingType = fallbackResults.meetingType
+      if (fallbackResults.followUpRequired !== undefined) analysis.followUpRequired = fallbackResults.followUpRequired
       
       // Set the deterministic meeting duration (calculated earlier)
       analysis.meetingDuration = deterministicDuration

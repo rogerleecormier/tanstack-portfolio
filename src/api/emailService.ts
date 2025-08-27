@@ -24,10 +24,8 @@ interface EmailData {
   meeting_data?: MeetingData
 }
 
-// Cloudflare Worker endpoints - use development by default
-const WORKER_ENDPOINT = import.meta.env.PROD 
-  ? 'https://tanstack-portfolio-email-worker-production.rcormier.workers.dev'
-  : 'https://tanstack-portfolio-email-worker-development.rcormier.workers.dev'
+// Cloudflare Worker endpoint - Production only
+const WORKER_ENDPOINT = 'https://tanstack-portfolio-email-worker.rcormier.workers.dev'
 
 export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
   try {

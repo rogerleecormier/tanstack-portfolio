@@ -19,7 +19,7 @@ export interface ContactFormData {
 }
 
 // AI Worker endpoint - Production only
-const AI_WORKER_ENDPOINT = 'https://ai-contact-analyzer.rcormier.workers.dev'
+const AI_WORKER_ENDPOINT = 'https://tanstack-portfolio-ai-contact-analyzer.rcormier.workers.dev'
 
 // Retry configuration
 const MAX_RETRIES = 2
