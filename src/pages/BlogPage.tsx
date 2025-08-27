@@ -14,7 +14,7 @@ import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as R
 import { MessageSquare, Calendar, Clock, User, Tag, ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from '@tanstack/react-router'
 import NewsletterSignup from '@/components/NewsletterSignup'
-import BlogRecommendations from '@/components/BlogRecommendations'
+import { BlogRecommendations } from '@/components/BlogRecommendations'
 
 // Define proper types for frontmatter
 interface BlogFrontmatter {
@@ -735,12 +735,11 @@ export default function BlogPage({ slug }: { slug: string }) {
           <div className="sticky top-32 space-y-6">
             {/* Portfolio Page Recommendations Sidebar */}
             <div className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-xl p-6 border border-teal-200 dark:border-teal-800 shadow-sm">
-              <BlogRecommendations 
-                blogContent={content}
-                blogTitle={frontmatter.title || ''}
-                blogTags={frontmatter.tags}
-                variant="sidebar"
-              />
+                              <BlogRecommendations
+                  blogContent={content}
+                  blogTitle={frontmatter.title || ''}
+                  blogTags={frontmatter.tags || []}
+                />
             </div>
 
             {/* Additional Sidebar Content */}

@@ -9,18 +9,18 @@ binding = "ai"
 
 # Environment variables
 [vars]
-ENVIRONMENT = "development"
-
-# Development environment
-[env.development]
-name = "ai-contact-analyzer-development"
-vars = { ENVIRONMENT = "development" }
-[env.development.ai]
-binding = "ai"
+ENVIRONMENT = "production"
 
 # Production environment
 [env.production]
-name = "ai-contact-analyzer-production"
-vars = { ENVIRONMENT = "production" }
-[env.production.ai]
-binding = "ai"
+# Production environment - uses main worker
+
+# Development environment
+[env.development]
+# Development environment - uses same production worker
+# This allows dev to use the live production worker
+vars = { ENVIRONMENT = "development" }
+
+# Enable logging for all environments
+[observability.logs]
+enabled = true

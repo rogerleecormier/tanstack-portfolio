@@ -31,6 +31,19 @@ const ANALYSIS_SCHEMA = {
   followUps: { type: 'array', maxLength: 3 }
 }
 
+// CORS headers helper function
+function addCorsHeaders(response, status = 200) {
+  const headers = new Headers(response.headers || {})
+  headers.set('Access-Control-Allow-Origin', '*')
+  headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept')
+  
+  return new Response(response.body, {
+    status,
+    headers
+  })
+}
+
 // PII and sensitive data scrubber
 function scrubSensitiveData(text) {
   if (!text || typeof text !== 'string') return text
@@ -426,20 +439,37 @@ Return ONLY the JSON object, no additional text.`
 
 export default {
   async fetch(request, env, ctx) {
-    // Handle CORS
+    // Handle CORS preflight request
     if (request.method === 'OPTIONS') {
+      console.log('CORS preflight request received')
       return new Response(null, {
         status: 200,
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept',
+          'Access-Control-Max-Age': '86400',
         },
       })
     }
 
+    // Handle health check
+    if (request.method === 'GET') {
+      return addCorsHeaders(new Response(JSON.stringify({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        cors: 'enabled'
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }))
+    }
+
     if (request.method !== 'POST') {
-      return new Response('Method not allowed', { status: 405 })
+      return addCorsHeaders(new Response('Method not allowed', { 
+        status: 405,
+        headers: { 'Content-Type': 'text/plain' }
+      }))
     }
 
     try {
@@ -473,7 +503,7 @@ export default {
       
       // If too many red flags, return early with safe response
       if (redFlags.length > 2) {
-        return new Response(JSON.stringify({
+        return addCorsHeaders(new Response(JSON.stringify({
           inquiryType: 'general',
           priorityLevel: 'low',
           industry: 'other',
@@ -499,9 +529,8 @@ export default {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
           },
-        })
+        }))
       }
 
       // Calculate meeting duration deterministically BEFORE AI analysis
@@ -532,35 +561,27 @@ export default {
       let aiResponse
       try {
         // Try with the correct model name
+        // Streamlined AI prompt to reduce neuron usage
         aiResponse = await env.ai.run('@cf/meta/llama-2-7b-chat-int8', {
           messages: [{
             role: 'user',
-                         content: `Analyze this contact form and return JSON. For followUps, generate 1-3 specific questions about information that's missing from their message. Make each question contextual and specific to what they mentioned:
-
- {
-   "inquiryType": "consultation|project|partnership|general|urgent",
-   "priorityLevel": "high|medium|low", 
-   "industry": "technology|healthcare|finance|manufacturing|other",
-   "projectScope": "small|medium|large|enterprise",
-   "urgency": "immediate|soon|flexible",
-   "suggestedResponse": "2-3 sentence personalized response",
-   "relevantContent": ["portfolio sections"],
-   "shouldScheduleMeeting": true/false,
-   "meetingType": "consultation|project-planning|technical-review|strategy-session|general-discussion",
-   "recommendedTimeSlots": ["morning", "afternoon", "evening"],
-   "timezoneConsideration": "user's local timezone",
-   "followUpRequired": true/false,
-   "redFlags": ["array of security concerns if any"],
-   "followUps": ["What's your timeline for this ERP implementation?", "How many users will need access to the system?", "Which specific ERP modules are you looking to implement?"]
- }
-
-Contact: ${name} (${company || 'Not specified'})
-Subject: ${scrubbedSubject}
+            content: `Analyze: ${name} (${company || 'N/A'}) - ${scrubbedSubject}
 Message: ${scrubbedMessage}
 
-JSON only:`
+Return JSON:
+{
+  "inquiryType": "consultation|project|partnership|general|urgent",
+  "priorityLevel": "high|medium|low",
+  "industry": "technology|healthcare|finance|manufacturing|other", 
+  "projectScope": "small|medium|large|enterprise",
+  "urgency": "immediate|soon|flexible",
+  "shouldScheduleMeeting": true/false,
+  "meetingType": "consultation|project-planning|technical-review|strategy-session|general-discussion",
+  "followUps": ["2-3 specific questions about missing info"]
+}`
           }],
-          temperature: 0.1 // Low temperature for consistent classification
+          temperature: 0.1,
+          max_tokens: 300 // Limit response size to reduce neurons
         })
       } catch (aiError) {
         console.error('AI service error:', aiError)
@@ -751,19 +772,18 @@ JSON only:`
       // Log only timing and status (no content)
       console.log(`AI analysis completed: ${Date.now()} - confidence: ${enhancedAnalysis.confidence} - redFlags: ${redFlags.length}`)
       
-      return new Response(JSON.stringify(enhancedAnalysis), {
+      return addCorsHeaders(new Response(JSON.stringify(enhancedAnalysis), {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
         },
-      })
+      }))
 
     } catch (error) {
       // Log error without sensitive data
       console.error(`AI analysis error: ${error.message} - timestamp: ${Date.now()}`)
       
-      return new Response(JSON.stringify({ 
+      return addCorsHeaders(new Response(JSON.stringify({ 
         error: error.message || 'AI analysis failed',
         fallback: true,
         timestamp: new Date().toISOString()
@@ -771,9 +791,8 @@ JSON only:`
         status: 500,
         headers: { 
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
         }
-      })
+      }))
     }
   }
 }

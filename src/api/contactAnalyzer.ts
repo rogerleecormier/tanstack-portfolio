@@ -1,6 +1,6 @@
 // AI Contact Form Analyzer Service
 // Integrates with Cloudflare AI Worker for intelligent form analysis
-// HARDENED VERSION with security and privacy features
+// ENHANCED VERSION with industry identification, timezone analysis, and smart fallbacks
 
 import { safeValidateAIAnalysis, type AIAnalysisResult } from '@/lib/aiSchema'
 
@@ -37,24 +37,158 @@ export class AIAnalysisError extends Error {
   }
 }
 
-// Fallback analysis when AI fails
+// Get user timezone from browser
+function getUserTimezone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone
+  } catch {
+    return 'America/New_York' // Fallback to EST
+  }
+}
+
+// AI-powered industry identification
+async function identifyIndustry(companyName: string, message: string): Promise<string> {
+  if (!companyName || companyName.trim() === '') {
+    return 'other'
+  }
+
+  try {
+    // Try AI-powered industry detection first
+    const response = await fetch(AI_WORKER_ENDPOINT + '/industry', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        company: companyName,
+        message: message.substring(0, 500) // Limit message size
+      }),
+    })
+
+    if (response.ok) {
+      const result = await response.json()
+      return result.industry || 'other'
+    }
+  } catch (error) {
+    console.warn('AI industry detection failed, using fallback:', error)
+  }
+
+  // Fallback: keyword-based industry detection
+  const messageLower = message.toLowerCase()
+  const companyLower = companyName.toLowerCase()
+
+  // Industry keywords mapping
+  const industryKeywords = {
+    technology: ['tech', 'software', 'saas', 'platform', 'digital', 'ai', 'automation', 'cloud', 'api'],
+    healthcare: ['health', 'medical', 'hospital', 'clinic', 'patient', 'doctor', 'nurse', 'pharma', 'biotech'],
+    finance: ['bank', 'financial', 'investment', 'insurance', 'credit', 'loan', 'trading', 'fintech', 'payments'],
+    manufacturing: ['manufacturing', 'factory', 'production', 'industrial', 'machinery', 'supply chain', 'logistics'],
+    retail: ['retail', 'ecommerce', 'store', 'shopping', 'consumer', 'merchandise', 'sales'],
+    education: ['education', 'school', 'university', 'college', 'learning', 'training', 'academic'],
+    government: ['government', 'public', 'federal', 'state', 'municipal', 'agency', 'department'],
+    nonprofit: ['nonprofit', 'charity', 'foundation', 'ngo', 'volunteer', 'donation'],
+    startup: ['startup', 'venture', 'funding', 'accelerator', 'incubator', 'seed', 'series'],
+    enterprise: ['enterprise', 'corporate', 'fortune', 'global', 'multinational', 'conglomerate']
+  }
+
+  for (const [industry, keywords] of Object.entries(industryKeywords)) {
+    if (keywords.some(keyword => 
+      companyLower.includes(keyword) || messageLower.includes(keyword)
+    )) {
+      return industry
+    }
+  }
+
+  return 'other'
+}
+
+// Enhanced message analysis with AI
+async function analyzeMessageContent(
+  name: string,
+  company: string,
+  subject: string,
+  message: string
+): Promise<Partial<AIAnalysisResult>> {
+  try {
+    console.log('🔍 Attempting AI analysis with worker:', AI_WORKER_ENDPOINT)
+    
+    const response = await fetch(AI_WORKER_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        company: company || '',
+        subject,
+        message,
+        consent: 'true'
+      }),
+    })
+
+    console.log('📡 AI Worker Response Status:', response.status, response.statusText)
+
+    if (response.ok) {
+      const result = await response.json()
+      console.log('✅ AI Worker Response:', result)
+      
+      // Mark as AI-available if we got a successful response
+      return {
+        ...result,
+        fallback: false,
+        aiAvailable: true
+      }
+    } else {
+      console.error('❌ AI Worker returned error status:', response.status, response.statusText)
+      const errorText = await response.text()
+      console.error('❌ AI Worker error details:', errorText)
+    }
+  } catch (error) {
+    console.error('❌ AI Worker request failed:', error)
+    console.error('❌ Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    })
+  }
+
+  console.log('🔄 Falling back to keyword-based analysis')
+  
+  // Fallback analysis
+  return createFallbackAnalysis({ 
+    name, 
+    email: 'user@example.com', // Default email for fallback
+    company, 
+    subject, 
+    message,
+    consent: true // Default consent for fallback
+  })
+}
+
+// Enhanced fallback analysis when AI fails
 const createFallbackAnalysis = (formData: ContactFormData): AIAnalysisResult => {
   const messageLower = formData.message.toLowerCase()
   const subjectLower = formData.subject.toLowerCase()
   
-  // Simple keyword-based fallback analysis
-  const hasUrgentKeywords = /urgent|asap|immediately|emergency|critical|deadline|rush/i.test(messageLower + ' ' + subjectLower)
-  const hasProjectKeywords = /project|development|implementation|integration|migration|modernization|strategy|planning/i.test(messageLower)
-  const hasTechnicalKeywords = /technical|architecture|system|platform|api|database|infrastructure|devops/i.test(messageLower)
+  // Enhanced keyword-based analysis
+  const hasUrgentKeywords = /urgent|asap|immediately|emergency|critical|deadline|rush|priority/i.test(messageLower + ' ' + subjectLower)
+  const hasProjectKeywords = /project|development|implementation|integration|migration|modernization|strategy|planning|consultation/i.test(messageLower)
+  const hasTechnicalKeywords = /technical|architecture|system|platform|api|database|infrastructure|devops|automation/i.test(messageLower)
+  const hasMeetingKeywords = /meet|schedule|call|discussion|conversation|consultation|review|planning/i.test(messageLower)
+  const hasSimpleKeywords = /quick|simple|basic|question|inquiry|information|help/i.test(messageLower)
   
   let inquiryType: AIAnalysisResult['inquiryType'] = 'general'
   let priorityLevel: AIAnalysisResult['priorityLevel'] = 'medium'
+  let messageType: AIAnalysisResult['messageType'] = 'message'
   let shouldScheduleMeeting = false
   let meetingDuration: AIAnalysisResult['meetingDuration'] = '1 hour'
+  let urgency: AIAnalysisResult['urgency'] = 'flexible'
+  let projectScope: AIAnalysisResult['projectScope'] = 'medium'
   
+  // Determine inquiry type and priority
   if (hasUrgentKeywords) {
     priorityLevel = 'high'
     inquiryType = 'urgent'
+    urgency = 'immediate'
     shouldScheduleMeeting = true
     meetingDuration = '2 hours'
   } else if (hasProjectKeywords && hasTechnicalKeywords) {
@@ -62,36 +196,99 @@ const createFallbackAnalysis = (formData: ContactFormData): AIAnalysisResult => 
     priorityLevel = 'medium'
     shouldScheduleMeeting = true
     meetingDuration = '1.5 hours'
+    projectScope = 'large'
   } else if (hasProjectKeywords) {
     inquiryType = 'project'
     shouldScheduleMeeting = true
     meetingDuration = '1 hour'
+    projectScope = 'medium'
+  } else if (hasMeetingKeywords) {
+    inquiryType = 'consultation'
+    messageType = 'meeting-request'
+    shouldScheduleMeeting = true
+    meetingDuration = '1 hour'
+  } else if (hasSimpleKeywords) {
+    inquiryType = 'general'
+    messageType = 'message'
+    shouldScheduleMeeting = false
+    meetingDuration = '30 minutes'
+    projectScope = 'small'
   }
+  
+  // Generate contextual follow-up questions
+  const followUpQuestions = generateFollowUpQuestions(messageLower, inquiryType)
   
   return {
     inquiryType,
     priorityLevel,
-    industry: 'other',
-    projectScope: 'medium',
-    urgency: hasUrgentKeywords ? 'immediate' : 'flexible',
+    industry: 'other', // Will be set by industry identification
+    projectScope,
+    urgency,
+    messageType,
     suggestedResponse: `Thank you for reaching out, ${formData.name}! I've received your inquiry about "${formData.subject}" and I'm looking forward to discussing how I can help with your project.`,
     meetingDuration,
     relevantContent: ['general portfolio'],
-    confidence: 0.6, // Lower confidence for fallback
+    confidence: 0.6,
     shouldScheduleMeeting,
     meetingType: shouldScheduleMeeting ? 'general-discussion' : 'consultation',
     recommendedTimeSlots: ['morning', 'afternoon'],
     timezoneConsideration: 'user\'s local timezone',
+    userTimezone: getUserTimezone(),
     followUpRequired: shouldScheduleMeeting,
     redFlags: [],
-    followUps: [],
+    followUpQuestions,
     timestamp: new Date().toISOString(),
     originalMessage: formData.message.substring(0, 200) + (formData.message.length > 200 ? '...' : ''),
     wordCount: formData.message.split(' ').length,
     hasCompany: !!formData.company,
     emailDomain: formData.email.split('@')[1] || 'unknown',
-    fallback: true
+    fallback: true,
+    aiAvailable: false
   }
+}
+
+// Generate contextual follow-up questions
+function generateFollowUpQuestions(message: string, inquiryType: string): string[] {
+  const questions: string[] = []
+  
+  // Analyze what information is missing
+  const hasTimeline = /timeline|deadline|schedule|when|time|duration|timeline/i.test(message)
+  const hasTeamSize = /team|team size|developers|staff|people|employees|users|organization/i.test(message)
+  const hasBudget = /budget|cost|price|investment|funding|financial|expense/i.test(message)
+  const hasTechnicalDetails = /technology|tech stack|framework|platform|api|database|infrastructure|system/i.test(message)
+  const hasBusinessContext = /business|company|industry|sector|market|customers|clients/i.test(message)
+  const hasSpecificGoals = /goals|objectives|outcomes|results|success|metrics|kpis|targets/i.test(message)
+  const hasStakeholders = /stakeholders|decision makers|leadership|management|executives/i.test(message)
+  
+  // Ask about missing critical information based on inquiry type
+  if (inquiryType === 'project') {
+    if (!hasTimeline) questions.push("What's your timeline for this project?")
+    if (!hasTeamSize) questions.push("How large is your team or organization?")
+    if (!hasBudget) questions.push("What's your budget range for this project?")
+    if (!hasTechnicalDetails) questions.push("What technologies or platforms are you currently using?")
+    if (!hasSpecificGoals) questions.push("What specific outcomes are you looking to achieve?")
+  } else if (inquiryType === 'consultation') {
+    if (!hasBusinessContext) questions.push("What industry or business context should I understand?")
+    if (!hasSpecificGoals) questions.push("What specific challenge are you facing?")
+    if (!hasStakeholders) questions.push("Who are the key stakeholders involved?")
+  } else if (inquiryType === 'urgent') {
+    if (!hasTimeline) questions.push("What's the urgency timeline for this request?")
+    if (!hasSpecificGoals) questions.push("What immediate outcome do you need?")
+    questions.push("How can I best help you address this urgent need?")
+  } else {
+    // General inquiry
+    if (!hasBusinessContext) questions.push("What industry or business context should I understand?")
+    if (!hasSpecificGoals) questions.push("What specific challenge are you facing?")
+    questions.push("How can I best help you achieve your goals?")
+  }
+  
+  // Ensure we have at least 2 questions
+  if (questions.length < 2) {
+    questions.push("What specific challenge are you facing?")
+    questions.push("How can I best help you achieve your goals?")
+  }
+  
+  return questions.slice(0, 5) // Limit to 5 questions
 }
 
 // Retry function with exponential backoff
@@ -103,154 +300,259 @@ const retryWithBackoff = async <T>(
   try {
     return await fn()
   } catch (error) {
-    if (maxRetries <= 0) {
+    if (maxRetries === 0) {
       throw error
     }
     
+    console.log(`🔄 Retrying... (${maxRetries} attempts left)`)
     await new Promise(resolve => setTimeout(resolve, delay))
     
     return retryWithBackoff(fn, maxRetries - 1, delay * 2)
   }
 }
 
-// Enhanced AI analysis with security features
+// Enhanced AI analysis with all new features
 export const analyzeContactForm = async (formData: ContactFormData): Promise<AIAnalysisResult | null> => {
   try {
-    // Validate consent before proceeding
-    if (!formData.consent) {
-      throw new AIAnalysisError(
-        'Explicit consent is required for AI analysis. Please check the consent checkbox.',
-        'CONSENT_REQUIRED'
-      )
-    }
-
     // Validate required fields
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       throw new AIAnalysisError(
-        'All required fields must be completed before AI analysis.',
+        'Missing required fields: name, email, subject, and message are required.',
         'VALIDATION_ERROR'
       )
     }
 
+    // Check consent
+    if (!formData.consent) {
+      throw new AIAnalysisError(
+        'Consent is required for AI analysis.',
+        'CONSENT_REQUIRED'
+      )
+    }
+
+    // Check honeypot (spam prevention)
+    if (formData.honeypot && formData.honeypot.trim() !== '') {
+      throw new AIAnalysisError(
+        'Invalid submission detected.',
+        'VALIDATION_ERROR'
+      )
+    }
+
+    // Get user timezone
+    const userTimezone = getUserTimezone()
+
     // Try AI analysis with retry logic
-    const result = await retryWithBackoff(async () => {
-      const response = await fetch(AI_WORKER_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          company: formData.company || '',
-          subject: formData.subject,
-          message: formData.message,
-          consent: 'true', // Explicit consent
-          honeypot: formData.honeypot || '' // Hidden field for spam prevention
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-        
-        // Handle specific error types
-        if (response.status === 429) {
-          throw new AIAnalysisError(
-            'Rate limit exceeded. Please wait a moment before trying again.',
-            'RATE_LIMIT'
-          )
-        }
-        
-        if (errorData.error?.includes('consent')) {
-          throw new AIAnalysisError(
-            'Consent is required for AI analysis.',
-            'CONSENT_REQUIRED'
-          )
-        }
-        
-        if (errorData.error?.includes('validation')) {
-          throw new AIAnalysisError(
-            errorData.error || 'Validation error occurred.',
-            'VALIDATION_ERROR'
-          )
-        }
-        
-        throw new AIAnalysisError(
-          errorData.error || `AI analysis failed with status ${response.status}`,
-          'AI_UNAVAILABLE'
-        )
-      }
-
-      const rawResult = await response.json()
+    const analysis = await retryWithBackoff(async () => {
+      const result = await analyzeMessageContent(
+        formData.name,
+        formData.company || '',
+        formData.subject,
+        formData.message
+      )
       
-      // Validate the response using Zod schema
-      return safeValidateAIAnalysis(rawResult)
+      if (result) {
+        // Add timezone information
+        result.userTimezone = userTimezone
+        
+        // Validate the response using Zod schema
+        return safeValidateAIAnalysis(result)
+      } else {
+        throw new Error('AI analysis returned null')
+      }
     })
 
-    return result
+    // If AI analysis succeeded, try industry identification
+    if (analysis && !analysis.fallback) {
+      try {
+        const industry = await identifyIndustry(formData.company || '', formData.message)
+        // Type assertion to ensure industry is valid
+        analysis.industry = industry as AIAnalysisResult['industry']
+      } catch (error) {
+        console.warn('Industry identification failed:', error)
+        // Keep the industry from AI analysis or default to 'other'
+      }
+    }
+
+    return analysis
 
   } catch (error) {
     // Handle specific error types
     if (error instanceof AIAnalysisError) {
-      // Re-throw AI-specific errors
+      console.error('AI Analysis Error:', error.message, error.code)
       throw error
     }
-    
+
     // For other errors, return fallback analysis
     console.warn('AI analysis failed, using fallback:', error)
-    return createFallbackAnalysis(formData)
+    const fallbackAnalysis = createFallbackAnalysis(formData)
+    
+    // Try industry identification even in fallback mode
+    try {
+      const industry = await identifyIndustry(formData.company || '', formData.message)
+      // Type assertion to ensure industry is valid
+      fallbackAnalysis.industry = industry as AIAnalysisResult['industry']
+    } catch (error) {
+      console.warn('Industry identification failed in fallback mode:', error)
+    }
+    
+    return fallbackAnalysis
   }
 }
 
 // Get priority color for UI display
 export const getPriorityColor = (priority: string): string => {
   switch (priority) {
-    case 'high': return 'bg-red-100 text-red-800 border-red-200'
-    case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-    case 'low': return 'bg-green-100 text-green-800 border-green-200'
-    default: return 'bg-gray-100 text-gray-800 border-gray-200'
-  }
-}
-
-// Get inquiry type icon
-export const getInquiryTypeIcon = (type: string): string => {
-  switch (type) {
-    case 'consultation': return '💼'
-    case 'project': return '🚀'
-    case 'partnership': return '🤝'
-    case 'urgent': return '⚡'
-    default: return '📧'
+    case 'high':
+      return 'bg-red-100 text-red-800 border-red-200'
+    case 'medium':
+      return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+    case 'low':
+      return 'bg-green-100 text-green-800 border-green-200'
+    default:
+      return 'bg-gray-100 text-gray-800 border-gray-200'
   }
 }
 
 // Get urgency indicator
 export const getUrgencyIndicator = (urgency: string): string => {
   switch (urgency) {
-    case 'immediate': return '🔴'
-    case 'soon': return '🟡'
-    default: return '🟢'
+    case 'immediate':
+      return '🔴'
+    case 'urgent':
+      return '🟠'
+    case 'flexible':
+      return '🟢'
+    default:
+      return '⚪'
+  }
+}
+
+// Get message type indicator
+export const getMessageTypeIndicator = (messageType: string): string => {
+  switch (messageType) {
+    case 'meeting-request': return '📅'
+    case 'message': return '💬'
+    default: return '📧'
   }
 }
 
 // Get red flag indicator
-export const getRedFlagIndicator = (redFlags: string[]): string => {
-  if (redFlags.length === 0) return ''
-  if (redFlags.length === 1) return '⚠️'
-  return '🚨'
-}
-
-// Format red flags for display
 export const formatRedFlags = (redFlags: string[]): string[] => {
   return redFlags.map(flag => {
-    switch (flag) {
-      case 'suspicious_content_detected':
-        return 'Suspicious content detected'
-      case 'rate_limit_exceeded':
-        return 'Rate limit exceeded'
-      case 'consent_required':
-        return 'Consent required'
-      default:
-        return flag.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
-    }
+    if (flag.includes('suspicious')) return '🚨 Suspicious activity detected'
+    if (flag.includes('spam')) return '📧 Potential spam content'
+    if (flag.includes('malicious')) return '⚠️ Malicious content detected'
+    return `⚠️ ${flag}`
   })
+}
+
+// Test AI Worker connectivity
+export async function testAIWorker(): Promise<{ success: boolean; error?: string; details?: unknown }> {
+  try {
+    console.log('🧪 Testing AI Worker connectivity...')
+    console.log('📍 Worker URL:', AI_WORKER_ENDPOINT)
+    console.log('🌐 Environment:', import.meta.env.PROD ? 'Production' : 'Development')
+    console.log('🔒 CORS Mode:', 'cors')
+    
+    const testData = {
+      name: 'Test User',
+      email: 'test@example.com',
+      company: 'Test Company',
+      subject: 'Test Subject',
+      message: 'This is a test message to check if the AI worker is working properly.',
+      consent: 'true'
+    }
+    
+    console.log('📤 Sending test data:', testData)
+    
+    // Test with different fetch options
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(testData),
+      mode: 'cors' as RequestMode,
+      cache: 'no-cache' as RequestCache,
+    }
+    
+    console.log('📡 Fetch options:', fetchOptions)
+    
+    const response = await fetch(AI_WORKER_ENDPOINT, fetchOptions)
+    
+    console.log('📡 Test Response Status:', response.status, response.statusText)
+    console.log('📡 Response Headers:', Object.fromEntries(response.headers.entries()))
+    
+    if (response.ok) {
+      const result = await response.json()
+      console.log('✅ AI Worker Test Successful:', result)
+      return { 
+        success: true, 
+        details: { status: response.status, result } 
+      }
+    } else {
+      let errorText = 'Unknown error'
+      try {
+        errorText = await response.text()
+      } catch (e) {
+        console.warn('Could not read error response:', e)
+      }
+      
+      console.error('❌ AI Worker Test Failed:', response.status, errorText)
+      console.error('❌ Response Headers:', Object.fromEntries(response.headers.entries()))
+      
+      return { 
+        success: false, 
+        error: `HTTP ${response.status}: ${errorText}`,
+        details: { 
+          status: response.status, 
+          statusText: response.statusText,
+          error: errorText,
+          headers: Object.fromEntries(response.headers.entries())
+        }
+      }
+    }
+  } catch (error) {
+    console.error('❌ AI Worker Test Error:', error)
+    
+    // More detailed error information
+    let errorDetails = {
+      message: 'Unknown error',
+      name: 'Unknown',
+      stack: undefined as string | undefined
+    }
+    
+    if (error instanceof Error) {
+      errorDetails = {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      }
+    } else if (error instanceof TypeError) {
+      errorDetails = {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      }
+    }
+    
+    console.error('❌ Error details:', errorDetails)
+    
+    // Check if it's a CORS issue
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      console.error('❌ This looks like a CORS or network issue')
+      console.error('❌ Check if the worker is running and accessible')
+    }
+    
+    return { 
+      success: false, 
+      error: errorDetails.message,
+      details: { 
+        error: errorDetails,
+        workerUrl: AI_WORKER_ENDPOINT,
+        environment: import.meta.env.PROD ? 'Production' : 'Development'
+      }
+    }
+  }
 }

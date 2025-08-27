@@ -2,9 +2,18 @@ name = "tanstack-portfolio-email-worker"
 main = "functions/send-email.js"
 compatibility_date = "2024-01-01"
 
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+
 # Environment-specific configurations
 [env.production]
-# Production environment - no additional config needed
+# Production environment - uses main worker
 
 [env.development]
-# Development environment - no additional config needed
+# Development environment - uses same production worker
+# This allows dev to use the live production worker
+
+# Enable logging for all environments
+[observability.logs]
+enabled = true

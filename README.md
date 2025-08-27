@@ -19,7 +19,7 @@ npm run build
 
 ## ✨ Key Features
 
-- **🤖 AI-Powered Assistant** - Site-wide intelligent recommendations and insights
+- **🤖 Smart Content Recommendations** - Tag-based content suggestions and insights
 - **🔐 Enterprise Authentication** - Cloudflare Access with Zero Trust security
 - **📧 Smart Contact System** - AI-analyzed contact form with meeting scheduling
 - **📧 Blog Newsletter** - Functional newsletter signups with email confirmations
@@ -106,7 +106,7 @@ src/
 ## 🌟 AI Features in Action
 
 ### **Site Assistant**
-- **Intelligent Recommendations**: AI-powered suggestions based on user queries
+- **Smart Content Recommendations**: Tag-based suggestions based on content relevance
 - **Content Discovery**: Helps users find relevant portfolio sections and blog posts
 - **Smart Navigation**: Suggests appropriate pages and contact methods
 - **Confidence Scoring**: Each recommendation includes reliability metrics
@@ -119,7 +119,7 @@ src/
 
 ### **Search Enhancement**
 - **Fuzzy Search**: Typo-tolerant search with Fuse.js
-- **AI Recommendations**: Smart content suggestions based on search patterns
+- **Smart Recommendations**: Content suggestions based on tags and relevance
 - **Relevance Scoring**: Advanced algorithms for better search results
 
 ## 🔧 Configuration

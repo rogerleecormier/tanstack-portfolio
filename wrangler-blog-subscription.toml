@@ -8,12 +8,14 @@ binding = "BLOG_SUBSCRIPTIONS"
 id = "6d69753cb29f41e6a00b9fab9e301018"  # Production KV namespace ID
 preview_id = "6d69753cb29f41e6a00b9fab9e301018"  # Preview KV namespace ID
 
-# Environment-specific configurations
+# Production environment
 [env.production]
-# Production environment - RESEND_KEY should be set as a secret
+# Production environment - uses main worker
 
+# Development environment
 [env.development]
-# Development environment - can use local .dev.vars file
+# Development environment - uses same production worker
+# This allows dev to use the live production worker
 # Create a .dev.vars file with: RESEND_KEY=your_api_key_here
 
 # Add Resend API key as a secret
@@ -22,3 +24,7 @@ preview_id = "6d69753cb29f41e6a00b9fab9e301018"  # Preview KV namespace ID
 # Environment variables
 # RESEND_KEY is stored as a secret, not as a plaintext variable
 # To set it: wrangler secret put RESEND_KEY --config wrangler-blog-subscription.toml
+
+# Enable logging for all environments
+[observability.logs]
+enabled = true

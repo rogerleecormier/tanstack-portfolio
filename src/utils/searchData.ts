@@ -140,5 +140,137 @@ export const searchData: SearchItem[] = [
     section: 'Education',
     headings: [],
     contentType: 'portfolio'
+  },
+  // Blog Posts
+  {
+    id: 'military-leadership-be-know-do',
+    title: 'Military Leadership: Be, Know, Do',
+    description: 'How military leadership principles translate to technical project management',
+    content: 'military leadership be know do principles technical project management army leadership',
+    url: '/blog/military-leadership-be-know-do',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'pmp-digital-transformation-leadership',
+    title: 'PMP Digital Transformation Leadership',
+    description: 'PMP certification insights for digital transformation leadership',
+    content: 'PMP certification digital transformation leadership project management',
+    url: '/blog/pmp-digital-transformation-leadership',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'internal-ethos-high-performing-organizations',
+    title: 'Internal Ethos: High-Performing Organizations',
+    description: 'Building high-performing organizations through internal ethos',
+    content: 'internal ethos high performing organizations culture leadership',
+    url: '/blog/internal-ethos-high-performing-organizations',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'digital-transformation-strategy-governance',
+    title: 'Digital Transformation Strategy & Governance',
+    description: 'Strategic approach to digital transformation with proper governance',
+    content: 'digital transformation strategy governance PMO project management',
+    url: '/blog/digital-transformation-strategy-governance',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'asana-ai-status-reporting',
+    title: 'Asana AI Status Reporting',
+    description: 'Leveraging AI for automated status reporting in Asana',
+    content: 'Asana AI status reporting automation project management',
+    url: '/blog/asana-ai-status-reporting',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'serverless-ai-workflows-azure-functions',
+    title: 'Serverless AI Workflows with Azure Functions',
+    description: 'Building AI-powered workflows using Azure Functions',
+    content: 'serverless AI workflows Azure Functions automation',
+    url: '/blog/serverless-ai-workflows-azure-functions',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'pmbok-agile-methodology-blend',
+    title: 'PMBOK & Agile Methodology Blend',
+    description: 'Combining PMBOK principles with Agile methodologies',
+    content: 'PMBOK agile methodology blend project management',
+    url: '/blog/pmbok-agile-methodology-blend',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'ramp-agents-ai-finance-operations',
+    title: 'Ramp Agents: AI Finance Operations',
+    description: 'AI-powered finance operations using Ramp',
+    content: 'Ramp agents AI finance operations automation',
+    url: '/blog/ramp-agents-ai-finance-operations',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'power-automate-workflow-automation',
+    title: 'Power Automate Workflow Automation',
+    description: 'Microsoft Power Automate for workflow automation',
+    content: 'Power Automate workflow automation Microsoft',
+    url: '/blog/power-automate-workflow-automation',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  {
+    id: 'mkdocs-github-actions-portfolio',
+    title: 'MkDocs & GitHub Actions Portfolio',
+    description: 'Building a portfolio with MkDocs and GitHub Actions',
+    content: 'MkDocs GitHub Actions portfolio documentation',
+    url: '/blog/mkdocs-github-actions-portfolio',
+    section: 'Blog',
+    headings: [],
+    contentType: 'blog'
+  },
+  // Projects
+  {
+    id: 'project-analysis',
+    title: 'Project Analysis Framework',
+    description: 'Comprehensive project analysis and evaluation framework',
+    content: 'project analysis framework evaluation methodology',
+    url: '/project-analysis',
+    section: 'Projects',
+    headings: [],
+    contentType: 'project'
+  },
+  {
+    id: 'risk-compliance',
+    title: 'Risk & Compliance Management',
+    description: 'Risk management and compliance framework implementation',
+    content: 'risk compliance management framework governance',
+    url: '/risk-compliance',
+    section: 'Projects',
+    headings: [],
+    contentType: 'project'
+  },
+  {
+    id: 'governance-pmo',
+    title: 'Governance & PMO Setup',
+    description: 'Project Management Office and governance structure',
+    content: 'governance PMO project management office setup',
+    url: '/governance-pmo',
+    section: 'Projects',
+    headings: [],
+    contentType: 'project'
   }
 ]

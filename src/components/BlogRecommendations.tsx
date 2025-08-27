@@ -1,48 +1,39 @@
-import { useState, useEffect, useCallback } from 'react'
-import { Link } from '@tanstack/react-router'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Separator } from '@/components/ui/separator'
 import { 
-  Sparkles, 
-  ArrowRight, 
-  Briefcase, 
-  Lightbulb,
-  RefreshCw,
-  AlertCircle,
-  Tags,
-  TrendingUp
+  TrendingUp,
+  CheckCircle,
+  MessageSquare,
+  Building,
+  Target
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { smartRecommendationsService, PortfolioItem } from '@/api/smartRecommendationsService'
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { smartRecommendationsService, type ContentItem } from '@/api/smartRecommendationsService'
 
 interface BlogRecommendationsProps {
   blogContent: string
   blogTitle: string
-  blogTags?: string[]
+  blogTags: string[]
   className?: string
-  variant?: 'sidebar' | 'inline'
 }
 
-export default function BlogRecommendations({ 
+export function BlogRecommendations({ 
   blogContent, 
   blogTitle, 
-  blogTags = [], 
-  className,
-  variant = 'inline'
+  blogTags, 
+  className 
 }: BlogRecommendationsProps) {
-  const [recommendations, setRecommendations] = useState<PortfolioItem[]>([])
+  const [relevantContent, setRelevantContent] = useState<ContentItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [hasLoaded, setHasLoaded] = useState(false)
 
-  const fetchRecommendations = useCallback(async () => {
+  const searchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+
+  // Smart content recommendations function
+  const getContentRecommendations = useCallback(async () => {
     if (!blogContent || !blogTitle) return
-    
+
     setIsLoading(true)
-    setError(null)
-    
     try {
       const response = await smartRecommendationsService.getRecommendations({
         content: blogContent,
@@ -51,309 +42,231 @@ export default function BlogRecommendations({
       })
       
       if (response.success && response.recommendations) {
-        // Ensure we have exactly 2 unique recommendations
-        const uniqueRecommendations = response.recommendations.filter((rec, index, arr) => 
-          arr.findIndex(r => r.id === rec.id) === index
-        ).slice(0, 2)
-        
-        setRecommendations(uniqueRecommendations)
-        setHasLoaded(true)
+        setRelevantContent(response.recommendations)
       } else {
-        throw new Error(response.error || 'Failed to get recommendations')
+        // Fallback to static content items
+        const fallbackItems = await smartRecommendationsService.getAllContentItems()
+        setRelevantContent(fallbackItems.slice(0, 4))
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch recommendations')
+    } catch (error) {
+      console.warn('Smart recommendations failed, using fallback:', error)
+      // Fallback to static content items
+      const fallbackItems = await smartRecommendationsService.getAllContentItems()
+      setRelevantContent(fallbackItems.slice(0, 4))
     } finally {
       setIsLoading(false)
     }
   }, [blogContent, blogTitle, blogTags])
 
+  // Debounced content recommendations
   useEffect(() => {
-    if (!hasLoaded && blogContent && blogTitle) {
-      fetchRecommendations()
+    if (blogContent && blogTitle) {
+      // Clear existing timeout
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+      
+      // Set new timeout for debounced search
+      searchTimeoutRef.current = setTimeout(() => {
+        getContentRecommendations()
+      }, 500)
     }
-  }, [blogContent, blogTitle, hasLoaded, fetchRecommendations])
+    
+    // Cleanup timeout on unmount
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [blogContent, blogTitle, blogTags, getContentRecommendations])
 
-  // Get confidence color based on smart-calculated confidence
-  const getConfidenceColor = (confidence: number): string => {
-    if (confidence >= 0.9) return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-700'
-    if (confidence >= 0.8) return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700'
-    if (confidence >= 0.7) return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900 dark:text-yellow-200 dark:border-yellow-700'
-    return 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700'
-  }
-
-  // Loading skeleton
   if (isLoading) {
     return (
-      <div className={cn("space-y-4", variant === 'sidebar' ? "w-full" : "space-y-6", className)}>
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-teal-600" />
-          <h3 className="text-lg font-semibold">Portfolio Page Recommendations</h3>
-        </div>
-        <div className={cn("space-y-4", variant === 'sidebar' ? "" : "grid grid-cols-1 md:grid-cols-2 gap-6")}>
-          {Array.from({ length: 2 }).map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <Skeleton className="h-5 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </div>
-                  <Skeleton className="h-6 w-16" />
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-2/3" />
-                <Skeleton className="h-8 w-full" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className={cn("space-y-4", variant === 'sidebar' ? "w-full" : "space-y-4", className)}>
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-teal-600" />
-          <h3 className="text-lg font-semibold">Portfolio Page Recommendations</h3>
-        </div>
-        <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
-          <CardContent className="pt-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-red-800 dark:text-red-200">
-                  Failed to load recommendations
-                </p>
-                <p className="text-xs text-red-700 dark:text-red-300">
-                  {error}
-                </p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={fetchRecommendations}
-                  className="text-red-700 border-red-300 hover:bg-red-100 dark:text-red-300 dark:border-red-600 dark:hover:bg-red-900"
-                >
-                  <RefreshCw className="h-3 w-3 mr-2" />
-                  Try Again
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  // Sidebar variant - more compact
-  if (variant === 'sidebar') {
-    return (
-      <div className={cn("space-y-4", className)}>
-        {/* Header */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900">
-            <Sparkles className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-blue-600" />
+            Finding Related Content...
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="animate-pulse space-y-3">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">Portfolio Page Recommendations</h3>
-            <p className="text-xs text-muted-foreground">Related expertise areas</p>
-          </div>
-        </div>
-
-        {/* Recommendations List */}
-        <div className="space-y-3">
-          {recommendations.slice(0, 2).map((recommendation) => (
-            <Card 
-              key={recommendation.id} 
-              className="group hover:shadow-md transition-all duration-200 border-l-4 border-l-teal-500 hover:border-l-teal-600"
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-sm font-semibold group-hover:text-teal-700 transition-colors mb-1 line-clamp-2">
-                      {recommendation.title}
-                    </CardTitle>
-                    <CardDescription className="text-xs text-muted-foreground">
-                      {recommendation.category}
-                    </CardDescription>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <Badge 
-                      variant="outline" 
-                      className={cn("text-xs font-medium", getConfidenceColor(recommendation.confidence || 0.7))}
-                    >
-                      {Math.round((recommendation.confidence || 0.7) * 100)}% match
-                    </Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">
-                  {recommendation.description}
-                </p>
-                
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {recommendation.tags.slice(0, 3).map((tag) => (
-                    <Badge 
-                      key={tag} 
-                      variant="secondary" 
-                      className="text-xs px-2 py-0.5 font-medium bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100 dark:bg-teal-950 dark:text-teal-300 dark:border-teal-800"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Action Button */}
-                <Link to={recommendation.url} className="block">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full text-xs group-hover:border-teal-300 group-hover:text-teal-700 group-hover:bg-teal-50 dark:group-hover:bg-teal-950 transition-all duration-200"
-                  >
-                    <Briefcase className="h-3 w-3 mr-1" />
-                    Explore
-                    <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-0.5 transition-transform" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Footer */}
-        <div className="text-center pt-3 border-t border-border">
-          <p className="text-xs text-muted-foreground">
-            Smart matching based on content analysis
-          </p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     )
   }
 
-  // Inline variant - full width with grid
+  if (relevantContent.length === 0) {
+    return null
+  }
+
   return (
-    <div className={cn("space-y-6", className)}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900">
-            <Sparkles className="h-5 w-5 text-teal-600 dark:text-teal-400" />
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold text-foreground">Portfolio Page Recommendations</h3>
-            <p className="text-sm text-muted-foreground">Discover related portfolio expertise</p>
-          </div>
-          <Badge variant="secondary" className="text-xs ml-2">
-            <Lightbulb className="h-3 w-3 mr-1" />
-            Smart Match
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <MessageSquare className="w-5 h-5 text-blue-600" />
+          Related Content
+          <Badge variant="outline" className="text-xs">
+            {relevantContent.length} recommendations
           </Badge>
-        </div>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={fetchRecommendations}
-          className="text-muted-foreground hover:text-foreground border-dashed"
-        >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
-        </Button>
-      </div>
-
-      {/* Recommendations Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {recommendations.slice(0, 2).map((recommendation) => (
-          <Card 
-            key={recommendation.id} 
-            className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-teal-500 hover:border-l-teal-600"
-          >
-            <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-lg font-semibold group-hover:text-teal-700 transition-colors mb-2">
-                    {recommendation.title}
-                  </CardTitle>
-                  <CardDescription className="text-sm font-medium text-muted-foreground">
-                    {recommendation.category}
-                  </CardDescription>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Content Recommendations */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {relevantContent.map((content, index) => (
+            <a
+              key={index}
+              href={content.url === '/about' ? '/' : content.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block p-4 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-lg transition-colors group"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="font-semibold text-teal-900 group-hover:text-teal-800 text-sm">
+                  {content.title}
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                  <Badge 
-                    variant="outline" 
-                    className={cn("text-xs font-medium", getConfidenceColor(recommendation.confidence || 0.7))}
-                  >
-                    <TrendingUp className="h-3 w-3 mr-1" />
-                    {Math.round((recommendation.confidence || 0.7) * 100)}% match
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">
+                    {content.contentType}
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    {Math.round((content.confidence || 0.7) * 100)}% match
                   </Badge>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-                {recommendation.description}
-              </p>
-              
-              {/* Tags */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Tags className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                    Related Topics
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {recommendation.tags.slice(0, 4).map((tag) => (
-                    <Badge 
-                      key={tag} 
-                      variant="secondary" 
-                      className="text-xs px-2 py-1 font-medium bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100 dark:bg-teal-950 dark:text-teal-300 dark:border-teal-800"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                  {recommendation.tags.length > 4 && (
-                    <Badge 
-                      variant="outline" 
-                      className="text-xs px-2 py-1 font-medium border-dashed"
-                    >
-                      +{recommendation.tags.length - 4} more
-                    </Badge>
-                  )}
-                </div>
+              <div className="text-xs text-teal-700 mb-3">
+                {content.description}
               </div>
+              <div className="flex flex-wrap gap-1">
+                {content.tags.slice(0, 3).map((tag: string) => (
+                  <Badge key={tag} variant="secondary" className="text-xs bg-teal-100 text-teal-800">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </a>
+          ))}
+        </div>
 
-              {/* Action Button */}
-              <Link to={recommendation.url} className="block">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full group-hover:border-teal-300 group-hover:text-teal-700 group-hover:bg-teal-50 dark:group-hover:bg-teal-950 transition-all duration-200"
-                >
-                  <Briefcase className="h-4 w-4 mr-2" />
-                  Explore Portfolio
-                  <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+        {/* Content Type Breakdown */}
+        <Separator />
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <CheckCircle className="w-4 h-4" />
+            Content Type Distribution
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {['portfolio', 'blog', 'project'].map((contentType) => {
+              const count = relevantContent.filter(item => item.contentType === contentType).length
+              if (count === 0) return null
+              
+              return (
+                <div key={contentType} className="text-center p-3 bg-gray-50 rounded-lg">
+                  <div className="text-lg font-semibold text-gray-900">{count}</div>
+                  <div className="text-xs text-gray-600 capitalize">{contentType}</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
 
-      {/* Footer */}
-      <div className="text-center pt-6 border-t border-border">
-        <p className="text-xs text-muted-foreground">
-          Recommendations powered by smart content analysis
-        </p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Tags and content are analyzed to find the most relevant portfolio expertise
-        </p>
-      </div>
-    </div>
+        {/* Category Breakdown */}
+        <Separator />
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <Building className="w-4 h-4" />
+            Top Categories
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {Array.from(new Set(relevantContent.map(item => item.category)))
+              .slice(0, 5)
+              .map((category) => (
+                <Badge key={category} variant="outline" className="text-xs">
+                  {category}
+                </Badge>
+              ))}
+          </div>
+        </div>
+
+        {/* Tag Cloud */}
+        <Separator />
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <Target className="w-4 h-4" />
+            Popular Tags
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {Array.from(
+              new Set(
+                relevantContent.flatMap(item => item.tags)
+              )
+            )
+              .slice(0, 8)
+              .map((tag: string) => (
+                <Badge key={tag} variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                  {tag}
+                </Badge>
+              ))}
+          </div>
+        </div>
+
+        {/* Confidence Distribution */}
+        <Separator />
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <TrendingUp className="w-4 h-4" />
+            Confidence Levels
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {relevantContent
+              .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))
+              .slice(0, 4)
+              .map((content) => (
+                <div key={content.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                  <div className="text-xs font-medium text-gray-700 truncate">
+                    {content.title}
+                  </div>
+                  <Badge variant="outline" className="text-xs ml-2">
+                    {Math.round((content.confidence || 0.7) * 100)}%
+                  </Badge>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {/* Additional Recommendations */}
+        {relevantContent.length >= 4 && (
+          <>
+            <Separator />
+            <div className="text-center">
+              <p className="text-xs text-gray-600 mb-2">
+                Want to see more related content?
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {relevantContent.slice(4, 6).map((content) => (
+                  <a
+                    key={content.id}
+                    href={content.url === '/about' ? '/' : content.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-700 hover:underline"
+                  >
+                    <span>{content.title}</span>
+                    <Badge variant="outline" className="text-xs">
+                      {content.contentType}
+                    </Badge>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </CardContent>
+    </Card>
   )
 }

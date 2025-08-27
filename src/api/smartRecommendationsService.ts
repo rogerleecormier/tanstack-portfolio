@@ -1,7 +1,7 @@
-// Smart Tag-Based Recommendations Service
-// Replaces AI workers with efficient tag matching and content analysis
+// Smart Content-Based Recommendations Service
+// Reads from content front matter for dynamic recommendations
 
-export interface PortfolioItem {
+export interface ContentItem {
   id: string
   title: string
   description: string
@@ -10,49 +10,56 @@ export interface PortfolioItem {
   url: string
   keywords?: string[]
   confidence?: number
+  contentType: 'blog' | 'portfolio' | 'project'
+  frontMatter?: Record<string, unknown>
 }
 
-export interface BlogRecommendationsRequest {
+export interface ContentRecommendationsRequest {
   content: string
   title: string
   tags?: string[]
+  contentType?: 'blog' | 'portfolio' | 'project'
 }
 
-export interface BlogRecommendationsResponse {
+export interface ContentRecommendationsResponse {
   success: boolean
-  recommendations: PortfolioItem[]
+  recommendations: ContentItem[]
   error?: string
   timestamp: string
 }
 
-// Portfolio data - Simplified with 6 consistent categories
-const PORTFOLIO_ITEMS: Omit<PortfolioItem, 'confidence'>[] = [
+// Content data from front matter - simplified approach
+const CONTENT_ITEMS: ContentItem[] = [
+  // Portfolio content
   {
-    id: 'strategy-consulting',
+    id: 'strategy',
     title: 'Strategy & Consulting',
     description: 'Strategic planning, digital transformation, and organizational consulting to drive sustainable growth and competitive advantage.',
     tags: ['strategy', 'consulting', 'digital-transformation', 'planning', 'growth', 'business', 'roadmap', 'vision'],
     category: 'Strategy & Consulting',
     url: '/strategy',
-    keywords: ['planning', 'transformation', 'growth', 'competitive', 'advantage', 'roadmap']
+    keywords: ['planning', 'transformation', 'growth', 'competitive', 'advantage', 'roadmap'],
+    contentType: 'portfolio'
   },
   {
-    id: 'leadership-culture',
+    id: 'leadership',
     title: 'Leadership & Culture',
     description: 'Building high-performing teams through strategic leadership, cultural transformation, and organizational development.',
     tags: ['leadership', 'culture', 'team-building', 'organizational-development', 'change-management', 'management', 'governance'],
     category: 'Leadership & Culture',
     url: '/leadership',
-    keywords: ['team', 'organization', 'culture', 'change', 'transformation', 'governance']
+    keywords: ['team', 'organization', 'culture', 'change', 'transformation', 'governance'],
+    contentType: 'portfolio'
   },
   {
-    id: 'technology-operations',
+    id: 'technology',
     title: 'Technology & Operations',
     description: 'Technology strategy, DevOps implementation, infrastructure automation, and operational excellence to accelerate delivery and improve reliability.',
     tags: ['technology', 'operations', 'devops', 'infrastructure', 'automation', 'reliability', 'digital', 'platform'],
     category: 'Technology & Operations',
     url: '/technology',
-    keywords: ['development', 'operations', 'infrastructure', 'automation', 'delivery', 'platform']
+    keywords: ['development', 'operations', 'infrastructure', 'automation', 'delivery', 'platform'],
+    contentType: 'portfolio'
   },
   {
     id: 'ai-automation',
@@ -61,16 +68,18 @@ const PORTFOLIO_ITEMS: Omit<PortfolioItem, 'confidence'>[] = [
     tags: ['ai', 'automation', 'machine-learning', 'workflow', 'optimization', 'intelligence', 'artificial-intelligence'],
     category: 'AI & Automation',
     url: '/ai-automation',
-    keywords: ['artificial intelligence', 'machine learning', 'workflow', 'process', 'optimization', 'intelligent']
+    keywords: ['artificial intelligence', 'machine learning', 'workflow', 'process', 'optimization', 'intelligent'],
+    contentType: 'portfolio'
   },
   {
-    id: 'data-analytics',
+    id: 'analytics',
     title: 'Data & Analytics',
     description: 'Data-driven decision making, analytics implementation, and business intelligence to uncover insights and drive growth.',
     tags: ['analytics', 'data', 'business-intelligence', 'insights', 'decision-making', 'metrics', 'reporting'],
     category: 'Data & Analytics',
     url: '/analytics',
-    keywords: ['data', 'insights', 'business intelligence', 'metrics', 'decision', 'reporting']
+    keywords: ['data', 'insights', 'business intelligence', 'metrics', 'decision', 'reporting'],
+    contentType: 'portfolio'
   },
   {
     id: 'risk-compliance',
@@ -79,188 +88,206 @@ const PORTFOLIO_ITEMS: Omit<PortfolioItem, 'confidence'>[] = [
     tags: ['risk', 'compliance', 'governance', 'regulatory', 'protection', 'security', 'audit', 'standards'],
     category: 'Risk & Compliance',
     url: '/risk-compliance',
-    keywords: ['risk management', 'compliance', 'regulatory', 'protection', 'security', 'audit']
+    keywords: ['risk management', 'compliance', 'regulatory', 'protection', 'security', 'audit'],
+    contentType: 'portfolio'
+  },
+  // Blog content
+  {
+    id: 'leadership-blog',
+    title: 'Leadership Development',
+    description: 'Building effective leadership skills and organizational culture for high-performing teams.',
+    tags: ['leadership', 'management', 'culture', 'team-building', 'development'],
+    category: 'Leadership',
+    url: '/blog/leadership',
+    keywords: ['leadership', 'management', 'culture', 'team'],
+    contentType: 'blog'
+  },
+  {
+    id: 'culture-blog',
+    title: 'Organizational Culture',
+    description: 'Creating and sustaining positive organizational cultures that drive success and employee engagement.',
+    tags: ['culture', 'organization', 'engagement', 'values', 'behaviors'],
+    category: 'Culture',
+    url: '/blog/culture',
+    keywords: ['culture', 'organization', 'engagement'],
+    contentType: 'blog'
+  },
+  {
+    id: 'strategy-blog',
+    title: 'Strategic Planning',
+    description: 'Developing and executing strategic initiatives that align with business objectives and drive growth.',
+    tags: ['strategy', 'planning', 'growth', 'business', 'objectives'],
+    category: 'Strategy',
+    url: '/blog/strategy',
+    keywords: ['strategy', 'planning', 'growth'],
+    contentType: 'blog'
+  },
+  {
+    id: 'devops-blog',
+    title: 'DevOps & Automation',
+    description: 'Implementing DevOps practices and automation to improve software delivery and operational efficiency.',
+    tags: ['devops', 'automation', 'ci-cd', 'deployment', 'infrastructure'],
+    category: 'Technology',
+    url: '/blog/devops',
+    keywords: ['devops', 'automation', 'deployment'],
+    contentType: 'blog'
+  },
+  // Project content
+  {
+    id: 'healthbridge',
+    title: 'HealthBridge Project',
+    description: 'Healthcare technology platform development with focus on patient care and system integration.',
+    tags: ['healthcare', 'technology', 'platform', 'integration', 'patient-care'],
+    category: 'Healthcare',
+    url: '/projects/healthbridge',
+    keywords: ['healthcare', 'technology', 'platform'],
+    contentType: 'project'
+  },
+  // Add ERP-related content
+  {
+    id: 'erp-implementation',
+    title: 'ERP Implementation & Integration',
+    description: 'Enterprise Resource Planning system implementation, customization, and integration with existing business processes.',
+    tags: ['erp', 'enterprise', 'implementation', 'integration', 'business-processes', 'systems'],
+    category: 'Technology & Operations',
+    url: '/erp-implementation',
+    keywords: ['erp', 'enterprise', 'implementation', 'integration', 'business processes'],
+    contentType: 'portfolio'
+  },
+  {
+    id: 'erp-blog',
+    title: 'ERP Best Practices',
+    description: 'Best practices for ERP implementation, customization, and optimization for business efficiency.',
+    tags: ['erp', 'best-practices', 'implementation', 'optimization', 'business-efficiency'],
+    category: 'Technology',
+    url: '/blog/erp-best-practices',
+    keywords: ['erp', 'best practices', 'implementation', 'optimization'],
+    contentType: 'blog'
+  },
+  {
+    id: 'erp-project',
+    title: 'ERP Migration Project',
+    description: 'Large-scale ERP migration project involving data migration, process optimization, and user training.',
+    tags: ['erp', 'migration', 'data-migration', 'process-optimization', 'training'],
+    category: 'Technology',
+    url: '/projects/erp-migration',
+    keywords: ['erp', 'migration', 'data migration', 'process optimization'],
+    contentType: 'project'
   }
 ]
 
-// Smart tag matching algorithm - completely rewritten for better relevance
-function calculateRelevanceScore(blogContent: string, blogTitle: string, blogTags: string[], portfolioItem: Omit<PortfolioItem, 'confidence'>): number {
+// Enhanced content matching algorithm with better accuracy
+function calculateContentRelevanceScore(
+  messageContent: string, 
+  messageTitle: string, 
+  messageTags: string[], 
+  contentItem: ContentItem
+): number {
   let score = 0
-  const contentLower = (blogContent + ' ' + blogTitle).toLowerCase()
-  const allPortfolioTags = [...portfolioItem.tags, ...(portfolioItem.keywords || [])]
+  const contentLower = (messageContent + ' ' + messageTitle).toLowerCase()
+  const allContentTags = [...contentItem.tags, ...(contentItem.keywords || [])]
   
-  // 1. Direct tag matches (highest weight - 40%)
-  const tagMatches = blogTags.filter(blogTag => 
-    allPortfolioTags.some(portfolioTag => 
-      portfolioTag.toLowerCase().includes(blogTag.toLowerCase()) ||
-      blogTag.toLowerCase().includes(portfolioTag.toLowerCase())
+  // 1. Exact tag matches (highest weight - 50%)
+  const exactTagMatches = messageTags.filter(messageTag => 
+    allContentTags.some(contentTag => 
+      contentTag.toLowerCase() === messageTag.toLowerCase()
     )
   ).length
   
-  // Normalize tag matches by total blog tags to avoid bias
-  const tagScore = blogTags.length > 0 ? (tagMatches / blogTags.length) * 0.4 : 0
-  score += tagScore
+  const exactTagScore = messageTags.length > 0 ? (exactTagMatches / messageTags.length) * 0.5 : 0
+  score += exactTagScore
   
-  // 2. Content keyword matches (30%) - more sophisticated
+  // 2. Partial tag matches (30%) - more strict matching
+  const partialTagMatches = messageTags.filter(messageTag => 
+    allContentTags.some(contentTag => 
+      contentTag.toLowerCase().includes(messageTag.toLowerCase()) ||
+      messageTag.toLowerCase().includes(contentTag.toLowerCase())
+    )
+  ).length
+  
+  const partialTagScore = messageTags.length > 0 ? (partialTagMatches / messageTags.length) * 0.3 : 0
+  score += partialTagScore
+  
+  // 3. Content keyword matches (20%) - exact matches only
   let keywordMatches = 0
-  for (const tag of allPortfolioTags) {
+  for (const tag of allContentTags) {
     const tagLower = tag.toLowerCase()
-    // Check for exact matches first
+    // Only count exact matches or very close matches
     if (contentLower.includes(tagLower)) {
       keywordMatches += 1
     } else {
-      // Check for partial matches and related terms
+      // Check for word boundaries to avoid false matches
       const tagWords = tagLower.split(/[\s-]+/)
       for (const word of tagWords) {
-        if (word.length > 3 && contentLower.includes(word)) {
-          keywordMatches += 0.5
+        if (word.length > 3) {
+          // Use word boundary matching to avoid partial word matches
+          const wordRegex = new RegExp(`\\b${word}\\b`, 'i')
+          if (wordRegex.test(contentLower)) {
+            keywordMatches += 0.5
+          }
         }
       }
     }
   }
   
-  // Normalize keyword matches by total portfolio tags
-  const keywordScore = allPortfolioTags.length > 0 ? Math.min(keywordMatches / allPortfolioTags.length, 1) * 0.3 : 0
+  const keywordScore = allContentTags.length > 0 ? Math.min(keywordMatches / allContentTags.length, 1) * 0.2 : 0
   score += keywordScore
   
-  // 3. Semantic similarity (20%) - expanded concept mapping
-  let semanticMatches = 0
-  const semanticMappings = {
-    // Technology & Development
-    'technology': ['digital', 'software', 'development', 'engineering', 'automation', 'ai', 'machine learning'],
-    'automation': ['efficiency', 'workflow', 'process', 'streamline', 'optimize', 'ai', 'intelligent'],
-    'ai': ['artificial intelligence', 'machine learning', 'intelligent', 'smart', 'automation', 'neural'],
-    'cloud': ['azure', 'aws', 'serverless', 'scalable', 'infrastructure', 'platform'],
-    'serverless': ['functions', 'scalable', 'event-driven', 'cloud-native', 'microservices'],
-    
-    // Business & Strategy
-    'strategy': ['planning', 'roadmap', 'vision', 'goals', 'objectives', 'direction', 'approach'],
-    'leadership': ['management', 'governance', 'direction', 'decision-making', 'team', 'culture'],
-    'transformation': ['change', 'modernization', 'evolution', 'improvement', 'innovation', 'digital'],
-    'governance': ['compliance', 'risk', 'policies', 'standards', 'oversight', 'management'],
-    
-    // Operations & Processes
-    'operations': ['processes', 'workflows', 'efficiency', 'optimization', 'automation', 'management'],
-    'data': ['analytics', 'insights', 'information', 'metrics', 'reporting', 'intelligence'],
-    'compliance': ['regulatory', 'standards', 'policies', 'risk', 'governance', 'audit'],
-    
-    // People & Culture
-    'talent': ['people', 'hr', 'recruitment', 'development', 'training', 'capability'],
-    'culture': ['values', 'behaviors', 'environment', 'team', 'collaboration', 'engagement']
+  // 4. Content type relevance (small bonus - 2%)
+  const contentTypeBonus = {
+    'portfolio': 0.02,
+    'blog': 0.015,
+    'project': 0.025
   }
   
-  for (const [portfolioTag, relatedTerms] of Object.entries(semanticMappings)) {
-    if (allPortfolioTags.some(tag => tag.toLowerCase().includes(portfolioTag))) {
-      for (const relatedTerm of relatedTerms) {
-        if (contentLower.includes(relatedTerm)) {
-          semanticMatches += 1
-          break // Only count once per portfolio tag
-        }
-      }
-    }
+  score += contentTypeBonus[contentItem.contentType] || 0.01
+  
+  // 5. Content length bonus (small bonus - 1%)
+  if (messageContent.length > 100) {
+    score += 0.01
   }
   
-  // Normalize semantic matches
-  const semanticScore = Math.min(semanticMatches / Math.max(allPortfolioTags.length, 1), 1) * 0.2
-  score += semanticScore
-  
-  // 4. Category relevance (10%) - improved matching
-  const categoryLower = portfolioItem.category.toLowerCase()
-  let categoryScore = 0
-  
-  // Check if blog tags or content relate to the category
-  for (const blogTag of blogTags) {
-    if (categoryLower.includes(blogTag.toLowerCase()) || blogTag.toLowerCase().includes(categoryLower)) {
-      categoryScore = 0.1
-      break
-    }
-  }
-  
-  // Also check content for category-related terms
-  if (categoryScore === 0) {
-    const categoryKeywords = {
-      'Strategy & Consulting': ['strategy', 'consulting', 'planning', 'roadmap', 'vision', 'transformation'],
-      'Leadership & Culture': ['leadership', 'management', 'culture', 'team', 'governance', 'organizational'],
-      'Technology & Operations': ['technology', 'operations', 'automation', 'digital', 'infrastructure', 'devops'],
-      'AI & Automation': ['ai', 'automation', 'intelligent', 'machine learning', 'workflow', 'artificial intelligence'],
-      'Data & Analytics': ['data', 'analytics', 'insights', 'metrics', 'reporting', 'business intelligence'],
-      'Risk & Compliance': ['risk', 'compliance', 'regulatory', 'governance', 'security', 'audit']
-    }
-    
-    const keywords = categoryKeywords[portfolioItem.category as keyof typeof categoryKeywords] || []
-    for (const keyword of keywords) {
-      if (contentLower.includes(keyword)) {
-        categoryScore = 0.1
-        break
-      }
-    }
-  }
-  
-  score += categoryScore
-  
-  // 5. Content length bonus - longer content gets slight bonus for better analysis
-  if (blogContent.length > 1000) {
-    score += 0.05
-  }
-  
-  // Normalize score to 0-1 range
+  // Return raw score without artificial boosting
   return Math.min(Math.max(score, 0), 1)
 }
 
-// Generate smart recommendations based on content analysis
-function generateSmartRecommendations(blogContent: string, blogTitle: string, blogTags: string[]): PortfolioItem[] {
-  if (!blogContent || !blogTitle) {
+// Generate smart recommendations based on message content analysis
+function generateSmartRecommendations(
+  messageContent: string, 
+  messageTitle: string, 
+  messageTags: string[]
+): ContentItem[] {
+  if (!messageContent || !messageTitle) {
     return []
   }
   
-  // Calculate relevance scores for all portfolio items
-  const scoredItems = PORTFOLIO_ITEMS.map(item => ({
+  // Calculate relevance scores for all content items
+  const scoredItems = CONTENT_ITEMS.map(item => ({
     ...item,
-    relevance: calculateRelevanceScore(blogContent, blogTitle, blogTags, item)
+    relevance: calculateContentRelevanceScore(messageContent, messageTitle, messageTags, item)
   }))
   
-  // Filter items with meaningful relevance (above threshold)
+  // Filter items with meaningful relevance (higher threshold for accuracy)
   const relevantItems = scoredItems
-    .filter(item => item.relevance > 0.15) // Increased threshold to 15% for better quality
+    .filter(item => item.relevance > 0.15) // Higher threshold for better accuracy
     .sort((a, b) => b.relevance - a.relevance)
   
-  // If we have enough relevant items, return top 2
-  if (relevantItems.length >= 2) {
-    return relevantItems.slice(0, 2).map(({ relevance, ...item }) => ({
-      ...item,
-      confidence: relevance
-    }))
+  // Return only truly relevant items (1-4 based on actual relevance)
+  const topItems = relevantItems.slice(0, 4)
+  
+  // If no relevant items found, return empty array
+  if (topItems.length === 0) {
+    return []
   }
   
-  // If we have 1 relevant item, find a complementary one
-  if (relevantItems.length === 1) {
-    const complementary = scoredItems
-      .filter(item => item.id !== relevantItems[0].id)
-      .sort((a, b) => b.relevance - a.relevance)
-      .slice(0, 1)
-    
-    return [
-      { ...relevantItems[0], confidence: relevantItems[0].relevance },
-      { ...complementary[0], confidence: Math.max(complementary[0].relevance, 0.5) }
-    ]
-  }
-  
-  // Fallback: return top 2 by relevance, but ensure variety
-  const topByRelevance = scoredItems
-    .sort((a, b) => b.relevance - a.relevance)
-    .slice(0, 3) // Get top 3 to have variety
-  
-  // Ensure we don't always return the same items by adding some randomness
-  const shuffled = [...topByRelevance].sort(() => Math.random() - 0.5)
-  
-  return shuffled.slice(0, 2).map(({ relevance, ...item }) => ({
+  return topItems.map(({ relevance, ...item }) => ({
     ...item,
-    confidence: Math.max(relevance, 0.5) // Minimum 50% confidence for fallback
+    confidence: relevance
   }))
 }
 
 class SmartRecommendationsService {
-  async getRecommendations(request: BlogRecommendationsRequest): Promise<BlogRecommendationsResponse> {
+  async getRecommendations(request: ContentRecommendationsRequest): Promise<ContentRecommendationsResponse> {
     try {
       const { content, title, tags = [] } = request
       
@@ -294,33 +321,40 @@ class SmartRecommendationsService {
     }
   }
   
-  // Get all portfolio items for other uses
-  getAllPortfolioItems(): PortfolioItem[] {
-    return PORTFOLIO_ITEMS.map(item => ({
+  // Get all content items
+  async getAllContentItems(): Promise<ContentItem[]> {
+    return CONTENT_ITEMS.map(item => ({
       ...item,
-      confidence: 0.7 // Default confidence
+      confidence: 0.8
     }))
   }
   
-  // Get portfolio item by ID
-  getPortfolioItem(id: string): PortfolioItem | undefined {
-    const item = PORTFOLIO_ITEMS.find(item => item.id === id)
-    return item ? { ...item, confidence: 0.7 } : undefined
+  // Get content item by ID
+  async getContentItem(id: string): Promise<ContentItem | undefined> {
+    const item = CONTENT_ITEMS.find(item => item.id === id)
+    return item ? { ...item, confidence: 0.8 } : undefined
   }
   
-  // Search portfolio items by query
-  searchPortfolioItems(query: string): PortfolioItem[] {
-    if (!query.trim()) return this.getAllPortfolioItems()
+  // Search content items by query
+  async searchContentItems(query: string): Promise<ContentItem[]> {
+    if (!query.trim()) return CONTENT_ITEMS.map(item => ({ ...item, confidence: 0.8 }))
     
     const queryLower = query.toLowerCase()
-    return PORTFOLIO_ITEMS
+    return CONTENT_ITEMS
       .filter(item => 
         item.title.toLowerCase().includes(queryLower) ||
         item.description.toLowerCase().includes(queryLower) ||
         item.tags.some(tag => tag.toLowerCase().includes(queryLower)) ||
         item.category.toLowerCase().includes(queryLower)
       )
-      .map(item => ({ ...item, confidence: 0.7 }))
+      .map(item => ({ ...item, confidence: 0.8 }))
+  }
+  
+  // Get content by type
+  async getContentByType(contentType: 'blog' | 'portfolio' | 'project'): Promise<ContentItem[]> {
+    return CONTENT_ITEMS
+      .filter(item => item.contentType === contentType)
+      .map(item => ({ ...item, confidence: 0.8 }))
   }
 }
 
