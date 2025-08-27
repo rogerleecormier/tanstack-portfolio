@@ -1,12 +1,97 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P, H3 } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, Wifi, WifiOff, CheckCircle, XCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { testAIWorker } from '../api/contactAnalyzer';
 
 export const ProtectedPage: React.FC = () => {
   const { isAuthenticated, user, isLoading, isDevelopment, logout } = useAuth();
+  
+  // Worker testing state
+  const [workerStatus, setWorkerStatus] = useState<{
+    ai: 'idle' | 'testing' | 'success' | 'error';
+    email: 'idle' | 'testing' | 'success' | 'error';
+    newsletter: 'idle' | 'testing' | 'success' | 'error';
+  }>({
+    ai: 'idle',
+    email: 'idle',
+    newsletter: 'idle'
+  });
+  
+  const [workerResults, setWorkerResults] = useState<{
+    ai?: any;
+    email?: any;
+    newsletter?: any;
+  }>({});
+
+  // Worker testing functions
+  const testAIWorkerConnectivity = async () => {
+    setWorkerStatus(prev => ({ ...prev, ai: 'testing' }));
+    try {
+      const result = await testAIWorker();
+      setWorkerResults(prev => ({ ...prev, ai: result }));
+      setWorkerStatus(prev => ({ ...prev, ai: result.success ? 'success' : 'error' }));
+    } catch (error) {
+      setWorkerResults(prev => ({ ...prev, ai: { error: error.message } }));
+      setWorkerStatus(prev => ({ ...prev, ai: 'error' }));
+    }
+  };
+
+  const testEmailWorkerConnectivity = async () => {
+    setWorkerStatus(prev => ({ ...prev, email: 'testing' }));
+    try {
+      const response = await fetch('https://tanstack-portfolio-email-worker.rcormier.workers.dev', {
+        method: 'OPTIONS',
+        headers: {
+          'Origin': window.location.origin,
+          'Access-Control-Request-Method': 'POST',
+          'Access-Control-Request-Headers': 'Content-Type'
+        }
+      });
+      
+      const result = {
+        success: response.ok,
+        status: response.status,
+        statusText: response.statusText,
+        cors: response.headers.get('Access-Control-Allow-Origin') === '*'
+      };
+      
+      setWorkerResults(prev => ({ ...prev, email: result }));
+      setWorkerStatus(prev => ({ ...prev, email: result.success ? 'success' : 'error' }));
+    } catch (error) {
+      setWorkerResults(prev => ({ ...prev, email: { error: error.message } }));
+      setWorkerStatus(prev => ({ ...prev, email: 'error' }));
+    }
+  };
+
+  const testNewsletterWorkerConnectivity = async () => {
+    setWorkerStatus(prev => ({ ...prev, newsletter: 'testing' }));
+    try {
+      const response = await fetch('https://tanstack-portfolio-blog-subscription.rcormier.workers.dev', {
+        method: 'OPTIONS',
+        headers: {
+          'Origin': window.location.origin,
+          'Access-Control-Request-Method': 'POST',
+          'Access-Control-Request-Headers': 'Content-Type'
+        }
+      });
+      
+      const result = {
+        success: response.ok,
+        status: response.status,
+        statusText: response.statusText,
+        cors: response.headers.get('Access-Control-Allow-Origin') === '*'
+      };
+      
+      setWorkerResults(prev => ({ ...prev, newsletter: result }));
+      setWorkerStatus(prev => ({ ...prev, newsletter: result.success ? 'success' : 'error' }));
+    } catch (error) {
+      setWorkerResults(prev => ({ ...prev, newsletter: { error: error.message } }));
+      setWorkerStatus(prev => ({ ...prev, newsletter: 'error' }));
+    }
+  };
 
   if (isLoading) {
     return (
@@ -129,6 +214,114 @@ export const ProtectedPage: React.FC = () => {
                 : 'This content is protected by Cloudflare Access. You authenticated using your credentials to verify your identity and access this portfolio content.'
               }
             </P>
+          </div>
+          
+          {/* Worker Connectivity Testing */}
+          <div className="bg-teal-100 border border-teal-200 rounded-lg p-4">
+            <H3 className="font-semibold text-teal-800 mb-4 flex items-center space-x-2">
+              <Wifi className="h-5 w-5" />
+              <span>Worker Connectivity Testing</span>
+            </H3>
+            
+            <div className="space-y-3">
+              {/* AI Worker Test */}
+              <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium text-teal-800">AI Contact Analyzer</span>
+                  <span className="text-xs text-teal-600">tanstack-portfolio-ai-contact-analyzer</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {workerStatus.ai === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
+                  {workerStatus.ai === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
+                  {workerStatus.ai === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                  {workerStatus.ai === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={testAIWorkerConnectivity}
+                    disabled={workerStatus.ai === 'testing'}
+                    className="text-xs"
+                  >
+                    Test
+                  </Button>
+                </div>
+              </div>
+
+              {/* Email Worker Test */}
+              <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium text-teal-800">Email Worker</span>
+                  <span className="text-xs text-teal-600">tanstack-portfolio-email-worker</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {workerStatus.email === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
+                  {workerStatus.email === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
+                  {workerStatus.email === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                  {workerStatus.email === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={testEmailWorkerConnectivity}
+                    disabled={workerStatus.email === 'testing'}
+                    className="text-xs"
+                  >
+                    Test
+                  </Button>
+                </div>
+              </div>
+
+              {/* Newsletter Worker Test */}
+              <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium text-teal-800">Newsletter Worker</span>
+                  <span className="text-xs text-teal-600">tanstack-portfolio-blog-subscription</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {workerStatus.newsletter === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
+                  {workerStatus.newsletter === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
+                  {workerStatus.newsletter === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                  {workerStatus.newsletter === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={testNewsletterWorkerConnectivity}
+                    disabled={workerStatus.newsletter === 'testing'}
+                    className="text-xs"
+                  >
+                    Test
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Test Results Display */}
+            {(workerResults.ai || workerResults.email || workerResults.newsletter) && (
+              <div className="mt-4 p-3 bg-white rounded-lg border border-teal-200">
+                <H3 className="font-semibold text-teal-800 mb-2 text-sm">Test Results</H3>
+                <div className="space-y-2 text-xs">
+                  {workerResults.ai && (
+                    <div>
+                      <strong>AI Worker:</strong> {workerResults.ai.success ? '✅ Connected' : '❌ Failed'} 
+                      {workerResults.ai.error && ` - ${workerResults.ai.error}`}
+                    </div>
+                  )}
+                  {workerResults.email && (
+                    <div>
+                      <strong>Email Worker:</strong> {workerResults.email.success ? '✅ Connected' : '❌ Failed'} 
+                      {workerResults.email.status && ` (${workerResults.email.status})`}
+                      {workerResults.email.cors && ' - CORS Enabled'}
+                    </div>
+                  )}
+                  {workerResults.newsletter && (
+                    <div>
+                      <strong>Newsletter Worker:</strong> {workerResults.newsletter.success ? '✅ Connected' : '❌ Failed'} 
+                      {workerResults.newsletter.status && ` (${workerResults.newsletter.status})`}
+                      {workerResults.newsletter.cors && ' - CORS Enabled'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="flex justify-center pt-2">
