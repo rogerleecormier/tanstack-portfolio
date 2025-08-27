@@ -464,6 +464,20 @@ function parseAIResponse(aiResponse) {
             current.length > longest.length ? current : longest
           )
         }
+        
+        // If still no valid JSON, try to complete incomplete JSON
+        if (!jsonText.match(/^\{.*\}$/s)) {
+          // Count braces to see if JSON is incomplete
+          const openBraces = (jsonText.match(/\{/g) || []).length
+          const closeBraces = (jsonText.match(/\}/g) || []).length
+          
+          if (openBraces > closeBraces) {
+            // Add missing closing braces
+            const missingBraces = openBraces - closeBraces
+            jsonText += '}'.repeat(missingBraces)
+            console.log('🔧 Attempting to complete incomplete JSON by adding', missingBraces, 'closing braces')
+          }
+        }
       }
       
       // Clean up any remaining markdown artifacts
@@ -729,6 +743,12 @@ Message: ${scrubbedMessage}
 
 IMPORTANT: Generate 2-3 intelligent follow-up questions that YOU would ask the client to better understand their needs. These should be questions FOR the client to answer, not statements about what the client said.
 
+CRITICAL: Generate DIFFERENT questions each time based on the specific content of the message. Do NOT use the same questions every time. Vary your questions based on:
+- Technologies mentioned (ERP, SaaS, specific tools)
+- Business context (industry, company size, role)
+- Project details (scope, timeline, goals)
+- Missing information that would be valuable
+
 Return this exact JSON structure (no other text):
 {
   "inquiryType": "consultation|project|partnership|general|urgent",
@@ -738,11 +758,11 @@ Return this exact JSON structure (no other text):
   "urgency": "immediate|soon|flexible",
   "shouldScheduleMeeting": true/false,
   "meetingType": "consultation|project-planning|technical-review|strategy-session|general-discussion",
-  "followUpQuestions": ["What specific areas of your ERP system need modernization?", "What is your timeline for this project?", "What are your current pain points with existing systems?"]
+  "followUpQuestions": ["Generate 2-3 unique questions based on the message content"]
 }`
               }],
-              temperature: 0.1,
-              max_tokens: 400
+                             temperature: 0.1,
+               max_tokens: 600
             })
             
             console.log(`✅ AI model ${model} successful`)
