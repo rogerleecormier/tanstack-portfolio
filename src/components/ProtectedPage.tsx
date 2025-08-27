@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P, H3 } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, Wifi, WifiOff, CheckCircle, XCircle } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, Wifi, CheckCircle, XCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 
@@ -21,9 +21,9 @@ export const ProtectedPage: React.FC = () => {
   });
   
   const [workerResults, setWorkerResults] = useState<{
-    ai?: any;
-    email?: any;
-    newsletter?: any;
+    ai?: { success: boolean; error?: string; status: number; details?: unknown };
+    email?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
+    newsletter?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
   }>({});
 
   // Worker testing functions
@@ -31,10 +31,16 @@ export const ProtectedPage: React.FC = () => {
     setWorkerStatus(prev => ({ ...prev, ai: 'testing' }));
     try {
       const result = await testAIWorker();
-      setWorkerResults(prev => ({ ...prev, ai: result }));
-      setWorkerStatus(prev => ({ ...prev, ai: result.success ? 'success' : 'error' }));
+      // Add status code to AI worker result for consistency
+      const enhancedResult = {
+        ...result,
+        status: 200 // AI worker test returns success with 200 status
+      };
+      setWorkerResults(prev => ({ ...prev, ai: enhancedResult }));
+      setWorkerStatus(prev => ({ ...prev, ai: enhancedResult.success ? 'success' : 'error' }));
     } catch (error) {
-      setWorkerResults(prev => ({ ...prev, ai: { error: error.message } }));
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setWorkerResults(prev => ({ ...prev, ai: { success: false, error: errorMessage, status: 0 } }));
       setWorkerStatus(prev => ({ ...prev, ai: 'error' }));
     }
   };
@@ -61,7 +67,8 @@ export const ProtectedPage: React.FC = () => {
       setWorkerResults(prev => ({ ...prev, email: result }));
       setWorkerStatus(prev => ({ ...prev, email: result.success ? 'success' : 'error' }));
     } catch (error) {
-      setWorkerResults(prev => ({ ...prev, email: { error: error.message } }));
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setWorkerResults(prev => ({ ...prev, email: { success: false, status: 0, statusText: 'Error', cors: false, error: errorMessage } }));
       setWorkerStatus(prev => ({ ...prev, email: 'error' }));
     }
   };
@@ -88,7 +95,8 @@ export const ProtectedPage: React.FC = () => {
       setWorkerResults(prev => ({ ...prev, newsletter: result }));
       setWorkerStatus(prev => ({ ...prev, newsletter: result.success ? 'success' : 'error' }));
     } catch (error) {
-      setWorkerResults(prev => ({ ...prev, newsletter: { error: error.message } }));
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setWorkerResults(prev => ({ ...prev, newsletter: { success: false, status: 0, statusText: 'Error', cors: false, error: errorMessage } }));
       setWorkerStatus(prev => ({ ...prev, newsletter: 'error' }));
     }
   };
@@ -302,6 +310,7 @@ export const ProtectedPage: React.FC = () => {
                   {workerResults.ai && (
                     <div>
                       <strong>AI Worker:</strong> {workerResults.ai.success ? '✅ Connected' : '❌ Failed'} 
+                      {workerResults.ai.status && ` (${workerResults.ai.status})`}
                       {workerResults.ai.error && ` - ${workerResults.ai.error}`}
                     </div>
                   )}

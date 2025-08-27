@@ -22,7 +22,7 @@ const RATE_LIMITS = {
 const ANALYSIS_SCHEMA = {
   inquiryType: ['consultation', 'project', 'partnership', 'general', 'urgent'],
   priorityLevel: ['high', 'medium', 'low'],
-  industry: ['technology', 'healthcare', 'finance', 'manufacturing', 'other'],
+  industry: ['technology', 'healthcare', 'finance', 'manufacturing', 'retail', 'education', 'government', 'nonprofit', 'startup', 'enterprise', 'other'],
   projectScope: ['small', 'medium', 'large', 'enterprise'],
   urgency: ['immediate', 'soon', 'flexible'],
   meetingType: ['consultation', 'project-planning', 'technical-review', 'strategy-session', 'general-discussion'],
@@ -42,6 +42,92 @@ function addCorsHeaders(response, status = 200) {
     status,
     headers
   })
+}
+
+// Intelligent fallback follow-up question generation
+function generateIntelligentFollowUpQuestions(message, subject, company) {
+  const messageLower = message.toLowerCase()
+  const subjectLower = subject.toLowerCase()
+  const questions = []
+  
+  // Technology-specific questions
+  if (messageLower.includes('netsuite') || subjectLower.includes('netsuite')) {
+    questions.push('What specific NetSuite modules or functionality are you looking to implement or optimize?')
+  }
+  if (messageLower.includes('erp') || subjectLower.includes('erp')) {
+    questions.push('What are your current pain points with your existing ERP system?')
+  }
+  if (messageLower.includes('cloud') || messageLower.includes('migration') || subjectLower.includes('cloud') || subjectLower.includes('migration')) {
+    questions.push('What is your target timeline for the cloud migration project?')
+  }
+  if (messageLower.includes('api') || messageLower.includes('integration') || subjectLower.includes('api') || subjectLower.includes('integration')) {
+    questions.push('What systems or platforms do you need to integrate with?')
+  }
+  if (messageLower.includes('devops') || messageLower.includes('ci/cd') || subjectLower.includes('devops') || subjectLower.includes('ci/cd')) {
+    questions.push('What is your current deployment and release process?')
+  }
+  if (messageLower.includes('automation') || messageLower.includes('workflow') || subjectLower.includes('automation') || subjectLower.includes('workflow')) {
+    questions.push('Which business processes are you looking to automate?')
+  }
+  
+  // Business context questions
+  if (messageLower.includes('team') || messageLower.includes('users') || subjectLower.includes('team') || subjectLower.includes('users')) {
+    questions.push('How many users will need access to the new system?')
+  }
+  if (messageLower.includes('budget') || messageLower.includes('cost') || subjectLower.includes('budget') || subjectLower.includes('cost')) {
+    questions.push('What is your budget range for this project?')
+  }
+  if (messageLower.includes('timeline') || messageLower.includes('deadline') || subjectLower.includes('timeline') || subjectLower.includes('deadline')) {
+    questions.push('What is your target completion date for this project?')
+  }
+  if (messageLower.includes('startup') || messageLower.includes('enterprise') || subjectLower.includes('startup') || subjectLower.includes('enterprise')) {
+    questions.push('What is your company size and growth stage?')
+  }
+  
+  // Project scope questions
+  if (messageLower.includes('project') || messageLower.includes('implementation') || subjectLower.includes('project') || subjectLower.includes('implementation')) {
+    questions.push('What is the scope and complexity of this project?')
+  }
+  if (messageLower.includes('consultation') || messageLower.includes('strategy') || subjectLower.includes('consultation') || subjectLower.includes('strategy')) {
+    questions.push('What specific challenges or goals are you looking to address?')
+  }
+  
+  // Industry-specific questions
+  if (messageLower.includes('healthcare') || subjectLower.includes('healthcare')) {
+    questions.push('What compliance requirements (HIPAA, etc.) do you need to consider?')
+  }
+  if (messageLower.includes('finance') || messageLower.includes('banking') || subjectLower.includes('finance') || subjectLower.includes('banking')) {
+    questions.push('What regulatory or security requirements do you need to meet?')
+  }
+  if (messageLower.includes('manufacturing') || subjectLower.includes('manufacturing')) {
+    questions.push('What production systems or equipment do you need to integrate with?')
+  }
+  
+  // Generic but intelligent questions based on content length and completeness
+  if (questions.length === 0) {
+    if (message.split(' ').length < 50) {
+      questions.push('Can you provide more details about your specific requirements and goals?')
+    }
+    if (!company || company.trim().length === 0) {
+      questions.push('What industry is your company in and what is your current technology stack?')
+    }
+    if (!messageLower.includes('when') && !messageLower.includes('timeline') && !messageLower.includes('deadline')) {
+      questions.push('What is your preferred timeline for this project or consultation?')
+    }
+  }
+  
+  // Ensure we have exactly 3 questions
+  while (questions.length < 3) {
+    if (questions.length === 0) {
+      questions.push('What specific outcomes are you looking to achieve with this project?')
+    } else if (questions.length === 1) {
+      questions.push('What is your current technology infrastructure and what challenges are you facing?')
+    } else {
+      questions.push('How can I best help you achieve your technology and business goals?')
+    }
+  }
+  
+  return questions.slice(0, 3)
 }
 
 // PII and sensitive data scrubber
@@ -423,22 +509,51 @@ ANALYSIS REQUIREMENTS:
 - Focus on business inquiry analysis and meeting recommendations
 - Provide clear reasoning for recommendations
 
+FOLLOW-UP QUESTION STRATEGY:
+Generate intelligent, context-aware follow-up questions that:
+1. Identify missing information using the 5W1H framework (Who, What, When, Where, Why, How)
+2. Ask specific questions about technologies, platforms, or tools mentioned in the message
+3. Request clarification on project scope, timeline, budget, or team size
+4. Probe for business context, challenges, and desired outcomes
+5. Ask about previous experience with similar projects or technologies
+
+EXAMPLES OF INTELLIGENT QUESTIONS:
+- If NetSuite is mentioned: "What specific NetSuite modules or functionality are you looking to implement or optimize?"
+- If ERP is mentioned: "What are your current pain points with your existing ERP system?"
+- If cloud migration is mentioned: "What is your target timeline for the cloud migration project?"
+- If team size is mentioned: "How many users will need access to the new system?"
+- If budget is mentioned: "What is your budget range for this project?"
+
+AVOID GENERIC QUESTIONS:
+- Don't ask: "Do you have any questions?"
+- Don't ask: "Can you provide more details?"
+- Don't ask: "What else would you like to know?"
+
 OUTPUT SCHEMA:
 {
   "inquiryType": "consultation|project|partnership|general|urgent",
   "priorityLevel": "high|medium|low",
-  "industry": "technology|healthcare|finance|manufacturing|other",
+  "industry": "technology|healthcare|finance|manufacturing|retail|education|government|nonprofit|startup|enterprise|other",
   "projectScope": "small|medium|large|enterprise",
   "urgency": "immediate|soon|flexible",
+  "messageType": "message|meeting-request",
   "suggestedResponse": "2-3 sentence personalized response",
+  "meetingDuration": "30 minutes|1 hour|1.5 hours|2 hours",
   "relevantContent": ["portfolio sections"],
   "shouldScheduleMeeting": true/false,
   "meetingType": "consultation|project-planning|technical-review|strategy-session|general-discussion",
   "recommendedTimeSlots": ["morning", "afternoon", "evening"],
   "timezoneConsideration": "user's local timezone",
+  "userTimezone": "user's detected timezone",
   "followUpRequired": true/false,
   "redFlags": ["array of security concerns if any"],
-  "followUpQuestions": ["specific question 1", "specific question 2", "specific question 3"]
+  "followUpQuestions": ["specific, context-aware question 1", "specific, context-aware question 2", "specific, context-aware question 3"],
+  "confidence": 0.0-1.0,
+  "timestamp": "ISO timestamp",
+  "originalMessage": "analyzed message content",
+  "wordCount": number,
+  "hasCompany": true/false,
+  "emailDomain": "email domain"
 }
 
 MEETING DETECTION RULES:
@@ -596,7 +711,7 @@ Return JSON:
 {
   "inquiryType": "consultation|project|partnership|general|urgent",
   "priorityLevel": "high|medium|low",
-  "industry": "technology|healthcare|finance|manufacturing|other", 
+  "industry": "technology|healthcare|finance|manufacturing|retail|education|government|nonprofit|startup|enterprise|other", 
   "projectScope": "small|medium|large|enterprise",
   "urgency": "immediate|soon|flexible",
   "shouldScheduleMeeting": true/false,
@@ -682,31 +797,32 @@ Return JSON:
            basicFollowUps.push("How can I best help you achieve your goals?")
          }
          
-         analysis = {
-           inquiryType,
-           priorityLevel,
-           industry: 'other',
-           projectScope: 'medium',
-           urgency: hasUrgentKeywords ? 'immediate' : 'flexible',
-           suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
-           relevantContent: ['general portfolio'],
-           confidence: 0.6,
-           shouldScheduleMeeting,
-           meetingType: shouldScheduleMeeting ? 'general-discussion' : 'consultation',
-           meetingDuration: '1 hour',
-           recommendedTimeSlots: ['morning', 'afternoon'],
-           timezoneConsideration: 'user\'s local timezone',
-           userTimezone: 'America/New_York',
-           followUpRequired: shouldScheduleMeeting,
-           redFlags,
-           followUpQuestions: basicFollowUps,
-           timestamp: new Date().toISOString(),
-           originalMessage: '[CONTENT_ANALYZED]',
-           wordCount: scrubbedMessage.split(' ').length,
-           hasCompany: !!company,
-           emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown',
-           fallback: true
-         }
+                 analysis = {
+          inquiryType,
+          priorityLevel,
+          industry: 'other',
+          projectScope: 'medium',
+          urgency: hasUrgentKeywords ? 'immediate' : 'flexible',
+          messageType: shouldScheduleMeeting ? 'meeting-request' : 'message',
+          suggestedResponse: `Thank you for reaching out, ${name}! I've received your inquiry about "${scrubbedSubject}" and I'm looking forward to discussing how I can help with your project.`,
+          relevantContent: ['general portfolio'],
+          confidence: 0.6,
+          shouldScheduleMeeting,
+          meetingType: shouldScheduleMeeting ? 'general-discussion' : 'consultation',
+          meetingDuration: '1 hour',
+          recommendedTimeSlots: ['morning', 'afternoon'],
+          timezoneConsideration: 'user\'s local timezone',
+          userTimezone: 'America/New_York',
+          followUpRequired: shouldScheduleMeeting,
+          redFlags,
+          followUpQuestions: basicFollowUps,
+          timestamp: new Date().toISOString(),
+          originalMessage: '[CONTENT_ANALYZED]',
+          wordCount: scrubbedMessage.split(' ').length,
+          hasCompany: !!company,
+          emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown',
+          fallback: true
+        }
         
         // Skip AI parsing since we're using fallback
         aiResponse = null
@@ -800,7 +916,7 @@ Return JSON:
         userTimezone: 'America/New_York',
         followUpRequired: false,
         redFlags: [],
-        followUpQuestions: [],
+        followUpQuestions: [], // Will be set later after function is available
         timestamp: new Date().toISOString(),
         originalMessage: '[CONTENT_ANALYZED]',
         wordCount: scrubbedMessage.split(' ').length,
@@ -826,6 +942,18 @@ Return JSON:
         
         return hasMeetingKeywords
       }
+
+      // Set the followUpQuestions now that the function is available
+      try {
+        defaultAnalysis.followUpQuestions = generateIntelligentFollowUpQuestions(scrubbedMessage, scrubbedSubject, company)
+      } catch (error) {
+        console.error('Error generating follow-up questions:', error.message)
+        defaultAnalysis.followUpQuestions = [
+          'What specific outcomes are you looking to achieve with this project?',
+          'What is your current technology infrastructure and what challenges are you facing?',
+          'How can I best help you achieve your technology and business goals?'
+        ]
+      }
       
       // Ensure the AI response has all required fields by merging with defaults
       if (analysis) {
@@ -848,7 +976,18 @@ Return JSON:
           userTimezone: analysis.userTimezone || 'America/New_York',
           followUpRequired: shouldOverrideMeetingDetection ? true : (analysis.followUpRequired !== undefined ? analysis.followUpRequired : false),
           redFlags: analysis.redFlags || [],
-          followUpQuestions: analysis.followUpQuestions || [],
+          followUpQuestions: analysis.followUpQuestions && analysis.followUpQuestions.length > 0 ? analysis.followUpQuestions : (() => {
+            try {
+              return generateIntelligentFollowUpQuestions(scrubbedMessage, scrubbedSubject, company)
+            } catch (error) {
+              console.error('Error generating follow-up questions:', error.message)
+              return [
+                'What specific outcomes are you looking to achieve with this project?',
+                'What is your current technology infrastructure and what challenges are you facing?',
+                'How can I best help you achieve your technology and business goals?'
+              ]
+            }
+          })(),
           timestamp: analysis.timestamp || new Date().toISOString(),
           originalMessage: analysis.originalMessage || '[CONTENT_ANALYZED]',
           wordCount: analysis.wordCount || scrubbedMessage.split(' ').length,
