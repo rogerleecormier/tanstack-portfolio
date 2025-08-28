@@ -16,7 +16,7 @@ export const searchData: SearchItem[] = [
     title: 'Digital Transformation Strategy',
     description: 'Strategic approach to digital transformation and operational excellence',
     content: 'Digital transformation strategy and operational excellence',
-    url: '/strategy',
+    url: '/portfolio/strategy',
     section: 'Strategy',
     headings: [],
     contentType: 'portfolio'
@@ -26,7 +26,7 @@ export const searchData: SearchItem[] = [
     title: 'Technical Project Leadership',
     description: 'Leadership approach to technical project management and team development',
     content: 'Technical project leadership and team management',
-    url: '/leadership',
+    url: '/portfolio/leadership',
     section: 'Leadership',
     headings: [],
     contentType: 'portfolio'
@@ -36,7 +36,7 @@ export const searchData: SearchItem[] = [
     title: 'Cloud & DevOps Engineering',
     description: 'Cloud automation and DevOps best practices implementation',
     content: 'Cloud automation DevOps best practices Azure Functions GitHub Actions',
-    url: '/devops',
+    url: '/portfolio/devops',
     section: 'DevOps',
     headings: [],
     contentType: 'portfolio'
@@ -46,7 +46,7 @@ export const searchData: SearchItem[] = [
     title: 'ERP & SaaS Integration',
     description: 'Enterprise system integration and SaaS platform connectivity',
     content: 'SaaS integration NetSuite Ramp Vena enterprise systems',
-    url: '/saas',
+    url: '/portfolio/saas',
     section: 'SaaS',
     headings: [],
     contentType: 'portfolio'
@@ -56,7 +56,7 @@ export const searchData: SearchItem[] = [
     title: 'Organizational Strategy & Talent Innovation',
     description: 'Talent development and organizational strategy initiatives',
     content: 'Organizational strategy and talent innovation',
-    url: '/talent',
+    url: '/portfolio/talent',
     section: 'Talent',
     headings: [],
     contentType: 'portfolio'
@@ -66,7 +66,7 @@ export const searchData: SearchItem[] = [
     title: 'Culture & Leadership Philosophy',
     description: 'Leadership philosophy and organizational culture development',
     content: 'Culture and leadership philosophy organizational development',
-    url: '/culture',
+    url: '/portfolio/culture',
     section: 'Culture',
     headings: [],
     contentType: 'portfolio'
@@ -76,7 +76,7 @@ export const searchData: SearchItem[] = [
     title: 'Data Analytics & Business Intelligence',
     description: 'Data analytics and business intelligence solutions',
     content: 'Data analytics business intelligence reporting dashboards',
-    url: '/analytics',
+    url: '/portfolio/analytics',
     section: 'Analytics',
     headings: [],
     contentType: 'portfolio'
@@ -86,7 +86,7 @@ export const searchData: SearchItem[] = [
     title: 'Strategic Vision & Career Aspirations',
     description: 'Long-term strategic vision and career development goals',
     content: 'Strategic vision and career aspirations future planning',
-    url: '/vision',
+    url: '/portfolio/vision',
     section: 'Vision',
     headings: [],
     contentType: 'portfolio'
@@ -96,7 +96,7 @@ export const searchData: SearchItem[] = [
     title: 'Product & UX Design',
     description: 'Product development and user experience design',
     content: 'Product development UX design user experience',
-    url: '/product-ux',
+    url: '/portfolio/product-ux',
     section: 'Product',
     headings: [],
     contentType: 'portfolio'
@@ -106,7 +106,7 @@ export const searchData: SearchItem[] = [
     title: 'AI & Automation',
     description: 'Artificial intelligence and automation solutions',
     content: 'AI automation artificial intelligence machine learning',
-    url: '/ai-automation',
+    url: '/portfolio/ai-automation',
     section: 'Technology',
     headings: [],
     contentType: 'portfolio'
@@ -116,7 +116,7 @@ export const searchData: SearchItem[] = [
     title: 'Core Capabilities',
     description: 'Core technical and business capabilities',
     content: 'Core capabilities technical skills business expertise',
-    url: '/capabilities',
+    url: '/portfolio/capabilities',
     section: 'Capabilities',
     headings: [],
     contentType: 'portfolio'
@@ -136,7 +136,7 @@ export const searchData: SearchItem[] = [
     title: 'Education & Certifications',
     description: 'Educational background and professional certifications',
     content: 'Education certifications PMP CompTIA degrees',
-    url: '/education-certifications',
+    url: '/portfolio/education-certifications',
     section: 'Education',
     headings: [],
     contentType: 'portfolio'
@@ -248,7 +248,7 @@ export const searchData: SearchItem[] = [
     title: 'Project Analysis Framework',
     description: 'Comprehensive project analysis and evaluation framework',
     content: 'project analysis framework evaluation methodology',
-    url: '/project-analysis',
+    url: '/projects/project-analysis',
     section: 'Projects',
     headings: [],
     contentType: 'project'

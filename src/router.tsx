@@ -14,14 +14,16 @@ import {
 } from '@tanstack/react-router'
 import { createBrowserHistory } from '@tanstack/history'
 import AppLayout from './layout/AppLayout'
-import MarkdownPage from './pages/MarkdownPage'
+import PortfolioPage from './pages/PortfolioPage'
+import ProjectsPage from './pages/ProjectsPage'
 import NotFound from './pages/NotFound'
 import HealthBridge from './pages/HealthBridge'
 import ContactPage from './pages/ContactPage'
 import PrivacyPage from './pages/PrivacyPage'
 import BlogListPage from './pages/BlogListPage'
 import BlogPostWrapper from './components/BlogPostWrapper'
-import PortfolioPage from './pages/PortfolioPage'
+import PortfolioListPage from './pages/PortfolioListPage'
+import AboutPage from './pages/AboutPage'
 import NewsletterPreferencesPage from './pages/NewsletterPreferencesPage'
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
@@ -41,7 +43,7 @@ console.count('[router] createRootRoute called')
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/', // root path for About
-  component: () => <MarkdownPage file="about" />
+  component: () => <AboutPage />
 })
 
 // Blog list route
@@ -55,7 +57,7 @@ const blogListRoute = createRoute({
 const portfolioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'portfolio',
-  component: () => <PortfolioPage />
+  component: () => <PortfolioListPage />
 })
 
 // Blog post route
@@ -65,13 +67,13 @@ const blogPostRoute = createRoute({
   component: BlogPostWrapper
 })
 
-// Dynamic portfolio route - handles all portfolio pages
+// Portfolio items route - handles all portfolio pages under /portfolio/*
 const portfolioItemRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '$slug',
+  path: 'portfolio/$slug',
   component: () => {
     // Get the slug from the URL
-    const slug = window.location.pathname.slice(1) // Remove leading slash
+    const slug = window.location.pathname.split('/').pop() || ''
     
     // List of all portfolio pages - easy to maintain
     // To add a new portfolio page, just add the slug here (filename without .md extension)
@@ -92,9 +94,9 @@ const portfolioItemRoute = createRoute({
       'capabilities'
     ]
     
-    // Check if this is a portfolio page
+    // Check if this is a valid portfolio page
     if (portfolioPages.includes(slug)) {
-      return <MarkdownPage file={`portfolio/${slug}`} />
+      return <PortfolioPage file={`portfolio/${slug}`} />
     }
     
     // If not found, return 404
@@ -102,12 +104,31 @@ const portfolioItemRoute = createRoute({
   }
 })
 
-// Project Analysis route (moved to projects)
-const projectAnalysisRoute = createRoute({
+// Projects route - handles all project pages under /projects/*
+const projectsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'project-analysis',
-  component: () => <MarkdownPage file="projects/project-analysis" />
+  path: 'projects/$slug',
+  component: () => {
+    // Get the slug from the URL
+    const slug = window.location.pathname.split('/').pop() || ''
+    
+    // List of all project pages - easy to maintain
+    // To add a new project page, just add the slug here (filename without .md extension)
+    const projectPages = [
+      'project-analysis'
+    ]
+    
+    // Check if this is a valid project page
+    if (projectPages.includes(slug)) {
+      return <ProjectsPage file={`projects/${slug}`} />
+    }
+    
+    // If not found, return 404
+    return <NotFound />
+  }
 })
+
+
 
 // Health Bridge Analysis route
 const healthBridgeAnalysisRoute = createRoute({
@@ -160,7 +181,7 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   portfolioRoute,
   portfolioItemRoute,
-  projectAnalysisRoute,
+  projectsRoute,
   healthBridgeAnalysisRoute,
   blogListRoute,
   blogPostRoute,

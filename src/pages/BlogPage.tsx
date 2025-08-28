@@ -14,7 +14,7 @@ import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as R
 import { MessageSquare, Calendar, Clock, User, Tag, ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from '@tanstack/react-router'
 import NewsletterSignup from '@/components/NewsletterSignup'
-import { BlogRecommendations } from '@/components/BlogRecommendations'
+import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 
 // Define proper types for frontmatter
 interface BlogFrontmatter {
@@ -32,6 +32,7 @@ interface BlogFrontmatter {
 export type BlogTOCEntry = {
   title: string
   slug: string
+  level: 2 | 3
 }
 
 function parseChartData(code: string) {
@@ -125,21 +126,17 @@ export default function BlogPage({ slug }: { slug: string }) {
         const calculatedReadingTime = calculateReadingTime(cleanedBody)
         setReadingTime(frontmatter.readTime || calculatedReadingTime)
 
-        // Extract headings for TOC - ONLY H2 headings
-        const headingRegex = /^#{2}\s+(.+)$/gm
+        // Extract headings for content analysis (used by related content service)
+        const headingRegex = /^#{2,3}\s+(.+)$/gm
         const headings: BlogTOCEntry[] = []
         let match
 
         while ((match = headingRegex.exec(cleanedBody)) !== null) {
           const title = match[1].trim()
           const slug = slugify(title, { lower: true, strict: true })
-          headings.push({ title, slug })
+          const level = match[0].match(/^#+/)?.[0].length || 2
+          headings.push({ title, slug, level: level as 2 | 3 })
         }
-
-        // Dispatch custom event to update sidebar TOC
-        window.dispatchEvent(new CustomEvent('blog-toc-updated', { 
-          detail: { toc: headings, slug } 
-        }))
       } catch (error) {
         console.error('Error loading blog markdown:', error)
       } finally {
@@ -150,14 +147,7 @@ export default function BlogPage({ slug }: { slug: string }) {
     loadMarkdown()
   }, [slug, frontmatter.readTime])
 
-  // Clean up event when component unmounts
-  React.useEffect(() => {
-    return () => {
-      window.dispatchEvent(new CustomEvent('blog-toc-updated', { 
-        detail: { toc: [], slug: null } 
-      }))
-    }
-  }, [])
+
 
   // Show loading skeleton
   if (isLoading) {
@@ -300,7 +290,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                   const text = String(children)
                   const id = slugify(text, { lower: true, strict: true })
                   return (
-                    <H2 id={id} {...props}>
+                    <H2 id={id} className="scroll-m-20" {...props}>
                       {children}
                     </H2>
                   )
@@ -733,13 +723,21 @@ export default function BlogPage({ slug }: { slug: string }) {
         {/* Right Sidebar */}
         <div className="lg:col-span-1">
           <div className="sticky top-32 space-y-6">
-            {/* Portfolio Page Recommendations Sidebar */}
+
+
+            {/* Smart Related Content Sidebar */}
             <div className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-xl p-6 border border-teal-200 dark:border-teal-800 shadow-sm">
-                              <BlogRecommendations
-                  blogContent={content}
-                  blogTitle={frontmatter.title || ''}
-                  blogTags={frontmatter.tags || []}
-                />
+
+
+              <UnifiedRelatedContent
+                content={content}
+                title={frontmatter.title || ''}
+                tags={frontmatter.tags || []}
+                contentType="blog"
+                currentUrl={window.location.pathname}
+                maxResults={2}
+                variant="sidebar"
+              />
             </div>
 
             {/* Additional Sidebar Content */}

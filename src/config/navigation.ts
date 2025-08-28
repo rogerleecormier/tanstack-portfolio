@@ -28,45 +28,40 @@ export const navigationItems = [
 export const portfolioItems = [
   {
     title: "Analytics & Insights",
-    url: "analytics",
+    url: "portfolio/analytics",
     icon: BarChart3,
   },
   {
     title: "Strategy & Vision",
-    url: "strategy",
+    url: "portfolio/strategy",
     icon: Target,
   },
   {
     title: "Leadership & Culture",
-    url: "leadership",
+    url: "portfolio/leadership",
     icon: Users,
   },
   {
     title: "Talent & Org Design",
-    url: "talent",
+    url: "portfolio/talent",
     icon: User,
   },
   {
     title: "DevOps & Automation",
-    url: "devops",
+    url: "portfolio/devops",
     icon: Code,
   },
   {
     title: "ERP & SaaS Integration",
-    url: "saas",
+    url: "portfolio/saas",
     icon: Settings,
-  },
-  {
-    title: "Project Method Analysis",
-    url: "project-analysis",
-    icon: BarChart3,
   },
 ];
 
 export const projectItems = [
   {
     title: "Project Method Analysis",
-    url: "project-analysis",
+    url: "projects/project-analysis",
     icon: BarChart3,
   },
   {

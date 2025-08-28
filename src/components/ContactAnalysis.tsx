@@ -20,7 +20,7 @@ import {
   HelpCircle
 } from 'lucide-react'
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { smartRecommendationsService } from '@/api/smartRecommendationsService'
+import { unifiedSmartRecommendationsService } from '@/api/unifiedSmartRecommendationsService'
 
 // Confidence text helper function
 function getConfidenceText(confidence: number): string {
@@ -77,48 +77,74 @@ export function ContactAnalysis({
       const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`
       const tags = [analysis.inquiryType, analysis.industry, analysis.projectScope].filter(Boolean)
       
-      const response = await smartRecommendationsService.getRecommendations({
+      const response = await unifiedSmartRecommendationsService.getRecommendations({
         content,
         title,
-        tags
+        tags,
+        maxResults: 4
       })
       
-      if (response.success && response.recommendations) {
-        const relevantContent = response.recommendations.map(item => ({
-          title: item.title,
-          path: item.url,
-          description: item.description,
-          relevance: item.confidence || 0.7,
-          contentType: item.contentType
-        }))
-        
-        setRelevantContent(relevantContent)
-      } else {
-        // Fallback to static content items
-        const fallbackItems = await smartRecommendationsService.getAllContentItems()
-        const relevantContent = fallbackItems.slice(0, 4).map(item => ({
-          title: item.title,
-          path: item.url,
-          description: item.description,
-          relevance: 0.7,
-          contentType: item.contentType
-        }))
-        
-        setRelevantContent(relevantContent)
+              if (response.success && response.recommendations) {
+          const relevantContent = response.recommendations
+            .filter(item => item.contentType !== 'page')
+            .map(item => ({
+              title: item.title,
+              path: item.url,
+              description: item.description,
+              relevance: item.confidence || 0.7,
+              contentType: item.contentType as 'blog' | 'portfolio' | 'project'
+            }))
+          
+          setRelevantContent(relevantContent)
+        } else {
+        // Fallback to type-based recommendations
+        const fallbackResponse = await unifiedSmartRecommendationsService.getRecommendationsByType(
+          'portfolio',
+          undefined,
+          4
+        )
+        if (fallbackResponse.success) {
+          const relevantContent = fallbackResponse.recommendations
+            .filter(item => item.contentType !== 'page')
+            .map(item => ({
+              title: item.title,
+              path: item.url,
+              description: item.description,
+              relevance: item.confidence || 0.7,
+              contentType: item.contentType as 'blog' | 'portfolio' | 'project'
+            }))
+          setRelevantContent(relevantContent)
+        } else {
+          setRelevantContent([])
+        }
       }
     } catch (error) {
       console.warn('Smart recommendations failed, using fallback:', error)
-      // Fallback to static content items
-      const fallbackItems = await smartRecommendationsService.getAllContentItems()
-      const relevantContent = fallbackItems.slice(0, 4).map(item => ({
-        title: item.title,
-        path: item.url,
-        description: item.description,
-        relevance: 0.7,
-        contentType: item.contentType
-      }))
-      
-      setRelevantContent(relevantContent)
+      // Fallback to type-based recommendations
+      try {
+        const fallbackResponse = await unifiedSmartRecommendationsService.getRecommendationsByType(
+          'portfolio',
+          undefined,
+          4
+        )
+        if (fallbackResponse.success) {
+          const relevantContent = fallbackResponse.recommendations
+            .filter(item => item.contentType !== 'page')
+            .map(item => ({
+              title: item.title,
+              path: item.url,
+              description: item.description,
+              relevance: item.confidence || 0.7,
+              contentType: item.contentType as 'blog' | 'portfolio' | 'project'
+            }))
+          setRelevantContent(relevantContent)
+        } else {
+          setRelevantContent([])
+        }
+      } catch (fallbackError) {
+        console.error('Fallback recommendations also failed:', fallbackError)
+        setRelevantContent([])
+      }
     }
   }, [])
 

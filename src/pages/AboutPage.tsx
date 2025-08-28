@@ -7,12 +7,12 @@ import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
+import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
 import { MessageSquare } from "lucide-react";
-import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -54,7 +54,7 @@ function getSeriesKeys(data: ChartDataPoint[]) {
   return Object.keys(data[0]).filter((key) => key !== "date");
 }
 
-export default function PortfolioPage({ file }: { file: string }) {
+export default function AboutPage() {
   const [content, setContent] = React.useState<string>('')
   const [frontmatter, setFrontmatter] = React.useState<Frontmatter>({})
   const [isLoading, setIsLoading] = React.useState(true)
@@ -62,40 +62,16 @@ export default function PortfolioPage({ file }: { file: string }) {
   // Scroll to top on route change
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [file]); // Use [file] as dependency instead of location.pathname
+  }, []); // No dependency needed for about page
 
-  // Determine content type based on file
-  const getContentType = (file: string): 'website' | 'article' | 'profile' => {
-    if (file === 'about') return 'profile'
-    if (['strategy', 'leadership', 'devops', 'saas', 'analytics', 'project-analysis'].includes(file)) return 'article'
-    return 'website'
-  }
-
-  // Generate page-specific keywords
-  const getPageKeywords = (file: string, tags?: string[]): string[] => {
-    const baseKeywords = tags || []
-    
-    const fileKeywords: Record<string, string[]> = {
-      about: ['About', 'Biography', 'Professional Background'],
-      strategy: ['Strategy', 'Strategic Planning', 'Business Strategy'],
-      leadership: ['Leadership', 'Team Management', 'Leadership Philosophy'],
-      devops: ['DevOps', 'CI/CD', 'Azure Functions', 'GitHub Actions'],
-      saas: ['SaaS', 'Software as a Service', 'Enterprise Software'],
-      analytics: ['Analytics', 'Data Analysis', 'Project Analytics'],
-      'project-analysis': ['Project Analysis', 'Risk Analysis', 'Budget Analysis']
-    }
-
-    return [...baseKeywords, ...(fileKeywords[file] || [])]
-  }
-
-  // Update document title and meta tags with enhanced SEO
+  // Update document title and meta tags with enhanced SEO for About page
   useDocumentTitle({
     title: frontmatter.title,
     description: frontmatter.description,
-    keywords: getPageKeywords(file, frontmatter.keywords || frontmatter.tags),
+    keywords: ['About', 'Biography', 'Professional Background', ...(frontmatter.keywords || frontmatter.tags || [])],
     image: frontmatter.image,
-    url: window.location.pathname, // Use window.location instead of location.pathname
-    type: getContentType(file),
+    url: window.location.pathname,
+    type: 'profile',
     author: frontmatter.author,
     publishedTime: frontmatter.date
   })
@@ -105,27 +81,10 @@ export default function PortfolioPage({ file }: { file: string }) {
     const loadMarkdown = async () => {
       setIsLoading(true)
       try {
-        // Import markdown directly from src/content
-        console.log('Loading markdown file:', file)
+        // Import about markdown file
+        console.log('Loading about markdown file')
         
-        // Handle nested directory structure by mapping file paths
-        let markdownModule
-        if (file.startsWith('portfolio/')) {
-          // Handle portfolio files
-          const fileName = file.replace('portfolio/', '')
-          markdownModule = await import(`../content/portfolio/${fileName}.md?raw`)
-        } else if (file.startsWith('projects/')) {
-          // Handle project files
-          const fileName = file.replace('projects/', '')
-          markdownModule = await import(`../content/projects/${fileName}.md?raw`)
-        } else if (file.startsWith('blog/')) {
-          // Handle blog files
-          const fileName = file.replace('blog/', '')
-          markdownModule = await import(`../content/blog/${fileName}.md?raw`)
-        } else {
-          // Handle root level files (fallback)
-          markdownModule = await import(`../content/${file}.md?raw`)
-        }
+        const markdownModule = await import(`../content/about.md?raw`)
         
         const text = markdownModule.default
 
@@ -150,10 +109,10 @@ export default function PortfolioPage({ file }: { file: string }) {
 
         // Dispatch custom event to update sidebar TOC
         window.dispatchEvent(new CustomEvent('toc-updated', { 
-          detail: { toc: headings, file } 
+          detail: { toc: headings, file: 'about' } 
         }))
       } catch (error) {
-        console.error('Error loading markdown for file:', file, error)
+        console.error('Error loading about markdown:', error)
         console.error('Full error details:', error)
       } finally {
         setIsLoading(false)
@@ -161,7 +120,7 @@ export default function PortfolioPage({ file }: { file: string }) {
     }
 
     loadMarkdown()
-  }, [file])
+  }, [])
 
   // Clean up event when component unmounts
   React.useEffect(() => {
@@ -188,12 +147,10 @@ export default function PortfolioPage({ file }: { file: string }) {
           </div>
         </header>
 
-                 {/* Profile card skeleton for about page */}
-         {(file === 'about' || file === 'portfolio/about') && (
-           <div className="not-prose mb-12">
-             <Skeleton className="h-64 w-full rounded-lg" />
-           </div>
-         )}
+         {/* Profile card skeleton for about page */}
+         <div className="not-prose mb-12">
+           <Skeleton className="h-64 w-full rounded-lg" />
+         </div>
 
         {/* Content skeleton - Preserve space to prevent layout shift */}
         <div className="space-y-6 min-h-[1000px]">
@@ -214,34 +171,36 @@ export default function PortfolioPage({ file }: { file: string }) {
 
   return (
     <div className="w-full">
-      {/* Check if this is a portfolio or project page to determine layout */}
-      {file.startsWith('portfolio/') || file.startsWith('projects/') ? (
-        // Two-column layout for portfolio/project pages
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main content area */}
-          <div className="lg:col-span-3">
-            {/* Header with h1 title */}
-            {frontmatter.title && (
-              <header className="mb-8">
-                <H1 className="mb-4">
-                  {frontmatter.title}
-                </H1>
-                {frontmatter.description && (
-                  <P className="text-xl text-muted-foreground leading-7">
-                    {frontmatter.description}
-                  </P>
-                )}
-                {frontmatter.tags && (
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {frontmatter.tags.map((tag: string) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </header>
-            )}
+      {/* Header with h1 title */}
+      {frontmatter.title && (
+        <header className="mb-8">
+          <H1 className="mb-4">
+            {frontmatter.title}
+          </H1>
+          {frontmatter.description && (
+            <P className="text-xl text-muted-foreground leading-7">
+              {frontmatter.description}
+            </P>
+          )}
+          {frontmatter.tags && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {frontmatter.tags.map((tag: string) => (
+                <Badge key={tag} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </header>
+      )}
+      
+      {/* Profile card below title and tagline */}
+      <div className="not-prose mb-12">
+        <AboutProfileCard />
+      </div>
+      
+      {/* Main content area */}
+      <div>
 
             {/* Markdown Content */}
             <article
@@ -697,36 +656,7 @@ export default function PortfolioPage({ file }: { file: string }) {
             </div>
           </div>
         </article>
-        </div>
-        
-        {/* Right Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-32 space-y-6">
-            {/* Smart Related Content Sidebar */}
-            <div className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-xl p-6 border border-teal-200 dark:border-teal-800 shadow-sm">
-              <UnifiedRelatedContent
-                content={content}
-                title={frontmatter.title || ''}
-                tags={frontmatter.tags || []}
-                contentType={file.startsWith('portfolio/') ? 'portfolio' : file.startsWith('projects/') ? 'project' : 'page'}
-                currentUrl={window.location.pathname}
-                maxResults={2}
-                variant="sidebar"
-              />
-            </div>
-          </div>
-        </div>
-        </div>
-      ) : (
-        // Single-column layout for other pages  
-        <div>
-          <article className="prose prose-neutral dark:prose-invert max-w-none w-full">
-            <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
-              {content}
-            </ReactMarkdown>
-          </article>
-        </div>
-      )}
+      </div>
     </div>
   )
 }

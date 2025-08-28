@@ -7,12 +7,12 @@ import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { AboutProfileCard } from '@/components/AboutProfileCard'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
 import { MessageSquare } from "lucide-react";
+import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -54,7 +54,7 @@ function getSeriesKeys(data: ChartDataPoint[]) {
   return Object.keys(data[0]).filter((key) => key !== "date");
 }
 
-export default function MarkdownPage({ file }: { file: string }) {
+export default function ProjectsPage({ file }: { file: string }) {
   const [content, setContent] = React.useState<string>('')
   const [frontmatter, setFrontmatter] = React.useState<Frontmatter>({})
   const [isLoading, setIsLoading] = React.useState(true)
@@ -214,53 +214,50 @@ export default function MarkdownPage({ file }: { file: string }) {
 
   return (
     <div className="w-full">
-      <div className="w-full">
-        {/* Header with h1 title */}
-        {frontmatter.title && (
-          <header className="mb-8">
-            <H1 className="mb-4">
-              {frontmatter.title}
-            </H1>
-            {frontmatter.description && (
-              <P className="text-xl text-muted-foreground leading-7">
-                {frontmatter.description}
-              </P>
+      {/* Check if this is a portfolio or project page to determine layout */}
+      {file.startsWith('portfolio/') || file.startsWith('projects/') ? (
+        // Two-column layout for portfolio/project pages
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main content area */}
+          <div className="lg:col-span-3">
+            {/* Header with h1 title */}
+            {frontmatter.title && (
+              <header className="mb-8">
+                <H1 className="mb-4">
+                  {frontmatter.title}
+                </H1>
+                {frontmatter.description && (
+                  <P className="text-xl text-muted-foreground leading-7">
+                    {frontmatter.description}
+                  </P>
+                )}
+                {frontmatter.tags && (
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {frontmatter.tags.map((tag: string) => (
+                      <Badge key={tag} variant="secondary">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </header>
             )}
-            {frontmatter.tags && (
-              <div className="flex flex-wrap gap-2 mt-4">
-                {frontmatter.tags.map((tag: string) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </header>
-        )}
 
-                 {/* Add the profile card for about page */}
-         {(file === 'about' || file === 'portfolio/about') && (
-           <div className="not-prose mb-12">
-             <AboutProfileCard />
-           </div>
-         )}
-
-        {/* Markdown Content */}
-        <article
-          className={cn(
-            "prose prose-neutral dark:prose-invert max-w-none w-full",
-            // REMOVE "prose-headings:scroll-m-20" from here!
-            "prose-headings:tracking-tight",
-            "prose-h1:text-4xl prose-h1:font-extrabold",
-            "prose-h2:text-3xl prose-h2:font-semibold prose-h2:border-b prose-h2:pb-2",
-            "prose-h3:text-2xl prose-h3:font-semibold",
-            "prose-h4:text-xl prose-h4:font-semibold",
-            "prose-p:leading-7",
-            "prose-blockquote:border-l-2 prose-blockquote:pl-6 prose-blockquote:italic",
-            "prose-code:relative prose-code:rounded prose-code:bg-muted prose-code:px-[0.3rem] prose-code:py-[0.2rem] prose-code:font-mono prose-code:text-sm",
-            "prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:border prose-pre:bg-muted prose-pre:p-4"
-          )}
-        >
+            {/* Markdown Content */}
+            <article
+              className={cn(
+                "prose prose-neutral dark:prose-invert max-w-none w-full",
+                "prose-headings:tracking-tight",
+                "prose-h1:text-4xl prose-h1:font-extrabold",
+                "prose-h2:text-3xl prose-h2:font-semibold prose-h2:border-b prose-h2:pb-2",
+                "prose-h3:text-2xl prose-h3:font-semibold",
+                "prose-h4:text-xl prose-h4:font-semibold",
+                "prose-p:leading-7",
+                "prose-blockquote:border-l-2 prose-blockquote:pl-6 prose-blockquote:italic",
+                "prose-code:relative prose-code:rounded prose-code:bg-muted prose-code:px-[0.3rem] prose-code:py-[0.2rem] prose-code:font-mono prose-code:text-sm",
+                "prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:border prose-pre:bg-muted prose-pre:p-4"
+              )}
+            >
           <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
@@ -680,27 +677,56 @@ export default function MarkdownPage({ file }: { file: string }) {
             {content}
           </ReactMarkdown>
           
-                     {/* Contact Section at bottom of every page */}
-           <div className="mt-16 pt-8 border-t border-gray-200">
-             <div className="text-center">
-               <H2 className="text-2xl font-semibold text-gray-900 mb-4">
-                 Ready to discuss your next project?
-               </H2>
-               <P className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                 Whether you need enterprise integration expertise, DevOps transformation, 
-                 or strategic technology leadership, I'm here to help bring your vision to life.
-               </P>
-               <a
-                 href="/contact"
-                 className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-               >
-                 <MessageSquare className="h-4 w-4" />
-                 Get in Touch
-               </a>
-             </div>
-           </div>
+          {/* Contact Section at bottom of every page */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <div className="text-center">
+              <H2 className="text-2xl font-semibold text-gray-900 mb-4">
+                Ready to discuss your next project?
+              </H2>
+              <P className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Whether you need enterprise integration expertise, DevOps transformation, 
+                or strategic technology leadership, I'm here to help bring your vision to life.
+              </P>
+              <a
+                href="/contact"
+                className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                <MessageSquare className="h-4 w-4" />
+                Get in Touch
+              </a>
+            </div>
+          </div>
         </article>
-      </div>
+        </div>
+        
+        {/* Right Sidebar */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-32 space-y-6">
+            {/* Smart Related Content Sidebar */}
+            <div className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-xl p-6 border border-teal-200 dark:border-teal-800 shadow-sm">
+              <UnifiedRelatedContent
+                content={content}
+                title={frontmatter.title || ''}
+                tags={frontmatter.tags || []}
+                contentType={file.startsWith('portfolio/') ? 'portfolio' : file.startsWith('projects/') ? 'project' : 'page'}
+                currentUrl={window.location.pathname}
+                maxResults={2}
+                variant="sidebar"
+              />
+            </div>
+          </div>
+        </div>
+        </div>
+      ) : (
+        // Single-column layout for other pages  
+        <div>
+          <article className="prose prose-neutral dark:prose-invert max-w-none w-full">
+            <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+              {content}
+            </ReactMarkdown>
+          </article>
+        </div>
+      )}
     </div>
   )
 }

@@ -16,8 +16,13 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
   if (typeof window === 'undefined') {
     console.log('Markdown loading skipped during build/SSR')
     const { searchData } = await import('./searchData')
-    cachedSearchItems = searchData
-    return searchData
+    // Filter out About page from static data
+    cachedSearchItems = searchData.filter(item => 
+      item.url !== '/' && 
+      item.url !== '/about' && 
+      item.id !== 'about'
+    )
+    return cachedSearchItems
   }
 
   try {
@@ -32,8 +37,13 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
     if (Object.keys(markdownModules).length === 0) {
       console.log('No markdown files found, using static data')
       const { searchData } = await import('./searchData')
-      cachedSearchItems = searchData
-      return searchData
+      // Filter out About page from static data
+      cachedSearchItems = searchData.filter(item => 
+        item.url !== '/' && 
+        item.url !== '/about' && 
+        item.id !== 'about'
+      )
+      return cachedSearchItems
     }
     
     const markdownFiles = await Promise.all(
@@ -44,16 +54,29 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
     )
 
     console.log('Loaded markdown files:', markdownFiles.length)
-    cachedSearchItems = convertMarkdownToSearchItems(markdownFiles)
-    console.log('Converted search items:', cachedSearchItems)
+    const searchItems = convertMarkdownToSearchItems(markdownFiles)
+    
+    // Filter out the About page (homepage) from search results
+    cachedSearchItems = searchItems.filter(item => 
+      item.url !== '/' && 
+      item.url !== '/about' && 
+      item.id !== 'about'
+    )
+    
+    console.log(`Converted search items: ${searchItems.length}, Filtered: ${cachedSearchItems.length} (excluded About page)`)
     return cachedSearchItems
   } catch (error) {
     console.error('Error loading markdown files:', error)
     
     // Fallback to static data if dynamic loading fails
     const { searchData } = await import('./searchData')
-    cachedSearchItems = searchData
-    return searchData
+    // Filter out About page from static data too
+    cachedSearchItems = searchData.filter(item => 
+      item.url !== '/' && 
+      item.url !== '/about' && 
+      item.id !== 'about'
+    )
+    return cachedSearchItems
   }
 }
 

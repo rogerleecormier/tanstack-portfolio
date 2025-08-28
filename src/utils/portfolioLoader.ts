@@ -97,7 +97,7 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
           description: (frontmatter.description as string) || 'No description available',
           tags: [...tags, ...keywords],
           category: getCategoryFromTags(tags, fileName),
-          url: fileName,
+          url: `portfolio/${fileName}`,
           keywords,
           content: cleanedBody,
           date: frontmatter.date as string | undefined
@@ -140,7 +140,7 @@ export async function getPortfolioItem(id: string): Promise<PortfolioItem | null
       description: (frontmatter.description as string) || '',
       tags: [...tags, ...keywords],
       category: getCategoryFromTags(tags, id),
-      url: id,
+      url: `portfolio/${id}`,
       keywords,
       content: cleanedBody,
       date: frontmatter.date as string | undefined
