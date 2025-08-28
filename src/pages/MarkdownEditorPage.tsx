@@ -35,7 +35,7 @@ import { Separator } from '@/components/ui/separator'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { H1, H2, P } from '@/components/ui/typography'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
@@ -149,7 +149,7 @@ def generate_content():
       .replace(/<li>(.*?)<\/li>/g, '- $1\n')
       .replace(/<blockquote>(.*?)<\/blockquote>/gs, '> $1\n\n')
       // Handle chart nodes
-      .replace(/<div[^>]*data-type="chart"[^>]*data-chart-type="([^"]*)"[^>]*data-chart-data="([^"]*)"[^>]*data-chart-title="([^"]*)"[^>]*><\/div>/g, (match, chartType, chartData, chartTitle) => {
+      .replace(/<div[^>]*data-type="chart"[^>]*data-chart-type="([^"]*)"[^>]*data-chart-data="([^"]*)"[^>]*data-chart-title="([^"]*)"[^>]*><\/div>/g, (_match, chartType, chartData, chartTitle) => {
         return `\n\n### ${chartTitle || 'Chart'}\n\n\`\`\`${chartType}\n${chartData}\n\`\`\`\n\n`
       })
       .replace(/<br\s*\/?>/g, '\n')
@@ -178,7 +178,7 @@ def generate_content():
       // Code blocks without language
       .replace(/```\n([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
       // Chart blocks (convert to chart nodes)
-      .replace(/### (.*?)\n\n```(barchart|linechart|scatterplot|histogram)\n([\s\S]*?)```/g, (match, title, chartType, chartData) => {
+      .replace(/### (.*?)\n\n```(barchart|linechart|scatterplot|histogram)\n([\s\S]*?)```/g, (_match, title, chartType, chartData) => {
         return `<div data-type="chart" data-chart-type="${chartType}" data-chart-data="${chartData.replace(/"/g, '&quot;')}" data-chart-title="${title.replace(/"/g, '&quot;')}"></div>`
       })
       // Blockquotes

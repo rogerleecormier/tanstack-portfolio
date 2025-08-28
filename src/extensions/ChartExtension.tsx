@@ -14,6 +14,11 @@ declare module '@tiptap/core' {
   }
 }
 
+// Wrapper component to adapt props for ReactNodeViewRenderer
+const ChartRendererWrapper = (props: any) => {
+  return <ChartRenderer node={props.node} />
+}
+
 export const Chart = Node.create<ChartOptions>({
   name: 'chart',
 
@@ -79,7 +84,7 @@ export const Chart = Node.create<ChartOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(ChartRenderer)
+    return ReactNodeViewRenderer(ChartRendererWrapper)
   },
 
   addCommands() {
