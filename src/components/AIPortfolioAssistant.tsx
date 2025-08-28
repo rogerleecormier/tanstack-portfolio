@@ -32,10 +32,9 @@ interface Recommendation {
 
 interface SiteAssistantProps {
   portfolioItems: PortfolioItem[]
-  onItemSelect?: (item: PortfolioItem) => void
 }
 
-export default function SiteAssistant({ portfolioItems, onItemSelect }: SiteAssistantProps) {
+export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
   const [userQuery, setUserQuery] = useState('')
   const [recommendations, setRecommendations] = useState<Recommendation[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -132,6 +131,18 @@ export default function SiteAssistant({ portfolioItems, onItemSelect }: SiteAssi
       })
     }
 
+    if (lowerQuery.includes('project') || lowerQuery.includes('method') || lowerQuery.includes('analysis') || lowerQuery.includes('methodology') || lowerQuery.includes('budget') || lowerQuery.includes('complexity')) {
+      insights.push({
+        type: 'solution',
+        title: 'Project Method Analysis & Budget Planning',
+        description: 'Comprehensive project methodology analysis including budget tiers, complexity assessment, and delivery risk evaluation.',
+        relatedItems: ['project-analysis'],
+        confidence: 0.89,
+        icon: BarChart3,
+        category: 'Project Management'
+      })
+    }
+
     // Site Navigation Insights
     if (lowerQuery.includes('contact') || lowerQuery.includes('reach') || lowerQuery.includes('get in touch') || lowerQuery.includes('hire')) {
       insights.push({
@@ -194,9 +205,17 @@ export default function SiteAssistant({ portfolioItems, onItemSelect }: SiteAssi
     } else if (itemSlug === 'about') {
       window.location.href = '/'
     } else {
+      // Check if this is a project item
+      if (itemSlug === 'project-analysis') {
+        window.location.href = '/projects/project-analysis'
+        return
+      }
+      
+      // Check if this is a portfolio item
       const item = portfolioItems.find(i => i.fileName === itemSlug)
-      if (item && onItemSelect) {
-        onItemSelect(item)
+      if (item) {
+        // Navigate directly to portfolio URLs
+        window.location.href = `/portfolio/${itemSlug}`
       }
     }
   }

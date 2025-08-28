@@ -48,9 +48,6 @@ export default function AppLayout() {
       {/* Site Assistant - Available on all pages */}
       <SiteAssistant 
         portfolioItems={portfolioItems}
-        onItemSelect={(item) => {
-          window.location.href = `/${item.url}`
-        }}
       />
     </SidebarProvider>
   )
