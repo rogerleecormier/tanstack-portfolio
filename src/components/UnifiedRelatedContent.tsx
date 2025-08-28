@@ -195,13 +195,13 @@ export function UnifiedRelatedContent({
   const getContentTypeColor = (type: string) => {
     switch (type) {
       case 'blog':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+        return 'brand-bg-secondary text-blue-800 dark:bg-blue-50 dark:text-blue-800'
       case 'portfolio':
-        return 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200'
+        return 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800'
       case 'project':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-50 dark:text-purple-800'
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+        return 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800'
     }
   }
 
@@ -262,7 +262,7 @@ export function UnifiedRelatedContent({
                                {cleanTags.slice(0, 4).map((tag, index) => (
                                  <span 
                                    key={index}
-                                   className="inline-block text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full"
+                                   className="inline-block text-xs px-2 py-1 brand-bg-primary text-teal-600 dark:bg-teal-50 dark:text-teal-600 rounded-full"
                                    title={tag}
                                  >
                                    {tag}
@@ -368,7 +368,7 @@ export function UnifiedRelatedContent({
                             {cleanTags.slice(0, 3).map((tag, index) => (
                               <span 
                                 key={index}
-                                className="inline-block text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full truncate max-w-[100px]"
+                                className="inline-block text-xs px-2 py-1 brand-bg-primary text-teal-600 dark:bg-teal-50 dark:text-teal-600 rounded-full truncate max-w-[100px]"
                                 title={tag}
                               >
                                 {tag}

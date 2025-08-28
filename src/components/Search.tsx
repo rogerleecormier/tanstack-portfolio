@@ -181,8 +181,8 @@ export default function Search() {
                           </span>
                           {/* Content Type Badge */}
                           <span className={`text-xs px-2 py-1 rounded-full ${
-                            result.item.contentType === 'blog' ? 'bg-blue-100 text-blue-800' :
-                            result.item.contentType === 'portfolio' ? 'bg-green-100 text-green-800' :
+                            result.item.contentType === 'blog' ? 'brand-bg-secondary text-blue-800' :
+                            result.item.contentType === 'portfolio' ? 'brand-bg-primary text-teal-800' :
                             result.item.contentType === 'project' ? 'bg-purple-100 text-purple-800' :
                             'bg-gray-100 text-gray-800'
                           }`}>
@@ -210,7 +210,7 @@ export default function Search() {
                         <div className="flex flex-wrap gap-1 mt-1">
                           <span className="text-xs text-muted-foreground mr-2">Topics:</span>
                           {result.item.headings.slice(0, 4).map((heading, idx) => (
-                            <span key={idx} className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                            <span key={idx} className="text-xs brand-bg-secondary text-blue-700 px-2 py-0.5 rounded-full">
                               {heading}
                             </span>
                           ))}

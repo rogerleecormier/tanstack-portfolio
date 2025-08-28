@@ -43,11 +43,11 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
   const chartConfig = {
     value: {
       label: "Value",
-      color: "#0d9488",
+      color: "#0d9488", // teal-600
     },
     date: {
       label: "Date",
-      color: "#0891b2",
+      color: "#0891b2", // blue-600
     },
   };
 
@@ -87,7 +87,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
     switch (chartType) {
                     case "barchart":
          return (
-           <div className="my-6 bg-gray-50 p-4 rounded-lg border border-gray-200" style={{ width, height: chartHeight }}>
+           <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
              {/* Shadcn Chart Implementation */}
                            <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
                 <BarChart
@@ -122,7 +122,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                          <ChartTooltipContent
                            active={active}
                            payload={payload}
-                           className="bg-white border border-teal-200 shadow-lg"
+                           className="bg-white brand-border-primary shadow-lg"
                          />
                        );
                      }
@@ -175,7 +175,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
              );
 
                                                                        return (
-                 <div className="my-6 bg-gray-50 p-4 rounded-lg border border-gray-200" style={{ width, height: chartHeight }}>
+                 <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
                    {/* Shadcn Chart Implementation */}
                                        <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
                       <LineChart
@@ -210,7 +210,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                         <ChartTooltipContent
                           active={active}
                           payload={payload}
-                          className="bg-white border border-teal-200 shadow-lg"
+                          className="bg-white brand-border-primary shadow-lg"
                         />
                       );
                     }
@@ -276,7 +276,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                               case "scatterplot":
                         return (
-                 <div className="my-6 bg-gray-50 p-4 rounded-lg border border-gray-200" style={{ width, height: chartHeight }}>
+                 <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
                   {/* Shadcn Chart Implementation */}
                                      <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
                     <ScatterChart
@@ -312,7 +312,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                         <ChartTooltipContent
                           active={active}
                           payload={payload}
-                          className="bg-white border border-teal-200 shadow-lg"
+                          className="bg-white brand-border-primary shadow-lg"
                         />
                       );
                     }
@@ -361,7 +361,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               case "histogram":
                return (
-                 <div className="my-6 bg-gray-50 p-4 rounded-lg border border-gray-200" style={{ width, height: chartHeight }}>
+                 <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
                   {/* Shadcn Chart Implementation */}
                                      <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
                     <BarChart
@@ -396,7 +396,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                                       <ChartTooltipContent
                                         active={active}
                                         payload={payload}
-                                        className="bg-white border border-teal-200 shadow-lg"
+                                        className="bg-white brand-border-primary shadow-lg"
                                       />
                                     );
                                   }

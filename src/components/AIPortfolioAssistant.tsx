@@ -221,19 +221,19 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
   }
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.9) return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-    if (confidence >= 0.8) return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-    if (confidence >= 0.7) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-    return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+    if (confidence >= 0.9) return 'bg-green-100 text-green-800 dark:bg-green-50 dark:text-green-800'
+    if (confidence >= 0.8) return 'brand-bg-secondary text-blue-800 dark:bg-blue-50 dark:text-blue-800'
+    if (confidence >= 0.7) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-50 dark:text-yellow-800'
+    return 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800'
   }
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'solution': return 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200'
-      case 'blog': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-      case 'trend': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
-      case 'insight': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      case 'solution': return 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800'
+      case 'blog': return 'bg-purple-100 text-purple-800 dark:bg-purple-50 dark:text-purple-800'
+      case 'trend': return 'bg-orange-100 text-orange-800 dark:bg-orange-50 dark:text-orange-800'
+      case 'insight': return 'brand-bg-secondary text-blue-800 dark:bg-blue-50 dark:text-blue-800'
+      default: return 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800'
     }
   }
 
@@ -280,11 +280,11 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
               onChange={(e) => setUserQuery(e.target.value)}
               className="min-h-[80px] resize-none"
             />
-            <Button
-              onClick={handleQuerySubmit}
-              disabled={isAnalyzing || !userQuery.trim()}
-              className="w-full"
-            >
+                         <Button
+               onClick={handleQuerySubmit}
+               disabled={isAnalyzing || !userQuery.trim()}
+               className="w-full brand-button-primary"
+             >
               {isAnalyzing ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -308,18 +308,18 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
               {recommendations.map((rec, index) => {
                 const IconComponent = rec.icon
                 return (
-                  <div key={index} className="p-3 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                                     <div key={index} className="p-3 border rounded-lg brand-bg-primary dark:bg-teal-50/20">
                     <div className="flex items-start gap-3">
                       <IconComponent className="w-5 h-5 text-teal-600 mt-0.5" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h5 className="font-medium text-sm">{rec.title}</h5>
-                          <Badge className={`text-xs ${getConfidenceColor(rec.confidence)}`}>
-                            {Math.round(rec.confidence * 100)}% match
-                          </Badge>
-                          <Badge className={`text-xs ${getTypeColor(rec.type)}`}>
-                            {rec.type}
-                          </Badge>
+                                                     <Badge variant="secondary" className={`text-xs ${getConfidenceColor(rec.confidence)}`}>
+                             {Math.round(rec.confidence * 100)}% match
+                           </Badge>
+                           <Badge variant="secondary" className={`text-xs ${getTypeColor(rec.type)}`}>
+                             {rec.type}
+                           </Badge>
                         </div>
                         <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
                           {rec.description}

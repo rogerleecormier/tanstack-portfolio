@@ -694,10 +694,10 @@ export default function BlogPage({ slug }: { slug: string }) {
                   </a>
                   <Link
                     to="/blog"
-                    className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-teal-700 border border-teal-300 px-6 py-3 rounded-lg font-medium transition-colors dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-teal-400 dark:border-teal-500"
+                    className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-teal-700 border border-teal-300 px-6 py-3 rounded-lg font-medium transition-colors dark:bg-teal-50 dark:hover:bg-teal-100 dark:text-teal-800 dark:border-teal-300"
                   >
-                    <Calendar className="h-4 w-4 text-teal-700 dark:text-teal-400" />
-                    <span className="text-teal-700 dark:text-teal-400">Read More Articles</span>
+                    <Calendar className="h-4 w-4 text-teal-700 dark:text-teal-800" />
+                    <span className="text-teal-700 dark:text-teal-800">Read More Articles</span>
                   </Link>
                 </div>
               </div>

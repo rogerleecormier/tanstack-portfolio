@@ -173,7 +173,7 @@ export function BlogRecommendations({
               href={content.url === '/about' ? '/' : content.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block p-4 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-lg transition-colors group"
+              className="block p-4 brand-bg-primary hover:bg-teal-100 brand-border-primary rounded-lg transition-colors group"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="font-semibold text-teal-900 group-hover:text-teal-800 text-sm">
@@ -193,7 +193,7 @@ export function BlogRecommendations({
               </div>
               <div className="flex flex-wrap gap-1">
                 {parseTagsSafely(content.tags).slice(0, 3).map((tag: string) => (
-                  <Badge key={tag} variant="secondary" className="text-xs bg-teal-100 text-teal-800">
+                  <Badge key={tag} variant="secondary" className="text-xs brand-bg-primary text-teal-800">
                     {tag}
                   </Badge>
                 ))}
@@ -257,7 +257,7 @@ export function BlogRecommendations({
             )
               .slice(0, 8)
               .map((tag: string) => (
-                <Badge key={tag} variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                <Badge key={tag} variant="secondary" className="text-xs brand-bg-secondary text-blue-800">
                   {tag}
                 </Badge>
               ))}

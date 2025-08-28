@@ -85,8 +85,8 @@ function getConfidenceText(confidence: number): string {
 // Get content type color
 function getContentTypeColor(contentType: 'blog' | 'portfolio' | 'project'): string {
   switch (contentType) {
-    case 'portfolio': return 'bg-teal-100 text-teal-800 border-teal-200'
-    case 'blog': return 'bg-blue-100 text-blue-800 border-blue-200'
+    case 'portfolio': return 'brand-bg-primary text-teal-800 brand-border-primary'
+    case 'blog': return 'brand-bg-secondary text-blue-800 brand-border-secondary'
     case 'project': return 'bg-purple-100 text-purple-800 border-purple-200'
     default: return 'bg-gray-100 text-gray-800 border-gray-200'
   }
@@ -319,7 +319,7 @@ export function ContactAnalysis({
               <HelpCircle className="h-4 w-4" />
               Follow-up Questions
             </h4>
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+            <div className="bg-blue-50 dark:bg-blue-50/20 p-4 rounded-lg">
               <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
                 To better understand your needs, consider these questions:
               </p>
@@ -385,7 +385,7 @@ export function ContactAnalysis({
                               {cleanTags.slice(0, 4).map((tag, tagIndex) => (
                                 <span 
                                   key={tagIndex}
-                                  className="inline-block text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full"
+                                  className="inline-block text-xs px-2 py-1 brand-bg-primary text-teal-600 dark:bg-teal-50/20 dark:text-teal-600 rounded-full"
                                   title={tag}
                                 >
                                   {tag}

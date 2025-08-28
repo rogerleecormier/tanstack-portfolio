@@ -41,7 +41,7 @@ const ToolsListPage: React.FC = () => {
       case 'active':
         return <Badge variant="default" className="bg-teal-600 hover:bg-teal-700 text-white">Active</Badge>
       case 'beta':
-        return <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-blue-200">Beta</Badge>
+        return <Badge variant="secondary" className="brand-bg-secondary text-blue-800 hover:bg-blue-200 brand-border-secondary">Beta</Badge>
       case 'coming-soon':
         return <Badge variant="outline" className="border-gray-300 text-gray-600">Coming Soon</Badge>
       default:

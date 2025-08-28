@@ -183,12 +183,12 @@ export default function PortfolioListPage() {
   }
 
   const categoryColors = {
-    'Strategy & Consulting': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-    'Leadership & Culture': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    'Technology & Operations': 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
-    'AI & Automation': 'bg-violet-100 text-violet-800 dark:bg-violet-900 dark:text-violet-200',
-    'Data & Analytics': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    'Risk & Compliance': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+    'Strategy & Consulting': 'bg-purple-100 text-purple-800 dark:bg-purple-50 dark:text-purple-800',
+    'Leadership & Culture': 'bg-green-100 text-green-800 dark:bg-green-50 dark:text-green-800',
+    'Technology & Operations': 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800',
+    'AI & Automation': 'bg-violet-100 text-violet-800 dark:bg-violet-50 dark:text-violet-800',
+    'Data & Analytics': 'brand-bg-secondary text-blue-800 dark:bg-blue-50 dark:text-blue-800',
+    'Risk & Compliance': 'bg-red-100 text-red-800 dark:bg-red-50 dark:text-red-800'
   }
 
   if (isLoading) {
@@ -366,7 +366,8 @@ export default function PortfolioListPage() {
                   {/* Category Badge */}
                   <div className="flex items-center gap-2 mt-2">
                     <Badge 
-                                             className={`${(categoryColors as Record<string, string>)[item.category] || 'bg-gray-100 text-gray-800'}`}
+                      variant="secondary"
+                      className={`${(categoryColors as Record<string, string>)[item.category] || 'bg-gray-100 text-gray-800'}`}
                     >
                       {item.category}
                     </Badge>
@@ -431,7 +432,7 @@ export default function PortfolioListPage() {
                {portfolioSearch?.getTags().map((tag) => (
                  <Badge
                    key={tag}
-                   variant={selectedTags.includes(tag) ? 'default' : 'outline'}
+                   variant={selectedTags.includes(tag) ? 'secondary' : 'outline'}
                    className={`cursor-pointer transition-colors ${
                      selectedTags.includes(tag) 
                        ? 'bg-teal-600 hover:bg-teal-700 text-white' 

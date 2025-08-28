@@ -592,7 +592,7 @@ This meeting request was generated based on AI analysis of their contact form su
                     href="https://github.com/rogerleecormier"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full bg-gray-800 hover:bg-gray-900 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-3 transition-colors text-sm font-medium shadow-md hover:shadow-lg"
+                    className="w-full brand-button-primary px-4 py-3 rounded-lg flex items-center justify-center gap-3 transition-colors text-sm font-medium shadow-md hover:shadow-lg"
                   >
                     <Github className="h-4 w-4" />
                     GitHub
@@ -916,7 +916,7 @@ This meeting request was generated based on AI analysis of their contact form su
                     href="https://github.com/rogerleecormier"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full bg-gray-800 hover:bg-gray-900 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-3 transition-colors text-sm font-medium shadow-md hover:shadow-lg"
+                    className="w-full brand-button-primary px-4 py-3 rounded-lg flex items-center justify-center gap-3 transition-colors text-sm font-medium shadow-md hover:shadow-lg"
                   >
                     <Github className="h-4 w-4" />
                     GitHub
