@@ -1,178 +1,293 @@
-# Roger Lee Cormier Portfolio
+# TanStack Portfolio Site
 
-A modern, professional portfolio website built with cutting-edge web technologies, featuring Cloudflare Access authentication, AI-powered features, interactive data visualization, and a fully functional contact form with Resend email integration.
+A modern, AI-enhanced portfolio website built with TanStack Router, React, and TypeScript, optimized for Cloudflare deployment with comprehensive content management and intelligent features.
 
-## 🚀 Quick Start
+## 🚀 Features
 
-```bash
-# Clone and install
-git clone <repository-url>
-cd tanstack-portfolio
-npm install
+### Core Functionality
+- **Portfolio Management**: Dynamic portfolio pages with markdown content loading
+- **Blog System**: Blog posts with markdown support and frontmatter parsing
+- **Project Showcase**: Dedicated project pages with detailed information
+- **AI-Powered Contact Form**: Intelligent form analysis with Cloudflare AI Workers
+- **Smart Content Recommendations**: AI-driven content suggestions across all pages
+- **Markdown Editor**: Rich text editor with TipTap integration for content creation
+- **Search & Discovery**: Advanced search functionality with Fuse.js integration
+- **Authentication**: Cloudflare Access integration with development fallbacks
+- **Responsive Design**: Mobile-first design with Tailwind CSS
 
-# Start development
-npm run dev
+### AI & Automation Features
+- **Contact Form Analysis**: AI-powered inquiry classification and priority assessment
+- **Content Recommendations**: Intelligent related content suggestions
+- **Portfolio Assistant**: AI-driven portfolio insights and guidance
+- **Meeting Scheduler**: AI-enhanced meeting coordination
+- **Newsletter Management**: Smart subscription handling with blog integration
 
-# Build for production
-npm run build
-```
+### Security & Performance
+- **Cloudflare Integration**: Optimized for Cloudflare Workers and Pages
+- **Authentication**: Secure access control with rate limiting
+- **Content Security Policy**: Comprehensive security headers
+- **Performance Optimization**: Vite build system with code splitting
+- **SEO Optimization**: Dynamic meta tags and structured data
 
-## ✨ Key Features
+## 🛠️ Technology Stack
 
-- **🤖 Smart Content Recommendations** - Tag-based content suggestions and insights
-- **🔐 Enterprise Authentication** - Cloudflare Access with Zero Trust security
-- **📧 Smart Contact System** - AI-analyzed contact form with meeting scheduling
-- **📧 Blog Newsletter** - Functional newsletter signups with email confirmations
-- **🔍 Intelligent Search** - Fuse.js powered search across all content
-- **📊 Data Visualization** - Interactive charts and analytics
-- **📱 Responsive Design** - Mobile-first, accessible interface
-- **⚡ Auto-Generated Content** - Dynamic portfolio from markdown files
+### Frontend
+- **React 19**: Latest React with concurrent features
+- **TanStack Router**: Type-safe routing with file-based routing
+- **TypeScript**: Full type safety throughout the application
+- **Tailwind CSS**: Utility-first CSS framework with custom design system
+- **Radix UI**: Accessible component primitives
+- **TipTap**: Rich text editor for markdown creation
 
-## 🏗️ Tech Stack
+### AI & Backend Services
+- **Cloudflare AI Workers**: AI-powered contact form analysis
+- **Cloudflare Workers**: Serverless functions for email and subscriptions
+- **Fuse.js**: Fuzzy search implementation
+- **Gray Matter**: Markdown frontmatter parsing
 
-- **Frontend**: React 19 + TypeScript 5.8 + Vite 7
-- **Routing**: TanStack Router v1
-- **UI**: shadcn/ui + Tailwind CSS 3.4
-- **Search**: Fuse.js with AI enhancements
-- **Authentication**: Cloudflare Access (Zero Trust)
-- **Email**: Resend API + Cloudflare Workers
-- **AI**: Cloudflare AI Workers with Llama 2
-- **Charts**: Recharts + shadcn/ui Chart Components
+### Development Tools
+- **Vite**: Fast build tool and development server
+- **ESLint**: Code quality and consistency
+- **PostCSS**: CSS processing and optimization
+- **Autoprefixer**: CSS vendor prefixing
 
-## 📚 Documentation
-
-### **Core Documentation**
-- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Comprehensive development guide, architecture, and implementation details
-- **[CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)** - Cloudflare Access and Workers setup guide
-- **[EMAIL_SYSTEM.md](./EMAIL_SYSTEM.md)** - Email system and meeting confirmation documentation
-
-### **Feature Documentation**
-- **[AI_FEATURE_README.md](./AI_FEATURE_README.md)** - AI-powered features, portfolio enhancements, and intelligent analysis
-- **[BLOG_SUBSCRIPTION_SYSTEM.md](./BLOG_SUBSCRIPTION_SYSTEM.md)** - Blog newsletter signups and subscription management
-
-### **Security & Access Control**
-- **[SECURITY.md](./SECURITY.md)** - Comprehensive security features and best practices
-- **[ACCESS_CONTROL.md](./ACCESS_CONTROL.md)** - Authentication and access control configuration
-
-### **Integration Guides**
-*No external integrations currently configured*
-
-## 🚀 Getting Started
-
-### **Prerequisites**
-- Node.js 18+ (LTS recommended)
-- npm 9+ or yarn 1.22+
-- Cloudflare account (for Workers and Access)
-- Resend account (for email functionality)
-
-### **Environment Setup**
-Create `.env.local` for local development:
-```bash
-VITE_DEV_MODE=true
-VITE_CLOUDFLARE_DOMAIN=rcormier.dev
-```
-
-### **Development Commands**
-```bash
-npm run dev              # Start Vite dev server
-npm run build            # Build for production
-npm run preview          # Preview production build
-npm run type-check       # TypeScript type checking
-npm run lint             # ESLint linting
-```
-
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```
 src/
-├── components/           # React components
-│   ├── ui/             # shadcn/ui components
-│   ├── SiteAssistant.tsx # AI-powered site assistant
-│   ├── Search.tsx      # Global search implementation
-│   └── ...             # Other components
-├── pages/               # Page components
-│   ├── PortfolioPage.tsx    # Auto-generated portfolio
-│   ├── ContactPage.tsx      # Smart contact flow
-│   └── ...                  # Other pages
-├── content/             # Markdown content files
-│   ├── portfolio/      # Auto-generated portfolio items
-│   └── blog/           # Blog posts
-├── api/                 # API and service files
-├── utils/               # Utility functions
-├── config/              # Configuration files
-└── router.tsx           # TanStack Router configuration
+├── components/          # Reusable UI components
+│   ├── ui/             # Base UI components (Radix UI)
+│   ├── AIPortfolioAssistant.tsx    # AI portfolio guidance
+│   ├── ContactAnalysis.tsx         # Contact form AI analysis
+│   ├── MarkdownEditor.tsx          # Rich text editor
+│   ├── ProtectedRoute.tsx          # Authentication wrapper
+│   └── CloudflareStatusChecker.tsx # Cloudflare integration status
+├── pages/              # Page components
+│   ├── PortfolioPage.tsx           # Portfolio item display
+│   ├── BlogPage.tsx                # Blog post rendering
+│   ├── ContactPage.tsx             # AI-enhanced contact form
+│   ├── MarkdownEditorPage.tsx      # Content creation tool
+│   └── HealthBridge.tsx            # Health analysis tool
+├── api/                # API services
+│   ├── contactAnalyzer.ts          # Contact form AI analysis
+│   ├── smartRecommendationsService.ts # Content recommendations
+│   └── emailService.ts             # Email handling
+├── hooks/              # Custom React hooks
+│   ├── useAuth.ts                  # Authentication management
+│   └── useScrollToTop.ts           # Scroll behavior
+├── utils/              # Utility functions
+│   ├── portfolioUtils.ts           # Portfolio content management
+│   ├── searchData.ts               # Search functionality
+│   ├── logger.ts                   # Centralized logging
+│   └── cloudflareAuth.ts           # Cloudflare authentication
+├── content/            # Markdown content
+│   ├── portfolio/      # Portfolio markdown files
+│   ├── blog/           # Blog post markdown files
+│   └── projects/       # Project markdown files
+└── config/             # Configuration files
+    └── environment.ts  # Environment-specific settings
 ```
 
-## 🌟 AI Features in Action
+## 🚀 Getting Started
 
-### **Site Assistant**
-- **Smart Content Recommendations**: Tag-based suggestions based on content relevance
-- **Content Discovery**: Helps users find relevant portfolio sections and blog posts
-- **Smart Navigation**: Suggests appropriate pages and contact methods
-- **Confidence Scoring**: Each recommendation includes reliability metrics
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Cloudflare account (for production deployment)
 
-### **Contact Form Intelligence**
-- **Real-time Analysis**: AI analyzes contact form submissions as users type
-- **Smart Classification**: Automatically categorizes inquiries by type, priority, and industry
-- **Meeting Recommendations**: Suggests optimal meeting duration and scheduling
-- **Content Suggestions**: Recommends relevant portfolio content based on inquiry analysis
+### Installation
 
-### **Search Enhancement**
-- **Fuzzy Search**: Typo-tolerant search with Fuse.js
-- **Smart Recommendations**: Content suggestions based on tags and relevance
-- **Relevance Scoring**: Advanced algorithms for better search results
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd tanstack-portfolio
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+### Development Commands
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run type-check   # Run TypeScript type checking
+```
+
+## 🌐 Deployment
+
+### Cloudflare Pages
+
+This site is optimized for Cloudflare Pages deployment:
+
+1. **Connect Repository**: Link your GitHub repository to Cloudflare Pages
+2. **Build Settings**:
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Node.js version: 18
+3. **Environment Variables**: Configure any required environment variables
+4. **Custom Domain**: Set up your custom domain with Cloudflare DNS
+
+### Cloudflare Workers
+
+The site uses several Cloudflare Workers for enhanced functionality:
+
+- **AI Contact Analyzer**: Intelligent contact form analysis
+- **Blog Subscription Worker**: Newsletter and subscription management
+- **Email Service**: Secure email handling
+
+## 🔐 Authentication
+
+### Development Mode
+- Mock authentication system for local development
+- Session timeout after 30 minutes
+- Rate limiting on login attempts
+
+### Production Mode
+- Cloudflare Access integration
+- Secure JWT-based authentication
+- Automatic redirect handling
+
+## 📝 Content Management
+
+### Adding Portfolio Items
+1. Create markdown file in `src/content/portfolio/`
+2. Add frontmatter with metadata (title, description, tags, category)
+3. Add the slug to the router configuration
+4. Content automatically appears in portfolio listings
+
+### Adding Blog Posts
+1. Create markdown file in `src/content/blog/`
+2. Include frontmatter with post metadata
+3. Posts automatically appear in blog listings and search
+
+### Markdown Editor
+- Rich text editing with TipTap
+- Real-time markdown preview
+- Syntax highlighting for code blocks
+- Export functionality
+
+## 🔍 Search & Discovery
+
+### Search Features
+- Full-text search across all content
+- Fuzzy matching with Fuse.js
+- Tag-based filtering
+- Content type categorization
+
+### AI Recommendations
+- Intelligent content suggestions
+- Context-aware recommendations
+- Portfolio-specific insights
+- Cross-content relationships
+
+## 🤖 AI Features
+
+### Contact Form Analysis
+- Automatic inquiry classification
+- Priority assessment
+- Industry identification
+- Follow-up question generation
+- Spam detection and prevention
+
+### Content Intelligence
+- Smart content recommendations
+- Portfolio insights and analysis
+- Meeting scheduling assistance
+- Newsletter content optimization
+
+## 🛡️ Security Features
+
+### Content Security Policy
+- Strict CSP headers
+- XSS protection
+- Frame options
+- Referrer policy
+
+### Rate Limiting
+- Request throttling
+- Abuse prevention
+- IP-based limiting
+
+### Authentication Security
+- Secure session management
+- JWT token handling
+- Development mode safeguards
+
+## 📱 Responsive Design
+
+- Mobile-first approach
+- Tailwind CSS responsive utilities
+- Touch-friendly interactions
+- Optimized for all screen sizes
 
 ## 🔧 Configuration
 
-### **Access Control**
-Manage user access in `src/config/accessControl.ts`:
-```typescript
-export const accessControl = {
-  allowedEmails: ['roger@rcormier.dev', 'rogerleecormier@gmail.com'],
-  allowedDomains: ['rcormier.dev']
-};
-```
+### Environment Variables
+- Development vs production mode detection
+- Cloudflare Access configuration
+- API endpoint configuration
+- Security settings
 
-### **Portfolio Content**
-Add new portfolio items by creating markdown files in `src/content/portfolio/` with front matter:
-```markdown
----
-title: "Your Solution Title"
-description: "Brief description of your solution"
-tags: ["tag1", "tag2"]
----
-```
+### Customization
+- Tailwind CSS configuration
+- Component theming
+- Content structure
+- Routing configuration
 
-## 🚨 Troubleshooting
+## 📊 Performance
 
-### **Common Issues**
-- **Authentication Problems**: Check [ACCESS_CONTROL.md](./ACCESS_CONTROL.md)
-- **Email Issues**: See [EMAIL_SYSTEM.md](./EMAIL_SYSTEM.md)
-- **AI Features**: Review [AI_FEATURE_README.md](./AI_FEATURE_README.md)
-- **Cloudflare Setup**: Follow [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md)
+### Optimization Features
+- Vite build optimization
+- Code splitting
+- Lazy loading
+- Image optimization
+- CSS purging
 
-### **Debug Commands**
-```bash
-# Check build errors
-npm run type-check
-
-# View worker logs
-wrangler tail --env development
-
-# Test worker endpoints
-curl -X POST your-worker-url
-```
+### Monitoring
+- Cloudflare Analytics integration
+- Performance metrics
+- Error tracking
+- User experience monitoring
 
 ## 🤝 Contributing
 
-This is a personal portfolio project, but suggestions and feedback are welcome. Please ensure any contributions align with the project's professional portfolio goals.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
 
 ## 📄 License
 
-This project is proprietary and confidential. All rights reserved.
+This project is licensed under the MIT License.
 
----
+## 🆘 Support
 
-**Built with ❤️ using React, TypeScript & TanStack Router**
+For support and questions:
+- Check the documentation
+- Review existing issues
+- Create a new issue with detailed information
 
-*For detailed technical information, see [DEVELOPMENT.md](./DEVELOPMENT.md)*
+## 🔄 Updates
+
+This site is actively maintained with regular updates for:
+- Security patches
+- Performance improvements
+- New features
+- Bug fixes
+- Dependency updates
