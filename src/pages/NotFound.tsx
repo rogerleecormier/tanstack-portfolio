@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button'
 import { Home, ArrowLeft } from 'lucide-react'
 import { useEffect } from 'react'
 
@@ -19,20 +20,20 @@ export default function NotFound() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
-          >
-            <Home className="h-4 w-4" />
-            Go Home
-          </Link>
-          <button
+          <Button asChild className="inline-flex items-center gap-2">
+            <Link to="/">
+              <Home className="h-4 w-4" />
+              Go Home
+            </Link>
+          </Button>
+          <Button 
+            variant="outline"
             onClick={() => window.history.back()}
-            className="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
             Go Back
-          </button>
+          </Button>
         </div>
       </div>
     </div>

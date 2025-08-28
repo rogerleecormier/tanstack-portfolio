@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Briefcase, Menu, User, LogOut } from "lucide-react";
 import Search from "../components/Search";
 import { LoginPage } from "../components/LoginPage";
@@ -26,7 +28,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-[100] bg-teal-600 shadow-md border-b border-teal-500">
+    <header className="sticky top-0 z-40 bg-teal-600 shadow-md border-b border-teal-500">
       <div className="py-3 sm:py-4">
         {/* Mobile Layout */}
         <div className="sm:hidden">
@@ -55,22 +57,26 @@ const Header: React.FC = () => {
                   <User className="h-4 w-4" />
                   <span className="hidden xs:inline">{getUserEmail()}</span>
                 </div>
-                <button
-                  className="px-3 py-2 bg-red-600 text-white font-semibold rounded shadow hover:bg-red-700 transition flex items-center gap-1"
+                <Button
+                  variant="destructive"
+                  size="sm"
                   onClick={handleLogout}
+                  className="flex items-center gap-1"
                 >
                   <LogOut className="h-4 w-4" />
                   <span className="hidden xs:inline">Logout</span>
-                </button>
+                </Button>
               </div>
             ) : (
-              <button
-                className="px-3 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition disabled:opacity-50"
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={handleLoginClick}
                 disabled={isLoading}
+                className="bg-white text-teal-700 hover:bg-teal-50"
               >
                 {isLoading ? 'Loading...' : 'Login'}
-              </button>
+              </Button>
             )}
           </div>
           {/* Breadcrumbs below search on mobile */}
@@ -100,21 +106,23 @@ const Header: React.FC = () => {
               <Search />
             </div>
             {isAuthenticated ? (
-              <button
-                className="px-4 py-2 bg-red-600 text-white font-semibold rounded shadow hover:bg-red-700 transition flex items-center gap-2"
+              <Button
+                variant="destructive"
                 onClick={handleLogout}
+                className="flex items-center gap-2"
               >
                 <LogOut className="h-4 w-4" />
                 Logout
-              </button>
+              </Button>
             ) : (
-              <button
-                className="px-4 py-2 bg-white text-teal-700 font-semibold rounded shadow hover:bg-teal-50 transition disabled:opacity-50"
+              <Button
+                variant="secondary"
                 onClick={handleLoginClick}
                 disabled={isLoading}
+                className="bg-white text-teal-700 hover:bg-teal-50"
               >
                 {isLoading ? 'Loading...' : 'Login'}
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -132,25 +140,15 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* Login modal */}
-      {showLogin && !isAuthenticated && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          aria-modal="true"
-          role="dialog"
-        >
-          <div className="bg-white rounded shadow-lg p-6 relative overflow-y-auto">
-            <button
-              className="absolute top-2 right-2 text-teal-700"
-              onClick={handleCloseLogin}
-              aria-label="Close login modal"
-            >
-              ✕
-            </button>
-            <LoginPage onClose={handleCloseLogin} />
-          </div>
-        </div>
-      )}
+      {/* Login Dialog using shadcn Dialog */}
+      <Dialog open={showLogin} onOpenChange={setShowLogin}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Login to Your Account</DialogTitle>
+          </DialogHeader>
+          <LoginPage onClose={handleCloseLogin} />
+        </DialogContent>
+      </Dialog>
     </header>
   );
 };

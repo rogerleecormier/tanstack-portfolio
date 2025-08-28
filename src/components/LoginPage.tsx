@@ -29,8 +29,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <Card className="w-full max-w-md mx-4 border-teal-200 shadow-xl">
+    <div className="w-full flex justify-center">
+      <Card className="w-full max-w-md border-teal-200 shadow-xl">
         <CardHeader className="text-center space-y-3">
           <div className="mx-auto p-3 bg-teal-100 rounded-full w-fit border-2 border-teal-200">
             <Shield className="h-8 w-8 text-teal-700" />
