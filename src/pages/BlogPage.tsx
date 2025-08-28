@@ -183,16 +183,7 @@ export default function BlogPage({ slug }: { slug: string }) {
 
   return (
     <div className="w-full">
-      {/* Back to Blog Link */}
-      <div className="mb-6">
-        <Link 
-          to="/blog" 
-          className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-medium transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Blog
-        </Link>
-      </div>
+
 
       {/* Main Content with Sidebar Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -720,9 +711,9 @@ export default function BlogPage({ slug }: { slug: string }) {
           </article>
         </div>
 
-        {/* Right Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-32 space-y-6">
+                     {/* Right Sidebar */}
+             <div className="lg:col-span-1">
+               <div className="sticky top-36 space-y-6">
 
 
             {/* Smart Related Content Sidebar */}

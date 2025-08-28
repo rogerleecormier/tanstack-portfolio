@@ -699,9 +699,9 @@ export default function ProjectsPage({ file }: { file: string }) {
         </article>
         </div>
         
-        {/* Right Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-32 space-y-6">
+                     {/* Right Sidebar */}
+             <div className="lg:col-span-1">
+               <div className="sticky top-36 space-y-6">
             {/* Smart Related Content Sidebar */}
             <div className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-xl p-6 border border-teal-200 dark:border-teal-800 shadow-sm">
               <UnifiedRelatedContent
