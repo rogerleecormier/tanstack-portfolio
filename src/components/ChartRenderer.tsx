@@ -166,11 +166,11 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
            </div>
          );
 
-                                                                                                                                                                                                                               case "linechart":
-             // Get all keys except 'date' for multiple series
-             const seriesKeys = Object.keys(chartData[0] || {}).filter(
-               (key) => key !== "date"
-             );
+                                                                                                                                                                                                                                     case "linechart": {
+        // Get all keys except 'date' for multiple series
+        const seriesKeys = Object.keys(chartData[0] || {}).filter(
+          (key) => key !== "date"
+        );
 
                                                                        return (
                  <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
@@ -271,6 +271,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                    */}
             </div>
           );
+        }
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                               case "scatterplot":
                         return (

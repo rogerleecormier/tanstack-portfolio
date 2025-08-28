@@ -184,7 +184,7 @@ def generate_content():
       // Blockquotes
       .replace(/^> (.*$)/gim, '<blockquote><p>$1</p></blockquote>')
       // Lists
-      .replace(/^\- (.*$)/gim, '<li>$1</li>')
+      .replace(/^- (.*$)/gim, '<li>$1</li>')
       .replace(/^(\d+)\. (.*$)/gim, '<li>$2</li>')
       // Wrap consecutive list items in ul/ol
       .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')

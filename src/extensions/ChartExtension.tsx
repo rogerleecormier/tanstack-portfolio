@@ -3,7 +3,7 @@ import { ReactNodeViewRenderer } from '@tiptap/react'
 import ChartRenderer from '@/components/ChartRenderer'
 
 export interface ChartOptions {
-  HTMLAttributes: Record<string, any>
+  HTMLAttributes: Record<string, unknown>
 }
 
 declare module '@tiptap/core' {
@@ -15,8 +15,8 @@ declare module '@tiptap/core' {
 }
 
 // Wrapper component to adapt props for ReactNodeViewRenderer
-const ChartRendererWrapper = (props: any) => {
-  return <ChartRenderer node={props.node} />
+const ChartRendererWrapper = (props: { node: { attrs: Record<string, unknown> } }) => {
+  return <ChartRenderer node={props.node as any} />
 }
 
 export const Chart = Node.create<ChartOptions>({

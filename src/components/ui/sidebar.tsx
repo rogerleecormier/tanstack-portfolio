@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { TooltipPortal } from "@radix-ui/react-tooltip"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -575,7 +576,7 @@ const SidebarMenuButton = React.forwardRef<
     ref
   ) => {
     const Comp = asChild ? Slot : "button"
-    const { isMobile, state } = useSidebar()
+    const { state } = useSidebar()
 
     const button = (
       <Comp
@@ -601,12 +602,15 @@ const SidebarMenuButton = React.forwardRef<
     return (
       <Tooltip>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
-        <TooltipContent
-          side="right"
-          align="center"
-          hidden={state !== "collapsed" || isMobile}
-          {...tooltip}
-        />
+        <TooltipPortal>
+          <TooltipContent
+            side="right"
+            align="center"
+            hidden={state !== "collapsed"}
+            className="z-[300]"
+            {...tooltip}
+          />
+        </TooltipPortal>
       </Tooltip>
     )
   }

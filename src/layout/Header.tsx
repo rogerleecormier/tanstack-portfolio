@@ -28,7 +28,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-teal-600 shadow-md border-b border-teal-500">
+    <header className="sticky top-0 z-10 bg-teal-600 shadow-md border-b border-teal-500">
       <div className="py-3 sm:py-4">
         {/* Mobile Layout */}
         <div className="sm:hidden">
