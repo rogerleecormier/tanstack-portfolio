@@ -11,6 +11,55 @@ import {
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { smartRecommendationsService, type ContentItem } from '@/api/smartRecommendationsService'
 
+// Helper function to safely parse tags
+function parseTagsSafely(tags: unknown): string[] {
+  if (!tags) return [];
+  
+  // If tags is already an array, process each item
+  if (Array.isArray(tags)) {
+    const allTags: string[] = [];
+    
+    for (const item of tags) {
+      if (typeof item === 'string') {
+        // Check if this string looks like JSON
+        if (item.trim().startsWith('[') && item.trim().endsWith(']')) {
+          try {
+            const parsed = JSON.parse(item);
+            if (Array.isArray(parsed)) {
+              allTags.push(...parsed.filter((tag): tag is string => typeof tag === 'string'));
+            }
+          } catch {
+            // If parsing fails, treat as a single tag
+            allTags.push(item);
+          }
+        } else {
+          // Regular string tag
+          allTags.push(item);
+        }
+      }
+    }
+    
+    return allTags;
+  }
+  
+  // If tags is a string, try to parse it
+  if (typeof tags === 'string') {
+    try {
+      const parsed = JSON.parse(tags);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((tag): tag is string => typeof tag === 'string');
+      }
+    } catch {
+      // If parsing fails, split by comma and clean up
+      return tags.split(',').map((tag: string) => 
+        tag.trim().replace(/^\[|\]$/g, '').replace(/"/g, '')
+      );
+    }
+  }
+  
+  return [];
+}
+
 interface BlogRecommendationsProps {
   blogContent: string
   blogTitle: string
@@ -143,7 +192,7 @@ export function BlogRecommendations({
                 {content.description}
               </div>
               <div className="flex flex-wrap gap-1">
-                {content.tags.slice(0, 3).map((tag: string) => (
+                {parseTagsSafely(content.tags).slice(0, 3).map((tag: string) => (
                   <Badge key={tag} variant="secondary" className="text-xs bg-teal-100 text-teal-800">
                     {tag}
                   </Badge>
@@ -203,7 +252,7 @@ export function BlogRecommendations({
           <div className="flex flex-wrap gap-2">
             {Array.from(
               new Set(
-                relevantContent.flatMap(item => item.tags)
+                relevantContent.flatMap(item => parseTagsSafely(item.tags))
               )
             )
               .slice(0, 8)

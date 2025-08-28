@@ -17,10 +17,60 @@ import {
   MessageSquare,
   Clock,
   MapPin,
-  HelpCircle
+  HelpCircle,
+  ExternalLink
 } from 'lucide-react'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { unifiedSmartRecommendationsService } from '@/api/unifiedSmartRecommendationsService'
+
+// Helper function to safely parse tags
+function parseTagsSafely(tags: unknown): string[] {
+  if (!tags) return [];
+  
+  // If tags is already an array, process each item
+  if (Array.isArray(tags)) {
+    const allTags: string[] = [];
+    
+    for (const item of tags) {
+      if (typeof item === 'string') {
+        // Check if this string looks like JSON
+        if (item.trim().startsWith('[') && item.trim().endsWith(']')) {
+          try {
+            const parsed = JSON.parse(item);
+            if (Array.isArray(parsed)) {
+              allTags.push(...parsed.filter((tag): tag is string => typeof tag === 'string'));
+            }
+          } catch {
+            // If parsing fails, treat as a single tag
+            allTags.push(item);
+          }
+        } else {
+          // Regular string tag
+          allTags.push(item);
+        }
+      }
+    }
+    
+    return allTags;
+  }
+  
+  // If tags is a string, try to parse it
+  if (typeof tags === 'string') {
+    try {
+      const parsed = JSON.parse(tags);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((tag): tag is string => typeof tag === 'string');
+      }
+    } catch {
+      // If parsing fails, split by comma and clean up
+      return tags.split(',').map((tag: string) => 
+        tag.trim().replace(/^\[|\]$/g, '').replace(/"/g, '')
+      );
+    }
+  }
+  
+  return [];
+}
 
 // Confidence text helper function
 function getConfidenceText(confidence: number): string {
@@ -59,6 +109,7 @@ export function ContactAnalysis({
     description: string
     relevance: number
     contentType: 'blog' | 'portfolio' | 'project'
+    tags: string[]
   }>>([])
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
@@ -85,14 +136,15 @@ export function ContactAnalysis({
       })
       
               if (response.success && response.recommendations) {
-          const relevantContent = response.recommendations
+                        const relevantContent = response.recommendations
             .filter(item => item.contentType !== 'page')
             .map(item => ({
               title: item.title,
               path: item.url,
               description: item.description,
               relevance: item.confidence || 0.7,
-              contentType: item.contentType as 'blog' | 'portfolio' | 'project'
+              contentType: item.contentType as 'blog' | 'portfolio' | 'project',
+              tags: parseTagsSafely(item.tags || [])
             }))
           
           setRelevantContent(relevantContent)
@@ -111,7 +163,8 @@ export function ContactAnalysis({
               path: item.url,
               description: item.description,
               relevance: item.confidence || 0.7,
-              contentType: item.contentType as 'blog' | 'portfolio' | 'project'
+              contentType: item.contentType as 'blog' | 'portfolio' | 'project',
+              tags: parseTagsSafely(item.tags || [])
             }))
           setRelevantContent(relevantContent)
         } else {
@@ -135,7 +188,8 @@ export function ContactAnalysis({
               path: item.url,
               description: item.description,
               relevance: item.confidence || 0.7,
-              contentType: item.contentType as 'blog' | 'portfolio' | 'project'
+              contentType: item.contentType as 'blog' | 'portfolio' | 'project',
+              tags: parseTagsSafely(item.tags || [])
             }))
           setRelevantContent(relevantContent)
         } else {
@@ -292,33 +346,81 @@ export function ContactAnalysis({
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {relevantContent.map((content, index) => (
-                  <a
-                    key={index}
-                    href={content.path}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block p-3 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-lg transition-colors group"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="font-medium text-teal-900 group-hover:text-teal-800 text-sm">
-                        {content.title}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge 
-                          variant="outline" 
-                          className={`text-xs ${getContentTypeColor(content.contentType)}`}
+                  <Card key={index} className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-base font-medium leading-tight text-gray-900 dark:text-gray-100 line-clamp-2">
+                            {content.title}
+                          </CardTitle>
+                        </div>
+                        <a 
+                          href={content.path} 
+                          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors flex-shrink-0 mt-1"
+                          aria-label={`Read ${content.title}`}
                         >
-                          {content.contentType.charAt(0).toUpperCase() + content.contentType.slice(1)}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {Math.round(content.relevance * 100)}% match
-                        </Badge>
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
                       </div>
-                    </div>
-                    <div className="text-xs text-teal-700">
-                      {content.description}
-                    </div>
-                  </a>
+                    </CardHeader>
+                    
+                    <CardContent className="pt-0">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-3">
+                        {content.description || 'No description available'}
+                      </p>
+                      
+                      {/* Tags */}
+                      {(() => {
+                        // Parse tags safely
+                        const cleanTags = parseTagsSafely(content.tags).filter(tag => tag && tag.trim().length > 0);
+                        
+                        // Only render if we have clean tags
+                        if (cleanTags.length === 0) {
+                          return null;
+                        }
+                        
+                        return (
+                          <div className="mb-3">
+                            <div className="flex flex-wrap gap-1">
+                              {cleanTags.slice(0, 4).map((tag, tagIndex) => (
+                                <span 
+                                  key={tagIndex}
+                                  className="inline-block text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full"
+                                  title={tag}
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                              {cleanTags.length > 4 && (
+                                <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
+                                  +{cleanTags.length - 4} more
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                      
+                      {/* Bottom row with content type and confidence */}
+                      <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <div className="flex items-center gap-2">
+                          <Badge 
+                            variant="secondary" 
+                            className={`text-xs px-2 py-1 ${getContentTypeColor(content.contentType)}`}
+                          >
+                            {content.contentType.charAt(0).toUpperCase() + content.contentType.slice(1)}
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                          <span>Relevance:</span>
+                          <Badge variant="outline" className="text-xs px-2 py-1">
+                            {Math.round(content.relevance * 100)}%
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>

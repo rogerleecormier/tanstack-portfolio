@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSidebar } from '@/components/ui/sidebar'
 
 type TOCEntry = {
   title: string
@@ -10,6 +11,7 @@ const STICKY_HEADER_HEIGHT = 170 // Height of the sticky header in pixels
 export function TableOfContents() {
   const [currentToc, setCurrentToc] = useState<TOCEntry[]>([])
   const [activeId, setActiveId] = useState<string>('')
+  const { state } = useSidebar()
 
   // Listen for TOC updates from MarkdownPage
   useEffect(() => {
@@ -69,7 +71,8 @@ export function TableOfContents() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [currentToc])
 
-  if (currentToc.length === 0) return null
+  // Don't render TOC when sidebar is collapsed or when there's no content
+  if (state === 'collapsed' || currentToc.length === 0) return null
 
   return (
     <div className="border-t border-teal-200 mt-4 pt-4">

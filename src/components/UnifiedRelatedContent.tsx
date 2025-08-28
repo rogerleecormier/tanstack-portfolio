@@ -15,6 +15,55 @@ interface UnifiedRelatedContentProps {
   variant?: 'sidebar' | 'inline'
 }
 
+// Helper function to safely parse tags
+function parseTagsSafely(tags: unknown): string[] {
+  if (!tags) return [];
+  
+  // If tags is already an array, process each item
+  if (Array.isArray(tags)) {
+    const allTags: string[] = [];
+    
+    for (const item of tags) {
+      if (typeof item === 'string') {
+        // Check if this string looks like JSON
+        if (item.trim().startsWith('[') && item.trim().endsWith(']')) {
+          try {
+            const parsed = JSON.parse(item);
+            if (Array.isArray(parsed)) {
+              allTags.push(...parsed.filter((tag): tag is string => typeof tag === 'string'));
+            }
+          } catch {
+            // If parsing fails, treat as a single tag
+            allTags.push(item);
+          }
+        } else {
+          // Regular string tag
+          allTags.push(item);
+        }
+      }
+    }
+    
+    return allTags;
+  }
+  
+  // If tags is a string, try to parse it
+  if (typeof tags === 'string') {
+    try {
+      const parsed = JSON.parse(tags);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((tag): tag is string => typeof tag === 'string');
+      }
+    } catch {
+      // If parsing fails, split by comma and clean up
+      return tags.split(',').map((tag: string) => 
+        tag.trim().replace(/^\[|\]$/g, '').replace(/"/g, '')
+      );
+    }
+  }
+  
+  return [];
+}
+
 export function UnifiedRelatedContent({ 
   content, 
   title, 
@@ -205,48 +254,8 @@ export function UnifiedRelatedContent({
                     <div className="mb-3">
                       <div className="flex flex-wrap gap-1">
                                                  {(() => {
-                           // Enhanced tag parsing to handle various formats
-                           let tagsArray = item.tags;
-                           
-                           // If tags is an array with a single string element that looks like JSON
-                           if (Array.isArray(item.tags) && item.tags.length === 1 && typeof item.tags[0] === 'string') {
-                             const firstTag = item.tags[0];
-                             if (firstTag.startsWith('[') && firstTag.endsWith(']')) {
-                               try {
-                                 tagsArray = JSON.parse(firstTag);
-                               } catch {
-                                 // Fallback to string splitting
-                                 tagsArray = firstTag.slice(1, -1).split(',').map(tag => 
-                                   tag.trim().replace(/"/g, '')
-                                 );
-                               }
-                             }
-                           }
-                           // If tags is a string, try to parse it
-                           else if (typeof item.tags === 'string') {
-                             try {
-                               tagsArray = JSON.parse(item.tags);
-                             } catch {
-                               // If parsing fails, split by comma and clean up
-                               tagsArray = item.tags.split(',').map(tag => 
-                                 tag.trim().replace(/^\[|\]$/g, '').replace(/"/g, '')
-                               );
-                             }
-                           }
-                           
-                           // Ensure we have an array and filter out empty strings
-                           const cleanTags = Array.isArray(tagsArray) 
-                             ? tagsArray.filter(tag => tag && tag.trim().length > 0)
-                             : [];
-                           
-                           // Debug logging in development
-                           if (process.env.NODE_ENV === 'development') {
-                             console.log('Tag parsing debug:', {
-                               originalTags: item.tags,
-                               parsedTags: tagsArray,
-                               cleanTags: cleanTags
-                             });
-                           }
+                                                                               // Use helper function to safely parse tags
+                        const cleanTags = parseTagsSafely(item.tags).filter(tag => tag && tag.trim().length > 0);
                            
                            return (
                              <>
@@ -351,39 +360,8 @@ export function UnifiedRelatedContent({
                                  {item.tags && item.tags.length > 0 && (
                    <div className="flex flex-wrap gap-1 max-w-[150px]">
                                            {(() => {
-                        // Enhanced tag parsing to handle various formats
-                        let tagsArray = item.tags;
-                        
-                        // If tags is an array with a single string element that looks like JSON
-                        if (Array.isArray(item.tags) && item.tags.length === 1 && typeof item.tags[0] === 'string') {
-                          const firstTag = item.tags[0];
-                          if (firstTag.startsWith('[') && firstTag.endsWith(']')) {
-                            try {
-                              tagsArray = JSON.parse(firstTag);
-                            } catch {
-                              // Fallback to string splitting
-                              tagsArray = firstTag.slice(1, -1).split(',').map(tag => 
-                                tag.trim().replace(/"/g, '')
-                              );
-                            }
-                          }
-                        }
-                        // If tags is a string, try to parse it
-                        else if (typeof item.tags === 'string') {
-                          try {
-                            tagsArray = JSON.parse(item.tags);
-                          } catch {
-                            // If parsing fails, split by comma and clean up
-                            tagsArray = item.tags.split(',').map(tag => 
-                              tag.trim().replace(/^\[|\]$/g, '').replace(/"/g, '')
-                            );
-                          }
-                        }
-                        
-                        // Ensure we have an array and filter out empty strings
-                        const cleanTags = Array.isArray(tagsArray) 
-                          ? tagsArray.filter(tag => tag && tag.trim().length > 0)
-                          : [];
+                        // Use helper function to safely parse tags
+                        const cleanTags = parseTagsSafely(item.tags).filter(tag => tag && tag.trim().length > 0);
                         
                         return (
                           <>
