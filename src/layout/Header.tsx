@@ -37,7 +37,6 @@ const Header: React.FC = () => {
               <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center [&_svg]:size-6">
                 <Menu className="h-5 w-5" aria-hidden="true" />
                 <span className="sr-only">Toggle navigation menu</span>
-                <span className="sr-only">Toggle Sidebar</span>
               </SidebarTrigger>
             </div>
             <Briefcase className="h-5 w-5 text-white flex-shrink-0" />
@@ -92,12 +91,11 @@ const Header: React.FC = () => {
               <SidebarTrigger className="w-full h-full p-1 text-white hover:bg-teal-700 rounded-md flex items-center justify-center [&_svg]:size-6">
                 <Menu aria-hidden="true" />
                 <span className="sr-only">Toggle navigation menu</span>
-                <span className="sr-only">Toggle Sidebar</span>
               </SidebarTrigger>
             </div>
             <Briefcase className="h-6 w-6 text-white flex-shrink-0" />
             <h1 className="text-xl font-bold text-white truncate">
-              Roger Lee Cormier
+              Roger Lee Cormier Portfolio
             </h1>
           </div>
           {/* Search and Login button row */}

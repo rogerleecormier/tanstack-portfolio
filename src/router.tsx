@@ -25,6 +25,8 @@ import BlogPostWrapper from './components/BlogPostWrapper'
 import PortfolioListPage from './pages/PortfolioListPage'
 import AboutPage from './pages/AboutPage'
 import NewsletterPreferencesPage from './pages/NewsletterPreferencesPage'
+import MarkdownEditorPage from './pages/MarkdownEditorPage'
+import ToolsListPage from './pages/ToolsListPage'
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -176,6 +178,20 @@ const newsletterPreferencesRoute = createRoute({
   component: NewsletterPreferencesPage,
 })
 
+// Tools list route
+const toolsListRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'tools',
+  component: ToolsListPage,
+})
+
+// Individual tool route
+const toolRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'tools/$toolId',
+  component: MarkdownEditorPage,
+})
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -190,6 +206,8 @@ const routeTree = rootRoute.addChildren([
   protectedRoute,
   cloudflareStatusRoute,
   newsletterPreferencesRoute,
+  toolsListRoute,
+  toolRoute,
 ])
 
 // Create router instance

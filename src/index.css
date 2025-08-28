@@ -99,42 +99,7 @@
     max-width: 200px;
   }
 
-  /* Mermaid chart styling */
-  .mermaid-chart svg {
-    @apply max-w-full h-auto;
-    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important;
-  }
   
-  .mermaid-chart .node rect,
-  .mermaid-chart .node circle,
-  .mermaid-chart .node polygon {
-    @apply fill-background stroke-border;
-  }
-  
-  .mermaid-chart .node .label {
-    @apply fill-foreground;
-  }
-  
-  .mermaid-chart .edgePath .path {
-    @apply stroke-border;
-  }
-  
-  .mermaid-chart .edgeLabel {
-    @apply bg-background text-foreground;
-  }
-  
-  /* Chart-specific styling */
-  .mermaid-chart .bar {
-    @apply fill-primary;
-  }
-  
-  .mermaid-chart .pieTitleText {
-    @apply fill-foreground text-lg font-semibold;
-  }
-  
-  .mermaid-chart .slice {
-    @apply stroke-background stroke-2;
-  }
   
   /* Mobile sidebar overlay styling */
   @media (max-width: 768px) {

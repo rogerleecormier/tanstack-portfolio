@@ -1,6 +1,6 @@
 // Navigation config for TanStack Router and AppSidebar
 
-import { User, BarChart3, Mail, FileText, Briefcase, Users, Settings, Code, Target } from "lucide-react";
+import { User, BarChart3, Mail, FileText, Briefcase, Users, Settings, Code, Target, Wrench } from "lucide-react";
 
 export const navigationItems = [
   {
@@ -17,6 +17,11 @@ export const navigationItems = [
     title: "Blog",
     url: "blog",
     icon: FileText,
+  },
+  {
+    title: "Tools",
+    url: "tools",
+    icon: Wrench,
   },
   {
     title: "Contact",

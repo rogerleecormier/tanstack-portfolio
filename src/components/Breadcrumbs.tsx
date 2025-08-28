@@ -1,59 +1,110 @@
 import React from 'react';
-import { Link } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
+
+// Simple title mapping for known routes - no dynamic imports
+const routeTitleMap: Record<string, string> = {
+  'portfolio': 'Portfolio',
+  'blog': 'Blog',
+  'tools': 'Tools',
+  'markdown-editor': 'Markdown Editor',
+  'contact': 'Contact',
+  'about': 'About',
+  
+  // Portfolio pages with actual titles from markdown frontmatter
+  'ai-automation': 'AI & Automation',
+  'analytics': 'Analytics & Insights',
+  'capabilities': 'Capabilities',
+  'culture': 'Culture',
+  'devops': 'DevOps & Automation',
+  'education-certifications': 'Education & Certifications',
+  'governance-pmo': 'Governance & PMO',
+  'leadership': 'Leadership',
+  'product-ux': 'Product & UX',
+  'projects': 'Projects',
+  'risk-compliance': 'Risk & Compliance',
+  'saas': 'ERP & SaaS Integration',
+  'strategy': 'Strategy & Vision',
+  'talent': 'Talent & Org Design',
+  
+  // Blog posts with actual titles from markdown frontmatter
+  'pmp-digital-transformation-leadership': 'Why I Pursued the PMP to Lead Digital Transformation, Automation, and System Integration Projects',
+  'internal-ethos-high-performing-organizations': 'Internal Ethos: High-Performing Organizations',
+  'military-leadership-be-know-do': 'Military Leadership: Be • Know • Do',
+  'digital-transformation-strategy-governance': 'Digital Transformation Strategy & Governance',
+  'asana-ai-status-reporting': 'Asana AI Status Reporting',
+  'mkdocs-github-actions-portfolio': 'MkDocs GitHub Actions Portfolio',
+  'power-automate-workflow-automation': 'Power Automate Workflow Automation',
+  'serverless-ai-workflows-azure-functions': 'Serverless AI Workflows with Azure Functions',
+  'pmp-agile-methodology-blend': 'PMP Agile Methodology Blend',
+  'ramp-agents-ai-finance-operations': 'Ramp Agents AI Finance Operations'
+};
 
 // Converts 'project-analysis' or 'my_awesome_page' to 'Project Analysis' or 'My Awesome Page'
-function formatLabel(str: string) {
+function formatLabel(str: string): string {
+  // Check if we have a specific title mapping first
+  if (routeTitleMap[str]) {
+    return routeTitleMap[str];
+  }
+  
+  // Fallback to formatting the slug
   return str
     .replace(/[-_]/g, ' ')
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
 const Breadcrumbs: React.FC = () => {
-
-  // Get the current pathname and split it into segments
-  const currentPath = window.location.pathname;
+  const location = useLocation();
+  const currentPath = location.pathname;
   const pathSegments = currentPath.split('/').filter(Boolean);
 
   const crumbs = pathSegments.map((segment, idx) => {
     const path = '/' + pathSegments.slice(0, idx + 1).join('/');
     const isLast = idx === pathSegments.length - 1;
     
-    // Handle special cases for better labels
     let name = formatLabel(segment);
-    if (segment === 'blog') name = 'Blog';
-    if (segment === 'portfolio') name = 'Portfolio';
-    if (segment === 'projects') name = 'Projects';
+    
+    // Special handling for home
+    if (idx === 0 && segment === '') {
+      name = 'Home';
+    }
     
     return {
       name,
       path,
-      isLast,
+      isLast
     };
   });
 
-  const homeCrumb = { name: 'Home', path: '/', isLast: crumbs.length === 0 };
+  // Add home crumb if not present
+  if (crumbs.length === 0 || crumbs[0].name !== 'Home') {
+    crumbs.unshift({
+      name: 'Home',
+      path: '/',
+      isLast: false
+    });
+  }
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-2">
-      <ol className="flex flex-wrap items-center gap-1 text-sm text-teal-100">
-        <li>
-          <Link to={homeCrumb.path} className="hover:underline font-semibold">
-            {homeCrumb.name}
-          </Link>
-        </li>
-        {crumbs.map(crumb => (
-          <React.Fragment key={crumb.path}>
-            <span className="mx-1 text-teal-300">/</span>
-            <li>
-              {crumb.isLast ? (
-                <span className="font-semibold text-white">{crumb.name}</span>
-              ) : (
-                <Link to={crumb.path} className="hover:underline">
-                  {crumb.name}
-                </Link>
-              )}
-            </li>
-          </React.Fragment>
+    <nav aria-label="Breadcrumb" className="mb-4">
+      <ol className="flex items-center space-x-2 text-sm text-teal-50">
+        {crumbs.map((crumb, idx) => (
+          <li key={crumb.path} className="flex items-center">
+            {idx > 0 && (
+              <span className="mx-2 text-teal-200">/</span>
+            )}
+            {crumb.isLast ? (
+              <span className="font-medium text-white">
+                {crumb.name}
+              </span>
+            ) : (
+              <Link
+                to={crumb.path}
+                className="text-teal-50 hover:text-white transition-colors"
+              >
+                {crumb.name}
+              </Link>
+            )}
+          </li>
         ))}
       </ol>
     </nav>
