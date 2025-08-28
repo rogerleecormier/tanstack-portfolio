@@ -16,7 +16,7 @@ declare module '@tiptap/core' {
 
 // Wrapper component to adapt props for ReactNodeViewRenderer
 const ChartRendererWrapper = (props: { node: { attrs: Record<string, unknown> } }) => {
-  return <ChartRenderer node={props.node as any} />
+  return <ChartRenderer node={props.node as { attrs: { chartType: string; data: string; xAxisLabel?: string; yAxisLabel?: string; width?: string; height?: string } } } />
 }
 
 export const Chart = Node.create<ChartOptions>({
