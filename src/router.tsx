@@ -185,10 +185,10 @@ const toolsListRoute = createRoute({
   component: ToolsListPage,
 })
 
-// Individual tool route
-const toolRoute = createRoute({
+// Markdown Editor route
+const markdownEditorRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'tools/$toolId',
+  path: 'markdown-editor',
   component: MarkdownEditorPage,
 })
 
@@ -207,7 +207,7 @@ const routeTree = rootRoute.addChildren([
   cloudflareStatusRoute,
   newsletterPreferencesRoute,
   toolsListRoute,
-  toolRoute,
+  markdownEditorRoute,
 ])
 
 // Create router instance

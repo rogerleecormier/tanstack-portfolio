@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Wrench, ArrowRight, Code, FileText, Palette, Database, BarChart3, Settings } from 'lucide-react'
+import { Wrench, ArrowRight, FileText } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
-import { H1, H2, H3, P } from '@/components/ui/typography'
+import { H1, H2, P } from '@/components/ui/typography'
 
 interface Tool {
   id: string
@@ -24,63 +24,18 @@ const tools: Tool[] = [
     description: 'A rich text editor for creating and editing markdown content with real-time preview and syntax highlighting.',
     category: 'Content Creation',
     icon: FileText,
-    url: '/tools/markdown-editor',
+    url: '/markdown-editor',
     features: ['Rich text editing', 'Real-time markdown generation', 'Syntax highlighting', 'Export functionality'],
     status: 'active'
-  },
-  {
-    id: 'code-generator',
-    title: 'Code Generator',
-    description: 'Generate boilerplate code, components, and utilities for various programming languages and frameworks.',
-    category: 'Development',
-    icon: Code,
-    url: '/tools/code-generator',
-    features: ['Multiple languages', 'Framework templates', 'Customizable output', 'Copy to clipboard'],
-    status: 'coming-soon'
-  },
-  {
-    id: 'design-tools',
-    title: 'Design Tools',
-    description: 'Collection of design utilities including color palettes, typography scales, and layout generators.',
-    category: 'Design',
-    icon: Palette,
-    url: '/tools/design',
-    features: ['Color schemes', 'Typography scales', 'Layout grids', 'Asset management'],
-    status: 'beta'
-  },
-  {
-    id: 'data-analyzer',
-    title: 'Data Analyzer',
-    description: 'Upload and analyze data files with built-in visualization tools and statistical insights.',
-    category: 'Analytics',
-    icon: BarChart3,
-    url: '/tools/data-analyzer',
-    features: ['File upload', 'Data visualization', 'Statistical analysis', 'Export reports'],
-    status: 'coming-soon'
-  },
-  {
-    id: 'database-tools',
-    title: 'Database Tools',
-    description: 'Database management utilities including query builders, schema designers, and migration tools.',
-    category: 'Development',
-    icon: Database,
-    url: '/tools/database',
-    features: ['Query builder', 'Schema designer', 'Migration tools', 'Performance analysis'],
-    status: 'coming-soon'
-  },
-  {
-    id: 'system-utilities',
-    title: 'System Utilities',
-    description: 'System administration tools for monitoring, configuration, and maintenance tasks.',
-    category: 'Administration',
-    icon: Settings,
-    url: '/tools/system',
-    features: ['System monitoring', 'Configuration management', 'Maintenance tools', 'Log analysis'],
-    status: 'coming-soon'
   }
 ]
 
 const ToolsListPage: React.FC = () => {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const getStatusBadge = (status: Tool['status']) => {
     switch (status) {
       case 'active':
@@ -98,14 +53,6 @@ const ToolsListPage: React.FC = () => {
     switch (category) {
       case 'Content Creation':
         return <FileText className="h-5 w-5" />
-      case 'Development':
-        return <Code className="h-5 w-5" />
-      case 'Design':
-        return <Palette className="h-5 w-5" />
-      case 'Analytics':
-        return <BarChart3 className="h-5 w-5" />
-      case 'Administration':
-        return <Settings className="h-5 w-5" />
       default:
         return <Wrench className="h-5 w-5" />
     }
@@ -162,7 +109,7 @@ const ToolsListPage: React.FC = () => {
               </P>
               
               <div className="mb-4">
-                <H3 className="text-sm font-semibold text-gray-700 mb-2">Key Features:</H3>
+                <H2 className="text-sm font-semibold text-gray-700 mb-2">Key Features:</H2>
                 <div className="flex flex-wrap gap-1">
                   {tool.features.map((feature, index) => (
                     <Badge key={index} variant="secondary" className="text-xs bg-gray-50 text-gray-600 border-gray-200">
