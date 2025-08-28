@@ -52,8 +52,10 @@ export function UnifiedRelatedContent({
       })
 
       if (response.success && response.recommendations) {
+        console.log('Recommendations loaded:', response.recommendations)
         setRecommendations(response.recommendations)
       } else {
+        console.log('No recommendations in response:', response)
         setRecommendations([])
       }
     } catch (err) {
@@ -80,6 +82,11 @@ export function UnifiedRelatedContent({
   if (isLoading) {
     return (
       <div className={className}>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            Related Content
+          </h3>
+        </div>
         <div className="space-y-4">
           {Array.from({ length: maxResults }, (_, i) => (
             <div key={i} className="animate-pulse">
@@ -103,20 +110,23 @@ export function UnifiedRelatedContent({
     )
   }
 
-  if (recommendations.length === 0) {
+  // Show skeleton when no recommendations (instead of debug info)
+  if (!isLoading && recommendations.length === 0) {
     return (
       <div className={className}>
-        <div className="text-sm text-muted-foreground text-center py-4">
-          <div className="mb-2">No recommendations found</div>
-          {process.env.NODE_ENV === 'development' && (
-            <div className="text-xs text-gray-500">
-              <div>Content length: {content.length}</div>
-              <div>Title: {title}</div>
-              <div>Tags: {tags.join(', ')}</div>
-              <div>Content type: {contentType}</div>
-              <div>Current URL: {currentUrl}</div>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            Related Content
+          </h3>
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: maxResults }, (_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-full"></div>
             </div>
-          )}
+          ))}
         </div>
       </div>
     )
@@ -149,6 +159,11 @@ export function UnifiedRelatedContent({
   }
 
   if (variant === 'sidebar') {
+    // Don't render anything if no recommendations
+    if (recommendations.length === 0) {
+      return null
+    }
+
     return (
       <div className={className}>
         <div className="mb-4">
