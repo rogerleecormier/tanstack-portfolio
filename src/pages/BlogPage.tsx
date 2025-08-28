@@ -11,7 +11,7 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
-import { MessageSquare, Calendar, Clock, User, Tag, ArrowLeft, ArrowRight } from "lucide-react";
+import { MessageSquare, Calendar, Clock, User, Tag, ArrowRight } from "lucide-react";
 import { Link } from '@tanstack/react-router'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'

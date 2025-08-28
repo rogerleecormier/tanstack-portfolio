@@ -44,28 +44,29 @@ export interface UnifiedRecommendationsResponse {
       const sourceText = (sourceContent + ' ' + sourceTitle).toLowerCase()
       const targetTags = targetItem.tags || []
       
-      // 1. Exact tag matches (highest weight - 40%)
+      // 1. Exact tag matches (highest weight - 35%)
       const exactTagMatches = sourceTags.filter(sourceTag => 
         targetTags.some(targetTag => 
           targetTag.toLowerCase() === sourceTag.toLowerCase()
         )
       ).length
       
-      const exactTagScore = sourceTags.length > 0 ? (exactTagMatches / sourceTags.length) * 0.4 : 0
+      const exactTagScore = sourceTags.length > 0 ? (exactTagMatches / sourceTags.length) * 0.35 : 0
       score += exactTagScore
       
-      // 2. Partial tag matches (25%)
+      // 2. Partial tag matches (30%) - increased weight for better scaling
       const partialTagMatches = sourceTags.filter(sourceTag => 
-        targetTags.some(targetTag => 
-          targetTag.toLowerCase().includes(sourceTag.toLowerCase()) ||
-          sourceTag.toLowerCase().includes(targetTag.toLowerCase())
-        )
+        targetTags.some(targetTag => {
+          const sourceLower = sourceTag.toLowerCase()
+          const targetLower = targetTag.toLowerCase()
+          return targetLower.includes(sourceLower) || sourceLower.includes(targetLower)
+        })
       ).length
       
-      const partialTagScore = sourceTags.length > 0 ? (partialTagMatches / sourceTags.length) * 0.25 : 0
+      const partialTagScore = sourceTags.length > 0 ? (partialTagMatches / sourceTags.length) * 0.30 : 0
       score += partialTagScore
       
-      // 3. Content keyword matches (20%)
+      // 3. Content keyword matches (25%) - increased weight and better matching
       let keywordMatches = 0
       
       for (const tag of targetTags) {
@@ -73,12 +74,11 @@ export interface UnifiedRecommendationsResponse {
         if (sourceText.includes(tagLower)) {
           keywordMatches += 1
         } else {
-          // Check for word boundaries
+          // Check for word boundaries and partial matches
           const tagWords = tagLower.split(/[\s-]+/)
           for (const word of tagWords) {
-            if (word.length > 3) {
+            if (word.length > 2) { // Reduced minimum length for better matching
               try {
-                // Escape special regex characters to prevent syntax errors
                 const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
                 const wordRegex = new RegExp(`\\b${escapedWord}\\b`, 'i')
                 if (wordRegex.test(sourceText)) {
@@ -93,23 +93,35 @@ export interface UnifiedRecommendationsResponse {
         }
       }
       
-      const keywordScore = targetTags.length > 0 ? Math.min(keywordMatches / targetTags.length, 1) * 0.2 : 0
+      const keywordScore = targetTags.length > 0 ? Math.min(keywordMatches / targetTags.length, 1) * 0.25 : 0
       score += keywordScore
       
-      // 4. Content type relevance (10%)
+      // 4. Content type relevance (15%) - increased bonus for better scaling
       const contentTypeBonus = {
-        'portfolio': 0.1,
-        'blog': 0.08,
-        'project': 0.12,
-        'page': 0.05
+        'portfolio': 0.15,
+        'blog': 0.12,
+        'project': 0.18,
+        'page': 0.08
       }
       
-      score += contentTypeBonus[targetItem.contentType] || 0.05
+      score += contentTypeBonus[targetItem.contentType] || 0.08
       
-      // 5. Content length bonus (5%)
+      // 5. Content length bonus (10%) - increased for better scaling
       if (sourceContent.length > 100) {
-        score += 0.05
+        score += 0.10
       }
+      
+      // 6. Title similarity bonus (5%) - new scoring dimension
+      const titleWords = sourceTitle.toLowerCase().split(/\s+/)
+      const targetTitleWords = (targetItem.title || '').toLowerCase().split(/\s+/)
+      const titleMatches = titleWords.filter(word => 
+        word.length > 3 && targetTitleWords.some(targetWord => 
+          targetWord.includes(word) || word.includes(targetWord)
+        )
+      ).length
+      
+      const titleScore = titleWords.length > 0 ? (titleMatches / titleWords.length) * 0.05 : 0
+      score += titleScore
       
       return Math.min(Math.max(score, 0), 1)
     } catch (error) {

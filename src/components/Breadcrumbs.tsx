@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMatches, Link } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 
 // Converts 'project-analysis' or 'my_awesome_page' to 'Project Analysis' or 'My Awesome Page'
 function formatLabel(str: string) {
@@ -9,7 +9,6 @@ function formatLabel(str: string) {
 }
 
 const Breadcrumbs: React.FC = () => {
-  const matches = useMatches();
 
   // Get the current pathname and split it into segments
   const currentPath = window.location.pathname;

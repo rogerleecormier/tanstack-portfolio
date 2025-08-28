@@ -52,10 +52,8 @@ export function UnifiedRelatedContent({
       })
 
       if (response.success && response.recommendations) {
-        console.log('Recommendations loaded:', response.recommendations)
         setRecommendations(response.recommendations)
       } else {
-        console.log('No recommendations in response:', response)
         setRecommendations([])
       }
     } catch (err) {
