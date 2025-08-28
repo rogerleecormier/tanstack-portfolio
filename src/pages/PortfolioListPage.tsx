@@ -23,6 +23,55 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
+// Helper function to safely parse tags
+function parseTagsSafely(tags: unknown): string[] {
+  if (!tags) return [];
+  
+  // If tags is already an array, process each item
+  if (Array.isArray(tags)) {
+    const allTags: string[] = [];
+    
+    for (const item of tags) {
+      if (typeof item === 'string') {
+        // Check if this string looks like JSON
+        if (item.trim().startsWith('[') && item.trim().endsWith(']')) {
+          try {
+            const parsed = JSON.parse(item);
+            if (Array.isArray(parsed)) {
+              allTags.push(...parsed.filter((tag): tag is string => typeof tag === 'string'));
+            }
+          } catch {
+            // If parsing fails, treat as a single tag
+            allTags.push(item);
+          }
+        } else {
+          // Regular string tag
+          allTags.push(item);
+        }
+      }
+    }
+    
+    return allTags;
+  }
+  
+  // If tags is a string, try to parse it
+  if (typeof tags === 'string') {
+    try {
+      const parsed = JSON.parse(tags);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((tag): tag is string => typeof tag === 'string');
+      }
+    } catch {
+      // If parsing fails, split by comma and clean up
+      return tags.split(',').map((tag: string) => 
+        tag.trim().replace(/^\[|\]$/g, '').replace(/"/g, '')
+      );
+    }
+  }
+  
+  return [];
+}
+
 // Portfolio search functionality
 class PortfolioSearch {
   private items: PortfolioItem[]
@@ -327,16 +376,23 @@ export default function PortfolioListPage() {
                 <CardContent className="pt-0 pb-3">
                   {/* Tags - Reduced to 3 max */}
                   <div className="flex flex-wrap gap-1 mb-2">
-                    {item.tags.slice(0, 3).map((tag: string) => (
-                      <Badge key={tag} variant="secondary" className="text-xs px-2 py-1">
-                        {tag}
-                      </Badge>
-                    ))}
-                    {item.tags.length > 3 && (
-                      <Badge variant="secondary" className="text-xs px-2 py-1">
-                        +{item.tags.length - 3}
-                      </Badge>
-                    )}
+                    {(() => {
+                      const cleanTags = parseTagsSafely(item.tags).filter(tag => tag && tag.trim().length > 0);
+                      return (
+                        <>
+                          {cleanTags.slice(0, 3).map((tag: string) => (
+                            <Badge key={tag} variant="secondary" className="text-xs px-2 py-1">
+                              {tag}
+                            </Badge>
+                          ))}
+                          {cleanTags.length > 3 && (
+                            <Badge variant="secondary" className="text-xs px-2 py-1">
+                              +{cleanTags.length - 3}
+                            </Badge>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
 
                   {/* View Details Link */}
