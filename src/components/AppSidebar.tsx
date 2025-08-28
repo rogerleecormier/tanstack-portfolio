@@ -20,7 +20,7 @@ export function AppSidebar() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <Sidebar className="border-r border-teal-200 bg-teal-50" collapsible="icon">
+    <Sidebar collapsible="icon">
       <SidebarContent className="pt-4">
         {/* Main Navigation Group */}
         <SidebarGroup>
@@ -35,8 +35,6 @@ export function AppSidebar() {
                     <Link
                       to={item.url === "" ? "/" : `/${item.url}`}
                       activeOptions={{ exact: item.url === "" }}
-                      activeProps={{ className: "bg-teal-200 text-teal-900 font-medium" }}
-                      inactiveProps={{ className: "text-teal-800 hover:bg-teal-100 hover:text-teal-900" }}
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
@@ -63,8 +61,6 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <Link
                       to={`/${item.url}`}
-                      activeProps={{ className: "bg-teal-200 text-teal-900 font-medium" }}
-                      inactiveProps={{ className: "text-teal-800 hover:bg-teal-100 hover:text-teal-900" }}
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
@@ -92,8 +88,6 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild tooltip={item.title}>
                       <Link
                         to={`/${item.url}`}
-                        activeProps={{ className: "bg-teal-200 text-teal-900 font-medium" }}
-                        inactiveProps={{ className: "text-teal-800 hover:bg-teal-100 hover:text-teal-900" }}
                         onClick={() => {
                           if (isMobile) setOpenMobile(false);
                         }}
