@@ -10,11 +10,13 @@ import { cn } from '@/lib/utils'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
 import { MessageSquare, Calendar, Clock, User, Tag, ArrowRight } from "lucide-react";
 import { Link } from '@tanstack/react-router'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
+import UnifiedChartRenderer from '@/components/UnifiedChartRenderer'
+import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
+
 
 // Define proper types for frontmatter
 interface BlogFrontmatter {
@@ -35,28 +37,7 @@ export type BlogTOCEntry = {
   level: 2 | 3
 }
 
-function parseChartData(code: string) {
-  try {
-    return JSON.parse(code.trim());
-  } catch {
-    return [];
-  }
-}
 
-interface ChartDataPoint {
-  date: string;
-  x?: number;
-  y?: number;
-  series?: string;
-  n?: number;
-  [key: string]: string | number | undefined;
-}
-
-function getSeriesKeys(data: ChartDataPoint[]) {
-  if (!Array.isArray(data) || data.length === 0) return [];
-  // Exclude 'date' key
-  return Object.keys(data[0]).filter((key) => key !== "date");
-}
 
 // Calculate reading time based on word count
 function calculateReadingTime(content: string): number {
@@ -316,274 +297,41 @@ export default function BlogPage({ slug }: { slug: string }) {
                     language === "scatter-trend" ||
                     language === "scattertrend"
                   ) {
-                    const chartData = parseChartData(String(children));
-                    if (!Array.isArray(chartData) || chartData.length === 0) {
-                      return <div className="text-red-500">Invalid chart data</div>;
-                    }
-                    // Group by series (optional). If no 'series', treat as single series named 'Data'.
-                    const groups: Record<string, ChartDataPoint[]> = {};
-                    for (const d of chartData) {
-                      const key = d.series ?? "Data";
-                      if (!groups[key]) groups[key] = [];
-                      groups[key].push(d);
-                    }
-                    const xs = chartData.map(d => Number(d.x));
-                    const ys = chartData.map(d => Number(d.y));
-                    const xMin = Math.min(...xs), xMax = Math.max(...xs);
-                    const yMin = Math.min(...ys), yMax = Math.max(...ys);
-                    const xPad = (xMax - xMin) * 0.05 || 1;
-                    const yPad = (yMax - yMin) * 0.05 || 1;
-                    const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"];
-                    const seriesNames = Object.keys(groups);
-                    // Total n per series for legend formatting
-                    const seriesTotals: Record<string, number> = Object.fromEntries(
-                      seriesNames.map((name) => [name, groups[name].reduce((acc, d) => acc + (Number(d.n) || 0), 0)])
-                    );
-
-                    // Simple linear regression for each series (least squares)
-                    const getTrendLine = (data: ChartDataPoint[]) => {
-                      if (data.length < 2) return [];
-                      const n = data.length;
-                      const sumX = data.reduce((acc, d) => acc + Number(d.x), 0);
-                      const sumY = data.reduce((acc, d) => acc + Number(d.y), 0);
-                      const sumXY = data.reduce((acc, d) => acc + Number(d.x) * Number(d.y), 0);
-                      const sumX2 = data.reduce((acc, d) => acc + Number(d.x) ** 2, 0);
-                      
-                      const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX ** 2);
-                      const intercept = (sumY - slope * sumX) / n;
-                      
-                      const minX = Math.min(...data.map(d => Number(d.x)));
-                      const maxX = Math.max(...data.map(d => Number(d.x)));
-                      
-                      return [
-                        { x: minX, y: slope * minX + intercept },
-                        { x: maxX, y: slope * maxX + intercept }
-                      ];
-                    };
-
-                    function formatCurrency(value: number) {
-                      if (value >= 1000000) {
-                        return `$${(value / 1000000).toFixed(2)}M`;
-                      }
-                      if (value >= 1000) {
-                        return `$${(value / 1000).toFixed(0)}K`;
-                      }
-                      return `$${value.toFixed(0)}`;
-                    }
-                    function formatComplexity(value: number) {
-                      return value.toFixed(2);
-                    }
-                    function formatCount(value: number) {
-                      return `${value} projects`;
-                    }
-
                     return (
-                      <div className="w-full my-6" style={{ minHeight: 320 }}>
-                        <ResponsiveContainer width="100%" height={320}>
-                          <ScatterChart
-                            data={chartData}
-                            margin={{ left: 32, right: 32, bottom: 20 }}
-                          >
-                            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                            <XAxis
-                              type="number"
-                              dataKey="x"
-                              domain={[xMin - xPad, xMax + xPad]}
-                              tickFormatter={formatCurrency}
-                              tickLine={false}
-                              axisLine={false}
-                              tickMargin={8}
-                              minTickGap={32}
-                            >
-                              <Label value="Budget (USD, scaled)" offset={-50} position="insideBottom" />
-                            </XAxis>
-                            <YAxis
-                              type="number"
-                              dataKey="y"
-                              domain={[yMin - yPad, yMax + yPad]}
-                              tickFormatter={formatComplexity}
-                              tickLine={false}
-                              axisLine={false}
-                              tickMargin={8}
-                            >
-                              <Label value="Mean Complexity" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
-                            </YAxis>
-                            <Legend formatter={(value: string) => {
-                              const total = seriesTotals?.[value];
-                              return total ? `${value} — Mean Complexity (n=${total})` : `${value} — Mean Complexity`;
-                            }} />
-                            <RechartsTooltip
-                              formatter={(value: number, name: string) => {
-                                if (name === "x") return formatCurrency(value);
-                                if (name === "y") return [`${formatComplexity(value)}`, "Mean Complexity"];
-                                if (name === "n") return formatCount(value);
-                                return value;
-                              }}
-                              labelFormatter={(label) => formatCurrency(label)}
-                            />
-                            {seriesNames.map((name, i) => (
-                              <Scatter key={name} name={name} data={groups[name]} fill={colors[i % colors.length]}>
-                                <ZAxis dataKey="n" range={[60, 300]} />
-                                {/* Optional 95% CI error bars if ciLow/ciHigh are provided */}
-                                <ErrorBar dataKey="ciLow" strokeOpacity={0.7} />
-                                <ErrorBar dataKey="ciHigh" strokeOpacity={0.7} />
-                                {/* Label each point with its budget tier */}
-                                <LabelList dataKey="group" position="top" />
-                              </Scatter>
-                            ))}
-                            {(language === "scatter-trend" || language === "scattertrend") && seriesNames.map((name, i) => {
-                              const trend = getTrendLine(groups[name]);
-                              return trend.length === 2 ? (
-                                <Scatter
-                                  key={name + "-trend"}
-                                  data={trend}
-                                  line
-                                  fill={colors[i % colors.length]}
-                                  legendType="none"
-                                />
-                              ) : null;
-                            })}
-                          </ScatterChart>
-                        </ResponsiveContainer>
-                      </div>
-                    )
+                      <UnifiedChartRenderer
+                        chartType="scatterplot"
+                        data={String(children)}
+                        chartTitle="Scatter Plot Analysis"
+                        xAxisLabel="Budget (USD, scaled)"
+                        yAxisLabel="Mean Complexity"
+                      />
+                    );
                   }
 
                   // Multi-series grouped bar chart
                   if (language === "barchart" || language === "bar-chart") {
-                    const chartData = parseChartData(String(children))
-                    if (!Array.isArray(chartData) || chartData.length === 0) {
-                      return <div className="text-red-500">Invalid chart data</div>
-                    }
-                    const seriesKeys = getSeriesKeys(chartData)
-                    const allValues = chartData.flatMap(d => seriesKeys.map(k => d[k]))
-                    const min = Math.min(...allValues)
-                    const max = Math.max(...allValues)
-                    const padding = Math.max(2, Math.round((max - min) * 0.05))
-                    const yDomain = [
-                      Number((min - padding).toFixed(3)),
-                      Number((max + padding).toFixed(3))
-                    ]
-                    const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"]
-
                     return (
-                      <div className="w-full my-6" style={{ minHeight: 320 }}>
-                        <ResponsiveContainer width="100%" height={320}>
-                          <BarChart
-                            data={chartData}
-                            margin={{ left: 32, right: 32, bottom: 20 }}
-                          >
-                            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                            <XAxis
-                              dataKey="date"
-                              tickLine={false}
-                              axisLine={false}
-                              tickMargin={8}
-                              minTickGap={32}
-                              tickFormatter={(value) => value}
-                            >
-                              <Label value="Budget Tier" offset={-50} position="insideBottom" />
-                            </XAxis>
-                            <YAxis
-                              domain={yDomain}
-                              tickFormatter={(value) => Number(value).toFixed(3)}
-                            >
-                              <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
-                            </YAxis>
-                            <Legend />
-                            <RechartsTooltip
-                              formatter={(value: number, name: string, props: { payload?: Record<string, unknown> }) => {
-                                // If per-series count is provided (e.g., Agile_n), show alongside value
-                                const perSeriesN = props?.payload?.[`${name}_n`];
-                                const globalN = props?.payload?.n;
-                                if (perSeriesN != null) return [`${value} (n=${perSeriesN})`, name];
-                                if (globalN != null) return [`${value} (n=${globalN})`, name];
-                                return [value, name];
-                              }}
-                            />
-                            {seriesKeys.map((key, i) => (
-                              <Bar
-                                key={key}
-                                dataKey={key}
-                                fill={colors[i % colors.length]}
-                                isAnimationActive={false}
-                                radius={[4, 4, 0, 0]}
-                              />
-                            ))}
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </div>
-                    )
+                      <UnifiedChartRenderer
+                        chartType="barchart"
+                        data={String(children)}
+                        chartTitle="Bar Chart Analysis"
+                        xAxisLabel="Budget Tier"
+                        yAxisLabel="Frequency"
+                      />
+                    );
                   }
 
                   // Multi-series line chart
                   if (language === "linechart" || language === "line-chart") {
-                    const chartData = parseChartData(String(children))
-                    if (!Array.isArray(chartData) || chartData.length === 0) {
-                      return <div className="text-red-500">Invalid chart data</div>
-                    }
-                    const seriesKeys = getSeriesKeys(chartData)
-                    const allValues = chartData.flatMap(d => seriesKeys.map(k => d[k]))
-                    const min = Math.min(...allValues)
-                    const max = Math.max(...allValues)
-                    const padding = Math.max(2, Math.round((max - min) * 0.05))
-                    const yDomain = [
-                      Number((min - padding).toFixed(3)),
-                      Number((max + padding).toFixed(3))
-                    ]
-                    const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"]
-
                     return (
-                      <div className="w-full my-6" style={{ minHeight: 320 }}>
-                        <ResponsiveContainer width="100%" height={320}>
-                          <LineChart
-                            data={chartData}
-                            margin={{ left: 32, right: 32, bottom: 20 }}
-                          >
-                            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                            <XAxis
-                              dataKey="date"
-                              tickLine={false}
-                              axisLine={false}
-                              tickMargin={8}
-                              minTickGap={32}
-                              tickFormatter={(value) => value}
-                            >
-                              <Label value="Budget Tier" offset={-50} position="insideBottom" />
-                            </XAxis>
-                            <YAxis
-                              domain={yDomain}
-                              tickFormatter={(value) => Number(value).toFixed(3)}
-                            >
-                              <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
-                            </YAxis>
-                            <Legend />
-                            <RechartsTooltip
-                              formatter={(value: number, name: string, props: { payload?: Record<string, unknown> }) => {
-                                // If per-series count is provided (e.g., Agile_n), show alongside value
-                                const perSeriesN = props?.payload?.[`${name}_n`];
-                                const globalN = props?.payload?.n;
-                                if (perSeriesN != null) return [`${value} (n=${perSeriesN})`, name];
-                                if (globalN != null) return [`${value} (n=${globalN})`, name];
-                                return [value, name];
-                              }}
-                            />
-                            {seriesKeys.map((key, i) => (
-                              <Line
-                                key={key}
-                                type="monotone"
-                                dataKey={key}
-                                stroke={colors[i % colors.length]}
-                                strokeWidth={2}
-                                dot={{ fill: colors[i % colors.length], strokeWidth: 2, r: 4 }}
-                                activeDot={{ r: 6, strokeWidth: 2 }}
-                                isAnimationActive={false}
-                              />
-                            ))}
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    )
+                      <UnifiedChartRenderer
+                        chartType="linechart"
+                        data={String(children)}
+                        chartTitle="Line Chart Analysis"
+                        xAxisLabel="Budget Tier"
+                        yAxisLabel="Frequency"
+                      />
+                    );
                   }
 
                   // -----------------------------
@@ -591,36 +339,15 @@ export default function BlogPage({ slug }: { slug: string }) {
                   // -----------------------------
                   // Expects pre-binned data: [{ "date": "<bin label>", "value": <count> }, ...]
                   if (language === "histogram" || language === "histchart") {
-                    const chartData = parseChartData(String(children))
-                    if (!Array.isArray(chartData) || chartData.length === 0) {
-                      return <div className="text-red-500">Invalid chart data</div>
-                    }
-                    const seriesKeys = ["value"]
-                    const allValues = chartData.flatMap(d => seriesKeys.map(k => d[k]))
-                    const min = Math.min(...allValues)
-                    const max = Math.max(...allValues)
-                    const padding = Math.max(2, Math.round((max - min) * 0.05))
-                    const yDomain = [
-                      Number((min - padding).toFixed(3)),
-                      Number((max + padding).toFixed(3))
-                    ]
                     return (
-                      <div className="w-full my-6" style={{ minHeight: 320 }}>
-                        <ResponsiveContainer width="100%" height={320}>
-                          <BarChart data={chartData} margin={{ left: 32, right: 32, bottom: 20 }}>
-                            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                            <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={32}>
-                              <Label value="Budget Bins" offset={-50} position="insideBottom" />
-                            </XAxis>
-                            <YAxis domain={yDomain}>
-                              <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
-                            </YAxis>
-                            <RechartsTooltip />
-                            <Bar dataKey="value" fill="#0d9488" isAnimationActive={false} radius={[4,4,0,0]} />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </div>
-                    )
+                      <UnifiedChartRenderer
+                        chartType="histogram"
+                        data={String(children)}
+                        chartTitle="Histogram Analysis"
+                        xAxisLabel="Budget Bins"
+                        yAxisLabel="Frequency"
+                      />
+                    );
                   }
 
                   // Default code block
@@ -653,28 +380,14 @@ export default function BlogPage({ slug }: { slug: string }) {
                 hr: ({ ...props }) => (
                   <Separator className="my-8" {...props} />
                 ),
-                table: ({ children, ...props }) => (
-                  <div className="my-6 w-full overflow-x-auto">
-                    <table className="w-full border-collapse border border-border table-fixed" {...props}>
-                      {children}
-                    </table>
-                  </div>
-                ),
-                thead: ({ children, ...props }) => (
-                  <thead className="bg-muted" {...props}>
-                    {children}
-                  </thead>
-                ),
-                th: ({ children, ...props }) => (
-                  <th className="border border-border px-4 py-2 text-left font-bold min-w-[120px]" {...props}>
-                    {children}
-                  </th>
-                ),
-                td: ({ children, ...props }) => (
-                  <td className="border border-border px-4 py-2 min-w-[120px]" {...props}>
-                    {children}
-                  </td>
-                ),
+                table: ({ children }) => {
+                  return (
+                    <UnifiedTableRenderer
+                      content={children}
+                      showSorting={true}
+                    />
+                  )
+                },
               }}
             >
               {content}

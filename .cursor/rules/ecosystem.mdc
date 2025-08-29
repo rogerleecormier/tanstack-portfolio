@@ -1,5 +1,0 @@
----
-description: only use shadcn components and shadcn charts, tailwind for css, fuse.js for search, and tanstack-router for routing. Do not overcomplicate the code by trying to recreate components and modules from scratch when we are using specific ecosystem imports, styles, etc.  Do not use recharts directly, use shadcn directly.
-globs:
-alwaysApply: true
----
