@@ -113,8 +113,18 @@ export const initializeSearchIndex = async (): Promise<void> => {
   }
 }
 
+// Define the search result type
+interface SearchResult {
+  item: SearchItem
+  score: number | undefined
+  matches?: Array<{
+    key: string
+    indices: Array<[number, number]>
+  }>
+}
+
 // Perform search with basic security validation
-export const performSearch = async (query: string, clientId?: string): Promise<any[]> => {
+export const performSearch = async (query: string, clientId?: string): Promise<SearchResult[]> => {
   // Security validation
   if (!validateSearchQuery(query)) {
     logger.warn('Invalid search query detected:', query);
