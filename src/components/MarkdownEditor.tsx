@@ -148,10 +148,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         return false
       },
     },
-    content: initialContent || `
-      <h1>Start Writing</h1>
-      <p>Begin your content here...</p>
-    `,
+    content: initialContent || '<p>Start Writing</p>',
+    onCreate: ({ editor }) => {
+      // Ensure cursor is positioned at the start when editor is created
+      setTimeout(() => {
+        editor.commands.focus('start')
+      }, 100)
+    },
     onUpdate: ({ editor }) => {
       // Skip update if we're currently setting content to prevent infinite loops
       if (isSettingContent.current) {
@@ -193,9 +196,22 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         // Reset flag after a short delay to allow editor to settle
         setTimeout(() => {
           isSettingContent.current = false
+          // Ensure cursor is at the beginning and no heading is active
+          editor.commands.focus('start')
         }, 100)
         
         logger.debug('Editor content updated successfully')
+      }
+    } else if (editor && !initialContent) {
+      // When initialContent is empty, ensure we have clean default content
+      const currentContent = editor.getHTML()
+      if (currentContent.includes('<h1>') || currentContent.includes('<h2>') || currentContent.includes('<h3>')) {
+        editor.commands.setContent('<p>Start Writing</p>')
+        setMarkdownOutput('')
+        // Ensure cursor is at the beginning and no heading is active
+        setTimeout(() => {
+          editor.commands.focus('start')
+        }, 50)
       }
     }
   }, [editor, initialContent])
@@ -653,10 +669,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
   const handleClearEditor = useCallback(() => {
     if (editor) {
-      editor.commands.setContent(`
-        <h1>Start Writing</h1>
-        <p>Begin your content here...</p>
-      `)
+      editor.commands.setContent('<p>Start Writing</p>')
       setMarkdownOutput('')
     }
   }, [editor])
