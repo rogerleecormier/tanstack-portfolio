@@ -244,11 +244,17 @@ class FileService {
       const relativePath = filePath.replace('src/content/', '')
       
       // Use dynamic import with ?raw to get the file content as text
-      const content = await import(`../content/${relativePath}?raw`)
-      
-      if (content.default) {
-        console.log(`Successfully read actual file content from: ${filePath}`)
-        return content.default
+      // Note: This is a development-only feature and may not work in production builds
+      if (import.meta.env.DEV) {
+        try {
+          const content = await import(`../content/${relativePath}.md?raw`)
+          if (content.default) {
+            console.log(`Successfully read actual file content from: ${filePath}`)
+            return content.default
+          }
+        } catch (error) {
+          console.log('Error reading actual file with raw import:', error)
+        }
       }
     } catch (error) {
       console.log('Error reading actual file with raw import:', error)
