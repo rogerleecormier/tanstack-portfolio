@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Save, FileText, Briefcase, FolderOpen, Settings, FolderOpen as FolderOpenIcon } from 'lucide-react'
@@ -17,6 +17,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import FileBrowser from '@/components/FileBrowser'
 import FileService, { FileItem } from '@/utils/fileService'
 import { logger } from '@/utils/logger'
+import { markdownToHtml } from '@/utils/markdownConverter'
 
 interface FrontmatterData {
   title: string
@@ -307,8 +308,9 @@ const ContentCreationPage: React.FC = () => {
                  // Set the states in the correct order to ensure proper flow
          setFrontmatter(parsedFrontmatter)
          setMarkdown(parsedMarkdown)
-         // Set content to markdown for proper table rendering in the editor
-         setContent(parsedMarkdown)
+         // Convert markdown to HTML for proper table rendering in the editor
+         const htmlContent = markdownToHtml(parsedMarkdown)
+         setContent(htmlContent)
         
         // Update file-related states
         setCurrentFilePath(file.path)
@@ -710,7 +712,7 @@ const ContentCreationPage: React.FC = () => {
                 ) : (
                                      <MarkdownEditor
                      key={currentFilePath || 'new-content'}
-                     initialContent={content || markdown || (isEditingExisting ? '<p>Loading content...</p>' : `# Start Writing Your Content
+                     initialContent={content || `# Start Writing Your Content
 
 Welcome to the Content Creation Studio! Use the toolbar above to format your content with headers, bold, italic, lists, and more.
 
@@ -731,7 +733,7 @@ You can create tables using the table button in the toolbar or by typing markdow
 2. Click the table icon to insert tables
 3. Click the chart icon to add charts
 4. Generate frontmatter when ready
-5. Save your content`)}
+5. Save your content`}
                      onContentChange={handleContentChange}
                      showToolbar={true}
                      minHeight="800px"
@@ -747,6 +749,9 @@ You can create tables using the table button in the toolbar or by typing markdow
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-teal-900">Edit Frontmatter</DialogTitle>
+              <DialogDescription>
+                Configure the metadata for your content including title, description, tags, and other properties.
+              </DialogDescription>
             </DialogHeader>
             
             {frontmatter && (
@@ -1010,6 +1015,9 @@ You can create tables using the table button in the toolbar or by typing markdow
            <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
              <DialogHeader>
                <DialogTitle className="text-teal-900">File Browser</DialogTitle>
+               <DialogDescription>
+                 Browse, create, and manage content files in your project directories.
+               </DialogDescription>
              </DialogHeader>
              <div className="flex gap-6 h-[70vh]">
                {/* File Browser */}
@@ -1089,6 +1097,12 @@ You can create tables using the table button in the toolbar or by typing markdow
                <DialogTitle className="text-teal-900">
                  {isEditingExisting ? 'Save Changes' : 'Save Content File'}
                </DialogTitle>
+               <DialogDescription>
+                 {isEditingExisting 
+                   ? 'Save your changes to the existing file.' 
+                   : 'Choose a filename and directory to save your new content file.'
+                 }
+               </DialogDescription>
              </DialogHeader>
              
              <div className="space-y-4">
