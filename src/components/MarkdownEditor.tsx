@@ -10,7 +10,7 @@ import { TableHeader } from '@tiptap/extension-table-header'
 import { common, createLowlight } from 'lowlight'
 import { Chart } from '@/extensions/ChartExtension'
 import { SortableTableExtension } from '@/extensions/SortableTableExtension'
-import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
+
 import { 
   Bold, 
   Italic, 
@@ -44,98 +44,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Label } from '@/components/ui/label'
 import { logger } from '@/utils/logger'
 import { markdownToHtml, htmlToMarkdown } from '@/utils/markdownConverter'
-import { createRoot } from 'react-dom/client'
+
 
 // Create lowlight instance with common languages
 const lowlight = createLowlight(common)
 
-// Custom table extension that renders using UnifiedTableRenderer styling but remains editable
-const CustomTableExtension = Table.extend({
-  addNodeView() {
-    return ({ node }) => {
-      const dom = document.createElement('div')
-      dom.className = 'custom-table-wrapper'
-      
-      // Extract table data from the TipTap table node
-      const tableData = {
-        headers: [] as string[],
-        rows: [] as string[][]
-      }
-      
-      // Get headers from the first row
-      if (node.content.content[0]?.content) {
-        const headerRow = node.content.content[0]
-        headerRow.content.forEach((cell: { type: { name: string }, textContent: string }) => {
-          if (cell.type.name === 'tableHeader') {
-            tableData.headers.push(cell.textContent || '')
-          }
-        })
-      }
-      
-      // Get data rows
-      for (let i = 1; i < node.content.content.length; i++) {
-        const row = node.content.content[i]
-        if (row.type.name === 'tableRow') {
-          const rowData: string[] = []
-          row.content.forEach((cell: { type: { name: string }, textContent: string }) => {
-            if (cell.type.name === 'tableCell') {
-              rowData.push(cell.textContent || '')
-            }
-          })
-          if (rowData.length > 0) {
-            tableData.rows.push(rowData)
-          }
-        }
-      }
-      
-      // Convert table data to markdown format for UnifiedTableRenderer
-      let markdownTable = '| '
-      tableData.headers.forEach(header => {
-        markdownTable += `${header} | `
-      })
-      markdownTable = markdownTable.slice(0, -1) + '\n|'
-      
-      tableData.headers.forEach(() => {
-        markdownTable += ' --- |'
-      })
-      markdownTable += '\n'
-      
-      tableData.rows.forEach(row => {
-        markdownTable += '| '
-        row.forEach(cell => {
-          markdownTable += `${cell} | `
-        })
-        markdownTable = markdownTable.slice(0, -1) + '\n'
-      })
-      
-      // Render using UnifiedTableRenderer
-      const root = createRoot(dom)
-      root.render(
-        <UnifiedTableRenderer 
-          content={markdownTable.trim()}
-          showSorting={false}
-        />
-      )
-      
-      return {
-        dom,
-        update: () => {
-          // Re-render when table content changes
-          root.render(
-            <UnifiedTableRenderer 
-              content={markdownTable.trim()}
-              showSorting={false}
-            />
-          )
-          return true
-        },
-        destroy: () => {
-          root.unmount()
-        }
-      }
-    }
-  }
-})
+// Remove the CustomTableExtension since it makes tables non-editable
+// Instead, we'll use the standard Table extension with unified styling
 
 // Custom table header extension to match UnifiedTableRenderer styling
 const CustomTableHeader = TableHeader.extend({
@@ -198,6 +113,8 @@ interface MarkdownEditorProps {
   showToolbar?: boolean
   className?: string
   minHeight?: string
+  contentType?: 'blog' | 'portfolio' | 'project'
+  onDirectoryChange?: (directory: string) => void
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
@@ -206,7 +123,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   showPreview = false,
   showToolbar = true,
   className = '',
-  minHeight = '600px'
+  minHeight = '600px',
+  contentType,
+  onDirectoryChange
 }) => {
   const [showPreviewState, setShowPreviewState] = useState(showPreview)
   const [markdownOutput, setMarkdownOutput] = useState('')
@@ -259,10 +178,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
            class: 'code-block',
          },
        }),
-               CustomTableExtension.configure({
+                       Table.configure({
           resizable: true,
           HTMLAttributes: {
-            class: 'my-4',
+            class: 'my-6 w-full caption-bottom text-sm border-collapse bg-white border border-teal-200 rounded-xl overflow-hidden shadow-sm',
           },
         }),
         CustomTableHeader,
