@@ -9,6 +9,7 @@ import { TableCell } from '@tiptap/extension-table-cell'
 import { TableHeader } from '@tiptap/extension-table-header'
 import { common, createLowlight } from 'lowlight'
 import { Chart } from '@/extensions/ChartExtension'
+import { SortableTableExtension } from '@/extensions/SortableTableExtension'
 import { 
   Bold, 
   Italic, 
@@ -42,6 +43,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Label } from '@/components/ui/label'
 import { logger } from '@/utils/logger'
 import { markdownToHtml, htmlToMarkdown } from '@/utils/markdownConverter'
+
 
 // Create lowlight instance with common languages
 const lowlight = createLowlight(common)
@@ -117,22 +119,27 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
        Table.configure({
          resizable: true,
          HTMLAttributes: {
-           class: 'border-collapse border border-gray-300 w-full my-4 overflow-x-auto',
+           class: 'w-full caption-bottom text-sm border-collapse my-4',
          },
        }),
        TableRow.configure({
          HTMLAttributes: {
-           class: 'border-b border-gray-300',
+           class: 'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
          },
        }),
        TableHeader.configure({
          HTMLAttributes: {
-           class: 'border border-gray-300 px-4 py-2 bg-gray-100 font-semibold text-left text-gray-900 whitespace-nowrap',
+           class: 'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0',
          },
        }),
        TableCell.configure({
          HTMLAttributes: {
-           class: 'border border-gray-300 px-4 py-2 min-w-[100px] whitespace-nowrap',
+           class: 'p-4 align-middle [&:has([role=checkbox])]:pr-0 min-w-[100px]',
+         },
+       }),
+       SortableTableExtension.configure({
+         HTMLAttributes: {
+           class: 'my-4',
          },
        }),
        Chart,
@@ -344,82 +351,89 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       try {
         logger.debug('Inserting table with:', { rows: tableRows, cols: tableCols, withHeader: tableWithHeader })
         
-        // Insert table at current cursor position
+        // Generate markdown table content
+        let markdownTable = '| '
+        
+        // Create headers
+        for (let i = 0; i < tableCols; i++) {
+          markdownTable += `Column ${i + 1} | `
+        }
+        markdownTable = markdownTable.slice(0, -1) + '\n|'
+        
+        // Create separator row
+        for (let i = 0; i < tableCols; i++) {
+          markdownTable += ' --- |'
+        }
+        markdownTable += '\n'
+        
+        // Create data rows
+        for (let row = 0; row < tableRows; row++) {
+          markdownTable += '| '
+          for (let col = 0; col < tableCols; col++) {
+            if (tableWithHeader && row === 0) {
+              markdownTable += `Header ${col + 1} | `
+            } else {
+              markdownTable += `Cell ${row + 1}-${col + 1} | `
+            }
+          }
+          markdownTable = markdownTable.slice(0, -1) + '\n'
+        }
+        
+        // Insert regular TipTap table so headers can be edited
         editor.chain().focus().insertTable({ 
           rows: tableRows, 
           cols: tableCols, 
           withHeaderRow: tableWithHeader 
         }).run()
         
-        // Force an update to ensure markdown is generated
+        // Update markdown output
         setTimeout(() => {
           if (!editor.isDestroyed && editor.view) {
             try {
               const html = editor.getHTML()
-              console.log('=== TABLE INSERTION DEBUG ===')
-              console.log('Editor HTML after table insertion:', html)
-              
-              // Check if table was actually inserted
-              const tables = document.querySelectorAll('.ProseMirror table')
-              console.log('Tables found in DOM:', tables.length)
-              
-              if (tables.length > 0) {
-                console.log('Table HTML structure:', tables[0].outerHTML)
-                
-                // Force markdown update
-                const markdown = htmlToMarkdown(html)
-                setMarkdownOutput(markdown)
-                console.log('Generated markdown after table insertion:', markdown)
-                
-                // Also check the raw HTML content for debugging
-                const tableMatch = html.match(/<table[^>]*>(.*?)<\/table>/s)
-                if (tableMatch) {
-                  console.log('Table content extracted from HTML:', tableMatch[1])
-                }
-              }
-              console.log('=== END TABLE INSERTION DEBUG ===')
+              const markdown = htmlToMarkdown(html)
+              setMarkdownOutput(markdown)
             } catch (error) {
-              console.error('Error logging table insertion:', error)
+              logger.error('Error updating markdown output:', error)
             }
           }
         }, 100)
-        
-        // Add some default content to make it clear the table is editable
-        if (tableWithHeader) {
-          // Add placeholder text to header cells
-          const headerCells = document.querySelectorAll('.ProseMirror table thead th')
-          logger.debug('Header cells found:', headerCells.length)
-          Array.from(headerCells).forEach((cell: Element, index: number) => {
-            if (!cell.textContent?.trim()) {
-              cell.textContent = `Header ${index + 1}`
-            }
-          })
-        }
-        
-        // Add placeholder text to first few data cells
-        const dataCells = document.querySelectorAll('.ProseMirror table tbody td')
-        logger.debug('Data cells found:', dataCells.length)
-        Array.from(dataCells).slice(0, Math.min(3, dataCells.length)).forEach((cell: Element, index: number) => {
-          if (!cell.textContent?.trim()) {
-            cell.textContent = `Cell ${index + 1}`
-          }
-        })
         
         setShowTableDialog(false)
         
-        // Focus the first editable cell
-        setTimeout(() => {
-          const firstCell = document.querySelector('.ProseMirror table td, .ProseMirror table th')
-          if (firstCell instanceof HTMLElement) {
-            firstCell.focus()
-          }
-        }, 100)
+        // Focus the editor
+        editor.commands.focus()
       } catch (error) {
         logger.error('Error inserting table:', error)
         alert('Error inserting table. Please try again.')
       }
     }
   }, [editor, tableRows, tableCols, tableWithHeader])
+
+  const insertTableTemplate = useCallback(() => {
+    if (editor && !editor.isDestroyed && editor.view) {
+      try {
+        // Insert a sample table with meaningful data
+        const sampleMarkdown = `| Project | Status | Progress | Due Date |
+|---------|--------|----------|----------|
+| Website Redesign | In Progress | 75% | Dec 15, 2024 |
+| Mobile App | Planning | 10% | Jan 30, 2025 |
+| Database Migration | Completed | 100% | Nov 1, 2024 |
+| API Integration | On Hold | 45% | Feb 15, 2025 |`
+
+        // Insert regular TipTap table so headers can be edited
+        editor.chain().focus().insertContent(sampleMarkdown).run()
+        
+        // Update markdown output
+        setMarkdownOutput(sampleMarkdown)
+        
+        // Focus the editor
+        editor.commands.focus()
+      } catch (error) {
+        logger.error('Error inserting table template:', error)
+      }
+    }
+  }, [editor])
 
   const handleAddRowBefore = useCallback(() => {
     if (editor && !editor.isDestroyed && editor.view) {
@@ -726,6 +740,14 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 >
                   <TableIcon className="h-4 w-4" />
                 </ToolbarButton>
+                <ToolbarButton
+                  onClick={() => insertTableTemplate()}
+                  title="Insert Sample Table"
+                >
+                  <div className="w-4 h-4 border border-current rounded-sm">
+                    <div className="w-2 h-2 border border-current rounded-sm mx-auto mt-0.5"></div>
+                  </div>
+                </ToolbarButton>
               </div>
 
               {/* Table Management Buttons - Only show when table is active */}
@@ -807,74 +829,74 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               onContextMenu={handleTableContextMenu}
             />
             <style>{`
-              /* Table styles - ensure all tables are properly styled */
+              /* Table styles using shadcn design system */
               .ProseMirror table {
-                border-collapse: collapse !important;
-                border: 1px solid #d1d5db !important;
                 width: 100% !important;
+                caption-bottom: true !important;
+                font-size: 0.875rem !important;
+                border-collapse: collapse !important;
                 margin: 1rem 0 !important;
-                table-layout: auto !important;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
                 display: table !important;
               }
               
-              .ProseMirror table td,
-              .ProseMirror table th {
-                border: 1px solid #d1d5db !important;
-                padding: 0.5rem !important;
-                min-width: 100px !important;
-                vertical-align: top !important;
-                display: table-cell !important;
-              }
-              
-              .ProseMirror table th {
-                background-color: #f3f4f6 !important;
-                font-weight: 600 !important;
-                text-align: left !important;
-                color: #111827 !important;
-              }
-              
-              .ProseMirror table tr {
-                display: table-row !important;
-              }
-              
-              .ProseMirror table tr:hover {
-                background-color: #f9fafb !important;
-              }
-              
-              .ProseMirror table td:focus,
-              .ProseMirror table th:focus {
-                outline: none !important;
-                border-color: #14b8a6 !important;
-                background-color: #f0f9ff !important;
-              }
-              
-              .ProseMirror table td:empty::before {
-                content: 'Click to edit' !important;
-                color: #9ca3af !important;
-                font-style: italic !important;
-              }
-              
-              .ProseMirror table td:focus:empty::before {
-                content: '' !important;
-              }
-              
-              .ProseMirror table td:hover,
-              .ProseMirror table th:hover {
-                background-color: #f8fafc !important;
-              }
-              
-              /* Ensure table structure is maintained */
               .ProseMirror table thead {
                 display: table-header-group !important;
+              }
+              
+              .ProseMirror table thead tr {
+                border-bottom: 1px solid hsl(var(--border)) !important;
               }
               
               .ProseMirror table tbody {
                 display: table-row-group !important;
               }
               
-              .ProseMirror table tfoot {
-                display: table-footer-group !important;
+              .ProseMirror table tbody tr:last-child {
+                border-bottom: 0 !important;
+              }
+              
+              .ProseMirror table tr {
+                border-bottom: 1px solid hsl(var(--border)) !important;
+                transition: colors 0.2s !important;
+                display: table-row !important;
+              }
+              
+              .ProseMirror table tr:hover {
+                background-color: hsl(var(--muted) / 0.5) !important;
+              }
+              
+              .ProseMirror table th {
+                height: 3rem !important;
+                padding: 0 1rem !important;
+                text-align: left !important;
+                vertical-align: middle !important;
+                font-weight: 500 !important;
+                color: hsl(var(--muted-foreground)) !important;
+                display: table-cell !important;
+              }
+              
+              .ProseMirror table td {
+                padding: 1rem !important;
+                vertical-align: middle !important;
+                display: table-cell !important;
+                min-width: 100px !important;
+              }
+              
+              .ProseMirror table td:focus,
+              .ProseMirror table th:focus {
+                outline: none !important;
+                border-color: hsl(var(--ring)) !important;
+                background-color: hsl(var(--accent)) !important;
+              }
+              
+              .ProseMirror table td:empty::before {
+                content: 'Click to edit' !important;
+                color: hsl(var(--muted-foreground)) !important;
+                font-style: italic !important;
+              }
+              
+              .ProseMirror table td:focus:empty::before {
+                content: '' !important;
               }
             `}</style>
           </div>
@@ -886,12 +908,18 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             <Separator orientation="vertical" className="bg-teal-200" />
             <div className="w-1/2 p-6 bg-gradient-to-br from-teal-50 to-blue-50">
               <div className="mb-4">
-                <h2 className="text-lg font-semibold text-teal-900 mb-2">Markdown Output</h2>
-                <Card className="border border-teal-200 bg-white">
-                  <CardContent className="p-4">
-                    <pre className="font-mono text-sm overflow-auto max-h-[600px] whitespace-pre-wrap text-gray-700 bg-gray-50 p-3 rounded border">{markdownOutput}</pre>
-                  </CardContent>
-                </Card>
+                <h2 className="text-lg font-semibold text-teal-900 mb-2">Preview</h2>
+                <div className="space-y-4">
+                  {/* Show markdown output */}
+                  <div>
+                    <h3 className="text-sm font-medium text-teal-800 mb-2">Markdown Output</h3>
+                    <Card className="border border-teal-200 bg-white">
+                      <CardContent className="p-4">
+                        <pre className="font-mono text-sm overflow-auto max-h-[400px] whitespace-pre-wrap text-gray-700 bg-gray-50 p-3 rounded border">{markdownOutput}</pre>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
               </div>
             </div>
           </>

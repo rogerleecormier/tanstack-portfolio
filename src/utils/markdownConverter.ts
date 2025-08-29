@@ -149,29 +149,30 @@ export const markdownToHtml = (markdown: string): string => {
         // Parse header cells - split by | and filter out empty cells
         const headerCells = headerRow.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0)
         
-                 // Build table HTML with proper TipTap table structure
-         let tableHtml = '<table class="border-collapse border border-gray-300 w-full my-4 overflow-x-auto">'
+                 // Build table HTML with shadcn table styling
+        let tableHtml = '<table class="w-full caption-bottom text-sm border-collapse">'
         
         // Add header row
-        tableHtml += '<thead><tr>'
+        tableHtml += '<thead class="[&_tr]:border-b">'
+        tableHtml += '<tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">'
         headerCells.forEach(cell => {
-          tableHtml += `<th class="border border-gray-300 px-4 py-2 bg-gray-100 font-semibold text-left">${cell}</th>`
+          tableHtml += `<th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">${cell}</th>`
         })
         tableHtml += '</tr></thead>'
         
         // Add data rows
-        tableHtml += '<tbody>'
+        tableHtml += '<tbody class="[&_tr:last-child]:border-0">'
         dataRows.forEach(row => {
           const cells = row.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0)
           if (cells.length > 0) {
-            tableHtml += '<tr>'
+            tableHtml += '<tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">'
             // Ensure we have the same number of cells as headers
             const paddedCells = [...cells]
             while (paddedCells.length < headerCells.length) {
               paddedCells.push('')
             }
             paddedCells.forEach(cell => {
-              tableHtml += `<td class="border border-gray-300 px-4 py-2 min-w-[100px]">${cell}</td>`
+              tableHtml += `<td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">${cell}</td>`
             })
             tableHtml += '</tr>'
           }
@@ -318,8 +319,28 @@ export const htmlToMarkdown = (html: string): string => {
     .replace(/<blockquote>(.*?)<\/blockquote>/gs, '> $1\n\n')
     // Handle horizontal rules
     .replace(/<hr\s*\/?>/g, '---\n\n')
-    // Handle tables - completely rewritten to handle TipTap HTML structure
-    .replace(/<table[^>]*>(.*?)<\/table>/gs, (match, tableContent) => {
+         // Handle sortable tables first - more flexible regex to catch all variations
+     .replace(/<div[^>]*data-type="sortable-table"[^>]*data-content="([^"]*)"[^>]*>/g, (match, encodedContent) => {
+       try {
+         const decodedContent = decodeURIComponent(encodedContent)
+         return decodedContent
+       } catch (error) {
+         console.error('Error decoding sortable table content:', error)
+         return match
+       }
+     })
+     // Also handle sortable tables without quotes around data-content
+     .replace(/<div[^>]*data-type="sortable-table"[^>]*data-content=([^>\s]*)[^>]*>/g, (match, encodedContent) => {
+       try {
+         const decodedContent = decodeURIComponent(encodedContent)
+         return decodedContent
+       } catch (error) {
+         console.error('Error decoding sortable table content:', error)
+         return match
+       }
+     })
+     // Handle regular tables - completely rewritten to handle TipTap HTML structure
+     .replace(/<table[^>]*>(.*?)<\/table>/gs, (match, tableContent) => {
       try {
         // Debug: Log the actual HTML structure being parsed
         console.log('=== TABLE PARSING DEBUG ===')
