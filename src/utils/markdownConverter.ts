@@ -149,30 +149,33 @@ export const markdownToHtml = (markdown: string): string => {
         // Parse header cells - split by | and filter out empty cells
         const headerCells = headerRow.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0)
         
-                 // Build table HTML with shadcn table styling
-        let tableHtml = '<table class="w-full caption-bottom text-sm border-collapse">'
+                 // Build table HTML with unified table styling
+        let tableHtml = '<table class="w-full caption-bottom text-sm border-collapse my-4 bg-white border border-teal-200 rounded-xl overflow-hidden shadow-sm">'
         
         // Add header row
-        tableHtml += '<thead class="[&_tr]:border-b">'
-        tableHtml += '<tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">'
+        tableHtml += '<thead class="bg-teal-50">'
+        tableHtml += '<tr class="border-b border-teal-200 last:border-b-0 hover:bg-teal-100 hover:shadow-sm transition-all duration-200 ease-in-out">'
         headerCells.forEach(cell => {
-          tableHtml += `<th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">${cell}</th>`
+          tableHtml += `<th class="h-14 px-5 text-left align-middle font-semibold text-teal-900 border-r border-teal-200 last:border-r-0 bg-teal-50 text-sm tracking-wide">${cell}</th>`
         })
         tableHtml += '</tr></thead>'
         
         // Add data rows
-        tableHtml += '<tbody class="[&_tr:last-child]:border-0">'
-        dataRows.forEach(row => {
+        tableHtml += '<tbody>'
+        dataRows.forEach((row, rowIndex) => {
           const cells = row.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0)
           if (cells.length > 0) {
-            tableHtml += '<tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">'
+            const rowClass = `border-b border-teal-100 last:border-b-0 hover:bg-teal-50 hover:shadow-sm transition-all duration-200 ease-in-out ${
+              rowIndex % 2 === 0 ? 'bg-white' : 'bg-teal-50'
+            }`
+            tableHtml += `<tr class="${rowClass}">`
             // Ensure we have the same number of cells as headers
             const paddedCells = [...cells]
             while (paddedCells.length < headerCells.length) {
               paddedCells.push('')
             }
             paddedCells.forEach(cell => {
-              tableHtml += `<td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">${cell}</td>`
+              tableHtml += `<td class="px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 last:border-r-0 text-teal-700 text-sm leading-relaxed">${cell}</td>`
             })
             tableHtml += '</tr>'
           }

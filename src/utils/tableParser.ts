@@ -1,4 +1,4 @@
-import { TableData } from '@/components/SortableTable'
+import { TableData } from '@/components/UnifiedTableRenderer'
 
 /**
  * Parses markdown table syntax into structured data

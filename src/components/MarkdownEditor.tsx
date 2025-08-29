@@ -10,6 +10,7 @@ import { TableHeader } from '@tiptap/extension-table-header'
 import { common, createLowlight } from 'lowlight'
 import { Chart } from '@/extensions/ChartExtension'
 import { SortableTableExtension } from '@/extensions/SortableTableExtension'
+import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
 import { 
   Bold, 
   Italic, 
@@ -43,10 +44,152 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Label } from '@/components/ui/label'
 import { logger } from '@/utils/logger'
 import { markdownToHtml, htmlToMarkdown } from '@/utils/markdownConverter'
-
+import { createRoot } from 'react-dom/client'
 
 // Create lowlight instance with common languages
 const lowlight = createLowlight(common)
+
+// Custom table extension that renders using UnifiedTableRenderer styling but remains editable
+const CustomTableExtension = Table.extend({
+  addNodeView() {
+    return ({ node }) => {
+      const dom = document.createElement('div')
+      dom.className = 'custom-table-wrapper'
+      
+      // Extract table data from the TipTap table node
+      const tableData = {
+        headers: [] as string[],
+        rows: [] as string[][]
+      }
+      
+      // Get headers from the first row
+      if (node.content.content[0]?.content) {
+        const headerRow = node.content.content[0]
+        headerRow.content.forEach((cell: { type: { name: string }, textContent: string }) => {
+          if (cell.type.name === 'tableHeader') {
+            tableData.headers.push(cell.textContent || '')
+          }
+        })
+      }
+      
+      // Get data rows
+      for (let i = 1; i < node.content.content.length; i++) {
+        const row = node.content.content[i]
+        if (row.type.name === 'tableRow') {
+          const rowData: string[] = []
+          row.content.forEach((cell: { type: { name: string }, textContent: string }) => {
+            if (cell.type.name === 'tableCell') {
+              rowData.push(cell.textContent || '')
+            }
+          })
+          if (rowData.length > 0) {
+            tableData.rows.push(rowData)
+          }
+        }
+      }
+      
+      // Convert table data to markdown format for UnifiedTableRenderer
+      let markdownTable = '| '
+      tableData.headers.forEach(header => {
+        markdownTable += `${header} | `
+      })
+      markdownTable = markdownTable.slice(0, -1) + '\n|'
+      
+      tableData.headers.forEach(() => {
+        markdownTable += ' --- |'
+      })
+      markdownTable += '\n'
+      
+      tableData.rows.forEach(row => {
+        markdownTable += '| '
+        row.forEach(cell => {
+          markdownTable += `${cell} | `
+        })
+        markdownTable = markdownTable.slice(0, -1) + '\n'
+      })
+      
+      // Render using UnifiedTableRenderer
+      const root = createRoot(dom)
+      root.render(
+        <UnifiedTableRenderer 
+          content={markdownTable.trim()}
+          showSorting={false}
+        />
+      )
+      
+      return {
+        dom,
+        update: () => {
+          // Re-render when table content changes
+          root.render(
+            <UnifiedTableRenderer 
+              content={markdownTable.trim()}
+              showSorting={false}
+            />
+          )
+          return true
+        },
+        destroy: () => {
+          root.unmount()
+        }
+      }
+    }
+  }
+})
+
+// Custom table header extension to match UnifiedTableRenderer styling
+const CustomTableHeader = TableHeader.extend({
+  addGlobalAttributes() {
+    return [
+      {
+        types: ['tableHeader'],
+        attributes: {
+          class: {
+            default: 'h-14 px-5 text-left align-middle font-semibold text-teal-900 border-r border-teal-200 last:border-r-0 bg-teal-50 text-sm tracking-wide',
+            parseHTML: element => element.getAttribute('class'),
+            renderHTML: attributes => {
+              if (!attributes.class) {
+                return {
+                  class: 'h-14 px-5 text-left align-middle font-semibold text-teal-900 border-r border-teal-200 last:border-r-0 bg-teal-50 text-sm tracking-wide'
+                }
+              }
+              return {
+                class: attributes.class
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+})
+
+// Custom table cell extension to match UnifiedTableRenderer styling
+const CustomTableCell = TableCell.extend({
+  addGlobalAttributes() {
+    return [
+      {
+        types: ['tableCell'],
+        attributes: {
+          class: {
+            default: 'px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 last:border-r-0 text-teal-700 text-sm leading-relaxed',
+            parseHTML: element => element.getAttribute('class'),
+            renderHTML: attributes => {
+              if (!attributes.class) {
+                return {
+                  class: 'px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 last:border-r-0 text-teal-700 text-sm leading-relaxed'
+                }
+              }
+              return {
+                class: attributes.class
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+})
 
 interface MarkdownEditorProps {
   initialContent?: string
@@ -116,27 +259,19 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
            class: 'code-block',
          },
        }),
-       Table.configure({
-         resizable: true,
-         HTMLAttributes: {
-           class: 'w-full caption-bottom text-sm border-collapse my-4',
-         },
-       }),
-       TableRow.configure({
-         HTMLAttributes: {
-           class: 'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
-         },
-       }),
-       TableHeader.configure({
-         HTMLAttributes: {
-           class: 'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0',
-         },
-       }),
-       TableCell.configure({
-         HTMLAttributes: {
-           class: 'p-4 align-middle [&:has([role=checkbox])]:pr-0 min-w-[100px]',
-         },
-       }),
+               CustomTableExtension.configure({
+          resizable: true,
+          HTMLAttributes: {
+            class: 'my-4',
+          },
+        }),
+        CustomTableHeader,
+        CustomTableCell,
+        TableRow.configure({
+          HTMLAttributes: {
+            class: 'border-b border-teal-100 last:border-b-0 hover:bg-teal-50 hover:shadow-sm transition-all duration-200 ease-in-out',
+          },
+        }),
        SortableTableExtension.configure({
          HTMLAttributes: {
            class: 'my-4',
@@ -828,77 +963,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               className="min-h-[600px]"
               onContextMenu={handleTableContextMenu}
             />
-            <style>{`
-              /* Table styles using shadcn design system */
-              .ProseMirror table {
-                width: 100% !important;
-                caption-bottom: true !important;
-                font-size: 0.875rem !important;
-                border-collapse: collapse !important;
-                margin: 1rem 0 !important;
-                display: table !important;
-              }
+
               
-              .ProseMirror table thead {
-                display: table-header-group !important;
-              }
-              
-              .ProseMirror table thead tr {
-                border-bottom: 1px solid hsl(var(--border)) !important;
-              }
-              
-              .ProseMirror table tbody {
-                display: table-row-group !important;
-              }
-              
-              .ProseMirror table tbody tr:last-child {
-                border-bottom: 0 !important;
-              }
-              
-              .ProseMirror table tr {
-                border-bottom: 1px solid hsl(var(--border)) !important;
-                transition: colors 0.2s !important;
-                display: table-row !important;
-              }
-              
-              .ProseMirror table tr:hover {
-                background-color: hsl(var(--muted) / 0.5) !important;
-              }
-              
-              .ProseMirror table th {
-                height: 3rem !important;
-                padding: 0 1rem !important;
-                text-align: left !important;
-                vertical-align: middle !important;
-                font-weight: 500 !important;
-                color: hsl(var(--muted-foreground)) !important;
-                display: table-cell !important;
-              }
-              
-              .ProseMirror table td {
-                padding: 1rem !important;
-                vertical-align: middle !important;
-                display: table-cell !important;
-                min-width: 100px !important;
-              }
-              
-              .ProseMirror table td:focus,
-              .ProseMirror table th:focus {
-                outline: none !important;
-                border-color: hsl(var(--ring)) !important;
-                background-color: hsl(var(--accent)) !important;
-              }
-              
-              .ProseMirror table td:empty::before {
-                content: 'Click to edit' !important;
-                color: hsl(var(--muted-foreground)) !important;
-                font-style: italic !important;
-              }
-              
-              .ProseMirror table td:focus:empty::before {
-                content: '' !important;
-              }
-            `}</style>
+
           </div>
         </div>
 

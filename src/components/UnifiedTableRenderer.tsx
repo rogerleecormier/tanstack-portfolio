@@ -2,12 +2,12 @@ import React, { useState, useMemo } from 'react'
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  UnifiedTable,
+  UnifiedTableBody,
+  UnifiedTableCell,
+  UnifiedTableHead,
+  UnifiedTableHeader,
+  UnifiedTableRow,
 } from '@/components/ui/table'
 import { parseMarkdownTable } from '@/utils/tableParser'
 import { logger } from '@/utils/logger'
@@ -441,7 +441,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
 
   if (!tableData || !tableData.headers || tableData.headers.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500 border border-gray-200 rounded-lg">
+      <div className="p-4 text-center text-teal-600 border border-teal-200 rounded-lg bg-teal-50">
         Invalid table data
       </div>
     )
@@ -452,47 +452,56 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
   return (
     <div className={`my-6 ${className}`}>
       {tableTitle && (
-        <div className="text-lg font-semibold text-center text-gray-800 mb-4">
+        <div className="text-lg font-semibold text-center text-teal-800 mb-4">
           {tableTitle}
         </div>
       )}
       
-      <div className="w-full overflow-x-auto rounded-lg border border-gray-200 bg-white">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {dataToRender.headers.map((header, index) => (
-                <TableHead key={index}>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-muted-foreground">{header}</span>
-                    {showSorting && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => requestSort(index)}
-                        className="h-6 w-6 p-0 hover:bg-muted ml-2"
-                      >
-                        {getSortIcon(index)}
-                      </Button>
-                    )}
-                  </div>
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {dataToRender.rows.map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
-                {dataToRender.headers.map((_, colIndex) => (
-                  <TableCell key={colIndex}>
-                    {row[colIndex] || ''}
-                  </TableCell>
-                ))}
-              </TableRow>
+      <UnifiedTable>
+        <UnifiedTableHeader>
+          <UnifiedTableRow>
+            {dataToRender.headers.map((header, index) => (
+              <UnifiedTableHead 
+                key={index} 
+                className="h-14 px-5 text-left align-middle font-semibold text-teal-900 border-r border-teal-200 last:border-r-0 bg-teal-50 text-sm tracking-wide"
+              >
+                <div className="flex items-center justify-between">
+                  <span>{header}</span>
+                  {showSorting && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => requestSort(index)}
+                      className="h-6 w-6 p-0 ml-2 hover:bg-teal-200"
+                    >
+                      {getSortIcon(index)}
+                    </Button>
+                  )}
+                </div>
+              </UnifiedTableHead>
             ))}
-          </TableBody>
-        </Table>
-      </div>
+          </UnifiedTableRow>
+        </UnifiedTableHeader>
+        <UnifiedTableBody>
+          {dataToRender.rows.map((row, rowIndex) => (
+            <UnifiedTableRow 
+              key={rowIndex} 
+              className={`border-b border-teal-100 last:border-b-0 hover:bg-teal-50 hover:shadow-sm transition-all duration-200 ease-in-out ${
+                rowIndex % 2 === 0 ? 'bg-white' : 'bg-teal-50'
+              }`}
+            >
+              {dataToRender.headers.map((_, colIndex) => (
+                <UnifiedTableCell 
+                  key={colIndex} 
+                  className="px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 last:border-r-0 text-teal-700 text-sm leading-relaxed"
+                >
+                  {row[colIndex] || ''}
+                </UnifiedTableCell>
+              ))}
+            </UnifiedTableRow>
+          ))}
+        </UnifiedTableBody>
+      </UnifiedTable>
     </div>
   )
 }
