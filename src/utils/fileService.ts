@@ -247,8 +247,8 @@ class FileService {
       // Note: This is a development-only feature and may not work in production builds
       if (import.meta.env.DEV) {
         try {
-          // Use a direct import path from the project root that Vite can resolve
-          const content = await import(`/src/content/${relativePath}?raw`)
+          // Use a relative import path that Vite can resolve
+          const content = await import(`../content/${relativePath}?raw`)
           if (content && content.default) {
             console.log(`Successfully read actual file content from: ${filePath}`)
             return content.default

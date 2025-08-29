@@ -5,6 +5,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartConfig,
 } from "@/components/ui/chart";
 // Recharts components (keeping for potential reversion)
 import {
@@ -34,44 +35,72 @@ interface ChartRendererProps {
 }
 
 const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
-  const { chartType, data, xAxisLabel, yAxisLabel, width = '100%', height = '320px' } = node.attrs;
+  const { chartType, data, xAxisLabel, yAxisLabel } = node.attrs;
 
   // Use logger instead of console.log
   logger.debug("ChartRenderer called with:", { chartType, data });
 
-  // Chart configuration for Shadcn components
-  const chartConfig = {
-    value: {
-      label: "Value",
-      color: "#0d9488", // teal-600
-    },
-    date: {
-      label: "Date",
-      color: "#0891b2", // blue-600
-    },
+  // Enhanced chart configuration that always provides meaningful labels
+  const getChartConfig = () => {
+    const baseConfig = {
+      value: {
+        label: "Value",
+        color: "#0d9488",
+      },
+      date: {
+        label: xAxisLabel || "Date",
+      },
+      x: {
+        label: xAxisLabel || "X Axis",
+      },
+      y: {
+        label: yAxisLabel || "Y Axis",
+      },
+    };
+
+    // Add dynamic series keys for line charts
+    if (chartType === "linechart" && Array.isArray(data)) {
+      try {
+        const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+        if (parsedData.length > 0) {
+          const seriesKeys = Object.keys(parsedData[0] || {}).filter(
+            (key) => key !== "date"
+          );
+          
+          seriesKeys.forEach((key, index) => {
+            baseConfig[key] = {
+              label: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
+              color: index === 0 ? "#0d9488" : "#0891b2",
+            };
+          });
+        }
+      } catch (error) {
+        logger.warn("Failed to parse data for dynamic series labels:", error);
+      }
+    }
+
+    return baseConfig;
   };
 
-  const parseChartData = (dataString: string) => {
-    try {
-      return JSON.parse(dataString);
-    } catch (error) {
-      logger.error("Failed to parse chart data:", error);
-      return [];
+  const chartConfig = getChartConfig();
+
+  // Handle data that might be a string or already parsed
+  const parseChartData = (dataInput: string | unknown[]) => {
+    if (Array.isArray(dataInput)) {
+      return dataInput;
     }
+    if (typeof dataInput === 'string') {
+      try {
+        return JSON.parse(dataInput);
+      } catch (error) {
+        logger.error("Failed to parse chart data:", error);
+        return [];
+      }
+    }
+    return [];
   };
 
   const chartData = parseChartData(data);
-
-  // Convert height string to number for ResponsiveContainer
-  const parseHeight = (heightStr: string): number => {
-    if (heightStr.endsWith('px')) {
-      return parseInt(heightStr.replace('px', ''), 10);
-    }
-    // Default to 320 if no valid height
-    return 320;
-  };
-
-  const chartHeight = parseHeight(height);
 
   if (!chartData || chartData.length === 0) {
     return (
@@ -83,125 +112,92 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
     );
   }
 
+  // Helper function to get default labels based on chart type and data
+  const getDefaultLabels = () => {
+    const defaultXLabel = xAxisLabel || (chartType === "scatterplot" ? "X Value" : "Date");
+    const defaultYLabel = yAxisLabel || (chartType === "scatterplot" ? "Y Value" : "Value");
+    
+    return { defaultXLabel, defaultYLabel };
+  };
+
+  const { defaultXLabel, defaultYLabel } = getDefaultLabels();
+
   const renderChart = () => {
     switch (chartType) {
-                    case "barchart":
-         return (
-           <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
-             {/* Shadcn Chart Implementation */}
-                           <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
-                <BarChart
-                  data={chartData}
-                  margin={{ left: 0, right: 0, bottom: 50 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-                  <XAxis
-                    dataKey="date"
-                    label={
-                      xAxisLabel
-                        ? { value: xAxisLabel, position: "bottom", offset: 5 }
-                        : undefined
+      case "barchart":
+        return (
+          <div className="my-6 brand-card p-4 rounded-lg w-full h-80">
+            <ChartContainer config={chartConfig} className="w-full h-full !aspect-auto">
+              <BarChart
+                data={chartData}
+                margin={{ left: 20, right: 20, bottom: 50 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
+                <XAxis
+                  dataKey="date"
+                  label={{
+                    value: defaultXLabel,
+                    position: "bottom",
+                    offset: 5,
+                  }}
+                />
+                <YAxis
+                  label={{
+                    value: defaultYLabel,
+                    angle: -90,
+                    position: "left",
+                    offset: -10,
+                  }}
+                />
+                <ChartTooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <ChartTooltipContent
+                          active={active}
+                          payload={payload}
+                          className="bg-white brand-border-primary shadow-lg"
+                        />
+                      );
                     }
-                  />
-                 <YAxis
-                   label={
-                     yAxisLabel
-                       ? {
-                           value: yAxisLabel,
-                           angle: -90,
-                           position: "left",
-                           offset: -10,
-                         }
-                       : undefined
-                   }
-                 />
-                 <ChartTooltip
-                   content={({ active, payload }) => {
-                     if (active && payload && payload.length) {
-                       return (
-                         <ChartTooltipContent
-                           active={active}
-                           payload={payload}
-                           className="bg-white brand-border-primary shadow-lg"
-                         />
-                       );
-                     }
-                     return null;
-                   }}
-                 />
-                 <Bar dataKey="value" fill="#0d9488" />
-               </BarChart>
-             </ChartContainer>
+                    return null;
+                  }}
+                />
+                <Bar dataKey="value" fill="#0d9488" />
+              </BarChart>
+            </ChartContainer>
+          </div>
+        );
 
-             {/* Original Recharts Implementation (commented out for potential reversion)
-             <ResponsiveContainer width="100%" height={chartHeight}>
-               <BarChart
-                 data={chartData}
-                 margin={{ left: 0, right: 0, bottom: 25 }}
-               >
-                 <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-                 <XAxis
-                   dataKey="date"
-                   label={
-                     xAxisLabel
-                       ? { value: xAxisLabel, position: "bottom", offset: 10 }
-                       : undefined
-                   }
-                 />
-                 <YAxis
-                   label={
-                     yAxisLabel
-                       ? {
-                           value: yAxisLabel,
-                           angle: -90,
-                           position: "left",
-                           offset: -10,
-                         }
-                       : undefined
-                   }
-                 />
-                 <Tooltip />
-                 <Bar dataKey="value" fill="#0d9488" />
-               </BarChart>
-             </ResponsiveContainer>
-             */}
-           </div>
-         );
-
-                                                                                                                                                                                                                                     case "linechart": {
+      case "linechart": {
         // Get all keys except 'date' for multiple series
         const seriesKeys = Object.keys(chartData[0] || {}).filter(
           (key) => key !== "date"
         );
 
-                                                                       return (
-                 <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
-                   {/* Shadcn Chart Implementation */}
-                                       <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
-                      <LineChart
-                        data={chartData}
-                        margin={{ left: 20, right: 20, bottom: 50 }}
-                      >
-                 <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-                 <XAxis
-                   dataKey="date"
-                   label={
-                     xAxisLabel
-                       ? { value: xAxisLabel, position: "bottom", offset: 5 }
-                       : undefined
-                   }
-                 />
+        return (
+          <div className="my-6 brand-card p-4 rounded-lg w-full h-80">
+            <ChartContainer config={chartConfig} className="w-full h-full !aspect-auto">
+              <LineChart
+                data={chartData}
+                margin={{ left: 20, right: 20, bottom: 50 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
+                <XAxis
+                  dataKey="date"
+                  label={{
+                    value: defaultXLabel,
+                    position: "bottom",
+                    offset: 5,
+                  }}
+                />
                 <YAxis
-                  label={
-                    yAxisLabel
-                      ? {
-                          value: yAxisLabel,
-                          angle: -90,
-                          position: "left",
-                          offset: -10,
-                        }
-                      : undefined
-                  }
+                  label={{
+                    value: defaultYLabel,
+                    angle: -90,
+                    position: "left",
+                    offset: -10,
+                  }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -217,94 +213,46 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                     return null;
                   }}
                 />
-               {seriesKeys.map((key, index) => (
-                 <Line
-                   key={key}
-                   type="monotone"
-                   dataKey={key}
-                   stroke={index === 0 ? "#0d9488" : "#0891b2"}
-                   strokeWidth={2}
-                   dot={{ fill: index === 0 ? "#0d9488" : "#0891b2" }}
-                 />
-                              ))}
-                                          </LineChart>
-                   </ChartContainer>
+                {seriesKeys.map((key, index) => (
+                  <Line
+                    key={key}
+                    type="monotone"
+                    dataKey={key}
+                    stroke={index === 0 ? "#0d9488" : "#0891b2"}
+                    dot={{ fill: index === 0 ? "#0d9488" : "#0891b2" }}
+                  />
+                ))}
+              </LineChart>
+            </ChartContainer>
+          </div>
+        );
+      }
 
-                   {/* Original Recharts Implementation (commented out for potential reversion)
-                   <ResponsiveContainer width="100%" height={chartHeight}>
-                     <LineChart
-                       data={chartData}
-                       margin={{ left: 20, right: 20, bottom: 40 }}
-                     >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-                <XAxis
-                  dataKey="date"
-                  label={
-                    xAxisLabel
-                      ? { value: xAxisLabel, position: "bottom", offset: 10 }
-                      : undefined
-                  }
-                />
-                <YAxis
-                  label={
-                    yAxisLabel
-                      ? {
-                          value: yAxisLabel,
-                          angle: -90,
-                          position: "left",
-                          offset: -10,
-                        }
-                      : undefined
-                  }
-                />
-                <Tooltip />
-               {seriesKeys.map((key, index) => (
-                 <Line
-                   key={key}
-                   type="monotone"
-                   dataKey={key}
-                   stroke={index === 0 ? "#0d9488" : "#0891b2"}
-                   strokeWidth={2}
-                   dot={{ fill: index === 0 ? "#0d9488" : "#0891b2" }}
-                 />
-                              ))}
-                                          </LineChart>
-              </ResponsiveContainer>
-                   */}
-            </div>
-          );
-        }
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                              case "scatterplot":
-                        return (
-                 <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
-                  {/* Shadcn Chart Implementation */}
-                                     <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
-                    <ScatterChart
-                      data={chartData}
-                      margin={{ left: 20, right: 20, bottom: 50 }}
-                    >
+      case "scatterplot":
+        return (
+          <div className="my-6 brand-card p-4 rounded-lg w-full h-80">
+            <ChartContainer config={chartConfig} className="w-full h-full !aspect-auto">
+              <ScatterChart
+                data={chartData}
+                margin={{ left: 20, right: 20, bottom: 50 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
                 <XAxis
                   dataKey="x"
-                  label={
-                    xAxisLabel
-                      ? { value: xAxisLabel, position: "bottom", offset: 5 }
-                      : undefined
-                  }
+                  label={{
+                    value: defaultXLabel,
+                    position: "bottom",
+                    offset: 5,
+                  }}
                 />
-                              <YAxis
+                <YAxis
                   dataKey="y"
-                  label={
-                    yAxisLabel
-                      ? {
-                          value: yAxisLabel,
-                          angle: -90,
-                          position: "left",
-                          offset: -10,
-                        }
-                      : undefined
-                  }
+                  label={{
+                    value: defaultYLabel,
+                    angle: -90,
+                    position: "left",
+                    offset: -10,
+                  }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -320,128 +268,56 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                     return null;
                   }}
                 />
-                                                           <Scatter dataKey="y" fill="#0d9488" />
-             </ScatterChart>
-                 </ChartContainer>
+                <Scatter dataKey="y" fill="#0d9488" />
+              </ScatterChart>
+            </ChartContainer>
+          </div>
+        );
 
-                 {/* Original Recharts Implementation (commented out for potential reversion)
-                 <ResponsiveContainer width="100%" height={chartHeight}>
-                   <ScatterChart
-                     data={chartData}
-                     margin={{ left: 20, right: 20, bottom: 40 }}
-                   >
-               <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-               <XAxis
-                 dataKey="x"
-                 label={
-                   xAxisLabel
-                     ? { value: xAxisLabel, position: "bottom", offset: 10 }
-                     : undefined
-                 }
-               />
-                              <YAxis
-                  dataKey="y"
-                  label={
-                    yAxisLabel
-                      ? {
-                          value: yAxisLabel,
-                          angle: -90,
-                          position: "left",
-                          offset: -10,
-                        }
-                      : undefined
-                  }
-                />
-                <Tooltip />
-                                                           <Scatter dataKey="y" fill="#0d9488" />
-             </ScatterChart>
-             </ResponsiveContainer>
-                 */}
-           </div>
-         );
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              case "histogram":
-               return (
-                 <div className="my-6 brand-card p-4 rounded-lg" style={{ width, height: chartHeight }}>
-                  {/* Shadcn Chart Implementation */}
-                                     <ChartContainer config={chartConfig} className="w-full" style={{ height: chartHeight }}>
-                    <BarChart
-                      data={chartData}
-                      margin={{ left: 20, right: 20, bottom: 50 }}
-                    >
+      case "histogram":
+        return (
+          <div className="my-6 brand-card p-4 rounded-lg w-full h-80">
+            <ChartContainer config={chartConfig} className="w-full h-full !aspect-auto">
+              <BarChart
+                data={chartData}
+                margin={{ left: 20, right: 20, bottom: 50 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
                 <XAxis
                   dataKey="date"
-                  label={
-                    xAxisLabel
-                      ? { value: xAxisLabel, position: "bottom", offset: 5 }
-                      : undefined
-                  }
+                  label={{
+                    value: defaultXLabel,
+                    position: "bottom",
+                    offset: 5,
+                  }}
                 />
-               <YAxis
-                 label={
-                   yAxisLabel
-                     ? {
-                         value: yAxisLabel,
-                         angle: -90,
-                         position: "left",
-                         offset: -10,
-                       }
-                     : undefined
-                 }
-               />
-                              <ChartTooltip
-                                content={({ active, payload }) => {
-                                  if (active && payload && payload.length) {
-                                    return (
-                                      <ChartTooltipContent
-                                        active={active}
-                                        payload={payload}
-                                        className="bg-white brand-border-primary shadow-lg"
-                                      />
-                                    );
-                                  }
-                                  return null;
-                                }}
-                              />
-                                                            <Bar dataKey="value" fill="#0d9488" />
-             </BarChart>
-                 </ChartContainer>
-
-                 {/* Original Recharts Implementation (commented out for potential reversion)
-                 <ResponsiveContainer width="100%" height={chartHeight}>
-                   <BarChart
-                     data={chartData}
-                     margin={{ left: 20, right: 20, bottom: 40 }}
-                 >
-               <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-               <XAxis
-                 dataKey="date"
-                 label={
-                   xAxisLabel
-                     ? { value: xAxisLabel, position: "bottom", offset: 10 }
-                     : undefined
-                 }
-               />
-               <YAxis
-                 label={
-                   yAxisLabel
-                     ? {
-                         value: yAxisLabel,
-                         angle: -90,
-                         position: "left",
-                         offset: -10,
-                       }
-                     : undefined
-                 }
-               />
-                              <Tooltip />
-                                                            <Bar dataKey="value" fill="#0d9488" />
-             </BarChart>
-               </ResponsiveContainer>
-                 */}
-             </div>
-           );
+                <YAxis
+                  label={{
+                    value: defaultYLabel,
+                    angle: -90,
+                    position: "left",
+                    offset: -10,
+                  }}
+                />
+                <ChartTooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <ChartTooltipContent
+                          active={active}
+                          payload={payload}
+                          className="bg-white brand-border-primary shadow-lg"
+                        />
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar dataKey="value" fill="#0d9488" />
+              </BarChart>
+            </ChartContainer>
+          </div>
+        );
 
       default:
         return (
@@ -452,11 +328,11 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
     }
   };
 
-     return (
-     <NodeViewWrapper className="my-4 mb-6">
-       {renderChart()}
-     </NodeViewWrapper>
-   );
+  return (
+    <NodeViewWrapper className="my-4 mb-6">
+      {renderChart()}
+    </NodeViewWrapper>
+  );
 };
 
 export default ChartRenderer;

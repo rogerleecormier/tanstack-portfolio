@@ -1,3 +1,5 @@
+import { logger } from '@/utils/logger'
+
 /**
  * Converts markdown text to HTML format
  * This function handles all markdown elements including tables, lists, headers, code blocks, and charts
@@ -147,8 +149,8 @@ export const markdownToHtml = (markdown: string): string => {
         // Parse header cells - split by | and filter out empty cells
         const headerCells = headerRow.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0)
         
-        // Build table HTML with proper TipTap table structure
-        let tableHtml = '<table class="border-collapse border border-gray-300 w-full my-4">'
+                 // Build table HTML with proper TipTap table structure
+         let tableHtml = '<table class="border-collapse border border-gray-300 w-full my-4 overflow-x-auto">'
         
         // Add header row
         tableHtml += '<thead><tr>'
@@ -198,15 +200,28 @@ export const markdownToHtml = (markdown: string): string => {
         j++
       }
       
-      if (j < lines.length) {
-        const chartType = line.substring(3).trim()
-        const data = chartData.join('\n')
-        
-        // Create chart HTML node
-        result.push(`<div data-type="chart" data-chart-type="${chartType}" data-chart-data="${data.replace(/"/g, '&quot;')}" data-chart-x-axis-label="" data-chart-y-axis-label="" data-chart-width="100%" data-chart-height="320px"></div>`)
-        i = j // Skip to end of chart block
-        continue
-      }
+             if (j < lines.length) {
+         const chartType = line.substring(3).trim()
+         const data = chartData.join('\n')
+         
+         logger.debug('markdownToHtml - processing chart:', { chartType, dataLength: data.length })
+         logger.debug('markdownToHtml - chart data preview:', data.substring(0, 100))
+         
+                   // Create chart HTML node with data directly in attribute
+          const chartDiv = `<div data-type="chart" data-chart-type="${chartType}" data-chart-data="${encodeURIComponent(data)}" data-chart-x-axis-label="" data-chart-y-axis-label="" data-chart-width="100%" data-chart-height="320px"></div>`
+          
+          logger.debug('markdownToHtml - processing chart:', { 
+            chartType, 
+            originalData: data.substring(0, 200), // Show first 200 chars
+            encodedData: encodeURIComponent(data).substring(0, 200), // Show first 200 chars of encoded
+            dataLength: data.length,
+            chartDiv: chartDiv.substring(0, 300) // Show first 300 chars of HTML
+          })
+          
+          result.push(chartDiv)
+         i = j // Skip to end of chart block
+         continue
+       }
     }
     
     // Check if this is a code block
@@ -303,101 +318,227 @@ export const htmlToMarkdown = (html: string): string => {
     .replace(/<blockquote>(.*?)<\/blockquote>/gs, '> $1\n\n')
     // Handle horizontal rules
     .replace(/<hr\s*\/?>/g, '---\n\n')
-    // Handle tables - improved version that handles both thead/tbody and direct tr structure
+    // Handle tables - completely rewritten to handle TipTap HTML structure
     .replace(/<table[^>]*>(.*?)<\/table>/gs, (match, tableContent) => {
-      // Try to find header row first
-      let headers: string[] = []
-      let rows: string[][] = []
-      
-      // Check if we have a thead structure
-      const headerMatch = tableContent.match(/<thead[^>]*>(.*?)<\/thead>/s)
-      if (headerMatch) {
-        const headerRowMatch = headerMatch[1].match(/<tr[^>]*>(.*?)<\/tr>/s)
-        if (headerRowMatch) {
-          const headerCells = headerRowMatch[1].match(/<th[^>]*>(.*?)<\/th>/g)
-          if (headerCells) {
-            headers = headerCells.map((cell: string) => cell.replace(/<th[^>]*>(.*?)<\/th>/s, '$1').trim())
-          }
-        }
+      try {
+        // Debug: Log the actual HTML structure being parsed
+        console.log('=== TABLE PARSING DEBUG ===')
+        console.log('Full table HTML:', match)
+        console.log('Table content:', tableContent)
         
-        // Extract data rows from tbody
-        const tbodyMatch = tableContent.match(/<tbody[^>]*>(.*?)<\/tbody>/s)
-        if (tbodyMatch) {
-          const rowMatches = tbodyMatch[1].match(/<tr[^>]*>(.*?)<\/tr>/gs)
-          if (rowMatches) {
-            rows = rowMatches.map((row: string) => {
-              const cellMatches = row.match(/<td[^>]*>(.*?)<\/td>/g)
-              if (!cellMatches) return []
-              return cellMatches.map((cell: string) => cell.replace(/<td[^>]*>(.*?)<\/td>/s, '$1').trim())
-            })
-          }
-        }
-      } else {
-        // No thead structure, try to parse all rows
-        const allRowMatches = tableContent.match(/<tr[^>]*>(.*?)<\/tr>/gs)
-        if (allRowMatches && allRowMatches.length > 0) {
-          // First row might be headers (if it contains th elements)
-          const firstRow = allRowMatches[0]
-          const firstRowCells = firstRow.match(/<(th|td)[^>]*>(.*?)<\/(th|td)>/g)
-          if (firstRowCells) {
-            const isFirstRowHeader = firstRow.includes('<th')
-            if (isFirstRowHeader) {
-              // First row is header
-              headers = firstRowCells.map((cell: string) => cell.replace(/<(th|td)[^>]*>(.*?)<\/(th|td)>/s, '$2').trim())
-              // Parse remaining rows as data
-              rows = allRowMatches.slice(1).map((row: string) => {
-                const cellMatches = row.match(/<td[^>]*>(.*?)<\/td>/g)
-                if (!cellMatches) return []
-                return cellMatches.map((cell: string) => cell.replace(/<td[^>]*>(.*?)<\/td>/s, '$1').trim())
+        let headers: string[] = []
+        let rows: string[][] = []
+        
+        // First, try to find thead structure
+        const theadMatch = tableContent.match(/<thead[^>]*>(.*?)<\/thead>/s)
+        if (theadMatch) {
+          console.log('Found thead structure:', theadMatch[1])
+          // Parse header row
+          const headerRowMatch = theadMatch[1].match(/<tr[^>]*>(.*?)<\/tr>/s)
+          if (headerRowMatch) {
+                         const headerCells = headerRowMatch[1].match(/<th[^>]*>(.*?)<\/th>/gs)
+            if (headerCells) {
+              headers = headerCells.map((cell: string) => {
+                // Extract text content, handling <p> tags and other HTML
+                const cleanContent = cell.replace(/<th[^>]*>(.*?)<\/th>/s, '$1')
+                  .replace(/<p[^>]*>(.*?)<\/p>/g, '$1') // Remove <p> tags
+                  .replace(/<br[^>]*>/g, ' ') // Replace <br> with space
+                  .trim()
+                return cleanContent
               })
+              console.log('Parsed headers from thead:', headers)
+            }
+          }
+          
+          // Parse tbody
+          const tbodyMatch = tableContent.match(/<tbody[^>]*>(.*?)<\/tbody>/s)
+          if (tbodyMatch) {
+            console.log('Found tbody structure:', tbodyMatch[1])
+            const rowMatches = tbodyMatch[1].match(/<tr[^>]*>(.*?)<\/tr>/gs)
+            if (rowMatches) {
+                           rows = rowMatches.map((row: string) => {
+               const cellMatches = row.match(/<td[^>]*>(.*?)<\/td>/gs)
+               if (!cellMatches) return []
+               return cellMatches.map((cell: string) => {
+                 // Extract text content, handling <p> tags and other HTML
+                 const cleanContent = cell.replace(/<td[^>]*>(.*?)<\/td>/s, '$1')
+                   .replace(/<p[^>]*>(.*?)<\/p>/g, '$1') // Remove <p> tags
+                   .replace(/<br[^>]*>/g, ' ') // Replace <br> with space
+                   .replace(/\n+/g, ' ') // Replace multiple newlines with single space
+                   .trim()
+                 return cleanContent
+               })
+             })
+              console.log('Parsed rows from tbody:', rows)
+            }
+          }
+        } else {
+          console.log('No thead found, parsing all rows directly')
+          // No thead, parse all rows directly
+          const allRowMatches = tableContent.match(/<tr[^>]*>(.*?)<\/tr>/gs)
+          if (allRowMatches && allRowMatches.length > 0) {
+            console.log('Found rows:', allRowMatches)
+            // Check if first row contains th elements (header row)
+            const firstRow = allRowMatches[0]
+            const hasHeaderRow = firstRow.includes('<th')
+            console.log('First row has header:', hasHeaderRow, 'First row:', firstRow)
+            
+                         if (hasHeaderRow) {
+               // First row is header
+               console.log('Processing header row:', firstRow)
+               const headerCells = firstRow.match(/<th[^>]*>(.*?)<\/th>/gs)
+               console.log('Raw header cells found:', headerCells)
+               if (headerCells) {
+                 headers = headerCells.map((cell: string) => {
+                   console.log('Processing header cell:', cell)
+                   // Extract text content, handling <p> tags and other HTML
+                   const cleanContent = cell.replace(/<th[^>]*>(.*?)<\/th>/s, '$1')
+                     .replace(/<p[^>]*>(.*?)<\/p>/g, '$1') // Remove <p> tags
+                     .replace(/<br[^>]*>/g, ' ') // Replace <br> with space
+                     .trim()
+                   console.log('Cleaned header content:', cleanContent)
+                   return cleanContent
+                 })
+                 console.log('Final parsed headers:', headers)
+               } else {
+                 console.log('No header cells found in first row')
+               }
+              
+                             // Parse remaining rows as data
+               for (let i = 1; i < allRowMatches.length; i++) {
+                 const row = allRowMatches[i]
+                 const cellMatches = row.match(/<td[^>]*>(.*?)<\/td>/gs)
+                 if (cellMatches) {
+                   const rowData = cellMatches.map((cell: string) => {
+                     // Extract text content, handling <p> tags and other HTML
+                     const cleanContent = cell.replace(/<td[^>]*>(.*?)<\/td>/s, '$1')
+                       .replace(/<p[^>]*>(.*?)<\/p>/g, '$1') // Remove <p> tags
+                       .replace(/<br[^>]*>/g, ' ') // Replace <br> with space
+                       .replace(/\n+/g, ' ') // Replace multiple newlines with single space
+                       .trim()
+                     return cleanContent
+                   })
+                   if (rowData.length > 0) {
+                     rows.push(rowData)
+                   }
+                 }
+               }
+              console.log('Parsed data rows:', rows)
             } else {
               // No header row, treat all as data
-              rows = allRowMatches.map((row: string) => {
-                const cellMatches = row.match(/<td[^>]*>(.*?)<\/td>/g)
-                if (!cellMatches) return []
-                return cellMatches.map((cell: string) => cell.replace(/<td[^>]*>(.*?)<\/td>/s, '$1').trim())
-              })
+              for (let i = 0; i < allRowMatches.length; i++) {
+                const row = allRowMatches[i]
+                const cellMatches = row.match(/<td[^>]*>(.*?)<\/td>/gs)
+                if (cellMatches) {
+                  const rowData = cellMatches.map((cell: string) => {
+                    // Extract text content, handling <p> tags and other HTML
+                    const cleanContent = cell.replace(/<td[^>]*>(.*?)<\/td>/s, '$1')
+                      .replace(/<p[^>]*>(.*?)<\/p>/g, '$1') // Remove <p> tags
+                      .replace(/<br[^>]*>/g, ' ') // Replace <br> with space
+                      .replace(/\n+/g, ' ') // Replace multiple newlines with single space
+                      .trim()
+                    return cleanContent
+                  })
+                  if (rowData.length > 0) {
+                    rows.push(rowData)
+                  }
+                }
+              }
+              console.log('Parsed all rows as data:', rows)
+              
               // Create default headers
               if (rows.length > 0) {
-                headers = rows[0].map((_, index) => `Column ${index + 1}`)
+                const maxCols = Math.max(...rows.map(row => row.length))
+                headers = Array.from({ length: maxCols }, (_, index) => `Column ${index + 1}`)
+                console.log('Created default headers:', headers)
               }
             }
           }
         }
+        
+                 // Build markdown table
+         console.log('About to build markdown table:')
+         console.log('Headers:', headers)
+         console.log('Rows:', rows)
+         
+         if (headers.length > 0) {
+           let markdown = '\n'
+           
+           // Check if all headers are empty and generate defaults if needed
+           const allHeadersEmpty = headers.every(header => !header.trim())
+           if (allHeadersEmpty) {
+             // Generate default column names
+             headers = headers.map((_, index) => `Column ${index + 1}`)
+             console.log('Generated default headers for empty table:', headers)
+           }
+           
+           // Header row
+           markdown += '| ' + headers.join(' | ') + ' |\n'
+           
+           // Separator row
+           markdown += '|' + headers.map(() => '---').join('|') + '|\n'
+           
+           // Data rows
+           rows.forEach((row: string[]) => {
+             if (row.length > 0) {
+               // Ensure row has same number of cells as headers
+               const paddedRow = [...row]
+               while (paddedRow.length < headers.length) {
+                 paddedRow.push('')
+               }
+               markdown += '| ' + paddedRow.join(' | ') + ' |\n'
+             }
+           })
+           
+           console.log('Generated markdown table:', markdown)
+           console.log('=== END TABLE PARSING DEBUG ===')
+           return markdown + '\n'
+         }
+         
+         console.log('Failed to parse table - headers array is empty')
+         console.log('Headers length:', headers.length)
+         console.log('Rows length:', rows.length)
+         console.log('=== END TABLE PARSING DEBUG ===')
+         // Fallback: return original table HTML if parsing failed
+         return match
+      } catch (error) {
+        console.error('Error parsing table:', error)
+        return match
       }
-      
-      // Build markdown table
-      if (headers.length > 0) {
-        let markdown = '\n'
-        
-        // Header row
-        markdown += '| ' + headers.join(' | ') + ' |\n'
-        
-        // Separator row
-        markdown += '|' + headers.map(() => '---').join('|') + '|\n'
-        
-        // Data rows
-        rows.forEach((row: string[]) => {
-          if (row.length > 0) {
-            // Ensure row has same number of cells as headers
-            const paddedRow = [...row]
-            while (paddedRow.length < headers.length) {
-              paddedRow.push('')
-            }
-            markdown += '| ' + paddedRow.join(' | ') + ' |\n'
-          }
-        })
-        
-        return markdown + '\n'
-      }
-      
-      // Fallback: return original table HTML if parsing failed
-      return match
     })
-    // Handle chart nodes
-    .replace(/<div[^>]*data-type="chart"[^>]*data-chart-type="([^"]*)"[^>]*data-chart-data="([^"]*)"[^>]*><\/div>/g, (_match, chartType, chartData) => {
-      return `\n\n\`\`\`${chartType}\n${chartData}\n\`\`\`\n\n`
-    })
+                        // Handle chart nodes - improved regex to handle chart data properly
+     .replace(/<div[^>]*data-type="chart"[^>]*>/g, (match) => {
+       try {
+         // Extract chart attributes using more robust parsing
+         const chartTypeMatch = match.match(/data-chart-type="([^"]*)"/)
+         const chartDataMatch = match.match(/data-chart-data="([^"]*)"/)
+         
+         if (chartTypeMatch && chartDataMatch) {
+           const chartType = chartTypeMatch[1]
+           const chartData = chartDataMatch[1]
+           
+           // Decode URI-encoded chart data
+           const decodedData = decodeURIComponent(chartData)
+           
+           logger.debug('htmlToMarkdown - converting chart to markdown:', { 
+             chartType, 
+             originalDataLength: chartData.length,
+             decodedDataLength: decodedData.length,
+             originalDataPreview: chartData.substring(0, 100),
+             decodedDataPreview: decodedData.substring(0, 100)
+           })
+           
+           return `\n\n\`\`\`${chartType}\n${decodedData}\n\`\`\`\n\n`
+         }
+         
+         // Fallback if attributes can't be parsed
+         logger.warn('htmlToMarkdown - failed to parse chart attributes from:', match)
+         return match
+       } catch (error) {
+         logger.error('htmlToMarkdown - error parsing chart:', error)
+         return match
+       }
+     })
     .replace(/<br\s*\/?>/g, '\n')
     .replace(/<[^>]*>/g, '')
     .replace(/\n\s*\n\s*\n/g, '\n\n')

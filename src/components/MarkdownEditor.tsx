@@ -70,6 +70,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const [showChartDialog, setShowChartDialog] = useState(false)
   const [chartType, setChartType] = useState('barchart')
   const [chartData, setChartData] = useState('')
+
   const [xAxisLabel, setXAxisLabel] = useState('')
   const [yAxisLabel, setYAxisLabel] = useState('')
   const [chartWidth, setChartWidth] = useState('100%')
@@ -115,7 +116,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
        Table.configure({
          resizable: true,
          HTMLAttributes: {
-           class: 'border-collapse border border-gray-300 w-full my-4',
+           class: 'border-collapse border border-gray-300 w-full my-4 overflow-x-auto',
          },
        }),
        TableRow.configure({
@@ -125,12 +126,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
        }),
        TableHeader.configure({
          HTMLAttributes: {
-           class: 'border border-gray-300 px-4 py-2 bg-gray-100 font-semibold text-left text-gray-900',
+           class: 'border border-gray-300 px-4 py-2 bg-gray-100 font-semibold text-left text-gray-900 whitespace-nowrap',
          },
        }),
        TableCell.configure({
          HTMLAttributes: {
-           class: 'border border-gray-300 px-4 py-2 min-w-[100px]',
+           class: 'border border-gray-300 px-4 py-2 min-w-[100px] whitespace-nowrap',
          },
        }),
        Chart,
@@ -174,6 +175,14 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       if (!editor.isDestroyed && editor.view) {
         try {
           const content = editor.getHTML()
+          
+          // Debug: Log the HTML content to see if it contains tables
+          if (content.includes('<table')) {
+            console.log('=== EDITOR UPDATE WITH TABLE ===')
+            console.log('Full HTML content:', content)
+            console.log('=== END EDITOR UPDATE ===')
+          }
+          
           const markdown = htmlToMarkdown(content)
           setMarkdownOutput(markdown)
           
@@ -315,6 +324,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         })
         
         setChartData('')
+
         setXAxisLabel('')
         setYAxisLabel('')
         setChartWidth('100%')
@@ -338,22 +348,35 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           withHeaderRow: tableWithHeader 
         }).run()
         
-                // Log the editor content after table insertion
+        // Force an update to ensure markdown is generated
         setTimeout(() => {
           if (!editor.isDestroyed && editor.view) {
             try {
               const html = editor.getHTML()
-              logger.debug('Editor HTML after table insertion:', html)
+              console.log('=== TABLE INSERTION DEBUG ===')
+              console.log('Editor HTML after table insertion:', html)
               
               // Check if table was actually inserted
               const tables = document.querySelectorAll('.ProseMirror table')
-              logger.debug('Tables found in DOM:', tables.length)
+              console.log('Tables found in DOM:', tables.length)
               
               if (tables.length > 0) {
-                logger.debug('Table HTML structure:', tables[0].outerHTML)
+                console.log('Table HTML structure:', tables[0].outerHTML)
+                
+                // Force markdown update
+                const markdown = htmlToMarkdown(html)
+                setMarkdownOutput(markdown)
+                console.log('Generated markdown after table insertion:', markdown)
+                
+                // Also check the raw HTML content for debugging
+                const tableMatch = html.match(/<table[^>]*>(.*?)<\/table>/s)
+                if (tableMatch) {
+                  console.log('Table content extracted from HTML:', tableMatch[1])
+                }
               }
+              console.log('=== END TABLE INSERTION DEBUG ===')
             } catch (error) {
-              logger.error('Error logging table insertion:', error)
+              console.error('Error logging table insertion:', error)
             }
           }
         }, 100)
@@ -481,27 +504,33 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     switch (type) {
       case 'barchart':
         return `[
-  { "date": "Category 1", "value": 100 },
-  { "date": "Category 2", "value": 200 },
-  { "date": "Category 3", "value": 150 }
+  { "date": "Q1 2024", "value": 100 },
+  { "date": "Q2 2024", "value": 200 },
+  { "date": "Q3 2024", "value": 150 },
+  { "date": "Q4 2024", "value": 300 }
 ]`
       case 'linechart':
         return `[
-  { "date": "Jan", "Series 1": 100, "Series 2": 80 },
-  { "date": "Feb", "Series 1": 120, "Series 2": 90 },
-  { "date": "Mar", "Series 1": 140, "Series 2": 110 }
+  { "date": "Jan 2024", "Revenue": 100, "Expenses": 80 },
+  { "date": "Feb 2024", "Revenue": 120, "Expenses": 90 },
+  { "date": "Mar 2024", "Revenue": 140, "Expenses": 110 },
+  { "date": "Apr 2024", "Revenue": 160, "Expenses": 95 }
 ]`
       case 'scatterplot':
         return `[
   { "x": 10, "y": 20 },
   { "x": 15, "y": 25 },
-  { "x": 20, "y": 30 }
+  { "x": 20, "y": 30 },
+  { "x": 25, "y": 35 },
+  { "x": 30, "y": 40 }
 ]`
       case 'histogram':
         return `[
   { "date": "0-10", "value": 5 },
   { "date": "10-20", "value": 12 },
-  { "date": "20-30", "value": 8 }
+  { "date": "20-30", "value": 8 },
+  { "date": "30-40", "value": 15 },
+  { "date": "40-50", "value": 10 }
 ]`
       default:
         return `[
@@ -1091,12 +1120,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           <DialogHeader>
             <DialogTitle className="text-teal-900">Insert Chart</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="chart-type" className="text-sm font-medium text-teal-700">
-                  Chart Type
-                </label>
+                      <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                  <label htmlFor="chart-type" className="text-sm font-medium text-teal-700">
+                    Chart Type
+                  </label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
@@ -1159,32 +1189,32 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="x-axis-label" className="text-sm font-medium text-teal-700">
-                  X-Axis Label (Optional)
-                </label>
-                <input
-                  id="x-axis-label"
-                  type="text"
-                  value={xAxisLabel}
-                  onChange={(e) => setXAxisLabel(e.target.value)}
-                  placeholder="e.g., Categories, Time, Values..."
-                  className="w-full mt-1 px-3 py-2 border border-teal-200 rounded-md focus:outline-none focus:border-teal-400"
-                />
-              </div>
-              <div>
-                <label htmlFor="y-axis-label" className="text-sm font-medium text-teal-700">
-                  Y-Axis Label (Optional)
-                </label>
-                <input
-                  id="y-axis-label"
-                  type="text"
-                  value={yAxisLabel}
-                  onChange={(e) => setYAxisLabel(e.target.value)}
-                  placeholder="e.g., Count, Percentage, Amount..."
-                  className="w-full mt-1 px-3 py-2 border border-teal-200 rounded-md focus:outline-none focus:border-teal-400"
-                />
-              </div>
+                              <div>
+                  <label htmlFor="x-axis-label" className="text-sm font-medium text-teal-700">
+                    X-Axis Label (Optional)
+                  </label>
+                  <input
+                    id="x-axis-label"
+                    type="text"
+                    value={xAxisLabel}
+                    onChange={(e) => setXAxisLabel(e.target.value)}
+                    placeholder="e.g., Categories, Time, Values..."
+                    className="w-full mt-1 px-3 py-2 border border-teal-200 rounded-md focus:outline-none focus:border-teal-400"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="y-axis-label" className="text-sm font-medium text-teal-700">
+                    Y-Axis Label (Optional)
+                  </label>
+                  <input
+                    id="y-axis-label"
+                    type="text"
+                    value={yAxisLabel}
+                    onChange={(e) => setYAxisLabel(e.target.value)}
+                    placeholder="e.g., Count, Percentage, Amount..."
+                    className="w-full mt-1 px-3 py-2 border border-teal-200 rounded-md focus:outline-none focus:border-teal-400"
+                  />
+                </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1230,6 +1260,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               <p className="text-xs text-teal-600 mt-1">
                 Use the exact format from your project analysis page. Data should be valid JSON.
               </p>
+
             </div>
 
             <div className="flex justify-end gap-2">
