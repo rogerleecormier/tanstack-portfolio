@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "workers",
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": ["workers/github-file-manager.ts"],
+  "exclude": ["node_modules", "dist", "src/**/*.tsx", "src/**/*.jsx"]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "github-file-manager",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for GitHub file management",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --env production",
+    "deploy:dev": "wrangler deploy --env development",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {},
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "github",
+    "api",
+    "file-management"
+  ],
+  "author": "Roger Lee Cormier",
+  "license": "MIT"
+}

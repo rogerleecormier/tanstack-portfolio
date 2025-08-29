@@ -150,6 +150,24 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   // Track if we're currently setting content to prevent infinite loops
   const isSettingContent = useRef(false)
   
+  // Function to get default directory based on content type
+  const getDefaultDirectory = (type: string) => {
+    switch (type) {
+      case 'blog': return 'src/content/blog'
+      case 'portfolio': return 'src/content/portfolio'
+      case 'project': return 'src/content/projects'
+      default: return 'src/content'
+    }
+  }
+  
+  // Update save directory when content type changes
+  useEffect(() => {
+    if (contentType && onDirectoryChange) {
+      const defaultDir = getDefaultDirectory(contentType)
+      onDirectoryChange(defaultDir)
+    }
+  }, [contentType, onDirectoryChange])
+  
   const editor = useEditor({
     extensions: [
       StarterKit.configure({

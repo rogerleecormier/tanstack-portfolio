@@ -2,7 +2,7 @@
 # Handles AI-powered contact form analysis and content recommendations
 
 name = "tanstack-portfolio-ai-contact-analyzer"
-main = "functions/ai-contact-analyzer.js"
+main = "workers/ai-contact-analyzer.js"
 compatibility_date = "2024-01-01"
 
 # AI binding for Cloudflare AI

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import FileSaveDialog from '@/components/FileSaveDialog'
 
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Save, FileText, Briefcase, FolderOpen, Settings, FolderOpen as FolderOpenIcon } from 'lucide-react'
@@ -15,7 +16,7 @@ import MarkdownEditor from '@/components/MarkdownEditor'
 import { FrontmatterGenerator } from '@/utils/frontmatterGenerator'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import FileBrowser from '@/components/FileBrowser'
-import FileService, { FileItem } from '@/utils/fileService'
+import FileManagementService, { FileItem } from '@/utils/fileManagementService'
 import { logger } from '@/utils/logger'
 import { markdownToHtml } from '@/utils/markdownConverter'
 
@@ -31,30 +32,6 @@ interface FrontmatterData {
 }
 
 const ContentCreationPage: React.FC = () => {
-  const [contentType, setContentType] = useState<'blog' | 'portfolio' | 'project'>('blog')
-  const [content, setContent] = useState('')
-  const [markdown, setMarkdown] = useState('')
-  const [frontmatter, setFrontmatter] = useState<FrontmatterData | null>(null)
-  const [showFrontmatterEditor, setShowFrontmatterEditor] = useState(false)
-  const [showSaveDialog, setShowSaveDialog] = useState(false)
-  const [filename, setFilename] = useState('')
-  const [customDirectory, setCustomDirectory] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  
-  // File management state
-  const [currentFilePath, setCurrentFilePath] = useState<string>('')
-  const [isEditingExisting, setIsEditingExisting] = useState(false)
-  const [showFileBrowser, setShowFileBrowser] = useState(false)
-  const [currentDirectory, setCurrentDirectory] = useState('src/content')
-  const [isSaving, setIsSaving] = useState(false)
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
-  const [isLoadingFile, setIsLoadingFile] = useState(false)
-  const [showFileLoadedNotification, setShowFileLoadedNotification] = useState(false)
-  const [loadedFileName, setLoadedFileName] = useState('')
-  
-  // File service instance
-  const fileService = FileService.getInstance()
-
   // Default directories for each content type
   const getDefaultDirectory = (type: string) => {
     switch (type) {
@@ -65,15 +42,28 @@ const ContentCreationPage: React.FC = () => {
     }
   }
 
-  // Generate filename from title
-  const generateFilename = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim()
-  }
+  const [contentType, setContentType] = useState<'blog' | 'portfolio' | 'project'>('blog')
+  const [content, setContent] = useState('')
+  const [markdown, setMarkdown] = useState('')
+  const [frontmatter, setFrontmatter] = useState<FrontmatterData | null>(null)
+  const [showFrontmatterEditor, setShowFrontmatterEditor] = useState(false)
+  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [customDirectory, setCustomDirectory] = useState(getDefaultDirectory('blog'))
+  const [isGenerating, setIsGenerating] = useState(false)
+  
+  // File management state
+  const [currentFilePath, setCurrentFilePath] = useState<string>('')
+  const [isEditingExisting, setIsEditingExisting] = useState(false)
+  const [showFileBrowser, setShowFileBrowser] = useState(false)
+  const [currentDirectory, setCurrentDirectory] = useState(getDefaultDirectory('blog'))
+  const [isLoadingFile, setIsLoadingFile] = useState(false)
+  const [showFileLoadedNotification, setShowFileLoadedNotification] = useState(false)
+  const [loadedFileName, setLoadedFileName] = useState('')
+  
+  // File service instance
+  const fileService = FileManagementService.getInstance()
+
+
 
     // Handle content changes from the editor - exactly like MarkdownEditorPage
   const handleContentChange = useCallback((html: string, markdown: string) => {
@@ -97,10 +87,7 @@ const ContentCreationPage: React.FC = () => {
                const generated = FrontmatterGenerator.generateFrontmatter(markdown, contentType)
       setFrontmatter(generated)
       
-      // Auto-generate filename from title
-      if (generated.title) {
-        setFilename(generateFilename(generated.title))
-      }
+
       
       setShowFrontmatterEditor(true)
     } catch (error) {
@@ -284,8 +271,7 @@ const ContentCreationPage: React.FC = () => {
      setFrontmatter(null)
      setCurrentFilePath('')
      setIsEditingExisting(false)
-     setFilename('')
-     setSaveStatus('idle')
+
    }
 
   // File management functions
@@ -293,7 +279,7 @@ const ContentCreationPage: React.FC = () => {
     try {
       setIsLoadingFile(true)
       logger.debug('Loading file:', file.path)
-      const fileContent = await fileService.readFile(file.path)
+      const fileContent = await fileService.readFile({ filePath: file.path })
       if (fileContent.content) {
         logger.debug('File content loaded, length:', fileContent.content.length)
         logger.debug('Raw file content:', fileContent.content.substring(0, 200) + '...')
@@ -315,7 +301,7 @@ const ContentCreationPage: React.FC = () => {
         // Update file-related states
         setCurrentFilePath(file.path)
         setIsEditingExisting(true)
-        setFilename(file.name.replace('.md', ''))
+
         
         // Update directory to match file location
         const fileDir = file.path.split('/').slice(0, -1).join('/')
@@ -388,70 +374,15 @@ const ContentCreationPage: React.FC = () => {
 
 
 
-     // Save the file
-   const saveFile = useCallback(async () => {
-     if (!frontmatter || !markdown.trim()) {
-       alert('Please generate frontmatter and add content before saving.')
-       return
-     }
-
-    const validation = FrontmatterGenerator.validateFrontmatter(frontmatter)
-    if (!validation.isValid) {
-      alert(`Frontmatter validation failed:\n${validation.errors.join('\n')}`)
-      return
-    }
-
-    try {
-      setIsSaving(true)
-      setSaveStatus('idle')
-      
-      // Create the full markdown content with frontmatter
-      const frontmatterYAML = FrontmatterGenerator.toYAML(frontmatter)
-      const fullContent = `${frontmatterYAML}\n\n${markdown}`
-
-      // Determine the file path
-      const targetPath = isEditingExisting && currentFilePath 
-        ? currentFilePath 
-        : `${customDirectory || getDefaultDirectory(contentType)}/${filename}.md`
-
-      // Save the file using the file service
-      const result = await fileService.writeFile(targetPath, fullContent)
-      
-      if (result.success) {
-        setSaveStatus('success')
-        setCurrentFilePath(targetPath)
-        setIsEditingExisting(true)
-        
-        // Show success message
-        setTimeout(() => {
-          alert(`File saved successfully to: ${targetPath}`)
-          setSaveStatus('idle')
-        }, 500)
-        
-        setShowSaveDialog(false)
-      } else {
-        setSaveStatus('error')
-        alert(`Error saving file: ${result.error}`)
-      }
-    } catch (error) {
-      setSaveStatus('error')
-      console.error('Error saving file:', error)
-      alert('Error saving file. Please try again.')
-    } finally {
-      setIsSaving(false)
-    }
-     }, [frontmatter, markdown, filename, customDirectory, contentType, isEditingExisting, currentFilePath, fileService])
 
 
 
-  // Update default directory when content type changes
+
+  // Update current directory for file browser when content type changes
   useEffect(() => {
-    if (!customDirectory) {
-      setCustomDirectory(getDefaultDirectory(contentType))
-    }
-    // Also update current directory for file browser
+    // Only update current directory for file browser, MarkdownEditor handles customDirectory
     setCurrentDirectory(getDefaultDirectory(contentType))
-  }, [contentType, customDirectory])
+  }, [contentType])
 
   return (
     <ProtectedRoute>
@@ -598,9 +529,7 @@ const ContentCreationPage: React.FC = () => {
                     placeholder="e.g., src/content/blog"
                     className="text-sm"
                   />
-                  <p className="text-xs text-gray-500">
-                    Default: {getDefaultDirectory(contentType)}
-                  </p>
+
                 </div>
 
                 <Separator />
@@ -737,6 +666,8 @@ You can create tables using the table button in the toolbar or by typing markdow
                      onContentChange={handleContentChange}
                      showToolbar={true}
                      minHeight="800px"
+                     contentType={contentType}
+                     onDirectoryChange={(directory) => setCustomDirectory(directory)}
                    />
                 )}
               </CardContent>
@@ -1090,120 +1021,21 @@ You can create tables using the table button in the toolbar or by typing markdow
            </DialogContent>
          </Dialog>
 
-         {/* Save Dialog */}
-         <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-           <DialogContent className="max-w-2xl">
-             <DialogHeader>
-               <DialogTitle className="text-teal-900">
-                 {isEditingExisting ? 'Save Changes' : 'Save Content File'}
-               </DialogTitle>
-               <DialogDescription>
-                 {isEditingExisting 
-                   ? 'Save your changes to the existing file.' 
-                   : 'Choose a filename and directory to save your new content file.'
-                 }
-               </DialogDescription>
-             </DialogHeader>
-             
-             <div className="space-y-4">
-               {!isEditingExisting && (
-                 <>
-                   <div>
-                     <Label htmlFor="filename" className="text-sm font-medium text-teal-700">
-                       Filename *
-                     </Label>
-                     <Input
-                       id="filename"
-                       value={filename}
-                       onChange={(e) => setFilename(e.target.value)}
-                       placeholder="e.g., my-awesome-post"
-                       className="mt-1"
-                     />
-                     <p className="text-xs text-gray-500 mt-1">
-                       The file will be saved as: {filename}.md
-                     </p>
-                   </div>
+         {/* File Save Dialog */}
+         <FileSaveDialog
+           open={showSaveDialog}
+           onOpenChange={setShowSaveDialog}
+                       frontmatter={frontmatter || {}}
+           markdown={markdown}
+           contentType={contentType}
+           
+           customDirectory={customDirectory}
+           onSaveSuccess={(filePath) => {
+             setCurrentFilePath(filePath)
+             setIsEditingExisting(true)
 
-                   <div>
-                     <Label htmlFor="save-directory" className="text-sm font-medium text-teal-700">
-                       Save Directory
-                     </Label>
-                     <Input
-                       id="save-directory"
-                       value={customDirectory}
-                       onChange={(e) => setCustomDirectory(e.target.value)}
-                       placeholder="e.g., src/content/blog"
-                       className="mt-1"
-                     />
-                     <p className="text-xs text-gray-500 mt-1">
-                       Recommended: {getDefaultDirectory(contentType)}
-                     </p>
-                   </div>
-                 </>
-               )}
-
-               {isEditingExisting && (
-                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                   <h4 className="font-medium text-blue-900 mb-2">Editing Existing File</h4>
-                   <div className="text-sm text-blue-800 space-y-1">
-                     <p><strong>File:</strong> {currentFilePath}</p>
-                     <p><strong>Directory:</strong> {customDirectory}</p>
-                     <p className="text-xs">Changes will be saved to the existing file.</p>
-                   </div>
-                 </div>
-               )}
-
-               <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                 <h4 className="font-medium text-teal-900 mb-2">File Summary</h4>
-                 <div className="text-sm text-teal-800 space-y-1">
-                   <p><strong>Content Type:</strong> {contentType.charAt(0).toUpperCase() + contentType.slice(1)}</p>
-                   <p><strong>Title:</strong> {frontmatter?.title || 'Not set'}</p>
-                   <p><strong>Tags:</strong> {frontmatter?.tags?.join(', ') || 'Not set'}</p>
-                   <p><strong>Content Length:</strong> {markdown.split(/\s+/).length} words</p>
-                 </div>
-               </div>
-
-               <div className="flex justify-end gap-2">
-                 <Button
-                   variant="outline"
-                   onClick={() => setShowSaveDialog(false)}
-                 >
-                   Cancel
-                 </Button>
-                 <Button
-                   onClick={saveFile}
-                   disabled={isSaving}
-                   className="bg-teal-600 hover:bg-teal-700 text-white"
-                 >
-                   {isSaving ? (
-                     <>
-                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                       Saving...
-                     </>
-                   ) : (
-                     <>
-                       <Save className="h-4 w-4 mr-2" />
-                       {isEditingExisting ? 'Save Changes' : 'Save File'}
-                     </>
-                   )}
-                 </Button>
-               </div>
-
-               {/* Save Status */}
-               {saveStatus === 'success' && (
-                 <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                   <p className="text-sm text-green-800">✅ File saved successfully!</p>
-                 </div>
-               )}
-               
-               {saveStatus === 'error' && (
-                 <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                   <p className="text-sm text-red-800">❌ Error saving file. Please try again.</p>
-                 </div>
-               )}
-             </div>
-           </DialogContent>
-         </Dialog>
+           }}
+         />
       </div>
     </ProtectedRoute>
   )
