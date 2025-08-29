@@ -170,7 +170,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
               </div>
             )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <BarChart data={chartData} margin={{ left: 60, right: 20, bottom: 60, top: 20 }}>
+              <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 20, top: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={xKey}
@@ -182,7 +182,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                   domain={yDomain}
                   tickLine={false}
                   axisLine={false}
-                  label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: 0 }}
+                  label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -228,7 +228,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
               </div>
             )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <LineChart data={chartData} margin={{ left: 60, right: 20, bottom: 60, top: 20 }}>
+              <LineChart data={chartData} margin={{ left: 20, right: 20, bottom: 20, top: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={xKey}
@@ -240,7 +240,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                   domain={yDomain}
                   tickLine={false}
                   axisLine={false}
-                  label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: 0 }}
+                  label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -289,7 +289,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
               </div>
             )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <ScatterChart data={chartData} margin={{ left: 60, right: 20, bottom: 60, top: 20 }}>
+              <ScatterChart data={chartData} margin={{ left: 20, right: 20, bottom: 20, top: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={xKey}
@@ -301,7 +301,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                   domain={yDomain}
                   tickLine={false}
                   axisLine={false}
-                  label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: 0 }}
+                  label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -347,7 +347,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
               </div>
             )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <BarChart data={chartData} margin={{ left: 60, right: 20, bottom: 60, top: 20 }}>
+              <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 20, top: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={xKey}
@@ -359,7 +359,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                   domain={yDomain}
                   tickLine={false}
                   axisLine={false}
-                  label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: 0 }}
+                  label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
