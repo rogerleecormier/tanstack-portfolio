@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
 import { MessageSquare } from "lucide-react";
+import { logger } from '@/utils/logger'
 
 // Define proper types for frontmatter
 interface Frontmatter {
@@ -82,7 +83,7 @@ export default function AboutPage() {
       setIsLoading(true)
       try {
         // Import about markdown file
-        console.log('Loading about markdown file')
+        logger.debug('Loading about markdown file')
         
         const markdownModule = await import(`../content/about.md?raw`)
         
@@ -112,8 +113,8 @@ export default function AboutPage() {
           detail: { toc: headings, file: 'about' } 
         }))
       } catch (error) {
-        console.error('Error loading about markdown:', error)
-        console.error('Full error details:', error)
+        logger.error('Error loading about markdown:', error)
+        logger.error('Full error details:', error)
       } finally {
         setIsLoading(false)
       }
@@ -605,6 +606,11 @@ export default function AboutPage() {
                 <ol className="my-6 ml-6 list-decimal [&>li]:mt-2" {...props}>
                   {children}
                 </ol>
+              ),
+              li: ({ children, ...props }) => (
+                <li className="mt-2" {...props}>
+                  {children}
+                </li>
               ),
               hr: ({ ...props }) => (
                 <Separator className="my-8" {...props} />

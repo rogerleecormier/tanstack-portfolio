@@ -1,82 +1,71 @@
 import Fuse from 'fuse.js'
-import type { SearchItem, SearchResult } from '../types/search'
 import { loadAllSearchItems } from './dynamicSearchData'
+import type { SearchItem } from '../types/search'
+import { logger } from './logger'
 
-// Security utilities for input sanitization
-class SecurityUtils {
-  // Sanitize user input to prevent XSS
-  static sanitizeInput(input: string): string {
-    if (typeof input !== 'string') return '';
-    
-    return input
-      .replace(/[<>]/g, '') // Remove < and > characters
-      .replace(/javascript:/gi, '') // Remove javascript: protocol
-      .replace(/on\w+\s*=/gi, '') // Remove event handlers
-      .replace(/data:/gi, '') // Remove data: protocol
-      .replace(/vbscript:/gi, '') // Remove vbscript: protocol
-      .trim()
-      .substring(0, 1000); // Limit input length
-  }
+// Basic security constants
+const MAX_SEARCH_ATTEMPTS = 50
+const SEARCH_WINDOW_MS = 60000 // 1 minute
 
-  // Validate search query format
-  static validateSearchQuery(query: string): boolean {
-    if (typeof query !== 'string') return false;
-    
-    // Check for suspicious patterns
-    const suspiciousPatterns = [
-      /<script/i,
-      /javascript:/i,
-      /on\w+\s*=/i,
-      /data:/i,
-      /vbscript:/i,
-      /<iframe/i,
-      /<object/i,
-      /<embed/i,
-      /<form/i,
-      /<input/i,
-      /<textarea/i,
-      /<select/i,
-      /<button/i
-    ];
-    
-    return !suspiciousPatterns.some(pattern => pattern.test(query));
-  }
+// Simple rate limiting for search
+const searchAttempts = new Map<string, { count: number; lastAttempt: number }>()
 
-  // Rate limiting for search requests
-  private static searchAttempts = new Map<string, { count: number; lastAttempt: number }>();
-  private static readonly MAX_SEARCH_ATTEMPTS = 50;
-  private static readonly SEARCH_WINDOW_MS = 60000; // 1 minute
+// Basic input sanitization
+function sanitizeInput(input: string): string {
+  if (typeof input !== 'string') return ''
   
-  static isSearchAllowed(clientId: string = 'default'): boolean {
-    const now = Date.now();
-    const record = this.searchAttempts.get(clientId);
-    
-    if (!record) {
-      this.searchAttempts.set(clientId, { count: 1, lastAttempt: now });
-      return true;
-    }
-    
-    // Reset if window has passed
-    if (now - record.lastAttempt > this.SEARCH_WINDOW_MS) {
-      record.count = 1;
-      record.lastAttempt = now;
-      return true;
-    }
-    
-    // Increment attempt count
-    record.count++;
-    record.lastAttempt = now;
-    
-    return record.count <= this.MAX_SEARCH_ATTEMPTS;
-  }
+  return input
+    .replace(/[<>]/g, '') // Remove < and > characters
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+\s*=/gi, '') // Remove event handlers
+    .trim()
+    .substring(0, 1000) // Limit input length
 }
 
-// (Removed unused MARKDOWN_FILES declaration)
+// Basic search query validation
+function validateSearchQuery(query: string): boolean {
+  if (typeof query !== 'string') return false
+  
+  // Check for suspicious patterns
+  const suspiciousPatterns = [
+    /<script/i,
+    /javascript:/i,
+    /on\w+\s*=/i,
+    /data:/i,
+    /vbscript:/i
+  ]
+  
+  return !suspiciousPatterns.some(pattern => pattern.test(query))
+}
+
+// Rate limiting check
+function isSearchAllowed(clientId: string = 'default'): boolean {
+  const now = Date.now()
+  const record = searchAttempts.get(clientId)
+  
+  if (!record) {
+    searchAttempts.set(clientId, { count: 1, lastAttempt: now })
+    return true
+  }
+  
+  // Reset if window has passed
+  if (now - record.lastAttempt > SEARCH_WINDOW_MS) {
+    record.count = 1
+    record.lastAttempt = now
+    return true
+  }
+  
+  // Increment attempt count
+  record.count++
+  record.lastAttempt = now
+  
+  return record.count <= MAX_SEARCH_ATTEMPTS
+}
 
 let searchIndex: Fuse<SearchItem> | null = null
 let searchData: SearchItem[] = []
 
-// Initialize search index with security
+// Initialize search index
 export const initializeSearchIndex = async (): Promise<void> => {
   try {
     const items: SearchItem[] = await loadAllSearchItems();
@@ -86,7 +75,7 @@ export const initializeSearchIndex = async (): Promise<void> => {
     if (import.meta.env.DEV) {
       const healthBridgeItem = items.find(item => item.url === '/healthbridge-analysis');
       if (healthBridgeItem) {
-        console.log('HealthBridge search item loaded:', {
+        logger.debug('HealthBridge search item loaded:', {
           title: healthBridgeItem.title,
           description: healthBridgeItem.description,
           contentLength: healthBridgeItem.content?.length || 0,
@@ -97,7 +86,7 @@ export const initializeSearchIndex = async (): Promise<void> => {
       }
     }
     
-    // Configure Fuse.js search with enhanced fields and security
+    // Configure Fuse.js search with enhanced fields
     const fuseOptions = {
       keys: [
         { name: 'title', weight: 0.3 },
@@ -105,43 +94,41 @@ export const initializeSearchIndex = async (): Promise<void> => {
         { name: 'content', weight: 0.2 },
         { name: 'headings', weight: 0.15 },
         { name: 'tags', weight: 0.1 },
-        { name: 'searchKeywords', weight: 0.2 } // New field for enhanced search
+        { name: 'searchKeywords', weight: 0.2 }
       ],
       threshold: 0.4,
       includeScore: true,
       includeMatches: true,
       minMatchCharLength: 2,
-      // Add security options
       ignoreLocation: false,
       distance: 100,
-      // Limit results for security
       limit: 20
     }
     
     searchIndex = new Fuse(searchData, fuseOptions)
     
-    console.log(`Search index initialized with ${items.length} items`)
+    logger.debug(`Search index initialized with ${items.length} items`)
   } catch (error) {
-    console.error('Failed to initialize search index:', error)
+    logger.error('Failed to initialize search index:', error)
   }
 }
 
-// Perform search with security validation
-export const performSearch = async (query: string, clientId?: string): Promise<SearchResult[]> => {
+// Perform search with basic security validation
+export const performSearch = async (query: string, clientId?: string): Promise<any[]> => {
   // Security validation
-  if (!SecurityUtils.validateSearchQuery(query)) {
-    console.warn('Invalid search query detected:', query);
+  if (!validateSearchQuery(query)) {
+    logger.warn('Invalid search query detected:', query);
     return [];
   }
   
   // Rate limiting check
-  if (!SecurityUtils.isSearchAllowed(clientId)) {
-    console.warn('Search rate limit exceeded for client:', clientId);
+  if (!isSearchAllowed(clientId)) {
+    logger.warn('Search rate limit exceeded for client:', clientId);
     return [];
   }
   
   // Sanitize input
-  const sanitizedQuery = SecurityUtils.sanitizeInput(query);
+  const sanitizedQuery = sanitizeInput(query);
   
   if (!searchIndex) {
     await initializeSearchIndex()
@@ -166,7 +153,7 @@ export const performSearch = async (query: string, clientId?: string): Promise<S
       }))
     }))
   } catch (error) {
-    console.error('Search error:', error);
+    logger.error('Search error:', error);
     return [];
   }
 }
@@ -175,7 +162,7 @@ export const performSearch = async (query: string, clientId?: string): Promise<S
 export const getSearchData = (): SearchItem[] => {
   // Only allow in development mode
   if (!import.meta.env.DEV) {
-    console.warn('getSearchData called in production - access denied');
+    logger.warn('getSearchData called in production - access denied');
     return [];
   }
   return searchData
@@ -187,7 +174,7 @@ export const getSearchSecurityStatus = () => {
     isInitialized: !!searchIndex,
     totalItems: searchData.length,
     rateLimitEnabled: true,
-    maxSearchAttempts: SecurityUtils['MAX_SEARCH_ATTEMPTS'],
-    searchWindowMs: SecurityUtils['SEARCH_WINDOW_MS']
+    maxSearchAttempts: MAX_SEARCH_ATTEMPTS,
+    searchWindowMs: SEARCH_WINDOW_MS
   };
 };

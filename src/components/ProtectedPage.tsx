@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P, H3 } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, Wifi, CheckCircle, XCircle } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, Wifi, CheckCircle, XCircle, FileText } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 
@@ -210,6 +210,36 @@ export const ProtectedPage: React.FC = () => {
                 {isDevelopment ? 'Development' : 'Production'}
               </div>
             </div>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="bg-teal-100 border border-teal-200 rounded-lg p-4">
+            <H3 className="font-semibold text-teal-800 mb-3">Content Management</H3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full justify-start border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
+              >
+                <a href="/content-creation">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Content Creation Studio
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full justify-start border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
+              >
+                <a href="/markdown-editor">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Markdown Editor
+                </a>
+              </Button>
+            </div>
+            <P className="text-xs text-teal-600 mt-2">
+              Create and edit blog posts, portfolio pages, and project documentation with AI-powered frontmatter generation.
+            </P>
           </div>
           
           <div className="bg-teal-100 border border-teal-200 rounded-lg p-4">

@@ -204,4 +204,91 @@
       transform: none !important;
     }
   }
+
+  /* TipTap Editor List Styling */
+  .ProseMirror ul {
+    list-style-type: disc !important;
+    padding-left: 1.5rem !important;
+    margin: 0.5rem 0 !important;
+  }
+  
+  .ProseMirror ol {
+    list-style-type: decimal !important;
+    padding-left: 1.5rem !important;
+    margin: 0.5rem 0 !important;
+  }
+  
+  .ProseMirror li {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    display: list-item !important;
+  }
+  
+  .ProseMirror li::marker {
+    color: hsl(var(--foreground)) !important;
+    font-weight: 500 !important;
+  }
+  
+  /* Ensure list markers are visible */
+  .ProseMirror ul li::marker {
+    content: "•" !important;
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  .ProseMirror ol li::marker {
+    content: counter(list-item) "." !important;
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Override any potential list-style: none */
+  .ProseMirror ul,
+  .ProseMirror ol {
+    list-style: revert !important;
+  }
+  
+  /* Additional TipTap list styling */
+  .ProseMirror .ProseMirror-focused ul,
+  .ProseMirror .ProseMirror-focused ol {
+    list-style: revert !important;
+  }
+  
+  /* Force list display */
+  .ProseMirror ul li,
+  .ProseMirror ol li {
+    list-style-position: outside !important;
+    padding-left: 0.5rem !important;
+  }
+  
+  /* Debug: Make sure lists are visible */
+  .ProseMirror ul,
+  .ProseMirror ol {
+    border: 1px solid transparent !important;
+    min-height: 1em !important;
+  }
+  
+  /* More specific list styling */
+  .ProseMirror .list-disc {
+    list-style-type: disc !important;
+  }
+  
+  .ProseMirror .list-decimal {
+    list-style-type: decimal !important;
+  }
+  
+  /* Ensure list items are properly displayed */
+  .ProseMirror li {
+    list-style-position: outside !important;
+    margin-left: 0 !important;
+    padding-left: 0.5rem !important;
+  }
+  
+  /* Override any global list resets */
+  .ProseMirror * {
+    list-style: inherit !important;
+  }
+  
+  .ProseMirror ul,
+  .ProseMirror ol {
+    list-style: revert !important;
+  }
 }

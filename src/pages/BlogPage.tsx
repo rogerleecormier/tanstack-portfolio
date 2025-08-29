@@ -645,6 +645,11 @@ export default function BlogPage({ slug }: { slug: string }) {
                     {children}
                   </ol>
                 ),
+                li: ({ children, ...props }) => (
+                  <li className="mt-2" {...props}>
+                    {children}
+                  </li>
+                ),
                 hr: ({ ...props }) => (
                   <Separator className="my-8" {...props} />
                 ),

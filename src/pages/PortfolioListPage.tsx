@@ -22,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { logger } from '@/utils/logger'
 
 // Helper function to safely parse tags
 function parseTagsSafely(tags: unknown): string[] {
@@ -135,10 +136,10 @@ export default function PortfolioListPage() {
     const loadItems = async () => {
       try {
         setIsLoading(true)
-        console.log('🚀 Starting to load portfolio items...')
+        logger.debug('🚀 Starting to load portfolio items...')
         const items = await loadPortfolioItems()
-        console.log('✨ Portfolio items loaded:', items)
-        console.log(`📊 Discovered ${items.length} portfolio items:`, items.map(item => item.id))
+        logger.debug('✨ Portfolio items loaded:', items)
+        logger.debug(`📊 Discovered ${items.length} portfolio items:`, items.map(item => item.id))
         setPortfolioItems(items)
         
         // Initialize search
@@ -146,7 +147,7 @@ export default function PortfolioListPage() {
         setPortfolioSearch(search)
         setFilteredItems(items)
       } catch (error) {
-        console.error('❌ Error loading portfolio items:', error)
+        logger.error('❌ Error loading portfolio items:', error)
       } finally {
         setIsLoading(false)
       }

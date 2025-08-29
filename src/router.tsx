@@ -26,6 +26,7 @@ import PortfolioListPage from './pages/PortfolioListPage'
 import AboutPage from './pages/AboutPage'
 import NewsletterPreferencesPage from './pages/NewsletterPreferencesPage'
 import MarkdownEditorPage from './pages/MarkdownEditorPage'
+import ContentCreationPage from './pages/ContentCreationPage'
 import ToolsListPage from './pages/ToolsListPage'
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
@@ -192,6 +193,17 @@ const markdownEditorRoute = createRoute({
   component: MarkdownEditorPage,
 })
 
+// Content Creation route (Protected)
+const contentCreationRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'content-creation',
+  component: () => (
+    <ProtectedRoute>
+      <ContentCreationPage />
+    </ProtectedRoute>
+  ),
+})
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -208,6 +220,7 @@ const routeTree = rootRoute.addChildren([
   newsletterPreferencesRoute,
   toolsListRoute,
   markdownEditorRoute,
+  contentCreationRoute,
 ])
 
 // Create router instance

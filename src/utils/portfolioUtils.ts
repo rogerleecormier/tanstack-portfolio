@@ -111,19 +111,22 @@ async function discoverPortfolioFiles(): Promise<string[]> {
     
     const discoveredFiles: string[] = []
     
-    // Try to dynamically import each potential file
-    for (const fileName of possibleFiles) {
+    // Batch process files for better performance
+    const filePromises = possibleFiles.map(async (fileName) => {
       try {
         const module = await import(`../content/portfolio/${fileName}.md?raw`)
         if (module && module.default) {
-          discoveredFiles.push(`${fileName}.md`)
-          logger.discovered(`${fileName}.md`)
+          return `${fileName}.md`
         }
       } catch {
         // File doesn't exist, skip it
-        logger.notFound(`${fileName}.md`)
       }
-    }
+      return null
+    })
+    
+    // Wait for all file checks to complete
+    const results = await Promise.all(filePromises)
+    discoveredFiles.push(...results.filter(Boolean) as string[])
     
     if (discoveredFiles.length > 0) {
       logger.portfolioLoading(`Successfully discovered ${discoveredFiles.length} portfolio files:`, discoveredFiles)
@@ -191,17 +194,22 @@ async function discoverBlogFiles(): Promise<string[]> {
     
     const discoveredBlogFiles: string[] = []
     
-    for (const fileName of possibleBlogFiles) {
+    // Batch process blog files for better performance
+    const blogFilePromises = possibleBlogFiles.map(async (fileName) => {
       try {
         const module = await import(`../content/blog/${fileName}.md?raw`)
         if (module && module.default) {
-          discoveredBlogFiles.push(`${fileName}.md`)
-          logger.discovered(`blog: ${fileName}.md`)
+          return `${fileName}.md`
         }
       } catch {
-        logger.notFound(`blog: ${fileName}.md`)
+        // File doesn't exist, skip it
       }
-    }
+      return null
+    })
+    
+    // Wait for all blog file checks to complete
+    const blogResults = await Promise.all(blogFilePromises)
+    discoveredBlogFiles.push(...blogResults.filter(Boolean) as string[])
     
     if (discoveredBlogFiles.length > 0) {
       logger.portfolioLoading(`Successfully discovered ${discoveredBlogFiles.length} blog files:`, discoveredBlogFiles)
@@ -218,7 +226,7 @@ async function discoverBlogFiles(): Promise<string[]> {
 // Dynamic project file discovery
 async function discoverProjectFiles(): Promise<string[]> {
   try {
-    logger.portfolioLoading('Attempting project file discovery...')
+    logger.portfolioLoading('Starting project file discovery...')
     
     const possibleProjectFiles = [
       'project-analysis'
@@ -226,20 +234,25 @@ async function discoverProjectFiles(): Promise<string[]> {
     
     const discoveredProjectFiles: string[] = []
     
-    for (const fileName of possibleProjectFiles) {
+    // Batch process project files for better performance
+    const projectFilePromises = possibleProjectFiles.map(async (fileName) => {
       try {
         const module = await import(`../content/projects/${fileName}.md?raw`)
         if (module && module.default) {
-          discoveredProjectFiles.push(`${fileName}.md`)
-          logger.discovered(`project: ${fileName}.md`)
+          return `${fileName}.md`
         }
       } catch {
-        logger.notFound(`project: ${fileName}.md`)
+        // File doesn't exist, skip it
       }
-    }
+      return null
+    })
+    
+    // Wait for all project file checks to complete
+    const projectResults = await Promise.all(projectFilePromises)
+    discoveredProjectFiles.push(...projectResults.filter(Boolean) as string[])
     
     if (discoveredProjectFiles.length > 0) {
-      logger.portfolioLoading(`Successfully discovered ${discoveredProjectFiles.length} project files:`, discoveredProjectFiles)
+      logger.portfolioLoading(`Successfully discovered ${discoveredProjectFiles.length} project files`)
       return discoveredProjectFiles
     }
     

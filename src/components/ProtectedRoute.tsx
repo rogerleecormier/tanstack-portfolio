@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
 import { Shield, ArrowRight, Loader2, Lock, UserCheck, AlertTriangle, Clock, Info } from 'lucide-react';
+import { logger } from '@/utils/logger';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -26,7 +27,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Debug: Log when component mounts to test console
   React.useEffect(() => {
-    console.log('ProtectedRoute: Component mounted', {
+    logger.debug('ProtectedRoute: Component mounted', {
       isAuthenticated,
       isLoading,
       isDevelopment,

@@ -18,6 +18,7 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+import { logger } from "@/utils/logger";
 
 interface ChartRendererProps {
   node: {
@@ -35,7 +36,8 @@ interface ChartRendererProps {
 const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
   const { chartType, data, xAxisLabel, yAxisLabel, width = '100%', height = '320px' } = node.attrs;
 
-  console.log("ChartRenderer called with:", { chartType, data });
+  // Use logger instead of console.log
+  logger.debug("ChartRenderer called with:", { chartType, data });
 
   // Chart configuration for Shadcn components
   const chartConfig = {
@@ -53,7 +55,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
     try {
       return JSON.parse(dataString);
     } catch (error) {
-      console.error("Failed to parse chart data:", error);
+      logger.error("Failed to parse chart data:", error);
       return [];
     }
   };

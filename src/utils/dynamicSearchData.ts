@@ -1,12 +1,13 @@
 import { convertMarkdownToSearchItems } from './markdownContentExtractor'
 import type { SearchItem } from '../types/search'
+import { logger } from './logger'
 
 // This will be populated by the build process or at runtime
 let cachedSearchItems: SearchItem[] = []
 
 // Function to load markdown files dynamically
 export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
-  console.log('loadMarkdownFiles called')
+  logger.debug('loadMarkdownFiles called')
   
   if (cachedSearchItems.length > 0) {
     return cachedSearchItems
@@ -14,7 +15,7 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
 
   // Only load markdown files at runtime, not during build
   if (typeof window === 'undefined') {
-    console.log('Markdown loading skipped during build/SSR')
+    logger.debug('Markdown loading skipped during build/SSR')
     const { searchData } = await import('./searchData')
     // Filter out About page from static data
     cachedSearchItems = searchData.filter(item => 
@@ -31,11 +32,11 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
       query: '?raw', 
       import: 'default' 
     })
-    console.log('Found markdown modules:', Object.keys(markdownModules))
+    logger.debug('Found markdown modules:', Object.keys(markdownModules))
     
     // If no markdown files found, fall back to static data immediately
     if (Object.keys(markdownModules).length === 0) {
-      console.log('No markdown files found, using static data')
+      logger.debug('No markdown files found, using static data')
       const { searchData } = await import('./searchData')
       // Filter out About page from static data
       cachedSearchItems = searchData.filter(item => 
@@ -53,7 +54,7 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
       }))
     )
 
-    console.log('Loaded markdown files:', markdownFiles.length)
+    logger.debug('Loaded markdown files:', markdownFiles.length)
     const searchItems = convertMarkdownToSearchItems(markdownFiles)
     
     // Filter out the About page (homepage) from search results
@@ -63,10 +64,10 @@ export const loadMarkdownFiles = async (): Promise<SearchItem[]> => {
       item.id !== 'about'
     )
     
-    console.log(`Converted search items: ${searchItems.length}, Filtered: ${cachedSearchItems.length} (excluded About page)`)
+    logger.debug(`Converted search items: ${searchItems.length}, Filtered: ${cachedSearchItems.length} (excluded About page)`)
     return cachedSearchItems
   } catch (error) {
-    console.error('Error loading markdown files:', error)
+    logger.error('Error loading markdown files:', error)
     
     // Fallback to static data if dynamic loading fails
     const { searchData } = await import('./searchData')
@@ -185,7 +186,7 @@ const extractComponentContent = (content: string, filename: string): Partial<Sea
   
   // Debug output for HealthBridge specifically
   if (filename.toLowerCase() === 'healthbridge') {
-    console.log('HealthBridge content extraction:', {
+    logger.debug('HealthBridge content extraction:', {
       hasJsDoc: !!jsDocMatch,
       hasDescription: !!description,
       hasFeatures: !!featuresMatch,
@@ -263,10 +264,10 @@ export const loadTsxPages = async (): Promise<SearchItem[]> => {
       })
     );
     
-    console.log('Loaded TSX pages with enhanced content:', tsxFiles.length);
+    logger.debug('Loaded TSX pages with enhanced content:', tsxFiles.length);
     return tsxFiles;
   } catch (error) {
-    console.error('Error loading TSX pages:', error);
+    logger.error('Error loading TSX pages:', error);
     return [];
   }
 };

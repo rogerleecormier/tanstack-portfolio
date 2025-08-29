@@ -21,7 +21,7 @@ const tools: Tool[] = [
   {
     id: 'markdown-editor',
     title: 'Markdown Editor',
-    description: 'A rich text editor for creating and editing markdown content with real-time preview and syntax highlighting.',
+            description: 'A rich text editor for creating and editing markdown content with real-time markdown generation and syntax highlighting.',
     category: 'Content Creation',
     icon: FileText,
     url: '/markdown-editor',

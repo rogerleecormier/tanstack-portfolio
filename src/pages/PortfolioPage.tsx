@@ -642,11 +642,16 @@ export default function PortfolioPage({ file }: { file: string }) {
                   {children}
                 </ul>
               ),
-              ol: ({ children, ...props }) => (
-                <ol className="my-6 ml-6 list-decimal [&>li]:mt-2" {...props}>
-                  {children}
-                </ol>
-              ),
+                              ol: ({ children, ...props }) => (
+                  <ol className="my-6 ml-6 list-decimal [&>li]:mt-2" {...props}>
+                    {children}
+                  </ol>
+                ),
+                li: ({ children, ...props }) => (
+                  <li className="mt-2" {...props}>
+                    {children}
+                  </li>
+                ),
               hr: ({ ...props }) => (
                 <Separator className="my-8" {...props} />
               ),
@@ -721,7 +726,27 @@ export default function PortfolioPage({ file }: { file: string }) {
         // Single-column layout for other pages  
         <div>
           <article className="prose prose-neutral dark:prose-invert max-w-none w-full">
-            <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown 
+              rehypePlugins={[rehypeRaw]} 
+              remarkPlugins={[remarkGfm]}
+              components={{
+                ul: ({ children, ...props }) => (
+                  <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...props}>
+                    {children}
+                  </ul>
+                ),
+                ol: ({ children, ...props }) => (
+                  <ol className="my-6 ml-6 list-decimal [&>li]:mt-2" {...props}>
+                    {children}
+                  </ol>
+                ),
+                li: ({ children, ...props }) => (
+                  <li className="mt-2" {...props}>
+                    {children}
+                  </li>
+                ),
+              }}
+            >
               {content}
             </ReactMarkdown>
           </article>

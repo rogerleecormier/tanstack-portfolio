@@ -4,6 +4,7 @@
 
 import { loadMarkdownFiles } from '@/utils/dynamicSearchData'
 import type { SearchItem } from '@/types/search'
+import { logger } from '@/utils/logger'
 
 export interface UnifiedContentItem {
   id: string
@@ -86,7 +87,7 @@ export interface UnifiedRecommendationsResponse {
                 }
               } catch (regexError) {
                 // Skip this word if regex creation fails
-                console.warn('Failed to create regex for word:', word, regexError)
+                logger.warn('Failed to create regex for word:', word, regexError)
               }
             }
           }
@@ -125,7 +126,7 @@ export interface UnifiedRecommendationsResponse {
       
       return Math.min(Math.max(score, 0), 1)
     } catch (error) {
-      console.error('Error calculating content relevance score:', error)
+      logger.error('Error calculating content relevance score:', error)
       // Return a minimal score instead of failing completely
       return 0.05
     }
@@ -156,9 +157,9 @@ class UnifiedSmartRecommendationsService {
     try {
       this.cachedSearchItems = await loadMarkdownFiles()
       this.isInitialized = true
-      console.log(`Unified recommendations service initialized with ${this.cachedSearchItems.length} items`)
+      logger.info(`Unified recommendations service initialized with ${this.cachedSearchItems.length} items`)
     } catch (error) {
-      console.error('Failed to initialize unified recommendations service:', error)
+      logger.error('Failed to initialize unified recommendations service:', error)
       throw error
     }
   }
@@ -171,12 +172,12 @@ class UnifiedSmartRecommendationsService {
       const { content, title, tags = [], excludeUrl, maxResults = 2 } = request
       
       // Debug logging
-      console.log('Recommendations request:', { contentLength: content?.length, title, tags, excludeUrl, maxResults })
-      console.log('Available search items:', this.cachedSearchItems.length)
+      logger.debug('Recommendations request:', { contentLength: content?.length, title, tags, excludeUrl, maxResults })
+      logger.debug('Available search items:', this.cachedSearchItems.length)
       
       // Validate input
       if (!content || !title) {
-        console.log('Invalid input - missing content or title')
+        logger.debug('Invalid input - missing content or title')
         return {
           success: false,
           error: 'Content and title are required',
@@ -211,16 +212,16 @@ class UnifiedSmartRecommendationsService {
       // Take the top items
       const finalItems = relevantItems.slice(0, maxResults)
       
-      console.log('Scored items:', scoredItems.length, 'total')
-      console.log('Relevant items (>0.1):', relevantItems.filter(item => item.relevance > 0.1).length)
-      console.log('Top scored items:', finalItems.slice(0, 3).map(item => ({ title: item.title, relevance: item.relevance })))
+      logger.debug('Scored items:', scoredItems.length, 'total')
+      logger.debug('Relevant items (>0.1):', relevantItems.filter(item => item.relevance > 0.1).length)
+      logger.debug('Top scored items:', finalItems.slice(0, 3).map(item => ({ title: item.title, relevance: item.relevance })))
       
       // Convert to unified format
       const recommendations = finalItems.map(({ relevance, ...item }) =>
         convertToUnifiedItem(item, relevance)
       )
       
-      console.log('Final recommendations:', recommendations.length)
+      logger.debug('Final recommendations:', recommendations.length)
       
       return {
         success: true,
@@ -229,7 +230,7 @@ class UnifiedSmartRecommendationsService {
       }
       
     } catch (error) {
-      console.error('Unified recommendations error:', error)
+      logger.error('Unified recommendations error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -266,7 +267,7 @@ class UnifiedSmartRecommendationsService {
       }
       
     } catch (error) {
-      console.error('Type-based recommendations error:', error)
+      logger.error('Type-based recommendations error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -285,7 +286,7 @@ class UnifiedSmartRecommendationsService {
         convertToUnifiedItem(item, 0.8)
       )
     } catch (error) {
-      console.error('Failed to get all content items:', error)
+      logger.error('Failed to get all content items:', error)
       return []
     }
   }

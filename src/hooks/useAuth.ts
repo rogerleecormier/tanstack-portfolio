@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { environment } from '../config/environment';
 import { CloudflareUser } from '../utils/cloudflareAuth';
+import { logger } from '@/utils/logger';
 
 // Simplified authentication without complex classes that could cause hanging
 const simpleAuth = {
@@ -26,7 +27,7 @@ const simpleAuth = {
       
       return true;
     } catch (error) {
-      console.error('Error checking mock authentication:', error);
+      logger.error('Error checking mock authentication:', error);
       return false;
     }
   },
@@ -49,7 +50,7 @@ const simpleAuth = {
         sub: 'dev-user-123'
       };
     } catch (error) {
-      console.error('Error getting mock user:', error);
+      logger.error('Error getting mock user:', error);
       return null;
     }
   },
@@ -72,7 +73,7 @@ const simpleAuth = {
         detail: { isAuthenticated: true, user: this.getMockUser() } 
       }));
     } catch (error) {
-      console.error('Error starting mock session:', error);
+      logger.error('Error starting mock session:', error);
     }
   },
 
@@ -88,7 +89,7 @@ const simpleAuth = {
         detail: { isAuthenticated: false, user: null } 
       }));
     } catch (error) {
-      console.error('Error clearing mock auth:', error);
+      logger.error('Error clearing mock auth:', error);
     }
   },
 
@@ -120,18 +121,18 @@ const simpleAuth = {
       try {
         localStorage.removeItem('cf_user');
       } catch {
-        console.warn('Could not clear localStorage during auth check');
+        logger.warn('Could not clear localStorage during auth check');
       }
       
       return { isAuthenticated: false, user: null };
     } catch (error) {
-      console.debug('Cloudflare Access identity check failed:', error);
+      logger.debug('Cloudflare Access identity check failed:', error);
       
       // On error, assume not authenticated and clear stored data
       try {
         localStorage.removeItem('cf_user');
       } catch {
-        console.warn('Could not clear localStorage during auth check error');
+        logger.warn('Could not clear localStorage during auth check error');
       }
       
       return { isAuthenticated: false, user: null };
@@ -154,7 +155,7 @@ export const useAuth = () => {
         const isAuth = simpleAuth.isMockAuthenticated();
         const mockUser = simpleAuth.getMockUser();
         
-        console.log('useAuth: Development auth check', { isAuth, mockUser });
+        logger.info('useAuth: Development auth check', { isAuth, mockUser });
         
         setIsAuthenticated(isAuth);
         setUser(mockUser);
@@ -172,12 +173,12 @@ export const useAuth = () => {
           try {
             localStorage.setItem('cf_user', JSON.stringify(userInfo));
           } catch {
-            console.warn('Could not store user info in localStorage');
+            logger.warn('Could not store user info in localStorage');
           }
         }
       }
     } catch (error) {
-      console.error('Error checking authentication:', error);
+      logger.error('Error checking authentication:', error);
       setIsAuthenticated(false);
       setUser(null);
       setError('Authentication check failed');
@@ -196,8 +197,8 @@ export const useAuth = () => {
                            window.location.pathname.includes('logout') ||
                            document.referrer.includes('logout');
     
-    if (isLogoutRedirect) {
-      console.log('useAuth: Detected logout redirect, clearing auth state');
+          if (isLogoutRedirect) {
+        logger.info('useAuth: Detected logout redirect, clearing auth state');
       setIsAuthenticated(false);
       setUser(null);
       setError(null);
@@ -213,17 +214,17 @@ export const useAuth = () => {
 
   // Additional auth check when page becomes visible (for mobile logout redirects)
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        console.log('useAuth: Page became visible, checking auth status');
-        checkAuth();
-      }
-    };
+          const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          logger.info('useAuth: Page became visible, checking auth status');
+          checkAuth();
+        }
+      };
 
-    const handleFocus = () => {
-      console.log('useAuth: Window focused, checking auth status');
-      checkAuth();
-    };
+      const handleFocus = () => {
+        logger.info('useAuth: Window focused, checking auth status');
+        checkAuth();
+      };
 
     // Listen for visibility changes (when user returns to tab)
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -240,7 +241,7 @@ export const useAuth = () => {
   // Listen for auth state changes from other components
   useEffect(() => {
     const handleAuthChange = (event: CustomEvent) => {
-      console.log('useAuth: Received auth state change event', event.detail);
+      logger.info('useAuth: Received auth state change event', event.detail);
       const { isAuthenticated: newAuthState, user: newUser } = event.detail;
       setIsAuthenticated(newAuthState);
       setUser(newUser);
@@ -255,14 +256,14 @@ export const useAuth = () => {
 
   const login = () => {
     try {
-      console.log('useAuth: Login called');
+      logger.info('useAuth: Login called');
       if (environment.isDevelopment()) {
         simpleAuth.startMockSession();
         // Update state immediately
         setIsAuthenticated(true);
         setUser(simpleAuth.getMockUser());
         setError(null);
-        console.log('useAuth: Development login successful');
+        logger.info('useAuth: Development login successful');
       } else {
         // In production, redirect to protected route to trigger Cloudflare Access
         // Cloudflare will automatically intercept this and redirect to authentication
@@ -271,7 +272,7 @@ export const useAuth = () => {
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const isEdge = /Edge/i.test(navigator.userAgent);
         
-        console.log('useAuth: Login redirect:', {
+        logger.info('useAuth: Login redirect:', {
           isMobile,
           isEdge,
           userAgent: navigator.userAgent,
@@ -280,7 +281,7 @@ export const useAuth = () => {
         
         // For mobile Edge, we might need to handle the redirect differently
         if (isMobile && isEdge) {
-          console.log('useAuth: Mobile Edge detected - using alternative redirect method');
+          logger.info('useAuth: Mobile Edge detected - using alternative redirect method');
           // Try using window.location.replace for mobile Edge
           window.location.replace('/protected');
         } else {
@@ -289,34 +290,34 @@ export const useAuth = () => {
         }
       }
     } catch (error) {
-      console.error('Login failed:', error);
+      logger.error('Login failed:', error);
       setError('Login failed');
     }
   };
 
   const logout = () => {
     try {
-      console.log('useAuth: Logout called');
+      logger.info('useAuth: Logout called');
       if (environment.isDevelopment()) {
         simpleAuth.clearMockAuth();
         // Update state immediately
         setIsAuthenticated(false);
         setUser(null);
         setError(null);
-        console.log('useAuth: Development logout successful');
+        logger.info('useAuth: Development logout successful');
       } else {
         // Clear any stored data and redirect to Cloudflare Access logout
         try {
           localStorage.removeItem('cf_user');
         } catch {
-          console.warn('Could not clear localStorage');
+          logger.warn('Could not clear localStorage');
         }
         
         // Check if we're on a mobile browser
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         if (isMobile) {
-          console.log('useAuth: Mobile logout detected, clearing state immediately');
+          logger.info('useAuth: Mobile logout detected, clearing state immediately');
           // For mobile, clear the state immediately before redirect
           setIsAuthenticated(false);
           setUser(null);
@@ -327,13 +328,13 @@ export const useAuth = () => {
         window.location.href = '/cdn-cgi/access/logout';
       }
     } catch (error) {
-      console.error('Logout failed:', error);
+      logger.error('Logout failed:', error);
       setError('Logout failed');
     }
   };
 
   const refreshAuth = () => {
-    console.log('useAuth: Refresh auth called');
+    logger.info('useAuth: Refresh auth called');
     checkAuth();
   };
 
@@ -343,7 +344,7 @@ export const useAuth = () => {
 
   // Debug logging for state changes
   useEffect(() => {
-    console.log('useAuth: State changed', { isAuthenticated, user, isLoading, error });
+    logger.info('useAuth: State changed', { isAuthenticated, user, isLoading, error });
   }, [isAuthenticated, user, isLoading, error]);
 
   return {
