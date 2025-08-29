@@ -114,12 +114,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
        Table.configure({
          resizable: true,
          HTMLAttributes: {
-           class: 'border-collapse border border-gray-300 w-full my-4 table-auto',
+           class: 'border-collapse border border-gray-300 w-full my-4',
          },
        }),
        TableRow.configure({
          HTMLAttributes: {
-           class: 'border-b border-gray-300 hover:bg-gray-50',
+           class: 'border-b border-gray-300',
          },
        }),
        TableHeader.configure({
@@ -129,7 +129,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
        }),
        TableCell.configure({
          HTMLAttributes: {
-           class: 'border border-gray-300 px-4 py-2 min-w-[100px] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent',
+           class: 'border border-gray-300 px-4 py-2 min-w-[100px]',
          },
        }),
        Chart,
@@ -702,6 +702,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const handleInsertTable = useCallback(() => {
     if (editor) {
       try {
+        logger.debug('Inserting table with:', { rows: tableRows, cols: tableCols, withHeader: tableWithHeader })
+        
         // Insert table at current cursor position
         editor.chain().focus().insertTable({ 
           rows: tableRows, 
@@ -709,10 +711,25 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           withHeaderRow: tableWithHeader 
         }).run()
         
+        // Log the editor content after table insertion
+        setTimeout(() => {
+          const html = editor.getHTML()
+          logger.debug('Editor HTML after table insertion:', html)
+          
+          // Check if table was actually inserted
+          const tables = document.querySelectorAll('.ProseMirror table')
+          logger.debug('Tables found in DOM:', tables.length)
+          
+          if (tables.length > 0) {
+            logger.debug('Table HTML structure:', tables[0].outerHTML)
+          }
+        }, 100)
+        
         // Add some default content to make it clear the table is editable
         if (tableWithHeader) {
           // Add placeholder text to header cells
           const headerCells = document.querySelectorAll('.ProseMirror table thead th')
+          logger.debug('Header cells found:', headerCells.length)
           Array.from(headerCells).forEach((cell: Element, index: number) => {
             if (!cell.textContent?.trim()) {
               cell.textContent = `Header ${index + 1}`
@@ -722,6 +739,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         
         // Add placeholder text to first few data cells
         const dataCells = document.querySelectorAll('.ProseMirror table tbody td')
+        logger.debug('Data cells found:', dataCells.length)
         Array.from(dataCells).slice(0, Math.min(3, dataCells.length)).forEach((cell: Element, index: number) => {
           if (!cell.textContent?.trim()) {
             cell.textContent = `Cell ${index + 1}`
@@ -1085,64 +1103,74 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               onContextMenu={handleTableContextMenu}
             />
             <style>{`
+              /* Table styles - ensure all tables are properly styled */
               .ProseMirror table {
-                border-collapse: collapse;
-                border: 1px solid #d1d5db;
-                width: 100%;
-                margin: 1rem 0;
-                table-layout: auto;
+                border-collapse: collapse !important;
+                border: 1px solid #d1d5db !important;
+                width: 100% !important;
+                margin: 1rem 0 !important;
+                table-layout: auto !important;
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+                display: table !important;
               }
               
               .ProseMirror table td,
               .ProseMirror table th {
-                border: 1px solid #d1d5db;
-                padding: 0.5rem;
-                min-width: 100px;
-                vertical-align: top;
+                border: 1px solid #d1d5db !important;
+                padding: 0.5rem !important;
+                min-width: 100px !important;
+                vertical-align: top !important;
+                display: table-cell !important;
               }
               
               .ProseMirror table th {
-                background-color: #f3f4f6;
-                font-weight: 600;
-                text-align: left;
-                color: #111827;
+                background-color: #f3f4f6 !important;
+                font-weight: 600 !important;
+                text-align: left !important;
+                color: #111827 !important;
+              }
+              
+              .ProseMirror table tr {
+                display: table-row !important;
               }
               
               .ProseMirror table tr:hover {
-                background-color: #f9fafb;
+                background-color: #f9fafb !important;
               }
               
               .ProseMirror table td:focus,
               .ProseMirror table th:focus {
-                outline: none;
-                ring: 2px;
-                ring-color: #14b8a6;
-                border-color: transparent;
+                outline: none !important;
+                border-color: #14b8a6 !important;
+                background-color: #f0f9ff !important;
               }
               
               .ProseMirror table td:empty::before {
-                content: 'Click to edit';
-                color: #9ca3af;
-                font-style: italic;
+                content: 'Click to edit' !important;
+                color: #9ca3af !important;
+                font-style: italic !important;
               }
               
               .ProseMirror table td:focus:empty::before {
-                content: '';
-              }
-              
-              .ProseMirror table td:focus,
-              .ProseMirror table th:focus {
-                background-color: #f0f9ff;
-                border-color: #14b8a6;
+                content: '' !important;
               }
               
               .ProseMirror table td:hover,
               .ProseMirror table th:hover {
-                background-color: #f8fafc;
+                background-color: #f8fafc !important;
               }
               
-              .ProseMirror table {
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+              /* Ensure table structure is maintained */
+              .ProseMirror table thead {
+                display: table-header-group !important;
+              }
+              
+              .ProseMirror table tbody {
+                display: table-row-group !important;
+              }
+              
+              .ProseMirror table tfoot {
+                display: table-footer-group !important;
               }
             `}</style>
           </div>

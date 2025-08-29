@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -74,25 +74,26 @@ const ContentCreationPage: React.FC = () => {
       .trim()
   }
 
-  // Handle content changes from the editor
-  const handleContentChange = useCallback((html: string, markdownText: string) => {
+    // Handle content changes from the editor - exactly like MarkdownEditorPage
+  const handleContentChange = useCallback((html: string, markdown: string) => {
     setContent(html)
-    setMarkdown(markdownText)
+    setMarkdown(markdown)
   }, [])
 
-  // Generate frontmatter automatically
-  const generateFrontmatter = useCallback(async () => {
-    if (!content.trim()) {
-      alert('Please add some content before generating frontmatter.')
-      return
-    }
+         // Generate frontmatter automatically
+   const generateFrontmatter = useCallback(async () => {
+     // Use markdown state for frontmatter generation
+     if (!markdown.trim()) {
+       alert('Please add some content before generating frontmatter.')
+       return
+     }
 
     setIsGenerating(true)
     try {
       // Simulate processing time for better UX
       await new Promise(resolve => setTimeout(resolve, 1000))
       
-      const generated = FrontmatterGenerator.generateFrontmatter(content, contentType)
+               const generated = FrontmatterGenerator.generateFrontmatter(markdown, contentType)
       setFrontmatter(generated)
       
       // Auto-generate filename from title
@@ -107,7 +108,7 @@ const ContentCreationPage: React.FC = () => {
     } finally {
       setIsGenerating(false)
     }
-  }, [content, contentType])
+     }, [markdown, contentType])
 
   // Update frontmatter field
   const updateFrontmatterField = (field: string, value: string | string[]) => {
@@ -276,17 +277,15 @@ const ContentCreationPage: React.FC = () => {
     }
   }
 
-
-
-  const clearEditor = () => {
-    setContent('')
-    setMarkdown('')
-    setFrontmatter(null)
-    setCurrentFilePath('')
-    setIsEditingExisting(false)
-    setFilename('')
-    setSaveStatus('idle')
-  }
+     const clearEditor = () => {
+     setContent('')
+     setMarkdown('')
+     setFrontmatter(null)
+     setCurrentFilePath('')
+     setIsEditingExisting(false)
+     setFilename('')
+     setSaveStatus('idle')
+   }
 
   // File management functions
   const handleFileSelect = useCallback(async (file: FileItem) => {
@@ -305,10 +304,11 @@ const ContentCreationPage: React.FC = () => {
         logger.debug('Parsed markdown:', parsedMarkdown)
         logger.debug('Markdown length:', parsedMarkdown.length)
         
-        // Set the states in the correct order to ensure proper flow
-        setFrontmatter(parsedFrontmatter)
-        setMarkdown(parsedMarkdown)
-        setContent('') // Reset HTML content - will be populated by MarkdownEditor
+                 // Set the states in the correct order to ensure proper flow
+         setFrontmatter(parsedFrontmatter)
+         setMarkdown(parsedMarkdown)
+         // Set content to markdown for proper table rendering in the editor
+         setContent(parsedMarkdown)
         
         // Update file-related states
         setCurrentFilePath(file.path)
@@ -386,12 +386,12 @@ const ContentCreationPage: React.FC = () => {
 
 
 
-  // Save the file
-  const saveFile = useCallback(async () => {
-    if (!frontmatter || !markdown.trim()) {
-      alert('Please generate frontmatter and add content before saving.')
-      return
-    }
+     // Save the file
+   const saveFile = useCallback(async () => {
+     if (!frontmatter || !markdown.trim()) {
+       alert('Please generate frontmatter and add content before saving.')
+       return
+     }
 
     const validation = FrontmatterGenerator.validateFrontmatter(frontmatter)
     if (!validation.isValid) {
@@ -438,7 +438,7 @@ const ContentCreationPage: React.FC = () => {
     } finally {
       setIsSaving(false)
     }
-  }, [frontmatter, markdown, filename, customDirectory, contentType, isEditingExisting, currentFilePath, fileService])
+     }, [frontmatter, markdown, filename, customDirectory, contentType, isEditingExisting, currentFilePath, fileService])
 
 
 
@@ -615,11 +615,11 @@ const ContentCreationPage: React.FC = () => {
                      {isLoadingFile ? 'Loading...' : 'Browse Files'}
                    </Button>
                    
-                   <Button
-                     onClick={generateFrontmatter}
-                     disabled={isGenerating || !content.trim()}
-                     className="w-full bg-teal-600 hover:bg-teal-700 text-white"
-                   >
+                                       <Button
+                      onClick={generateFrontmatter}
+                      disabled={isGenerating || !markdown.trim()}
+                      className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                    >
                      {isGenerating ? 'Generating...' : 'Generate Frontmatter'}
                    </Button>
                    
@@ -708,12 +708,34 @@ const ContentCreationPage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <MarkdownEditor
-                    initialContent={markdown || ''}
-                    onContentChange={handleContentChange}
-                    showToolbar={true}
-                    minHeight="800px"
-                  />
+                                     <MarkdownEditor
+                     key={currentFilePath || 'new-content'}
+                     initialContent={content || markdown || (isEditingExisting ? '<p>Loading content...</p>' : `# Start Writing Your Content
+
+Welcome to the Content Creation Studio! Use the toolbar above to format your content with headers, bold, italic, lists, and more.
+
+## Table Support
+
+You can create tables using the table button in the toolbar or by typing markdown:
+
+| Feature | Description | Status |
+|---------|-------------|---------|
+| Tables | Full table support with editing | ✅ |
+| Charts | Interactive chart insertion | ✅ |
+| Code | Syntax highlighting | ✅ |
+| Lists | Bullet and numbered lists | ✅ |
+
+## Getting Started
+
+1. Use the toolbar for formatting
+2. Click the table icon to insert tables
+3. Click the chart icon to add charts
+4. Generate frontmatter when ready
+5. Save your content`)}
+                     onContentChange={handleContentChange}
+                     showToolbar={true}
+                     minHeight="800px"
+                   />
                 )}
               </CardContent>
             </Card>
