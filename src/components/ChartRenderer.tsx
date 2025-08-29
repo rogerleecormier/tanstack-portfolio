@@ -1,24 +1,23 @@
 import React from "react";
 import { NodeViewWrapper } from "@tiptap/react";
-// Shadcn chart components
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartConfig,
-} from "@/components/ui/chart";
-// Recharts components (keeping for potential reversion)
-import {
-  Bar,
   BarChart,
-  Line,
+  Bar,
   LineChart,
-  Scatter,
+  Line,
   ScatterChart,
+  Scatter,
   XAxis,
   YAxis,
   CartesianGrid,
 } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart";
 import { logger } from "@/utils/logger";
 
 interface ChartRendererProps {
@@ -34,60 +33,19 @@ interface ChartRendererProps {
   };
 }
 
+interface ChartDataPoint {
+  [key: string]: string | number | undefined;
+}
+
 const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
   const { chartType, data, xAxisLabel, yAxisLabel } = node.attrs;
 
-  // Use logger instead of console.log
   logger.debug("ChartRenderer called with:", { chartType, data });
 
-  // Enhanced chart configuration that always provides meaningful labels
-  const getChartConfig = () => {
-    const baseConfig = {
-      value: {
-        label: "Value",
-        color: "#0d9488",
-      },
-      date: {
-        label: xAxisLabel || "Date",
-      },
-      x: {
-        label: xAxisLabel || "X Axis",
-      },
-      y: {
-        label: yAxisLabel || "Y Axis",
-      },
-    };
-
-    // Add dynamic series keys for line charts
-    if (chartType === "linechart" && Array.isArray(data)) {
-      try {
-        const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-        if (parsedData.length > 0) {
-          const seriesKeys = Object.keys(parsedData[0] || {}).filter(
-            (key) => key !== "date"
-          );
-          
-          seriesKeys.forEach((key, index) => {
-            baseConfig[key] = {
-              label: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
-              color: index === 0 ? "#0d9488" : "#0891b2",
-            };
-          });
-        }
-      } catch (error) {
-        logger.warn("Failed to parse data for dynamic series labels:", error);
-      }
-    }
-
-    return baseConfig;
-  };
-
-  const chartConfig = getChartConfig();
-
-  // Handle data that might be a string or already parsed
-  const parseChartData = (dataInput: string | unknown[]) => {
+  // Parse chart data from string or use as-is if already parsed
+  const parseChartData = (dataInput: string | unknown[]): ChartDataPoint[] => {
     if (Array.isArray(dataInput)) {
-      return dataInput;
+      return dataInput as ChartDataPoint[];
     }
     if (typeof dataInput === 'string') {
       try {
@@ -112,42 +70,111 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
     );
   }
 
-  // Helper function to get default labels based on chart type and data
-  const getDefaultLabels = () => {
-    const defaultXLabel = xAxisLabel || (chartType === "scatterplot" ? "X Value" : "Date");
-    const defaultYLabel = yAxisLabel || (chartType === "scatterplot" ? "Y Value" : "Value");
+  // Dynamic data key detection and label generation
+  const getChartKeys = (data: ChartDataPoint[]) => {
+    if (!data || data.length === 0) return { xKey: 'category', yKeys: ['value'] };
     
-    return { defaultXLabel, defaultYLabel };
+    const keys = Object.keys(data[0]);
+    if (keys.length === 0) return { xKey: 'category', yKeys: ['value'] };
+    
+    // First key is typically the X-axis (category, date, etc.)
+    const xKey = keys[0];
+    // All other keys are Y-axis values (series)
+    const yKeys = keys.slice(1);
+    
+    return { xKey, yKeys };
   };
 
-  const { defaultXLabel, defaultYLabel } = getDefaultLabels();
+  const generateLabels = (xKey: string, yKeys: string[]) => {
+    // Use provided labels or generate meaningful ones
+    const xLabel = xAxisLabel || (() => {
+      const key = xKey.toLowerCase();
+      if (key.includes('budget') || key.includes('tier')) return 'Budget Tier';
+      if (key.includes('date') || key.includes('time') || key.includes('period')) return 'Date/Time';
+      if (key.includes('category') || key.includes('group')) return 'Category';
+      return xKey.charAt(0).toUpperCase() + xKey.slice(1);
+    })();
+
+    const yLabel = yAxisLabel || (() => {
+      if (yKeys.length === 1) {
+        const key = yKeys[0].toLowerCase();
+        if (key.includes('count')) return 'Count';
+        if (key.includes('value') || key.includes('amount')) return 'Value';
+        if (key.includes('complexity') || key.includes('score')) return 'Complexity Score';
+        if (key.includes('gap')) return 'Complexity Gap';
+        return yKeys[0].charAt(0).toUpperCase() + yKeys[0].slice(1);
+      }
+      return 'Value';
+    })();
+
+    return { xLabel, yLabel };
+  };
+
+  const { xKey, yKeys } = getChartKeys(chartData);
+  const { xLabel } = generateLabels(xKey, yKeys);
+
+  // Color palette for multiple series
+  const colors = ["#0d9488", "#0891b2", "#7c3aed", "#dc2626", "#059669", "#f59e0b"];
+
+  // Calculate Y-axis domain with padding
+  const getYDomain = (data: ChartDataPoint[], keys: string[]) => {
+    if (!data || data.length === 0) return [0, 100];
+    
+    const allValues = data.flatMap(d => 
+      keys.map(k => Number(d[k])).filter(v => !isNaN(v))
+    );
+    
+    if (allValues.length === 0) return [0, 100];
+    
+    const min = Math.min(...allValues);
+    const max = Math.max(...allValues);
+    const padding = Math.max(1, (max - min) * 0.1);
+    
+    return [Math.max(0, min - padding), max + padding];
+  };
+
+  const yDomain = getYDomain(chartData, yKeys);
+
+  // Generate chart configuration for shadcn charts
+  const generateChartConfig = () => {
+    const config: Record<string, { label: string; color: string }> = {};
+    
+    // Add X-axis key
+    config[xKey] = {
+      label: xLabel,
+      color: colors[0]
+    };
+    
+    // Add Y-axis keys
+    yKeys.forEach((key, index) => {
+      config[key] = {
+        label: key.charAt(0).toUpperCase() + key.slice(1),
+        color: colors[index % colors.length]
+      };
+    });
+    
+    return config;
+  };
+
+  const chartConfig = generateChartConfig();
 
   const renderChart = () => {
     switch (chartType) {
       case "barchart":
         return (
-          <div className="my-6 brand-card p-4 rounded-lg w-full h-80">
-            <ChartContainer config={chartConfig} className="w-full h-full !aspect-auto">
-              <BarChart
-                data={chartData}
-                margin={{ left: 20, right: 20, bottom: 50 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-                <XAxis
-                  dataKey="date"
-                  label={{
-                    value: defaultXLabel,
-                    position: "bottom",
-                    offset: 5,
-                  }}
+          <div className="my-6 p-4 rounded-lg w-full h-80 border border-gray-200 bg-white">
+            <ChartContainer config={chartConfig} className="w-full h-full">
+              <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 50, top: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis 
+                  dataKey={xKey}
+                  tickLine={false}
+                  axisLine={false}
                 />
-                <YAxis
-                  label={{
-                    value: defaultYLabel,
-                    angle: -90,
-                    position: "left",
-                    offset: -10,
-                  }}
+                <YAxis 
+                  domain={yDomain}
+                  tickLine={false}
+                  axisLine={false}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -156,48 +183,49 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                         <ChartTooltipContent
                           active={active}
                           payload={payload}
-                          className="bg-white brand-border-primary shadow-lg"
+                          className="bg-white border border-gray-200 shadow-lg"
                         />
                       );
                     }
                     return null;
                   }}
                 />
-                <Bar dataKey="value" fill="#0d9488" />
+                <ChartLegend
+                  content={({ payload }) => (
+                    <ChartLegendContent
+                      payload={payload}
+                      className="justify-start"
+                    />
+                  )}
+                />
+                {yKeys.map((key, index) => (
+                  <Bar 
+                    key={key}
+                    dataKey={key} 
+                    fill={colors[index % colors.length]}
+                    radius={[4, 4, 0, 0]}
+                  />
+                ))}
               </BarChart>
             </ChartContainer>
           </div>
         );
 
-      case "linechart": {
-        // Get all keys except 'date' for multiple series
-        const seriesKeys = Object.keys(chartData[0] || {}).filter(
-          (key) => key !== "date"
-        );
-
+      case "linechart":
         return (
-          <div className="my-6 brand-card p-4 rounded-lg w-full h-80">
-            <ChartContainer config={chartConfig} className="w-full h-full !aspect-auto">
-              <LineChart
-                data={chartData}
-                margin={{ left: 20, right: 20, bottom: 50 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-                <XAxis
-                  dataKey="date"
-                  label={{
-                    value: defaultXLabel,
-                    position: "bottom",
-                    offset: 5,
-                  }}
+          <div className="my-6 p-4 rounded-lg w-full h-80 border border-gray-200 bg-white">
+            <ChartContainer config={chartConfig} className="w-full h-full">
+              <LineChart data={chartData} margin={{ left: 20, right: 20, bottom: 50, top: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis 
+                  dataKey={xKey}
+                  tickLine={false}
+                  axisLine={false}
                 />
-                <YAxis
-                  label={{
-                    value: defaultYLabel,
-                    angle: -90,
-                    position: "left",
-                    offset: -10,
-                  }}
+                <YAxis 
+                  domain={yDomain}
+                  tickLine={false}
+                  axisLine={false}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -206,53 +234,52 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                         <ChartTooltipContent
                           active={active}
                           payload={payload}
-                          className="bg-white brand-border-primary shadow-lg"
+                          className="bg-white border border-gray-200 shadow-lg"
                         />
                       );
                     }
                     return null;
                   }}
                 />
-                {seriesKeys.map((key, index) => (
-                  <Line
+                <ChartLegend
+                  content={({ payload }) => (
+                    <ChartLegendContent
+                      payload={payload}
+                      className="justify-start"
+                    />
+                  )}
+                />
+                {yKeys.map((key, index) => (
+                  <Line 
                     key={key}
                     type="monotone"
                     dataKey={key}
-                    stroke={index === 0 ? "#0d9488" : "#0891b2"}
-                    dot={{ fill: index === 0 ? "#0d9488" : "#0891b2" }}
+                    stroke={colors[index % colors.length]}
+                    strokeWidth={2}
+                    dot={{ fill: colors[index % colors.length], r: 4 }}
+                    activeDot={{ r: 6 }}
                   />
                 ))}
               </LineChart>
             </ChartContainer>
           </div>
         );
-      }
 
       case "scatterplot":
         return (
-          <div className="my-6 brand-card p-4 rounded-lg w-full h-80">
-            <ChartContainer config={chartConfig} className="w-full h-full !aspect-auto">
-              <ScatterChart
-                data={chartData}
-                margin={{ left: 20, right: 20, bottom: 50 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-                <XAxis
-                  dataKey="x"
-                  label={{
-                    value: defaultXLabel,
-                    position: "bottom",
-                    offset: 5,
-                  }}
+          <div className="my-6 p-4 rounded-lg w-full h-80 border border-gray-200 bg-white">
+            <ChartContainer config={chartConfig} className="w-full h-full">
+              <ScatterChart data={chartData} margin={{ left: 20, right: 20, bottom: 50, top: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis 
+                  dataKey={xKey}
+                  tickLine={false}
+                  axisLine={false}
                 />
-                <YAxis
-                  dataKey="y"
-                  label={{
-                    value: defaultYLabel,
-                    angle: -90,
-                    position: "left",
-                    offset: -10,
-                  }}
+                <YAxis 
+                  domain={yDomain}
+                  tickLine={false}
+                  axisLine={false}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -261,14 +288,29 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                         <ChartTooltipContent
                           active={active}
                           payload={payload}
-                          className="bg-white brand-border-primary shadow-lg"
+                          className="bg-white border border-gray-200 shadow-lg"
                         />
                       );
                     }
                     return null;
                   }}
                 />
-                <Scatter dataKey="y" fill="#0d9488" />
+                <ChartLegend
+                  content={({ payload }) => (
+                    <ChartLegendContent
+                      payload={payload}
+                      className="justify-start"
+                    />
+                  )}
+                />
+                {yKeys.map((key, index) => (
+                  <Scatter 
+                    key={key}
+                    dataKey={key} 
+                    fill={colors[index % colors.length]}
+                    r={6}
+                  />
+                ))}
               </ScatterChart>
             </ChartContainer>
           </div>
@@ -276,28 +318,19 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
 
       case "histogram":
         return (
-          <div className="my-6 brand-card p-4 rounded-lg w-full h-80">
-            <ChartContainer config={chartConfig} className="w-full h-full !aspect-auto">
-              <BarChart
-                data={chartData}
-                margin={{ left: 20, right: 20, bottom: 50 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6fffa" />
-                <XAxis
-                  dataKey="date"
-                  label={{
-                    value: defaultXLabel,
-                    position: "bottom",
-                    offset: 5,
-                  }}
+          <div className="my-6 p-4 rounded-lg w-full h-80 border border-gray-200 bg-white">
+            <ChartContainer config={chartConfig} className="w-full h-full">
+              <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 50, top: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis 
+                  dataKey={xKey}
+                  tickLine={false}
+                  axisLine={false}
                 />
-                <YAxis
-                  label={{
-                    value: defaultYLabel,
-                    angle: -90,
-                    position: "left",
-                    offset: -10,
-                  }}
+                <YAxis 
+                  domain={yDomain}
+                  tickLine={false}
+                  axisLine={false}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -306,14 +339,29 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
                         <ChartTooltipContent
                           active={active}
                           payload={payload}
-                          className="bg-white brand-border-primary shadow-lg"
+                          className="bg-white border border-gray-200 shadow-lg"
                         />
                       );
                     }
                     return null;
                   }}
                 />
-                <Bar dataKey="value" fill="#0d9488" />
+                <ChartLegend
+                  content={({ payload }) => (
+                    <ChartLegendContent
+                      payload={payload}
+                      className="justify-start"
+                    />
+                  )}
+                />
+                {yKeys.map((key, index) => (
+                  <Bar 
+                    key={key}
+                    dataKey={key} 
+                    fill={colors[index % colors.length]}
+                    radius={[4, 4, 0, 0]}
+                  />
+                ))}
               </BarChart>
             </ChartContainer>
           </div>

@@ -39,6 +39,50 @@ function parseChartData(code: string) {
   }
 }
 
+// Helper function to generate meaningful labels from data keys
+function generateChartLabels(chartData: ChartDataPoint[]) {
+  if (!Array.isArray(chartData) || chartData.length === 0) {
+    return { xLabel: 'Category', yLabel: 'Value' };
+  }
+
+  const firstItem = chartData[0];
+  const keys = Object.keys(firstItem);
+  
+  if (keys.length === 0) {
+    return { xLabel: 'Category', yLabel: 'Value' };
+  }
+
+  let xLabel = keys[0];
+  let yLabel = keys.length > 1 ? keys[1] : 'Value';
+
+  // Generate meaningful labels based on data keys
+  if (xLabel.toLowerCase().includes('date') || xLabel.toLowerCase().includes('time') || xLabel.toLowerCase().includes('period')) {
+    xLabel = 'Date/Time';
+  } else if (xLabel.toLowerCase().includes('budget') || xLabel.toLowerCase().includes('tier')) {
+    xLabel = 'Budget Tier';
+  } else if (xLabel.toLowerCase().includes('category') || xLabel.toLowerCase().includes('group')) {
+    xLabel = 'Category';
+  } else {
+    // Capitalize first letter
+    xLabel = xLabel.charAt(0).toUpperCase() + xLabel.slice(1);
+  }
+
+  if (yLabel.toLowerCase().includes('value') || yLabel.toLowerCase().includes('count') || yLabel.toLowerCase().includes('frequency')) {
+    yLabel = 'Count/Value';
+  } else if (yLabel.toLowerCase().includes('complexity') || yLabel.toLowerCase().includes('score')) {
+    yLabel = 'Complexity Score';
+  } else if (yLabel.toLowerCase().includes('gap')) {
+    yLabel = 'Complexity Gap';
+  } else if (yLabel.toLowerCase().includes('revenue') || yLabel.toLowerCase().includes('expenses') || yLabel.toLowerCase().includes('profit')) {
+    yLabel = yLabel.charAt(0).toUpperCase() + yLabel.slice(1);
+  } else {
+    // Capitalize first letter
+    yLabel = yLabel.charAt(0).toUpperCase() + yLabel.slice(1);
+  }
+
+  return { xLabel, yLabel };
+}
+
 interface ChartDataPoint {
   date: string;
   x?: number;
@@ -333,6 +377,9 @@ export default function PortfolioPage({ file }: { file: string }) {
                   const seriesTotals: Record<string, number> = Object.fromEntries(
                     seriesNames.map((name) => [name, groups[name].reduce((acc, d) => acc + (Number(d.n) || 0), 0)])
                   );
+                  
+                                     // Generate dynamic labels based on data structure
+                   const { xLabel, yLabel } = generateChartLabels(chartData)
 
                   // Simple linear regression for each series (least squares)
                   function getTrendLine(data: ChartDataPoint[]) {
@@ -386,7 +433,7 @@ export default function PortfolioPage({ file }: { file: string }) {
                             tickMargin={8}
                             minTickGap={32}
                           >
-                            <Label value="Budget (USD, scaled)" offset={-50} position="insideBottom" />
+                            <Label value={xLabel} offset={-50} position="insideBottom" />
                           </XAxis>
                           <YAxis
                             type="number"
@@ -397,20 +444,20 @@ export default function PortfolioPage({ file }: { file: string }) {
                             axisLine={false}
                             tickMargin={8}
                           >
-                            <Label value="Mean Complexity" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                            <Label value={yLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
                           </YAxis>
                           <Legend formatter={(value: string) => {
                             const total = seriesTotals?.[value];
-                            return total ? `${value} — Mean Complexity (n=${total})` : `${value} — Mean Complexity`;
+                            return total ? `${value} — ${yLabel} (n=${total})` : `${value} — ${yLabel}`;
                           }} />
                           <RechartsTooltip
                             formatter={(value: number, name: string) => {
                               if (name === "x") return formatCurrency(value);
-                              if (name === "y") return [`${formatComplexity(value)}`, "Mean Complexity"];
+                              if (name === "y") return [`${formatComplexity(value)}`, yLabel];
                               if (name === "n") return formatCount(value);
                               return value;
                             }}
-                            labelFormatter={(label) => formatCurrency(label)}
+                            labelFormatter={(label) => `${xLabel}: ${formatCurrency(label)}`}
                           />
                           {seriesNames.map((name, i) => (
                             <Scatter key={name} name={name} data={groups[name]} fill={colors[i % colors.length]}>
@@ -458,16 +505,21 @@ export default function PortfolioPage({ file }: { file: string }) {
                     Number((min - padding).toFixed(3)),
                     Number((max + padding).toFixed(3))
                   ]
+                  
+                  // Generate dynamic labels based on data structure
+                  const { xLabel, yLabel } = generateChartLabels(chartData)
+                  const xAxisKey = Object.keys(chartData[0])[0] // First key is typically X-axis
+                  
                   return (
                     <div className="w-full my-6" style={{ minHeight: 320 }}>
                       <ResponsiveContainer width="100%" height={320}>
                         <BarChart data={chartData} margin={{ left: 32, right: 32, bottom: 20 }}>
                           <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                          <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={32}>
-                            <Label value="Budget Bins" offset={-50} position="insideBottom" />
+                          <XAxis dataKey={xAxisKey} tickLine={false} axisLine={false} tickMargin={8} minTickGap={32}>
+                            <Label value={xLabel} offset={-50} position="insideBottom" />
                           </XAxis>
                           <YAxis domain={yDomain}>
-                            <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                            <Label value={yLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
                           </YAxis>
                           <RechartsTooltip />
                           <Bar dataKey="value" fill="#0d9488" isAnimationActive={false} radius={[4,4,0,0]} />
@@ -493,6 +545,10 @@ export default function PortfolioPage({ file }: { file: string }) {
                     Number((max + padding).toFixed(3))
                   ]
                   const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"]
+                  
+                  // Generate dynamic labels based on data structure
+                  const { xLabel, yLabel } = generateChartLabels(chartData)
+                  const xAxisKey = Object.keys(chartData[0])[0] // First key is typically X-axis
 
                   return (
                     <div className="w-full my-6" style={{ minHeight: 320 }}>
@@ -503,20 +559,20 @@ export default function PortfolioPage({ file }: { file: string }) {
                         >
                           <CartesianGrid vertical={false} strokeDasharray="3 3" />
                           <XAxis
-                            dataKey="date"
+                            dataKey={xAxisKey}
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
                             minTickGap={32}
                             tickFormatter={(value) => value}
                           >
-                            <Label value="Budget Tier" offset={-50} position="insideBottom" />
+                            <Label value={xLabel} offset={-50} position="insideBottom" />
                           </XAxis>
                           <YAxis
                             domain={yDomain}
                             tickFormatter={(value) => Number(value).toFixed(3)}
                           >
-                            <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                            <Label value={yLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
                           </YAxis>
                           <Legend />
                           <RechartsTooltip
@@ -560,6 +616,10 @@ export default function PortfolioPage({ file }: { file: string }) {
                     Number((max + padding).toFixed(3))
                   ]
                   const colors = ["#0d9488", "#64748b", "#f59e42", "#e11d48", "#6366f1"]
+                  
+                                     // Generate dynamic labels based on data structure
+                   const { xLabel, yLabel } = generateChartLabels(chartData)
+                  const xAxisKey = Object.keys(chartData[0])[0] // First key is typically X-axis
 
                   return (
                     <div className="w-full my-6" style={{ minHeight: 320 }}>
@@ -570,20 +630,20 @@ export default function PortfolioPage({ file }: { file: string }) {
                         >
                           <CartesianGrid vertical={false} strokeDasharray="3 3" />
                           <XAxis
-                            dataKey="date"
+                            dataKey={xAxisKey}
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
                             minTickGap={32}
                             tickFormatter={(value) => value}
                           >
-                            <Label value="Budget Tier" offset={-50} position="insideBottom" />
+                            <Label value={xLabel} offset={-50} position="insideBottom" />
                           </XAxis>
                           <YAxis
                             domain={yDomain}
                             tickFormatter={(value) => Number(value).toFixed(3)}
                           >
-                            <Label value="Frequency" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
+                            <Label value={yLabel} angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} />
                           </YAxis>
                           <Legend />
                           <RechartsTooltip
@@ -592,7 +652,7 @@ export default function PortfolioPage({ file }: { file: string }) {
                               const perSeriesN = props?.payload?.[`${name}_n`];
                               const globalN = props?.payload?.n;
                               if (perSeriesN != null) return [`${value} (n=${perSeriesN})`, name];
-                              if (globalN != null) return [`${value} (n=${globalN})`, name];
+                              if (globalN != null) return [`${value} (n=${perSeriesN})`, name];
                               return [value, name];
                             }}
                           />

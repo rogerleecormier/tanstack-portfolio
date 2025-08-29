@@ -52,21 +52,21 @@ Determine how **project budget** relates to **project complexity** and whether *
 
 ```histogram
 [
-  { "date": "$0.16M–$0.40M", "value": 189 },
-  { "date": "$0.40M–$0.66M", "value": 701 },
-  { "date": "$0.66M–$0.91M", "value": 818 },
-  { "date": "$0.91M–$1.16M", "value": 672 },
-  { "date": "$1.16M–$1.41M", "value": 517 },
-  { "date": "$1.41M–$1.65M", "value": 350 },
-  { "date": "$1.65M–$1.91M", "value": 264 },
-  { "date": "$1.91M–$2.16M", "value": 181 },
-  { "date": "$2.16M–$2.41M", "value": 149 },
-  { "date": "$2.41M–$2.66M", "value": 88 },
-  { "date": "$2.66M–$2.91M", "value": 46 },
-  { "date": "$2.91M–$3.16M", "value": 17 },
-  { "date": "$3.16M–$3.41M", "value": 6 },
-  { "date": "$3.41M–$3.66M", "value": 1 },
-  { "date": "$3.66M–$3.91M", "value": 1 }
+  { "Budget Range": "$0.16M–$0.40M", "Count": 189 },
+  { "Budget Range": "$0.40M–$0.66M", "Count": 701 },
+  { "Budget Range": "$0.66M–$0.91M", "Count": 818 },
+  { "Budget Range": "$0.91M–$1.16M", "Count": 672 },
+  { "Budget Range": "$1.16M–$1.41M", "Count": 517 },
+  { "Budget Range": "$1.41M–$1.65M", "Count": 350 },
+  { "Budget Range": "$1.65M–$1.91M", "Count": 264 },
+  { "Budget Range": "$1.91M–$2.16M", "Count": 181 },
+  { "Budget Range": "$2.16M–$2.41M", "Count": 149 },
+  { "Budget Range": "$2.41M–$2.66M", "Count": 88 },
+  { "Budget Range": "$2.66M–$2.91M", "Count": 46 },
+  { "Budget Range": "$2.91M–$3.16M", "Count": 17 },
+  { "Budget Range": "$3.16M–$3.41M", "Count": 6 },
+  { "Budget Range": "$3.41M–$3.66M", "Count": 1 },
+  { "Budget Range": "$3.66M–$3.91M", "Count": 1 }
 ]
 ```
 
@@ -79,12 +79,12 @@ Budgets are **right-skewed**, with most projects under ~$1.5M. Percentile-based 
 
 ```scatterplot
 [
-  { "x": 159356, "y": 4.1 },
-  { "x": 408000, "y": 3.9 },
-  { "x": 900000, "y": 6.0 },
-  { "x": 1250000, "y": 6.7 },
-  { "x": 2000000, "y": 7.4 },
-  { "x": 3200000, "y": 8.8 }
+  { "Budget": 159356, "Mean Complexity Score": 4.1 },
+  { "Budget": 408000, "Mean Complexity Score": 3.9 },
+  { "Budget": 900000, "Mean Complexity Score": 6.0 },
+  { "Budget": 1250000, "Mean Complexity Score": 6.7 },
+  { "Budget": 2000000, "Mean Complexity Score": 7.4 },
+  { "Budget": 3200000, "Mean Complexity Score": 8.8 }
 ]
 ```
 
@@ -94,11 +94,11 @@ This scatterplot shows **mean complexity scores** grouped by representative budg
 
 ```linechart
 [
-  { "date": "≈$0.20M", "All Projects": 4.0 },
-  { "date": "≈$0.80M", "All Projects": 5.6 },
-  { "date": "≈$1.50M", "All Projects": 6.8 },
-  { "date": "≈$2.20M", "All Projects": 7.6 },
-  { "date": "≈$3.20M", "All Projects": 8.6 }
+  { "Budget Estimate": "≈$0.20M", "Mean Complexity Score": 4.0 },
+  { "Budget Estimate": "≈$0.80M", "Mean Complexity Score": 5.6 },
+  { "Budget Estimate": "≈$1.50M", "Mean Complexity Score": 6.8 },
+  { "Budget Estimate": "≈$2.20M", "Mean Complexity Score": 7.6 },
+  { "Budget Estimate": "≈$3.20M", "Mean Complexity Score": 8.6 }
 ]
 ```
 
@@ -130,9 +130,9 @@ This scatterplot shows **mean complexity per budget tier** for Agile vs. Non‑A
 
 ```linechart
 [
-  { "date": "Low (≤33rd)",  "Agile": 4.670, "Non-Agile": 3.982 },
-  { "date": "Mid (33rd–67th)", "Agile": 6.667, "Non-Agile": 5.436 },
-  { "date": "High (>67th)", "Agile": 8.919, "Non-Agile": 6.391 }
+  { "Budget Tier": "Low (≤33rd)", "Agile": 4.670, "Non-Agile": 3.982 },
+  { "Budget Tier": "Mid (33rd–67th)", "Agile": 6.667, "Non-Agile": 5.436 },
+  { "Budget Tier": "High (>67th)", "Agile": 8.919, "Non-Agile": 6.391 }
 ]
 ```
 
@@ -146,9 +146,9 @@ Methodology-specific trends **diverge** across tiers: **Agile** rises faster wit
 
 ```barchart
 [
-  { "date": "Low (≤33rd)", "value": 1334 },
-  { "date": "Mid (33rd–67th)", "value": 1333 },
-  { "date": "High (>67th)", "value": 1333 }
+  { "Budget Tier": "Low (≤33rd)", "Count": 1334 },
+  { "Budget Tier": "Mid (33rd–67th)", "Count": 1333 },
+  { "Budget Tier": "High (>67th)", "Count": 1333 }
 ]
 ```
 
@@ -161,9 +161,9 @@ Counts are balanced across tiers, enabling meaningful comparisons in subsequent 
 
 ```barchart
 [
-  { "date": "Low (≤33rd)", "Agile": 4.670, "Non-Agile": 3.982 },
-  { "date": "Mid (33rd–67th)", "Agile": 6.667, "Non-Agile": 5.436 },
-  { "date": "High (>67th)", "Agile": 8.919, "Non-Agile": 6.391 }
+  { "Budget Tier": "Low (≤33rd)", "Agile": 4.670, "Non-Agile": 3.982 },
+  { "Budget Tier": "Mid (33rd–67th)", "Agile": 6.667, "Non-Agile": 5.436 },
+  { "Budget Tier": "High (>67th)", "Agile": 8.919, "Non-Agile": 6.391 }
 ]
 ```
 
@@ -176,9 +176,9 @@ Compares **mean complexity** for **Agile** and **Non-Agile** within each tier. A
 
 ```linechart
 [
-  { "date": "Low (≤33rd)", "Gap": 0.688 },
-  { "date": "Mid (33rd–67th)", "Gap": 1.231 },
-  { "date": "High (>67th)", "Gap": 2.528 }
+  { "Budget Tier": "Low (≤33rd)", "Gap": 0.688 },
+  { "Budget Tier": "Mid (33rd–67th)", "Gap": 1.231 },
+  { "Budget Tier": "High (>67th)", "Gap": 2.528 }
 ]
 ```
 
