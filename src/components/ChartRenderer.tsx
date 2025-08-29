@@ -25,6 +25,7 @@ interface ChartRendererProps {
     attrs: {
       chartType: string;
       data: string;
+      chartTitle?: string;
       xAxisLabel?: string;
       yAxisLabel?: string;
       width?: string;
@@ -38,7 +39,7 @@ interface ChartDataPoint {
 }
 
 const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
-  const { chartType, data, xAxisLabel, yAxisLabel } = node.attrs;
+  const { chartType, data, chartTitle, xAxisLabel, yAxisLabel } = node.attrs;
 
   logger.debug("ChartRenderer called with:", { chartType, data });
 
@@ -111,7 +112,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
   };
 
   const { xKey, yKeys } = getChartKeys(chartData);
-  const { xLabel } = generateLabels(xKey, yKeys);
+  const { xLabel, yLabel } = generateLabels(xKey, yKeys);
 
   // Color palette for multiple series
   const colors = ["#0d9488", "#0891b2", "#7c3aed", "#dc2626", "#059669", "#f59e0b"];
@@ -163,18 +164,25 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
       case "barchart":
         return (
           <div className="my-6 p-4 rounded-lg w-full h-80 border border-gray-200 bg-white">
+            {chartTitle && (
+              <div className="text-lg font-semibold text-center text-gray-800 mb-4">
+                {chartTitle}
+              </div>
+            )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 50, top: 20 }}>
+              <BarChart data={chartData} margin={{ left: 60, right: 20, bottom: 60, top: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={xKey}
                   tickLine={false}
                   axisLine={false}
+                  label={{ value: xLabel, position: 'bottom', offset: 0 }}
                 />
                 <YAxis 
                   domain={yDomain}
                   tickLine={false}
                   axisLine={false}
+                  label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: 0 }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -214,18 +222,25 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
       case "linechart":
         return (
           <div className="my-6 p-4 rounded-lg w-full h-80 border border-gray-200 bg-white">
+            {chartTitle && (
+              <div className="text-lg font-semibold text-center text-gray-800 mb-4">
+                {chartTitle}
+              </div>
+            )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <LineChart data={chartData} margin={{ left: 20, right: 20, bottom: 50, top: 20 }}>
+              <LineChart data={chartData} margin={{ left: 60, right: 20, bottom: 60, top: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={xKey}
                   tickLine={false}
                   axisLine={false}
+                  label={{ value: xLabel, position: 'bottom', offset: 0 }}
                 />
                 <YAxis 
                   domain={yDomain}
                   tickLine={false}
                   axisLine={false}
+                  label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: 0 }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -268,18 +283,25 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
       case "scatterplot":
         return (
           <div className="my-6 p-4 rounded-lg w-full h-80 border border-gray-200 bg-white">
+            {chartTitle && (
+              <div className="text-lg font-semibold text-center text-gray-800 mb-4">
+                {chartTitle}
+              </div>
+            )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <ScatterChart data={chartData} margin={{ left: 20, right: 20, bottom: 50, top: 20 }}>
+              <ScatterChart data={chartData} margin={{ left: 60, right: 20, bottom: 60, top: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={xKey}
                   tickLine={false}
                   axisLine={false}
+                  label={{ value: xLabel, position: 'bottom', offset: 0 }}
                 />
                 <YAxis 
                   domain={yDomain}
                   tickLine={false}
                   axisLine={false}
+                  label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: 0 }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {
@@ -319,18 +341,25 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
       case "histogram":
         return (
           <div className="my-6 p-4 rounded-lg w-full h-80 border border-gray-200 bg-white">
+            {chartTitle && (
+              <div className="text-lg font-semibold text-center text-gray-800 mb-4">
+                {chartTitle}
+              </div>
+            )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 50, top: 20 }}>
+              <BarChart data={chartData} margin={{ left: 60, right: 20, bottom: 60, top: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey={xKey}
                   tickLine={false}
                   axisLine={false}
+                  label={{ value: xLabel, position: 'bottom', offset: 0 }}
                 />
                 <YAxis 
                   domain={yDomain}
                   tickLine={false}
                   axisLine={false}
+                  label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: 0 }}
                 />
                 <ChartTooltip
                   content={({ active, payload }) => {

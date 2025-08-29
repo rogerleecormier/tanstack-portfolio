@@ -70,6 +70,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const [showChartDialog, setShowChartDialog] = useState(false)
   const [chartType, setChartType] = useState('barchart')
   const [chartData, setChartData] = useState('')
+  const [chartTitle, setChartTitle] = useState('')
 
   const [xAxisLabel, setXAxisLabel] = useState('')
   const [yAxisLabel, setYAxisLabel] = useState('')
@@ -317,6 +318,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         editor.commands.setChart({
           chartType,
           data: chartData,
+          chartTitle,
           xAxisLabel,
           yAxisLabel,
           width: chartWidth,
@@ -325,6 +327,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         
         setChartData('')
 
+        setChartTitle('')
         setXAxisLabel('')
         setYAxisLabel('')
         setChartWidth('100%')
@@ -334,7 +337,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         logger.error('Error inserting chart:', error)
       }
     }
-  }, [chartData, chartType, xAxisLabel, yAxisLabel, chartWidth, chartHeight, editor])
+  }, [chartData, chartType, chartTitle, xAxisLabel, yAxisLabel, chartWidth, chartHeight, editor])
 
   const handleInsertTable = useCallback(() => {
     if (editor && !editor.isDestroyed && editor.view) {
@@ -1150,6 +1153,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                     <DropdownMenuItem onClick={() => {
                       setChartType('barchart')
                       setChartData(getChartTemplate('barchart'))
+                      setChartTitle('')
                     }}>
                       <div className="flex items-center gap-2">
                         <BarChart3 className="h-4 w-4" />
@@ -1159,6 +1163,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                     <DropdownMenuItem onClick={() => {
                       setChartType('linechart')
                       setChartData(getChartTemplate('linechart'))
+                      setChartTitle('')
                     }}>
                       <div className="flex items-center gap-2">
                         <TrendingUp className="h-4 w-4" />
@@ -1168,6 +1173,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                     <DropdownMenuItem onClick={() => {
                       setChartType('scatterplot')
                       setChartData(getChartTemplate('scatterplot'))
+                      setChartTitle('')
                     }}>
                       <div className="flex items-center gap-2">
                         <PieChart className="h-4 w-4" />
@@ -1177,6 +1183,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                     <DropdownMenuItem onClick={() => {
                       setChartType('histogram')
                       setChartData(getChartTemplate('histogram'))
+                      setChartTitle('')
                     }}>
                       <div className="flex items-center gap-2">
                         <BarChart3 className="h-4 w-4" />
@@ -1189,10 +1196,39 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                  <label htmlFor="x-axis-label" className="text-sm font-medium text-teal-700">
-                    X-Axis Label (Optional)
-                  </label>
+              <div>
+                <label htmlFor="chart-title" className="text-sm font-medium text-teal-700">
+                  Chart Title (Optional)
+                </label>
+                <input
+                  id="chart-title"
+                  type="text"
+                  value={chartTitle}
+                  onChange={(e) => setChartTitle(e.target.value)}
+                  placeholder="e.g., Revenue Overview, Project Timeline..."
+                  className="w-full mt-1 px-3 py-2 border border-teal-200 rounded-md focus:outline-none focus:border-teal-400"
+                />
+              </div>
+              <div>
+                <label htmlFor="chart-width" className="text-sm font-medium text-teal-700">
+                  Chart Width
+                </label>
+                <input
+                  id="chart-width"
+                  type="text"
+                  value={chartWidth}
+                  onChange={(e) => setChartWidth(e.target.value)}
+                  placeholder="e.g., 100%, 500px, 80%..."
+                  className="w-full mt-1 px-3 py-2 border border-teal-200 rounded-md focus:outline-none focus:border-teal-400"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="x-axis-label" className="text-sm font-medium text-teal-700">
+                  X-Axis Label (Optional)
+                </label>
                   <input
                     id="x-axis-label"
                     type="text"
@@ -1269,6 +1305,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 onClick={() => {
                   setShowChartDialog(false)
                   setChartData('')
+                  setChartTitle('')
                   setXAxisLabel('')
                   setYAxisLabel('')
                   setChartWidth('100%')

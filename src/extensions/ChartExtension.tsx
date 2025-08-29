@@ -35,6 +35,9 @@ export const Chart = Node.create<ChartOptions>({
       data: {
         default: '[]',
       },
+      chartTitle: {
+        default: '',
+      },
       xAxisLabel: {
         default: '',
       },
@@ -84,6 +87,7 @@ export const Chart = Node.create<ChartOptions>({
           const attrs = {
             chartType: element.getAttribute('data-chart-type') || 'barchart',
             data: chartData,
+            chartTitle: element.getAttribute('data-chart-title') || '',
             xAxisLabel: element.getAttribute('data-chart-x-axis-label') || '',
             yAxisLabel: element.getAttribute('data-chart-y-axis-label') || '',
             width: element.getAttribute('data-chart-width') || '100%',
@@ -106,6 +110,7 @@ export const Chart = Node.create<ChartOptions>({
         'data-type': 'chart',
         'data-chart-type': HTMLAttributes.chartType,
         'data-chart-data': HTMLAttributes.data || '[]',
+        'data-chart-title': HTMLAttributes.chartTitle,
         'data-chart-x-axis-label': HTMLAttributes.xAxisLabel,
         'data-chart-y-axis-label': HTMLAttributes.yAxisLabel,
         'data-chart-width': HTMLAttributes.width,
