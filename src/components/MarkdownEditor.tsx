@@ -26,6 +26,7 @@ import {
   Eye,
   EyeOff,
   Clipboard,
+  Copy,
   Upload,
   Square,
   BarChart3,
@@ -146,9 +147,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const [tableWithHeader, setTableWithHeader] = useState(true)
   const [showTableContextMenu, setShowTableContextMenu] = useState(false)
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 })
+  const [copySuccess, setCopySuccess] = useState(false)
   
-     // Track if we're currently setting content to prevent infinite loops
-   const isSettingContent = useRef(false)
+  // Track if we're currently setting content to prevent infinite loops
+  const isSettingContent = useRef(false)
   
   // Function to get default directory based on content type
   const getDefaultDirectory = (type: string) => {
@@ -218,7 +220,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     ],
     editorProps: {
       attributes: {
-        class: `focus:outline-none border border-teal-200 focus:border-teal-400 rounded-lg p-6 min-h-[${minHeight}] transition-colors duration-200 bg-white ${className}`,
+        class: `focus:outline-none p-6 min-h-[${minHeight}] transition-colors duration-200 bg-white ${className}`,
       },
       handleKeyDown: (_view, event) => {
         // Ctrl/Cmd + T to insert table
@@ -541,6 +543,26 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       }
     }
   }, [editor])
+
+  const handleCopyToClipboard = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(markdownOutput)
+      setCopySuccess(true)
+      setTimeout(() => setCopySuccess(false), 2000) // Reset after 2 seconds
+      logger.debug('Markdown copied to clipboard successfully')
+    } catch (error) {
+      logger.error('Failed to copy to clipboard:', error)
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea')
+      textArea.value = markdownOutput
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+      setCopySuccess(true)
+      setTimeout(() => setCopySuccess(false), 2000)
+    }
+  }, [markdownOutput])
 
   const isTableActive = useCallback(() => {
     return editor?.isActive('table') || false
@@ -908,7 +930,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           <div className="prose prose-sm max-w-none">
             <EditorContent 
               editor={editor} 
-              className="min-h-[600px]"
+              className="min-h-[600px] max-h-[800px] overflow-y-auto border border-teal-200 rounded-lg"
               onContextMenu={handleTableContextMenu}
             />
           </div>
@@ -922,17 +944,40 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               <div className="mb-4">
                 <h2 className="text-lg font-semibold text-teal-900 mb-2">Preview</h2>
                 
-                <div className="space-y-4">
-                  {/* Show markdown output */}
-                  <div>
-                    <h3 className="text-sm font-medium text-teal-800 mb-2">Markdown Output</h3>
-                    <Card className="border border-teal-200 bg-white">
-                      <CardContent className="p-4">
-                        <pre className="font-mono text-sm overflow-auto max-h-[400px] whitespace-pre-wrap text-gray-700 bg-gray-50 p-3 rounded border">{markdownOutput}</pre>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
+                                 <div className="space-y-4">
+                   {/* Show markdown output */}
+                   <div>
+                     <div className="flex items-center justify-between mb-2">
+                       <h3 className="text-sm font-medium text-teal-800">Markdown Output</h3>
+                       <Button
+                         onClick={handleCopyToClipboard}
+                         size="sm"
+                         variant="outline"
+                         className="border-teal-200 text-teal-700 hover:bg-teal-50 flex items-center gap-2"
+                         title="Copy to Clipboard"
+                       >
+                         {copySuccess ? (
+                           <>
+                             <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                               <div className="w-2 h-2 bg-white rounded-full"></div>
+                             </div>
+                             Copied!
+                           </>
+                         ) : (
+                           <>
+                             <Copy className="h-4 w-4" />
+                             Copy
+                           </>
+                         )}
+                       </Button>
+                     </div>
+                     <Card className="border border-teal-200 bg-white">
+                       <CardContent className="p-4">
+                         <pre className="font-mono text-sm overflow-auto max-h-[400px] whitespace-pre-wrap text-gray-700 bg-gray-50 p-3 rounded border">{markdownOutput}</pre>
+                       </CardContent>
+                     </Card>
+                   </div>
+                 </div>
               </div>
             </div>
           </>

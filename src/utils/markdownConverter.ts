@@ -583,8 +583,12 @@ export const htmlToMarkdown = (html: string): string => {
                 .trim()                  // Remove leading/trailing whitespace
               
               // Validate the cleaned data is valid JSON
+              let finalData = cleanedData
+              let dataSource = 'cleaned'
+              
               try {
                 JSON.parse(cleanedData)
+                // Basic cleaning worked, use cleanedData
               } catch (jsonError) {
                 logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
                 // Try more aggressive cleaning for carriage returns
@@ -595,13 +599,17 @@ export const htmlToMarkdown = (html: string): string => {
                 
                 try {
                   JSON.parse(aggressivelyCleanedData)
-                  // If this works, use the aggressively cleaned data
-                  return `\n\n\`\`\`${chartType}\n${aggressivelyCleanedData}\n\`\`\`\n\n`
+                  // Aggressive cleaning worked
+                  finalData = aggressivelyCleanedData
+                  dataSource = 'aggressive'
                 } catch (aggressiveError) {
                   logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
                   // Try to parse the original decoded data as a fallback
                   try {
                     JSON.parse(decodedData)
+                    // Original data worked
+                    finalData = decodedData
+                    dataSource = 'original'
                   } catch (fallbackError) {
                     logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
                     // Return the original HTML if data is corrupted
@@ -615,12 +623,13 @@ export const htmlToMarkdown = (html: string): string => {
                 encoding,
                 originalDataLength: chartData.length,
                 decodedDataLength: decodedData.length,
-                originalDataPreview: chartData.substring(0, 100),
-                decodedDataPreview: cleanedData.substring(0, 100)
+                finalDataLength: finalData.length,
+                dataSource,
+                finalDataPreview: finalData.substring(0, 100)
               })
               
-              // Use the cleaned data for the markdown output
-              return `\n\n\`\`\`${chartType}\n${cleanedData}\n\`\`\`\n\n`
+              // Use the final cleaned data for the markdown output
+              return `\n\n\`\`\`${chartType}\n${finalData}\n\`\`\`\n\n`
            } catch (decodeError) {
              logger.error('htmlToMarkdown - failed to decode chart data:', decodeError)
              // Return the original HTML if decoding fails
@@ -668,8 +677,12 @@ export const htmlToMarkdown = (html: string): string => {
                 .trim()                  // Remove leading/trailing whitespace
               
               // Validate the cleaned data is valid JSON
+              let finalData = cleanedData
+              let dataSource = 'cleaned'
+              
               try {
                 JSON.parse(cleanedData)
+                // Basic cleaning worked, use cleanedData
               } catch (jsonError) {
                 logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
                 // Try more aggressive cleaning for carriage returns
@@ -680,15 +693,20 @@ export const htmlToMarkdown = (html: string): string => {
                 
                 try {
                   JSON.parse(aggressivelyCleanedData)
-                  // If this works, use the aggressively cleaned data
-                  return `\n\n\`\`\`${chartType}\n${aggressivelyCleanedData}\n\`\`\`\n\n`
+                  // Aggressive cleaning worked
+                  finalData = aggressivelyCleanedData
+                  dataSource = 'aggressive'
                 } catch (aggressiveError) {
                   logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
                   // Try to parse the original decoded data as a fallback
                   try {
                     JSON.parse(decodedData)
+                    // Original data worked
+                    finalData = decodedData
+                    dataSource = 'original'
                   } catch (fallbackError) {
                     logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                    // Return the original HTML if data is corrupted
                     return match
                   }
                 }
@@ -698,11 +716,14 @@ export const htmlToMarkdown = (html: string): string => {
                 chartType, 
                 encoding,
                 originalDataLength: chartData.length,
-                decodedDataLength: cleanedData.length
+                decodedDataLength: decodedData.length,
+                finalDataLength: finalData.length,
+                dataSource,
+                finalDataPreview: finalData.substring(0, 100)
               })
               
-              // Use the cleaned data for the markdown output
-              return `\n\n\`\`\`${chartType}\n${cleanedData}\n\`\`\`\n\n`
+              // Use the final cleaned data for the markdown output
+              return `\n\n\`\`\`${chartType}\n${finalData}\n\`\`\`\n\n`
            } catch (decodeError) {
              logger.error('htmlToMarkdown - failed to decode chart data:', decodeError)
              return match
