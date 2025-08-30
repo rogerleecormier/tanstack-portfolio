@@ -593,7 +593,7 @@ export const htmlToMarkdown = (html: string): string => {
            let chartData = ''
            let encoding = encodingMatch ? encodingMatch[1] : 'uri'
            
-           // Prefer raw data attribute if available, otherwise fall back to encoded data
+                        // Prefer raw data attribute if available, otherwise fall back to encoded data - FIRST INSTANCE
            if (rawDataMatch) {
              chartData = rawDataMatch[1]
              // Raw data is not encoded, so we can use it directly
@@ -632,11 +632,12 @@ export const htmlToMarkdown = (html: string): string => {
                .replace(/&#60;/g, '<')
                .replace(/&#62;/g, '>')
              
-             // Clean up the decoded data by removing carriage returns and extra whitespace
+             // Clean up the decoded data by removing carriage returns and extra whitespace - FIRST INSTANCE
+             // The key issue is that the data contains newlines within the JSON string
+             // We need to normalize these newlines and ensure proper JSON formatting
              const cleanedData = htmlDecodedData
                .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
                .replace(/\r/g, '\n')    // Replace any remaining carriage returns
-               .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
                .trim()                  // Remove leading/trailing whitespace
              
              // Validate the cleaned data is valid JSON
@@ -648,38 +649,68 @@ export const htmlToMarkdown = (html: string): string => {
                // Basic cleaning worked, use cleanedData
              } catch (jsonError) {
                logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
-               // Try more aggressive cleaning for carriage returns and whitespace
-               const aggressivelyCleanedData = cleanedData
-                 .replace(/\r/g, '')  // Remove ALL carriage returns
-                 .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
-                 .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-                 .trim()
                
+               // Try to fix the JSON by normalizing newlines and whitespace
                try {
-                 JSON.parse(aggressivelyCleanedData)
-                 // Aggressive cleaning worked
-                 finalData = aggressivelyCleanedData
-                 dataSource = 'aggressive'
-               } catch (aggressiveError) {
-                 logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
-                 // Try to parse the HTML-decoded data as a fallback
+                 // First, try to parse and re-stringify to get clean JSON
+                 const parsedData = JSON.parse(cleanedData.replace(/\n/g, ' ').replace(/\s+/g, ' '))
+                 finalData = JSON.stringify(parsedData, null, 2)
+                 dataSource = 'normalized'
+                 logger.debug('htmlToMarkdown - JSON normalization succeeded')
+               } catch (normalizeError) {
+                 logger.warn('htmlToMarkdown - JSON normalization failed:', normalizeError)
+                 
+                 // Try more aggressive cleaning for carriage returns and whitespace
+                 const aggressivelyCleanedData = cleanedData
+                   .replace(/\r/g, '')  // Remove ALL carriage returns
+                   .replace(/\n/g, ' ') // Replace newlines with spaces
+                   .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                   .trim()
+                 
                  try {
-                   JSON.parse(htmlDecodedData)
-                   // HTML-decoded data worked
-                   finalData = htmlDecodedData
-                   dataSource = 'html-decoded'
-                 } catch (htmlDecodedError) {
-                   logger.warn('htmlToMarkdown - HTML-decoded parsing also failed:', htmlDecodedError)
-                   // Try to parse the original decoded data as a final fallback
+                   JSON.parse(aggressivelyCleanedData)
+                   // Aggressive cleaning worked
+                   finalData = aggressivelyCleanedData
+                   dataSource = 'aggressive'
+                 } catch (aggressiveError) {
+                   logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
+                   
+                   // Try to parse the HTML-decoded data as a fallback
                    try {
-                     JSON.parse(decodedData)
-                     // Original data worked
-                     finalData = decodedData
-                     dataSource = 'original'
-                   } catch (fallbackError) {
-                     logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
-                     // Return the original HTML if data is corrupted
-                     return match
+                     JSON.parse(htmlDecodedData)
+                     // HTML-decoded data worked
+                     finalData = htmlDecodedData
+                     dataSource = 'html-decoded'
+                   } catch (htmlDecodedError) {
+                     logger.warn('htmlToMarkdown - HTML-decoded parsing also failed:', htmlDecodedError)
+                     
+                     // Try to parse the original decoded data as a final fallback
+                     try {
+                       JSON.parse(decodedData)
+                       // Original data worked
+                       finalData = decodedData
+                       dataSource = 'original'
+                     } catch (fallbackError) {
+                       logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                       
+                       // As a last resort, try to clean the data by removing all newlines and extra whitespace
+                       try {
+                         const lastResortData = decodedData
+                           .replace(/\r/g, '')
+                           .replace(/\n/g, ' ')
+                           .replace(/\s+/g, ' ')
+                           .trim()
+                         
+                         JSON.parse(lastResortData)
+                         finalData = lastResortData
+                         dataSource = 'last-resort'
+                         logger.debug('htmlToMarkdown - last resort cleaning succeeded')
+                       } catch (lastResortError) {
+                         logger.warn('htmlToMarkdown - last resort cleaning also failed:', lastResortError)
+                         // Return the original HTML if all cleaning attempts failed
+                         return match
+                       }
+                     }
                    }
                  }
                }
@@ -766,11 +797,12 @@ export const htmlToMarkdown = (html: string): string => {
                .replace(/&#60;/g, '<')
                .replace(/&#62;/g, '>')
              
-             // Clean up the decoded data by removing carriage returns and extra whitespace
+             // Clean up the decoded data by removing carriage returns and extra whitespace - SECOND INSTANCE
+             // The key issue is that the data contains newlines within the JSON string
+             // We need to normalize these newlines and ensure proper JSON formatting
              const cleanedData = htmlDecodedData
                .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
                .replace(/\r/g, '\n')    // Replace any remaining carriage returns
-               .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
                .trim()                  // Remove leading/trailing whitespace
              
              // Validate the cleaned data is valid JSON
@@ -782,38 +814,68 @@ export const htmlToMarkdown = (html: string): string => {
                // Basic cleaning worked, use cleanedData
              } catch (jsonError) {
                logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
-               // Try more aggressive cleaning for carriage returns and whitespace
-               const aggressivelyCleanedData = cleanedData
-                 .replace(/\r/g, '')  // Remove ALL carriage returns
-                 .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
-                 .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-                 .trim()
                
+               // Try to fix the JSON by normalizing newlines and whitespace
                try {
-                 JSON.parse(aggressivelyCleanedData)
-                 // Aggressive cleaning worked
-                 finalData = aggressivelyCleanedData
-                 dataSource = 'aggressive'
-               } catch (aggressiveError) {
-                 logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
-                 // Try to parse the HTML-decoded data as a fallback
+                 // First, try to parse and re-stringify to get clean JSON
+                 const parsedData = JSON.parse(cleanedData.replace(/\n/g, ' ').replace(/\s+/g, ' '))
+                 finalData = JSON.stringify(parsedData, null, 2)
+                 dataSource = 'normalized'
+                 logger.debug('htmlToMarkdown - JSON normalization succeeded')
+               } catch (normalizeError) {
+                 logger.warn('htmlToMarkdown - JSON normalization failed:', normalizeError)
+                 
+                 // Try more aggressive cleaning for carriage returns and whitespace
+                 const aggressivelyCleanedData = cleanedData
+                   .replace(/\r/g, '')  // Remove ALL carriage returns
+                   .replace(/\n/g, ' ') // Replace newlines with spaces
+                   .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                   .trim()
+                 
                  try {
-                   JSON.parse(htmlDecodedData)
-                   // HTML-decoded data worked
-                   finalData = htmlDecodedData
-                   dataSource = 'html-decoded'
-                 } catch (htmlDecodedError) {
-                   logger.warn('htmlToMarkdown - HTML-decoded parsing also failed:', htmlDecodedError)
-                   // Try to parse the original decoded data as a final fallback
+                   JSON.parse(aggressivelyCleanedData)
+                   // Aggressive cleaning worked
+                   finalData = aggressivelyCleanedData
+                   dataSource = 'aggressive'
+                 } catch (aggressiveError) {
+                   logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
+                   
+                   // Try to parse the HTML-decoded data as a fallback
                    try {
-                     JSON.parse(decodedData)
-                     // Original data worked
-                     finalData = decodedData
-                     dataSource = 'original'
-                   } catch (fallbackError) {
-                     logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
-                     // Return the original HTML if data is corrupted
-                     return match
+                     JSON.parse(htmlDecodedData)
+                     // HTML-decoded data worked
+                     finalData = htmlDecodedData
+                     dataSource = 'html-decoded'
+                   } catch (htmlDecodedError) {
+                     logger.warn('htmlToMarkdown - HTML-decoded parsing also failed:', htmlDecodedError)
+                     
+                     // Try to parse the original decoded data as a final fallback
+                     try {
+                       JSON.parse(decodedData)
+                       // Original data worked
+                       finalData = decodedData
+                       dataSource = 'original'
+                     } catch (fallbackError) {
+                       logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                       
+                       // As a last resort, try to clean the data by removing all newlines and extra whitespace
+                       try {
+                         const lastResortData = decodedData
+                           .replace(/\r/g, '')
+                           .replace(/\n/g, ' ')
+                           .replace(/\s+/g, ' ')
+                           .trim()
+                         
+                         JSON.parse(lastResortData)
+                         finalData = lastResortData
+                         dataSource = 'last-resort'
+                         logger.debug('htmlToMarkdown - last resort cleaning succeeded')
+                       } catch (lastResortError) {
+                         logger.warn('htmlToMarkdown - last resort cleaning also failed:', lastResortError)
+                         // Return the original HTML if all cleaning attempts failed
+                         return match
+                       }
+                     }
                    }
                  }
                }
