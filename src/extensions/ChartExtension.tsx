@@ -72,12 +72,26 @@ export const Chart = Node.create<ChartOptions>({
           
           // Get the chart data from the div attribute and decode it
           const encodedChartData = element.getAttribute('data-chart-data') || '[]'
+          const encoding = element.getAttribute('data-chart-encoding') || 'uri'
           let chartData = encodedChartData
           
-          // Try to decode URI-encoded data if it appears to be encoded
+          // Decode the chart data based on encoding type
           try {
-            if (encodedChartData.includes('%') || encodedChartData.includes('&')) {
+            if (encoding === 'base64') {
+              // Decode base64-encoded chart data
+              chartData = decodeURIComponent(escape(atob(encodedChartData)))
+            } else if (encodedChartData.includes('%') || encodedChartData.includes('&')) {
+              // Decode URI-encoded chart data (backward compatibility)
               chartData = decodeURIComponent(encodedChartData)
+            }
+            
+            // Validate the decoded data is valid JSON
+            try {
+              JSON.parse(chartData)
+            } catch (jsonError) {
+              logger.warn('ChartExtension.parseHTML - decoded chart data is not valid JSON:', jsonError)
+              // Use original encoded data if decoding fails
+              chartData = encodedChartData
             }
           } catch (error) {
             logger.warn('ChartExtension.parseHTML - failed to decode chart data, using original:', error)

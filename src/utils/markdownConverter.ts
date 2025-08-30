@@ -190,7 +190,7 @@ export const markdownToHtml = (markdown: string): string => {
       }
     }
     
-    // Check if this is a chart block
+            // Check if this is a chart block
     if (line.startsWith('```') && /^(barchart|linechart|scatterplot|histogram)$/.test(line.substring(3).trim())) {
       if (currentList.length > 0) {
         result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
@@ -206,28 +206,47 @@ export const markdownToHtml = (markdown: string): string => {
         j++
       }
       
-             if (j < lines.length) {
-         const chartType = line.substring(3).trim()
-         const data = chartData.join('\n')
-         
-         logger.debug('markdownToHtml - processing chart:', { chartType, dataLength: data.length })
-         logger.debug('markdownToHtml - chart data preview:', data.substring(0, 100))
-         
-                   // Create chart HTML node with data directly in attribute
-          const chartDiv = `<div data-type="chart" data-chart-type="${chartType}" data-chart-data="${encodeURIComponent(data)}" data-chart-x-axis-label="" data-chart-y-axis-label="" data-chart-width="100%" data-chart-height="320px"></div>`
+      if (j < lines.length) {
+        const chartType = line.substring(3).trim()
+        const data = chartData.join('\n')
+        
+        logger.debug('markdownToHtml - processing chart:', { chartType, dataLength: data.length })
+        logger.debug('markdownToHtml - chart data preview:', data.substring(0, 100))
+        
+        // Validate chart data before encoding
+        let isValidChartData = true
+        try {
+          // Try to parse as JSON to validate
+          JSON.parse(data)
+        } catch (error) {
+          logger.warn('markdownToHtml - invalid JSON in chart data:', error)
+          isValidChartData = false
+        }
+        
+        if (isValidChartData) {
+          // Use base64 encoding instead of URI encoding to prevent corruption
+          const encodedData = btoa(unescape(encodeURIComponent(data)))
           
           logger.debug('markdownToHtml - processing chart:', { 
             chartType, 
             originalData: data.substring(0, 200), // Show first 200 chars
-            encodedData: encodeURIComponent(data).substring(0, 200), // Show first 200 chars of encoded
-            dataLength: data.length,
-            chartDiv: chartDiv.substring(0, 300) // Show first 300 chars of HTML
+            encodedDataLength: encodedData.length,
+            dataLength: data.length
           })
           
+          // Create chart HTML node with base64-encoded data
+          const chartDiv = `<div data-type="chart" data-chart-type="${chartType}" data-chart-data="${encodedData}" data-chart-encoding="base64" data-chart-x-axis-label="" data-chart-y-axis-label="" data-chart-width="100%" data-chart-height="320px"></div>`
+          
           result.push(chartDiv)
-         i = j // Skip to end of chart block
-         continue
-       }
+        } else {
+          // If chart data is invalid, preserve as code block instead
+          logger.warn('markdownToHtml - preserving invalid chart as code block')
+          result.push(`<pre><code class="language-${chartType}">${data}</code></pre>`)
+        }
+        
+        i = j // Skip to end of chart block
+        continue
+      }
     }
     
     // Check if this is a code block
@@ -537,23 +556,48 @@ export const htmlToMarkdown = (html: string): string => {
          // Extract chart attributes using more robust parsing
          const chartTypeMatch = match.match(/data-chart-type="([^"]*)"/)
          const chartDataMatch = match.match(/data-chart-data="([^"]*)"/)
+         const encodingMatch = match.match(/data-chart-encoding="([^"]*)"/)
          
          if (chartTypeMatch && chartDataMatch) {
            const chartType = chartTypeMatch[1]
            const chartData = chartDataMatch[1]
+           const encoding = encodingMatch ? encodingMatch[1] : 'uri' // Default to URI for backward compatibility
            
-           // Decode URI-encoded chart data
-           const decodedData = decodeURIComponent(chartData)
+           let decodedData: string
            
-           logger.debug('htmlToMarkdown - converting chart to markdown:', { 
-             chartType, 
-             originalDataLength: chartData.length,
-             decodedDataLength: decodedData.length,
-             originalDataPreview: chartData.substring(0, 100),
-             decodedDataPreview: decodedData.substring(0, 100)
-           })
-           
-           return `\n\n\`\`\`${chartType}\n${decodedData}\n\`\`\`\n\n`
+           try {
+             if (encoding === 'base64') {
+               // Decode base64-encoded chart data
+               decodedData = decodeURIComponent(escape(atob(chartData)))
+             } else {
+               // Decode URI-encoded chart data (backward compatibility)
+               decodedData = decodeURIComponent(chartData)
+             }
+             
+             // Validate the decoded data is valid JSON
+             try {
+               JSON.parse(decodedData)
+             } catch (jsonError) {
+               logger.warn('htmlToMarkdown - decoded chart data is not valid JSON:', jsonError)
+               // Return the original HTML if data is corrupted
+               return match
+             }
+             
+             logger.debug('htmlToMarkdown - converting chart to markdown:', { 
+               chartType, 
+               encoding,
+               originalDataLength: chartData.length,
+               decodedDataLength: decodedData.length,
+               originalDataPreview: chartData.substring(0, 100),
+               decodedDataPreview: decodedData.substring(0, 100)
+             })
+             
+             return `\n\n\`\`\`${chartType}\n${decodedData}\n\`\`\`\n\n`
+           } catch (decodeError) {
+             logger.error('htmlToMarkdown - failed to decode chart data:', decodeError)
+             // Return the original HTML if decoding fails
+             return match
+           }
          }
          
          // Fallback if attributes can't be parsed
