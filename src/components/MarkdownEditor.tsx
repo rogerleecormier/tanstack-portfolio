@@ -229,6 +229,19 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         }
         return false
       },
+      // Prevent automatic HTML entity encoding
+      transformPastedHTML: (html) => {
+        // Decode any HTML entities that might be in pasted content
+        return html
+          .replace(/&quot;/g, '"')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&apos;/g, "'")
+      },
+      // Ensure content is not automatically encoded
+      enableInputRules: true,
+      enablePasteRules: true,
     },
     content: initialContent || '<p>Start Writing</p>',
     onCreate: ({ editor }) => {
@@ -251,29 +264,26 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         return
       }
       
-      // Convert HTML to markdown-like format
-      if (!editor.isDestroyed && editor.view) {
-        try {
-          const content = editor.getHTML()
-          
-          // Debug: Log the HTML content to see if it contains tables
-          if (content.includes('<table')) {
-            console.log('=== EDITOR UPDATE WITH TABLE ===')
-            console.log('Full HTML content:', content)
-            console.log('=== END EDITOR UPDATE ===')
+                // Convert HTML to markdown-like format
+          if (!editor.isDestroyed && editor.view) {
+            try {
+              const content = editor.getHTML()
+              
+
+              
+              // Decode any HTML entities before converting to markdown
+              const cleanContent = decodeHtmlEntities(content)
+              const markdown = htmlToMarkdown(cleanContent)
+              setMarkdownOutput(markdown)
+              
+              // Call the callback if provided
+              if (onContentChange) {
+                onContentChange(cleanContent, markdown)
+              }
+            } catch (error) {
+              logger.error('Failed to get editor content:', error)
+            }
           }
-          
-          const markdown = htmlToMarkdown(content)
-          setMarkdownOutput(markdown)
-          
-          // Call the callback if provided
-          if (onContentChange) {
-            onContentChange(content, markdown)
-          }
-        } catch (error) {
-          logger.error('Failed to get editor content:', error)
-        }
-      }
     },
   })
 
@@ -286,8 +296,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         // Check if initialContent is already HTML or if it's markdown
         let newHtml: string
         if (initialContent.startsWith('<') && initialContent.includes('>')) {
-          // Content is already HTML, use it directly
-          newHtml = initialContent
+          // Content is already HTML, decode HTML entities and use it directly
+          newHtml = decodeHtmlEntities(initialContent)
         } else {
           // Content is markdown, convert it to HTML
           newHtml = markdownToHtml(initialContent)
@@ -357,7 +367,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const handlePasteMarkdown = useCallback(() => {
     if (pasteMarkdown.trim() && editor && !editor.isDestroyed && editor.view) {
       try {
-        const html = markdownToHtml(pasteMarkdown)
+        // Decode any HTML entities in the pasted markdown
+        const cleanMarkdown = decodeHtmlEntities(pasteMarkdown)
+        const html = markdownToHtml(cleanMarkdown)
         editor.commands.setContent(html)
         setPasteMarkdown('')
         setShowPasteDialog(false)
@@ -463,7 +475,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           if (!editor.isDestroyed && editor.view) {
             try {
               const html = editor.getHTML()
-              const markdown = htmlToMarkdown(html)
+              // Decode any HTML entities before converting to markdown
+              const cleanHtml = decodeHtmlEntities(html)
+              const markdown = htmlToMarkdown(cleanHtml)
               setMarkdownOutput(markdown)
             } catch (error) {
               logger.error('Error updating markdown output:', error)
@@ -496,8 +510,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         // Insert regular TipTap table so headers can be edited
         editor.chain().focus().insertContent(sampleMarkdown).run()
         
-        // Update markdown output
-        setMarkdownOutput(sampleMarkdown)
+        // Update markdown output - ensure no HTML entities
+        const cleanMarkdown = decodeHtmlEntities(sampleMarkdown)
+        setMarkdownOutput(cleanMarkdown)
         
         // Focus the editor
         editor.commands.focus()
@@ -627,6 +642,21 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   { "date": "Category 2", "value": 200 }
 ]`
     }
+  }
+
+  // Function to decode HTML entities to prevent &quot; and &amp;quot; issues
+  const decodeHtmlEntities = (content: string): string => {
+    return content
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&apos;/g, "'")
+      .replace(/&#39;/g, "'")
+      .replace(/&#34;/g, '"')
+      .replace(/&#38;/g, '&')
+      .replace(/&#60;/g, '<')
+      .replace(/&#62;/g, '>')
   }
 
   if (!editor) {

@@ -5,6 +5,8 @@ import { logger } from '@/utils/logger'
  * This function handles all markdown elements including tables, lists, headers, code blocks, and charts
  */
 export const markdownToHtml = (markdown: string): string => {
+
+
   // Parse markdown line by line for better list handling
   const lines = markdown.split('\n')
   const result: string[] = []
@@ -280,8 +282,40 @@ export const markdownToHtml = (markdown: string): string => {
  * This function handles all HTML elements including tables, lists, headers, code blocks, and charts
  */
 export const htmlToMarkdown = (html: string): string => {
+  // First, decode HTML entities to prevent &quot; and &amp;quot; issues
+  const decodeHtmlEntities = (str: string): string => {
+    const textarea = document.createElement('textarea')
+    textarea.innerHTML = str
+    return textarea.value
+  }
+
+  // Decode HTML entities first
+  let decodedHtml = html
+  try {
+    // Handle common HTML entities that might be causing issues
+    decodedHtml = html
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&apos;/g, "'")
+      .replace(/&#39;/g, "'")
+      .replace(/&#34;/g, '"')
+      .replace(/&#38;/g, '&')
+      .replace(/&#60;/g, '<')
+      .replace(/&#62;/g, '>')
+  } catch (error) {
+    // Fallback to DOM-based decoding if available
+    try {
+      decodedHtml = decodeHtmlEntities(html)
+    } catch (fallbackError) {
+      // If all else fails, use the original HTML
+      decodedHtml = html
+    }
+  }
+
   // Simple HTML to markdown conversion with improved list handling
-  return html
+  return decodedHtml
     .replace(/<h1>(.*?)<\/h1>/g, '# $1\n\n')
     .replace(/<h2>(.*?)<\/h2>/g, '## $1\n\n')
     .replace(/<h3>(.*?)<\/h3>/g, '### $1\n\n')
