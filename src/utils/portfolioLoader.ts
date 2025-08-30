@@ -25,6 +25,15 @@ export interface ProjectItem {
   date?: string
 }
 
+// Interface for GitHub file objects returned from the API
+interface GitHubFileObject {
+  name: string
+  path: string
+  type: string // 'blob' for files, 'tree' for directories
+  size: number
+  sha: string
+}
+
 // Map portfolio files to categories based on content analysis and specific file mappings
 const getCategoryFromTags = (tags: string[], fileName: string): string => {
   const tagString = tags.join(' ').toLowerCase()
@@ -105,7 +114,7 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
     logger.info(`📁 Found ${portfolioFiles.length} portfolio files`)
     
     // Log file types for debugging
-    portfolioFiles.forEach((file: any) => {
+    portfolioFiles.forEach((file: GitHubFileObject) => {
       logger.info(`🔍 File: ${file.name}, Type: ${file.type}`)
     })
     
