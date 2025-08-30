@@ -147,12 +147,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const [showTableContextMenu, setShowTableContextMenu] = useState(false)
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 })
   
-  // Track if we're currently setting content to prevent infinite loops
-  const isSettingContent = useRef(false)
-  
-  // Add debouncing for content updates to prevent constant HTML to markdown conversion
-  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const lastContentRef = useRef<string>('')
+     // Track if we're currently setting content to prevent infinite loops
+   const isSettingContent = useRef(false)
   
   // Function to get default directory based on content type
   const getDefaultDirectory = (type: string) => {
@@ -248,61 +244,15 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
          onCreate: () => {
        // Don't force cursor position - let user maintain their position naturally
      },
-         onUpdate: ({ editor }) => {
-       // Skip update if we're currently setting content to prevent infinite loops
-       if (isSettingContent.current) {
-         return
-       }
-       
-       // Get current HTML content
-       if (!editor.isDestroyed && editor.view) {
-         try {
-           const content = editor.getHTML()
-           
-           // Only update if content has significantly changed (more than just a few characters)
-           if (content === lastContentRef.current || Math.abs(content.length - lastContentRef.current.length) < 10) {
-             return
-           }
-           
-           // Update the last content reference
-           lastContentRef.current = content
-           
-           // Clear any existing timeout
-           if (updateTimeoutRef.current) {
-             clearTimeout(updateTimeoutRef.current)
-           }
-           
-           // Debounce the content update to prevent constant HTML to markdown conversion
-           updateTimeoutRef.current = setTimeout(() => {
-             try {
-               // Decode any HTML entities before converting to markdown
-               const cleanContent = decodeHtmlEntities(content)
-               const markdown = htmlToMarkdown(cleanContent)
-               setMarkdownOutput(markdown)
-               
-               // Call the callback if provided
-               if (onContentChange) {
-                 onContentChange(cleanContent, markdown)
-               }
-             } catch (error) {
-               logger.error('Failed to get editor content:', error)
-             }
-           }, 1000) // Increased to 1000ms for better stability
-         } catch (error) {
-           logger.error('Failed to get editor content:', error)
-         }
-       }
-     },
+               onUpdate: () => {
+        // DISABLED: No content updates while typing to prevent cursor jumping and corruption
+        // The editor will remain completely stable during typing
+        // Markdown output will only update when explicitly requested
+        return
+      },
   })
 
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (updateTimeoutRef.current) {
-        clearTimeout(updateTimeoutRef.current)
-      }
-    }
-  }, [])
+  
 
 
 
@@ -322,27 +272,27 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           newHtml = markdownToHtml(initialContent)
         }
         
-        // Only update if the content is actually different
-        if (currentContent !== newHtml) {
-        logger.debug('Setting editor content')
-        
-        // Set flag to prevent onUpdate callback during content setting
-        isSettingContent.current = true
-        
-        editor.commands.setContent(newHtml)
-        
-        // Also update the markdown output
-        const markdown = htmlToMarkdown(newHtml)
-        setMarkdownOutput(markdown)
-        
-                 // Reset flag after a short delay to allow editor to settle
-         setTimeout(() => {
-           isSettingContent.current = false
-           // Don't force cursor position - let user maintain their position
-         }, 100)
-        
-        logger.debug('Editor content updated successfully')
-      }
+                 // Only update if the content is actually different
+         if (currentContent !== newHtml) {
+           logger.debug('Setting editor content')
+           
+           // Set flag to prevent onUpdate callback during content setting
+           isSettingContent.current = true
+           
+           editor.commands.setContent(newHtml)
+           
+           // Also update the markdown output
+           const markdown = htmlToMarkdown(newHtml)
+           setMarkdownOutput(markdown)
+           
+           // Reset flag after a short delay to allow editor to settle
+           setTimeout(() => {
+             isSettingContent.current = false
+             // Don't force cursor position - let user maintain their position
+           }, 100)
+           
+           logger.debug('Editor content updated successfully')
+         }
     } catch (error) {
       logger.error('Failed to update editor content:', error)
     }
@@ -825,12 +775,38 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 >
                   <Trash2 className="h-4 w-4" />
                 </ToolbarButton>
-                <ToolbarButton
-                  onClick={handlePasteFromClipboard}
-                  title="Paste Markdown from Clipboard"
-                >
-                  <Clipboard className="h-4 w-4" />
-                </ToolbarButton>
+                                 <ToolbarButton
+                   onClick={handlePasteFromClipboard}
+                   title="Paste Markdown from Clipboard"
+                 >
+                   <Clipboard className="h-4 w-4" />
+                 </ToolbarButton>
+                 
+                 <Button
+                   onClick={() => {
+                     if (editor && !editor.isDestroyed && editor.view) {
+                       try {
+                         const content = editor.getHTML()
+                         const cleanContent = decodeHtmlEntities(content)
+                         const markdown = htmlToMarkdown(cleanContent)
+                         setMarkdownOutput(markdown)
+                         
+                         if (onContentChange) {
+                           onContentChange(cleanContent, markdown)
+                         }
+                       } catch (error) {
+                         logger.error('Failed to update markdown:', error)
+                       }
+                     }
+                   }}
+                   size="sm"
+                   className="bg-blue-600 hover:bg-blue-700 text-white"
+                   title="Update Markdown Output"
+                 >
+                   <div className="w-4 h-4 border border-current rounded-sm">
+                     <div className="w-2 h-2 border border-current rounded-sm mx-auto mt-0.5"></div>
+                   </div>
+                 </Button>
                 
               </div>
             </div>
