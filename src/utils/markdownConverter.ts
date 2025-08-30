@@ -582,14 +582,28 @@ export const htmlToMarkdown = (html: string): string => {
        logger.debug('htmlToMarkdown - found chart div:', match)
        try {
          // Extract chart attributes using more robust parsing
+         // First try to get the raw data from the 'data' attribute (contains the actual JSON)
+         const rawDataMatch = match.match(/data="([^"]*)"/)
          const chartTypeMatch = match.match(/data-chart-type="([^"]*)"/)
          const chartDataMatch = match.match(/data-chart-data="([^"]*)"/)
          const encodingMatch = match.match(/data-chart-encoding="([^"]*)"/)
          
-         if (chartTypeMatch && chartDataMatch) {
+         if (chartTypeMatch) {
            const chartType = chartTypeMatch[1]
-           const chartData = chartDataMatch[1]
-           const encoding = encodingMatch ? encodingMatch[1] : 'uri' // Default to URI for backward compatibility
+           let chartData = ''
+           let encoding = encodingMatch ? encodingMatch[1] : 'uri'
+           
+           // Prefer raw data attribute if available, otherwise fall back to encoded data
+           if (rawDataMatch) {
+             chartData = rawDataMatch[1]
+             // Raw data is not encoded, so we can use it directly
+             encoding = 'raw'
+           } else if (chartDataMatch) {
+             chartData = chartDataMatch[1]
+           } else {
+             logger.warn('htmlToMarkdown - no chart data found in attributes')
+             return match
+           }
            
            let decodedData: string
            
@@ -597,6 +611,9 @@ export const htmlToMarkdown = (html: string): string => {
              if (encoding === 'base64') {
                // Decode base64-encoded chart data
                decodedData = decodeURIComponent(escape(atob(chartData)))
+             } else if (encoding === 'raw') {
+               // Raw data is already decoded
+               decodedData = chartData
              } else {
                // Decode URI-encoded chart data (backward compatibility)
                decodedData = decodeURIComponent(chartData)
@@ -701,20 +718,37 @@ export const htmlToMarkdown = (html: string): string => {
        logger.debug('htmlToMarkdown - found self-closing chart div:', match)
        try {
          // Extract chart attributes using more robust parsing
+         // First try to get the raw data from the 'data' attribute (contains the actual JSON)
+         const rawDataMatch = match.match(/data="([^"]*)"/)
          const chartTypeMatch = match.match(/data-chart-type="([^"]*)"/)
          const chartDataMatch = match.match(/data-chart-data="([^"]*)"/)
          const encodingMatch = match.match(/data-chart-encoding="([^"]*)"/)
          
-         if (chartTypeMatch && chartDataMatch) {
+         if (chartTypeMatch) {
            const chartType = chartTypeMatch[1]
-           const chartData = chartDataMatch[1]
-           const encoding = encodingMatch ? encodingMatch[1] : 'uri'
+           let chartData = ''
+           let encoding = encodingMatch ? encodingMatch[1] : 'uri'
+           
+           // Prefer raw data attribute if available, otherwise fall back to encoded data
+           if (rawDataMatch) {
+             chartData = rawDataMatch[1]
+             // Raw data is not encoded, so we can use it directly
+             encoding = 'raw'
+           } else if (chartDataMatch) {
+             chartData = chartDataMatch[1]
+           } else {
+             logger.warn('htmlToMarkdown - no chart data found in attributes')
+             return match
+           }
            
            let decodedData: string
            
            try {
              if (encoding === 'base64') {
                decodedData = decodeURIComponent(escape(atob(chartData)))
+             } else if (encoding === 'raw') {
+               // Raw data is already decoded
+               decodedData = chartData
              } else {
                decodedData = decodeURIComponent(chartData)
              }

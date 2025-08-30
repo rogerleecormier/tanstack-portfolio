@@ -150,6 +150,13 @@ export const Chart = Node.create<ChartOptions>({
         'data-chart-y-axis-label': HTMLAttributes.yAxisLabel,
         'data-chart-width': HTMLAttributes.width,
         'data-chart-height': HTMLAttributes.height,
+        // Add the raw data attribute for easier HTML to Markdown conversion
+        'data': chartData,
+        // Add legacy attributes for backward compatibility
+        'charttype': HTMLAttributes.chartType,
+        'charttitle': HTMLAttributes.chartTitle,
+        'xaxislabel': HTMLAttributes.xAxisLabel,
+        'yaxislabel': HTMLAttributes.yAxisLabel,
       }),
     ]
     
