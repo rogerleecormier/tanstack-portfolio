@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -19,6 +19,7 @@ import {
   Globe
 } from 'lucide-react'
 import { PortfolioItem } from '@/utils/portfolioUtils'
+import { workerContentService } from '@/api/workerContentService'
 
 interface Recommendation {
   type: 'solution' | 'insight' | 'trend' | 'blog' | 'portfolio'
@@ -30,15 +31,47 @@ interface Recommendation {
   category?: string
 }
 
+interface ContentRecommendation {
+  type: 'content'
+  title: string
+  description: string
+  url: string
+  contentType: 'blog' | 'portfolio' | 'project' | 'page'
+  confidence: number
+  icon: React.ComponentType<{ className?: string }>
+  category?: string
+}
+
 interface SiteAssistantProps {
   portfolioItems: PortfolioItem[]
 }
 
 export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
   const [userQuery, setUserQuery] = useState('')
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+  const [recommendations, setRecommendations] = useState<(Recommendation | ContentRecommendation)[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
+
+  // Get content recommendations from worker API
+  const getContentRecommendations = useCallback(async (query: string): Promise<ContentRecommendation[]> => {
+    try {
+      const contentItems = await workerContentService.searchByQuery(query, 'all', 3)
+      
+      return contentItems.map(item => ({
+        type: 'content' as const,
+        title: item.title,
+        description: item.description,
+        url: item.url,
+        contentType: item.contentType,
+        confidence: 0.85, // Default confidence for content matches
+        icon: BookOpen,
+        category: item.category || 'Content'
+      }))
+    } catch (error) {
+      console.error('Error getting content recommendations:', error)
+      return []
+    }
+  }, [])
 
   // Enhanced insights based on comprehensive site knowledge
   const generateInsights = (query: string): Recommendation[] => {
@@ -189,15 +222,35 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
 
     setIsAnalyzing(true)
     
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const insights = generateInsights(userQuery)
-    setRecommendations(insights)
-    setIsAnalyzing(false)
+    try {
+      // Get both static insights and content recommendations
+      const [insights, contentRecs] = await Promise.all([
+        Promise.resolve(generateInsights(userQuery)),
+        getContentRecommendations(userQuery)
+      ])
+      
+      // Combine insights and content recommendations
+      const allRecommendations = [...insights, ...contentRecs]
+      setRecommendations(allRecommendations)
+    } catch (error) {
+      console.error('Error getting recommendations:', error)
+      // Fallback to just insights
+      const insights = generateInsights(userQuery)
+      setRecommendations(insights)
+    } finally {
+      setIsAnalyzing(false)
+    }
   }
 
-  const handleItemSelect = (itemSlug: string) => {
+  const handleItemSelect = (itemSlug: string, recommendation?: Recommendation | ContentRecommendation) => {
+    // Handle content recommendations
+    if (recommendation && recommendation.type === 'content') {
+      const contentRec = recommendation as ContentRecommendation
+      window.location.href = contentRec.url
+      return
+    }
+    
+    // Handle static recommendations
     if (itemSlug === 'blog') {
       window.location.href = '/blog'
     } else if (itemSlug === 'contact') {
@@ -233,6 +286,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
       case 'blog': return 'bg-purple-100 text-purple-800 dark:bg-purple-50 dark:text-purple-800'
       case 'trend': return 'bg-orange-100 text-orange-800 dark:bg-orange-50 dark:text-orange-800'
       case 'insight': return 'brand-bg-secondary text-blue-800 dark:bg-blue-50 dark:text-blue-800'
+      case 'content': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-50 dark:text-indigo-800'
       default: return 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800'
     }
   }
@@ -325,21 +379,36 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                           {rec.description}
                         </p>
                         <div className="flex flex-wrap gap-1">
-                          {rec.relatedItems.map((itemSlug) => (
+                          {rec.type === 'content' ? (
                             <Button
-                              key={itemSlug}
                               variant="outline"
                               size="sm"
-                              onClick={() => handleItemSelect(itemSlug)}
+                              onClick={() => handleItemSelect('', rec)}
                               className="text-xs h-6 px-2"
                             >
-                              {itemSlug === 'blog' ? 'Read Blog' :
-                               itemSlug === 'contact' ? 'Contact Me' :
-                               itemSlug === 'about' ? 'About Me' :
-                               itemSlug.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                              {rec.contentType === 'blog' ? 'Read Article' :
+                               rec.contentType === 'portfolio' ? 'View Portfolio' :
+                               rec.contentType === 'project' ? 'View Project' :
+                               'View Content'}
                               <ArrowRight className="w-3 h-3 ml-1" />
                             </Button>
-                          ))}
+                          ) : (
+                            rec.relatedItems.map((itemSlug) => (
+                              <Button
+                                key={itemSlug}
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleItemSelect(itemSlug)}
+                                className="text-xs h-6 px-2"
+                              >
+                                {itemSlug === 'blog' ? 'Read Blog' :
+                                 itemSlug === 'contact' ? 'Contact Me' :
+                                 itemSlug === 'about' ? 'About Me' :
+                                 itemSlug.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                <ArrowRight className="w-3 h-3 ml-1" />
+                              </Button>
+                            ))
+                          )}
                         </div>
                       </div>
                     </div>

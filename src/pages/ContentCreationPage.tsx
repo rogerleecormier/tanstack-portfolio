@@ -439,6 +439,8 @@ const ContentCreationPage: React.FC = () => {
             <P className="text-sm lg:text-base text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Create professional blog posts, portfolio pages, and project documentation with Smart frontmatter generation.
             </P>
+            
+            
           </div>
         </div>
 

@@ -27,6 +27,7 @@ import NewsletterPreferencesPage from './pages/NewsletterPreferencesPage'
 import MarkdownEditorPage from './pages/MarkdownEditorPage'
 import ContentCreationPage from './pages/ContentCreationPage'
 import ToolsListPage from './pages/ToolsListPage'
+
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -184,6 +185,8 @@ const contentCreationRoute = createRoute({
   ),
 })
 
+
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -202,6 +205,7 @@ const routeTree = rootRoute.addChildren([
   toolsListRoute,
   markdownEditorRoute,
   contentCreationRoute,
+
 ])
 
 // Create router instance

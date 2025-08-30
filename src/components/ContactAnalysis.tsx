@@ -21,7 +21,7 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { unifiedSmartRecommendationsService } from '@/api/unifiedSmartRecommendationsService'
+import { workerContentService } from '@/api/workerContentService'
 
 // Helper function to safely parse tags
 function parseTagsSafely(tags: unknown): string[] {
@@ -117,52 +117,41 @@ export function ContactAnalysis({
   // Smart content recommendations function
   const getContentRecommendations = useCallback(async (analysis: AIAnalysisResult) => {
     try {
-      // Create content for analysis from AI results
-      const content = [
-        analysis.industry,
-        analysis.projectScope,
-        analysis.inquiryType,
-        analysis.originalMessage || ''
-      ].filter(Boolean).join(' ')
-      
       const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`
       const tags = [analysis.inquiryType, analysis.industry, analysis.projectScope].filter(Boolean)
       
-      const response = await unifiedSmartRecommendationsService.getRecommendations({
-        content,
+      const response = await workerContentService.getRelatedContent(
         title,
         tags,
-        maxResults: 4
-      })
+        undefined,
+        undefined,
+        4
+      )
       
-              if (response.success && response.recommendations) {
-                        const relevantContent = response.recommendations
-            .filter(item => item.contentType !== 'page')
-            .map(item => ({
-              title: item.title,
-              path: item.url,
-              description: item.description,
-              relevance: item.confidence || 0.7,
-              contentType: item.contentType as 'blog' | 'portfolio' | 'project',
-              tags: parseTagsSafely(item.tags || [])
-            }))
-          
-          setRelevantContent(relevantContent)
-        } else {
+      if (response && response.length > 0) {
+        const relevantContent = response
+          .filter(item => item.contentType !== 'page')
+          .map(item => ({
+            title: item.title,
+            path: item.url,
+            description: item.description,
+            relevance: 0.85, // Default relevance for worker API results
+            contentType: item.contentType as 'blog' | 'portfolio' | 'project',
+            tags: parseTagsSafely(item.tags || [])
+          }))
+        
+        setRelevantContent(relevantContent)
+      } else {
         // Fallback to type-based recommendations
-        const fallbackResponse = await unifiedSmartRecommendationsService.getRecommendationsByType(
-          'portfolio',
-          undefined,
-          4
-        )
-        if (fallbackResponse.success) {
-          const relevantContent = fallbackResponse.recommendations
+        const fallbackResponse = await workerContentService.getContentByType('portfolio', 4)
+        if (fallbackResponse && fallbackResponse.length > 0) {
+          const relevantContent = fallbackResponse
             .filter(item => item.contentType !== 'page')
             .map(item => ({
               title: item.title,
               path: item.url,
               description: item.description,
-              relevance: item.confidence || 0.7,
+              relevance: 0.85, // Default relevance for worker API results
               contentType: item.contentType as 'blog' | 'portfolio' | 'project',
               tags: parseTagsSafely(item.tags || [])
             }))
@@ -175,19 +164,15 @@ export function ContactAnalysis({
       console.warn('Smart recommendations failed, using fallback:', error)
       // Fallback to type-based recommendations
       try {
-        const fallbackResponse = await unifiedSmartRecommendationsService.getRecommendationsByType(
-          'portfolio',
-          undefined,
-          4
-        )
-        if (fallbackResponse.success) {
-          const relevantContent = fallbackResponse.recommendations
+        const fallbackResponse = await workerContentService.getContentByType('portfolio', 4)
+        if (fallbackResponse && fallbackResponse.length > 0) {
+          const relevantContent = fallbackResponse
             .filter(item => item.contentType !== 'page')
             .map(item => ({
               title: item.title,
               path: item.url,
               description: item.description,
-              relevance: item.confidence || 0.7,
+              relevance: 0.85, // Default relevance for worker API results
               contentType: item.contentType as 'blog' | 'portfolio' | 'project',
               tags: parseTagsSafely(item.tags || [])
             }))

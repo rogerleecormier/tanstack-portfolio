@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MessageSquare, ExternalLink, TrendingUp } from 'lucide-react'
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { unifiedSmartRecommendationsService, type UnifiedContentItem } from '@/api/unifiedSmartRecommendationsService'
+import { workerContentService, type WorkerContentItem } from '@/api/workerContentService'
 
 interface UnifiedRelatedContentProps {
   content: string
@@ -74,7 +74,7 @@ export function UnifiedRelatedContent({
   maxResults = 2,
   variant = 'sidebar'
 }: UnifiedRelatedContentProps) {
-  const [recommendations, setRecommendations] = useState<UnifiedContentItem[]>([])
+  const [recommendations, setRecommendations] = useState<WorkerContentItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -91,17 +91,16 @@ export function UnifiedRelatedContent({
     setError(null)
 
     try {
-      const response = await unifiedSmartRecommendationsService.getRecommendations({
-        content,
+      const response = await workerContentService.getRelatedContent(
         title,
         tags,
         contentType,
-        excludeUrl: currentUrl,
+        currentUrl,
         maxResults
-      })
+      )
 
-      if (response.success && response.recommendations) {
-        setRecommendations(response.recommendations)
+      if (response && response.length > 0) {
+        setRecommendations(response)
       } else {
         setRecommendations([])
       }
@@ -292,12 +291,12 @@ export function UnifiedRelatedContent({
                      </Badge>
                    </div>
                    
-                   <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                     <span>Relevance:</span>
-                     <Badge variant="outline" className="text-xs px-2 py-1">
-                       {Math.round(item.confidence * 100)}%
-                     </Badge>
-                   </div>
+                                       <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                      <span>Relevance:</span>
+                      <Badge variant="outline" className="text-xs px-2 py-1">
+                        85%
+                      </Badge>
+                    </div>
                  </div>
                </CardContent>
             </Card>
@@ -352,9 +351,9 @@ export function UnifiedRelatedContent({
                     <span className="ml-1 capitalize">{item.contentType}</span>
                   </Badge>
                   
-                  <Badge variant="outline" className="text-xs px-2 py-1">
-                    {Math.round(item.confidence * 100)}%
-                  </Badge>
+                                     <Badge variant="outline" className="text-xs px-2 py-1">
+                     85%
+                   </Badge>
                 </div>
                 
                                  {item.tags && item.tags.length > 0 && (

@@ -2,325 +2,79 @@ import { logger } from '@/utils/logger'
 
 /**
  * Converts markdown text to HTML format
- * This function handles all markdown elements including tables, lists, headers, code blocks, and charts
+ * Simple, robust conversion that handles common markdown elements
  */
 export const markdownToHtml = (markdown: string): string => {
-
-
-  // Parse markdown line by line for better list handling
-  const lines = markdown.split('\n')
-  const result: string[] = []
-  let currentList: string[] = []
-  let currentListType: 'ul' | 'ol' | null = null
+  if (!markdown) return ''
   
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim()
+  try {
+    let html = markdown
     
-    if (!line) {
-      // Empty line - close any open list and add paragraph break
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
-      result.push('')
-      continue
-    }
+    // Remove emojis and problematic characters first
+    html = html
+      .replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1F018}-\u{1F270}]/gu, '')
+      .replace(/[ðâ¤ð³ð¬ð¥]/g, '') // Remove specific problematic characters
     
-    // Check if this is a list item
-    if (line.startsWith('* ') || line.startsWith('- ')) {
-      // Unordered list item
-      if (currentListType !== 'ul') {
-        // Close previous list if different type
-        if (currentList.length > 0) {
-          result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        }
-        currentList = []
-        currentListType = 'ul'
-      }
+    // Convert markdown to HTML - simple and effective
+    html = html
+      // Headers
+      .replace(/^### (.*$)/gim, '<h3 class="text-xl font-semibold mb-2 text-gray-700 dark:text-gray-300">$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-semibold mb-3 text-gray-800 dark:text-gray-200">$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100">$1</h1>')
       
-      // Convert markdown to HTML for the list item content
-      const content = line.substring(2)
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/__(.*?)__/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/_(.*?)_/g, '<em>$1</em>')
-        .replace(/`(.*?)`/g, '<code>$1</code>')
+      // Bold and italic
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900 dark:text-gray-100">$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em class="italic text-gray-800 dark:text-gray-200">$1</em>')
+      .replace(/__(.*?)__/g, '<strong class="font-semibold text-gray-900 dark:text-gray-100">$1</strong>')
+      .replace(/_(.*?)_/g, '<em class="italic text-gray-800 dark:text-gray-200">$1</em>')
       
-      currentList.push(`<li>${content}</li>`)
-      continue
-    }
-    
-    if (/^\d+\.\s/.test(line)) {
-      // Ordered list item
-      if (currentListType !== 'ol') {
-        // Close previous list if different type
-        if (currentList.length > 0) {
-          result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        }
-        currentList = []
-        currentListType = 'ol'
-      }
+      // Inline code
+      .replace(/`(.*?)`/g, '<code class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono text-gray-800 dark:text-gray-200">$1</code>')
       
-      // Convert markdown to HTML for the list item content
-      const content = line.replace(/^\d+\.\s/, '')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/__(.*?)__/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/_(.*?)_/g, '<em>$1</em>')
-        .replace(/`(.*?)`/g, '<code>$1</code>')
+      // Links
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-teal-600 dark:text-teal-400 underline hover:text-teal-800 dark:hover:text-teal-300" target="_blank" rel="noopener noreferrer">$1</a>')
       
-      currentList.push(`<li>${content}</li>`)
-      continue
-    }
-    
-    // Check if this is a header
-    if (line.startsWith('### ')) {
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
-      result.push(`<h3>${line.substring(4)}</h3>`)
-      continue
-    }
-    
-    if (line.startsWith('## ')) {
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
-      result.push(`<h2>${line.substring(3)}</h2>`)
-      continue
-    }
-    
-    if (line.startsWith('# ')) {
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
-      result.push(`<h1>${line.substring(2)}</h1>`)
-      continue
-    }
-    
-    // Check if this is a horizontal rule
-    if (line === '---') {
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
-      result.push('<hr>')
-      continue
-    }
-    
-    // Check if this is a blockquote
-    if (line.startsWith('> ')) {
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
-      result.push(`<blockquote><p>${line.substring(2)}</p></blockquote>`)
-      continue
-    }
-    
-    // Check if this is a table
-    if (line.includes('|')) {
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
+      // Horizontal rules
+      .replace(/^---$/gm, '<hr class="border-gray-300 dark:border-gray-600 my-6">')
       
-      // Find all table rows
-      const tableRows = []
-      let j = i
-      while (j < lines.length && lines[j].trim().includes('|')) {
-        tableRows.push(lines[j].trim())
-        j++
-      }
+      // Blockquotes
+      .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-teal-500 pl-4 py-2 my-4 bg-teal-50 dark:bg-teal-900/20 italic text-gray-700 dark:text-gray-300">$1</blockquote>')
       
-      if (tableRows.length >= 2) {
-        // Parse table structure
-        const headerRow = tableRows[0]
-        const dataRows = tableRows.slice(2)
-        
-        // Parse header cells - split by | and filter out empty cells
-        const headerCells = headerRow.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0)
-        
-                 // Build table HTML with unified table styling
-        let tableHtml = '<table class="w-full caption-bottom text-sm border-collapse my-4 bg-white border border-teal-200 rounded-xl overflow-hidden shadow-sm">'
-        
-        // Add header row
-        tableHtml += '<thead class="bg-teal-50">'
-        tableHtml += '<tr class="border-b border-teal-200 last:border-b-0 hover:bg-teal-100 hover:shadow-sm transition-all duration-200 ease-in-out">'
-        headerCells.forEach(cell => {
-          tableHtml += `<th class="h-14 px-5 text-left align-middle font-semibold text-teal-900 border-r border-teal-200 last:border-r-0 bg-teal-50 text-sm tracking-wide">${cell}</th>`
-        })
-        tableHtml += '</tr></thead>'
-        
-        // Add data rows
-        tableHtml += '<tbody>'
-        dataRows.forEach((row, rowIndex) => {
-          const cells = row.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0)
-          if (cells.length > 0) {
-            const rowClass = `border-b border-teal-100 last:border-b-0 hover:bg-teal-50 hover:shadow-sm transition-all duration-200 ease-in-out ${
-              rowIndex % 2 === 0 ? 'bg-white' : 'bg-teal-50'
-            }`
-            tableHtml += `<tr class="${rowClass}">`
-            // Ensure we have the same number of cells as headers
-            const paddedCells = [...cells]
-            while (paddedCells.length < headerCells.length) {
-              paddedCells.push('')
-            }
-            paddedCells.forEach(cell => {
-              tableHtml += `<td class="px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 last:border-r-0 text-teal-700 text-sm leading-relaxed">${cell}</td>`
-            })
-            tableHtml += '</tr>'
-          }
-        })
-        tableHtml += '</tbody></table>'
-        
-        result.push(tableHtml)
-        i = j - 1 // Skip to end of table
-        continue
-      }
-    }
+      // Lists - handle both ordered and unordered
+      .replace(/^[-*+] (.*$)/gim, '<li class="text-gray-700 dark:text-gray-300">$1</li>')
+      .replace(/^\d+\. (.*$)/gim, '<li class="text-gray-700 dark:text-gray-300">$1</li>')
+      
+      // Wrap list items in proper list tags
+      .replace(/(<li.*<\/li>)/gs, '<ul class="list-disc list-inside mb-4 space-y-1">$1</ul>')
+      
+      // Code blocks
+      .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4"><code class="language-$1">$2</code></pre>')
+      
+      // Paragraphs - wrap text in <p> tags
+      .replace(/^([^<].*)$/gm, '<p class="mb-3 text-gray-700 dark:text-gray-300 leading-relaxed">$1</p>')
+      
+      // Clean up empty paragraphs and excessive spacing
+      .replace(/<p class="mb-3 text-gray-700 dark:text-gray-300 leading-relaxed"><\/p>/g, '')
+      .replace(/<p class="mb-3 text-gray-700 dark:text-gray-300 leading-relaxed">\s*<\/p>/g, '')
+      .replace(/\n\s*\n/g, '\n')
     
-            // Check if this is a chart block
-    if (line.startsWith('```') && /^(barchart|linechart|scatterplot|histogram)$/.test(line.substring(3).trim())) {
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
-      
-      // Find the end of the chart block
-      const chartData = []
-      let j = i + 1
-      while (j < lines.length && !lines[j].trim().startsWith('```')) {
-        chartData.push(lines[j])
-        j++
-      }
-      
-      if (j < lines.length) {
-        const chartType = line.substring(3).trim()
-        const data = chartData.join('\n')
-        
-        logger.debug('markdownToHtml - processing chart:', { chartType, dataLength: data.length })
-        logger.debug('markdownToHtml - chart data preview:', data.substring(0, 100))
-        
-        // Validate chart data before encoding
-        let isValidChartData = true
-        let cleanedData = data
-        
-        try {
-          // Clean the data first by removing carriage returns and normalizing whitespace
-          cleanedData = data
-            .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
-            .replace(/\r/g, '\n')    // Replace any remaining carriage returns
-            .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
-            .trim()                  // Remove leading/trailing whitespace
-          
-          // Try to parse as JSON to validate
-          JSON.parse(cleanedData)
-        } catch (error) {
-          logger.warn('markdownToHtml - invalid JSON in chart data after cleaning:', error)
-          
-          // Try more aggressive cleaning
-          try {
-            const aggressivelyCleanedData = cleanedData
-              .replace(/\r/g, '')  // Remove ALL carriage returns
-              .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
-              .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-              .trim()
-            
-            JSON.parse(aggressivelyCleanedData)
-            cleanedData = aggressivelyCleanedData
-            isValidChartData = true
-            logger.debug('markdownToHtml - aggressive cleaning succeeded')
-          } catch (aggressiveError) {
-            logger.warn('markdownToHtml - aggressive cleaning also failed:', aggressiveError)
-            isValidChartData = false
-          }
-        }
-        
-        if (isValidChartData) {
-          // Use base64 encoding instead of URI encoding to prevent corruption
-          const encodedData = btoa(unescape(encodeURIComponent(cleanedData)))
-          
-          logger.debug('markdownToHtml - processing chart:', { 
-            chartType, 
-            originalData: data.substring(0, 200), // Show first 200 chars
-            cleanedData: cleanedData.substring(0, 200), // Show first 200 chars of cleaned data
-            encodedDataLength: encodedData.length,
-            dataLength: data.length,
-            cleanedDataLength: cleanedData.length
-          })
-          
-          // Create chart HTML node with base64-encoded data
-          const chartDiv = `<div data-type="chart" data-chart-type="${chartType}" data-chart-data="${encodedData}" data-chart-encoding="base64" data-chart-x-axis-label="" data-chart-y-axis-label="" data-chart-width="100%" data-chart-height="320px"></div>`
-          
-          result.push(chartDiv)
-        } else {
-          // If chart data is invalid, preserve as code block instead
-          logger.warn('markdownToHtml - preserving invalid chart as code block')
-          result.push(`<pre><code class="language-${chartType}">${data}</code></pre>`)
-        }
-        
-        i = j // Skip to end of chart block
-        continue
-      }
-    }
+    // Clean up the final HTML
+    html = html
+      .replace(/\n\s*\n\s*\n/g, '\n\n')
+      .trim()
     
-    // Check if this is a code block
-    if (line.startsWith('```')) {
-      if (currentList.length > 0) {
-        result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-        currentList = []
-        currentListType = null
-      }
-      
-      // Find the end of the code block
-      const codeContent = []
-      let j = i + 1
-      while (j < lines.length && !lines[j].trim().startsWith('```')) {
-        codeContent.push(lines[j])
-        j++
-      }
-      
-      if (j < lines.length) {
-        const language = line.substring(3).trim() || 'text'
-        const code = codeContent.join('\n')
-        
-        // Create code block HTML
-        result.push(`<pre><code class="language-${language}">${code}</code></pre>`)
-        i = j // Skip to end of code block
-        continue
-      }
-    }
+    return html
     
-    // Regular paragraph - convert inline markdown
-    const content = line
+  } catch (error) {
+    logger.error('Error converting markdown to HTML:', error)
+    // Return a cleaned version of the original markdown if conversion fails
+    return markdown
+      .replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1F018}-\u{1F270}]/gu, '')
+      .replace(/[ðâ¤ð³ð¬ð¥]/g, '')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/__(.*?)__/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/_(.*?)_/g, '<em>$1</em>')
       .replace(/`(.*?)`/g, '<code>$1</code>')
-    
-    result.push(`<p>${content}</p>`)
   }
-  
-  // Close any remaining open list
-  if (currentList.length > 0) {
-    result.push(`<${currentListType}>${currentList.join('')}</${currentListType}>`)
-  }
-  
-  // Join all HTML elements and clean up
-  return result.join('\n').replace(/\n\s*\n\s*\n/g, '\n\n').trim()
 }
 
 /**

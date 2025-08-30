@@ -3,7 +3,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Menu, User, LogOut } from "lucide-react";
-import Search from "../components/Search";
+import RedesignedSearch from "../components/RedesignedSearch";
 import { LoginPage } from "../components/LoginPage";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { useAuth } from "../hooks/useAuth";
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
           <div className="w-full flex items-center gap-2 px-4 sm:px-6">
             <div className="flex-1 min-w-0">
               <div className="w-full max-w-[340px]">
-                <Search />
+                <RedesignedSearch />
               </div>
             </div>
             {isAuthenticated ? (
@@ -101,7 +101,7 @@ const Header: React.FC = () => {
           {/* Search and Login button row */}
           <div className="flex items-center gap-2 h-10 flex-shrink-0 ml-auto">
             <div className="flex-1 min-w-0">
-              <Search />
+              <RedesignedSearch />
             </div>
             {isAuthenticated ? (
               <Button
