@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
+  ResponsiveContainer,
 } from "recharts";
 import {
   ChartContainer,
@@ -51,9 +52,11 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
     }
     if (typeof dataInput === 'string') {
       try {
-        return JSON.parse(dataInput);
+        const parsed = JSON.parse(dataInput);
+        logger.debug("Successfully parsed chart data:", { dataLength: Array.isArray(parsed) ? parsed.length : 'not array' });
+        return Array.isArray(parsed) ? parsed : [];
       } catch (error) {
-        logger.error("Failed to parse chart data:", error);
+        logger.error("Failed to parse chart data:", error, { dataInput: dataInput.substring(0, 200) + '...' });
         return [];
       }
     }
@@ -139,13 +142,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
   const generateChartConfig = () => {
     const config: Record<string, { label: string; color: string }> = {};
     
-    // Add X-axis key
-    config[xKey] = {
-      label: xLabel,
-      color: colors[0]
-    };
-    
-    // Add Y-axis keys
+    // Add Y-axis keys (these are the data series that will be plotted)
     yKeys.forEach((key, index) => {
       config[key] = {
         label: key.charAt(0).toUpperCase() + key.slice(1),
@@ -169,51 +166,53 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
               </div>
             )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 40, top: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis 
-                  dataKey={xKey}
-                  tickLine={false}
-                  axisLine={false}
-                  label={{ value: xLabel, position: 'bottom', offset: 0 }}
-                />
-                <YAxis 
-                  domain={yDomain}
-                  tickLine={false}
-                  axisLine={false}
-                  label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
-                />
-                <ChartTooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <ChartTooltipContent
-                          active={active}
-                          payload={payload}
-                          className="bg-white border border-gray-200 shadow-lg"
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <ChartLegend
-                  content={({ payload }) => (
-                    <ChartLegendContent
-                      payload={payload}
-                      className="justify-start"
-                    />
-                  )}
-                />
-                {yKeys.map((key, index) => (
-                  <Bar 
-                    key={key}
-                    dataKey={key} 
-                    fill={colors[index % colors.length]}
-                    radius={[4, 4, 0, 0]}
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 40, top: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey={xKey}
+                    tickLine={false}
+                    axisLine={false}
+                    label={{ value: xLabel, position: 'bottom', offset: 0 }}
                   />
-                ))}
-              </BarChart>
+                  <YAxis 
+                    domain={yDomain}
+                    tickLine={false}
+                    axisLine={false}
+                    label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
+                  />
+                  <ChartTooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <ChartTooltipContent
+                            active={active}
+                            payload={payload}
+                            className="bg-white border border-gray-200 shadow-lg"
+                          />
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <ChartLegend
+                    content={({ payload }) => (
+                      <ChartLegendContent
+                        payload={payload}
+                        className="justify-start"
+                      />
+                    )}
+                  />
+                  {yKeys.map((key, index) => (
+                    <Bar 
+                      key={key}
+                      dataKey={key} 
+                      fill={colors[index % colors.length]}
+                      radius={[4, 4, 0, 0]}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
             </ChartContainer>
           </div>
         );
@@ -227,54 +226,56 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
               </div>
             )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <LineChart data={chartData} margin={{ left: 20, right: 20, bottom: 40, top: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis 
-                  dataKey={xKey}
-                  tickLine={false}
-                  axisLine={false}
-                  label={{ value: xLabel, position: 'bottom', offset: 0 }}
-                />
-                <YAxis 
-                  domain={yDomain}
-                  tickLine={false}
-                  axisLine={false}
-                  label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
-                />
-                <ChartTooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <ChartTooltipContent
-                          active={active}
-                          payload={payload}
-                          className="bg-white border border-gray-200 shadow-lg"
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <ChartLegend
-                  content={({ payload }) => (
-                    <ChartLegendContent
-                      payload={payload}
-                      className="justify-start"
-                    />
-                  )}
-                />
-                {yKeys.map((key, index) => (
-                  <Line 
-                    key={key}
-                    type="monotone"
-                    dataKey={key}
-                    stroke={colors[index % colors.length]}
-                    strokeWidth={2}
-                    dot={{ fill: colors[index % colors.length], r: 4 }}
-                    activeDot={{ r: 6 }}
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData} margin={{ left: 20, right: 20, bottom: 40, top: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey={xKey}
+                    tickLine={false}
+                    axisLine={false}
+                    label={{ value: xLabel, position: 'bottom', offset: 0 }}
                   />
-                ))}
-              </LineChart>
+                  <YAxis 
+                    domain={yDomain}
+                    tickLine={false}
+                    axisLine={false}
+                    label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
+                  />
+                  <ChartTooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <ChartTooltipContent
+                            active={active}
+                            payload={payload}
+                            className="bg-white border border-gray-200 shadow-lg"
+                          />
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <ChartLegend
+                    content={({ payload }) => (
+                      <ChartLegendContent
+                        payload={payload}
+                        className="justify-start"
+                      />
+                    )}
+                  />
+                  {yKeys.map((key, index) => (
+                    <Line 
+                      key={key}
+                      type="monotone"
+                      dataKey={key}
+                      stroke={colors[index % colors.length]}
+                      strokeWidth={2}
+                      dot={{ fill: colors[index % colors.length], r: 4 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
             </ChartContainer>
           </div>
         );
@@ -288,51 +289,53 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
               </div>
             )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <ScatterChart data={chartData} margin={{ left: 20, right: 20, bottom: 40, top: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis 
-                  dataKey={xKey}
-                  tickLine={false}
-                  axisLine={false}
-                  label={{ value: xLabel, position: 'bottom', offset: 0 }}
-                />
-                <YAxis 
-                  domain={yDomain}
-                  tickLine={false}
-                  axisLine={false}
-                  label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
-                />
-                <ChartTooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <ChartTooltipContent
-                          active={active}
-                          payload={payload}
-                          className="bg-white border border-gray-200 shadow-lg"
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <ChartLegend
-                  content={({ payload }) => (
-                    <ChartLegendContent
-                      payload={payload}
-                      className="justify-start"
-                    />
-                  )}
-                />
-                {yKeys.map((key, index) => (
-                  <Scatter 
-                    key={key}
-                    dataKey={key} 
-                    fill={colors[index % colors.length]}
-                    r={6}
+              <ResponsiveContainer width="100%" height="100%">
+                <ScatterChart data={chartData} margin={{ left: 20, right: 20, bottom: 40, top: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey={xKey}
+                    tickLine={false}
+                    axisLine={false}
+                    label={{ value: xLabel, position: 'bottom', offset: 0 }}
                   />
-                ))}
-              </ScatterChart>
+                  <YAxis 
+                    domain={yDomain}
+                    tickLine={false}
+                    axisLine={false}
+                    label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
+                  />
+                  <ChartTooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <ChartTooltipContent
+                            active={active}
+                            payload={payload}
+                            className="bg-white border border-gray-200 shadow-lg"
+                          />
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <ChartLegend
+                    content={({ payload }) => (
+                      <ChartLegendContent
+                        payload={payload}
+                        className="justify-start"
+                      />
+                    )}
+                  />
+                  {yKeys.map((key, index) => (
+                    <Scatter 
+                      key={key}
+                      dataKey={key} 
+                      fill={colors[index % colors.length]}
+                      r={6}
+                    />
+                  ))}
+                </ScatterChart>
+              </ResponsiveContainer>
             </ChartContainer>
           </div>
         );
@@ -346,51 +349,53 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
               </div>
             )}
             <ChartContainer config={chartConfig} className="w-full h-full">
-              <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 40, top: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis 
-                  dataKey={xKey}
-                  tickLine={false}
-                  axisLine={false}
-                  label={{ value: xLabel, position: 'bottom', offset: 0 }}
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ left: 20, right: 20, bottom: 40, top: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey={xKey}
+                    tickLine={false}
+                    axisLine={false}
+                    label={{ value: xLabel, position: 'bottom', offset: 0 }}
                 />
-                <YAxis 
-                  domain={yDomain}
-                  tickLine={false}
-                  axisLine={false}
-                  label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
-                />
-                <ChartTooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <ChartTooltipContent
-                          active={active}
-                          payload={payload}
-                          className="bg-white border border-gray-200 shadow-lg"
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <ChartLegend
-                  content={({ payload }) => (
-                    <ChartLegendContent
-                      payload={payload}
-                      className="justify-start"
-                    />
-                  )}
-                />
-                {yKeys.map((key, index) => (
-                  <Bar 
-                    key={key}
-                    dataKey={key} 
-                    fill={colors[index % colors.length]}
-                    radius={[4, 4, 0, 0]}
+                  <YAxis 
+                    domain={yDomain}
+                    tickLine={false}
+                    axisLine={false}
+                    label={{ value: yLabel, angle: -90, position: 'left', offset: 0 }}
                   />
-                ))}
-              </BarChart>
+                  <ChartTooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <ChartTooltipContent
+                            active={active}
+                            payload={payload}
+                            className="bg-white border border-gray-200 shadow-lg"
+                          />
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <ChartLegend
+                    content={({ payload }) => (
+                      <ChartLegendContent
+                        payload={payload}
+                        className="justify-start"
+                      />
+                    )}
+                  />
+                  {yKeys.map((key, index) => (
+                    <Bar 
+                      key={key}
+                      dataKey={key} 
+                      fill={colors[index % colors.length]}
+                      radius={[4, 4, 0, 0]}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
             </ChartContainer>
           </div>
         );

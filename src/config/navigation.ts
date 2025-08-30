@@ -19,6 +19,11 @@ export const navigationItems = [
     icon: FileText,
   },
   {
+    title: "Projects",
+    url: "projects",
+    icon: BarChart3,
+  },
+  {
     title: "Tools",
     url: "tools",
     icon: Wrench,
@@ -60,19 +65,6 @@ export const portfolioItems = [
     title: "ERP & SaaS Integration",
     url: "portfolio/saas",
     icon: Settings,
-  },
-];
-
-export const projectItems = [
-  {
-    title: "Project Method Analysis",
-    url: "projects/project-analysis",
-    icon: BarChart3,
-  },
-  {
-    title: "HealthBridge Analysis",
-    url: "healthbridge-analysis",
-    icon: BarChart3,
   },
 ];
 

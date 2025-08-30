@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"; // TanStack Router
 import { useAuth } from "../hooks/useAuth";
-import { navigationItems, projectItems, protectedProjectItems } from "../config/navigation";
+import { navigationItems, protectedProjectItems } from "../config/navigation";
 import { TableOfContents } from "./TableOfContents";
 
 import {
@@ -49,31 +49,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         
-        {/* Projects Group */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">
-            Projects
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
-              {projectItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link
-                      to={`/${item.url}`}
-                      onClick={() => {
-                        if (isMobile) setOpenMobile(false);
-                      }}
-                    >
-                      {item.icon && <item.icon className="h-4 w-4" />}
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+
 
         {/* Protected Projects Group - Only show when authenticated */}
         {isAuthenticated && (

@@ -14,6 +14,7 @@ import { createBrowserHistory } from '@tanstack/history'
 import AppLayout from './layout/AppLayout'
 import PortfolioPage from './pages/PortfolioPage'
 import ProjectsPage from './pages/ProjectsPage'
+import ProjectsListPage from './pages/ProjectsListPage'
 import NotFound from './pages/NotFound'
 import HealthBridge from './pages/HealthBridge'
 import ContactPage from './pages/ContactPage'
@@ -57,6 +58,13 @@ const portfolioRoute = createRoute({
   component: () => <PortfolioListPage />
 })
 
+// Projects list route
+const projectsListRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'projects',
+  component: () => <ProjectsListPage />
+})
+
 // Blog post route
 const blogPostRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -89,7 +97,8 @@ const projectsRoute = createRoute({
     // List of all project pages - easy to maintain
     // To add a new project page, just add the slug here (filename without .md extension)
     const projectPages = [
-      'project-analysis'
+      'project-analysis',
+      'healthbridge-analysis'
     ]
     
     // Check if this is a valid project page
@@ -104,10 +113,10 @@ const projectsRoute = createRoute({
 
 
 
-// Health Bridge Analysis route
+// Health Bridge Analysis route - moved under projects path
 const healthBridgeAnalysisRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'healthbridge-analysis',
+  path: 'projects/healthbridge-analysis',
   component: () => <HealthBridge />
 })
 
@@ -180,6 +189,7 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   portfolioRoute,
   portfolioItemRoute,
+  projectsListRoute,
   projectsRoute,
   healthBridgeAnalysisRoute,
   blogListRoute,
