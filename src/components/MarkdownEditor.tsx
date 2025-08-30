@@ -256,25 +256,26 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
 
 
-  // Update editor content when initialContent changes
-  useEffect(() => {
-    if (editor && initialContent && !editor.isDestroyed && editor.view) {
-      try {
-        const currentContent = editor.getHTML()
-        
-        // Check if initialContent is already HTML or if it's markdown
-        let newHtml: string
-        if (initialContent.startsWith('<') && initialContent.includes('>')) {
-          // Content is already HTML, decode HTML entities and use it directly
-          newHtml = decodeHtmlEntities(initialContent)
-        } else {
-          // Content is markdown, convert it to HTML
-          newHtml = markdownToHtml(initialContent)
-        }
-        
-                 // Only update if the content is actually different
-         if (currentContent !== newHtml) {
-           logger.debug('Setting editor content')
+     // Update editor content when initialContent changes - but only once to prevent reversion
+   useEffect(() => {
+     if (editor && initialContent && !editor.isDestroyed && editor.view) {
+       try {
+         const currentContent = editor.getHTML()
+         
+         // Only set content if editor is empty or has default content
+         // This prevents reversion when user has made changes
+         if (currentContent === '<p>Start Writing</p>' || currentContent === '' || currentContent.includes('Start Writing')) {
+           logger.debug('Setting initial editor content')
+           
+           // Check if initialContent is already HTML or if it's markdown
+           let newHtml: string
+           if (initialContent.startsWith('<') && initialContent.includes('>')) {
+             // Content is already HTML, decode HTML entities and use it directly
+             newHtml = decodeHtmlEntities(initialContent)
+           } else {
+             // Content is markdown, convert it to HTML
+             newHtml = markdownToHtml(initialContent)
+           }
            
            // Set flag to prevent onUpdate callback during content setting
            isSettingContent.current = true
@@ -288,28 +289,26 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
            // Reset flag after a short delay to allow editor to settle
            setTimeout(() => {
              isSettingContent.current = false
-             // Don't force cursor position - let user maintain their position
            }, 100)
            
            logger.debug('Editor content updated successfully')
          }
-    } catch (error) {
-      logger.error('Failed to update editor content:', error)
-    }
-  } else if (editor && !initialContent && !editor.isDestroyed && editor.view) {
-    try {
-      // When initialContent is empty, ensure we have clean default content
-      const currentContent = editor.getHTML()
-      if (currentContent.includes('<h1>') || currentContent.includes('<h2>') || currentContent.includes('<h3>')) {
-        editor.commands.setContent('<p>Start Writing</p>')
-        setMarkdownOutput('')
-                 // Don't force cursor position - let user maintain their position
-      }
-    } catch (error) {
-      logger.error('Failed to setup default content:', error)
-    }
-  }
-  }, [editor, initialContent])
+       } catch (error) {
+         logger.error('Failed to update editor content:', error)
+       }
+     } else if (editor && !initialContent && !editor.isDestroyed && editor.view) {
+       try {
+         // When initialContent is empty, ensure we have clean default content
+         const currentContent = editor.getHTML()
+         if (currentContent.includes('<h1>') || currentContent.includes('<h2>') || currentContent.includes('<h3>')) {
+           editor.commands.setContent('<p>Start Writing</p>')
+           setMarkdownOutput('')
+         }
+       } catch (error) {
+         logger.error('Failed to setup default content:', error)
+       }
+     }
+   }, [editor, initialContent])
 
 
 
@@ -782,31 +781,31 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                    <Clipboard className="h-4 w-4" />
                  </ToolbarButton>
                  
-                 <Button
-                   onClick={() => {
-                     if (editor && !editor.isDestroyed && editor.view) {
-                       try {
-                         const content = editor.getHTML()
-                         const cleanContent = decodeHtmlEntities(content)
-                         const markdown = htmlToMarkdown(cleanContent)
-                         setMarkdownOutput(markdown)
-                         
-                         if (onContentChange) {
-                           onContentChange(cleanContent, markdown)
-                         }
-                       } catch (error) {
-                         logger.error('Failed to update markdown:', error)
-                       }
-                     }
-                   }}
-                   size="sm"
-                   className="bg-blue-600 hover:bg-blue-700 text-white"
-                   title="Update Markdown Output"
-                 >
-                   <div className="w-4 h-4 border border-current rounded-sm">
-                     <div className="w-2 h-2 border border-current rounded-sm mx-auto mt-0.5"></div>
-                   </div>
-                 </Button>
+                                   <Button
+                    onClick={() => {
+                      if (editor && !editor.isDestroyed && editor.view) {
+                        try {
+                          const content = editor.getHTML()
+                          // Don't decode HTML entities for chart data - preserve original attributes
+                          const markdown = htmlToMarkdown(content)
+                          setMarkdownOutput(markdown)
+                          
+                          if (onContentChange) {
+                            onContentChange(content, markdown)
+                          }
+                        } catch (error) {
+                          logger.error('Failed to update markdown:', error)
+                        }
+                      }
+                    }}
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    title="Update Markdown Output"
+                  >
+                    <div className="w-4 h-4 border border-current rounded-sm">
+                      <div className="w-2 h-2 border border-current rounded-sm mx-auto mt-0.5"></div>
+                    </div>
+                  </Button>
                 
               </div>
             </div>
