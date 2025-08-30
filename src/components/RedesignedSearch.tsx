@@ -173,7 +173,7 @@ export default function RedesignedSearch() {
               <Filter className="h-4 w-4 text-muted-foreground" />
               <select
                 value={selectedContentType}
-                onChange={(e) => setSelectedContentType(e.target.value as any)}
+                onChange={(e) => setSelectedContentType(e.target.value as 'all' | 'blog' | 'portfolio' | 'project' | 'page')}
                 className="text-sm border rounded-md px-2 py-1 bg-white"
               >
                 <option value="all">All Content</option>

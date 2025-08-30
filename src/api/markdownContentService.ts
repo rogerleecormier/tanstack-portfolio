@@ -25,6 +25,32 @@ export interface SearchResult {
   refIndex: number
 }
 
+interface GitHubTreeItem {
+  type: string
+  path: string
+  sha: string
+  url: string
+  mode: string
+  size?: number
+}
+
+interface GitHubFileResponse {
+  content: string
+  encoding: string
+  sha: string
+  size: number
+  url: string
+  html_url: string
+  git_url: string
+  download_url: string
+  type: string
+  _links: {
+    self: string
+    git: string
+    html: string
+  }
+}
+
 class MarkdownContentService {
   private baseUrl = 'https://api.github.com/repos/rogerleecormier/tanstack-portfolio-content'
   private headers = {
@@ -49,7 +75,7 @@ class MarkdownContentService {
       const tree = await treeResponse.json()
       
       // Filter markdown files in content directories
-      const contentFiles = tree.tree.filter((item: any) => 
+      const contentFiles = tree.tree.filter((item: GitHubTreeItem) => 
         item.type === 'blob' && 
         item.path.endsWith('.md') &&
         (item.path.startsWith('src/content/blog/') ||
@@ -66,7 +92,7 @@ class MarkdownContentService {
       
       for (let i = 0; i < contentFiles.length; i += batchSize) {
         const batch = contentFiles.slice(i, i + batchSize)
-        const batchPromises = batch.map((file: any) => this.processMarkdownFile(file.path))
+        const batchPromises = batch.map((file: GitHubTreeItem) => this.processMarkdownFile(file.path))
         const batchResults = await Promise.allSettled(batchPromises)
         
         batchResults.forEach((result, index) => {
@@ -99,7 +125,7 @@ class MarkdownContentService {
         return null
       }
 
-      const file = await response.json()
+      const file = await response.json() as GitHubFileResponse
       
       if (file.encoding !== 'base64') {
         return null
@@ -117,11 +143,11 @@ class MarkdownContentService {
       const url = this.generateUrlFromPath(filePath)
       
       // Clean up title and description
-      const cleanTitle = this.cleanContentString(frontmatter.title || this.generateTitleFromPath(filePath))
-      const cleanDescription = this.cleanContentString(frontmatter.description || frontmatter.excerpt || '')
+      const cleanTitle = this.cleanContentString(String(frontmatter.title || this.generateTitleFromPath(filePath)))
+      const cleanDescription = this.cleanContentString(String(frontmatter.description || frontmatter.excerpt || ''))
       
       // Process tags
-      const tags = this.processTags(frontmatter.tags || frontmatter.tag || [], contentType)
+      const tags = this.processTags((frontmatter.tags as string[] | string) || (frontmatter.tag as string[] | string) || [], contentType)
 
       return {
         id: file.sha,
@@ -130,10 +156,10 @@ class MarkdownContentService {
         tags,
         url,
         contentType,
-        category: frontmatter.category || frontmatter.section,
-        excerpt: frontmatter.excerpt,
-        date: frontmatter.date,
-        author: frontmatter.author,
+        category: String(frontmatter.category || frontmatter.section || ''),
+        excerpt: String(frontmatter.excerpt || ''),
+        date: String(frontmatter.date || ''),
+        author: String(frontmatter.author || ''),
         lastModified: file.url,
         content: markdownContent // Full content for search
       }
@@ -147,7 +173,7 @@ class MarkdownContentService {
   /**
    * Parse frontmatter from markdown content
    */
-  private parseFrontmatter(content: string): { frontmatter: Record<string, any>, content: string } {
+  private parseFrontmatter(content: string): { frontmatter: Record<string, unknown>, content: string } {
     const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/
     const match = content.match(frontmatterRegex)
     
@@ -158,7 +184,7 @@ class MarkdownContentService {
     const [, frontmatterStr, markdownContent] = match
     
     try {
-      const frontmatter: Record<string, any> = {}
+      const frontmatter: Record<string, unknown> = {}
       const lines = frontmatterStr.split('\n')
       
       for (const line of lines) {

@@ -1,71 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { MessageSquare, ExternalLink, TrendingUp } from 'lucide-react'
-import { useEffect, useState, useCallback, useRef } from 'react'
-import { workerContentService, type WorkerContentItem } from '@/api/workerContentService'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { Badge } from './ui/badge'
+import { MessageSquare, TrendingUp, ExternalLink } from 'lucide-react'
+import { ContentItem } from '../types/content'
 
 interface UnifiedRelatedContentProps {
-  content: string
-  title: string
+  title?: string
   tags?: string[]
-  contentType?: 'blog' | 'portfolio' | 'project' | 'page'
-  currentUrl?: string
+  contentType?: string
+  currentUrl: string
   className?: string
   maxResults?: number
   variant?: 'sidebar' | 'inline'
-}
-
-// Helper function to safely parse tags
-function parseTagsSafely(tags: unknown): string[] {
-  if (!tags) return [];
-  
-  // If tags is already an array, process each item
-  if (Array.isArray(tags)) {
-    const allTags: string[] = [];
-    
-    for (const item of tags) {
-      if (typeof item === 'string') {
-        // Check if this string looks like JSON
-        if (item.trim().startsWith('[') && item.trim().endsWith(']')) {
-          try {
-            const parsed = JSON.parse(item);
-            if (Array.isArray(parsed)) {
-              allTags.push(...parsed.filter((tag): tag is string => typeof tag === 'string'));
-            }
-          } catch {
-            // If parsing fails, treat as a single tag
-            allTags.push(item);
-          }
-        } else {
-          // Regular string tag
-          allTags.push(item);
-        }
-      }
-    }
-    
-    return allTags;
-  }
-  
-  // If tags is a string, try to parse it
-  if (typeof tags === 'string') {
-    try {
-      const parsed = JSON.parse(tags);
-      if (Array.isArray(parsed)) {
-        return parsed.filter((tag): tag is string => typeof tag === 'string');
-      }
-    } catch {
-      // If parsing fails, split by comma and clean up
-      return tags.split(',').map((tag: string) => 
-        tag.trim().replace(/^\[|\]$/g, '').replace(/"/g, '')
-      );
-    }
-  }
-  
-  return [];
+  content?: string
 }
 
 export function UnifiedRelatedContent({ 
-  content, 
   title, 
   tags = [], 
   contentType,
@@ -74,47 +23,66 @@ export function UnifiedRelatedContent({
   maxResults = 2,
   variant = 'sidebar'
 }: UnifiedRelatedContentProps) {
-  const [recommendations, setRecommendations] = useState<WorkerContentItem[]>([])
+  const [recommendations, setRecommendations] = useState<ContentItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
 
   const getRecommendations = useCallback(async () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
+    if (!title && (!tags || tags.length === 0)) {
+      return
     }
 
     const controller = new AbortController()
     abortControllerRef.current = controller
 
-    setIsLoading(true)
-    setError(null)
-
     try {
-      const response = await workerContentService.getRelatedContent(
-        title,
-        tags,
-        contentType,
-        currentUrl,
-        maxResults
-      )
+      setIsLoading(true)
+      setError(null)
 
-      if (response && response.length > 0) {
-        setRecommendations(response)
+      const response = await fetch('/api/content-search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: title || tags.join(' '),
+          contentType: contentType || 'all',
+          maxResults: maxResults + 1, // Get one extra to account for current page
+          excludeUrl: currentUrl,
+          tags: tags || []
+        }),
+        signal: controller.signal
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      
+      if (data.success && data.results) {
+        // Filter out the current page and limit results
+        const filteredResults = data.results
+          .filter((item: ContentItem) => item.url !== currentUrl)
+          .slice(0, maxResults)
+        
+        setRecommendations(filteredResults)
       } else {
         setRecommendations([])
       }
     } catch (err) {
-      if (err instanceof Error && err.name !== 'AbortError') {
-        setError('Failed to load recommendations')
-        console.error('Error loading recommendations:', err)
+      if (err instanceof Error && err.name === 'AbortError') {
+        return
       }
+      setError(err instanceof Error ? err.message : 'Unknown error')
+      console.error('Error loading recommendations:', err)
     } finally {
       if (!controller.signal.aborted) {
         setIsLoading(false)
       }
     }
-  }, [content, title, tags, contentType, currentUrl, maxResults])
+  }, [title, tags, contentType, currentUrl, maxResults])
 
   useEffect(() => {
     getRecommendations()
@@ -220,13 +188,13 @@ export function UnifiedRelatedContent({
         
         <div className="space-y-4">
           {recommendations.map((item) => (
-            <Card key={item.id} className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
-                             <CardHeader className="pb-3">
+            <div key={item.id} className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+                             <div className="pb-3">
                  <div className="flex items-start justify-between gap-2">
                    <div className="flex-1 min-w-0">
-                     <CardTitle className="text-base font-medium leading-tight text-gray-900 dark:text-gray-100 line-clamp-2">
+                     <h4 className="text-base font-medium leading-tight text-gray-900 dark:text-gray-100 line-clamp-2">
                        {item.title}
-                     </CardTitle>
+                     </h4>
                      {item.category && (
                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                          {item.category}
@@ -241,9 +209,9 @@ export function UnifiedRelatedContent({
                      <ExternalLink className="h-4 w-4" />
                    </a>
                  </div>
-               </CardHeader>
+               </div>
               
-                             <CardContent className="pt-0">
+                             <div className="pt-0">
                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-3">
                    {item.description || 'No description available'}
                  </p>
@@ -254,11 +222,11 @@ export function UnifiedRelatedContent({
                       <div className="flex flex-wrap gap-1">
                                                  {(() => {
                                                                                // Use helper function to safely parse tags
-                        const cleanTags = parseTagsSafely(item.tags).filter(tag => tag && tag.trim().length > 0);
+                        const cleanTags = item.tags.filter((tag: string) => tag && tag.trim().length > 0);
                            
                            return (
                              <>
-                               {cleanTags.slice(0, 4).map((tag, index) => (
+                               {cleanTags.slice(0, 4).map((tag: string, index: number) => (
                                  <span 
                                    key={index}
                                    className="inline-block text-xs px-2 py-1 brand-bg-primary text-teal-600 dark:bg-teal-50 dark:text-teal-600 rounded-full"
@@ -298,8 +266,8 @@ export function UnifiedRelatedContent({
                       </Badge>
                     </div>
                  </div>
-               </CardContent>
-            </Card>
+               </div>
+            </div>
           ))}
         </div>
       </div>
@@ -320,12 +288,12 @@ export function UnifiedRelatedContent({
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {recommendations.map((item) => (
-          <Card key={item.id} className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors h-full">
-            <CardHeader className="pb-3">
+          <div key={item.id} className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors h-full">
+            <div className="pb-3">
               <div className="flex items-start justify-between gap-2">
-                <CardTitle className="text-lg font-medium leading-tight text-gray-900 dark:text-gray-100 line-clamp-2">
+                <h4 className="text-lg font-medium leading-tight text-gray-900 dark:text-gray-100 line-clamp-2">
                   {item.title}
-                </CardTitle>
+                </h4>
                 <a 
                   href={item.url} 
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors flex-shrink-0 mt-1"
@@ -334,9 +302,9 @@ export function UnifiedRelatedContent({
                   <ExternalLink className="h-4 w-4" />
                 </a>
               </div>
-            </CardHeader>
+            </div>
             
-            <CardContent className="pt-0">
+            <div className="pt-0">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
                 {item.description}
               </p>
@@ -360,11 +328,11 @@ export function UnifiedRelatedContent({
                    <div className="flex flex-wrap gap-1 max-w-[150px]">
                                            {(() => {
                         // Use helper function to safely parse tags
-                        const cleanTags = parseTagsSafely(item.tags).filter(tag => tag && tag.trim().length > 0);
+                        const cleanTags = item.tags.filter((tag: string) => tag && tag.trim().length > 0);
                         
                         return (
                           <>
-                            {cleanTags.slice(0, 3).map((tag, index) => (
+                            {cleanTags.slice(0, 3).map((tag: string, index: number) => (
                               <span 
                                 key={index}
                                 className="inline-block text-xs px-2 py-1 brand-bg-primary text-teal-600 dark:bg-teal-50 dark:text-teal-600 rounded-full truncate max-w-[100px]"
@@ -384,8 +352,8 @@ export function UnifiedRelatedContent({
                    </div>
                  )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
     </div>

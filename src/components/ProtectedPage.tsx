@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { P, H3 } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, Wifi, CheckCircle, XCircle, FileText, Activity, Database, Globe, Server, BarChart3, Settings, Users, Code, Mail } from 'lucide-react';
+import { P } from './ui/typography';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, FileText, Activity, Database, Globe, BarChart3, Settings, Users, Code, Mail } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 
@@ -63,7 +63,7 @@ export const ProtectedPage: React.FC = () => {
     setApiStatus(prev => ({ ...prev, email: 'testing' }));
     try {
       // Try a simple GET request to check basic connectivity
-      const response = await fetch('https://tanstack-portfolio-email-worker.rcormier.workers.dev', {
+      await fetch('https://tanstack-portfolio-email-worker.rcormier.workers.dev', {
         method: 'GET',
         mode: 'no-cors', // This bypasses CORS for basic connectivity testing
         headers: {
@@ -92,7 +92,7 @@ export const ProtectedPage: React.FC = () => {
     setApiStatus(prev => ({ ...prev, newsletter: 'testing' }));
     try {
       // Try a simple GET request to check basic connectivity
-      const response = await fetch('https://tanstack-portfolio-blog-subscription.rcormier.workers.dev', {
+      await fetch('https://tanstack-portfolio-blog-subscription.rcormier.workers.dev', {
         method: 'GET',
         mode: 'no-cors', // This bypasses CORS for basic connectivity testing
         headers: {
@@ -121,7 +121,7 @@ export const ProtectedPage: React.FC = () => {
     setApiStatus(prev => ({ ...prev, contentSearch: 'testing' }));
     try {
       // Try a simple GET request first to check basic connectivity
-      const response = await fetch('https://tanstack-portfolio-content-search.rcormier.workers.dev', {
+      await fetch('https://tanstack-portfolio-content-search.rcormier.workers.dev', {
         method: 'GET',
         mode: 'no-cors', // This bypasses CORS for basic connectivity testing
         headers: {
@@ -150,7 +150,7 @@ export const ProtectedPage: React.FC = () => {
     setApiStatus(prev => ({ ...prev, githubFileManager: 'testing' }));
     try {
       // Try a simple GET request to check basic connectivity
-      const response = await fetch('https://tanstack-portfolio-file-manager.rcormier.workers.dev', {
+      await fetch('https://tanstack-portfolio-file-manager.rcormier.workers.dev', {
         method: 'GET',
         mode: 'no-cors', // This bypasses CORS for basic connectivity testing
         headers: {
@@ -205,7 +205,7 @@ export const ProtectedPage: React.FC = () => {
     setApiStatus(prev => ({ ...prev, smartRecommendations: 'testing' }));
     try {
       // Try a simple GET request to check basic connectivity
-      const response = await fetch('https://tanstack-portfolio-content-search.rcormier.workers.dev', {
+      await fetch('https://tanstack-portfolio-content-search.rcormier.workers.dev', {
         method: 'GET',
         mode: 'no-cors', // This bypasses CORS for basic connectivity testing
         headers: {
@@ -234,7 +234,7 @@ export const ProtectedPage: React.FC = () => {
     setApiStatus(prev => ({ ...prev, markdownContent: 'testing' }));
     try {
       // Try a simple GET request to check basic connectivity
-      const response = await fetch('https://tanstack-portfolio-file-manager.rcormier.workers.dev', {
+      await fetch('https://tanstack-portfolio-file-manager.rcormier.workers.dev', {
         method: 'GET',
         mode: 'no-cors', // This bypasses CORS for basic connectivity testing
         headers: {

@@ -35,14 +35,7 @@ interface ContentItem {
   lastModified?: string
 }
 
-interface SearchResponse {
-  success: boolean
-  results: ContentItem[]
-  totalResults: number
-  query: string
-  timestamp: string
-  error?: string
-}
+// SearchResponse interface removed as it's not used
 
 interface GitHubFileResponse {
   content: string
@@ -201,7 +194,7 @@ class ContentSearchWorker {
       const results = scoredItems
         .sort((a, b) => b.score - a.score)
         .slice(0, maxResults)
-        .map(({ score, ...item }) => item)
+        .map(({ score: _score, ...item }) => item)
 
       // Return clean results for display (no full content)
       const cleanResults = results.map(item => ({
@@ -500,7 +493,7 @@ class ContentSearchWorker {
   /**
    * Parse frontmatter from markdown content
    */
-  private parseFrontmatter(content: string): { frontmatter: Record<string, any>, content: string } {
+  private parseFrontmatter(content: string): { frontmatter: Record<string, unknown>, content: string } {
     const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/
     const match = content.match(frontmatterRegex)
     
@@ -511,7 +504,7 @@ class ContentSearchWorker {
     const [, frontmatterStr, markdownContent] = match
     
     try {
-      const frontmatter: Record<string, any> = {}
+      const frontmatter: Record<string, unknown> = {}
       const lines = frontmatterStr.split('\n')
       
       for (const line of lines) {
@@ -566,7 +559,7 @@ class ContentSearchWorker {
   /**
    * Generate search keywords from content
    */
-  private generateSearchKeywords(frontmatter: Record<string, any>, content: string, headings: string[]): string[] {
+  private generateSearchKeywords(frontmatter: Record<string, unknown>, content: string, headings: string[]): string[] {
     const keywords = new Set<string>()
     
     // Add tags
@@ -699,7 +692,7 @@ class ContentSearchWorker {
     
     try {
       // Remove emojis first (Unicode emoji ranges)
-      let cleanedContent = content.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
+      const cleanedContent = content.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
       
       // Import unified packages dynamically (Cloudflare Workers don't support top-level imports)
       const { unified } = await import('unified')
@@ -929,7 +922,7 @@ class ContentSearchWorker {
       .filter(item => item.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, maxResults)
-      .map(({ score, ...item }) => item)
+      .map(({ score: _score, ...item }) => item)
   }
 
   /**
