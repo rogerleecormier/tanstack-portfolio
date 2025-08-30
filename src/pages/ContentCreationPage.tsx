@@ -656,6 +656,7 @@ const ContentCreationPage: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
+
                 {isLoadingFile ? (
                   <div className="flex items-center justify-center h-96">
                     <div className="text-center">

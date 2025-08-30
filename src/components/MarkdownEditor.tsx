@@ -150,6 +150,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   // Track if we're currently setting content to prevent infinite loops
   const isSettingContent = useRef(false)
   
+  // Add debouncing for content updates to prevent constant HTML to markdown conversion
+  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const lastContentRef = useRef<string>('')
+  
   // Function to get default directory based on content type
   const getDefaultDirectory = (type: string) => {
     switch (type) {
@@ -261,13 +265,27 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         return
       }
       
-                // Convert HTML to markdown-like format
-          if (!editor.isDestroyed && editor.view) {
+      // Get current HTML content
+      if (!editor.isDestroyed && editor.view) {
+        try {
+          const content = editor.getHTML()
+          
+          // Check if content has actually changed to avoid unnecessary updates
+          if (content === lastContentRef.current) {
+            return
+          }
+          
+          // Update the last content reference
+          lastContentRef.current = content
+          
+          // Clear any existing timeout
+          if (updateTimeoutRef.current) {
+            clearTimeout(updateTimeoutRef.current)
+          }
+          
+          // Debounce the content update to prevent constant HTML to markdown conversion
+          updateTimeoutRef.current = setTimeout(() => {
             try {
-              const content = editor.getHTML()
-              
-
-              
               // Decode any HTML entities before converting to markdown
               const cleanContent = decodeHtmlEntities(content)
               const markdown = htmlToMarkdown(cleanContent)
@@ -280,9 +298,24 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             } catch (error) {
               logger.error('Failed to get editor content:', error)
             }
-          }
+          }, 500) // 500ms debounce delay
+        } catch (error) {
+          logger.error('Failed to get editor content:', error)
+        }
+      }
     },
   })
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current)
+      }
+    }
+  }, [])
+
+
 
   // Update editor content when initialContent changes
   useEffect(() => {
@@ -827,6 +860,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 >
                   <Clipboard className="h-4 w-4" />
                 </ToolbarButton>
+                
               </div>
             </div>
 
@@ -940,6 +974,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             <div className="w-1/2 p-6 bg-gradient-to-br from-teal-50 to-blue-50">
               <div className="mb-4">
                 <h2 className="text-lg font-semibold text-teal-900 mb-2">Preview</h2>
+                
+
+                
                 <div className="space-y-4">
                   {/* Show markdown output */}
                   <div>
