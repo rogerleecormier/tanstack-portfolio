@@ -26,5 +26,5 @@ export const testYourExample = () => {
 
 // Export for use in browser console
 if (typeof window !== 'undefined') {
-  (window as Window & { testYourExample: () => void }).testYourExample = testYourExample
+  ;(window as any).testYourExample = testYourExample
 }
