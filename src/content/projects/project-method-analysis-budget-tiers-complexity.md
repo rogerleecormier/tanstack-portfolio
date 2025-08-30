@@ -8,7 +8,7 @@ tags: ["Analytics", "Project Method Analysis", "Risk Analysis", "Budget Analysis
 
 ## 📝 Project Overview
 
-This project analyzes a dataset of 4,000 real-world project records to explore how budget correlates with project complexity. The goal is to surface patterns in budget allocation across projects and visualize how often projects fall into specific budget tiers.
+This project analyzes a dataset of 4,000 real-world project records to explore how budget correlates with complexity. The goal is to surface patterns in budget allocation across projects and visualize how often projects fall into specific budget tiers.
 
 ## ❓ Problem Statement
 
