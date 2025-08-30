@@ -1,0 +1,3 @@
+# Handle SPA routing - redirect all routes to index.html except assets
+/assets/* /assets/:splat 200
+/* /index.html 200

@@ -160,6 +160,20 @@ class Logger {
     }
   }
 
+  // Asset loading logging - only in dev/localhost
+  assetLoading(message: string, ...args: unknown[]): void {
+    if (this.shouldLog('info')) {
+      console.log(`📦 ${message}`, ...args)
+    }
+  }
+
+  // MIME type logging - only in dev/localhost
+  mimeType(message: string, ...args: unknown[]): void {
+    if (this.shouldLog('info')) {
+      console.log(`🔧 ${message}`, ...args)
+    }
+  }
+
   // Validation logging - only in dev/localhost
   validation(message: string, ...args: unknown[]): void {
     if (this.shouldLog('info')) {
@@ -198,6 +212,8 @@ export const {
   location,
   data,
   response,
+  assetLoading,
+  mimeType,
   validation,
   getEnvironmentInfo,
   toggleDebug

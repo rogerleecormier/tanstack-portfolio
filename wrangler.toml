@@ -1,0 +1,23 @@
+[build]
+command = "npm run build"
+watch_dir = "src"
+
+[site]
+bucket = "./dist"
+entry-point = "."
+
+[env.production]
+name = "rcormier-dev"
+route = "rcormier.dev/*"
+
+[env.production.site]
+bucket = "./dist"
+
+# Ensure proper MIME types for assets
+[[env.production.rules]]
+type = "ESModule"
+globs = ["**/*.js"]
+
+[[env.production.rules]]
+type = "Data"
+globs = ["**/*.css", "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.svg", "**/*.ico", "**/*.webmanifest"]

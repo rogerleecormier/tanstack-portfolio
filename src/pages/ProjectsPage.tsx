@@ -86,29 +86,72 @@ export default function ProjectsPage({ file }: { file: string }) {
     const loadMarkdown = async () => {
       setIsLoading(true)
       try {
-        // Import markdown directly from src/content
+        // First try to fetch content from the worker API for real-time updates
         console.log('Loading markdown file:', file)
         
-        // Handle nested directory structure by mapping file paths
-        let markdownModule
-        if (file.startsWith('portfolio/')) {
-          // Handle portfolio files
-          const fileName = file.replace('portfolio/', '')
-          markdownModule = await import(`../content/portfolio/${fileName}.md?raw`)
-        } else if (file.startsWith('projects/')) {
-          // Handle project files
-          const fileName = file.replace('projects/', '')
-          markdownModule = await import(`../content/projects/${fileName}.md?raw`)
+        // Extract the filename for the API call
+        let fileName = file
+        if (file.startsWith('projects/')) {
+          fileName = file.replace('projects/', '')
+        } else if (file.startsWith('portfolio/')) {
+          fileName = file.replace('portfolio/', '')
         } else if (file.startsWith('blog/')) {
-          // Handle blog files
-          const fileName = file.replace('blog/', '')
-          markdownModule = await import(`../content/blog/${fileName}.md?raw`)
-        } else {
-          // Handle root level files (fallback)
-          markdownModule = await import(`../content/${file}.md?raw`)
+          fileName = file.replace('blog/', '')
         }
         
-        const text = markdownModule.default
+        // Try to fetch from worker API first (for real-time content)
+        let text: string
+        try {
+          const workerUrl = 'https://github-file-manager.rcormier.workers.dev'
+          const apiUrl = `${workerUrl}/api/files/read`
+          
+          console.log('🔗 Attempting to fetch from worker API:', apiUrl)
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              filePath: `${fileName}.md` // Send relative path without src/content prefix
+            })
+          })
+          
+          if (response.ok) {
+            const result = await response.json()
+            if (result.success && result.content) {
+              console.log('✅ Successfully loaded content from worker API')
+              text = result.content
+            } else {
+              throw new Error('Worker API returned no content')
+            }
+          } else {
+            throw new Error(`Worker API error: ${response.status}`)
+          }
+        } catch (apiError) {
+          console.log('⚠️ Worker API failed, falling back to bundled content:', apiError)
+          
+          // Fallback to bundled content if API fails
+          let markdownModule
+          if (file.startsWith('portfolio/')) {
+            // Handle portfolio files
+            const fileName = file.replace('portfolio/', '')
+            markdownModule = await import(`../content/portfolio/${fileName}.md?raw`)
+          } else if (file.startsWith('projects/')) {
+            // Handle project files
+            const fileName = file.replace('projects/', '')
+            markdownModule = await import(`../content/projects/${fileName}.md?raw`)
+          } else if (file.startsWith('blog/')) {
+            // Handle blog files
+            const fileName = file.replace('blog/', '')
+            markdownModule = await import(`../content/blog/${fileName}.md?raw`)
+          } else {
+            // Handle root level files (fallback)
+            markdownModule = await import(`../content/${file}.md?raw`)
+          }
+          
+          text = markdownModule.default
+        }
 
         // Parse frontmatter
         const { attributes, body } = fm(text)
