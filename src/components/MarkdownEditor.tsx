@@ -902,30 +902,25 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         </Card>
       )}
 
-      <div className="flex">
+      <div className="space-y-6">
         {/* Editor */}
-        <div className={`${showPreviewState ? 'w-1/2' : 'w-full'}`}>
+        <div className="w-full">
           <div className="prose prose-sm max-w-none">
             <EditorContent 
               editor={editor} 
               className="min-h-[600px]"
               onContextMenu={handleTableContextMenu}
             />
-
-              
-
           </div>
         </div>
 
         {/* Preview */}
         {showPreviewState && (
           <>
-            <Separator orientation="vertical" className="bg-teal-200" />
-            <div className="w-1/2 p-6 bg-gradient-to-br from-teal-50 to-blue-50">
+            <Separator className="bg-teal-200" />
+            <div className="w-full p-6 bg-gradient-to-br from-teal-50 to-blue-50 rounded-lg border border-teal-200">
               <div className="mb-4">
                 <h2 className="text-lg font-semibold text-teal-900 mb-2">Preview</h2>
-                
-
                 
                 <div className="space-y-4">
                   {/* Show markdown output */}

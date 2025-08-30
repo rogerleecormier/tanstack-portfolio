@@ -587,13 +587,26 @@ export const htmlToMarkdown = (html: string): string => {
                 JSON.parse(cleanedData)
               } catch (jsonError) {
                 logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
-                // Try to parse the original decoded data as a fallback
+                // Try more aggressive cleaning for carriage returns
+                const aggressivelyCleanedData = cleanedData
+                  .replace(/\r/g, '')  // Remove ALL carriage returns
+                  .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
+                  .trim()
+                
                 try {
-                  JSON.parse(decodedData)
-                } catch (fallbackError) {
-                  logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
-                  // Return the original HTML if data is corrupted
-                  return match
+                  JSON.parse(aggressivelyCleanedData)
+                  // If this works, use the aggressively cleaned data
+                  return `\n\n\`\`\`${chartType}\n${aggressivelyCleanedData}\n\`\`\`\n\n`
+                } catch (aggressiveError) {
+                  logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
+                  // Try to parse the original decoded data as a fallback
+                  try {
+                    JSON.parse(decodedData)
+                  } catch (fallbackError) {
+                    logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                    // Return the original HTML if data is corrupted
+                    return match
+                  }
                 }
               }
               
@@ -659,12 +672,25 @@ export const htmlToMarkdown = (html: string): string => {
                 JSON.parse(cleanedData)
               } catch (jsonError) {
                 logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
-                // Try to parse the original decoded data as a fallback
+                // Try more aggressive cleaning for carriage returns
+                const aggressivelyCleanedData = cleanedData
+                  .replace(/\r/g, '')  // Remove ALL carriage returns
+                  .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
+                  .trim()
+                
                 try {
-                  JSON.parse(decodedData)
-                } catch (fallbackError) {
-                  logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
-                  return match
+                  JSON.parse(aggressivelyCleanedData)
+                  // If this works, use the aggressively cleaned data
+                  return `\n\n\`\`\`${chartType}\n${aggressivelyCleanedData}\n\`\`\`\n\n`
+                } catch (aggressiveError) {
+                  logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
+                  // Try to parse the original decoded data as a fallback
+                  try {
+                    JSON.parse(decodedData)
+                  } catch (fallbackError) {
+                    logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                    return match
+                  }
                 }
               }
               
