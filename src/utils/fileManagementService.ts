@@ -146,9 +146,16 @@ class FileManagementService {
           ? 'http://localhost:8787' 
           : 'https://github-file-manager.rcormier.workers.dev'
         
-        logger.debug('🔗 Calling GitHub worker at:', workerUrl)
+        const fullUrl = `${workerUrl}/api/files/read`
+        logger.debug('🔗 Calling GitHub worker at:', fullUrl)
+        logger.debug('🔗 Full request details:', {
+          url: fullUrl,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: request
+        })
         
-        const response = await fetch(`${workerUrl}/api/files/read`, {
+        const response = await fetch(fullUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(request)
@@ -156,15 +163,18 @@ class FileManagementService {
 
         logger.debug('📡 Worker response status:', response.status)
         logger.debug('📡 Worker response ok:', response.ok)
+        logger.debug('📡 Worker response headers:', Object.fromEntries(response.headers.entries()))
 
         if (response.ok) {
           const result = await response.json()
+          logger.debug('✅ Worker response success:', result)
           if (result.success) {
             return {
               success: true,
               content: result.content
             }
           } else {
+            logger.error('❌ Worker returned error:', result.error)
             return {
               success: false,
               error: result.error || 'Failed to read file from GitHub'
@@ -172,24 +182,28 @@ class FileManagementService {
           }
         } else {
           const error = await response.json()
+          logger.error('❌ Worker HTTP error:', response.status, error)
           return {
             success: false,
             error: error.error || `GitHub API error: ${response.status}`
           }
         }
-      } catch {
+      } catch (workerError) {
         // Fall back to development mode if worker is not available
-        console.log('GitHub file manager worker not available, falling back to development mode')
+        logger.warn('⚠️ GitHub file manager worker not available, falling back to development mode:', workerError)
       }
       
       if (import.meta.env.DEV) {
         // In development, try to read from the content directory
+        logger.debug('🔄 Falling back to development mode')
         return this.readLocalFile()
       } else {
         // In production, make actual API call
+        logger.debug('🔄 Falling back to production API call')
         return this.makeApiCall('/read', request)
       }
     } catch (error) {
+      logger.error('💥 readFile error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred'

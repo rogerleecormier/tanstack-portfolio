@@ -159,6 +159,9 @@ class GitHubFileManager {
         return this.errorResponse('File path is required', 400)
       }
 
+      // Construct the full path by prepending CONTENT_PATH
+      // filePath is like "projects/project-analysis.md"
+      // fullPath becomes "src/content/projects/project-analysis.md"
       const fullPath = `${this.env.CONTENT_PATH}/${filePath}`
       const file = await this.getFile(fullPath)
 
