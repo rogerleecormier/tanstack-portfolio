@@ -86,10 +86,14 @@ class FileManagementService {
           ? 'http://localhost:8787' 
           : 'https://github-file-manager.rcormier.workers.dev'
         
+        // The worker expects relative paths, so strip the 'src/content/' prefix
+        const relativePath = request.filePath.replace(/^src\/content\//, '')
+        const saveRequest = { ...request, filePath: relativePath }
+        
         const response = await fetch(`${workerUrl}/api/files/save`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(request)
+          body: JSON.stringify(saveRequest)
         })
 
         if (response.ok) {
@@ -145,12 +149,19 @@ class FileManagementService {
         const workerUrl = 'https://github-file-manager.rcormier.workers.dev'
         const fullUrl = `${workerUrl}/api/files/read`
         
+        // The worker expects relative paths (e.g., 'projects/project-analysis.md')
+        // but we're receiving full paths (e.g., 'src/content/projects/project-analysis.md')
+        // So we need to strip the 'src/content/' prefix
+        const relativePath = request.filePath.replace(/^src\/content\//, '')
+        
         logger.network('🔗 Calling GitHub worker at:', fullUrl)
         logger.network('🔗 Full request details:', {
           url: fullUrl,
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: request
+          originalPath: request.filePath,
+          relativePath: relativePath,
+          body: { filePath: relativePath }
         })
 
         const response = await fetch(fullUrl, {
@@ -158,7 +169,7 @@ class FileManagementService {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(request)
+          body: JSON.stringify({ filePath: relativePath })
         })
 
         logger.response('📡 Worker response status:', response.status)
@@ -214,10 +225,13 @@ class FileManagementService {
           ? 'http://localhost:8787' 
           : 'https://github-file-manager.rcormier.workers.dev'
         
+        // The worker expects relative paths, so strip the 'src/content/' prefix
+        const relativeDirectory = request.directory.replace(/^src\/content\//, '')
+        
         const response = await fetch(`${workerUrl}/api/files/list`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(request)
+          body: JSON.stringify({ directory: relativeDirectory })
         })
 
         if (response.ok) {
@@ -378,10 +392,13 @@ class FileManagementService {
           ? 'http://localhost:8787' 
           : 'https://github-file-manager.rcormier.workers.dev'
         
+        // The worker expects relative paths, so strip the 'src/content/' prefix
+        const relativePath = filePath.replace(/^src\/content\//, '')
+        
         const response = await fetch(`${workerUrl}/api/files/exists`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filePath })
+          body: JSON.stringify({ filePath: relativePath })
         })
 
         if (response.ok) {
