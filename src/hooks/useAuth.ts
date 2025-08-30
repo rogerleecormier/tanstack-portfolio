@@ -212,31 +212,8 @@ export const useAuth = () => {
     }
   }, [checkAuth]);
 
-  // Additional auth check when page becomes visible (for mobile logout redirects)
-  useEffect(() => {
-          const handleVisibilityChange = () => {
-        if (!document.hidden) {
-          logger.info('useAuth: Page became visible, checking auth status');
-          checkAuth();
-        }
-      };
-
-      const handleFocus = () => {
-        logger.info('useAuth: Window focused, checking auth status');
-        checkAuth();
-      };
-
-    // Listen for visibility changes (when user returns to tab)
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    // Listen for window focus (when user returns to browser)
-    window.addEventListener('focus', handleFocus);
-    
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [checkAuth]);
+  // Removed automatic auth checks on focus/visibility change to prevent unwanted Cloudflare calls
+  // Auth is now only checked on initial load and when explicitly requested
 
   // Listen for auth state changes from other components
   useEffect(() => {
