@@ -304,11 +304,11 @@ export const htmlToMarkdown = (html: string): string => {
       .replace(/&#38;/g, '&')
       .replace(/&#60;/g, '<')
       .replace(/&#62;/g, '>')
-  } catch (error) {
+  } catch {
     // Fallback to DOM-based decoding if available
     try {
       decodedHtml = decodeHtmlEntities(html)
-    } catch (fallbackError) {
+    } catch {
       // If all else fails, use the original HTML
       decodedHtml = html
     }

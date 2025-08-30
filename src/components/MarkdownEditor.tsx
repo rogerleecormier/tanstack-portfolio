@@ -239,9 +239,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           .replace(/&gt;/g, '>')
           .replace(/&apos;/g, "'")
       },
-      // Ensure content is not automatically encoded
-      enableInputRules: true,
-      enablePasteRules: true,
     },
     content: initialContent || '<p>Start Writing</p>',
     onCreate: ({ editor }) => {
