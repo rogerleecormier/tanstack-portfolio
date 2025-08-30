@@ -3,6 +3,8 @@
  * Handles file operations for the content creation system
  */
 
+import { logger } from './logger'
+
 export interface FileSaveRequest {
   filePath: string
   content: string
@@ -136,17 +138,24 @@ class FileManagementService {
    */
   async readFile(request: FileReadRequest): Promise<FileReadResponse> {
     try {
+      logger.debug('📖 readFile called with request:', request)
+      
       // Try to use the GitHub file manager worker first
       try {
         const workerUrl = import.meta.env.DEV 
           ? 'http://localhost:8787' 
           : 'https://github-file-manager.rcormier.workers.dev'
         
+        logger.debug('🔗 Calling GitHub worker at:', workerUrl)
+        
         const response = await fetch(`${workerUrl}/api/files/read`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(request)
         })
+
+        logger.debug('📡 Worker response status:', response.status)
+        logger.debug('📡 Worker response ok:', response.ok)
 
         if (response.ok) {
           const result = await response.json()
