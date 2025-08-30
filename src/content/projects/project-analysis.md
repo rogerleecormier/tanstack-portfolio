@@ -8,7 +8,7 @@ tags: ["Analytics", "Project Method Analysis", "Risk Analysis", "Budget Analysis
 
 ## 📝 Project Overview
 
-This project analyzes a dataset of 4,000 real-world project records to explore how budget correlates with project complexity. The goal is to surface patterns in budget allocation across projects and visualize how often projects fall into specific budget tiers.
+This project analyzes a dataset of 4,000 real-world project records to explore how budget correlates with **project complexity**. The goal is to surface patterns in budget allocation across projects and visualize how often projects fall into specific budget tiers.
 
 ## ❓ Problem Statement
 
@@ -70,21 +70,21 @@ This approach balances group sizes despite the right-skewed distribution, ensuri
 
 ```histogram
 [
-  { &quot;Budget Range&quot;: &quot;$0.16M–$0.40M&quot;, &quot;Count&quot;: 189 },
-  { &quot;Budget Range&quot;: &quot;$0.40M–$0.66M&quot;, &quot;Count&quot;: 701 },
-  { &quot;Budget Range&quot;: &quot;$0.66M–$0.91M&quot;, &quot;Count&quot;: 818 },
-  { &quot;Budget Range&quot;: &quot;$0.91M–$1.16M&quot;, &quot;Count&quot;: 672 },
-  { &quot;Budget Range&quot;: &quot;$1.16M–$1.41M&quot;, &quot;Count&quot;: 517 },
-  { &quot;Budget Range&quot;: &quot;$1.41M–$1.65M&quot;, &quot;Count&quot;: 350 },
-  { &quot;Budget Range&quot;: &quot;$1.65M–$1.91M&quot;, &quot;Count&quot;: 264 },
-  { &quot;Budget Range&quot;: &quot;$1.91M–$2.16M&quot;, &quot;Count&quot;: 181 },
-  { &quot;Budget Range&quot;: &quot;$2.16M–$2.41M&quot;, &quot;Count&quot;: 149 },
-  { &quot;Budget Range&quot;: &quot;$2.41M–$2.66M&quot;, &quot;Count&quot;: 88 },
-  { &quot;Budget Range&quot;: &quot;$2.66M–$2.91M&quot;, &quot;Count&quot;: 46 },
-  { &quot;Budget Range&quot;: &quot;$2.91M–$3.16M&quot;, &quot;Count&quot;: 17 },
-  { &quot;Budget Range&quot;: &quot;$3.16M–$3.41M&quot;, &quot;Count&quot;: 6 },
-  { &quot;Budget Range&quot;: &quot;$3.41M–$3.66M&quot;, &quot;Count&quot;: 1 },
-  { &quot;Budget Range&quot;: &quot;$3.66M–$3.91M&quot;, &quot;Count&quot;: 1 }
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$0.16M–$0.40M&amp;quot;, &amp;quot;Count&amp;quot;: 189 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$0.40M–$0.66M&amp;quot;, &amp;quot;Count&amp;quot;: 701 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$0.66M–$0.91M&amp;quot;, &amp;quot;Count&amp;quot;: 818 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$0.91M–$1.16M&amp;quot;, &amp;quot;Count&amp;quot;: 672 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$1.16M–$1.41M&amp;quot;, &amp;quot;Count&amp;quot;: 517 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$1.41M–$1.65M&amp;quot;, &amp;quot;Count&amp;quot;: 350 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$1.65M–$1.91M&amp;quot;, &amp;quot;Count&amp;quot;: 264 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$1.91M–$2.16M&amp;quot;, &amp;quot;Count&amp;quot;: 181 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$2.16M–$2.41M&amp;quot;, &amp;quot;Count&amp;quot;: 149 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$2.41M–$2.66M&amp;quot;, &amp;quot;Count&amp;quot;: 88 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$2.66M–$2.91M&amp;quot;, &amp;quot;Count&amp;quot;: 46 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$2.91M–$3.16M&amp;quot;, &amp;quot;Count&amp;quot;: 17 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$3.16M–$3.41M&amp;quot;, &amp;quot;Count&amp;quot;: 6 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$3.41M–$3.66M&amp;quot;, &amp;quot;Count&amp;quot;: 1 },
+  { &amp;quot;Budget Range&amp;quot;: &amp;quot;$3.66M–$3.91M&amp;quot;, &amp;quot;Count&amp;quot;: 1 }
 ]
 ```
 
@@ -98,12 +98,12 @@ Budgets are **right-skewed**, with most projects under ~$1.5M. Percentile-based 
 
 ```scatterplot
 [
-  { &quot;Budget&quot;: 159356, &quot;Mean Complexity Score&quot;: 4.1 },
-  { &quot;Budget&quot;: 408000, &quot;Mean Complexity Score&quot;: 3.9 },
-  { &quot;Budget&quot;: 900000, &quot;Mean Complexity Score&quot;: 6.0 },
-  { &quot;Budget&quot;: 1250000, &quot;Mean Complexity Score&quot;: 6.7 },
-  { &quot;Budget&quot;: 2000000, &quot;Mean Complexity Score&quot;: 7.4 },
-  { &quot;Budget&quot;: 3200000, &quot;Mean Complexity Score&quot;: 8.8 }
+  { &amp;quot;Budget&amp;quot;: 159356, &amp;quot;Mean Complexity Score&amp;quot;: 4.1 },
+  { &amp;quot;Budget&amp;quot;: 408000, &amp;quot;Mean Complexity Score&amp;quot;: 3.9 },
+  { &amp;quot;Budget&amp;quot;: 900000, &amp;quot;Mean Complexity Score&amp;quot;: 6.0 },
+  { &amp;quot;Budget&amp;quot;: 1250000, &amp;quot;Mean Complexity Score&amp;quot;: 6.7 },
+  { &amp;quot;Budget&amp;quot;: 2000000, &amp;quot;Mean Complexity Score&amp;quot;: 7.4 },
+  { &amp;quot;Budget&amp;quot;: 3200000, &amp;quot;Mean Complexity Score&amp;quot;: 8.8 }
 ]
 ```
 
@@ -115,11 +115,11 @@ This scatterplot shows **mean complexity scores** grouped by representative budg
 
 ```linechart
 [
-  { &quot;Budget Estimate&quot;: &quot;≈$0.20M&quot;, &quot;Mean Complexity Score&quot;: 4.0 },
-  { &quot;Budget Estimate&quot;: &quot;≈$0.80M&quot;, &quot;Mean Complexity Score&quot;: 5.6 },
-  { &quot;Budget Estimate&quot;: &quot;≈$1.50M&quot;, &quot;Mean Complexity Score&quot;: 6.8 },
-  { &quot;Budget Estimate&quot;: &quot;≈$2.20M&quot;, &quot;Mean Complexity Score&quot;: 7.6 },
-  { &quot;Budget Estimate&quot;: &quot;≈$3.20M&quot;, &quot;Mean Complexity Score&quot;: 8.6 }
+  { &amp;quot;Budget Estimate&amp;quot;: &amp;quot;≈$0.20M&amp;quot;, &amp;quot;Mean Complexity Score&amp;quot;: 4.0 },
+  { &amp;quot;Budget Estimate&amp;quot;: &amp;quot;≈$0.80M&amp;quot;, &amp;quot;Mean Complexity Score&amp;quot;: 5.6 },
+  { &amp;quot;Budget Estimate&amp;quot;: &amp;quot;≈$1.50M&amp;quot;, &amp;quot;Mean Complexity Score&amp;quot;: 6.8 },
+  { &amp;quot;Budget Estimate&amp;quot;: &amp;quot;≈$2.20M&amp;quot;, &amp;quot;Mean Complexity Score&amp;quot;: 7.6 },
+  { &amp;quot;Budget Estimate&amp;quot;: &amp;quot;≈$3.20M&amp;quot;, &amp;quot;Mean Complexity Score&amp;quot;: 8.6 }
 ]
 ```
 
@@ -133,15 +133,15 @@ The fitted trend indicates a **monotonic increase** in complexity with budget, s
 
 ```scatterplot
 [
-  { &quot;x&quot;: 450000, &quot;y&quot;: 4.5, &quot;series&quot;: &quot;Agile&quot; },
-  { &quot;x&quot;: 800000, &quot;y&quot;: 5.8, &quot;series&quot;: &quot;Agile&quot; },
-  { &quot;x&quot;: 1500000, &quot;y&quot;: 7.2, &quot;series&quot;: &quot;Agile&quot; },
-  { &quot;x&quot;: 2800000, &quot;y&quot;: 8.9, &quot;series&quot;: &quot;Agile&quot; },
+  { &amp;quot;x&amp;quot;: 450000, &amp;quot;y&amp;quot;: 4.5, &amp;quot;series&amp;quot;: &amp;quot;Agile&amp;quot; },
+  { &amp;quot;x&amp;quot;: 800000, &amp;quot;y&amp;quot;: 5.8, &amp;quot;series&amp;quot;: &amp;quot;Agile&amp;quot; },
+  { &amp;quot;x&amp;quot;: 1500000, &amp;quot;y&amp;quot;: 7.2, &amp;quot;series&amp;quot;: &amp;quot;Agile&amp;quot; },
+  { &amp;quot;x&amp;quot;: 2800000, &amp;quot;y&amp;quot;: 8.9, &amp;quot;series&amp;quot;: &amp;quot;Agile&amp;quot; },
 
-  { &quot;x&quot;: 450000, &quot;y&quot;: 3.7, &quot;series&quot;: &quot;Non-Agile&quot; },
-  { &quot;x&quot;: 800000, &quot;y&quot;: 4.9, &quot;series&quot;: &quot;Non-Agile&quot; },
-  { &quot;x&quot;: 1500000, &quot;y&quot;: 5.9, &quot;series&quot;: &quot;Non-Agile&quot; },
-  { &quot;x&quot;: 2800000, &quot;y&quot;: 6.5, &quot;series&quot;: &quot;Non-Agile&quot; }
+  { &amp;quot;x&amp;quot;: 450000, &amp;quot;y&amp;quot;: 3.7, &amp;quot;series&amp;quot;: &amp;quot;Non-Agile&amp;quot; },
+  { &amp;quot;x&amp;quot;: 800000, &amp;quot;y&amp;quot;: 4.9, &amp;quot;series&amp;quot;: &amp;quot;Non-Agile&amp;quot; },
+  { &amp;quot;x&amp;quot;: 1500000, &amp;quot;y&amp;quot;: 5.9, &amp;quot;series&amp;quot;: &amp;quot;Non-Agile&amp;quot; },
+  { &amp;quot;x&amp;quot;: 2800000, &amp;quot;y&amp;quot;: 6.5, &amp;quot;series&amp;quot;: &amp;quot;Non-Agile&amp;quot; }
 ]
 ```
 
@@ -153,9 +153,9 @@ This scatterplot shows **mean complexity per budget tier** for Agile vs. Non‑A
 
 ```linechart
 [
-  { &quot;Budget Tier&quot;: &quot;Low (≤33rd)&quot;, &quot;Agile&quot;: 4.670, &quot;Non-Agile&quot;: 3.982 },
-  { &quot;Budget Tier&quot;: &quot;Mid (33rd–67th)&quot;, &quot;Agile&quot;: 6.667, &quot;Non-Agile&quot;: 5.436 },
-  { &quot;Budget Tier&quot;: &quot;High (&gt;67th)&quot;, &quot;Agile&quot;: 8.919, &quot;Non-Agile&quot;: 6.391 }
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;Low (≤33rd)&amp;quot;, &amp;quot;Agile&amp;quot;: 4.670, &amp;quot;Non-Agile&amp;quot;: 3.982 },
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;Mid (33rd–67th)&amp;quot;, &amp;quot;Agile&amp;quot;: 6.667, &amp;quot;Non-Agile&amp;quot;: 5.436 },
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;High (&amp;gt;67th)&amp;quot;, &amp;quot;Agile&amp;quot;: 8.919, &amp;quot;Non-Agile&amp;quot;: 6.391 }
 ]
 ```
 
@@ -169,9 +169,9 @@ Methodology-specific trends **diverge** across tiers: **Agile** rises faster wit
 
 ```barchart
 [
-  { &quot;Budget Tier&quot;: &quot;Low (≤33rd)&quot;, &quot;Count&quot;: 1334 },
-  { &quot;Budget Tier&quot;: &quot;Mid (33rd–67th)&quot;, &quot;Count&quot;: 1333 },
-  { &quot;Budget Tier&quot;: &quot;High (&gt;67th)&quot;, &quot;Count&quot;: 1333 }
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;Low (≤33rd)&amp;quot;, &amp;quot;Count&amp;quot;: 1334 },
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;Mid (33rd–67th)&amp;quot;, &amp;quot;Count&amp;quot;: 1333 },
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;High (&amp;gt;67th)&amp;quot;, &amp;quot;Count&amp;quot;: 1333 }
 ]
 ```
 
@@ -185,9 +185,9 @@ Counts are balanced across tiers, enabling meaningful comparisons in subsequent 
 
 ```barchart
 [
-  { &quot;Budget Tier&quot;: &quot;Low (≤33rd)&quot;, &quot;Agile&quot;: 4.670, &quot;Non-Agile&quot;: 3.982 },
-  { &quot;Budget Tier&quot;: &quot;Mid (33rd–67th)&quot;, &quot;Agile&quot;: 6.667, &quot;Non-Agile&quot;: 5.436 },
-  { &quot;Budget Tier&quot;: &quot;High (&gt;67th)&quot;, &quot;Agile&quot;: 8.919, &quot;Non-Agile&quot;: 6.391 }
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;Low (≤33rd)&amp;quot;, &amp;quot;Agile&amp;quot;: 4.670, &amp;quot;Non-Agile&amp;quot;: 3.982 },
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;Mid (33rd–67th)&amp;quot;, &amp;quot;Agile&amp;quot;: 6.667, &amp;quot;Non-Agile&amp;quot;: 5.436 },
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;High (&amp;gt;67th)&amp;quot;, &amp;quot;Agile&amp;quot;: 8.919, &amp;quot;Non-Agile&amp;quot;: 6.391 }
 ]
 ```
 
@@ -201,9 +201,9 @@ Compares **mean complexity** for **Agile** and **Non-Agile** within each tier. A
 
 ```linechart
 [
-  { &quot;Budget Tier&quot;: &quot;Low (≤33rd)&quot;, &quot;Gap&quot;: 0.688 },
-  { &quot;Budget Tier&quot;: &quot;Mid (33rd–67th)&quot;, &quot;Gap&quot;: 1.231 },
-  { &quot;Budget Tier&quot;: &quot;High (&gt;67th)&quot;, &quot;Gap&quot;: 2.528 }
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;Low (≤33rd)&amp;quot;, &amp;quot;Gap&amp;quot;: 0.688 },
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;Mid (33rd–67th)&amp;quot;, &amp;quot;Gap&amp;quot;: 1.231 },
+  { &amp;quot;Budget Tier&amp;quot;: &amp;quot;High (&amp;gt;67th)&amp;quot;, &amp;quot;Gap&amp;quot;: 2.528 }
 ]
 ```
 
