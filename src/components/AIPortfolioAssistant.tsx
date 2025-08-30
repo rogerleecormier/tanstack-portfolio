@@ -18,7 +18,7 @@ import {
   MessageSquare,
   Globe
 } from 'lucide-react'
-import { PortfolioItem } from '@/utils/portfolioUtils'
+import { PortfolioItem } from '@/utils/portfolioLoader'
 import { workerContentService } from '@/api/workerContentService'
 
 // Interface for the content search worker response
