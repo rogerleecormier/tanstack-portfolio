@@ -653,7 +653,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     
     try {
       // First, try to clean the data
-      let cleanedData = data.trim()
+      const cleanedData = data.trim()
         .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
         .replace(/\r/g, '\n')    // Replace any remaining carriage returns
         .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
