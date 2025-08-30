@@ -781,31 +781,42 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                    <Clipboard className="h-4 w-4" />
                  </ToolbarButton>
                  
-                                   <Button
-                    onClick={() => {
-                      if (editor && !editor.isDestroyed && editor.view) {
-                        try {
-                          const content = editor.getHTML()
-                          // Don't decode HTML entities for chart data - preserve original attributes
-                          const markdown = htmlToMarkdown(content)
-                          setMarkdownOutput(markdown)
-                          
-                          if (onContentChange) {
-                            onContentChange(content, markdown)
-                          }
-                        } catch (error) {
-                          logger.error('Failed to update markdown:', error)
-                        }
-                      }
-                    }}
-                    size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                    title="Update Markdown Output"
-                  >
-                    <div className="w-4 h-4 border border-current rounded-sm">
-                      <div className="w-2 h-2 border border-current rounded-sm mx-auto mt-0.5"></div>
-                    </div>
-                  </Button>
+                                                                       <Button
+                     onClick={() => {
+                       if (editor && !editor.isDestroyed && editor.view) {
+                         try {
+                           const content = editor.getHTML()
+                           
+                           // Check if this is the initial content that was loaded
+                           // If so, use the original markdown instead of converting HTML back
+                           if (initialContent && !initialContent.startsWith('<')) {
+                             // Original content was markdown, use it directly
+                             setMarkdownOutput(initialContent)
+                             if (onContentChange) {
+                               onContentChange(content, initialContent)
+                             }
+                           } else {
+                             // Convert HTML to markdown
+                             const markdown = htmlToMarkdown(content)
+                             setMarkdownOutput(markdown)
+                             
+                             if (onContentChange) {
+                               onContentChange(content, markdown)
+                             }
+                           }
+                         } catch (error) {
+                           logger.error('Failed to update markdown:', error)
+                         }
+                       }
+                     }}
+                     size="sm"
+                     className="bg-blue-600 hover:bg-blue-700 text-white"
+                     title="Update Markdown Output"
+                   >
+                     <div className="w-4 h-4 border border-current rounded-sm">
+                       <div className="w-2 h-2 border border-current rounded-sm mx-auto mt-0.5"></div>
+                     </div>
+                   </Button>
                 
               </div>
             </div>
