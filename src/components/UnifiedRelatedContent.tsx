@@ -17,7 +17,6 @@ import { parseContentForSearch } from '../utils/characterParser'
 interface UnifiedRelatedContentProps {
   title?: string
   tags?: string[]
-  contentType?: string
   currentUrl: string
   className?: string
   maxResults?: number
@@ -25,16 +24,20 @@ interface UnifiedRelatedContentProps {
   content?: string
 }
 
+// Extended ContentItem interface to include relevance score
+interface ExtendedContentItem extends ContentItem {
+  relevanceScore?: number
+}
+
 export function UnifiedRelatedContent({ 
   title, 
   tags = [], 
-  contentType,
   currentUrl,
   className = '',
   maxResults = 2,
   variant = 'sidebar'
 }: UnifiedRelatedContentProps) {
-  const [recommendations, setRecommendations] = useState<ContentItem[]>([])
+  const [recommendations, setRecommendations] = useState<ExtendedContentItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -58,7 +61,7 @@ export function UnifiedRelatedContent({
         },
         body: JSON.stringify({
           query: title || tags.join(' '),
-          contentType: contentType || 'all',
+          contentType: 'all', // Always use 'all' for cross-content type recommendations
           maxResults: maxResults + 1, // Get one extra to account for current page
           excludeUrl: currentUrl,
           tags: tags || []
@@ -93,7 +96,7 @@ export function UnifiedRelatedContent({
         setIsLoading(false)
       }
     }
-  }, [title, tags, contentType, currentUrl, maxResults])
+  }, [title, tags, currentUrl, maxResults])
 
   useEffect(() => {
     getRecommendations()
@@ -293,7 +296,9 @@ export function UnifiedRelatedContent({
                     <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                       <Clock className="h-3 w-3" />
                       <span>Relevance:</span>
-                      <span className="font-medium text-green-600 dark:text-green-400">85%</span>
+                      <span className="font-medium text-green-600 dark:text-green-400">
+                        {item.relevanceScore ? `${item.relevanceScore}%` : 'N/A'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -356,7 +361,9 @@ export function UnifiedRelatedContent({
                   <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <Clock className="h-4 w-4" />
                     <span>Relevance:</span>
-                    <span className="font-medium text-green-600 dark:text-green-400">85%</span>
+                    <span className="font-medium text-green-600 dark:text-green-400">
+                      {item.relevanceScore ? `${item.relevanceScore}%` : 'N/A'}
+                    </span>
                   </div>
                 </div>
                 

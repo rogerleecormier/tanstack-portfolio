@@ -463,7 +463,6 @@ export default function ProjectsPage({ file }: { file: string }) {
                 content={content}
                 title={frontmatter.title || ''}
                 tags={frontmatter.tags || []}
-                contentType={file.startsWith('portfolio/') ? 'portfolio' : file.startsWith('projects/') ? 'portfolio' : 'page'}
                 currentUrl={window.location.pathname}
                 maxResults={2}
                 variant="sidebar"

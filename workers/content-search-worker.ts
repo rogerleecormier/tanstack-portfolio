@@ -3,6 +3,13 @@
  * Provides search functionality for content stored in the GitHub repository
  */
 
+// Cloudflare Workers types
+interface KVNamespace {
+  get(key: string, options?: { type: 'text' | 'json' }): Promise<string | null>
+  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>
+  delete(key: string): Promise<void>
+}
+
 interface Env {
   GITHUB_TOKEN: string
   GITHUB_REPO: string
@@ -173,7 +180,7 @@ class ContentSearchWorker {
       // Get all content items
       const allItems = await this.getAllContentItems()
       
-      // Filter by content type if specified
+      // Filter by content type if specified, but default to 'all' for cross-relation
       let filteredItems = allItems
       if (contentType !== 'all') {
         filteredItems = allItems.filter(item => item.contentType === contentType)
@@ -194,9 +201,8 @@ class ContentSearchWorker {
       const results = scoredItems
         .sort((a, b) => b.score - a.score)
         .slice(0, maxResults)
-        .map(({ score: _unusedScore, ...item }) => item) // eslint-disable-line @typescript-eslint/no-unused-vars
 
-      // Return clean results for display (no full content)
+      // Return clean results for display with scores
       const cleanResults = results.map(item => ({
         id: item.id,
         title: item.title,
@@ -207,7 +213,8 @@ class ContentSearchWorker {
         contentType: item.contentType,
         category: item.category,
         headings: item.headings,
-        lastModified: item.lastModified
+        lastModified: item.lastModified,
+        relevanceScore: Math.round(item.score) // Include the actual relevance score
       }))
 
       return this.jsonResponse({
@@ -247,8 +254,8 @@ class ContentSearchWorker {
   async getCacheStats(): Promise<{ size: number; lastUpdate: string; ttl: number }> {
     try {
       const [contentItems, lastUpdate] = await Promise.all([
-        this.env.CONTENT_CACHE.get(this.CACHE_KEYS.CONTENT_ITEMS, 'json'),
-        this.env.CONTENT_CACHE.get(this.CACHE_KEYS.LAST_UPDATE, 'text')
+        this.env.CONTENT_CACHE.get(this.CACHE_KEYS.CONTENT_ITEMS, { type: 'json' }),
+        this.env.CONTENT_CACHE.get(this.CACHE_KEYS.LAST_UPDATE, { type: 'text' })
       ])
       
       const size = contentItems ? Object.keys(contentItems).length : 0
@@ -276,7 +283,7 @@ class ContentSearchWorker {
    */
   private async getCachedContent(): Promise<Record<string, ContentItem> | null> {
     try {
-      const cached = await this.env.CONTENT_CACHE.get(this.CACHE_KEYS.CONTENT_ITEMS, 'json')
+      const cached = await this.env.CONTENT_CACHE.get(this.CACHE_KEYS.CONTENT_ITEMS, { type: 'json' })
       return cached as Record<string, ContentItem> | null
     } catch (error) {
       console.error('Error reading from KV cache:', error)
@@ -324,7 +331,7 @@ class ContentSearchWorker {
    */
   private async isCacheValid(): Promise<boolean> {
     try {
-      const lastUpdate = await this.env.CONTENT_CACHE.get(this.CACHE_KEYS.LAST_UPDATE, 'text')
+      const lastUpdate = await this.env.CONTENT_CACHE.get(this.CACHE_KEYS.LAST_UPDATE, { type: 'text' })
       if (!lastUpdate) return false
       
       const lastUpdateTime = parseInt(lastUpdate)
@@ -457,7 +464,7 @@ class ContentSearchWorker {
       const url = this.generateUrlFromPath(filePath)
       
       // Extract headings from markdown
-      const headings = this.extractHeadings(markdownContent)
+      const headings = await this.extractHeadings(markdownContent)
       
       // Generate search keywords
       const searchKeywords = this.generateSearchKeywords(frontmatter, markdownContent, headings)
@@ -542,14 +549,14 @@ class ContentSearchWorker {
   /**
    * Extract headings from markdown content
    */
-  private extractHeadings(content: string): string[] {
+  private async extractHeadings(content: string): Promise<string[]> {
     const headingRegex = /^#{1,6}\s+(.+)$/gm
     const headings: string[] = []
     let match
     
     while ((match = headingRegex.exec(content)) !== null) {
       // Clean heading text by removing emojis and extra formatting
-      const cleanHeading = this.cleanContentString(match[1].trim())
+      const cleanHeading = await this.cleanContentString(match[1].trim())
       headings.push(cleanHeading)
     }
     
@@ -647,8 +654,8 @@ class ContentSearchWorker {
     if (!str) return ''
     
     try {
-      // Use the new character parsing utility
-      const { parseContentForSearch } = await import('../src/utils/characterParser')
+      // Use the local character parsing utility
+      const { parseContentForSearch } = await import('./characterParser')
       return parseContentForSearch(str)
     } catch (error) {
       console.error('Error importing character parser, using fallback:', error)
@@ -674,8 +681,8 @@ class ContentSearchWorker {
     if (!content) return ''
     
     try {
-      // Use the new character parsing utility
-      const { parseContentForSearch } = await import('../src/utils/characterParser')
+      // Use the local character parsing utility
+      const { parseContentForSearch } = await import('./characterParser')
       let cleaned = parseContentForSearch(content)
       
       // Remove emojis (Unicode emoji ranges)

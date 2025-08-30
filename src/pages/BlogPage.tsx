@@ -453,7 +453,6 @@ export default function BlogPage({ slug }: { slug: string }) {
                 content={content}
                 title={frontmatter.title || ''}
                 tags={frontmatter.tags || []}
-                contentType="blog"
                 currentUrl={window.location.pathname}
                 maxResults={2}
                 variant="sidebar"

@@ -121,6 +121,6 @@ export const getConfidenceStyle = (confidence: number) => {
 
 // For confidence indicators
 <Badge className={getConfidenceStyle(0.85)}>
-  85% Match
+  {Math.round(0.85 * 100)}% Match
 </Badge>
 */
