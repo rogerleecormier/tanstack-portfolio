@@ -228,7 +228,7 @@ class GitHubFileManager {
         .map(item => ({
           name: item.path.split('/').pop() || '',
           path: item.path.replace(this.env.CONTENT_PATH + '/', ''),
-          type: item.type as 'file' | 'directory',
+          type: item.type, // GitHub API returns 'blob' for files, 'tree' for directories
           size: item.size || 0,
           sha: item.sha
         }))

@@ -2,7 +2,6 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
-import fm from 'front-matter'
 import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -16,6 +15,7 @@ import NewsletterSignup from '@/components/NewsletterSignup'
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 import UnifiedChartRenderer from '@/components/UnifiedChartRenderer'
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
+import { loadBlogPost, formatDate } from '@/utils/blogUtils'
 
 
 // Define proper types for frontmatter
@@ -39,23 +39,7 @@ export type BlogTOCEntry = {
 
 
 
-// Calculate reading time based on word count
-function calculateReadingTime(content: string): number {
-  const wordsPerMinute = 200;
-  const wordCount = content.split(/\s+/).length;
-  return Math.ceil(wordCount / wordsPerMinute);
-}
 
-// Format date for display
-function formatDate(dateString: string): string {
-  // Create date and adjust for timezone to ensure it displays as the intended date
-  const date = new Date(dateString + 'T00:00:00');
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-}
 
 export default function BlogPage({ slug }: { slug: string }) {
   const [content, setContent] = React.useState<string>('')
@@ -91,32 +75,41 @@ export default function BlogPage({ slug }: { slug: string }) {
     const loadMarkdown = async () => {
       setIsLoading(true)
       try {
-        // Import markdown directly from src/content/blog
-        const markdownModule = await import(`../content/blog/${slug}.md?raw`)
-        const text = markdownModule.default
-
-        // Parse frontmatter
-        const { attributes, body } = fm(text)
-        setFrontmatter(attributes as BlogFrontmatter)
+        // Load blog post from API worker
+        const blogPost = await loadBlogPost(slug)
         
-        // Remove import statements from markdown content
-        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-        setContent(cleanedBody)
+        if (blogPost) {
+          // Set frontmatter
+          setFrontmatter({
+            title: blogPost.title,
+            description: blogPost.description,
+            tags: blogPost.tags,
+            date: blogPost.date,
+            author: blogPost.author,
+            keywords: blogPost.keywords,
+            image: blogPost.image,
+            readTime: blogPost.readTime
+          })
+          
+          // Set content
+          setContent(blogPost.content)
+          
+          // Set reading time
+          setReadingTime(blogPost.readTime)
 
-        // Calculate reading time
-        const calculatedReadingTime = calculateReadingTime(cleanedBody)
-        setReadingTime(frontmatter.readTime || calculatedReadingTime)
+          // Extract headings for content analysis (used by related content service)
+          const headingRegex = /^#{2,3}\s+(.+)$/gm
+          const headings: BlogTOCEntry[] = []
+          let match
 
-        // Extract headings for content analysis (used by related content service)
-        const headingRegex = /^#{2,3}\s+(.+)$/gm
-        const headings: BlogTOCEntry[] = []
-        let match
-
-        while ((match = headingRegex.exec(cleanedBody)) !== null) {
-          const title = match[1].trim()
-          const slug = slugify(title, { lower: true, strict: true })
-          const level = match[0].match(/^#+/)?.[0].length || 2
-          headings.push({ title, slug, level: level as 2 | 3 })
+          while ((match = headingRegex.exec(blogPost.content)) !== null) {
+            const title = match[1].trim()
+            const headingSlug = slugify(title, { lower: true, strict: true })
+            const level = match[0].match(/^#+/)?.[0].length || 2
+            headings.push({ title, slug: headingSlug, level: level as 2 | 3 })
+          }
+        } else {
+          console.error('Blog post not found:', slug)
         }
       } catch (error) {
         console.error('Error loading blog markdown:', error)
@@ -126,7 +119,7 @@ export default function BlogPage({ slug }: { slug: string }) {
     }
 
     loadMarkdown()
-  }, [slug, frontmatter.readTime])
+  }, [slug])
 
 
 
@@ -395,9 +388,9 @@ export default function BlogPage({ slug }: { slug: string }) {
                     {children}
                   </li>
                 ),
-                hr: ({ ...props }) => (
-                  <Separator className="my-8" {...props} />
-                ),
+                                 hr: ({ ...props }) => (
+                   <Separator className="my-8" {...props} />
+                 ),
                 table: ({ children }) => {
                   return (
                     <UnifiedTableRenderer

@@ -2,7 +2,6 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
-import fm from 'front-matter'
 import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -14,6 +13,8 @@ import { MessageSquare } from "lucide-react";
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 import UnifiedChartRenderer from '@/components/UnifiedChartRenderer'
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
+import { getProjectItem, getPortfolioItem } from '@/utils/portfolioLoader'
+import { loadBlogPost } from '@/utils/blogUtils'
 
 
 // Define proper types for frontmatter
@@ -86,96 +87,85 @@ export default function ProjectsPage({ file }: { file: string }) {
     const loadMarkdown = async () => {
       setIsLoading(true)
       try {
-        // First try to fetch content from the worker API for real-time updates
         console.log('Loading markdown file:', file)
         
-        // Extract the filename for the API call
-        let fileName = file
+        // Load content from API worker based on file type
+        let content = ''
+        let frontmatterData: Frontmatter = {}
+        
         if (file.startsWith('projects/')) {
-          fileName = file.replace('projects/', '')
-        } else if (file.startsWith('portfolio/')) {
-          fileName = file.replace('portfolio/', '')
-        } else if (file.startsWith('blog/')) {
-          fileName = file.replace('blog/', '')
-        }
-        
-        // Try to fetch from worker API first (for real-time content)
-        let text: string
-        try {
-          const workerUrl = 'https://github-file-manager.rcormier.workers.dev'
-          const apiUrl = `${workerUrl}/api/files/read`
-          
-          console.log('🔗 Attempting to fetch from worker API:', apiUrl)
-          
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-              filePath: `${fileName}.md` // Send relative path without src/content prefix
-            })
-          })
-          
-          if (response.ok) {
-            const result = await response.json()
-            if (result.success && result.content) {
-              console.log('✅ Successfully loaded content from worker API')
-              text = result.content
-            } else {
-              throw new Error('Worker API returned no content')
+          // Handle project files
+          const fileName = file.replace('projects/', '')
+          const projectItem = await getProjectItem(fileName)
+          if (projectItem) {
+            content = projectItem.content
+            frontmatterData = {
+              title: projectItem.title,
+              description: projectItem.description,
+              tags: projectItem.tags,
+              keywords: projectItem.keywords,
+              date: projectItem.date
             }
-          } else {
-            throw new Error(`Worker API error: ${response.status}`)
           }
-        } catch (apiError) {
-          console.log('⚠️ Worker API failed, falling back to bundled content:', apiError)
-          
-          // Fallback to bundled content if API fails
-          let markdownModule
-          if (file.startsWith('portfolio/')) {
-            // Handle portfolio files
-            const fileName = file.replace('portfolio/', '')
-            markdownModule = await import(`../content/portfolio/${fileName}.md?raw`)
-          } else if (file.startsWith('projects/')) {
-            // Handle project files
-            const fileName = file.replace('projects/', '')
-            markdownModule = await import(`../content/projects/${fileName}.md?raw`)
-          } else if (file.startsWith('blog/')) {
-            // Handle blog files
-            const fileName = file.replace('blog/', '')
-            markdownModule = await import(`../content/blog/${fileName}.md?raw`)
-          } else {
-            // Handle root level files (fallback)
-            markdownModule = await import(`../content/${file}.md?raw`)
+        } else if (file.startsWith('portfolio/')) {
+          // Handle portfolio files
+          const fileName = file.replace('portfolio/', '')
+          const portfolioItem = await getPortfolioItem(fileName)
+          if (portfolioItem) {
+            content = portfolioItem.content
+            frontmatterData = {
+              title: portfolioItem.title,
+              description: portfolioItem.description,
+              tags: portfolioItem.tags,
+              keywords: portfolioItem.keywords,
+              date: portfolioItem.date
+            }
           }
-          
-          text = markdownModule.default
+        } else if (file.startsWith('blog/')) {
+          // Handle blog files
+          const fileName = file.replace('blog/', '')
+          const blogPost = await loadBlogPost(fileName)
+          if (blogPost) {
+            content = blogPost.content
+            frontmatterData = {
+              title: blogPost.title,
+              description: blogPost.description,
+              tags: blogPost.tags,
+              keywords: blogPost.keywords,
+              date: blogPost.date,
+              author: blogPost.author
+            }
+          }
+        } else {
+          // Handle root level files (fallback) - TODO: implement about page loading
+          console.log('Root level file loading not yet implemented')
         }
-
-        // Parse frontmatter
-        const { attributes, body } = fm(text)
-        setFrontmatter(attributes as Frontmatter)
         
-        // Remove import statements from markdown content
-        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-        setContent(cleanedBody)
+        if (content) {
+          // Set frontmatter
+          setFrontmatter(frontmatterData)
+          
+          // Set content
+          setContent(content)
 
-        // Extract headings for TOC - ONLY H2 headings
-        const headingRegex = /^#{2}\s+(.+)$/gm
-        const headings: TOCEntry[] = []
-        let match
+          // Extract headings for TOC - ONLY H2 headings
+          const headingRegex = /^#{2}\s+(.+)$/gm
+          const headings: TOCEntry[] = []
+          let match
 
-        while ((match = headingRegex.exec(cleanedBody)) !== null) {
-          const title = match[1].trim()
-          const slug = slugify(title, { lower: true, strict: true })
-          headings.push({ title, slug })
+          while ((match = headingRegex.exec(content)) !== null) {
+            const title = match[1].trim()
+            const slug = slugify(title, { lower: true, strict: true })
+            headings.push({ title, slug })
+          }
+
+          // Dispatch custom event to update sidebar TOC
+          window.dispatchEvent(new CustomEvent('toc-updated', { 
+            detail: { toc: headings, file } 
+          }))
+        } else {
+          console.error('No content loaded for file:', file)
         }
-
-        // Dispatch custom event to update sidebar TOC
-        window.dispatchEvent(new CustomEvent('toc-updated', { 
-          detail: { toc: headings, file } 
-        }))
       } catch (error) {
         console.error('Error loading markdown for file:', file, error)
         console.error('Full error details:', error)

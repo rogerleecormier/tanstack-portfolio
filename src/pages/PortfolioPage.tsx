@@ -2,7 +2,6 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
-import fm from 'front-matter'
 import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -13,6 +12,8 @@ import { MessageSquare } from "lucide-react";
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 import UnifiedChartRenderer from '@/components/UnifiedChartRenderer'
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
+import { getPortfolioItem, getProjectItem } from '@/utils/portfolioLoader'
+import { loadBlogPost } from '@/utils/blogUtils'
 
 
 // Define proper types for frontmatter
@@ -85,53 +86,85 @@ export default function PortfolioPage({ file }: { file: string }) {
     const loadMarkdown = async () => {
       setIsLoading(true)
       try {
-        // Import markdown directly from src/content
         console.log('Loading markdown file:', file)
         
-        // Handle nested directory structure by mapping file paths
-        let markdownModule
+        // Load content from API worker based on file type
+        let content = ''
+        let frontmatterData: Frontmatter = {}
+        
         if (file.startsWith('portfolio/')) {
           // Handle portfolio files
           const fileName = file.replace('portfolio/', '')
-          markdownModule = await import(`../content/portfolio/${fileName}.md?raw`)
+          const portfolioItem = await getPortfolioItem(fileName)
+          if (portfolioItem) {
+            content = portfolioItem.content
+            frontmatterData = {
+              title: portfolioItem.title,
+              description: portfolioItem.description,
+              tags: portfolioItem.tags,
+              keywords: portfolioItem.keywords,
+              date: portfolioItem.date
+            }
+          }
         } else if (file.startsWith('projects/')) {
           // Handle project files
           const fileName = file.replace('projects/', '')
-          markdownModule = await import(`../content/projects/${fileName}.md?raw`)
+          const projectItem = await getProjectItem(fileName)
+          if (projectItem) {
+            content = projectItem.content
+            frontmatterData = {
+              title: projectItem.title,
+              description: projectItem.description,
+              tags: projectItem.tags,
+              keywords: projectItem.keywords,
+              date: projectItem.date
+            }
+          }
         } else if (file.startsWith('blog/')) {
           // Handle blog files
           const fileName = file.replace('blog/', '')
-          markdownModule = await import(`../content/blog/${fileName}.md?raw`)
+          const blogPost = await loadBlogPost(fileName)
+          if (blogPost) {
+            content = blogPost.content
+            frontmatterData = {
+              title: blogPost.title,
+              description: blogPost.description,
+              tags: blogPost.tags,
+              keywords: blogPost.keywords,
+              date: blogPost.date,
+              author: blogPost.author
+            }
+          }
         } else {
-          // Handle root level files (fallback)
-          markdownModule = await import(`../content/${file}.md?raw`)
+          // Handle root level files (fallback) - TODO: implement about page loading
+          console.log('Root level file loading not yet implemented')
         }
         
-        const text = markdownModule.default
+        if (content) {
+          // Set frontmatter
+          setFrontmatter(frontmatterData)
+          
+          // Set content
+          setContent(content)
 
-        // Parse frontmatter
-        const { attributes, body } = fm(text)
-        setFrontmatter(attributes as Frontmatter)
-        
-        // Remove import statements from markdown content
-        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-        setContent(cleanedBody)
+          // Extract headings for TOC - ONLY H2 headings
+          const headingRegex = /^#{2}\s+(.+)$/gm
+          const headings: TOCEntry[] = []
+          let match
 
-        // Extract headings for TOC - ONLY H2 headings
-        const headingRegex = /^#{2}\s+(.+)$/gm
-        const headings: TOCEntry[] = []
-        let match
+          while ((match = headingRegex.exec(content)) !== null) {
+            const title = match[1].trim()
+            const slug = slugify(title, { lower: true, strict: true })
+            headings.push({ title, slug })
+          }
 
-        while ((match = headingRegex.exec(cleanedBody)) !== null) {
-          const title = match[1].trim()
-          const slug = slugify(title, { lower: true, strict: true })
-          headings.push({ title, slug })
+          // Dispatch custom event to update sidebar TOC
+          window.dispatchEvent(new CustomEvent('toc-updated', { 
+            detail: { toc: headings, file } 
+          }))
+        } else {
+          console.error('No content loaded for file:', file)
         }
-
-        // Dispatch custom event to update sidebar TOC
-        window.dispatchEvent(new CustomEvent('toc-updated', { 
-          detail: { toc: headings, file } 
-        }))
       } catch (error) {
         console.error('Error loading markdown for file:', file, error)
         console.error('Full error details:', error)
