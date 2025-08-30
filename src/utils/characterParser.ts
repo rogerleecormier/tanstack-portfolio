@@ -227,16 +227,21 @@ export const validateTextEncoding = (text: string): { isValid: boolean; fixed: s
  */
 export const ensureUtf8Encoding = (text: string): string => {
   if (!text) return ''
-  
+
   try {
     // First clean and decode the text
     let encoded = cleanTextContent(text)
-    
-    // Ensure proper UTF-8 encoding
+
+    // Ensure proper UTF-8 encoding - remove control characters safely
     encoded = encoded
-      .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Remove control characters
+      .split('')
+      .filter(char => {
+        const code = char.charCodeAt(0)
+        return code >= 32 && code !== 127 && (code < 128 || code > 159)
+      })
+      .join('')
       .replace(/[\uFFFD]/g, '') // Remove replacement characters
-    
+
     return encoded
   } catch (error) {
     logger.error('Error ensuring UTF-8 encoding:', error)

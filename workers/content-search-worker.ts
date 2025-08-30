@@ -194,7 +194,7 @@ class ContentSearchWorker {
       const results = scoredItems
         .sort((a, b) => b.score - a.score)
         .slice(0, maxResults)
-        .map(({ score: _score, ...item }) => item)
+        .map(({ score: _unusedScore, ...item }) => item) // eslint-disable-line @typescript-eslint/no-unused-vars
 
       // Return clean results for display (no full content)
       const cleanResults = results.map(item => ({
@@ -950,7 +950,7 @@ class ContentSearchWorker {
       .filter(item => item.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, maxResults)
-      .map(({ score: _score, ...item }) => item)
+      .map(({ score: _unusedScore, ...item }) => item) // eslint-disable-line @typescript-eslint/no-unused-vars
   }
 
   /**
