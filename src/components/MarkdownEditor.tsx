@@ -148,6 +148,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const [showTableContextMenu, setShowTableContextMenu] = useState(false)
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 })
   const [copySuccess, setCopySuccess] = useState(false)
+  const [chartValidationError, setChartValidationError] = useState<string | null>(null)
   
   // Track if we're currently setting content to prevent infinite loops
   const isSettingContent = useRef(false)
@@ -357,10 +358,41 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const handleInsertChart = useCallback(() => {
     if (chartData.trim() && editor && !editor.isDestroyed && editor.view) {
       try {
-        // Insert the chart using the Chart extension
+        // Clean the chart data before inserting to prevent encoding issues
+        let cleanedChartData = chartData.trim()
+        
+        try {
+          // Parse and re-stringify to ensure valid JSON and clean formatting
+          const parsedData = JSON.parse(cleanedChartData)
+          cleanedChartData = JSON.stringify(parsedData, null, 2)
+          logger.debug('Chart data cleaned and validated successfully')
+        } catch (jsonError) {
+          logger.warn('Invalid JSON in chart data, attempting to clean:', jsonError)
+          
+          // Try to clean the data by removing problematic characters
+          try {
+            const cleanedData = cleanedChartData
+              .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
+              .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+              .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
+              .trim()                  // Remove leading/trailing whitespace
+            
+            // Try to parse the cleaned data
+            const parsedData = JSON.parse(cleanedData)
+            cleanedChartData = JSON.stringify(parsedData, null, 2)
+            logger.debug('Chart data cleaned successfully after initial cleaning')
+          } catch (cleaningError) {
+            logger.error('Failed to clean chart data:', cleaningError)
+            // Show error to user
+            alert('Invalid chart data. Please ensure your JSON is valid.')
+            return
+          }
+        }
+        
+        // Insert the chart using the Chart extension with cleaned data
         editor.commands.setChart({
           chartType,
-          data: chartData,
+          data: cleanedChartData,
           chartTitle,
           xAxisLabel,
           yAxisLabel,
@@ -369,15 +401,18 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         })
         
         setChartData('')
-
         setChartTitle('')
         setXAxisLabel('')
         setYAxisLabel('')
         setChartWidth('100%')
         setChartHeight('320px')
+        setChartValidationError(null)
         setShowChartDialog(false)
+        
+        logger.debug('Chart inserted successfully with cleaned data')
       } catch (error) {
         logger.error('Error inserting chart:', error)
+        alert('Error inserting chart. Please try again.')
       }
     }
   }, [chartData, chartType, chartTitle, xAxisLabel, yAxisLabel, chartWidth, chartHeight, editor])
@@ -576,43 +611,86 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   }, [isTableActive])
 
-  const getChartTemplate = (type: string): string => {
+    const getChartTemplate = (type: string): string => {
     switch (type) {
       case 'barchart':
         return `[
-  { "date": "Q1 2024", "value": 100 },
-  { "date": "Q2 2024", "value": 200 },
-  { "date": "Q3 2024", "value": 150 },
-  { "date": "Q4 2024", "value": 300 }
+  { "Budget Tier": "Low (≤33rd)", "Count": 1334 },
+  { "Budget Tier": "Mid (33rd–67th)", "Count": 1333 },
+  { "Budget Tier": "High (>67th)", "Count": 1333 }
 ]`
       case 'linechart':
         return `[
-  { "date": "Jan 2024", "Revenue": 100, "Expenses": 80 },
-  { "date": "Feb 2024", "Revenue": 120, "Expenses": 90 },
-  { "date": "Mar 2024", "Revenue": 140, "Expenses": 110 },
-  { "date": "Apr 2024", "Revenue": 160, "Expenses": 95 }
+  { "Budget Tier": "Low (≤33rd)", "Agile": 4.670, "Non-Agile": 3.982 },
+  { "Budget Tier": "Mid (33rd–67th)", "Agile": 6.667, "Non-Agile": 5.436 },
+  { "Budget Tier": "High (>67th)", "Agile": 8.919, "Non-Agile": 6.391 }
 ]`
       case 'scatterplot':
         return `[
-  { "x": 10, "y": 20 },
-  { "x": 15, "y": 25 },
-  { "x": 20, "y": 30 },
-  { "x": 25, "y": 35 },
-  { "x": 30, "y": 40 }
+  { "x": 450000, "y": 4.5, "series": "Agile" },
+  { "x": 1200000, "y": 6.2, "series": "Non-Agile" },
+  { "x": 2800000, "y": 6.5, "series": "Non-Agile" }
 ]`
       case 'histogram':
         return `[
-  { "date": "0-10", "value": 5 },
-  { "date": "10-20", "value": 12 },
-  { "date": "20-30", "value": 8 },
-  { "date": "30-40", "value": 15 },
-  { "date": "40-50", "value": 10 }
+  { "Budget Range": "$0.16M–$0.40M", "Count": 1 },
+  { "Budget Range": "$0.40M–$0.64M", "Count": 2 },
+  { "Budget Range": "$3.66M–$3.91M", "Count": 1 }
 ]`
       default:
         return `[
-  { "date": "Category 1", "value": 100 },
-  { "date": "Category 2", "value": 200 }
+  { "Budget Tier": "Low (≤33rd)", "value": 100 },
+  { "Budget Tier": "Mid (33rd–67th)", "value": 200 }
 ]`
+    }
+  }
+
+  // Function to validate chart data and show helpful errors
+  const validateChartData = (data: string): { isValid: boolean; error: string | null; cleanedData?: string } => {
+    if (!data.trim()) {
+      return { isValid: false, error: 'Chart data cannot be empty' }
+    }
+    
+    try {
+      // First, try to clean the data
+      let cleanedData = data.trim()
+        .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
+        .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+        .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
+      
+      // Try to parse the cleaned data
+      const parsedData = JSON.parse(cleanedData)
+      
+      // Validate that it's an array
+      if (!Array.isArray(parsedData)) {
+        return { isValid: false, error: 'Chart data must be an array of objects' }
+      }
+      
+      // Validate that array is not empty
+      if (parsedData.length === 0) {
+        return { isValid: false, error: 'Chart data array cannot be empty' }
+      }
+      
+      // Validate that all items are objects
+      for (let i = 0; i < parsedData.length; i++) {
+        if (typeof parsedData[i] !== 'object' || parsedData[i] === null) {
+          return { isValid: false, error: `Item at index ${i} must be an object` }
+        }
+      }
+      
+      return { 
+        isValid: true, 
+        error: null, 
+        cleanedData: JSON.stringify(parsedData, null, 2) 
+      }
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        return { 
+          isValid: false, 
+          error: `Invalid JSON: ${error.message}. Check for missing commas, quotes, or brackets.` 
+        }
+      }
+      return { isValid: false, error: 'Unknown error validating chart data' }
     }
   }
 
@@ -1204,7 +1282,19 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       </Dialog>
 
       {/* Chart Insertion Dialog */}
-      <Dialog open={showChartDialog} onOpenChange={setShowChartDialog}>
+      <Dialog open={showChartDialog} onOpenChange={(open) => {
+        setShowChartDialog(open)
+        if (!open) {
+          // Clear all chart-related state when dialog is closed
+          setChartData('')
+          setChartTitle('')
+          setXAxisLabel('')
+          setYAxisLabel('')
+          setChartWidth('100%')
+          setChartHeight('320px')
+          setChartValidationError(null)
+        }
+      }}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle className="text-teal-900">Insert Chart</DialogTitle>
@@ -1240,6 +1330,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                       setChartType('barchart')
                       setChartData(getChartTemplate('barchart'))
                       setChartTitle('')
+                      setChartValidationError(null)
                     }}>
                       <div className="flex items-center gap-2">
                         <BarChart3 className="h-4 w-4" />
@@ -1250,6 +1341,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                       setChartType('linechart')
                       setChartData(getChartTemplate('linechart'))
                       setChartTitle('')
+                      setChartValidationError(null)
                     }}>
                       <div className="flex items-center gap-2">
                         <TrendingUp className="h-4 w-4" />
@@ -1260,6 +1352,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                       setChartType('scatterplot')
                       setChartData(getChartTemplate('scatterplot'))
                       setChartTitle('')
+                      setChartValidationError(null)
                     }}>
                       <div className="flex items-center gap-2">
                         <PieChart className="h-4 w-4" />
@@ -1270,6 +1363,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                       setChartType('histogram')
                       setChartData(getChartTemplate('histogram'))
                       setChartTitle('')
+                      setChartValidationError(null)
                     }}>
                       <div className="flex items-center gap-2">
                         <BarChart3 className="h-4 w-4" />
@@ -1375,14 +1469,73 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               <Textarea
                 id="chart-data"
                 value={chartData}
-                onChange={(e) => setChartData(e.target.value)}
+                onChange={(e) => {
+                  const newData = e.target.value
+                  setChartData(newData)
+                  
+                  // Clear previous validation error
+                  setChartValidationError(null)
+                  
+                  // Validate the data if it's not empty
+                  if (newData.trim()) {
+                    const validation = validateChartData(newData)
+                    if (!validation.isValid) {
+                      setChartValidationError(validation.error)
+                    }
+                  }
+                }}
                 placeholder="Enter chart data in JSON format..."
-                className="min-h-[300px] font-mono text-sm border-teal-200 focus:border-teal-400"
+                className={`min-h-[300px] font-mono text-sm border-teal-200 focus:border-teal-400 ${
+                  chartValidationError ? 'border-red-300 focus:border-red-400' : ''
+                }`}
               />
-              <p className="text-xs text-teal-600 mt-1">
-                Use the exact format from your project analysis page. Data should be valid JSON.
-              </p>
-
+              
+              {/* Validation Error */}
+              {chartValidationError && (
+                <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md">
+                  <p className="text-sm text-red-700 font-medium">Validation Error:</p>
+                  <p className="text-sm text-red-600">{chartValidationError}</p>
+                </div>
+              )}
+              
+              {/* Validation Success */}
+              {chartData.trim() && !chartValidationError && (
+                <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
+                  <p className="text-sm text-green-700 font-medium">✓ Valid JSON</p>
+                  <p className="text-sm text-green-600">Your chart data is properly formatted.</p>
+                </div>
+              )}
+              
+              {/* Clean Data Button */}
+              {chartData.trim() && chartValidationError && (
+                <div className="mt-2 flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const validation = validateChartData(chartData)
+                      if (validation.cleanedData) {
+                        setChartData(validation.cleanedData)
+                        setChartValidationError(null)
+                      }
+                    }}
+                    className="border-orange-200 text-orange-700 hover:bg-orange-50"
+                  >
+                    Try to Clean Data
+                  </Button>
+                </div>
+              )}
+              
+              <div className="text-xs text-teal-600 mt-1 space-y-1">
+                <p>Use the exact format from your project analysis page. Data should be valid JSON.</p>
+                <p><strong>Tips:</strong></p>
+                <ul className="list-disc list-inside ml-2 space-y-0.5">
+                  <li>Ensure all quotes are straight quotes (") not curly quotes (" or ")</li>
+                  <li>Remove any carriage returns or extra whitespace</li>
+                  <li>Use proper JSON syntax with commas between objects</li>
+                  <li>Avoid HTML entities like &amp;gt; - use &gt; instead</li>
+                </ul>
+              </div>
             </div>
 
             <div className="flex justify-end gap-2">
@@ -1390,20 +1543,14 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 variant="outline"
                 onClick={() => {
                   setShowChartDialog(false)
-                  setChartData('')
-                  setChartTitle('')
-                  setXAxisLabel('')
-                  setYAxisLabel('')
-                  setChartWidth('100%')
-                  setChartHeight('320px')
                 }}
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleInsertChart}
-                disabled={!chartData.trim()}
-                className="bg-teal-600 hover:bg-teal-700 text-white"
+                disabled={!chartData.trim() || !!chartValidationError}
+                className="bg-teal-600 hover:bg-teal-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Insert Chart

@@ -118,12 +118,33 @@ export const Chart = Node.create<ChartOptions>({
   renderHTML({ HTMLAttributes }) {
     logger.debug('ChartExtension.renderHTML - HTMLAttributes:', HTMLAttributes)
     
+    // Clean the chart data before rendering to prevent HTML entity encoding issues
+    let chartData = HTMLAttributes.data || '[]'
+    if (typeof chartData === 'string' && chartData.length > 0) {
+      try {
+        // Clean the data by removing carriage returns and normalizing whitespace
+        const cleanedData = chartData
+          .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
+          .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+          .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
+          .trim()                  // Remove leading/trailing whitespace
+        
+        // Validate the cleaned data is valid JSON
+        JSON.parse(cleanedData)
+        chartData = cleanedData
+        logger.debug('ChartExtension.renderHTML - data cleaned successfully')
+      } catch (error) {
+        logger.warn('ChartExtension.renderHTML - failed to clean chart data:', error)
+        // Use original data if cleaning fails
+      }
+    }
+    
     const result: [string, Record<string, unknown>] = [
       'div',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'chart',
         'data-chart-type': HTMLAttributes.chartType,
-        'data-chart-data': HTMLAttributes.data || '[]',
+        'data-chart-data': chartData,
         'data-chart-title': HTMLAttributes.chartTitle,
         'data-chart-x-axis-label': HTMLAttributes.xAxisLabel,
         'data-chart-y-axis-label': HTMLAttributes.yAxisLabel,

@@ -215,23 +215,50 @@ export const markdownToHtml = (markdown: string): string => {
         
         // Validate chart data before encoding
         let isValidChartData = true
+        let cleanedData = data
+        
         try {
+          // Clean the data first by removing carriage returns and normalizing whitespace
+          cleanedData = data
+            .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
+            .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+            .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
+            .trim()                  // Remove leading/trailing whitespace
+          
           // Try to parse as JSON to validate
-          JSON.parse(data)
+          JSON.parse(cleanedData)
         } catch (error) {
-          logger.warn('markdownToHtml - invalid JSON in chart data:', error)
-          isValidChartData = false
+          logger.warn('markdownToHtml - invalid JSON in chart data after cleaning:', error)
+          
+          // Try more aggressive cleaning
+          try {
+            const aggressivelyCleanedData = cleanedData
+              .replace(/\r/g, '')  // Remove ALL carriage returns
+              .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
+              .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+              .trim()
+            
+            JSON.parse(aggressivelyCleanedData)
+            cleanedData = aggressivelyCleanedData
+            isValidChartData = true
+            logger.debug('markdownToHtml - aggressive cleaning succeeded')
+          } catch (aggressiveError) {
+            logger.warn('markdownToHtml - aggressive cleaning also failed:', aggressiveError)
+            isValidChartData = false
+          }
         }
         
         if (isValidChartData) {
           // Use base64 encoding instead of URI encoding to prevent corruption
-          const encodedData = btoa(unescape(encodeURIComponent(data)))
+          const encodedData = btoa(unescape(encodeURIComponent(cleanedData)))
           
           logger.debug('markdownToHtml - processing chart:', { 
             chartType, 
             originalData: data.substring(0, 200), // Show first 200 chars
+            cleanedData: cleanedData.substring(0, 200), // Show first 200 chars of cleaned data
             encodedDataLength: encodedData.length,
-            dataLength: data.length
+            dataLength: data.length,
+            cleanedDataLength: cleanedData.length
           })
           
           // Create chart HTML node with base64-encoded data
@@ -575,61 +602,84 @@ export const htmlToMarkdown = (html: string): string => {
                decodedData = decodeURIComponent(chartData)
              }
              
-                           // Clean up the decoded data by removing carriage returns and extra whitespace
-              const cleanedData = decodedData
-                .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
-                .replace(/\r/g, '\n')    // Replace any remaining carriage returns
-                .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
-                .trim()                  // Remove leading/trailing whitespace
-              
-              // Validate the cleaned data is valid JSON
-              let finalData = cleanedData
-              let dataSource = 'cleaned'
-              
-              try {
-                JSON.parse(cleanedData)
-                // Basic cleaning worked, use cleanedData
-              } catch (jsonError) {
-                logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
-                // Try more aggressive cleaning for carriage returns
-                const aggressivelyCleanedData = cleanedData
-                  .replace(/\r/g, '')  // Remove ALL carriage returns
-                  .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
-                  .trim()
-                
-                try {
-                  JSON.parse(aggressivelyCleanedData)
-                  // Aggressive cleaning worked
-                  finalData = aggressivelyCleanedData
-                  dataSource = 'aggressive'
-                } catch (aggressiveError) {
-                  logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
-                  // Try to parse the original decoded data as a fallback
-                  try {
-                    JSON.parse(decodedData)
-                    // Original data worked
-                    finalData = decodedData
-                    dataSource = 'original'
-                  } catch (fallbackError) {
-                    logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
-                    // Return the original HTML if data is corrupted
-                    return match
-                  }
-                }
-              }
-              
-              logger.debug('htmlToMarkdown - converting chart to markdown:', { 
-                chartType, 
-                encoding,
-                originalDataLength: chartData.length,
-                decodedDataLength: decodedData.length,
-                finalDataLength: finalData.length,
-                dataSource,
-                finalDataPreview: finalData.substring(0, 100)
-              })
-              
-              // Use the final cleaned data for the markdown output
-              return `\n\n\`\`\`${chartType}\n${finalData}\n\`\`\`\n\n`
+             // First, decode HTML entities that might be in the data
+             const htmlDecodedData = decodedData
+               .replace(/&amp;/g, '&')
+               .replace(/&lt;/g, '<')
+               .replace(/&gt;/g, '>')
+               .replace(/&quot;/g, '"')
+               .replace(/&apos;/g, "'")
+               .replace(/&#39;/g, "'")
+               .replace(/&#34;/g, '"')
+               .replace(/&#38;/g, '&')
+               .replace(/&#60;/g, '<')
+               .replace(/&#62;/g, '>')
+             
+             // Clean up the decoded data by removing carriage returns and extra whitespace
+             const cleanedData = htmlDecodedData
+               .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
+               .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+               .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
+               .trim()                  // Remove leading/trailing whitespace
+             
+             // Validate the cleaned data is valid JSON
+             let finalData = cleanedData
+             let dataSource = 'cleaned'
+             
+             try {
+               JSON.parse(cleanedData)
+               // Basic cleaning worked, use cleanedData
+             } catch (jsonError) {
+               logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
+               // Try more aggressive cleaning for carriage returns and whitespace
+               const aggressivelyCleanedData = cleanedData
+                 .replace(/\r/g, '')  // Remove ALL carriage returns
+                 .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
+                 .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                 .trim()
+               
+               try {
+                 JSON.parse(aggressivelyCleanedData)
+                 // Aggressive cleaning worked
+                 finalData = aggressivelyCleanedData
+                 dataSource = 'aggressive'
+               } catch (aggressiveError) {
+                 logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
+                 // Try to parse the HTML-decoded data as a fallback
+                 try {
+                   JSON.parse(htmlDecodedData)
+                   // HTML-decoded data worked
+                   finalData = htmlDecodedData
+                   dataSource = 'html-decoded'
+                 } catch (htmlDecodedError) {
+                   logger.warn('htmlToMarkdown - HTML-decoded parsing also failed:', htmlDecodedError)
+                   // Try to parse the original decoded data as a final fallback
+                   try {
+                     JSON.parse(decodedData)
+                     // Original data worked
+                     finalData = decodedData
+                     dataSource = 'original'
+                   } catch (fallbackError) {
+                     logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                     // Return the original HTML if data is corrupted
+                     return match
+                   }
+                 }
+               }
+             }
+             
+             logger.debug('htmlToMarkdown - converting chart to markdown:', { 
+               chartType, 
+               encoding,
+               originalDataLength: chartData.length,
+               decodedDataLength: decodedData.length,
+               finalDataLength: finalData.length,
+               dataSource,
+               finalDataPreview: finalData.substring(0, 100)
+             })
+             
+             // Use the final cleaned data for the markdown output
+             return `\n\n\`\`\`${chartType}\n${finalData}\n\`\`\`\n\n`
            } catch (decodeError) {
              logger.error('htmlToMarkdown - failed to decode chart data:', decodeError)
              // Return the original HTML if decoding fails
@@ -669,61 +719,84 @@ export const htmlToMarkdown = (html: string): string => {
                decodedData = decodeURIComponent(chartData)
              }
              
-                           // Clean up the decoded data by removing carriage returns and extra whitespace
-              const cleanedData = decodedData
-                .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
-                .replace(/\r/g, '\n')    // Replace any remaining carriage returns
-                .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
-                .trim()                  // Remove leading/trailing whitespace
-              
-              // Validate the cleaned data is valid JSON
-              let finalData = cleanedData
-              let dataSource = 'cleaned'
-              
-              try {
-                JSON.parse(cleanedData)
-                // Basic cleaning worked, use cleanedData
-              } catch (jsonError) {
-                logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
-                // Try more aggressive cleaning for carriage returns
-                const aggressivelyCleanedData = cleanedData
-                  .replace(/\r/g, '')  // Remove ALL carriage returns
-                  .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
-                  .trim()
-                
-                try {
-                  JSON.parse(aggressivelyCleanedData)
-                  // Aggressive cleaning worked
-                  finalData = aggressivelyCleanedData
-                  dataSource = 'aggressive'
-                } catch (aggressiveError) {
-                  logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
-                  // Try to parse the original decoded data as a fallback
-                  try {
-                    JSON.parse(decodedData)
-                    // Original data worked
-                    finalData = decodedData
-                    dataSource = 'original'
-                  } catch (fallbackError) {
-                    logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
-                    // Return the original HTML if data is corrupted
-                    return match
-                  }
-                }
-              }
-              
-              logger.debug('htmlToMarkdown - converting self-closing chart to markdown:', { 
-                chartType, 
-                encoding,
-                originalDataLength: chartData.length,
-                decodedDataLength: decodedData.length,
-                finalDataLength: finalData.length,
-                dataSource,
-                finalDataPreview: finalData.substring(0, 100)
-              })
-              
-              // Use the final cleaned data for the markdown output
-              return `\n\n\`\`\`${chartType}\n${finalData}\n\`\`\`\n\n`
+             // First, decode HTML entities that might be in the data
+             const htmlDecodedData = decodedData
+               .replace(/&amp;/g, '&')
+               .replace(/&lt;/g, '<')
+               .replace(/&gt;/g, '>')
+               .replace(/&quot;/g, '"')
+               .replace(/&apos;/g, "'")
+               .replace(/&#39;/g, "'")
+               .replace(/&#34;/g, '"')
+               .replace(/&#38;/g, '&')
+               .replace(/&#60;/g, '<')
+               .replace(/&#62;/g, '>')
+             
+             // Clean up the decoded data by removing carriage returns and extra whitespace
+             const cleanedData = htmlDecodedData
+               .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
+               .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+               .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
+               .trim()                  // Remove leading/trailing whitespace
+             
+             // Validate the cleaned data is valid JSON
+             let finalData = cleanedData
+             let dataSource = 'cleaned'
+             
+             try {
+               JSON.parse(cleanedData)
+               // Basic cleaning worked, use cleanedData
+             } catch (jsonError) {
+               logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
+               // Try more aggressive cleaning for carriage returns and whitespace
+               const aggressivelyCleanedData = cleanedData
+                 .replace(/\r/g, '')  // Remove ALL carriage returns
+                 .replace(/\n\s*\n/g, '\n') // Clean up multiple newlines
+                 .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                 .trim()
+               
+               try {
+                 JSON.parse(aggressivelyCleanedData)
+                 // Aggressive cleaning worked
+                 finalData = aggressivelyCleanedData
+                 dataSource = 'aggressive'
+               } catch (aggressiveError) {
+                 logger.warn('htmlToMarkdown - aggressive cleaning also failed:', aggressiveError)
+                 // Try to parse the HTML-decoded data as a fallback
+                 try {
+                   JSON.parse(htmlDecodedData)
+                   // HTML-decoded data worked
+                   finalData = htmlDecodedData
+                   dataSource = 'html-decoded'
+                 } catch (htmlDecodedError) {
+                   logger.warn('htmlToMarkdown - HTML-decoded parsing also failed:', htmlDecodedError)
+                   // Try to parse the original decoded data as a final fallback
+                   try {
+                     JSON.parse(decodedData)
+                     // Original data worked
+                     finalData = decodedData
+                     dataSource = 'original'
+                   } catch (fallbackError) {
+                     logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                     // Return the original HTML if data is corrupted
+                     return match
+                   }
+                 }
+               }
+             }
+             
+             logger.debug('htmlToMarkdown - converting self-closing chart to markdown:', { 
+               chartType, 
+               encoding,
+               originalDataLength: chartData.length,
+               decodedDataLength: decodedData.length,
+               finalDataLength: finalData.length,
+               dataSource,
+               finalDataPreview: finalData.substring(0, 100)
+             })
+             
+             // Use the final cleaned data for the markdown output
+             return `\n\n\`\`\`${chartType}\n${finalData}\n\`\`\`\n\n`
            } catch (decodeError) {
              logger.error('htmlToMarkdown - failed to decode chart data:', decodeError)
              return match

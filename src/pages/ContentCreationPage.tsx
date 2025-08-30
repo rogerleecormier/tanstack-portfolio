@@ -572,14 +572,6 @@ const ContentCreationPage: React.FC = () => {
                      {isLoadingFile ? 'Loading...' : 'Browse Files'}
                    </Button>
                    
-                                       <Button
-                      onClick={generateFrontmatter}
-                      disabled={isGenerating || !markdown.trim()}
-                      className="w-full bg-teal-600 hover:bg-teal-700 text-white"
-                    >
-                     {isGenerating ? 'Generating...' : 'Generate Frontmatter'}
-                   </Button>
-                   
                    <Button
                      onClick={() => setShowSaveDialog(true)}
                      disabled={!frontmatter || !markdown.trim()}
@@ -589,10 +581,6 @@ const ContentCreationPage: React.FC = () => {
                      <Save className="h-4 w-4 mr-2" />
                      {isEditingExisting ? 'Save Changes' : 'Save File'}
                    </Button>
-
-                   
-                   
-                   
                  </div>
               </CardContent>
             </Card>
@@ -643,6 +631,17 @@ const ContentCreationPage: React.FC = () => {
                 </CardContent>
               </Card>
             )}
+
+            {/* Generate Frontmatter Button - Moved below preview */}
+            <div className="mt-4">
+              <Button
+                onClick={generateFrontmatter}
+                disabled={isGenerating || !markdown.trim()}
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+              >
+                {isGenerating ? 'Generating...' : 'Generate Frontmatter'}
+              </Button>
+            </div>
           </div>
 
           {/* Main Content Area */}
