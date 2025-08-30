@@ -194,7 +194,11 @@ class GitHubFileManager {
         return this.errorResponse('Directory path is required', 400)
       }
 
-      const fullPath = `${this.env.CONTENT_PATH}/${directory}`
+      // Handle directory path correctly - if it already starts with CONTENT_PATH, don't prepend it
+      let fullPath = directory
+      if (!directory.startsWith(this.env.CONTENT_PATH)) {
+        fullPath = `${this.env.CONTENT_PATH}/${directory}`
+      }
       
       // Get the tree for the current branch
       const treeResponse = await fetch(`${this.baseUrl}/git/trees/${this.env.GITHUB_BRANCH}?recursive=1`, {
@@ -222,7 +226,7 @@ class GitHubFileManager {
       return this.jsonResponse({
         success: true,
         files,
-        directory: fullPath
+        directory: directory // Return the original directory path, not the fullPath
       })
 
     } catch (error) {

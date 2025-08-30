@@ -188,7 +188,10 @@ export const {
   data,
   response,
   validation,
-  getEnvironmentInfo
+  getEnvironmentInfo,
+  enableDebugMode,
+  disableDebugMode,
+  isDebugMode
 } = logger
 
 // Default export
