@@ -579,6 +579,7 @@ export const htmlToMarkdown = (html: string): string => {
               const cleanedData = decodedData
                 .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
                 .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+                .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
                 .trim()                  // Remove leading/trailing whitespace
               
               // Validate the cleaned data is valid JSON
@@ -596,19 +597,17 @@ export const htmlToMarkdown = (html: string): string => {
                 }
               }
               
+              logger.debug('htmlToMarkdown - converting chart to markdown:', { 
+                chartType, 
+                encoding,
+                originalDataLength: chartData.length,
+                decodedDataLength: decodedData.length,
+                originalDataPreview: chartData.substring(0, 100),
+                decodedDataPreview: cleanedData.substring(0, 100)
+              })
+              
               // Use the cleaned data for the markdown output
               return `\n\n\`\`\`${chartType}\n${cleanedData}\n\`\`\`\n\n`
-             
-             logger.debug('htmlToMarkdown - converting chart to markdown:', { 
-               chartType, 
-               encoding,
-               originalDataLength: chartData.length,
-               decodedDataLength: decodedData.length,
-               originalDataPreview: chartData.substring(0, 100),
-               decodedDataPreview: decodedData.substring(0, 100)
-             })
-             
-             return `\n\n\`\`\`${chartType}\n${decodedData}\n\`\`\`\n\n`
            } catch (decodeError) {
              logger.error('htmlToMarkdown - failed to decode chart data:', decodeError)
              // Return the original HTML if decoding fails
@@ -652,6 +651,7 @@ export const htmlToMarkdown = (html: string): string => {
               const cleanedData = decodedData
                 .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
                 .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+                .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
                 .trim()                  // Remove leading/trailing whitespace
               
               // Validate the cleaned data is valid JSON
@@ -668,17 +668,15 @@ export const htmlToMarkdown = (html: string): string => {
                 }
               }
               
+              logger.debug('htmlToMarkdown - converting self-closing chart to markdown:', { 
+                chartType, 
+                encoding,
+                originalDataLength: chartData.length,
+                decodedDataLength: cleanedData.length
+              })
+              
               // Use the cleaned data for the markdown output
               return `\n\n\`\`\`${chartType}\n${cleanedData}\n\`\`\`\n\n`
-             
-             logger.debug('htmlToMarkdown - converting self-closing chart to markdown:', { 
-               chartType, 
-               encoding,
-               originalDataLength: chartData.length,
-               decodedDataLength: decodedData.length
-             })
-             
-             return `\n\n\`\`\`${chartType}\n${decodedData}\n\`\`\`\n\n`
            } catch (decodeError) {
              logger.error('htmlToMarkdown - failed to decode chart data:', decodeError)
              return match
