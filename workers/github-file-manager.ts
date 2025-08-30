@@ -159,13 +159,20 @@ class GitHubFileManager {
         return this.errorResponse('File path is required', 400)
       }
 
+      // Debug logging
+      console.log('🔍 readFile called with:', { filePath, CONTENT_PATH: this.env.CONTENT_PATH })
+
       // Construct the full path by prepending CONTENT_PATH
       // filePath is like "projects/project-analysis.md"
       // fullPath becomes "src/content/projects/project-analysis.md"
       const fullPath = `${this.env.CONTENT_PATH}/${filePath}`
+      console.log('🔍 Constructed fullPath:', fullPath)
+      
       const file = await this.getFile(fullPath)
+      console.log('🔍 getFile result:', file ? 'File found' : 'File not found')
 
       if (!file) {
+        console.log('❌ File not found for path:', fullPath)
         return this.errorResponse('File not found', 404)
       }
 

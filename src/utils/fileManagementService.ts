@@ -137,37 +137,38 @@ class FileManagementService {
    * Read a markdown file
    */
   async readFile(request: FileReadRequest): Promise<FileReadResponse> {
-    try {
-      logger.debug('📖 readFile called with request:', request)
-      
-      // Try to use the GitHub file manager worker first
+    logger.debug('📖 readFile called with request:', request)
+    
+    // In production, try to use the GitHub worker
+    if (import.meta.env.PROD) {
       try {
-        const workerUrl = import.meta.env.DEV 
-          ? 'http://localhost:8787' 
-          : 'https://github-file-manager.rcormier.workers.dev'
-        
+        const workerUrl = 'https://github-file-manager.rcormier.workers.dev'
         const fullUrl = `${workerUrl}/api/files/read`
-        logger.debug('🔗 Calling GitHub worker at:', fullUrl)
-        logger.debug('🔗 Full request details:', {
+        
+        logger.network('🔗 Calling GitHub worker at:', fullUrl)
+        logger.network('🔗 Full request details:', {
           url: fullUrl,
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: request
         })
-        
+
         const response = await fetch(fullUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify(request)
         })
 
-        logger.debug('📡 Worker response status:', response.status)
-        logger.debug('📡 Worker response ok:', response.ok)
-        logger.debug('📡 Worker response headers:', Object.fromEntries(response.headers.entries()))
+        logger.response('📡 Worker response status:', response.status)
+        logger.response('📡 Worker response ok:', response.ok)
+        logger.response('📡 Worker response headers:', Object.fromEntries(response.headers.entries()))
 
         if (response.ok) {
           const result = await response.json()
-          logger.debug('✅ Worker response success:', result)
+          logger.response('✅ Worker response success:', result)
+          
           if (result.success) {
             return {
               success: true,
@@ -177,38 +178,29 @@ class FileManagementService {
             logger.error('❌ Worker returned error:', result.error)
             return {
               success: false,
-              error: result.error || 'Failed to read file from GitHub'
+              error: result.error
             }
           }
         } else {
-          const error = await response.json()
+          const error = await response.text()
           logger.error('❌ Worker HTTP error:', response.status, error)
           return {
             success: false,
-            error: error.error || `GitHub API error: ${response.status}`
+            error: `Worker error: ${response.status}`
           }
         }
       } catch (workerError) {
-        // Fall back to development mode if worker is not available
         logger.warn('⚠️ GitHub file manager worker not available, falling back to development mode:', workerError)
-      }
-      
-      if (import.meta.env.DEV) {
-        // In development, try to read from the content directory
+        
+        // Fall back to development mode
         logger.debug('🔄 Falling back to development mode')
         return this.readLocalFile()
-      } else {
-        // In production, make actual API call
-        logger.debug('🔄 Falling back to production API call')
-        return this.makeApiCall('/read', request)
-      }
-    } catch (error) {
-      logger.error('💥 readFile error:', error)
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred'
       }
     }
+
+    // In development, use local simulation
+    logger.debug('🔄 Falling back to production API call')
+    return this.readLocalFile()
   }
 
   /**
