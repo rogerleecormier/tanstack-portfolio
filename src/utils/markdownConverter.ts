@@ -575,14 +575,29 @@ export const htmlToMarkdown = (html: string): string => {
                decodedData = decodeURIComponent(chartData)
              }
              
-             // Validate the decoded data is valid JSON
-             try {
-               JSON.parse(decodedData)
-             } catch (jsonError) {
-               logger.warn('htmlToMarkdown - decoded chart data is not valid JSON:', jsonError)
-               // Return the original HTML if data is corrupted
-               return match
-             }
+                           // Clean up the decoded data by removing carriage returns and extra whitespace
+              const cleanedData = decodedData
+                .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
+                .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+                .trim()                  // Remove leading/trailing whitespace
+              
+              // Validate the cleaned data is valid JSON
+              try {
+                JSON.parse(cleanedData)
+              } catch (jsonError) {
+                logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
+                // Try to parse the original decoded data as a fallback
+                try {
+                  JSON.parse(decodedData)
+                } catch (fallbackError) {
+                  logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                  // Return the original HTML if data is corrupted
+                  return match
+                }
+              }
+              
+              // Use the cleaned data for the markdown output
+              return `\n\n\`\`\`${chartType}\n${cleanedData}\n\`\`\`\n\n`
              
              logger.debug('htmlToMarkdown - converting chart to markdown:', { 
                chartType, 
@@ -633,12 +648,28 @@ export const htmlToMarkdown = (html: string): string => {
                decodedData = decodeURIComponent(chartData)
              }
              
-             try {
-               JSON.parse(decodedData)
-             } catch (jsonError) {
-               logger.warn('htmlToMarkdown - decoded chart data is not valid JSON:', jsonError)
-               return match
-             }
+                           // Clean up the decoded data by removing carriage returns and extra whitespace
+              const cleanedData = decodedData
+                .replace(/\r\n/g, '\n')  // Replace carriage returns with newlines
+                .replace(/\r/g, '\n')    // Replace any remaining carriage returns
+                .trim()                  // Remove leading/trailing whitespace
+              
+              // Validate the cleaned data is valid JSON
+              try {
+                JSON.parse(cleanedData)
+              } catch (jsonError) {
+                logger.warn('htmlToMarkdown - cleaned chart data is not valid JSON:', jsonError)
+                // Try to parse the original decoded data as a fallback
+                try {
+                  JSON.parse(decodedData)
+                } catch (fallbackError) {
+                  logger.warn('htmlToMarkdown - fallback parsing also failed:', fallbackError)
+                  return match
+                }
+              }
+              
+              // Use the cleaned data for the markdown output
+              return `\n\n\`\`\`${chartType}\n${cleanedData}\n\`\`\`\n\n`
              
              logger.debug('htmlToMarkdown - converting self-closing chart to markdown:', { 
                chartType, 
