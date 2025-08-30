@@ -340,13 +340,11 @@ export const htmlToMarkdown = (html: string): string => {
   try {
     // Handle common HTML entities that might be causing issues
     decodedHtml = html
-      .replace(/&quot;/g, '"')
       .replace(/&amp;/g, '&')
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
       .replace(/&apos;/g, "'")
       .replace(/&#39;/g, "'")
-      .replace(/&#34;/g, '"')
       .replace(/&#38;/g, '&')
       .replace(/&#60;/g, '<')
       .replace(/&#62;/g, '>')
@@ -908,6 +906,9 @@ export const htmlToMarkdown = (html: string): string => {
      })
     .replace(/<br\s*\/?>/g, '\n')
     .replace(/<[^>]*>/g, '')
+    // Decode any remaining &quot; entities after attribute parsing to avoid breaking chart data extraction
+    .replace(/&quot;/g, '"')
+    .replace(/&#34;/g, '"')
     .replace(/\n\s*\n\s*\n/g, '\n\n')
     .trim()
 }
