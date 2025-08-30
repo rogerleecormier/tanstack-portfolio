@@ -12,7 +12,41 @@ This project analyzes a dataset of 4,000 real-world project records to explore h
 
 ## ❓ Problem Statement
 
-@@ -50,7 +50,7 @@ Project budgets were divided into three tiers using the 33rd and 67th percentile
+Determine how **project budget** relates to **project complexity** and whether **methodology** (Agile vs. Non-Agile) interacts with budget tier to influence complexity. A two-way ANOVA evaluates main effects and the interaction between budget tier and methodology.
+
+---
+
+## 📦 Data Summary
+
+**Data Source**: [Kaggle – Project Management Risk Dataset](https://www.kaggle.com/datasets/ka66ledata/project-management-risk-raw)
+
+**Total Records:** 4,000
+
+**Features:** 51 columns including budget, team size, risk level, methodology, and stakeholder data
+
+**Key Quantitative Variables:**
+
+`ProjectBudgetUSD` → Defines tiers via 33rd and 67th percentiles (Low / Mid / High).
+
+`Complexity_Score` → 0–10 scale (dependent variable).
+
+`Methodology_Group` → Agile vs. Non-Agile.
+
+## 🗂️ Data Groupings
+
+### Project Methodologies
+
+All projects are grouped into **Agile** vs. **Non-Agile** for analysis, and further stratified by budget tier (Low, Mid, High).
+
+**Agile** includes projects using Agile, Scrum, or Kanban methodologies.
+
+**Non-Agile** includes Waterfall and Hybrid approaches.
+
+### Budget Tiers
+
+Project budgets were divided into three tiers using the 33rd and 67th percentiles of the full portfolio.
+
+**Low (≤33rd percentile):** Smallest third of projects by budget
 
 **Mid (33rd–67th percentile):** Middle third
 
@@ -20,7 +54,9 @@ This project analyzes a dataset of 4,000 real-world project records to explore h
 
 This approach balances group sizes despite the right-skewed distribution, ensuring fair comparisons of complexity and methodology across budget levels.
 
-@@ -60,7 +60,7 @@ This approach balances group sizes despite the right-skewed distribution, ensuri
+## 📊 Summary Statistics
+
+| **Budget Tier** | **Budget Range (USD)** | **Project Count** | **Mean Complexity (Agile)** | **Mean Complexity (Non-Agile)** |
 |---|---|---|---|---|
 | Low (≤33rd) | $159,355.55 – $790,000.26 | 1,334 | 4.670 | 3.982 |
 | Mid (33rd–67th) | $790,000.26 – $1,279,552.09 | 1,333 | 6.667 | 5.436 |
@@ -28,7 +64,9 @@ This approach balances group sizes despite the right-skewed distribution, ensuri
 
 ---
 
-@@ -70,22 +70,7 @@ This approach balances group sizes despite the right-skewed distribution, ensuri
+## 📉 Visualizations
+
+### Budget Distribution (Histogram)
 
 ```histogram
 [
@@ -51,7 +89,12 @@ This approach balances group sizes despite the right-skewed distribution, ensuri
 ```
 
 **Explanation:**
-@@ -98,13 +83,7 @@ Budgets are **right-skewed**, with most projects under ~$1.5M. Percentile-based
+
+Budgets are **right-skewed**, with most projects under ~$1.5M. Percentile-based tiers ensure balanced groups despite skew.
+
+---
+
+### Complexity vs. Budget (Scatterplot – All Projects — Mean Complexity)
 
 ```scatterplot
 [
@@ -65,7 +108,10 @@ This approach balances group sizes despite the right-skewed distribution, ensuri
 ```
 
 **Explanation:**
-@@ -115,12 +94,7 @@ This scatterplot shows **mean complexity scores** grouped by representative budg
+
+This scatterplot shows **mean complexity scores** grouped by representative budget bins, not all 4,000 records. It illustrates a **positive relationship** between project budget and complexity, motivating the use of tiers and inferential tests.
+
+### Regression Trend – Budget vs. Complexity (Line)
 
 ```linechart
 [
@@ -78,7 +124,12 @@ This approach balances group sizes despite the right-skewed distribution, ensuri
 ```
 
 **Explanation:**
-@@ -133,16 +107,7 @@ The fitted trend indicates a **monotonic increase** in complexity with budget, s
+
+The fitted trend indicates a **monotonic increase** in complexity with budget, supporting the stratification into tiers and motivating inferential testing.
+
+---
+
+### Complexity vs. Budget (Scatterplot – By Methodology — Mean Complexity per Tier)
 
 ```scatterplot
 [
@@ -95,7 +146,8 @@ This approach balances group sizes despite the right-skewed distribution, ensuri
 ```
 
 **Explanation:**
-@@ -151,63 +116,51 @@ This scatterplot shows **mean complexity per budget tier** for Agile vs. Non‑A
+
+This scatterplot shows **mean complexity per budget tier** for Agile vs. Non‑Agile. Agile projects consistently show higher complexity at each representative budget level, highlighting methodology effects without visualizing all 4,000 underlying data points.
 
 ### Regression Trend – By Methodology (Line)
 
@@ -159,7 +211,23 @@ Compares **mean complexity** for **Agile** and **Non-Agile** within each tier. A
 
 The **gap widens** from Low to High tiers, implying methodology differences intensify as projects grow in size and scope.
 
-@@ -231,7 +184,7 @@ The **gap widens** from Low to High tiers, implying methodology differences inte
+---
+
+## 🧩 Interpretation
+
+1) **Budget tier main effect** — higher tiers correspond to higher complexity.
+
+2) **Methodology main effect** — Agile has higher mean complexity.
+
+3) **Interaction** — Agile’s advantage **increases** with budget tier.
+
+**Budget vs. Complexity:** The histogram, scatterplots, and **trend lines** indicate a **right-skewed** budget distribution and a **positive association** between budget and complexity.
+
+**Methodology Effect:** Across tiers and at similar budgets, **Agile** projects show **higher complexity** than Non-Agile, suggesting either selection (Agile chosen for difficult problems) or capability (Agile better supports uncertainty).
+
+**Interaction Preview:** The tiered mean chart, **methodology-specific trend line**, and the widening gap line suggest a **methodology × budget interaction**, later tested via ANOVA.
+
+**Two-Way ANOVA:** Results support three findings:
 
 **Operational Implications**
 
@@ -167,7 +235,47 @@ The **gap widens** from Low to High tiers, implying methodology differences inte
 
 **Governance:** For Mid/High tiers, require **early validation** (spikes, dependency mapping) to prevent unnecessary scope inflation.
 
-@@ -279,9 +232,9 @@ Portfolio policy should **match methodology to problem structure**:
+**Engineering Enablement:** Invest in **observability**, **feature flags**, and **progressive delivery** to manage complexity without slowing throughput.
+
+---
+
+## 🏁 Conclusion
+
+**Budgets are right-skewed**; percentile tiers produce balanced groups suitable for comparison.
+
+**Complexity rises with budget** across the portfolio.
+
+**Agile projects are more complex** than Non-Agile at every tier, and the **difference grows** with budget.
+
+The **two-way ANOVA** confirms significant **main effects** and a **significant interaction**, aligning with the visuals.
+
+Portfolio policy should **match methodology to problem structure**:
+
+**Agile** for high-uncertainty, integration-heavy, or evolving scopes.
+
+**Non-Agile** for stable, well-specified, low-volatility work.
+
+---
+
+## ⏭️ Next Steps
+
+**Post-hoc analysis:** Tukey HSD to identify which tier pairs differ. Include **effect sizes** (η² / partial η²).
+
+**Assumptions:** Check residual normality and homoscedasticity (Levene’s). If violated, use **robust ANOVA** or **Kruskal–Wallis + Dunn’s**.
+
+**Selection bias audit:** Model methodology choice from pre-project variables; consider **propensity score matching** before re-estimating effects.
+
+**Outcome linkage:** Add delivery KPIs (cycle time, defect density, rework). Validate whether Agile’s higher complexity maintains or improves outcomes at Mid/High tiers.
+
+**Sensitivity:** Re-tier at **25/50/75** and **20/40/60/80** to confirm robustness of direction and magnitude.
+
+---
+
+## 📁 Supporting Files
+
+**Excel Summary Workbook:** [Download](/assets/files/M7.3%20Final%20Project%20Phase%203.xlsx)
+
+---
 
 ## 🔗 Related Pages
 
@@ -177,5 +285,5 @@ The **gap widens** from Low to High tiers, implying methodology differences inte
 
 ---
 
-
 📋 *Detailed methodology and code snippets available upon request. [Let's connect](/contact).*
+
