@@ -245,65 +245,54 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       },
     },
     content: initialContent || '<p>Start Writing</p>',
-    onCreate: ({ editor }) => {
-      // Ensure cursor is positioned at the start when editor is created
-      // Use a longer delay to ensure the view is fully ready
-      setTimeout(() => {
-        if (editor.isDestroyed || !editor.view) {
-          return
-        }
-        try {
-          editor.commands.focus('start')
-        } catch (error) {
-          logger.debug('Editor focus failed, view not ready yet:', error)
-        }
-      }, 200)
-    },
-    onUpdate: ({ editor }) => {
-      // Skip update if we're currently setting content to prevent infinite loops
-      if (isSettingContent.current) {
-        return
-      }
-      
-      // Get current HTML content
-      if (!editor.isDestroyed && editor.view) {
-        try {
-          const content = editor.getHTML()
-          
-          // Check if content has actually changed to avoid unnecessary updates
-          if (content === lastContentRef.current) {
-            return
-          }
-          
-          // Update the last content reference
-          lastContentRef.current = content
-          
-          // Clear any existing timeout
-          if (updateTimeoutRef.current) {
-            clearTimeout(updateTimeoutRef.current)
-          }
-          
-          // Debounce the content update to prevent constant HTML to markdown conversion
-          updateTimeoutRef.current = setTimeout(() => {
-            try {
-              // Decode any HTML entities before converting to markdown
-              const cleanContent = decodeHtmlEntities(content)
-              const markdown = htmlToMarkdown(cleanContent)
-              setMarkdownOutput(markdown)
-              
-              // Call the callback if provided
-              if (onContentChange) {
-                onContentChange(cleanContent, markdown)
-              }
-            } catch (error) {
-              logger.error('Failed to get editor content:', error)
-            }
-          }, 500) // 500ms debounce delay
-        } catch (error) {
-          logger.error('Failed to get editor content:', error)
-        }
-      }
-    },
+         onCreate: () => {
+       // Don't force cursor position - let user maintain their position naturally
+     },
+         onUpdate: ({ editor }) => {
+       // Skip update if we're currently setting content to prevent infinite loops
+       if (isSettingContent.current) {
+         return
+       }
+       
+       // Get current HTML content
+       if (!editor.isDestroyed && editor.view) {
+         try {
+           const content = editor.getHTML()
+           
+           // Only update if content has significantly changed (more than just a few characters)
+           if (content === lastContentRef.current || Math.abs(content.length - lastContentRef.current.length) < 10) {
+             return
+           }
+           
+           // Update the last content reference
+           lastContentRef.current = content
+           
+           // Clear any existing timeout
+           if (updateTimeoutRef.current) {
+             clearTimeout(updateTimeoutRef.current)
+           }
+           
+           // Debounce the content update to prevent constant HTML to markdown conversion
+           updateTimeoutRef.current = setTimeout(() => {
+             try {
+               // Decode any HTML entities before converting to markdown
+               const cleanContent = decodeHtmlEntities(content)
+               const markdown = htmlToMarkdown(cleanContent)
+               setMarkdownOutput(markdown)
+               
+               // Call the callback if provided
+               if (onContentChange) {
+                 onContentChange(cleanContent, markdown)
+               }
+             } catch (error) {
+               logger.error('Failed to get editor content:', error)
+             }
+           }, 1000) // Increased to 1000ms for better stability
+         } catch (error) {
+           logger.error('Failed to get editor content:', error)
+         }
+       }
+     },
   })
 
   // Cleanup timeout on unmount
@@ -346,19 +335,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         const markdown = htmlToMarkdown(newHtml)
         setMarkdownOutput(markdown)
         
-        // Reset flag after a short delay to allow editor to settle
-        setTimeout(() => {
-          isSettingContent.current = false
-          // Ensure cursor is at the beginning and no heading is active
-          // Only focus if the editor is not in a dialog context
-          if (!editor.isDestroyed && editor.view && !document.querySelector('[data-state="open"]')) {
-            try {
-              editor.commands.focus('start')
-            } catch (error) {
-              logger.debug('Editor focus failed during content update:', error)
-            }
-          }
-        }, 100)
+                 // Reset flag after a short delay to allow editor to settle
+         setTimeout(() => {
+           isSettingContent.current = false
+           // Don't force cursor position - let user maintain their position
+         }, 100)
         
         logger.debug('Editor content updated successfully')
       }
@@ -372,17 +353,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       if (currentContent.includes('<h1>') || currentContent.includes('<h2>') || currentContent.includes('<h3>')) {
         editor.commands.setContent('<p>Start Writing</p>')
         setMarkdownOutput('')
-        // Ensure cursor is at the beginning and no heading is active
-        // Only focus if the editor is not in a dialog context
-        setTimeout(() => {
-          if (!editor.isDestroyed && editor.view && !document.querySelector('[data-state="open"]')) {
-            try {
-              editor.commands.focus('start')
-            } catch (error) {
-              logger.debug('Editor focus failed during default content setup:', error)
-            }
-          }
-        }, 50)
+                 // Don't force cursor position - let user maintain their position
       }
     } catch (error) {
       logger.error('Failed to setup default content:', error)
