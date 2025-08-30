@@ -162,6 +162,24 @@ export default function BlogPage({ slug }: { slug: string }) {
     )
   }
 
+  // Show error state
+  if (!frontmatter.title) { // Changed from blogPost to frontmatter.title
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="text-center">
+          <H1>Blog Post Not Found</H1>
+          <P className="mt-4">
+            The requested blog post could not be found.
+          </P>
+          <Link to="/blog" className="inline-flex items-center mt-4 text-blue-600 hover:text-blue-800">
+            <ArrowRight className="w-4 h-4 mr-2" />
+            Back to Blog
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full">
 

@@ -5,8 +5,8 @@ compatibility_date = "2024-01-01"
 # GitHub API configuration
 [vars]
 ENVIRONMENT = "production"
-GITHUB_REPO = "rogerleecormier/tanstack-portfolio"
-GITHUB_BRANCH = "content"
+GITHUB_REPO = "rogerleecormier/tanstack-portfolio-content"
+GITHUB_BRANCH = "main"
 CONTENT_PATH = "src/content"
 GITHUB_API_BASE = "https://api.github.com"
 COMMIT_AUTHOR_NAME = "Roger Lee Cormier"

@@ -1,10 +1,8 @@
 /**
  * Router Configuration for Portfolio Site
  * 
- * To add new portfolio pages:
- * 1. Add your .md file to src/content/portfolio/
- * 2. Add the slug (filename without .md) to the portfolioPages array below
- * 3. The route will automatically work at /your-slug
+ * Portfolio pages are now dynamically loaded from the API worker
+ * No need to manually add new portfolio pages to the router
  */
 
 import {
@@ -66,7 +64,7 @@ const blogPostRoute = createRoute({
   component: BlogPostWrapper
 })
 
-// Portfolio items route - handles all portfolio pages under /portfolio/*
+// Portfolio items route - dynamically handles all portfolio pages
 const portfolioItemRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'portfolio/$slug',
@@ -74,32 +72,9 @@ const portfolioItemRoute = createRoute({
     // Get the slug from the URL
     const slug = window.location.pathname.split('/').pop() || ''
     
-    // List of all portfolio pages - easy to maintain
-    // To add a new portfolio page, just add the slug here (filename without .md extension)
-    const portfolioPages = [
-      'strategy',
-      'leadership', 
-      'culture',
-      'talent',
-      'devops',
-      'saas',
-      'analytics',
-      'risk-compliance',
-      'governance-pmo',
-      'product-ux',
-      'ai-automation',
-      'education-certifications',
-      'projects',
-      'capabilities'
-    ]
-    
-    // Check if this is a valid portfolio page
-    if (portfolioPages.includes(slug)) {
-      return <PortfolioPage file={`portfolio/${slug}`} />
-    }
-    
-    // If not found, return 404
-    return <NotFound />
+    // The PortfolioPage component will now handle loading content from the API worker
+    // No need to validate slugs here - the component will handle 404s gracefully
+    return <PortfolioPage file={`portfolio/${slug}`} />
   }
 })
 

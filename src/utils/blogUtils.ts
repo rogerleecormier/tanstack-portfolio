@@ -1,4 +1,5 @@
 import fm from 'front-matter'
+import { logger } from './logger'
 
 export interface BlogPost {
   slug: string
@@ -42,8 +43,120 @@ export function formatDate(dateString: string): string {
   });
 }
 
-// Load all blog posts dynamically from markdown files
+// Load all blog posts from the API worker
 export async function loadAllBlogPosts(): Promise<BlogPost[]> {
+  try {
+    logger.info('🔄 Loading blog posts from API worker...')
+    
+    // Use the production worker URL
+    const workerUrl = 'https://github-file-manager.rcormier.workers.dev'
+    
+    const listResponse = await fetch(`${workerUrl}/api/files/list`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ directory: 'blog' })
+    })
+
+    if (!listResponse.ok) {
+      throw new Error(`Failed to list blog files: ${listResponse.status}`)
+    }
+
+    const listResult = await listResponse.json()
+    if (!listResult.success) {
+      throw new Error(`Failed to list blog files: ${listResult.error}`)
+    }
+
+    const blogFiles = listResult.files || []
+    logger.info(`📚 Found ${blogFiles.length} blog files`)
+    logger.info(`📁 Blog files:`, blogFiles)
+    
+    const posts: BlogPost[] = []
+
+    // Load each blog post
+    for (const file of blogFiles) {
+      if (file.type === 'blob' && file.name.endsWith('.md')) {
+        try {
+          logger.info(`🔄 Attempting to read file: ${file.name}`)
+          
+          // Read the file content
+          const readResponse = await fetch(`${workerUrl}/api/files/read`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filePath: `blog/${file.name}` })
+          })
+
+          logger.info(`📡 Read response status: ${readResponse.status}`)
+          logger.info(`📡 Read response ok: ${readResponse.ok}`)
+
+          if (readResponse.ok) {
+            const readResult = await readResponse.json()
+            logger.info(`📄 Read result:`, readResult)
+            
+            if (readResult.success && readResult.content) {
+              logger.info(`✅ File content received, length: ${readResult.content.length}`)
+              
+              // Parse frontmatter
+              const { attributes, body } = fm(readResult.content)
+              const frontmatter = attributes as BlogFrontmatter
+              
+              logger.info(`📝 Frontmatter parsed:`, frontmatter)
+
+              // Remove import statements from markdown content
+              const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+
+              // Calculate reading time
+              const calculatedReadingTime = calculateReadingTime(cleanedBody)
+
+              // Extract slug from filename
+              const slug = file.name.replace('.md', '')
+
+              // Create blog post
+              const post: BlogPost = {
+                slug,
+                title: (frontmatter.title as string) || slug.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+                description: (frontmatter.description as string) || 'No description available',
+                date: (frontmatter.date as string) || new Date().toISOString(),
+                author: (frontmatter.author as string) || 'Roger Lee Cormier',
+                tags: (frontmatter.tags as string[]) || (frontmatter.keywords as string[]) || [],
+                readTime: (frontmatter.readTime as number) || calculatedReadingTime,
+                content: cleanedBody,
+                image: frontmatter.image as string,
+                keywords: frontmatter.keywords as string[]
+              }
+
+              posts.push(post)
+              logger.info(`✅ Successfully loaded blog post: ${post.title}`)
+            } else {
+              logger.error(`❌ File read failed for ${file.name}:`, readResult)
+            }
+          } else {
+            const errorText = await readResponse.text()
+            logger.error(`❌ HTTP error reading ${file.name}: ${readResponse.status} - ${errorText}`)
+          }
+        } catch (error) {
+          logger.error(`❌ Exception reading blog file ${file.name}:`, error)
+        }
+      }
+    }
+
+    // Sort by date (most recent first)
+    const sortedPosts = posts.sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
+    
+    logger.info(`🎉 Successfully loaded ${sortedPosts.length} blog posts`)
+    return sortedPosts
+  } catch (error) {
+    logger.error('❌ Error loading blog posts from API worker:', error)
+    
+    // Fallback to local loading if API worker fails
+    logger.info('🔄 Falling back to local file loading...')
+    return loadAllBlogPostsLocal()
+  }
+}
+
+// Fallback function for local file loading
+async function loadAllBlogPostsLocal(): Promise<BlogPost[]> {
   try {
     // Dynamically import all markdown files from the blog directory
     const blogModules = import.meta.glob('../content/blog/*.md', { query: '?raw', import: 'default' })
@@ -72,7 +185,7 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
         // Create blog post
         const post: BlogPost = {
           slug: fileName,
-          title: (frontmatter.title as string) || fileName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          title: (frontmatter.title as string) || fileName.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
           description: (frontmatter.description as string) || 'No description available',
           date: (frontmatter.date as string) || new Date().toISOString(),
           author: (frontmatter.author as string) || 'Roger Lee Cormier',
@@ -102,6 +215,67 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
 // Load a specific blog post by slug
 export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
   try {
+    logger.info(`🔄 Loading blog post: ${slug}`)
+    
+    // Use the production worker URL
+    const workerUrl = 'https://github-file-manager.rcormier.workers.dev'
+    
+    const readResponse = await fetch(`${workerUrl}/api/files/read`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filePath: `blog/${slug}.md` })
+    })
+
+    if (readResponse.ok) {
+      const readResult = await readResponse.json()
+      if (readResult.success && readResult.content) {
+        // Parse frontmatter
+        const { attributes, body } = fm(readResult.content)
+        const frontmatter = attributes as BlogFrontmatter
+
+        // Remove import statements from markdown content
+        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+
+        // Calculate reading time
+        const calculatedReadingTime = calculateReadingTime(cleanedBody)
+
+        const blogPost: BlogPost = {
+          slug,
+          title: frontmatter.title || 'Untitled',
+          description: frontmatter.description || '',
+          date: frontmatter.date || new Date().toISOString(),
+          author: frontmatter.author || 'Roger Lee Cormier',
+          tags: frontmatter.tags || [],
+          readTime: frontmatter.readTime || calculatedReadingTime,
+          content: cleanedBody,
+          image: frontmatter.image,
+          keywords: frontmatter.keywords
+        }
+        
+        logger.info(`✅ Successfully loaded blog post: ${blogPost.title}`)
+        return blogPost
+      }
+    }
+    
+    // Fallback to local loading if API worker fails
+    logger.info(`🔄 API worker failed, falling back to local loading for: ${slug}`)
+    return loadBlogPostLocal(slug)
+  } catch (error) {
+    logger.error(`❌ Error loading blog post ${slug} from API worker:`, error)
+    
+    // Fallback to local loading
+    try {
+      return await loadBlogPostLocal(slug)
+    } catch (localError) {
+      logger.error(`❌ Error loading blog post ${slug} from local files:`, localError)
+      return null
+    }
+  }
+}
+
+// Fallback function for local file loading
+async function loadBlogPostLocal(slug: string): Promise<BlogPost | null> {
+  try {
     // Import the markdown file
     const markdownModule = await import(`../content/blog/${slug}.md?raw`)
     const text = markdownModule.default
@@ -121,7 +295,7 @@ export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
       title: frontmatter.title || 'Untitled',
       description: frontmatter.description || '',
       date: frontmatter.date || new Date().toISOString(),
-      author: frontmatter.author || 'Ryan Cormier',
+      author: frontmatter.author || 'Roger Lee Cormier',
       tags: frontmatter.tags || [],
       readTime: frontmatter.readTime || calculatedReadingTime,
       content: cleanedBody,

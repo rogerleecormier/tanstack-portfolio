@@ -5,7 +5,6 @@ import remarkGfm from 'remark-gfm'
 import fm from 'front-matter'
 import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -383,9 +382,9 @@ export default function PortfolioPage({ file }: { file: string }) {
                     {children}
                   </li>
                 ),
-              hr: ({ ...props }) => (
-                <Separator className="my-8" {...props} />
-              ),
+                             hr: ({ ...props }) => (
+                 <hr className="my-8 border-t border-gray-200" {...props} />
+               ),
               table: ({ children }) => {
                 return (
                   <UnifiedTableRenderer
