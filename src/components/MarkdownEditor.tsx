@@ -787,23 +787,16 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                          try {
                            const content = editor.getHTML()
                            
-                           // Check if this is the initial content that was loaded
-                           // If so, use the original markdown instead of converting HTML back
-                           if (initialContent && !initialContent.startsWith('<')) {
-                             // Original content was markdown, use it directly
-                             setMarkdownOutput(initialContent)
-                             if (onContentChange) {
-                               onContentChange(content, initialContent)
-                             }
-                           } else {
-                             // Convert HTML to markdown
-                             const markdown = htmlToMarkdown(content)
-                             setMarkdownOutput(markdown)
-                             
-                             if (onContentChange) {
-                               onContentChange(content, markdown)
-                             }
+                           // Always try to convert the current HTML content back to markdown
+                           // This ensures we get the actual content as it appears in the editor
+                           const markdown = htmlToMarkdown(content)
+                           setMarkdownOutput(markdown)
+                           
+                           if (onContentChange) {
+                             onContentChange(content, markdown)
                            }
+                           
+                           logger.debug('Markdown output updated from current editor content')
                          } catch (error) {
                            logger.error('Failed to update markdown:', error)
                          }
