@@ -21,6 +21,17 @@ import {
 import { PortfolioItem } from '@/utils/portfolioUtils'
 import { workerContentService } from '@/api/workerContentService'
 
+// Interface for the content search worker response
+interface ContentSearchResult {
+  id: string
+  title: string
+  description: string
+  url: string
+  contentType: 'blog' | 'portfolio' | 'project' | 'page'
+  tags: string[]
+  relevanceScore?: number
+}
+
 interface Recommendation {
   type: 'solution' | 'insight' | 'trend' | 'blog' | 'portfolio'
   title: string
@@ -55,6 +66,38 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
   // Get content recommendations from worker API
   const getContentRecommendations = useCallback(async (query: string): Promise<ContentRecommendation[]> => {
     try {
+      // Use the updated content search worker for actual relevance scores
+      const response = await fetch('https://content-search.rcormier.workers.dev/api/recommendations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: query,
+          contentType: 'all', // Get cross-content type recommendations
+          maxResults: 3,
+          tags: []
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        
+        if (data.success && data.results && data.results.length > 0) {
+          return data.results.map((item: ContentSearchResult) => ({
+            type: 'content' as const,
+            title: item.title,
+            description: item.description,
+            url: item.url,
+            contentType: item.contentType,
+            confidence: (item.relevanceScore || 0) / 100, // Convert percentage to decimal
+            icon: BookOpen,
+            category: item.contentType.charAt(0).toUpperCase() + item.contentType.slice(1)
+          }))
+        }
+      }
+      
+      // Fallback to old service if new API fails
       const contentItems = await workerContentService.searchByQuery(query, 'all', 3)
       
       return contentItems.map(item => ({
@@ -63,7 +106,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
         description: item.description,
         url: item.url,
         contentType: item.contentType,
-        confidence: 0.85, // Default confidence for content matches
+        confidence: 0.65, // Lower confidence for fallback content
         icon: BookOpen,
         category: item.category || 'Content'
       }))

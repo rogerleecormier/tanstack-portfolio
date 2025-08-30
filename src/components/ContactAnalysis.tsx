@@ -23,6 +23,17 @@ import {
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { workerContentService } from '@/api/workerContentService'
 
+// Interface for the content search worker response
+interface ContentSearchResult {
+  id: string
+  title: string
+  description: string
+  url: string
+  contentType: 'blog' | 'portfolio' | 'project' | 'page'
+  tags: string[]
+  relevanceScore?: number
+}
+
 // Helper function to safely parse tags
 function parseTagsSafely(tags: unknown): string[] {
   if (!tags) return [];
@@ -120,45 +131,57 @@ export function ContactAnalysis({
       const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`
       const tags = [analysis.inquiryType, analysis.industry, analysis.projectScope].filter(Boolean)
       
-      const response = await workerContentService.getRelatedContent(
-        title,
-        tags,
-        undefined,
-        undefined,
-        4
-      )
-      
-      if (response && response.length > 0) {
-        const relevantContent = response
-          .filter(item => item.contentType !== 'page')
-          .map(item => ({
-            title: item.title,
-            path: item.url,
-            description: item.description,
-            relevance: 0.85, // Default relevance for worker API results
-            contentType: item.contentType as 'blog' | 'portfolio' | 'project',
-            tags: parseTagsSafely(item.tags || [])
-          }))
+      // Use the updated content search worker for actual relevance scores
+      const response = await fetch('https://content-search.rcormier.workers.dev/api/recommendations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: title,
+          contentType: 'all', // Get cross-content type recommendations
+          maxResults: 4,
+          tags: tags
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
         
-        setRelevantContent(relevantContent)
-      } else {
-        // Fallback to type-based recommendations
-        const fallbackResponse = await workerContentService.getContentByType('portfolio', 4)
-        if (fallbackResponse && fallbackResponse.length > 0) {
-          const relevantContent = fallbackResponse
-            .filter(item => item.contentType !== 'page')
-            .map(item => ({
+        if (data.success && data.results && data.results.length > 0) {
+          const relevantContent = data.results
+            .filter((item: ContentSearchResult) => item.contentType !== 'page')
+            .map((item: ContentSearchResult) => ({
               title: item.title,
               path: item.url,
               description: item.description,
-              relevance: 0.85, // Default relevance for worker API results
+              relevance: (item.relevanceScore || 0) / 100, // Convert percentage to decimal
               contentType: item.contentType as 'blog' | 'portfolio' | 'project',
               tags: parseTagsSafely(item.tags || [])
             }))
+          
           setRelevantContent(relevantContent)
         } else {
-          setRelevantContent([])
+          // Fallback to type-based recommendations
+          const fallbackResponse = await workerContentService.getContentByType('portfolio', 4)
+          if (fallbackResponse && fallbackResponse.length > 0) {
+            const relevantContent = fallbackResponse
+              .filter(item => item.contentType !== 'page')
+              .map(item => ({
+                title: item.title,
+                path: item.url,
+                description: item.description,
+                relevance: 0.65, // Lower relevance for fallback content
+                contentType: item.contentType as 'blog' | 'portfolio' | 'project',
+                tags: parseTagsSafely(item.tags || [])
+              }))
+            setRelevantContent(relevantContent)
+          } else {
+            setRelevantContent([])
+          }
         }
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
     } catch (error) {
       console.warn('Smart recommendations failed, using fallback:', error)
@@ -172,7 +195,7 @@ export function ContactAnalysis({
               title: item.title,
               path: item.url,
               description: item.description,
-              relevance: 0.85, // Default relevance for worker API results
+              relevance: 0.45, // Lower relevance for fallback content
               contentType: item.contentType as 'blog' | 'portfolio' | 'project',
               tags: parseTagsSafely(item.tags || [])
             }))
