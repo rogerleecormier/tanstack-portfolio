@@ -3,12 +3,15 @@ export interface ContentItem {
   title: string
   description: string
   tags: string[]
-  category: string
+  category?: string
   url: string
   keywords?: string[]
   confidence?: number
-  contentType: 'blog' | 'portfolio' | 'project'
+  contentType: 'blog' | 'portfolio' | 'project' | 'page'
   frontMatter?: Record<string, unknown>
+  headings?: string[]
+  lastModified?: string
+  displayContent?: string
 }
 
 export interface ContentRecommendationsRequest {

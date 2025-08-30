@@ -463,11 +463,11 @@ class ContentSearchWorker {
       const searchKeywords = this.generateSearchKeywords(frontmatter, markdownContent, headings)
 
       // Clean up title and description to remove extra quotes and formatting
-      const cleanTitle = this.cleanContentString(frontmatter.title || this.generateTitleFromPath(filePath))
-      const cleanDescription = this.cleanContentString(frontmatter.description || frontmatter.excerpt || '')
+      const cleanTitle = await this.cleanContentString(frontmatter.title || this.generateTitleFromPath(filePath))
+      const cleanDescription = await this.cleanContentString(frontmatter.description || frontmatter.excerpt || '')
       
              // Generate clean text content for display (no emojis, basic markdown cleaning)
-       const displayContent = this.cleanMarkdownContent(markdownContent)
+       const displayContent = await this.cleanMarkdownContent(markdownContent)
 
       return {
         id: file.sha,
@@ -643,45 +643,73 @@ class ContentSearchWorker {
   /**
    * Clean content string by removing extra quotes and formatting
    */
-  private cleanContentString(str: string): string {
+  private async cleanContentString(str: string): Promise<string> {
     if (!str) return ''
     
-    // Remove surrounding quotes
-    let cleaned = str.trim()
-    if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
-      cleaned = cleaned.slice(1, -1)
+    try {
+      // Use the new character parsing utility
+      const { parseContentForSearch } = await import('../src/utils/characterParser')
+      return parseContentForSearch(str)
+    } catch (error) {
+      console.error('Error importing character parser, using fallback:', error)
+      
+      // Fallback to original method
+      let cleaned = str.trim()
+      if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+        cleaned = cleaned.slice(1, -1)
+      }
+      if (cleaned.startsWith("'") && cleaned.endsWith("'")) {
+        cleaned = cleaned.slice(1, -1)
+      }
+      
+      cleaned = cleaned.replace(/["']/g, '').trim()
+      return cleaned
     }
-    if (cleaned.startsWith("'") && cleaned.endsWith("'")) {
-      cleaned = cleaned.slice(1, -1)
-    }
-    
-    // Remove any remaining quotes and clean up whitespace
-    cleaned = cleaned.replace(/["']/g, '').trim()
-    
-    return cleaned
   }
 
   /**
    * Clean markdown content for display by removing emojis but preserving markdown formatting
    */
-  private cleanMarkdownContent(content: string): string {
+  private async cleanMarkdownContent(content: string): Promise<string> {
     if (!content) return ''
     
-    // Remove emojis (Unicode emoji ranges)
-    let cleaned = content.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
-    
-    // Clean up whitespace
-    cleaned = cleaned
-      .replace(/\n\s*\n/g, '\n') // Multiple newlines to single
-      .replace(/\s+/g, ' ') // Multiple spaces to single
-      .trim()
-    
-    // Limit length for display
-    if (cleaned.length > 400) {
-      cleaned = cleaned.substring(0, 400).trim() + '...'
+    try {
+      // Use the new character parsing utility
+      const { parseContentForSearch } = await import('../src/utils/characterParser')
+      let cleaned = parseContentForSearch(content)
+      
+      // Remove emojis (Unicode emoji ranges)
+      cleaned = cleaned.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
+      
+      // Clean up whitespace
+      cleaned = cleaned
+        .replace(/\n\s*\n/g, '\n') // Multiple newlines to single
+        .replace(/\s+/g, ' ') // Multiple spaces to single
+        .trim()
+      
+      // Limit length for display
+      if (cleaned.length > 400) {
+        cleaned = cleaned.substring(0, 400).trim() + '...'
+      }
+      
+      return cleaned
+    } catch (error) {
+      console.error('Error importing character parser, using fallback:', error)
+      
+      // Fallback to original method
+      let cleaned = content.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
+      
+      cleaned = cleaned
+        .replace(/\n\s*\n/g, '\n')
+        .replace(/\s+/g, ' ')
+        .trim()
+      
+      if (cleaned.length > 400) {
+        cleaned = cleaned.substring(0, 400).trim() + '...'
+      }
+      
+      return cleaned
     }
-    
-    return cleaned
   }
 
   /**

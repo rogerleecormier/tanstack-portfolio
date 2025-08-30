@@ -1,4 +1,5 @@
 import { logger } from '@/utils/logger'
+import { parseContentForSearch } from './characterParser'
 
 /**
  * Converts markdown text to HTML format
@@ -8,7 +9,8 @@ export const markdownToHtml = (markdown: string): string => {
   if (!markdown) return ''
   
   try {
-    let html = markdown
+    // First parse and clean the content using the new character parser
+    let html = parseContentForSearch(markdown)
     
     // Remove emojis and problematic characters first
     html = html

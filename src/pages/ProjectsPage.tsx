@@ -458,7 +458,7 @@ export default function ProjectsPage({ file }: { file: string }) {
              <div className="lg:col-span-1">
                <div className="sticky top-36 space-y-6">
             {/* Smart Related Content Sidebar */}
-            <div className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-xl p-6 border border-teal-200 dark:border-teal-800 shadow-sm">
+            <div className="bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-900 dark:to-gray-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm backdrop-blur-sm">
               <UnifiedRelatedContent
                 content={content}
                 title={frontmatter.title || ''}

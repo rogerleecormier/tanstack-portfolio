@@ -1,7 +1,18 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { Badge } from './ui/badge'
-import { MessageSquare, TrendingUp, ExternalLink } from 'lucide-react'
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { 
+  TrendingUp,
+  ExternalLink,
+  Clock,
+  Tag,
+  BookOpen,
+  User,
+  ArrowRight
+} from 'lucide-react'
 import { ContentItem } from '../types/content'
+import { parseContentForSearch } from '../utils/characterParser'
 
 interface UnifiedRelatedContentProps {
   title?: string
@@ -40,7 +51,7 @@ export function UnifiedRelatedContent({
       setIsLoading(true)
       setError(null)
 
-      const response = await fetch('/api/content-search', {
+      const response = await fetch('https://content-search.rcormier.workers.dev/api/recommendations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,18 +107,24 @@ export function UnifiedRelatedContent({
   if (isLoading) {
     return (
       <div className={className}>
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
             Related Content
           </h3>
+          <div className="w-16 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full"></div>
         </div>
         <div className="space-y-4">
           {Array.from({ length: maxResults }, (_, i) => (
-            <div key={i} className="animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-full"></div>
-            </div>
+            <Card key={i} className="border-dashed">
+              <CardHeader className="pb-3">
+                <Skeleton className="h-5 w-4/5" />
+              </CardHeader>
+              <CardContent className="pt-0 pb-4">
+                <Skeleton className="h-4 w-full mb-3" />
+                <Skeleton className="h-4 w-3/4 mb-3" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
@@ -117,29 +134,41 @@ export function UnifiedRelatedContent({
   if (error) {
     return (
       <div className={className}>
-        <div className="text-sm text-muted-foreground text-center py-4">
-          Unable to load recommendations
-        </div>
+        <Card className="border-destructive/20 bg-destructive/5">
+          <CardContent className="pt-6">
+            <div className="text-center py-4">
+              <p className="text-base text-muted-foreground">
+                Unable to load recommendations
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
-  // Show skeleton when no recommendations (instead of debug info)
+  // Show skeleton when no recommendations
   if (!isLoading && recommendations.length === 0) {
     return (
       <div className={className}>
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
             Related Content
           </h3>
+          <div className="w-16 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full"></div>
         </div>
         <div className="space-y-4">
           {Array.from({ length: maxResults }, (_, i) => (
-            <div key={i} className="animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-full"></div>
-            </div>
+            <Card key={i} className="border-dashed opacity-50">
+              <CardHeader className="pb-3">
+                <Skeleton className="h-5 w-4/5" />
+              </CardHeader>
+              <CardContent className="pt-0 pb-4">
+                <Skeleton className="h-4 w-full mb-3" />
+                <Skeleton className="h-4 w-3/4 mb-3" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
@@ -149,26 +178,26 @@ export function UnifiedRelatedContent({
   const getContentTypeIcon = (type: string) => {
     switch (type) {
       case 'blog':
-        return <MessageSquare className="h-3 w-3" />
+        return <BookOpen className="h-4 w-4" />
       case 'portfolio':
-        return <TrendingUp className="h-3 w-3" />
+        return <TrendingUp className="h-4 w-4" />
       case 'project':
-        return <ExternalLink className="h-3 w-3" />
+        return <ExternalLink className="h-4 w-4" />
       default:
-        return <MessageSquare className="h-3 w-3" />
+        return <BookOpen className="h-4 w-4" />
     }
   }
 
   const getContentTypeColor = (type: string) => {
     switch (type) {
       case 'blog':
-        return 'brand-bg-secondary text-blue-800 dark:bg-blue-50 dark:text-blue-800'
+        return 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800'
       case 'portfolio':
-        return 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800'
+        return 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950 dark:text-teal-300 dark:border-teal-800'
       case 'project':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-50 dark:text-purple-800'
+        return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800'
       default:
-        return 'brand-bg-primary text-teal-800 dark:bg-teal-50 dark:text-teal-800'
+        return 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950 dark:text-teal-300 dark:border-teal-800'
     }
   }
 
@@ -180,94 +209,96 @@ export function UnifiedRelatedContent({
 
     return (
       <div className={className}>
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
             Related Content
           </h3>
+          <div className="w-16 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full"></div>
         </div>
         
         <div className="space-y-4">
           {recommendations.map((item) => (
-            <div key={item.id} className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
-                             <div className="pb-3">
-                 <div className="flex items-start justify-between gap-2">
-                   <div className="flex-1 min-w-0">
-                     <h4 className="text-base font-medium leading-tight text-gray-900 dark:text-gray-100 line-clamp-2">
-                       {item.title}
-                     </h4>
-                     {item.category && (
-                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                         {item.category}
-                       </p>
-                     )}
-                   </div>
-                   <a 
-                     href={item.url} 
-                     className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors flex-shrink-0 mt-1"
-                     aria-label={`Read ${item.title}`}
-                   >
-                     <ExternalLink className="h-4 w-4" />
-                   </a>
-                 </div>
-               </div>
+            <Card key={item.id} className="group hover:shadow-lg transition-all duration-200 hover:border-teal-300 dark:hover:border-teal-600 overflow-hidden">
+              <CardHeader className="pb-3">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-base font-semibold leading-tight text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors">
+                      {parseContentForSearch(item.title)}
+                    </CardTitle>
+                    {item.category && (
+                      <CardDescription className="text-sm text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        {parseContentForSearch(item.category)}
+                      </CardDescription>
+                    )}
+                  </div>
+                  <a 
+                    href={item.url} 
+                    className="text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex-shrink-0 p-2 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950"
+                    aria-label={`Read ${parseContentForSearch(item.title)}`}
+                  >
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                </div>
+              </CardHeader>
               
-                             <div className="pt-0">
-                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-3">
-                   {item.description || 'No description available'}
-                 </p>
-                 
-                                   {/* Enhanced tag display */}
-                  {item.tags && item.tags.length > 0 && (
-                    <div className="mb-3">
-                      <div className="flex flex-wrap gap-1">
-                                                 {(() => {
-                                                                               // Use helper function to safely parse tags
+              <CardContent className="pt-0 pb-4">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-4 leading-relaxed">
+                  {parseContentForSearch(item.description || 'No description available')}
+                </p>
+                
+                {/* Compact tag display */}
+                {item.tags && item.tags.length > 0 && (
+                  <div className="mb-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      {(() => {
                         const cleanTags = item.tags.filter((tag: string) => tag && tag.trim().length > 0);
-                           
-                           return (
-                             <>
-                               {cleanTags.slice(0, 4).map((tag: string, index: number) => (
-                                 <span 
-                                   key={index}
-                                   className="inline-block text-xs px-2 py-1 brand-bg-primary text-teal-600 dark:bg-teal-50 dark:text-teal-600 rounded-full"
-                                   title={tag}
-                                 >
-                                   {tag}
-                                 </span>
-                               ))}
-                               {cleanTags.length > 4 && (
-                                 <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
-                                   +{cleanTags.length - 4} more
-                                 </span>
-                               )}
-                             </>
-                           );
-                         })()}
-                      </div>
+                        
+                        return (
+                          <>
+                            {cleanTags.slice(0, 3).map((tag: string, index: number) => (
+                              <span 
+                                key={index}
+                                className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-md font-medium"
+                                title={parseContentForSearch(tag)}
+                              >
+                                <Tag className="h-3 w-3" />
+                                <span className="truncate max-w-[70px]">{parseContentForSearch(tag)}</span>
+                              </span>
+                            ))}
+                            {cleanTags.length > 3 && (
+                              <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
+                                +{cleanTags.length - 3}
+                              </span>
+                            )}
+                          </>
+                        );
+                      })()}
                     </div>
-                  )}
-                 
-                 {/* Bottom row with content type and confidence */}
-                 <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
-                   <div className="flex items-center gap-2">
-                     <Badge 
-                       variant="secondary" 
-                       className={`text-xs px-2 py-1 ${getContentTypeColor(item.contentType)}`}
-                     >
-                       {getContentTypeIcon(item.contentType)}
-                       <span className="ml-1 capitalize">{item.contentType}</span>
-                     </Badge>
-                   </div>
-                   
-                                       <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                  </div>
+                )}
+              </CardContent>
+             
+              <CardFooter className="pt-0 pb-4">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <Badge 
+                      variant="outline" 
+                      className={`text-xs px-2 py-1 border ${getContentTypeColor(item.contentType)}`}
+                    >
+                      {getContentTypeIcon(item.contentType)}
+                      <span className="ml-1 capitalize">{parseContentForSearch(item.contentType)}</span>
+                    </Badge>
+                    
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                      <Clock className="h-3 w-3" />
                       <span>Relevance:</span>
-                      <Badge variant="outline" className="text-xs px-2 py-1">
-                        85%
-                      </Badge>
+                      <span className="font-medium text-green-600 dark:text-green-400">85%</span>
                     </div>
-                 </div>
-               </div>
-            </div>
+                  </div>
+                </div>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       </div>
@@ -277,83 +308,88 @@ export function UnifiedRelatedContent({
   // Inline variant for portfolio/project pages
   return (
     <div className={className}>
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-          Related Content
-        </h2>
-        <p className="text-muted-foreground">
+      <div className="mb-8">
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+            Related Content
+          </h2>
+          <div className="w-20 h-1.5 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full"></div>
+        </div>
+        <p className="text-lg text-muted-foreground">
           Discover more insights and projects
         </p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {recommendations.map((item) => (
-          <div key={item.id} className="border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors h-full">
-            <div className="pb-3">
-              <div className="flex items-start justify-between gap-2">
-                <h4 className="text-lg font-medium leading-tight text-gray-900 dark:text-gray-100 line-clamp-2">
-                  {item.title}
-                </h4>
+          <Card key={item.id} className="group hover:shadow-xl transition-all duration-200 hover:border-teal-300 dark:hover:border-teal-600 h-full overflow-hidden">
+            <CardHeader className="pb-4">
+              <div className="flex items-start gap-3">
+                <CardTitle className="text-lg font-semibold leading-tight text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors flex-1">
+                  {parseContentForSearch(item.title)}
+                </CardTitle>
                 <a 
                   href={item.url} 
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors flex-shrink-0 mt-1"
-                  aria-label={`Read ${item.title}`}
+                  className="text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex-shrink-0 p-2 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950"
+                  aria-label={`Read ${parseContentForSearch(item.title)}`}
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <ArrowRight className="h-5 w-5" />
                 </a>
               </div>
-            </div>
+            </CardHeader>
             
-            <div className="pt-0">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
-                {item.description}
+            <CardContent className="pt-0 pb-4">
+              <p className="text-base text-gray-600 dark:text-gray-400 mb-4 line-clamp-4 leading-relaxed">
+                {parseContentForSearch(item.description)}
               </p>
               
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
                   <Badge 
-                    variant="secondary" 
-                    className={`text-xs px-2 py-1 ${getContentTypeColor(item.contentType)}`}
+                    variant="outline" 
+                    className={`text-sm px-3 py-1.5 border ${getContentTypeColor(item.contentType)}`}
                   >
                     {getContentTypeIcon(item.contentType)}
-                    <span className="ml-1 capitalize">{item.contentType}</span>
+                    <span className="ml-2 capitalize font-medium">{parseContentForSearch(item.contentType)}</span>
                   </Badge>
                   
-                                     <Badge variant="outline" className="text-xs px-2 py-1">
-                     85%
-                   </Badge>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <Clock className="h-4 w-4" />
+                    <span>Relevance:</span>
+                    <span className="font-medium text-green-600 dark:text-green-400">85%</span>
+                  </div>
                 </div>
                 
-                                 {item.tags && item.tags.length > 0 && (
-                   <div className="flex flex-wrap gap-1 max-w-[150px]">
-                                           {(() => {
-                        // Use helper function to safely parse tags
-                        const cleanTags = item.tags.filter((tag: string) => tag && tag.trim().length > 0);
-                        
-                        return (
-                          <>
-                            {cleanTags.slice(0, 3).map((tag: string, index: number) => (
-                              <span 
-                                key={index}
-                                className="inline-block text-xs px-2 py-1 brand-bg-primary text-teal-600 dark:bg-teal-50 dark:text-teal-600 rounded-full truncate max-w-[100px]"
-                                title={tag}
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                            {cleanTags.length > 3 && (
-                              <span className="text-xs text-gray-400 dark:text-gray-500">
-                                +{cleanTags.length - 3}
-                              </span>
-                            )}
-                          </>
-                        );
-                      })()}
-                   </div>
-                 )}
+                {item.tags && item.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {(() => {
+                      const cleanTags = item.tags.filter((tag: string) => tag && tag.trim().length > 0);
+                      
+                      return (
+                        <>
+                          {cleanTags.slice(0, 3).map((tag: string, index: number) => (
+                            <span 
+                              key={index}
+                              className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-md font-medium truncate max-w-[90px]"
+                              title={parseContentForSearch(tag)}
+                            >
+                              <Tag className="h-3 w-3 flex-shrink-0" />
+                              <span className="truncate">{parseContentForSearch(tag)}</span>
+                            </span>
+                          ))}
+                          {cleanTags.length > 3 && (
+                            <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
+                              +{cleanTags.length - 3}
+                            </span>
+                          )}
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>
