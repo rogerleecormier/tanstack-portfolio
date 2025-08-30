@@ -32,15 +32,11 @@ import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
-console.count('[router] module evaluated');
-
 // Root route
 const rootRoute = createRootRoute({
   component: AppLayout,
   notFoundComponent: NotFound,
 })
-
-console.count('[router] createRootRoute called')
 
 // Index route (About page at root)
 const indexRoute = createRoute({
@@ -231,4 +227,3 @@ export const router = createRouter({
   defaultNotFoundComponent: NotFound,
 })
 
-console.count('[router] createRouter called');

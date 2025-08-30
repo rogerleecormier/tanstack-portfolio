@@ -18,6 +18,7 @@ import {
   MoreHorizontal
 } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { logger } from '@/utils/logger'
 
 interface FileItem {
   name: string
@@ -144,8 +145,24 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
   }
 
   const handleFileClick = (file: FileItem) => {
+    logger.debug('🖱️ File clicked in FileBrowser:', {
+      name: file.name,
+      path: file.path,
+      type: file.type,
+      size: file.size,
+      isLoadingFile,
+      currentEditingFile
+    })
+    
     if (file.type === 'file' && !isLoadingFile) {
+      logger.debug('✅ Calling onFileSelect callback')
       onFileSelect(file)
+    } else {
+      logger.debug('❌ File click ignored:', {
+        reason: file.type === 'file' ? 'isLoadingFile is true' : 'not a file',
+        isLoadingFile,
+        fileType: file.type
+      })
     }
   }
 

@@ -12,6 +12,7 @@ class Logger {
   private isDevelopment: boolean
   private isLocalhost: boolean
   private logLevels: LogLevel
+  private forceDebug: boolean = false
 
   constructor() {
     this.isDevelopment = import.meta.env.DEV
@@ -30,8 +31,18 @@ class Logger {
     }
   }
 
+  // Toggle debug mode for production troubleshooting
+  toggleDebug(): void {
+    this.forceDebug = !this.forceDebug
+    if (this.forceDebug) {
+      console.log('🔧 Debug mode enabled - all logs will be shown')
+    } else {
+      console.log('🔧 Debug mode disabled')
+    }
+  }
+
   private shouldLog(level: keyof LogLevel): boolean {
-    return this.logLevels[level]
+    return this.logLevels[level] || this.forceDebug
   }
 
   // Debug logging - only in dev/localhost
@@ -189,9 +200,7 @@ export const {
   response,
   validation,
   getEnvironmentInfo,
-  enableDebugMode,
-  disableDebugMode,
-  isDebugMode
+  toggleDebug
 } = logger
 
 // Default export

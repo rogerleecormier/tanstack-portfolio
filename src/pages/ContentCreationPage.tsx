@@ -278,33 +278,52 @@ const ContentCreationPage: React.FC = () => {
   const handleFileSelect = useCallback(async (file: FileItem) => {
     try {
       setIsLoadingFile(true)
-      logger.debug('Loading file:', file.path)
+      logger.debug('🚀 Starting file load process')
+      logger.debug('📁 File details:', {
+        name: file.name,
+        path: file.path,
+        type: file.type,
+        size: file.size
+      })
+      
+      logger.debug('🔍 Calling fileService.readFile with path:', file.path)
       const fileContent = await fileService.readFile({ filePath: file.path })
+      
+      logger.debug('📡 File service response:', {
+        success: fileContent.success,
+        hasContent: !!fileContent.content,
+        contentLength: fileContent.content?.length || 0,
+        error: fileContent.error
+      })
+      
       if (fileContent.content) {
-        logger.debug('File content loaded, length:', fileContent.content.length)
-        logger.debug('Raw file content:', fileContent.content.substring(0, 200) + '...')
+        logger.debug('✅ File content loaded successfully')
+        logger.debug('📊 Content preview:', fileContent.content.substring(0, 200) + '...')
         
         // Parse the content to separate frontmatter and markdown
+        logger.debug('🔍 Parsing markdown file...')
         const { frontmatter: parsedFrontmatter, markdown: parsedMarkdown } = parseMarkdownFile(fileContent.content)
         
-        logger.debug('Parsed frontmatter:', parsedFrontmatter)
-        logger.debug('Parsed markdown:', parsedMarkdown)
-        logger.debug('Markdown length:', parsedMarkdown.length)
+        logger.debug('📋 Parsed frontmatter:', parsedFrontmatter)
+        logger.debug('📝 Parsed markdown length:', parsedMarkdown.length)
         
-                 // Set the states in the correct order to ensure proper flow
-         setFrontmatter(parsedFrontmatter)
-         setMarkdown(parsedMarkdown)
-         // Convert markdown to HTML for proper table rendering in the editor
-         const htmlContent = markdownToHtml(parsedMarkdown)
-         setContent(htmlContent)
+        // Set the states in the correct order to ensure proper flow
+        logger.debug('🔄 Setting component states...')
+        setFrontmatter(parsedFrontmatter)
+        setMarkdown(parsedMarkdown)
+        
+        // Convert markdown to HTML for proper table rendering in the editor
+        logger.debug('🔄 Converting markdown to HTML...')
+        const htmlContent = markdownToHtml(parsedMarkdown)
+        setContent(htmlContent)
         
         // Update file-related states
         setCurrentFilePath(file.path)
         setIsEditingExisting(true)
 
-        
         // Update directory to match file location
         const fileDir = file.path.split('/').slice(0, -1).join('/')
+        logger.debug('📂 Setting directory to:', fileDir)
         setCustomDirectory(fileDir)
         setCurrentDirectory(fileDir)
         
@@ -312,10 +331,11 @@ const ContentCreationPage: React.FC = () => {
         setShowFileBrowser(false)
         
         // Show success message
-        logger.debug('File loaded successfully, states updated')
+        logger.debug('✅ File loaded successfully, all states updated')
         
         // Auto-show frontmatter editor if frontmatter is incomplete
         if (!parsedFrontmatter.title || !parsedFrontmatter.description || parsedFrontmatter.tags.length === 0) {
+          logger.debug('⚠️ Frontmatter incomplete, will show editor')
           setTimeout(() => {
             setShowFrontmatterEditor(true)
           }, 500)
@@ -325,12 +345,18 @@ const ContentCreationPage: React.FC = () => {
         setLoadedFileName(file.name)
         setShowFileLoadedNotification(true)
         setTimeout(() => setShowFileLoadedNotification(false), 3000)
+      } else {
+        logger.error('❌ File content is empty or undefined')
+        logger.error('📡 File service response:', fileContent)
+        alert('File content is empty. Please try again.')
       }
     } catch (error) {
+      logger.error('💥 Error loading file:', error)
       console.error('Error loading file:', error)
       alert('Error loading file. Please try again.')
     } finally {
       setIsLoadingFile(false)
+      logger.debug('🏁 File load process completed')
     }
   }, [fileService])
 
