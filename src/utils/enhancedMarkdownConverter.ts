@@ -55,17 +55,17 @@ export const enhancedMarkdownToHtml = (markdown: string): string => {
     
     // Enhanced code blocks with syntax highlighting
     html = html
-      .replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+      .replace(/```(\w+)?\n([\s\S]*?)```/g, (_match, lang, code) => {
         const language = lang || 'text'
         return `<pre class="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg overflow-x-auto mb-6 border border-teal-200 dark:border-teal-700"><code class="language-${language} text-sm text-teal-800 dark:text-teal-200">${code}</code></pre>`
       })
     
     // Enhanced table handling
     html = html
-      .replace(/\|(.+)\|\n\|([-:\s|]+)\|\n((?:\|.+\|\n?)+)/g, (match, headerRow, separatorRow, dataRows) => {
-        const headers = headerRow.split('|').map(h => h.trim()).filter(Boolean)
-        const rows = dataRows.trim().split('\n').map(row => 
-          row.split('|').map(cell => cell.trim()).filter(Boolean)
+      .replace(/\|(.+)\|\n\|([-:\s|]+)\|\n((?:\|.+\|\n?)+)/g, (_match, headerRow, _separatorRow, dataRows) => {
+        const headers = headerRow.split('|').map((h: string) => h.trim()).filter(Boolean)
+        const rows = dataRows.trim().split('\n').map((row: string) => 
+          row.split('|').map((cell: string) => cell.trim()).filter(Boolean)
         )
         
         let tableHTML = '<div class="overflow-x-auto my-8"><table class="w-full caption-bottom text-sm border-collapse bg-white dark:bg-teal-900/10 border border-teal-200 dark:border-teal-700 rounded-xl overflow-hidden shadow-sm">'
@@ -73,7 +73,7 @@ export const enhancedMarkdownToHtml = (markdown: string): string => {
         // Header
         if (headers.length > 0) {
           tableHTML += '<thead><tr>'
-          headers.forEach(header => {
+          headers.forEach((header: string) => {
             tableHTML += `<th class="h-14 px-5 text-left align-middle font-semibold text-teal-900 dark:text-teal-100 border-r border-teal-200 dark:border-teal-700 last:border-r-0 bg-teal-50 dark:bg-teal-900/30 text-sm tracking-wide">${header}</th>`
           })
           tableHTML += '</tr></thead>'
@@ -81,9 +81,9 @@ export const enhancedMarkdownToHtml = (markdown: string): string => {
         
         // Body
         tableHTML += '<tbody>'
-        rows.forEach(row => {
+        rows.forEach((row: string[]) => {
           tableHTML += '<tr class="border-b border-teal-100 dark:border-teal-700 last:border-b-0 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 ease-in-out">'
-          row.forEach((cell, index) => {
+          row.forEach((cell: string, index: number) => {
             const isLast = index === row.length - 1
             tableHTML += `<td class="px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 dark:border-teal-700 ${isLast ? 'last:border-r-0' : ''} text-teal-700 dark:text-teal-300 text-sm leading-relaxed">${cell}</td>`
           })
@@ -96,7 +96,7 @@ export const enhancedMarkdownToHtml = (markdown: string): string => {
     
     // Enhanced chart handling
     html = html
-      .replace(/```chart\s+(\w+)\s*\n([\s\S]*?)```/g, (match, chartType, chartData) => {
+      .replace(/```chart\s+(\w+)\s*\n([\s\S]*?)```/g, (_match, chartType, chartData) => {
         try {
           const data = JSON.parse(chartData.trim())
           return `<div data-type="chart" data-chart-type="${chartType}" data-chart-data="${encodeURIComponent(JSON.stringify(data))}" class="my-8 p-4 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-700 rounded-lg">
@@ -175,7 +175,6 @@ export const enhancedHtmlToMarkdown = (html: string): string => {
 function processNode(node: Element): string {
   const tagName = node.tagName.toLowerCase()
   const textContent = node.textContent || ''
-  const className = node.className || ''
   
   // Handle different element types
   switch (tagName) {
@@ -214,11 +213,12 @@ function processNode(node: Element): string {
       }
       return `\`${textContent.trim()}\``
     
-    case 'pre':
+    case 'pre': {
       const codeElement = node.querySelector('code')
       const language = codeElement?.className?.replace('language-', '') || ''
       const code = codeElement?.textContent || textContent
       return `\`\`\`${language}\n${code}\n\`\`\`\n\n`
+    }
     
     case 'blockquote':
       return `> ${textContent.trim()}\n\n`
@@ -250,9 +250,10 @@ function processNode(node: Element): string {
     case 'hr':
       return '---\n\n'
     
-    case 'a':
+    case 'a': {
       const href = node.getAttribute('href') || ''
       return `[${textContent.trim()}](${href})`
+    }
     
     case 'br':
       return '\n'

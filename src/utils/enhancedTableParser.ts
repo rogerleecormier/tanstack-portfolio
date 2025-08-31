@@ -135,11 +135,12 @@ function extractRichTextContent(element: Element): string {
           content += `\`${childElement.textContent || ''}\``
           break
           
-        case 'a':
+        case 'a': {
           const href = childElement.getAttribute('href') || ''
           const text = childElement.textContent || ''
           content += `[${text}](${href})`
           break
+        }
           
         case 'br':
           content += '\n'
@@ -170,7 +171,7 @@ export function markdownTableToHtml(markdownTable: string): string {
     // Header
     if (headers.length > 0) {
       html += '<thead><tr>'
-      headers.forEach(header => {
+      headers.forEach((header: string) => {
         html += `<th class="h-14 px-5 text-left align-middle font-semibold text-teal-900 dark:text-teal-100 border-r border-teal-200 dark:border-teal-700 last:border-r-0 bg-teal-50 dark:bg-teal-900/30 text-sm tracking-wide">${parseMarkdownInCell(header)}</th>`
       })
       html += '</tr></thead>'
@@ -178,9 +179,9 @@ export function markdownTableToHtml(markdownTable: string): string {
     
     // Body
     html += '<tbody>'
-    rows.forEach(row => {
+    rows.forEach((row: string[]) => {
       html += '<tr class="border-b border-teal-100 dark:border-teal-700 last:border-b-0 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 ease-in-out">'
-      row.forEach((cell, index) => {
+      row.forEach((cell: string, index: number) => {
         const isLast = index === row.length - 1
         html += `<td class="px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 dark:border-teal-700 ${isLast ? 'last:border-r-0' : ''} text-teal-700 dark:text-teal-300 text-sm leading-relaxed">${parseMarkdownInCell(cell)}</td>`
       })
@@ -202,7 +203,7 @@ export function markdownTableToHtml(markdownTable: string): string {
 function parseMarkdownInCell(content: string): string {
   if (!content) return ''
   
-  let html = content
+  const html = content
     // Bold
     .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-teal-900 dark:text-teal-100">$1</strong>')
     .replace(/__(.*?)__/g, '<strong class="font-semibold text-teal-900 dark:text-teal-100">$1</strong>')
@@ -228,7 +229,7 @@ function parseMarkdownInCell(content: string): string {
  */
 export function createEditableTableCell(
   content: string, 
-  onContentChange: (newContent: string) => void,
+  _onContentChange: (newContent: string) => void,
   isHeader: boolean = false
 ): string {
   const cellClass = isHeader 

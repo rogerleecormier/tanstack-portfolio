@@ -34,6 +34,25 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       userAgent: navigator.userAgent
     });
   }, [isAuthenticated, isLoading, isDevelopment]);
+
+  // Log access attempts for observability
+  React.useEffect(() => {
+    if (!isLoading) {
+      if (isAuthenticated) {
+        logger.info('ProtectedRoute: Authorized access granted', {
+          isDevelopment,
+          userAgent: navigator.userAgent,
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        logger.warn('ProtectedRoute: Unauthorized access attempt', {
+          isDevelopment,
+          userAgent: navigator.userAgent,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+  }, [isAuthenticated, isLoading, isDevelopment]);
   
   if (isLoading) {
     return (

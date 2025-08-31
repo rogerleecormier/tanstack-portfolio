@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
@@ -16,8 +16,6 @@ import {
   Italic, 
   List, 
   ListOrdered, 
-  Quote, 
-  Code, 
   Heading1, 
   Heading2, 
   Heading3,
@@ -25,19 +23,13 @@ import {
   Redo,
   Eye,
   EyeOff,
-  Clipboard,
-  Copy,
-  Upload,
-  Square,
   BarChart3,
   TrendingUp,
   PieChart,
   ChevronDown,
-  Trash2,
   Table as TableIcon,
   FileText,
   Edit3,
-  Save,
   Settings,
   Plus,
   Minus
@@ -50,7 +42,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -58,7 +50,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { logger } from '@/utils/logger'
 import { markdownToHtml, htmlToMarkdown } from '@/utils/enhancedMarkdownConverter'
 import { FrontmatterGenerator } from '@/utils/frontmatterGenerator'
-import { parseMarkdownTable, htmlTableToMarkdown } from '@/utils/enhancedTableParser'
+
 import FrontmatterManager, { FrontmatterData } from '@/components/FrontmatterManager'
 
 // Create lowlight instance with common languages
@@ -106,8 +98,8 @@ const CustomTableCell = TableCell.extend({
 
 interface ContentCreationStudioProps {
   initialContent?: string
-  initialFrontmatter?: Record<string, any>
-  onContentChange?: (html: string, markdown: string, frontmatter: Record<string, any>) => void
+  initialFrontmatter?: Partial<FrontmatterData>
+  onContentChange?: (html: string, markdown: string, frontmatter: FrontmatterData) => void
   showPreview?: boolean
   showToolbar?: boolean
   className?: string
@@ -160,8 +152,8 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
     withHeader: true
   })
   
-  const [isSettingContent, setIsSettingContent] = useRef(false)
-  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true)
+  const [isSettingContent, setIsSettingContent] = useState(false)
+  const [autoSaveEnabled] = useState(true)
   
   // Function to get default directory based on content type
   const getDefaultDirectory = (type: string) => {
@@ -180,6 +172,11 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
       onDirectoryChange(defaultDir)
     }
   }, [contentType, onDirectoryChange])
+
+  // Update preview state when prop changes
+  useEffect(() => {
+    setShowPreviewState(showPreview)
+  }, [showPreview])
 
   const editor = useEditor({
     extensions: [
@@ -254,7 +251,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
       // Initialize content
     },
     onUpdate: ({ editor }) => {
-      if (!isSettingContent.current && autoSaveEnabled) {
+      if (!isSettingContent && autoSaveEnabled) {
         const html = editor.getHTML()
         const markdown = htmlToMarkdown(html)
         setMarkdownContent(markdown)
@@ -333,15 +330,14 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
   }, [autoSaveEnabled, onContentChange, frontmatter])
 
   // Handle frontmatter changes
-  const handleFrontmatterChange = useCallback((key: string, value: any) => {
-    const updated = { ...frontmatter, [key]: value }
-    setFrontmatter(updated)
+  const handleFrontmatterChange = useCallback((updatedFrontmatter: FrontmatterData) => {
+    setFrontmatter(updatedFrontmatter)
     
     if (onContentChange) {
       const html = editor?.getHTML() || ''
-      onContentChange(html, markdownContent, updated)
+      onContentChange(html, markdownContent, updatedFrontmatter)
     }
-  }, [frontmatter, onContentChange, editor, markdownContent])
+  }, [onContentChange, editor, markdownContent])
 
   // Insert table
   const insertTable = useCallback(() => {
@@ -407,13 +403,18 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
   return (
     <TooltipProvider>
       <div className="w-full space-y-4">
-        {/* Header with view mode toggle and controls */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-teal-50 to-blue-50 border border-teal-200 rounded-lg">
+        {/* Compact Toolbar Header */}
+        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-blue-50 border border-gray-200 rounded-xl shadow-sm">
           <div className="flex items-center space-x-4">
-            <h2 className="text-xl font-semibold text-teal-900">Content Creation Studio</h2>
-            <Badge variant="secondary" className="bg-teal-100 text-teal-800">
-              {contentType || 'content'}
-            </Badge>
+            <div className="flex items-center space-x-2">
+              <Badge variant="secondary" className="bg-teal-100 text-teal-800">
+                {contentType || 'content'}
+              </Badge>
+              <span className="text-sm text-gray-600">•</span>
+              <span className="text-sm text-gray-700 font-medium">
+                {viewMode === 'html' ? 'HTML Editor' : 'Markdown Editor'}
+              </span>
+            </div>
           </div>
           
           <div className="flex items-center space-x-2">
@@ -424,7 +425,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               className="bg-teal-600 hover:bg-teal-700"
             >
               <FileText className="w-4 h-4 mr-2" />
-              HTML Editor
+              HTML
             </Button>
             
             <Button
@@ -434,14 +435,14 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               className="bg-blue-600 hover:bg-blue-700"
             >
               <Edit3 className="w-4 h-4 mr-2" />
-              Markdown Editor
+              Markdown
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowFrontmatterDialog(true)}
-              className="border-teal-300 text-teal-700 hover:bg-teal-50"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50"
             >
               <Settings className="w-4 h-4 mr-2" />
               Frontmatter
@@ -451,7 +452,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               variant="outline"
               size="sm"
               onClick={() => setShowPreviewState(!showPreviewState)}
-              className="border-teal-300 text-teal-700 hover:bg-teal-50"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50"
             >
               {showPreviewState ? <EyeOff className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
               {showPreviewState ? 'Hide Preview' : 'Show Preview'}
@@ -459,13 +460,13 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
           </div>
         </div>
 
-        {/* Main Editor Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Main Editor Area - Optimized for Dual Pane */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Editor Panel */}
-          <Card className="border-teal-200">
-            <CardHeader className="pb-3">
+          <Card className="border-0 shadow-lg bg-white">
+            <CardHeader className="pb-3 border-b border-gray-100">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium text-teal-900">
+                <h3 className="text-lg font-medium text-gray-900">
                   {viewMode === 'html' ? 'HTML Editor' : 'Markdown Editor'}
                 </h3>
                 <div className="flex items-center space-x-2">
@@ -473,7 +474,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
                     variant="outline"
                     size="sm"
                     onClick={handleViewModeSwitch}
-                    className="text-xs"
+                    className="text-xs border-gray-200 text-gray-600 hover:bg-gray-50"
                   >
                     Switch to {viewMode === 'html' ? 'Markdown' : 'HTML'}
                   </Button>
@@ -486,7 +487,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
                 <>
                   {/* HTML Editor Toolbar */}
                   {showToolbar && (
-                    <div className="flex flex-wrap items-center gap-1 p-3 border-b border-teal-200 bg-gradient-to-r from-teal-50 to-blue-50">
+                    <div className="flex flex-wrap items-center gap-1 p-3 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-blue-50">
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
@@ -652,7 +653,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
                   )}
                   
                   {/* HTML Editor Content */}
-                  <EditorContent editor={editor} className="min-h-[400px]" />
+                  <EditorContent editor={editor} className="min-h-[600px]" />
                 </>
               ) : (
                 /* Markdown Editor */
@@ -661,7 +662,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
                     value={markdownContent}
                     onChange={(e) => handleMarkdownChange(e.target.value)}
                     placeholder="Write your markdown content here..."
-                    className="min-h-[400px] font-mono text-sm border-teal-200 focus:border-teal-400 focus:ring-teal-400"
+                    className="min-h-[600px] font-mono text-sm border-gray-200 focus:border-teal-400 focus:ring-teal-400"
                   />
                 </div>
               )}
@@ -670,13 +671,13 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
 
           {/* Preview Panel */}
           {showPreviewState && (
-            <Card className="border-blue-200">
-              <CardHeader className="pb-3">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-blue-50">
+              <CardHeader className="pb-3 border-b border-blue-100">
                 <h3 className="text-lg font-medium text-blue-900">Live Preview</h3>
               </CardHeader>
               <CardContent className="p-4">
                 <div 
-                  className="prose prose-teal max-w-none min-h-[400px]"
+                  className="prose prose-teal max-w-none min-h-[600px]"
                   dangerouslySetInnerHTML={{ 
                     __html: viewMode === 'html' 
                       ? editor.getHTML() 

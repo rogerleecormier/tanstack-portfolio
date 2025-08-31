@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, FileText, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 import { cachedContentService } from '@/api/cachedContentService';
 
+
 export const ProtectedPage: React.FC = () => {
   const { isAuthenticated, user, isLoading, isDevelopment, logout } = useAuth();
+  
+
   
   // API testing state
   const [apiStatus, setApiStatus] = useState<{
@@ -347,30 +350,7 @@ export const ProtectedPage: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {/* Content Creation Studio - Prominent Primary Button */}
-              <Card className="border-teal-200 bg-teal-50/30">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center space-x-2">
-                    <FileText className="h-5 w-5 text-teal-600" />
-                    <CardTitle className="text-lg text-teal-900">Content Management</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Button
-                    asChild
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                    size="lg"
-                  >
-                    <a href="/content-creation">
-                      <FileText className="h-6 w-6 mr-3" />
-                      Content Creation Studio
-                    </a>
-                  </Button>
-                  <P className="text-xs text-teal-600 mt-3 text-center">
-                    AI-powered content creation with automated frontmatter generation
-                  </P>
-                </CardContent>
-              </Card>
+
 
               {/* System Information */}
               <Card className="border-teal-200 bg-teal-50/30">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import ContentCreationStudio from '@/components/ContentCreationStudio'
+import { FrontmatterData } from '@/components/FrontmatterManager'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -19,7 +20,7 @@ import {
 interface ContentData {
   html: string
   markdown: string
-  frontmatter: any
+  frontmatter: FrontmatterData
 }
 
 const ContentStudioDemo: React.FC = () => {
@@ -68,15 +69,15 @@ const ContentStudioDemo: React.FC = () => {
 
   const [showPreview, setShowPreview] = useState(true)
 
-  const handleBlogChange = (html: string, markdown: string, frontmatter: any) => {
+  const handleBlogChange = (html: string, markdown: string, frontmatter: FrontmatterData) => {
     setBlogContent({ html, markdown, frontmatter })
   }
 
-  const handlePortfolioChange = (html: string, markdown: string, frontmatter: any) => {
+  const handlePortfolioChange = (html: string, markdown: string, frontmatter: FrontmatterData) => {
     setPortfolioContent({ html, markdown, frontmatter })
   }
 
-  const handleProjectChange = (html: string, markdown: string, frontmatter: any) => {
+  const handleProjectChange = (html: string, markdown: string, frontmatter: FrontmatterData) => {
     setProjectContent({ html, markdown, frontmatter })
   }
 
@@ -144,7 +145,7 @@ const ContentStudioDemo: React.FC = () => {
         </div>
 
         {/* Content Type Tabs */}
-        <Tabs defaultValue="blog" className="w-full">
+        <Tabs value="blog" onValueChange={() => {}} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm border border-teal-200">
             <TabsTrigger value="blog" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
