@@ -137,8 +137,8 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
         if (!b.date) return -1
         
         // Parse dates using UTC to avoid timezone shifts
-        const [yearA, monthA, dayA] = a.date.split('-').map(Number)
-        const [yearB, monthB, dayB] = b.date.split('-').map(Number)
+        const [yearA, monthA, dayA] = a.date!.split('-').map(Number)
+        const [yearB, monthB, dayB] = b.date!.split('-').map(Number)
         
         const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA))
         const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB))
@@ -259,6 +259,7 @@ export function getBlogPostsByAuthor(posts: BlogPost[], author: string): BlogPos
 // Get blog posts by date range
 export function getBlogPostsByDateRange(posts: BlogPost[], startDate: Date, endDate: Date): BlogPost[] {
   return posts.filter(post => {
+    if (!post.date) return false
     const postDate = new Date(post.date)
     return postDate >= startDate && postDate <= endDate
   })
