@@ -21,12 +21,12 @@ const tools: Tool[] = [
   {
     id: 'markdown-editor',
     title: 'Markdown Editor',
-            description: 'A rich text editor for creating and editing markdown content with real-time markdown generation and syntax highlighting.',
+    description: 'A rich text editor for creating and editing markdown content with real-time markdown generation and syntax highlighting.',
     category: 'Content Creation',
     icon: FileText,
     url: '/markdown-editor',
     features: ['Rich text editing', 'Real-time markdown generation', 'Syntax highlighting', 'Export functionality'],
-    status: 'active'
+    status: 'coming-soon'
   }
 ]
 
@@ -132,9 +132,13 @@ const ToolsListPage: React.FC = () => {
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </Button>
-                ) : (
+                ) : tool.status === 'beta' ? (
                   <Button disabled size="sm" variant="outline">
-                    {tool.status === 'beta' ? 'Try Beta' : 'Coming Soon'}
+                    Try Beta
+                  </Button>
+                ) : (
+                  <Button disabled size="sm" variant="outline" className="text-gray-400 border-gray-300 bg-gray-50 cursor-not-allowed">
+                    Coming Soon
                   </Button>
                 )}
               </div>

@@ -1,7 +1,13 @@
 // R2 Configuration
 export const R2_CONFIG = {
   // Custom domain for R2 bucket
-  BASE_URL: 'https://files.rcormier.dev',
+  // NOTE: This domain has CORS issues when accessed from rcormier.dev
+  // Cloudflare R2 custom domains don't support CORS configuration
+  // BASE_URL: 'https://files.rcormier.dev',
+  
+  // Use the public R2 bucket URL (has rate limits but works with CORS)
+  BASE_URL: 'https://pub-d976666cda3244a8a0fa73abc1043959.r2.dev',
+  
   BUCKET_NAME: 'tanstack-portfolio-r2',
   
   // Content directories

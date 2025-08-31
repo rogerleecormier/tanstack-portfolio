@@ -1,0 +1,24 @@
+name = "r2-content-proxy"
+main = "workers/r2-content-proxy.ts"
+compatibility_date = "2024-01-01"
+
+# Custom domain for the worker
+[env.production]
+name = "r2-content-proxy"
+route = "r2-content-proxy.rcormier.dev/*"
+
+# R2 bucket bindings for production
+[[env.production.r2_buckets]]
+binding = "PORTFOLIO_CONTENT"
+bucket_name = "tanstack-portfolio-r2"
+
+# Development environment
+[env.development]
+name = "r2-content-proxy-dev"
+route = "r2-content-proxy-dev.rcormier.dev/*"
+
+# R2 bucket bindings for development
+[[env.development.r2_buckets]]
+binding = "PORTFOLIO_CONTENT"
+bucket_name = "tanstack-portfolio-r2"
+preview_binding = "PORTFOLIO_CONTENT_PREVIEW"

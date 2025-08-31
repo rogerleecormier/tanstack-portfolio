@@ -1,0 +1,14 @@
+[
+  {
+    "AllowedOrigins": [
+      "https://rcormier.dev",
+      "https://www.rcormier.dev",
+      "http://localhost:5173",
+      "http://localhost:3000"
+    ],
+    "AllowedMethods": ["GET", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "MaxAgeSeconds": 86400,
+    "ExposeHeaders": ["ETag", "Last-Modified", "Content-Type"]
+  }
+]
