@@ -15,6 +15,7 @@ import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as R
 import { MessageSquare } from "lucide-react";
 import { logger } from '@/utils/logger'
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
+import aboutContent from '../content/about.md?raw'
 
 
 // Define proper types for frontmatter
@@ -84,12 +85,10 @@ export default function AboutPage() {
     const loadMarkdown = async () => {
       setIsLoading(true)
       try {
-        // Import about markdown file
+        // Use static import instead of dynamic import to avoid chunking issues
         logger.debug('Loading about markdown file')
         
-        const markdownModule = await import(`../content/about.md?raw`)
-        
-        const text = markdownModule.default
+        const text = aboutContent
 
         // Parse frontmatter
         const { attributes, body } = fm(text)

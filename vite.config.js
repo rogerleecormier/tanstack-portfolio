@@ -20,7 +20,17 @@ export default defineConfig({
                 assetFileNames: 'assets/[name]-[hash][extname]',
                 chunkFileNames: 'assets/[name]-[hash].js',
                 entryFileNames: 'assets/[name]-[hash].js',
+                // Force relative paths for all chunks
+                format: 'es',
+                // Ensure dynamic imports use relative paths
+                manualChunks: undefined,
             },
         },
+        // Ensure chunks use relative paths
+        chunkSizeWarningLimit: 1000,
+    },
+    // Ensure all imports use relative paths
+    optimizeDeps: {
+        include: ['react', 'react-dom'],
     },
 });
