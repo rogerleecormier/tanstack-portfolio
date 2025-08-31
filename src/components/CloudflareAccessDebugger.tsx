@@ -42,9 +42,9 @@ export const CloudflareAccessDebugger: React.FC = () => {
       ];
 
              cfHeaders.forEach(header => {
-         const value = document.querySelector(`meta[name="${header}"]`)?.getAttribute('content') || 
-                      (window as Record<string, unknown>)[header] || 
-                      'Not found';
+         const metaValue = document.querySelector(`meta[name="${header}"]`)?.getAttribute('content');
+         const windowValue = (window as unknown as Record<string, unknown>)[header];
+         const value = metaValue || (typeof windowValue === 'string' ? windowValue : 'Not found');
          info.cfHeaders[header] = value;
        });
 
