@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { Loader2, Shield, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 
 interface DebugInfo {
   url: string;
   cookies: string[];
   cfHeaders: Record<string, string>;
-  identityResponse: any;
-  accessResponse: any;
+  identityResponse: Record<string, unknown> | null;
+  accessResponse: Record<string, unknown> | null;
   error?: string;
 }
 
@@ -42,12 +41,12 @@ export const CloudflareAccessDebugger: React.FC = () => {
         'CF-Request-ID'
       ];
 
-      cfHeaders.forEach(header => {
-        const value = document.querySelector(`meta[name="${header}"]`)?.getAttribute('content') || 
-                     (window as any)[header] || 
-                     'Not found';
-        info.cfHeaders[header] = value;
-      });
+             cfHeaders.forEach(header => {
+         const value = document.querySelector(`meta[name="${header}"]`)?.getAttribute('content') || 
+                      (window as Record<string, unknown>)[header] || 
+                      'Not found';
+         info.cfHeaders[header] = value;
+       });
 
       // Test Cloudflare Access identity endpoint
       try {
