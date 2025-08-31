@@ -368,20 +368,20 @@ const RedesignedSearch: React.FC = () => {
                                 </p>
                                 
                                 {result.item.tags && result.item.tags.length > 0 && (
-                                  <div className="flex flex-wrap gap-2 mb-4">
-                                    {result.item.tags.slice(0, 4).map((tag, tagIndex) => (
+                                  <div className="flex flex-wrap gap-1.5 mt-2">
+                                    {[...new Set(result.item.tags)].slice(0, 4).map((tag, tagIndex) => (
                                       <Badge 
                                         key={tagIndex}
-                                        variant="outline" 
-                                        className="text-xs px-2 py-1 h-auto bg-gray-50 border-gray-200 text-gray-600"
+                                        variant="secondary"
+                                        className="text-xs px-1.5 py-0.5 h-auto"
                                       >
                                         <Tag className="h-3 w-3 mr-1" />
-                                        {tag}
+                                        <span className="whitespace-nowrap">{tag}</span>
                                       </Badge>
                                     ))}
                                     {result.item.tags.length > 4 && (
-                                      <span className="text-xs text-gray-400 px-2 py-1">
-                                        +{result.item.tags.length - 4} more
+                                      <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
+                                        +{result.item.tags.length - 4}
                                       </span>
                                     )}
                                   </div>

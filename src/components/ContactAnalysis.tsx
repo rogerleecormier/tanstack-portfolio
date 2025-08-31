@@ -18,7 +18,8 @@ import {
   Clock,
   MapPin,
   HelpCircle,
-  ExternalLink
+  ExternalLink,
+  Tag
 } from 'lucide-react'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { cachedContentService } from '@/api/cachedContentService'
@@ -337,8 +338,8 @@ export function ContactAnalysis({
                       
                       {/* Tags */}
                       {(() => {
-                        // Parse tags safely
-                        const cleanTags = parseTagsSafely(content.tags).filter(tag => tag && tag.trim().length > 0);
+                        // Parse tags safely and deduplicate
+                        const cleanTags = [...new Set(parseTagsSafely(content.tags).filter(tag => tag && tag.trim().length > 0))];
                         
                         // Only render if we have clean tags
                         if (cleanTags.length === 0) {
@@ -349,17 +350,18 @@ export function ContactAnalysis({
                           <div className="mb-3">
                             <div className="flex flex-wrap gap-1">
                               {cleanTags.slice(0, 4).map((tag, tagIndex) => (
-                                <span 
+                                <Badge 
                                   key={tagIndex}
-                                  className="inline-block text-xs px-2 py-1 brand-bg-primary text-teal-600 dark:bg-teal-50/20 dark:text-teal-600 rounded-full"
-                                  title={tag}
+                                  variant="secondary"
+                                  className="text-xs px-1.5 py-0.5 h-auto"
                                 >
-                                  {tag}
-                                </span>
+                                  <Tag className="h-3 w-3 mr-1" />
+                                  <span className="whitespace-nowrap">{tag}</span>
+                                </Badge>
                               ))}
                               {cleanTags.length > 4 && (
                                 <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
-                                  +{cleanTags.length - 4} more
+                                  +{cleanTags.length - 4}
                                 </span>
                               )}
                             </div>

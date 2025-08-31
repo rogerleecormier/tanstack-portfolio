@@ -615,7 +615,7 @@ const ContentCreationPage: React.FC = () => {
                   <div>
                     <Label className="text-xs font-medium text-gray-600">Tags</Label>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {frontmatter.tags?.map((tag, index) => (
+                      {[...new Set(frontmatter.tags)].map((tag, index) => (
                         <Badge key={index} variant="secondary" className="text-xs">
                           {tag}
                         </Badge>
@@ -793,7 +793,7 @@ You can create tables using the table button in the toolbar or by typing markdow
                       </Button>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {frontmatter.tags?.map((tag, index) => (
+                      {[...new Set(frontmatter.tags)].map((tag, index) => (
                         <Badge key={index} variant="secondary" className="flex items-center gap-1">
                           {tag}
                           <button

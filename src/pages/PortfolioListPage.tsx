@@ -383,8 +383,13 @@ export default function PortfolioListPage() {
                       return (
                         <>
                           {cleanTags.slice(0, 3).map((tag: string) => (
-                            <Badge key={tag} variant="secondary" className="text-xs px-2 py-1">
-                              {tag}
+                            <Badge 
+                              key={tag}
+                              variant="secondary"
+                              className="text-xs px-1.5 py-0.5 h-auto"
+                            >
+                              <Tag className="h-3 w-3 mr-1" />
+                              <span className="whitespace-nowrap">{tag}</span>
                             </Badge>
                           ))}
                           {cleanTags.length > 3 && (

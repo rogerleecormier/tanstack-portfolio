@@ -270,7 +270,8 @@ export function UnifiedRelatedContent({
                   <div className="mb-4">
                     <div className="flex flex-wrap gap-1.5">
                       {(() => {
-                        const cleanTags = item.tags.filter((tag: string) => tag && tag.trim().length > 0);
+                        // Deduplicate tags and filter out empty ones
+                        const cleanTags = [...new Set(item.tags.filter((tag: string) => tag && tag.trim().length > 0))];
                         
                         return (
                           <>
@@ -282,7 +283,7 @@ export function UnifiedRelatedContent({
                                 title={parseContentForSearch(tag)}
                               >
                                 <Tag className="h-3 w-3 mr-1" />
-                                <span className="truncate max-w-[70px]">{parseContentForSearch(tag)}</span>
+                                <span className="whitespace-nowrap">{parseContentForSearch(tag)}</span>
                               </Badge>
                             ))}
                             {cleanTags.length > 3 && (
@@ -386,7 +387,7 @@ export function UnifiedRelatedContent({
                 {item.tags && item.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {(() => {
-                      const cleanTags = item.tags.filter((tag: string) => tag && tag.trim().length > 0);
+                      const cleanTags = [...new Set(item.tags.filter((tag: string) => tag && tag.trim().length > 0))];
                       
                       return (
                         <>
@@ -398,7 +399,7 @@ export function UnifiedRelatedContent({
                               title={parseContentForSearch(tag)}
                             >
                               <Tag className="h-3 w-3 mr-1" />
-                              <span className="truncate max-w-[90px]">{parseContentForSearch(tag)}</span>
+                              <span className="whitespace-nowrap">{parseContentForSearch(tag)}</span>
                             </Badge>
                           ))}
                           {cleanTags.length > 3 && (

@@ -293,45 +293,50 @@ export class CachedContentService {
     const scoredItems = items.map(item => {
       let score = 0
       
-      // Title match (highest weight)
-      if (item.title.toLowerCase().includes(queryLower)) {
-        score += 15
+          // Title match (highest weight)
+    if (item.title.toLowerCase().includes(queryLower)) {
+      score += 25
+    }
+    
+    // Description match
+    if (item.description.toLowerCase().includes(queryLower)) {
+      score += 15
+    }
+    
+    // Content match
+    if (item.content.toLowerCase().includes(queryLower)) {
+      score += 10
+    }
+    
+    // Tags match (exact matches get higher weight)
+    const itemTags = item.tags.map(tag => tag.toLowerCase())
+    const matchingTags = tagsLower.filter(tag => itemTags.includes(tag))
+    score += matchingTags.length * 12
+    
+    // Keywords match
+    const itemKeywords = item.keywords.map(keyword => keyword.toLowerCase())
+    const matchingKeywords = tagsLower.filter(keyword => itemKeywords.includes(keyword))
+    score += matchingKeywords.length * 8
+    
+    // Category match
+    if (item.category.toLowerCase().includes(queryLower)) {
+      score += 10
+    }
+    
+    // Partial word matches for better semantic understanding
+    const queryWords = queryLower.split(/\s+/)
+    queryWords.forEach(word => {
+      if (word.length > 2) {
+        if (item.title.toLowerCase().includes(word)) score += 5
+        if (item.description.toLowerCase().includes(word)) score += 3
+        if (item.content.toLowerCase().includes(word)) score += 2
       }
-      
-      // Description match
-      if (item.description.toLowerCase().includes(queryLower)) {
-        score += 8
-      }
-      
-      // Content match
-      if (item.content.toLowerCase().includes(queryLower)) {
-        score += 5
-      }
-      
-      // Tags match (high weight for exact matches)
-      const itemTags = item.tags.map(tag => tag.toLowerCase())
-      const matchingTags = tagsLower.filter(tag => itemTags.includes(tag))
-      score += matchingTags.length * 10
-      
-      // Keywords match
-      const itemKeywords = item.keywords.map(keyword => keyword.toLowerCase())
-      const matchingKeywords = tagsLower.filter(keyword => itemKeywords.includes(keyword))
-      score += matchingKeywords.length * 8
-
-      // Category match
-      if (item.category.toLowerCase().includes(queryLower)) {
-        score += 6
-      }
-
-      // Partial word matches
-      const queryWords = queryLower.split(/\s+/)
-      queryWords.forEach(word => {
-        if (word.length > 2) {
-          if (item.title.toLowerCase().includes(word)) score += 3
-          if (item.description.toLowerCase().includes(word)) score += 2
-          if (item.content.toLowerCase().includes(word)) score += 1
-        }
-      })
+    })
+    
+    // Content quality bonus
+    if (item.content.length > 200) score += 5
+    if (item.tags.length > 2) score += 3
+    if (item.keywords.length > 2) score += 2
 
       return { item, score }
     })
@@ -353,26 +358,63 @@ export class CachedContentService {
     
     let score = 0
     
-    // Title match
+    // Title match (highest weight)
     if (item.title.toLowerCase().includes(queryLower)) {
-      score += 15
+      score += 25
     }
     
     // Description match
     if (item.description.toLowerCase().includes(queryLower)) {
-      score += 8
+      score += 15
     }
     
-    // Tags match
+    // Content match
+    if (item.content.toLowerCase().includes(queryLower)) {
+      score += 10
+    }
+    
+    // Tags match (exact matches get higher weight)
     const itemTags = item.tags.map(tag => tag.toLowerCase())
     const matchingTags = tagsLower.filter(tag => itemTags.includes(tag))
-    score += matchingTags.length * 10
+    score += matchingTags.length * 12
     
-    // Normalize score to 0-100 range
-    const normalizedScore = Math.min(100, Math.max(0, Math.round((score / 50) * 100)))
+    // Keywords match
+    const itemKeywords = item.keywords.map(keyword => keyword.toLowerCase())
+    const matchingKeywords = tagsLower.filter(keyword => itemKeywords.includes(keyword))
+    score += matchingKeywords.length * 8
+    
+    // Category match
+    if (item.category.toLowerCase().includes(queryLower)) {
+      score += 10
+    }
+    
+    // Partial word matches for better semantic understanding
+    const queryWords = queryLower.split(/\s+/)
+    queryWords.forEach(word => {
+      if (word.length > 2) {
+        if (item.title.toLowerCase().includes(word)) score += 5
+        if (item.description.toLowerCase().includes(word)) score += 3
+        if (item.content.toLowerCase().includes(word)) score += 2
+      }
+    })
+    
+    // Content quality bonus
+    if (item.content.length > 200) score += 5
+    if (item.tags.length > 2) score += 3
+    if (item.keywords.length > 2) score += 2
+    
+    // Normalize score to 0-100 range with realistic distribution
+    // Remove the artificial normalization that was causing 80% and 100% scores
+    const normalizedScore = Math.min(100, Math.max(0, Math.round(score)))
+    
+    // Deduplicate tags to prevent duplication in the UI
+    const deduplicatedTags = [...new Set(item.tags)]
+    const deduplicatedKeywords = [...new Set(item.keywords)]
     
     return {
       ...item,
+      tags: deduplicatedTags,
+      keywords: deduplicatedKeywords,
       relevanceScore: normalizedScore
     }
   }

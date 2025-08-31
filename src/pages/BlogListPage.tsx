@@ -379,18 +379,16 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
         {/* Tags */}
         {post.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-4">
-            {post.tags.slice(0, 3).map((tag, index) => {
-              const colors = [
-                'bg-teal-100 text-teal-800 border-teal-200',
-                'bg-blue-100 text-blue-800 border-blue-200',
-                'bg-purple-100 text-purple-800 border-purple-200'
-              ];
-              return (
-                <Badge key={tag} variant="secondary" className={`text-xs ${colors[index % colors.length]}`}>
-                  {tag}
-                </Badge>
-              );
-            })}
+            {post.tags.slice(0, 3).map((tag, index) => (
+              <Badge 
+                key={index}
+                variant="secondary"
+                className="text-xs px-1.5 py-0.5 h-auto"
+              >
+                <Tag className="h-3 w-3 mr-1" />
+                <span className="whitespace-nowrap">{tag}</span>
+              </Badge>
+            ))}
             {post.tags.length > 3 && (
               <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
                 +{post.tags.length - 3} more

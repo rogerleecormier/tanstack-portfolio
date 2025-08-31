@@ -248,17 +248,60 @@ export default function ProjectsPage({ file }: { file: string }) {
                 )}
                 {frontmatter.tags && (
                   <div className="flex flex-wrap gap-1.5 mt-4">
-                    {[...new Set(frontmatter.tags)].map((tag: string, index: number) => (
-                      <Badge 
-                        key={`${tag}-${index}`}
-                        variant="secondary"
-                        className="text-xs px-1.5 py-0.5 h-auto"
-                        title={tag}
-                      >
-                        <Tag className="h-3 w-3 mr-1" />
-                        <span className="truncate max-w-[90px]">{tag}</span>
-                      </Badge>
-                    ))}
+                    {(() => {
+                      // Deduplicate tags by converting to lowercase for comparison
+                      const uniqueTags = [...new Set(frontmatter.tags.map(tag => tag.toLowerCase()))];
+                      
+                      // Format tags with proper title case
+                      const formatTag = (tag: string) => {
+                        const commonWords = ['and', 'or', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
+                        const acronyms = ['ai', 'ml', 'api', 'ui', 'ux', 'devops', 'saas', 'pmp', 'pmi', 'ide', 'erp', 'ap'];
+                        
+                        return tag.split(' ').map((word, index) => {
+                          const lowerWord = word.toLowerCase();
+                          
+                          // Handle acronyms - always uppercase
+                          if (acronyms.includes(lowerWord)) {
+                            return lowerWord.toUpperCase();
+                          }
+                          
+                          // Handle connected words with acronyms (e.g., "API-first", "AI-powered")
+                          // Split by hyphens and process each part
+                          if (word.includes('-')) {
+                            const parts = word.split('-');
+                            return parts.map((part, partIndex) => {
+                              const lowerPart = part.toLowerCase();
+                              
+                              // Check if this part is an acronym
+                              if (acronyms.includes(lowerPart)) {
+                                return lowerPart.toUpperCase();
+                              }
+                              
+                              // For non-acronym parts, apply title case
+                              return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+                            }).join('-');
+                          }
+                          
+                          // Always capitalize first word, capitalize others unless they're common words
+                          if (index === 0 || !commonWords.includes(lowerWord)) {
+                            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                          }
+                          return lowerWord;
+                        }).join(' ');
+                      };
+                      
+                      return uniqueTags.map((tag: string, index: number) => (
+                        <Badge 
+                          key={`${tag}-${index}`}
+                          variant="secondary"
+                          className="text-xs px-1.5 py-0.5 h-auto"
+                          title={formatTag(tag)}
+                        >
+                          <Tag className="h-3 w-3 mr-1" />
+                          <span className="whitespace-nowrap">{formatTag(tag)}</span>
+                        </Badge>
+                      ));
+                    })()}
                   </div>
                 )}
               </header>

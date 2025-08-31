@@ -231,8 +231,31 @@ export class WorkerContentService {
       tags: item.tags,
       keywords: item.keywords,
       content: item.content,
-      relevanceScore: 85 // Default relevance score
+      relevanceScore: this.calculateSemanticRelevance(item) // Calculate semantic relevance instead of hardcoded value
     }
+  }
+
+  /**
+   * Calculate semantic relevance score based on content characteristics
+   */
+  private calculateSemanticRelevance(item: PortfolioItem | BlogItem | ProjectItem): number {
+    let score = 0
+    
+    // Content completeness scoring
+    if (item.title && item.title.length > 0) score += 10
+    if (item.description && item.description.length > 20) score += 15
+    if (item.content && item.content.length > 100) score += 20
+    if (item.tags && item.tags.length > 0) score += 10
+    if (item.keywords && item.keywords.length > 0) score += 10
+    
+    // Content quality indicators
+    if (item.category && item.category !== 'General') score += 5
+    if (item.url && item.url.includes('/')) score += 5
+    
+    // Normalize to 0-100 range with realistic distribution
+    const normalizedScore = Math.min(100, Math.max(0, Math.round(score)))
+    
+    return normalizedScore
   }
 
   /**

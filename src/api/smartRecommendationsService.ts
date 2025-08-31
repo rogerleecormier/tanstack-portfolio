@@ -325,14 +325,34 @@ class SmartRecommendationsService {
   async getAllContentItems(): Promise<ContentItem[]> {
     return CONTENT_ITEMS.map(item => ({
       ...item,
-      confidence: 0.8
+      confidence: this.calculateDefaultConfidence(item)
     }))
   }
   
   // Get content item by ID
   async getContentItem(id: string): Promise<ContentItem | undefined> {
     const item = CONTENT_ITEMS.find(item => item.id === id)
-    return item ? { ...item, confidence: 0.8 } : undefined
+    return item ? { ...item, confidence: this.calculateDefaultConfidence(item) } : undefined
+  }
+  
+  /**
+   * Calculate default confidence based on content characteristics
+   */
+  private calculateDefaultConfidence(item: ContentItem): number {
+    let confidence = 0.3 // Base confidence
+    
+    // Content completeness
+    if (item.title && item.title.length > 0) confidence += 0.1
+    if (item.description && item.description.length > 20) confidence += 0.1
+    if (item.tags && item.tags.length > 0) confidence += 0.1
+    if (item.keywords && item.keywords.length > 0) confidence += 0.1
+    
+    // Content type bonus
+    if (item.contentType === 'portfolio') confidence += 0.1
+    else if (item.contentType === 'blog') confidence += 0.05
+    else if (item.contentType === 'project') confidence += 0.08
+    
+    return Math.min(Math.max(confidence, 0.1), 0.9)
   }
   
   // Search content items by query
