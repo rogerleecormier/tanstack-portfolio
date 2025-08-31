@@ -1,6 +1,6 @@
 import { Node, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
-import ChartRenderer from '@/components/ChartRenderer'
+import UnifiedChartRenderer from '@/components/UnifiedChartRenderer'
 import { logger } from '@/utils/logger'
 
 export interface ChartOptions {
@@ -17,7 +17,7 @@ declare module '@tiptap/core' {
 
 // Wrapper component to adapt props for ReactNodeViewRenderer
 const ChartRendererWrapper = (props: { node: { attrs: Record<string, unknown> } }) => {
-  return <ChartRenderer node={props.node as { attrs: { chartType: string; data: string; xAxisLabel?: string; yAxisLabel?: string; width?: string; height?: string } } } />
+  return <UnifiedChartRenderer node={props.node as { attrs: { chartType: string; data: string; xAxisLabel?: string; yAxisLabel?: string; width?: string; height?: string } } } />
 }
 
 export const Chart = Node.create<ChartOptions>({

@@ -1,6 +1,6 @@
 import { Node, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer, ReactNodeViewProps } from '@tiptap/react'
-import { SortableTable } from '@/components/SortableTable'
+import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
 import { parseMarkdownTable } from '@/utils/tableParser'
 
 export interface SortableTableOptions {
@@ -92,7 +92,7 @@ function SortableTableNodeView({ node }: ReactNodeViewProps) {
       <div className="mb-2 text-sm text-muted-foreground">
         <span className="font-medium">Sortable Table</span> - Click arrows to sort, edit headers directly
       </div>
-      <SortableTable data={tableData} />
+      <UnifiedTableRenderer content={content} />
     </div>
   )
 }
