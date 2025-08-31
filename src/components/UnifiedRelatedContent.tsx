@@ -55,7 +55,15 @@ export function UnifiedRelatedContent({
     while (!cachedContentService.isReady() && retryCount < maxRetries) {
       retryCount++
       console.log(`🔄 Waiting for content service to be ready... (attempt ${retryCount}/${maxRetries})`)
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // Use requestIdleCallback for better performance instead of setTimeout
+      await new Promise(resolve => {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(resolve)
+        } else {
+          // Fallback for browsers that don't support requestIdleCallback
+          setTimeout(resolve, 100)
+        }
+      })
     }
 
     if (!cachedContentService.isReady()) {

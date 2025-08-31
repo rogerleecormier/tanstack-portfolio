@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="512" height="512" rx="96" fill="white"/>
+  
+  <!-- Crosshairs bullseye design -->
+  <g>
+    <!-- Outer bullseye ring -->
+    <circle cx="256" cy="256" r="224" fill="none" stroke="url(#outerRingGradient)" stroke-width="16"/>
+    
+    <!-- Middle bullseye ring -->
+    <circle cx="256" cy="256" r="160" fill="none" stroke="url(#middleRingGradient)" stroke-width="16"/>
+    
+    <!-- Inner bullseye ring -->
+    <circle cx="256" cy="256" r="96" fill="none" stroke="url(#innerRingGradient)" stroke-width="16"/>
+    
+    <!-- Horizontal crosshair line -->
+    <line x1="64" y1="256" x2="448" y2="256" stroke="url(#crosshairGradient)" stroke-width="16" stroke-linecap="round"/>
+    
+    <!-- Vertical crosshair line -->
+    <line x1="256" y1="64" x2="256" y2="448" stroke="url(#crosshairGradient)" stroke-width="16" stroke-linecap="round"/>
+    
+    <!-- Center dot -->
+    <circle cx="256" cy="256" r="32" fill="url(#centerGradient)"/>
+  </g>
+  
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="outerRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0066FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="middleRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0099FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00E6FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="innerRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00CCFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00F0FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="crosshairGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0099FF;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#00F5FF;stop-opacity:0.9" />
+    </linearGradient>
+    
+    <linearGradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00F5FF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

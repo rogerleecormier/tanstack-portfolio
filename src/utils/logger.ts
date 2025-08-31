@@ -12,7 +12,7 @@ class Logger {
   private isDevelopment: boolean
   private isLocalhost: boolean
   private logLevels: LogLevel
-  private forceDebug: boolean = true
+  private forceDebug: boolean = false
 
   constructor() {
     this.isDevelopment = import.meta.env.DEV

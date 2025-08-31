@@ -22,7 +22,8 @@ import {
   Tag, 
   BookOpen,
   Filter,
-  X
+  X,
+  ArrowRight
 } from 'lucide-react'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { 
@@ -139,291 +140,322 @@ export default function BlogListPage() {
   }, [isLoading, isLoadingMore, displayedPosts.length, filteredPosts.length])
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen">
+      {/* Header with Subtle Blue Accent */}
+      <div className="bg-gradient-to-b from-blue-50/50 via-gray-50 to-white dark:from-blue-950/30 dark:via-gray-950 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-4xl mx-auto px-4 py-12 text-center">
           <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
-              <BookOpen className="h-6 w-6 text-teal-600" />
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50 rounded-xl flex items-center justify-center">
+              <BookOpen className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
-            <H1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-              Insights & Articles
-            </H1>
+            <div>
+              <H1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+                Insights & Articles
+              </H1>
+              <div className="w-16 h-0.5 bg-gradient-to-r from-blue-600 to-teal-600 mx-auto mt-3"></div>
+            </div>
           </div>
-          <P className="text-sm lg:text-base text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+          <P className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Strategic insights, technical deep-dives, and leadership perspectives on enterprise technology transformation
           </P>
         </div>
       </div>
 
-        {/* Search and Filters */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Search insights and articles..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Button 
-            variant="outline" 
-            onClick={() => setIsTagFilterOpen(true)}
-            className="flex items-center gap-2"
-          >
-            <Filter className="w-4 h-4" />
-            Topics {selectedTags.length > 0 && `(${selectedTags.length})`}
-          </Button>
-          {(searchQuery || selectedTags.length > 0) && (
-            <Button variant="outline" onClick={clearFilters} className="flex items-center gap-2">
-              <X className="w-4 h-4" />
-              Clear Filters
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Search and Filters with Blue Accent */}
+        <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8 shadow-sm">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                placeholder="Search insights and articles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-11 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500/20"
+              />
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsTagFilterOpen(true)}
+              className="flex items-center gap-2 h-11 px-6 border-gray-200 dark:border-gray-700 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/20"
+            >
+              <Filter className="w-4 h-4" />
+              Topics {selectedTags.length > 0 && `(${selectedTags.length})`}
             </Button>
-          )}
-        </div>
-
-        {/* Selected Tags Display */}
-        {selectedTags.length > 0 && (
-          <div className="mt-3">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Selected filters:</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {selectedTags.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="default"
-                  className="cursor-pointer hover:bg-teal-700"
-                  onClick={() => toggleTag(tag)}
-                >
-                  <Tag className="h-3 w-3 mr-1" />
-                  {tag}
-                  <X className="h-3 w-3 ml-1" />
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-       {/* Results Count */}
-       <div className="mb-6">
-         <div className="flex items-center justify-between">
-           <p className="text-gray-600 dark:text-gray-300">
-             Showing {displayedPosts.length} of {filteredPosts.length} articles
-           </p>
-         </div>
-       </div>
-
-              {/* Tag Filter Dialog */}
-       <Dialog open={isTagFilterOpen} onOpenChange={setIsTagFilterOpen}>
-         <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col z-[200]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Filter className="h-5 w-5 text-teal-600" />
-              Filter by Topics
-            </DialogTitle>
-            <DialogDescription>
-              Select topics to filter articles by specific themes and subjects
-            </DialogDescription>
-          </DialogHeader>
-          
-          <Separator />
-          
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="flex flex-wrap gap-2">
-              {allTags.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant={selectedTags.includes(tag) ? 'default' : 'outline'}
-                  className={`cursor-pointer transition-colors ${
-                    selectedTags.includes(tag) 
-                      ? 'bg-teal-600 hover:bg-teal-700 text-white' 
-                      : 'hover:bg-teal-50 hover:border-teal-300 dark:hover:bg-teal-900/20'
-                  }`}
-                  onClick={() => toggleTag(tag)}
-                >
-                  <Tag className="h-3 w-3 mr-1" />
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          </div>
-          
-          <Separator />
-          
-          <div className="flex items-center justify-between p-6">
-            <div className="text-sm text-muted-foreground">
-              {selectedTags.length} tag{selectedTags.length !== 1 ? 's' : ''} selected
-            </div>
-            <div className="flex gap-3">
+            {(searchQuery || selectedTags.length > 0) && (
               <Button 
                 variant="outline" 
-                onClick={clearFilters}
+                onClick={clearFilters} 
+                className="flex items-center gap-2 h-11 px-6 border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
               >
-                Clear All
+                <X className="w-4 h-4" />
+                Clear
               </Button>
-              <Button 
-                onClick={closeTagFilter}
-                className="bg-teal-600 hover:bg-teal-700"
-              >
-                Apply Filters
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Blog Posts Grid */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <Card key={i} className="h-full">
-              <CardHeader>
-                <Skeleton className="h-6 w-3/4 mb-2" />
-                <Skeleton className="h-4 w-1/2" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-20 w-full mb-4" />
-                <div className="flex gap-2 mb-4">
-                  <Skeleton className="h-6 w-16" />
-                  <Skeleton className="h-6 w-20" />
-                </div>
-                <div className="flex gap-2 mb-4">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-4 w-20" />
-                </div>
-                <Skeleton className="h-4 w-32 mb-4" />
-                <Skeleton className="h-10 w-full" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : filteredPosts.length === 0 ? (
-        <Card className="text-center py-12">
-          <CardContent>
-            <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                         <H3 className="mb-2">
-               No articles found
-             </H3>
-             <P className="text-gray-500 dark:text-gray-400">
-               {searchQuery || selectedTags.length > 0 
-                 ? 'Try adjusting your search or filters'
-                 : 'No blog posts have been published yet'
-               }
-             </P>
-          </CardContent>
-        </Card>
-      ) : (
-        <>
-          {/* All Articles Grid */}
-          <div className="mb-8">
-                         <H2 className="mb-6">
-               Articles
-             </H2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayedPosts.map((post) => (
-                <BlogPostCard key={post.slug} post={post} />
-              ))}
-            </div>
+            )}
           </div>
 
-                     {/* Loading indicator for infinite scroll */}
-           {displayedPosts.length < filteredPosts.length && (
-             <div ref={loadingRef} className="text-center py-8">
-               <div className="inline-flex items-center gap-2 text-gray-500">
-                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-teal-600"></div>
-                 <span>Loading more articles...</span>
-               </div>
-             </div>
-           )}
-
-          {/* End of articles indicator */}
-          {displayedPosts.length === filteredPosts.length && filteredPosts.length > 0 && (
-            <div className="text-center py-8">
-              <p className="text-gray-500 dark:text-gray-400">
-                You've reached the end of all articles
-              </p>
+          {/* Selected Tags Display */}
+          {selectedTags.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Active filters:</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {selectedTags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="default"
+                    className="cursor-pointer bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0"
+                    onClick={() => toggleTag(tag)}
+                  >
+                    <Tag className="h-3 w-3 mr-1" />
+                    {tag}
+                    <X className="h-3 w-3 ml-1" />
+                  </Badge>
+                ))}
+              </div>
             </div>
           )}
-        </>
-      )}
+        </div>
 
-      {/* Newsletter Signup */}
-      <NewsletterSignup />
+        {/* Results Count */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between">
+            <p className="text-gray-600 dark:text-gray-400 font-medium">
+              Showing {displayedPosts.length} of {filteredPosts.length} articles
+            </p>
+          </div>
+        </div>
+
+        {/* Tag Filter Dialog */}
+        <Dialog open={isTagFilterOpen} onOpenChange={setIsTagFilterOpen}>
+          <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col z-[200]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Filter className="h-5 w-5 text-blue-600" />
+                Filter by Topics
+              </DialogTitle>
+              <DialogDescription>
+                Select topics to filter articles by specific themes and subjects
+              </DialogDescription>
+            </DialogHeader>
+            
+            <Separator />
+            
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="flex flex-wrap gap-2">
+                {allTags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant={selectedTags.includes(tag) ? 'default' : 'outline'}
+                    className={`cursor-pointer transition-colors ${
+                      selectedTags.includes(tag) 
+                        ? 'bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0' 
+                        : 'hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-950/20 border-gray-200 dark:border-gray-700'
+                    }`}
+                    onClick={() => toggleTag(tag)}
+                  >
+                    <Tag className="h-3 w-3 mr-1" />
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            
+            <Separator />
+            
+            <div className="flex items-center justify-between p-6">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {selectedTags.length} tag{selectedTags.length !== 1 ? 's' : ''} selected
+              </div>
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  onClick={clearFilters}
+                  className="border-gray-200 dark:border-gray-700"
+                >
+                  Clear All
+                </Button>
+                <Button 
+                  onClick={closeTagFilter}
+                  className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0"
+                >
+                  Apply Filters
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Blog Posts Grid */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <Card key={i} className="h-full border-gray-200 dark:border-gray-700">
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/2" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-20 w-full mb-4" />
+                  <div className="flex gap-2 mb-4">
+                    <Skeleton className="h-6 w-16" />
+                    <Skeleton className="h-6 w-20" />
+                  </div>
+                  <div className="flex gap-2 mb-4">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-20" />
+                  </div>
+                  <Skeleton className="h-4 w-32 mb-4" />
+                  <Skeleton className="h-10 w-full" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredPosts.length === 0 ? (
+          <Card className="text-center py-16 border-gray-200 dark:border-gray-700">
+            <CardContent>
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <BookOpen className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <H3 className="mb-3 text-gray-800 dark:text-gray-200">
+                No articles found
+              </H3>
+              <P className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+                {searchQuery || selectedTags.length > 0 
+                  ? 'Try adjusting your search or filters'
+                  : 'No blog posts have been published yet'
+                }
+              </P>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            {/* All Articles Grid */}
+            <div className="mb-8">
+              <H2 className="mb-6 text-gray-800 dark:text-gray-200">
+                Articles
+              </H2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayedPosts.map((post) => (
+                  <BlogPostCard key={post.slug} post={post} />
+                ))}
+              </div>
+            </div>
+
+            {/* Loading indicator for infinite scroll */}
+            {displayedPosts.length < filteredPosts.length && (
+              <div ref={loadingRef} className="text-center py-12">
+                <div className="inline-flex items-center gap-3 text-gray-500 dark:text-gray-400">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <span className="font-medium">Loading more articles...</span>
+                </div>
+              </div>
+            )}
+
+            {/* End of articles indicator */}
+            {displayedPosts.length === filteredPosts.length && filteredPosts.length > 0 && (
+              <div className="text-center py-12">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-gray-500 dark:text-gray-400 font-medium">
+                  You've reached the end of all articles
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Newsletter Signup with Blue Accent */}
+      <div className="bg-gradient-to-b from-blue-50/30 via-gray-50 to-gray-50 dark:from-blue-950/20 dark:via-gray-950 dark:to-gray-950 border-t border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <NewsletterSignup />
+        </div>
+      </div>
     </div>
   )
 }
 
-// Blog Post Card Component
+// Blog Post Card Component with Blue Accent
 interface BlogPostCardProps {
   post: BlogPost
 }
 
 const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
   return (
-    <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-200 group">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg leading-tight line-clamp-2 group-hover:text-teal-600 transition-colors">
+    <Card className="h-full flex flex-col hover:shadow-lg transition-all duration-200 group border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
+      {/* Blue-to-teal top accent */}
+      <div className="h-1 bg-gradient-to-r from-blue-600 to-teal-600"></div>
+      
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg leading-tight line-clamp-2 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
           <Link to={`/blog/${post.slug}`} className="hover:no-underline">
             {post.title}
           </Link>
         </CardTitle>
-        <CardDescription className="line-clamp-3">
+        <CardDescription className="line-clamp-3 text-gray-600 dark:text-gray-400 leading-relaxed">
           {post.description}
         </CardDescription>
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col">
-        {/* Tags */}
+        {/* Tags with Blue Accent */}
         {post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
+          <div className="flex flex-wrap gap-2 mb-5">
             {post.tags.slice(0, 3).map((tag, index) => (
               <Badge 
                 key={index}
                 variant="secondary"
-                className="text-xs px-1.5 py-0.5 h-auto"
+                className="text-xs px-2 py-1 h-auto bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
               >
                 <Tag className="h-3 w-3 mr-1" />
                 <span className="whitespace-nowrap">{tag}</span>
               </Badge>
             ))}
             {post.tags.length > 3 && (
-              <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+              <Badge variant="secondary" className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
                 +{post.tags.length - 3} more
               </Badge>
             )}
           </div>
         )}
 
-        {/* Meta Info */}
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-          <div className="flex items-center gap-1">
-            <Calendar className="w-4 h-4" />
-            <span>{formatDate(post.date)}</span>
+        {/* Meta Info with Blue Accent */}
+        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-5">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center">
+              <Calendar className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+            </div>
+            <span className="text-blue-700 dark:text-blue-300 font-medium">{formatDate(post.date)}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            <span>{post.readTime} min read</span>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+              <Clock className="w-3 h-3 text-gray-500" />
+            </div>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">{post.readTime} min read</span>
           </div>
         </div>
 
-        {/* Author */}
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-          <User className="w-4 h-4" />
-          <span>{post.author}</span>
+        {/* Author with Blue Accent */}
+        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
+          <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center">
+            <User className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+          </div>
+          <span className="text-blue-700 dark:text-blue-300 font-medium">{post.author}</span>
         </div>
 
-        {/* Action Button */}
+        {/* Action Button with Blue-to-teal Gradient */}
         <div className="mt-auto">
           <Button 
-            variant="outline" 
-            className="w-full group-hover:bg-teal-50 group-hover:border-teal-300 group-hover:text-teal-700 transition-colors" 
+            className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0 transition-all duration-200 group-hover:scale-[1.01] font-medium"
             asChild
           >
             <Link to={`/blog/${post.slug}`}>
               Read Article
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>
         </div>

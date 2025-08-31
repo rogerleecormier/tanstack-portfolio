@@ -89,8 +89,15 @@ const ContentCreationPage: React.FC = () => {
 
     setIsGenerating(true)
     try {
-      // Simulate processing time for better UX
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Use requestIdleCallback for better performance instead of setTimeout
+      await new Promise(resolve => {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(resolve)
+        } else {
+          // Fallback for browsers that don't support requestIdleCallback
+          setTimeout(resolve, 100)
+        }
+      })
       
                const generated = FrontmatterGenerator.generateFrontmatter(markdown, contentType)
       setFrontmatter(generated)

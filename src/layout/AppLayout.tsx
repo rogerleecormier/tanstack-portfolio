@@ -6,48 +6,125 @@ import { AppSidebar } from '@/components/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import SiteAssistant from '@/components/AIPortfolioAssistant'
 import { loadPortfolioItems } from '@/utils/r2PortfolioLoader'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, Suspense, Component, ReactNode } from 'react'
 import { PortfolioItem } from '@/utils/r2PortfolioLoader'
+
+// Error boundary component for the main content
+class MainContentErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('MainContentErrorBoundary caught an error:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+          <div className="w-full max-w-7xl mx-auto">
+            <div className="text-center py-12">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Something went wrong</h2>
+              <p className="text-gray-600 mb-4">We're sorry, but there was an error loading this content.</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+              >
+                Reload Page
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
+
+// Loading component for the main content
+function MainContentLoading() {
+  return (
+    <div className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-7xl mx-auto">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function AppLayout() {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
+  const [isLoadingPortfolio, setIsLoadingPortfolio] = useState(true)
+  const [portfolioError, setPortfolioError] = useState<string | null>(null)
+
+  // Memoized portfolio loading function
+  const loadItems = useCallback(async () => {
+    try {
+      setIsLoadingPortfolio(true)
+      setPortfolioError(null)
+      const items = await loadPortfolioItems()
+      setPortfolioItems(items)
+    } catch (error) {
+      console.error('Error loading portfolio items for AI assistant:', error)
+      setPortfolioError('Failed to load portfolio items')
+    } finally {
+      setIsLoadingPortfolio(false)
+    }
+  }, [])
 
   useEffect(() => {
-    const loadItems = async () => {
-      try {
-        const items = await loadPortfolioItems()
-        setPortfolioItems(items)
-      } catch (error) {
-        console.error('Error loading portfolio items for AI assistant:', error)
-      }
+    // Use requestIdleCallback for better performance in development
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => loadItems())
+    } else {
+      // Fallback for browsers that don't support requestIdleCallback
+      setTimeout(loadItems, 0)
     }
-
-    loadItems()
-  }, [])
+  }, [loadItems])
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex bg-gray-50">
+      <Header />
+      <div className="min-h-screen flex bg-gray-50 pt-36 md:pt-32">
         <AppSidebar />
-        {/* Main content fills the full height */}
-        <div className="flex flex-col flex-1 min-w-0 min-h-screen">
-          <Header />
-          <div className="flex flex-1 min-h-0">
-            <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
-              {/* Consistent page width container for all pages */}
-              <div className="w-full max-w-7xl mx-auto">
-                <Outlet />
-              </div>
-            </main>
+        {/* Main content area - Header is now fixed at top */}
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col min-h-screen">
+            <MainContentErrorBoundary>
+              <Suspense fallback={<MainContentLoading />}>
+                <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+                  {/* Consistent page width container for all pages */}
+                  <div className="w-full max-w-7xl mx-auto">
+                    <Outlet />
+                  </div>
+                </main>
+              </Suspense>
+            </MainContentErrorBoundary>
+            <Footer />
           </div>
-          {/* Footer is now INSIDE the main flex column, positioned between sidebar and right edge */}
-          <Footer />
         </div>
       </div>
       
       {/* Site Assistant - Available on all pages */}
       <SiteAssistant 
         portfolioItems={portfolioItems}
+        isLoading={isLoadingPortfolio}
+        error={portfolioError}
       />
     </SidebarProvider>
   )

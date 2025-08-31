@@ -34,4 +34,16 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react', 'react-dom'],
   },
+  // Development server optimizations
+  server: {
+    hmr: {
+      // Optimize HMR for better performance
+      overlay: false,
+    },
+  },
+  // Performance optimizations
+  esbuild: {
+    // Reduce bundle size and improve performance
+    drop: ['console', 'debugger'],
+  },
 })

@@ -12,8 +12,6 @@ import {
 } from '@tanstack/react-router'
 import { createBrowserHistory } from '@tanstack/history'
 import AppLayout from './layout/AppLayout'
-import PortfolioPage from './pages/PortfolioPage'
-import ProjectsPage from './pages/ProjectsPage'
 import ProjectsListPage from './pages/ProjectsListPage'
 import NotFound from './pages/NotFound'
 import HealthBridge from './pages/HealthBridge'
@@ -30,40 +28,43 @@ import ToolsListPage from './pages/ToolsListPage'
 
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
-import { ProtectedRoute } from './components/ProtectedRoute'
+import { PortfolioPageWrapper, ProjectsPageWrapper, RootErrorBoundary } from './components/RouteWrappers'
+
+
 
 // Root route
 const rootRoute = createRootRoute({
   component: AppLayout,
   notFoundComponent: NotFound,
+  errorComponent: RootErrorBoundary,
 })
 
 // Index route (About page at root)
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/', // root path for About
-  component: () => <AboutPage />
+  component: AboutPage
 })
 
 // Blog list route
 const blogListRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'blog',
-  component: () => <BlogListPage />
+  component: BlogListPage
 })
 
 // Portfolio route
 const portfolioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'portfolio',
-  component: () => <PortfolioListPage />
+  component: PortfolioListPage
 })
 
 // Projects list route
 const projectsListRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'projects',
-  component: () => <ProjectsListPage />
+  component: ProjectsListPage
 })
 
 // Blog post route
@@ -77,39 +78,14 @@ const blogPostRoute = createRoute({
 const portfolioItemRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'portfolio/$slug',
-  component: () => {
-    // Get the slug from the URL
-    const slug = window.location.pathname.split('/').pop() || ''
-    
-    // The PortfolioPage component will now handle loading content from the API worker
-    // No need to validate slugs here - the component will handle 404s gracefully
-    return <PortfolioPage file={`portfolio/${slug}`} />
-  }
+  component: PortfolioPageWrapper
 })
 
 // Projects route - handles all project pages under /projects/*
 const projectsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'projects/$slug',
-  component: () => {
-    // Get the slug from the URL
-    const slug = window.location.pathname.split('/').pop() || ''
-    
-    // List of all project pages - easy to maintain
-    // To add a new project page, just add the slug here (filename without .md extension)
-    const projectPages = [
-      'project-analysis',
-      'healthbridge-analysis'
-    ]
-    
-    // Check if this is a valid project page
-    if (projectPages.includes(slug)) {
-      return <ProjectsPage file={`projects/${slug}`} />
-    }
-    
-    // If not found, return 404
-    return <NotFound />
-  }
+  component: ProjectsPageWrapper
 })
 
 
@@ -118,32 +94,28 @@ const projectsRoute = createRoute({
 const healthBridgeAnalysisRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'projects/healthbridge-analysis',
-  component: () => <HealthBridge />
+  component: HealthBridge
 })
 
 // Protected route - PROTECTED
 const protectedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'protected',
-  component: () => (
-    <ProtectedRoute>
-      <ProtectedPage />
-    </ProtectedRoute>
-  ),
+  component: ProtectedPage
 })
 
 // Contact route
 const contactRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'contact',
-  component: () => <ContactPage />
+  component: ContactPage
 })
 
 // Privacy route
 const privacyRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'privacy',
-  component: () => <PrivacyPage />
+  component: PrivacyPage
 })
 
 // Cloudflare status checker route
@@ -178,11 +150,7 @@ const markdownEditorRoute = createRoute({
 const contentCreationRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'content-creation',
-  component: () => (
-    <ProtectedRoute>
-      <ContentCreationPage />
-    </ProtectedRoute>
-  ),
+  component: ContentCreationPage
 })
 
 

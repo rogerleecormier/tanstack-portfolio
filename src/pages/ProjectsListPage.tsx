@@ -28,32 +28,32 @@ export default function ProjectsListPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-teal-100 dark:from-teal-950 dark:via-blue-950 dark:to-teal-900">
-      {/* Hero Section */}
+      {/* Hero Section - More Compact */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-teal-600/10 via-blue-600/10 to-teal-600/10 dark:from-teal-400/20 dark:via-blue-400/20 dark:to-teal-400/20"></div>
         
-        <div className="relative px-4 py-16 sm:px-6 lg:px-8">
+        <div className="relative px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl">
               <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
                 Projects & Case Studies
               </span>
             </h1>
-            <p className="mt-6 text-xl leading-8 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="mt-4 text-lg leading-7 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Explore my technical projects, analytical work, and real-world case studies that demonstrate 
               expertise in project management, digital transformation, and data-driven decision making.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Badge variant="secondary" className="bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200 px-4 py-2 text-sm">
-                <BarChart3 className="w-4 h-4 mr-2" />
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Badge variant="secondary" className="bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200 px-3 py-1.5 text-sm">
+                <BarChart3 className="w-4 h-4 mr-1.5" />
                 Data Analysis
               </Badge>
-                                                           <Badge variant="secondary" className="bg-blue-200 text-blue-900 dark:bg-blue-800 dark:text-blue-100 px-4 py-2 text-sm">
-                 <Briefcase className="w-4 h-4 mr-2" />
-                 Project Management
-               </Badge>
-              <Badge variant="secondary" className="bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200 px-4 py-2 text-sm">
-                <User className="w-4 h-4 mr-2" />
+              <Badge variant="secondary" className="bg-blue-200 text-blue-900 dark:bg-blue-800 dark:text-blue-100 px-3 py-1.5 text-sm">
+                <Briefcase className="w-4 h-4 mr-1.5" />
+                Project Management
+              </Badge>
+              <Badge variant="secondary" className="bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200 px-3 py-1.5 text-sm">
+                <User className="w-4 h-4 mr-1.5" />
                 Digital Transformation
               </Badge>
             </div>
@@ -61,205 +61,205 @@ export default function ProjectsListPage() {
         </div>
       </div>
 
-      {/* Projects Grid */}
-      <div className="px-4 py-16 sm:px-6 lg:px-8">
+      {/* Projects Grid - More Compact */}
+      <div className="px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
               Featured Projects
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Each project represents real-world challenges, analytical insights, and practical solutions 
               that drive business value and operational excellence.
             </p>
           </div>
 
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-             {/* Project Method Analysis */}
-                           <Card className="group hover:shadow-2xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
-                <CardHeader className="pb-4 flex-shrink-0">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300">
-                      <BarChart3 className="w-3 h-3 mr-1" />
-                      Analytics
-                    </Badge>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">2025</span>
-                  </div>
-                  <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                    Project Method Analysis
-                  </CardTitle>
-                                    <CardDescription className="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                     Comprehensive analysis of 4,000+ project records comparing Agile vs. Non-Agile methodologies 
-                     across budget tiers and complexity metrics.
-                   </CardDescription>
-                </CardHeader>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* Project Method Analysis - More Compact */}
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
+              <CardHeader className="pb-3 flex-shrink-0">
+                <div className="flex items-center justify-between mb-2">
+                  <Badge variant="outline" className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 text-xs">
+                    <BarChart3 className="w-3 h-3 mr-1" />
+                    Analytics
+                  </Badge>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">2025</span>
+                </div>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                  Project Method Analysis
+                </CardTitle>
+                <CardDescription className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                  Comprehensive analysis of 4,000+ project records comparing Agile vs. Non-Agile methodologies 
+                  across budget tiers and complexity metrics.
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="flex flex-col h-full pt-0">
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
+                    Budget Analysis
+                  </Badge>
+                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
+                    Risk Analysis
+                  </Badge>
+                  <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
+                    ANOVA Testing
+                  </Badge>
+                </div>
                 
-                <CardContent className="flex flex-col h-full">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300">
-                      Budget Analysis
-                    </Badge>
-                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                      Risk Analysis
-                    </Badge>
-                    <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300">
-                      ANOVA Testing
-                    </Badge>
-                  </div>
-                  
-                  <div className="mt-auto">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          <span>4,000+ Records</span>
-                        </div>
-                        <div className="flex items-center">
-                          <User className="w-4 h-4 mr-1" />
-                          <span>Roger Cormier</span>
-                        </div>
+                <div className="mt-auto">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        <span>4,000+ Records</span>
+                      </div>
+                      <div className="flex items-center">
+                        <User className="w-3 h-3 mr-1" />
+                        <span>Roger Cormier</span>
                       </div>
                     </div>
-                    <Button 
-                      onClick={() => handleProjectClick('/projects/project-analysis')}
-                      className="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0 group-hover:shadow-lg transition-all duration-300"
-                    >
-                      View Project
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Button>
                   </div>
-                </CardContent>
-              </Card>
+                  <Button 
+                    onClick={() => handleProjectClick('/projects/project-analysis')}
+                    className="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 text-sm py-2"
+                  >
+                    View Project
+                    <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
-             {/* HealthBridge Analysis */}
-                           <Card className="group hover:shadow-2xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
-                <CardHeader className="pb-4 flex-shrink-0">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300">
-                      <TrendingUp className="w-3 h-3 mr-1" />
-                      Strategy
-                    </Badge>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">2025</span>
-                  </div>
-                  <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    HealthBridge Analysis
-                  </CardTitle>
-                  <CardDescription className="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                    Personal weight loss journey analysis using data tracking, trend analysis, and 
-                    behavioral insights to optimize health outcomes and sustainable habits.
-                  </CardDescription>
-                </CardHeader>
+            {/* HealthBridge Analysis - More Compact */}
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
+              <CardHeader className="pb-3 flex-shrink-0">
+                <div className="flex items-center justify-between mb-2">
+                  <Badge variant="outline" className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300 text-xs">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    Strategy
+                  </Badge>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">2025</span>
+                </div>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  HealthBridge Analysis
+                </CardTitle>
+                <CardDescription className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                  Personal weight loss journey analysis using data tracking, trend analysis, and 
+                  behavioral insights to optimize health outcomes and sustainable habits.
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="flex flex-col h-full pt-0">
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
+                    Health Analytics
+                  </Badge>
+                  <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
+                    Data Tracking
+                  </Badge>
+                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
+                    Behavioral Insights
+                  </Badge>
+                </div>
                 
-                <CardContent className="flex flex-col h-full">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                      Health Analytics
-                    </Badge>
-                    <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300">
-                      Data Tracking
-                    </Badge>
-                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                      Behavioral Insights
-                    </Badge>
-                  </div>
-                  
-                  <div className="mt-auto">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          <span>Personal Journey</span>
-                        </div>
-                        <div className="flex items-center">
-                          <User className="w-4 h-4 mr-1" />
-                          <span>Roger Cormier</span>
-                        </div>
+                <div className="mt-auto">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        <span>Personal Journey</span>
+                      </div>
+                      <div className="flex items-center">
+                        <User className="w-3 h-3 mr-1" />
+                        <span>Roger Cormier</span>
                       </div>
                     </div>
-                    <Button 
-                      onClick={() => handleProjectClick('/projects/healthbridge-analysis')}
-                      className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0 group-hover:shadow-lg transition-all duration-300"
-                    >
-                      View Project
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Button>
                   </div>
-                </CardContent>
-              </Card>
-           </div>
+                  <Button 
+                    onClick={() => handleProjectClick('/projects/healthbridge-analysis')}
+                    className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 text-sm py-2"
+                  >
+                    View Project
+                    <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-          {/* Methodology Section */}
-          <div className="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950/50 dark:to-blue-950/50 rounded-2xl p-8 mb-16">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          {/* Methodology Section - More Compact */}
+          <div className="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950/50 dark:to-blue-950/50 rounded-xl p-6 mb-12">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                 Analytical Approach
               </h3>
-              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              <p className="text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
                 My projects follow a structured methodology combining quantitative analysis, 
                 industry best practices, and practical implementation strategies.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <BarChart3 className="w-8 h-8 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <BarChart3 className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Data-Driven Insights</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-1.5 text-sm">Data-Driven Insights</h4>
+                <p className="text-gray-600 dark:text-gray-300 text-xs">
                   Comprehensive data analysis using statistical methods and visualization techniques
                 </p>
               </div>
               
               <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-8 h-8 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <TrendingUp className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Strategic Recommendations</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-1.5 text-sm">Strategic Recommendations</h4>
+                <p className="text-gray-600 dark:text-gray-300 text-xs">
                   Actionable insights and implementation roadmaps for business impact
                 </p>
               </div>
               
               <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User className="w-8 h-8 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <User className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Expert Execution</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-1.5 text-sm">Expert Execution</h4>
+                <p className="text-gray-600 dark:text-gray-300 text-xs">
                   PMP-certified project management with proven delivery methodologies
                 </p>
               </div>
             </div>
           </div>
 
-          {/* CTA Section */}
+          {/* CTA Section - More Compact */}
           <div className="text-center">
-            <div className="bg-gradient-to-r from-teal-600 to-blue-600 rounded-2xl p-8 text-white">
-              <h3 className="text-2xl font-bold mb-4">
+            <div className="bg-gradient-to-r from-teal-600 to-blue-600 rounded-xl p-6 text-white">
+              <h3 className="text-xl font-bold mb-3">
                 Ready to Transform Your Projects?
               </h3>
-              <p className="text-lg text-teal-100 mb-6 max-w-2xl mx-auto">
+              <p className="text-base text-teal-100 mb-4 max-w-2xl mx-auto">
                 Let's discuss how data-driven project management and strategic analysis 
                 can drive success in your organization.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button 
                   onClick={() => navigate({ to: '/contact' })}
                   variant="secondary"
-                  size="lg"
+                  size="default"
                   className="bg-white text-teal-600 hover:bg-gray-100 border-0"
                 >
                   Get in Touch
                 </Button>
-                                 <Button 
-                   onClick={() => navigate({ to: '/portfolio' })}
-                   variant="secondary"
-                   size="lg"
-                   className="bg-white/20 text-white hover:bg-white hover:text-teal-600 border border-white/30 hover:border-white transition-all duration-300"
-                 >
-                   View Portfolio
-                 </Button>
+                <Button 
+                  onClick={() => navigate({ to: '/portfolio' })}
+                  variant="secondary"
+                  size="default"
+                  className="bg-white/20 text-white hover:bg-white hover:text-teal-600 border border-white/30 hover:border-white transition-all duration-300"
+                >
+                  View Portfolio
+                </Button>
               </div>
             </div>
           </div>

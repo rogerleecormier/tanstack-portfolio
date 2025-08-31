@@ -346,4 +346,26 @@
   .search-results-container::-webkit-scrollbar-thumb:hover {
     background-color: hsl(var(--muted-foreground));
   }
+
+  /* Fix sidebar positioning to start below fixed header */
+  [data-sidebar="sidebar"] {
+    top: 6rem !important; /* 96px - accounts for header height */
+    height: calc(100vh - 6rem) !important;
+  }
+  
+  /* Mobile sidebar positioning fix */
+  [data-mobile="true"][data-sidebar="sidebar"] {
+    top: 0 !important;
+    height: 100vh !important;
+  }
+  
+  /* Fix sidebar gap positioning for desktop */
+  .group[data-side="left"] > div:first-child {
+    margin-top: 0rem !important; 
+  }
+  
+  /* Ensure sidebar content doesn't overlap header */
+  .group[data-side="left"] > div:last-child {
+    margin-top: 0em !important; 
+  }
 }

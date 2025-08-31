@@ -46,6 +46,8 @@ interface ContentRecommendation {
 
 interface SiteAssistantProps {
   portfolioItems: PortfolioItem[]
+  isLoading?: boolean
+  error?: string | null
 }
 
 export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
