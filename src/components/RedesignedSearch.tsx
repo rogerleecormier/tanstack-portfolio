@@ -228,8 +228,8 @@ const RedesignedSearch: React.FC = () => {
 
       {/* Search Dialog */}
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[85vh] p-0 border-0 shadow-2xl">
-          <DialogHeader className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <DialogContent className="max-w-4xl max-h-[85vh] p-0 border-0 shadow-2xl flex flex-col">
+          <DialogHeader className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white flex-shrink-0">
             <DialogTitle className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <Search className="h-5 w-5 text-teal-600" />
@@ -242,9 +242,9 @@ const RedesignedSearch: React.FC = () => {
             </DialogTitle>
           </DialogHeader>
           
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col flex-1 min-h-0">
             {/* Search Input */}
-            <div className="px-6 py-4 border-b border-gray-100">
+            <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
@@ -270,8 +270,8 @@ const RedesignedSearch: React.FC = () => {
               </div>
             </div>
             
-            {/* Search Results */}
-            <div className="flex-1 overflow-y-auto">
+            {/* Search Results - Scrollable Container */}
+            <div className="flex-1 overflow-y-auto min-h-0 search-results-container">
               {!query && recentSearches.length > 0 && (
                 <div className="p-6 border-b border-gray-100">
                   <h3 className="text-sm font-medium text-gray-700 mb-4 flex items-center gap-2">
@@ -421,7 +421,7 @@ const RedesignedSearch: React.FC = () => {
             </div>
             
             {/* Footer */}
-            <div className="p-4 border-t border-gray-100 bg-gray-50">
+            <div className="p-4 border-t border-gray-100 bg-gray-50 flex-shrink-0">
               <div className="flex items-center justify-between text-xs text-gray-500">
                 <span className="flex items-center gap-2">
                   <Command className="h-3 w-3" />
