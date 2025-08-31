@@ -1,5 +1,6 @@
 import fm from 'front-matter'
 import { logger } from './logger'
+import { loadBlogItems, getBlogItem } from '@/utils/r2PortfolioLoader'
 
 export interface BlogPost {
   slug: string
@@ -11,184 +12,59 @@ export interface BlogPost {
   readTime: number
   content: string
   image?: string
-  keywords?: string[]
+  keywords: string[]
 }
 
 export interface BlogFrontmatter {
   title?: string
   description?: string
-  tags?: string[]
   date?: string
   author?: string
-  keywords?: string[]
-  image?: string
+  tags?: string[]
   readTime?: number
+  image?: string
+  keywords?: string[]
 }
 
-// Calculate reading time based on word count
-export function calculateReadingTime(content: string): number {
-  const wordsPerMinute = 200;
-  const wordCount = content.split(/\s+/).length;
-  return Math.ceil(wordCount / wordsPerMinute);
+// Calculate reading time based on content length
+function calculateReadingTime(content: string): number {
+  const wordsPerMinute = 200
+  const wordCount = content.split(/\s+/).length
+  return Math.ceil(wordCount / wordsPerMinute)
 }
 
 // Format date for display
 export function formatDate(dateString: string): string {
   // Create date and adjust for timezone to ensure it displays as the intended date
-  const date = new Date(dateString + 'T00:00:00');
+  const date = new Date(dateString + 'T00:00:00')
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
-  });
+  })
 }
 
-// Load all blog posts from the API worker
+// Load all blog posts from R2 storage
 export async function loadAllBlogPosts(): Promise<BlogPost[]> {
   try {
-    logger.info('🔄 Loading blog posts from API worker...')
+    logger.info('🔄 Loading blog posts from R2 storage...')
     
-    // Use the production worker URL
-    const workerUrl = 'https://github-file-manager.rcormier.workers.dev'
-    
-    const listResponse = await fetch(`${workerUrl}/api/files/list`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ directory: 'blog' })
-    })
-
-    if (!listResponse.ok) {
-      throw new Error(`Failed to list blog files: ${listResponse.status}`)
-    }
-
-    const listResult = await listResponse.json()
-    if (!listResult.success) {
-      throw new Error(`Failed to list blog files: ${listResult.error}`)
-    }
-
-    const blogFiles = listResult.files || []
-    logger.info(`📚 Found ${blogFiles.length} blog files`)
-    logger.info(`📁 Blog files:`, blogFiles)
+    // Use R2 loader instead of GitHub worker
+    const blogItems = await loadBlogItems()
+    logger.info(`📚 Found ${blogItems.length} blog items from R2`)
     
     const posts: BlogPost[] = []
 
-    // Load each blog post
-    for (const file of blogFiles) {
-      if (file.type === 'blob' && file.name.endsWith('.md')) {
-        try {
-          logger.info(`🔄 Attempting to read file: ${file.name}`)
-          
-          // Read the file content
-          const readResponse = await fetch(`${workerUrl}/api/files/read`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filePath: `blog/${file.name}` })
-          })
-
-          logger.info(`📡 Read response status: ${readResponse.status}`)
-          logger.info(`📡 Read response ok: ${readResponse.ok}`)
-
-          if (readResponse.ok) {
-            const readResult = await readResponse.json()
-            logger.info(`📄 Read result:`, readResult)
-            
-            if (readResult.success && readResult.content) {
-              logger.info(`✅ File content received, length: ${readResult.content.length}`)
-              
-              // Parse frontmatter
-              const { attributes, body } = fm(readResult.content)
-              const frontmatter = attributes as BlogFrontmatter
-              
-              logger.info(`📝 Frontmatter parsed:`, frontmatter)
-
-              // Remove import statements from markdown content
-              const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-
-              // Calculate reading time
-              const calculatedReadingTime = calculateReadingTime(cleanedBody)
-
-              // Extract slug from filename
-              const slug = file.name.replace('.md', '')
-
-              // Create blog post
-              const post: BlogPost = {
-                slug,
-                title: (frontmatter.title as string) || slug.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-                description: (frontmatter.description as string) || 'No description available',
-                date: (frontmatter.date as string) || new Date().toISOString(),
-                author: (frontmatter.author as string) || 'Roger Lee Cormier',
-                tags: (frontmatter.tags as string[]) || (frontmatter.keywords as string[]) || [],
-                readTime: (frontmatter.readTime as number) || calculatedReadingTime,
-                content: cleanedBody,
-                image: frontmatter.image as string,
-                keywords: frontmatter.keywords as string[]
-              }
-
-              posts.push(post)
-              logger.info(`✅ Successfully loaded blog post: ${post.title}`)
-            } else {
-              logger.error(`❌ File read failed for ${file.name}:`, readResult)
-            }
-          } else {
-            const errorText = await readResponse.text()
-            logger.error(`❌ HTTP error reading ${file.name}: ${readResponse.status} - ${errorText}`)
-          }
-        } catch (error) {
-          logger.error(`❌ Exception reading blog file ${file.name}:`, error)
-        }
-      }
-    }
-
-    // Sort by date (most recent first)
-    const sortedPosts = posts.sort((a, b) => 
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
-    
-    logger.info(`🎉 Successfully loaded ${sortedPosts.length} blog posts`)
-    return sortedPosts
-  } catch (error) {
-    logger.error('❌ Error loading blog posts from API worker:', error)
-    
-    // Fallback to local loading if API worker fails
-    logger.info('🔄 Falling back to local file loading...')
-    return loadAllBlogPostsLocal()
-  }
-}
-
-// Fallback function for local file loading
-async function loadAllBlogPostsLocal(): Promise<BlogPost[]> {
-  try {
-    logger.info('🔄 Loading blog posts from local files...')
-    // For now, return empty array to avoid build issues
-    // In a real fallback scenario, you might want to implement a different approach
-    logger.warn('⚠️ Local file loading is disabled to avoid build issues')
-    return []
-  } catch (error) {
-    logger.error('❌ Error loading blog posts from local files:', error)
-    return []
-  }
-}
-
-// Load a specific blog post by slug
-export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
-  try {
-    logger.info(`🔄 Loading blog post: ${slug}`)
-    
-    // Use the production worker URL
-    const workerUrl = 'https://github-file-manager.rcormier.workers.dev'
-    
-    const readResponse = await fetch(`${workerUrl}/api/files/read`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filePath: `blog/${slug}.md` })
-    })
-
-    if (readResponse.ok) {
-      const readResult = await readResponse.json()
-      if (readResult.success && readResult.content) {
-        // Parse frontmatter
-        const { attributes, body } = fm(readResult.content)
+    // Convert R2 blog items to BlogPost format
+    for (const item of blogItems) {
+      try {
+        logger.info(`🔄 Processing blog item: ${item.title}`)
+        
+        // Parse frontmatter from the content
+        const { attributes, body } = fm(item.content)
         const frontmatter = attributes as BlogFrontmatter
+        
+        logger.info(`📝 Frontmatter parsed:`, frontmatter)
 
         // Remove import statements from markdown content
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -196,50 +72,83 @@ export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
         // Calculate reading time
         const calculatedReadingTime = calculateReadingTime(cleanedBody)
 
-        const blogPost: BlogPost = {
+        // Extract slug from filename
+        const slug = item.fileName.replace('.md', '')
+
+        // Create blog post
+        const post: BlogPost = {
           slug,
-          title: frontmatter.title || 'Untitled',
-          description: frontmatter.description || '',
-          date: frontmatter.date || new Date().toISOString(),
-          author: frontmatter.author || 'Roger Lee Cormier',
-          tags: frontmatter.tags || [],
-          readTime: frontmatter.readTime || calculatedReadingTime,
+          title: (frontmatter.title as string) || item.title,
+          description: (frontmatter.description as string) || item.description,
+          date: (frontmatter.date as string) || new Date().toISOString(),
+          author: (frontmatter.author as string) || 'Roger Lee Cormier',
+          tags: (frontmatter.tags as string[]) || (frontmatter.keywords as string[]) || item.tags,
+          readTime: (frontmatter.readTime as number) || calculatedReadingTime,
           content: cleanedBody,
-          image: frontmatter.image,
-          keywords: frontmatter.keywords
+          image: frontmatter.image as string,
+          keywords: (frontmatter.keywords as string[]) || item.keywords
         }
-        
-        logger.info(`✅ Successfully loaded blog post: ${blogPost.title}`)
-        return blogPost
+
+        posts.push(post)
+        logger.info(`✅ Successfully loaded blog post: ${post.title}`)
+      } catch (error) {
+        logger.error(`❌ Exception processing blog item ${item.title}:`, error)
       }
     }
-    
-    // Fallback to local loading if API worker fails
-    logger.info(`🔄 API worker failed, falling back to local loading for: ${slug}`)
-    return loadBlogPostLocal(slug)
+
+    // Sort by date (most recent first)
+    const sortedPosts = posts.sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
+
+    logger.info(`✅ Successfully loaded ${sortedPosts.length} blog posts from R2`)
+    return sortedPosts
   } catch (error) {
-    logger.error(`❌ Error loading blog post ${slug} from API worker:`, error)
-    
-    // Fallback to local loading
-    try {
-      return await loadBlogPostLocal(slug)
-    } catch (localError) {
-      logger.error(`❌ Error loading blog post ${slug} from local files:`, localError)
-      return null
-    }
+    logger.error('❌ Failed to load blog posts from R2:', error)
+    throw error
   }
 }
 
-// Fallback function for local file loading
-async function loadBlogPostLocal(slug: string): Promise<BlogPost | null> {
+// Load a specific blog post by slug from R2 storage
+export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    logger.info(`🔄 Loading blog post ${slug} from local files...`)
-    // For now, return null to avoid build issues
-    // In a real fallback scenario, you might want to implement a different approach
-    logger.warn('⚠️ Local file loading is disabled to avoid build issues')
+    logger.info(`🔄 Loading blog post: ${slug}`)
+    
+    // Use R2 loader instead of GitHub worker
+    const item = await getBlogItem(slug)
+    
+    if (item) {
+      // Parse frontmatter from the content
+      const { attributes, body } = fm(item.content)
+      const frontmatter = attributes as BlogFrontmatter
+
+      // Remove import statements from markdown content
+      const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+
+      // Calculate reading time
+      const calculatedReadingTime = calculateReadingTime(cleanedBody)
+
+      const blogPost: BlogPost = {
+        slug,
+        title: frontmatter.title || item.title,
+        description: frontmatter.description || item.description,
+        date: frontmatter.date || item.date || new Date().toISOString(),
+        author: frontmatter.author || 'Roger Lee Cormier',
+        tags: frontmatter.tags || item.tags,
+        readTime: frontmatter.readTime || calculatedReadingTime,
+        content: cleanedBody,
+        image: frontmatter.image,
+        keywords: frontmatter.keywords || item.keywords
+      }
+      
+      logger.info(`✅ Successfully loaded blog post: ${blogPost.title}`)
+      return blogPost
+    }
+    
+    logger.warn(`⚠️ Blog post not found: ${slug}`)
     return null
   } catch (error) {
-    logger.error(`❌ Error loading blog post ${slug} from local files:`, error)
+    logger.error(`❌ Error loading blog post ${slug} from R2:`, error)
     return null
   }
 }
@@ -271,11 +180,43 @@ export function filterBlogPostsByTags(posts: BlogPost[], tags: string[]): BlogPo
   )
 }
 
-// Get all unique tags from blog posts
+// Get all unique tags from blog posts (alias for compatibility)
 export function getAllTags(posts: BlogPost[]): string[] {
-  const tags = new Set<string>()
-  posts.forEach(post => {
-    post.tags.forEach(tag => tags.add(tag))
+  const allTags = posts.flatMap(post => post.tags)
+  return [...new Set(allTags)].sort()
+}
+
+// Get all unique tags from blog posts (new name)
+export function getAllBlogTags(posts: BlogPost[]): string[] {
+  const allTags = posts.flatMap(post => post.tags)
+  return [...new Set(allTags)].sort()
+}
+
+// Get blog posts by tag
+export function getBlogPostsByTag(posts: BlogPost[], tag: string): BlogPost[] {
+  return posts.filter(post => post.tags.includes(tag))
+}
+
+// Get blog posts by author
+export function getBlogPostsByAuthor(posts: BlogPost[], author: string): BlogPost[] {
+  return posts.filter(post => post.author.toLowerCase().includes(author.toLowerCase()))
+}
+
+// Get blog posts by date range
+export function getBlogPostsByDateRange(posts: BlogPost[], startDate: Date, endDate: Date): BlogPost[] {
+  return posts.filter(post => {
+    const postDate = new Date(post.date)
+    return postDate >= startDate && postDate <= endDate
   })
-  return Array.from(tags).sort()
+}
+
+// Get blog posts by keyword
+export function getBlogPostsByKeyword(posts: BlogPost[], keyword: string): BlogPost[] {
+  const searchTerm = keyword.toLowerCase()
+  return posts.filter(post =>
+    post.title.toLowerCase().includes(searchTerm) ||
+    post.description.toLowerCase().includes(searchTerm) ||
+    post.content.toLowerCase().includes(searchTerm) ||
+    post.keywords.some(k => k.toLowerCase().includes(searchTerm))
+  )
 }

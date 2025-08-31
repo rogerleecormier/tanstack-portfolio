@@ -227,8 +227,8 @@ export default function BlogPage({ slug }: { slug: string }) {
               {/* Tags */}
               {frontmatter.tags && (
                 <div className="flex flex-wrap gap-2">
-                  {frontmatter.tags.map((tag: string) => (
-                    <Badge key={tag} variant="secondary" className="text-sm">
+                  {frontmatter.tags.map((tag: string, index: number) => (
+                    <Badge key={`${frontmatter.title}-${tag}-${index}`} variant="secondary" className="text-sm">
                       <Tag className="h-3 w-3 mr-1" />
                       {tag}
                     </Badge>

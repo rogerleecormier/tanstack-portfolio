@@ -13,7 +13,7 @@ import { MessageSquare } from "lucide-react";
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 import UnifiedChartRenderer from '@/components/UnifiedChartRenderer'
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
-import { getProjectItem, getPortfolioItem } from '@/utils/portfolioLoader'
+import { getProjectItem, getPortfolioItem } from '@/utils/r2PortfolioLoader'
 import { loadBlogPost } from '@/utils/blogUtils'
 
 

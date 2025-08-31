@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, FileText, Activity, Database, Globe, BarChart3, Settings, Users, Code, Mail } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, FileText, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 
@@ -15,19 +15,21 @@ export const ProtectedPage: React.FC = () => {
     email: 'idle' | 'testing' | 'success' | 'error';
     newsletter: 'idle' | 'testing' | 'success' | 'error';
     contentSearch: 'idle' | 'testing' | 'success' | 'error';
-    githubFileManager: 'idle' | 'testing' | 'success' | 'error';
+
     healthBridge: 'idle' | 'testing' | 'success' | 'error';
     smartRecommendations: 'idle' | 'testing' | 'success' | 'error';
-    markdownContent: 'idle' | 'testing' | 'success' | 'error';
+
+    r2Bucket: 'idle' | 'testing' | 'success' | 'error';
   }>({
     ai: 'idle',
     email: 'idle',
     newsletter: 'idle',
     contentSearch: 'idle',
-    githubFileManager: 'idle',
+
     healthBridge: 'idle',
     smartRecommendations: 'idle',
-    markdownContent: 'idle'
+
+    r2Bucket: 'idle'
   });
   
   const [apiResults, setApiResults] = useState<{
@@ -35,10 +37,11 @@ export const ProtectedPage: React.FC = () => {
     email?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
     newsletter?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
     contentSearch?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
-    githubFileManager?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
+
     healthBridge?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
     smartRecommendations?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
-    markdownContent?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
+
+    r2Bucket?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
   }>({});
 
   // API testing functions
@@ -146,34 +149,7 @@ export const ProtectedPage: React.FC = () => {
     }
   };
 
-  const testGitHubFileManagerWorkerConnectivity = async () => {
-    setApiStatus(prev => ({ ...prev, githubFileManager: 'testing' }));
-    try {
-      // Try a simple GET request to check basic connectivity
-      await fetch('https://tanstack-portfolio-file-manager.rcormier.workers.dev', {
-        method: 'GET',
-        mode: 'no-cors', // This bypasses CORS for basic connectivity testing
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-      
-      // With no-cors mode, we can't read the response, but if we get here, the worker is reachable
-      const result = {
-        success: true, // Worker is reachable
-        status: 200, // Assume success since we can't read the actual status
-        statusText: 'OK',
-        cors: true
-      };
-      
-      setApiResults(prev => ({ ...prev, githubFileManager: result }));
-      setApiStatus(prev => ({ ...prev, githubFileManager: 'success' }));
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setApiResults(prev => ({ ...prev, githubFileManager: { success: false, status: 0, statusText: 'Error', cors: false, error: errorMessage } }));
-      setApiStatus(prev => ({ ...prev, githubFileManager: 'error' }));
-    }
-  };
+
 
   const testHealthBridgeAPI = async () => {
     setApiStatus(prev => ({ ...prev, healthBridge: 'testing' }));
@@ -230,32 +206,32 @@ export const ProtectedPage: React.FC = () => {
     }
   };
 
-  const testMarkdownContentAPI = async () => {
-    setApiStatus(prev => ({ ...prev, markdownContent: 'testing' }));
+
+
+  const testR2BucketConnectivity = async () => {
+    setApiStatus(prev => ({ ...prev, r2Bucket: 'testing' }));
     try {
-      // Try a simple GET request to check basic connectivity
-      await fetch('https://tanstack-portfolio-file-manager.rcormier.workers.dev', {
+      // Test connectivity to files.rcormier.dev R2 bucket
+      const response = await fetch('https://files.rcormier.dev/portfolio/strategy.md', {
         method: 'GET',
-        mode: 'no-cors', // This bypasses CORS for basic connectivity testing
         headers: {
-          'Accept': 'application/json'
+          'Accept': 'text/markdown'
         }
       });
       
-      // With no-cors mode, we can't read the response, but if we get here, the worker is reachable
       const result = {
-        success: true, // Worker is reachable
-        status: 200, // Assume success since we can't read the actual status
-        statusText: 'OK',
+        success: response.ok,
+        status: response.status,
+        statusText: response.statusText,
         cors: true
       };
       
-      setApiResults(prev => ({ ...prev, markdownContent: result }));
-      setApiStatus(prev => ({ ...prev, markdownContent: 'success' }));
+      setApiResults(prev => ({ ...prev, r2Bucket: result }));
+      setApiStatus(prev => ({ ...prev, r2Bucket: result.success ? 'success' : 'error' }));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setApiResults(prev => ({ ...prev, markdownContent: { success: false, status: 0, statusText: 'Error', cors: false, error: errorMessage } }));
-      setApiStatus(prev => ({ ...prev, markdownContent: 'error' }));
+      setApiResults(prev => ({ ...prev, r2Bucket: { success: false, status: 0, statusText: 'Error', cors: false, error: errorMessage } }));
+      setApiStatus(prev => ({ ...prev, r2Bucket: 'error' }));
     }
   };
 
@@ -547,31 +523,7 @@ export const ProtectedPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* GitHub File Manager */}
-                  <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
-                    <div className="flex items-center space-x-2">
-                      <Code className="h-4 w-4 text-teal-600" />
-                      <div>
-                        <div className="font-medium text-teal-800">File Manager</div>
-                        <div className="text-xs text-teal-600">GitHub content management</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      {apiStatus.githubFileManager === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
-                      {apiStatus.githubFileManager === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
-                      {apiStatus.githubFileManager === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
-                      {apiStatus.githubFileManager === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={testGitHubFileManagerWorkerConnectivity}
-                        disabled={apiStatus.githubFileManager === 'testing'}
-                        className="text-xs border-teal-300 text-teal-700 hover:bg-teal-50"
-                      >
-                        Test
-                      </Button>
-                    </div>
-                  </div>
+
 
                   {/* Health Bridge API */}
                   <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
@@ -625,25 +577,27 @@ export const ProtectedPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Markdown Content Service */}
+
+
+                  {/* R2 Bucket */}
                   <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
                     <div className="flex items-center space-x-2">
-                      <FileText className="h-4 w-4 text-teal-600" />
+                      <Database className="h-4 w-4 text-teal-600" />
                       <div>
-                        <div className="font-medium text-teal-800">Content Service</div>
-                        <div className="text-xs text-teal-600">Markdown content management</div>
+                        <div className="font-medium text-teal-800">R2 Bucket</div>
+                        <div className="text-xs text-teal-600">files.rcormier.dev connectivity</div>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {apiStatus.markdownContent === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
-                      {apiStatus.markdownContent === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
-                      {apiStatus.markdownContent === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
-                      {apiStatus.markdownContent === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
+                      {apiStatus.r2Bucket === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
+                      {apiStatus.r2Bucket === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
+                      {apiStatus.r2Bucket === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                      {apiStatus.r2Bucket === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={testMarkdownContentAPI}
-                        disabled={apiStatus.markdownContent === 'testing'}
+                        onClick={testR2BucketConnectivity}
+                        disabled={apiStatus.r2Bucket === 'testing'}
                         className="text-xs border-teal-300 text-teal-700 hover:bg-teal-50"
                       >
                         Test
@@ -654,7 +608,7 @@ export const ProtectedPage: React.FC = () => {
               </Card>
 
               {/* Test Results Summary */}
-              {(apiResults.ai || apiResults.email || apiResults.newsletter || apiResults.contentSearch || apiResults.githubFileManager || apiResults.healthBridge || apiResults.smartRecommendations || apiResults.markdownContent) && (
+              {(apiResults.ai || apiResults.email || apiResults.newsletter || apiResults.contentSearch || apiResults.healthBridge || apiResults.smartRecommendations || apiResults.r2Bucket) && (
                 <Card className="border-teal-200 bg-teal-50/30">
                   <CardHeader className="pb-3">
                     <div className="flex items-center space-x-2">
@@ -708,17 +662,7 @@ export const ProtectedPage: React.FC = () => {
                           </div>
                         </div>
                       )}
-                      {apiResults.githubFileManager && (
-                        <div className="flex items-center justify-between p-2 bg-white rounded border border-teal-200">
-                          <span className="font-medium text-teal-800">File Manager</span>
-                          <div className="flex items-center space-x-2">
-                            {apiResults.githubFileManager.success ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
-                            <span className={apiResults.githubFileManager.success ? 'text-green-600' : 'text-red-600'}>
-                              {apiResults.githubFileManager.success ? 'Connected' : 'Failed'}
-                            </span>
-                          </div>
-                        </div>
-                      )}
+
                       {apiResults.healthBridge && (
                         <div className="flex items-center justify-between p-2 bg-white rounded border border-teal-200">
                           <span className="font-medium text-teal-800">Health Bridge API</span>
@@ -741,13 +685,14 @@ export const ProtectedPage: React.FC = () => {
                           </div>
                         </div>
                       )}
-                      {apiResults.markdownContent && (
+
+                      {apiResults.r2Bucket && (
                         <div className="flex items-center justify-between p-2 bg-white rounded border border-teal-200">
-                          <span className="font-medium text-teal-800">Content Service</span>
+                          <span className="font-medium text-teal-800">R2 Bucket</span>
                           <div className="flex items-center space-x-2">
-                            {apiResults.markdownContent.success ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
-                            <span className={apiResults.markdownContent.success ? 'text-green-600' : 'text-red-600'}>
-                              {apiResults.markdownContent.success ? 'Connected' : 'Failed'}
+                            {apiResults.r2Bucket.success ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
+                            <span className={apiResults.r2Bucket.success ? 'text-green-600' : 'text-red-600'}>
+                              {apiResults.r2Bucket.success ? 'Connected' : 'Failed'}
                             </span>
                           </div>
                         </div>

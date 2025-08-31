@@ -21,16 +21,7 @@ import {
 import { PortfolioItem } from '@/utils/portfolioLoader'
 import { workerContentService } from '@/api/workerContentService'
 
-// Interface for the content search worker response
-interface ContentSearchResult {
-  id: string
-  title: string
-  description: string
-  url: string
-  contentType: 'blog' | 'portfolio' | 'project' | 'page'
-  tags: string[]
-  relevanceScore?: number
-}
+
 
 interface Recommendation {
   type: 'solution' | 'insight' | 'trend' | 'blog' | 'portfolio'
@@ -84,7 +75,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
         const data = await response.json()
         
         if (data.success && data.results && data.results.length > 0) {
-          return data.results.map((item: ContentSearchResult) => ({
+          return data.results.map((item: { title: string; description: string; url: string; contentType: string; relevanceScore?: number }) => ({
             type: 'content' as const,
             title: item.title,
             description: item.description,

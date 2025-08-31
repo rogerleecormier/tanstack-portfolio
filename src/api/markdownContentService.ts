@@ -1,7 +1,4 @@
-/**
- * Markdown Content Service
- * Fetches and parses markdown files directly from the GitHub repository
- */
+import { loadPortfolioItems, loadBlogItems, loadProjectItems } from '@/utils/r2PortfolioLoader'
 
 export interface MarkdownContentItem {
   id: string
@@ -9,314 +6,152 @@ export interface MarkdownContentItem {
   description: string
   tags: string[]
   url: string
-  contentType: 'blog' | 'portfolio' | 'project' | 'page'
-  category?: string
-  excerpt?: string
-  date?: string
+  contentType: 'blog' | 'portfolio' | 'project' | 'about'
+  category: string
+  content: string
+  frontmatter: Record<string, unknown>
+  lastModified?: string
   author?: string
-  lastModified: string
-  // Full content for Fuse.js search (not displayed)
-  content: string
+  readingTime?: number
 }
 
-export interface SearchResult {
-  item: MarkdownContentItem
-  score: number
-  refIndex: number
-}
-
-interface GitHubTreeItem {
-  type: string
-  path: string
-  sha: string
-  url: string
-  mode: string
-  size?: number
-}
-
-interface GitHubFileResponse {
-  content: string
-  encoding: string
-  sha: string
-  size: number
-  url: string
-  html_url: string
-  git_url: string
-  download_url: string
-  type: string
-  _links: {
-    self: string
-    git: string
-    html: string
-  }
-}
-
-class MarkdownContentService {
-  private baseUrl = 'https://api.github.com/repos/rogerleecormier/tanstack-portfolio-content'
-  private headers = {
-    'Accept': 'application/vnd.github.v3+json',
-    'User-Agent': 'Portfolio-Search-App'
-  }
-
+/**
+ * Service for managing markdown content from R2 storage
+ */
+export class MarkdownContentService {
   /**
-   * Get all markdown content items from the repository
+   * Get all markdown content items from R2 storage
    */
   async getAllContentItems(): Promise<MarkdownContentItem[]> {
     try {
-      // Get the tree for the main branch
-      const treeResponse = await fetch(`${this.baseUrl}/git/trees/main?recursive=1`, {
-        headers: this.headers
-      })
-
-      if (!treeResponse.ok) {
-        throw new Error(`GitHub API error: ${treeResponse.status}`)
-      }
-
-      const tree = await treeResponse.json()
+      console.log('Loading content from R2 storage...')
       
-      // Filter markdown files in content directories
-      const contentFiles = tree.tree.filter((item: GitHubTreeItem) => 
-        item.type === 'blob' && 
-        item.path.endsWith('.md') &&
-        (item.path.startsWith('src/content/blog/') ||
-         item.path.startsWith('src/content/portfolio/') ||
-         item.path.startsWith('src/content/projects/') ||
-         item.path === 'src/content/about.md')
-      )
+      // Load content from R2 in parallel
+      const [portfolioItems, blogItems, projectItems] = await Promise.all([
+        loadPortfolioItems(),
+        loadBlogItems(),
+        loadProjectItems()
+      ])
 
-      console.log(`Found ${contentFiles.length} content files to process`)
+      // Convert portfolio items to search format
+      const portfolioContentItems: MarkdownContentItem[] = portfolioItems.map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        tags: item.tags,
+        url: item.url,
+        contentType: 'portfolio' as const,
+        category: item.category,
+        content: item.content,
+        frontmatter: item.frontmatter,
+        lastModified: item.date,
+        readingTime: this.calculateReadingTime(item.content)
+      }))
 
-      // Process files in batches for better performance
-      const contentItems: MarkdownContentItem[] = []
-      const batchSize = 5
-      
-      for (let i = 0; i < contentFiles.length; i += batchSize) {
-        const batch = contentFiles.slice(i, i + batchSize)
-        const batchPromises = batch.map((file: GitHubTreeItem) => this.processMarkdownFile(file.path))
-        const batchResults = await Promise.allSettled(batchPromises)
-        
-        batchResults.forEach((result, index) => {
-          if (result.status === 'fulfilled' && result.value) {
-            contentItems.push(result.value)
-          } else if (result.status === 'rejected') {
-            console.warn(`Failed to process file ${batch[index].path}:`, result.reason)
-          }
-        })
-      }
+      // Convert blog items to search format
+      const blogContentItems: MarkdownContentItem[] = blogItems.map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        tags: item.tags,
+        url: item.url,
+        contentType: 'blog' as const,
+        category: item.category,
+        content: item.content,
+        frontmatter: item.frontmatter,
+        lastModified: item.date,
+        readingTime: this.calculateReadingTime(item.content)
+      }))
 
-      return contentItems
+      // Convert project items to search format
+      const projectContentItems: MarkdownContentItem[] = projectItems.map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        tags: item.tags,
+        url: item.url,
+        contentType: 'project' as const,
+        category: item.category,
+        content: item.content,
+        frontmatter: item.frontmatter,
+        lastModified: item.date,
+        readingTime: this.calculateReadingTime(item.content)
+      }))
+
+      // Combine all content items
+      const allContentItems = [
+        ...portfolioContentItems,
+        ...blogContentItems,
+        ...projectContentItems
+      ]
+
+      console.log(`Loaded ${allContentItems.length} content items from R2`)
+      return allContentItems
 
     } catch (error) {
-      console.error('Error fetching content items:', error)
+      console.error('Error fetching content items from R2:', error)
       throw error
     }
   }
 
   /**
-   * Process a markdown file to extract metadata and content
+   * Calculate reading time for content
    */
-  private async processMarkdownFile(filePath: string): Promise<MarkdownContentItem | null> {
-    try {
-      const response = await fetch(`${this.baseUrl}/contents/${filePath}?ref=main`, {
-        headers: this.headers
-      })
-
-      if (!response.ok) {
-        return null
-      }
-
-      const file = await response.json() as GitHubFileResponse
-      
-      if (file.encoding !== 'base64') {
-        return null
-      }
-
-      const content = atob(file.content)
-      
-      // Extract frontmatter and content
-      const { frontmatter, content: markdownContent } = this.parseFrontmatter(content)
-      
-      // Determine content type from path
-      const contentType = this.getContentTypeFromPath(filePath)
-      
-      // Generate URL from path
-      const url = this.generateUrlFromPath(filePath)
-      
-      // Clean up title and description
-      const cleanTitle = this.cleanContentString(String(frontmatter.title || this.generateTitleFromPath(filePath)))
-      const cleanDescription = this.cleanContentString(String(frontmatter.description || frontmatter.excerpt || ''))
-      
-      // Process tags
-      const tags = this.processTags((frontmatter.tags as string[] | string) || (frontmatter.tag as string[] | string) || [], contentType)
-
-      return {
-        id: file.sha,
-        title: cleanTitle,
-        description: cleanDescription,
-        tags,
-        url,
-        contentType,
-        category: String(frontmatter.category || frontmatter.section || ''),
-        excerpt: String(frontmatter.excerpt || ''),
-        date: String(frontmatter.date || ''),
-        author: String(frontmatter.author || ''),
-        lastModified: file.url,
-        content: markdownContent // Full content for search
-      }
-
-    } catch (error) {
-      console.error(`Error processing file ${filePath}:`, error)
-      return null
-    }
+  private calculateReadingTime(content: string): number {
+    const wordsPerMinute = 200
+    const wordCount = content.split(/\s+/).length
+    return Math.ceil(wordCount / wordsPerMinute)
   }
 
   /**
-   * Parse frontmatter from markdown content
+   * Search content items by query
    */
-  private parseFrontmatter(content: string): { frontmatter: Record<string, unknown>, content: string } {
-    const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/
-    const match = content.match(frontmatterRegex)
+  async searchContent(query: string): Promise<MarkdownContentItem[]> {
+    const allItems = await this.getAllContentItems()
     
-    if (!match) {
-      return { frontmatter: {}, content }
+    if (!query.trim()) {
+      return allItems
     }
 
-    const [, frontmatterStr, markdownContent] = match
+    const searchTerm = query.toLowerCase()
     
-    try {
-      const frontmatter: Record<string, unknown> = {}
-      const lines = frontmatterStr.split('\n')
-      
-      for (const line of lines) {
-        const colonIndex = line.indexOf(':')
-        if (colonIndex > 0) {
-          const key = line.substring(0, colonIndex).trim()
-          let value: string | string[] = line.substring(colonIndex + 1).trim()
-          
-          // Remove surrounding quotes from string values
-          if (value.startsWith('"') && value.endsWith('"')) {
-            value = value.slice(1, -1)
-          }
-          
-          // Handle array values
-          if (value.startsWith('[') && value.endsWith(']')) {
-            try {
-              value = JSON.parse(value)
-            } catch {
-              // If JSON parsing fails, split by comma
-              if (typeof value === 'string') {
-                value = value.slice(1, -1).split(',').map((v: string) => v.trim().replace(/"/g, ''))
-              }
-            }
-          }
-          
-          frontmatter[key] = value
-        }
-      }
-      
-      return { frontmatter, content: markdownContent }
-    } catch (error) {
-      console.warn('Failed to parse frontmatter:', error)
-      return { frontmatter: {}, content }
-    }
+    return allItems.filter(item => 
+      item.title.toLowerCase().includes(searchTerm) ||
+      item.description.toLowerCase().includes(searchTerm) ||
+      item.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+      item.category.toLowerCase().includes(searchTerm) ||
+      item.content.toLowerCase().includes(searchTerm)
+    )
   }
 
   /**
-   * Process and enhance tags based on content type
+   * Get content items by type
    */
-  private processTags(tags: string[] | string, contentType: string): string[] {
-    let processedTags: string[] = []
-    
-    // Convert to array if it's a string
-    if (typeof tags === 'string') {
-      processedTags = [tags]
-    } else if (Array.isArray(tags)) {
-      processedTags = [...tags]
-    }
-
-    // Add content type as a tag
-    processedTags.push(contentType)
-
-    // Add category-based tags
-    if (contentType === 'blog') {
-      processedTags.push('article', 'post')
-    } else if (contentType === 'portfolio') {
-      processedTags.push('skill', 'expertise')
-    } else if (contentType === 'project') {
-      processedTags.push('work', 'case-study')
-    }
-
-    // Remove duplicates and clean
-    return [...new Set(processedTags)].map(tag => tag.toLowerCase().trim())
+  async getContentByType(type: 'blog' | 'portfolio' | 'project'): Promise<MarkdownContentItem[]> {
+    const allItems = await this.getAllContentItems()
+    return allItems.filter(item => item.contentType === type)
   }
 
   /**
-   * Determine content type from file path
+   * Get content items by category
    */
-  private getContentTypeFromPath(filePath: string): 'blog' | 'portfolio' | 'project' | 'page' {
-    if (filePath.includes('/blog/')) return 'blog'
-    if (filePath.includes('/portfolio/')) return 'portfolio'
-    if (filePath.includes('/projects/')) return 'project'
-    return 'page'
+  async getContentByCategory(category: string): Promise<MarkdownContentItem[]> {
+    const allItems = await this.getAllContentItems()
+    return allItems.filter(item => 
+      item.category.toLowerCase() === category.toLowerCase()
+    )
   }
 
   /**
-   * Generate URL from file path
+   * Get content items by tag
    */
-  private generateUrlFromPath(filePath: string): string {
-    const relativePath = filePath.replace('src/content/', '')
-    
-    if (relativePath === 'about.md') {
-      return '/about'
-    }
-    
-    if (relativePath.startsWith('blog/')) {
-      const slug = relativePath.replace('blog/', '').replace('.md', '')
-      return `/blog/${slug}`
-    }
-    
-    if (relativePath.startsWith('portfolio/')) {
-      const slug = relativePath.replace('portfolio/', '').replace('.md', '')
-      return `/portfolio/${slug}`
-    }
-    
-    if (relativePath.startsWith('projects/')) {
-      const slug = relativePath.replace('projects/', '').replace('.md', '')
-      return `/projects/${slug}`
-    }
-    
-    return `/${relativePath.replace('.md', '')}`
-  }
-
-  /**
-   * Generate title from file path if no title in frontmatter
-   */
-  private generateTitleFromPath(filePath: string): string {
-    const fileName = filePath.split('/').pop() || ''
-    return fileName.replace('.md', '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
-  }
-
-  /**
-   * Clean content string by removing extra quotes and formatting
-   */
-  private cleanContentString(str: string): string {
-    if (!str) return ''
-    
-    // Remove surrounding quotes
-    let cleaned = str.trim()
-    if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
-      cleaned = cleaned.slice(1, -1)
-    }
-    if (cleaned.startsWith("'") && cleaned.endsWith("'")) {
-      cleaned = cleaned.slice(1, -1)
-    }
-    
-    // Remove any remaining quotes and clean up whitespace
-    cleaned = cleaned.replace(/["']/g, '').trim()
-    
-    return cleaned
+  async getContentByTag(tag: string): Promise<MarkdownContentItem[]> {
+    const allItems = await this.getAllContentItems()
+    return allItems.filter(item => 
+      item.tags.some(itemTag => 
+        itemTag.toLowerCase() === tag.toLowerCase()
+      )
+    )
   }
 }
 
-// Export singleton instance
-export const markdownContentService = new MarkdownContentService()

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { ContentItem } from '../types/content'
 import { parseContentForSearch } from '../utils/characterParser'
+import { workerContentService } from '@/api/workerContentService'
 
 interface UnifiedRelatedContentProps {
   title?: string
@@ -54,30 +55,18 @@ export function UnifiedRelatedContent({
       setIsLoading(true)
       setError(null)
 
-      const response = await fetch('https://content-search.rcormier.workers.dev/api/recommendations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: title || tags.join(' '),
-          contentType: 'all', // Always use 'all' for cross-content type recommendations
-          maxResults: maxResults + 1, // Get one extra to account for current page
-          excludeUrl: currentUrl,
-          tags: tags || []
-        }),
-        signal: controller.signal
+      // Use the updated R2-based content service for recommendations
+      const response = await workerContentService.getRecommendations({
+        query: title || tags.join(' '),
+        contentType: 'all', // Always use 'all' for cross-content type recommendations
+        maxResults: maxResults + 1, // Get one extra to account for current page
+        excludeUrl: currentUrl,
+        tags: tags || []
       })
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      
-      if (data.success && data.results) {
+      if (response.success && response.results) {
         // Filter out the current page and limit results
-        const filteredResults = data.results
+        const filteredResults = response.results
           .filter((item: ContentItem) => item.url !== currentUrl)
           .slice(0, maxResults)
         

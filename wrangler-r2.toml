@@ -1,0 +1,7 @@
+name = "portfolio-content-r2"
+compatibility_date = "2024-01-01"
+
+[[r2_buckets]]
+binding = "PORTFOLIO_CONTENT"
+bucket_name = "portfolio-content"
+preview_binding = "PORTFOLIO_CONTENT_PREVIEW"

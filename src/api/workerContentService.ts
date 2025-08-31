@@ -1,26 +1,22 @@
-/**
- * Worker Content Service
- * Interfaces with the Cloudflare Worker API for content search and recommendations
- */
+import { loadPortfolioItems, loadBlogItems, loadProjectItems, type PortfolioItem, type BlogItem, type ProjectItem } from '@/utils/r2PortfolioLoader'
 
 export interface WorkerContentItem {
   id: string
   title: string
   description: string
-  displayContent: string // Clean text content for display (no emojis, basic markdown cleaning)
-  tags: string[]
   url: string
   contentType: 'blog' | 'portfolio' | 'project' | 'page'
-  category?: string
-  headings?: string[]
-  lastModified?: string
+  category: string
+  tags: string[]
+  keywords: string[]
+  content: string
+  relevanceScore?: number
 }
 
 export interface WorkerSearchRequest {
   query: string
-  contentType?: 'blog' | 'portfolio' | 'project' | 'page' | 'all'
+  contentType?: 'blog' | 'portfolio' | 'project' | 'all'
   maxResults?: number
-  excludeUrl?: string
   tags?: string[]
 }
 
@@ -35,7 +31,7 @@ export interface WorkerSearchResponse {
 
 export interface WorkerRecommendationsRequest {
   query: string
-  contentType?: 'blog' | 'portfolio' | 'project' | 'page' | 'all'
+  contentType?: 'blog' | 'portfolio' | 'project' | 'all'
   maxResults?: number
   excludeUrl?: string
   tags?: string[]
@@ -50,35 +46,66 @@ export interface WorkerRecommendationsResponse {
   error?: string
 }
 
-class WorkerContentService {
-  private baseUrl: string
+/**
+ * Service for content search and recommendations using R2 storage
+ * Replaces the GitHub API-based content-search worker
+ */
+export class WorkerContentService {
+  private portfolioItems: PortfolioItem[] = []
+  private blogItems: BlogItem[] = []
+  private projectItems: ProjectItem[] = []
 
   constructor() {
-    // Always use production worker
-    this.baseUrl = 'https://content-search.rcormier.workers.dev'
+    // Initialize content on service creation
+    this.initializeContent()
   }
 
   /**
-   * Search content using the worker API
+   * Initialize content from R2 storage
+   */
+  private async initializeContent() {
+    try {
+      // Load all content from R2
+      this.portfolioItems = await loadPortfolioItems()
+      this.blogItems = await loadBlogItems()
+      this.projectItems = await loadProjectItems()
+    } catch (error) {
+      console.error('Failed to initialize content from R2:', error)
+    }
+  }
+
+  /**
+   * Search content using R2 data
    */
   async searchContent(request: WorkerSearchRequest): Promise<WorkerSearchResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      const { query, contentType = 'all', maxResults = 10, tags = [] } = request
+      
+      // Get all content items based on type
+      const allItems: (PortfolioItem | BlogItem | ProjectItem)[] = []
+      
+      if (contentType === 'all' || contentType === 'portfolio') {
+        allItems.push(...this.portfolioItems)
+      }
+      if (contentType === 'all' || contentType === 'blog') {
+        allItems.push(...this.blogItems)
+      }
+      if (contentType === 'all' || contentType === 'project') {
+        allItems.push(...this.projectItems)
       }
 
-      const data: WorkerSearchResponse = await response.json()
-      return data
+      // Search through content
+      const results = this.searchItems(allItems, query, tags, maxResults)
+
+      return {
+        success: true,
+        results: results.map(item => this.convertToWorkerContentItem(item)),
+        totalResults: results.length,
+        query,
+        timestamp: new Date().toISOString()
+      }
     } catch (error) {
-      console.error('Worker search error:', error)
+      console.error('R2 content search error:', error)
       return {
         success: false,
         results: [],
@@ -91,26 +118,42 @@ class WorkerContentService {
   }
 
   /**
-   * Get content recommendations using the worker API
+   * Get content recommendations using R2 data
    */
   async getRecommendations(request: WorkerRecommendationsRequest): Promise<WorkerRecommendationsResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/recommendations`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      const { query, contentType = 'all', maxResults = 3, excludeUrl, tags = [] } = request
+      
+      // Get all content items based on type
+      let allItems: (PortfolioItem | BlogItem | ProjectItem)[] = []
+      
+      if (contentType === 'all' || contentType === 'portfolio') {
+        allItems.push(...this.portfolioItems)
+      }
+      if (contentType === 'all' || contentType === 'blog') {
+        allItems.push(...this.blogItems)
+      }
+      if (contentType === 'all' || contentType === 'project') {
+        allItems.push(...this.projectItems)
       }
 
-      const data: WorkerRecommendationsResponse = await response.json()
-      return data
+      // Filter out excluded URL
+      if (excludeUrl) {
+        allItems = allItems.filter(item => item.url !== excludeUrl)
+      }
+
+      // Search through content
+      const results = this.searchItems(allItems, query, tags, maxResults)
+
+      return {
+        success: true,
+        results: results.map(item => this.convertToWorkerContentItem(item)),
+        totalResults: results.length,
+        query,
+        timestamp: new Date().toISOString()
+      }
     } catch (error) {
-      console.error('Worker recommendations error:', error)
+      console.error('R2 content recommendations error:', error)
       return {
         success: false,
         results: [],
@@ -123,111 +166,108 @@ class WorkerContentService {
   }
 
   /**
-   * Get related content based on current content
+   * Search items using simple text matching
    */
-  async getRelatedContent(
-    title: string,
-    tags: string[] = [],
-    contentType?: 'blog' | 'portfolio' | 'project' | 'page',
-    excludeUrl?: string,
-    maxResults: number = 3
-  ): Promise<WorkerContentItem[]> {
-    try {
-      const response = await this.getRecommendations({
-        query: `${title} ${tags.join(' ')}`,
-        contentType,
-        maxResults,
-        excludeUrl,
-        tags
-      })
+  private searchItems(
+    items: (PortfolioItem | BlogItem | ProjectItem)[],
+    query: string,
+    tags: string[],
+    maxResults: number
+  ): (PortfolioItem | BlogItem | ProjectItem)[] {
+    const queryLower = query.toLowerCase()
+    const tagsLower = tags.map(tag => tag.toLowerCase())
 
-      if (response.success) {
-        return response.results
+    // Score items based on relevance
+    const scoredItems = items.map(item => {
+      let score = 0
+      
+      // Title match (highest weight)
+      if (item.title.toLowerCase().includes(queryLower)) {
+        score += 10
       }
+      
+      // Description match
+      if (item.description.toLowerCase().includes(queryLower)) {
+        score += 5
+      }
+      
+      // Content match
+      if (item.content.toLowerCase().includes(queryLower)) {
+        score += 3
+      }
+      
+      // Tags match
+      const itemTags = item.tags.map(tag => tag.toLowerCase())
+      const matchingTags = tagsLower.filter(tag => itemTags.includes(tag))
+      score += matchingTags.length * 2
+      
+      // Keywords match
+      const itemKeywords = item.keywords.map(keyword => keyword.toLowerCase())
+      const matchingKeywords = tagsLower.filter(keyword => itemKeywords.includes(keyword))
+      score += matchingKeywords.length * 1.5
 
-      return []
-    } catch (error) {
-      console.error('Error getting related content:', error)
-      return []
+      return { item, score }
+    })
+
+    // Sort by score and return top results
+    return scoredItems
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, maxResults)
+      .map(({ item }) => item)
+  }
+
+  /**
+   * Convert content item to WorkerContentItem format
+   */
+  private convertToWorkerContentItem(item: PortfolioItem | BlogItem | ProjectItem): WorkerContentItem {
+    return {
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      url: item.url,
+      contentType: this.getContentType(item),
+      category: item.category || 'General',
+      tags: item.tags,
+      keywords: item.keywords,
+      content: item.content,
+      relevanceScore: 85 // Default relevance score
     }
   }
 
   /**
-   * Search for content by query
+   * Determine content type from item
+   */
+  private getContentType(item: PortfolioItem | BlogItem | ProjectItem): 'blog' | 'portfolio' | 'project' | 'page' {
+    if ('slug' in item) { // Assuming BlogItem has a 'slug' property
+      return 'blog'
+    } else if (item.url.includes('portfolio')) {
+      return 'portfolio'
+    } else if (item.url.includes('projects')) {
+      return 'project'
+    } else {
+      return 'page' // Default or for other types
+    }
+  }
+
+  /**
+   * Search by query (legacy method for compatibility)
    */
   async searchByQuery(
     query: string,
-    contentType?: 'blog' | 'portfolio' | 'project' | 'page' | 'all',
-    maxResults: number = 10
+    contentType: 'blog' | 'portfolio' | 'project' | 'all' = 'all',
+    maxResults: number = 5
   ): Promise<WorkerContentItem[]> {
-    try {
-      const response = await this.searchContent({
-        query,
-        contentType,
-        maxResults
-      })
-
-      if (response.success) {
-        return response.results
-      }
-
-      return []
-    } catch (error) {
-      console.error('Error searching content:', error)
-      return []
-    }
+    const response = await this.searchContent({ query, contentType, maxResults })
+    return response.results
   }
 
   /**
-   * Get content by type
+   * Get all content items
    */
-  async getContentByType(
-    contentType: 'blog' | 'portfolio' | 'project' | 'page',
-    maxResults: number = 20
-  ): Promise<WorkerContentItem[]> {
-    try {
-      const response = await this.searchContent({
-        query: '', // Empty query to get all content of type
-        contentType,
-        maxResults
-      })
-
-      if (response.success) {
-        return response.results
-      }
-
-      return []
-    } catch (error) {
-      console.error('Error getting content by type:', error)
-      return []
-    }
-  }
-
-  /**
-   * Get content by tags
-   */
-  async getContentByTags(
-    tags: string[],
-    contentType?: 'blog' | 'portfolio' | 'project' | 'page' | 'all',
-    maxResults: number = 10
-  ): Promise<WorkerContentItem[]> {
-    try {
-      const response = await this.searchContent({
-        query: tags.join(' '),
-        contentType,
-        maxResults,
-        tags
-      })
-
-      if (response.success) {
-        return response.results
-      }
-
-      return []
-    } catch (error) {
-      console.error('Error getting content by tags:', error)
-      return []
-    }
+  async getAllContent(): Promise<WorkerContentItem[]> {
+    const allItems = [...this.portfolioItems, ...this.blogItems, ...this.projectItems]
+    return allItems.map(item => this.convertToWorkerContentItem(item))
   }
 }
 

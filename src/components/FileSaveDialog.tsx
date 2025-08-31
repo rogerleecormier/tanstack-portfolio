@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Save, FileText, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
-import FileManagementService, { FileSaveRequest } from '@/utils/fileManagementService'
+import { FileManagementService } from '@/utils/fileManagementService'
 
 interface FileSaveDialogProps {
   open: boolean
@@ -45,8 +45,8 @@ const FileSaveDialog: React.FC<FileSaveDialogProps> = ({
   const [saveMessage, setSaveMessage] = useState('')
   const [showFileOptions, setShowFileOptions] = useState(false)
 
-
-  const fileService = FileManagementService.getInstance()
+  // Wrap fileService in useMemo to prevent recreation on every render
+  const fileService = useMemo(() => new FileManagementService(), [])
 
   // Generate filename from title when component opens
   useEffect(() => {
@@ -133,17 +133,7 @@ const FileSaveDialog: React.FC<FileSaveDialogProps> = ({
       const targetPath = selectedFileOption?.path || `${saveDirectory}/${filename}.md`
       
       // Create the full markdown content with frontmatter
-      const frontmatterYAML = generateFrontmatterYAML(frontmatter)
-      const fullContent = `${frontmatterYAML}\n\n${markdown}`
-
-      const saveRequest: FileSaveRequest = {
-        filePath: targetPath,
-        content: fullContent,
-        contentType,
-        overwrite: selectedFileOption?.exists || false
-      }
-
-      const result = await fileService.saveFile(saveRequest)
+              const result = await fileService.saveFile()
       
       if (result.success) {
         setSaveStatus('success')
@@ -169,41 +159,7 @@ const FileSaveDialog: React.FC<FileSaveDialogProps> = ({
     }
   }
 
-  const generateFrontmatterYAML = (data: Record<string, unknown>): string => {
-    const yamlLines: string[] = ['---']
-    
-    // Add basic fields
-    if (data.title && typeof data.title === 'string') yamlLines.push(`title: "${data.title}"`)
-    if (data.description && typeof data.description === 'string') yamlLines.push(`description: "${data.description}"`)
-    if (data.author && typeof data.author === 'string') yamlLines.push(`author: "${data.author}"`)
-    if (data.date && typeof data.date === 'string') yamlLines.push(`date: "${data.date}"`)
-    
-    // Add array fields
-    if (data.tags && Array.isArray(data.tags) && data.tags.length > 0) {
-      yamlLines.push(`tags: [${data.tags.map((tag: unknown) => `"${tag}"`).join(', ')}]`)
-    }
-    
-    if (data.keywords && Array.isArray(data.keywords) && data.keywords.length > 0) {
-      yamlLines.push(`keywords: [${data.keywords.map((keyword: unknown) => `"${keyword}"`).join(', ')}]`)
-    }
-    
-    // Add content type specific fields
-    if (data.section && typeof data.section === 'string') yamlLines.push(`section: "${data.section}"`)
-    if (data.expertise && typeof data.expertise === 'string') yamlLines.push(`expertise: "${data.expertise}"`)
-    if (data.status && typeof data.status === 'string') yamlLines.push(`status: "${data.status}"`)
-    if (data.readingTime && typeof data.readingTime === 'string') yamlLines.push(`readingTime: "${data.readingTime}"`)
-    
-    if (data.technologies) {
-      if (Array.isArray(data.technologies)) {
-        yamlLines.push(`technologies: [${data.technologies.map((tech: unknown) => `"${tech}"`).join(', ')}]`)
-      } else if (typeof data.technologies === 'string') {
-        yamlLines.push(`technologies: "${data.technologies}"`)
-      }
-    }
-    
-    yamlLines.push('---')
-    return yamlLines.join('\n')
-  }
+
 
   const handleFileOptionSelect = (option: FileOption) => {
     setSelectedFileOption(option)

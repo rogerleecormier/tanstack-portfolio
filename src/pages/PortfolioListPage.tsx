@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Briefcase, Tag, Search, X, Filter, ChevronDown } from 'lucide-react'
-import { loadPortfolioItems, type PortfolioItem } from '@/utils/portfolioLoader'
+import { loadPortfolioItems, type PortfolioItem } from '@/utils/r2PortfolioLoader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'

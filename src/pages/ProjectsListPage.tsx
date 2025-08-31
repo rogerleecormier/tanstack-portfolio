@@ -4,9 +4,15 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, BarChart3, TrendingUp, Calendar, User, Briefcase } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { useEffect } from 'react'
 
 export default function ProjectsListPage() {
   const navigate = useNavigate()
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   // Update document title and meta tags
   useDocumentTitle({

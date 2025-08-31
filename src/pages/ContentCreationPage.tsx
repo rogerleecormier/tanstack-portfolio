@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,9 +16,17 @@ import MarkdownEditor from '@/components/MarkdownEditor'
 import { FrontmatterGenerator } from '@/utils/frontmatterGenerator'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import FileBrowser from '@/components/FileBrowser'
-import FileManagementService, { FileItem } from '@/utils/fileManagementService'
+import { FileManagementService } from '@/utils/fileManagementService'
 import { logger } from '@/utils/logger'
 import { markdownToHtml } from '@/utils/markdownConverter'
+
+interface FileItem {
+  name: string
+  path: string
+  type: 'file' | 'directory'
+  size?: number
+  modified?: Date
+}
 
 interface FrontmatterData {
   title: string
@@ -61,7 +69,7 @@ const ContentCreationPage: React.FC = () => {
   const [loadedFileName, setLoadedFileName] = useState('')
   
   // File service instance
-  const fileService = FileManagementService.getInstance()
+  const fileService = useMemo(() => new FileManagementService(), [])
 
 
 

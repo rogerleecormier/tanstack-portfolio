@@ -5,9 +5,9 @@ import Footer from './Footer'
 import { AppSidebar } from '@/components/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import SiteAssistant from '@/components/AIPortfolioAssistant'
-import { loadPortfolioItems } from '@/utils/portfolioLoader'
+import { loadPortfolioItems } from '@/utils/r2PortfolioLoader'
 import { useEffect, useState } from 'react'
-import { PortfolioItem } from '@/utils/portfolioLoader'
+import { PortfolioItem } from '@/utils/r2PortfolioLoader'
 
 export default function AppLayout() {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])

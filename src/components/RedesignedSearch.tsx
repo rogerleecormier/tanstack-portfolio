@@ -7,7 +7,7 @@ import { Input } from './ui/input'
 import { Badge } from './ui/badge'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import Fuse from 'fuse.js'
-import { markdownContentService, type MarkdownContentItem } from '@/api/markdownContentService'
+import { MarkdownContentService, type MarkdownContentItem } from '@/api/markdownContentService'
 import { logger } from '@/utils/logger'
 
 export default function RedesignedSearch() {
@@ -47,7 +47,8 @@ export default function RedesignedSearch() {
     const loadContent = async () => {
       setIsLoading(true)
       try {
-        const items = await markdownContentService.getAllContentItems()
+        const service = new MarkdownContentService()
+        const items = await service.getAllContentItems()
         setAllItems(items)
         logger.debug('Loaded content items:', items.length)
       } catch (error) {
@@ -235,7 +236,7 @@ export default function RedesignedSearch() {
                 <div className="grid gap-4">
                   {results.map((result) => {
                     const contentTypeInfo = getContentTypeInfo(result.contentType)
-                    const formattedDate = formatDate(result.date)
+                    const formattedDate = result.lastModified ? formatDate(result.lastModified) : null
                     
                     return (
                       <div

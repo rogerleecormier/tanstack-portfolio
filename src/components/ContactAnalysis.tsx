@@ -23,16 +23,7 @@ import {
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { workerContentService } from '@/api/workerContentService'
 
-// Interface for the content search worker response
-interface ContentSearchResult {
-  id: string
-  title: string
-  description: string
-  url: string
-  contentType: 'blog' | 'portfolio' | 'project' | 'page'
-  tags: string[]
-  relevanceScore?: number
-}
+
 
 // Helper function to safely parse tags
 function parseTagsSafely(tags: unknown): string[] {
@@ -150,8 +141,8 @@ export function ContactAnalysis({
         
         if (data.success && data.results && data.results.length > 0) {
           const relevantContent = data.results
-            .filter((item: ContentSearchResult) => item.contentType !== 'page')
-            .map((item: ContentSearchResult) => ({
+            .filter((item: { contentType: string }) => item.contentType !== 'page')
+            .map((item: { title: string; url: string; description: string; relevanceScore?: number; contentType: string; tags?: string[] }) => ({
               title: item.title,
               path: item.url,
               description: item.description,
@@ -163,11 +154,11 @@ export function ContactAnalysis({
           setRelevantContent(relevantContent)
         } else {
           // Fallback to type-based recommendations
-          const fallbackResponse = await workerContentService.getContentByType('portfolio', 4)
+          const fallbackResponse = await workerContentService.searchByQuery('portfolio', 'portfolio', 4)
           if (fallbackResponse && fallbackResponse.length > 0) {
             const relevantContent = fallbackResponse
-              .filter(item => item.contentType !== 'page')
-              .map(item => ({
+              .filter((item: { contentType: string }) => item.contentType !== 'page')
+              .map((item: { title: string; url: string; description: string; contentType: string; tags?: string[] }) => ({
                 title: item.title,
                 path: item.url,
                 description: item.description,
@@ -185,28 +176,28 @@ export function ContactAnalysis({
       }
     } catch (error) {
       console.warn('Smart recommendations failed, using fallback:', error)
-      // Fallback to type-based recommendations
-      try {
-        const fallbackResponse = await workerContentService.getContentByType('portfolio', 4)
-        if (fallbackResponse && fallbackResponse.length > 0) {
-          const relevantContent = fallbackResponse
-            .filter(item => item.contentType !== 'page')
-            .map(item => ({
-              title: item.title,
-              path: item.url,
-              description: item.description,
-              relevance: 0.45, // Lower relevance for fallback content
-              contentType: item.contentType as 'blog' | 'portfolio' | 'project',
-              tags: parseTagsSafely(item.tags || [])
-            }))
-          setRelevantContent(relevantContent)
-        } else {
+              // Fallback to type-based recommendations
+        try {
+          const fallbackResponse = await workerContentService.searchByQuery('portfolio', 'portfolio', 4)
+          if (fallbackResponse && fallbackResponse.length > 0) {
+            const relevantContent = fallbackResponse
+              .filter((item: { contentType: string }) => item.contentType !== 'page')
+              .map((item: { title: string; url: string; description: string; contentType: string; tags?: string[] }) => ({
+                title: item.title,
+                path: item.url,
+                description: item.description,
+                relevance: 0.45, // Lower relevance for fallback content
+                contentType: item.contentType as 'blog' | 'portfolio' | 'project',
+                tags: parseTagsSafely(item.tags || [])
+              }))
+            setRelevantContent(relevantContent)
+          } else {
+            setRelevantContent([])
+          }
+        } catch (fallbackError) {
+          console.error('Fallback recommendations also failed:', fallbackError)
           setRelevantContent([])
         }
-      } catch (fallbackError) {
-        console.error('Fallback recommendations also failed:', fallbackError)
-        setRelevantContent([])
-      }
     }
   }, [])
 
