@@ -51,11 +51,11 @@ export function AppSidebar() {
         
 
 
-        {/* Protected Projects Group - Only show when authenticated */}
+        {/* Administration Group - Only show when authenticated */}
         {isAuthenticated && (
           <SidebarGroup>
             <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">
-              Protected Projects
+              Administration
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="space-y-1">

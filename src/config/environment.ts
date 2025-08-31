@@ -93,7 +93,9 @@ export const environment = {
     retryAttempts: 3,
     // Secure endpoints that require authentication
     protectedEndpoints: ['/auth/verify', '/auth/me', '/auth/logout']
-  }
+  },
+
+
 };
 
 export default environment;

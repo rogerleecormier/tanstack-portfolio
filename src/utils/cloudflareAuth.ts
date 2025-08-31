@@ -12,9 +12,8 @@ export interface CloudflareUser {
 
 // Check if we're in development mode
 export const isDevelopment = (): boolean => {
-  return window.location.hostname === 'localhost' || 
-         window.location.hostname === '127.0.0.1' ||
-         window.location.hostname.includes('localhost');
+  // Use the same environment detection as the main environment config
+  return import.meta.env.DEV;
 };
 
 // Check if user is authenticated via Cloudflare Access
