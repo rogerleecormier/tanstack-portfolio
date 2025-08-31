@@ -8,26 +8,40 @@ const simpleAuth = {
   // Check if user is authenticated in development mode
   isMockAuthenticated(): boolean {
     try {
-      if (!environment.isDevelopment()) return false;
+      logger.info('simpleAuth: isMockAuthenticated called');
+      if (!environment.isDevelopment()) {
+        logger.info('simpleAuth: Not in development mode, returning false');
+        return false;
+      }
+      
       const isAuth = localStorage.getItem('dev_auth') === 'true';
       const sessionStart = localStorage.getItem('session_start');
       
-      if (!isAuth || !sessionStart) return false;
+      logger.info('simpleAuth: localStorage check', { isAuth, sessionStart });
+      
+      if (!isAuth || !sessionStart) {
+        logger.info('simpleAuth: Missing auth data, returning false');
+        return false;
+      }
       
       // Check if session is still valid (30 minutes)
       const now = Date.now();
       const elapsed = now - parseInt(sessionStart, 10);
       const sessionTimeout = 30 * 60 * 1000; // 30 minutes
       
+      logger.info('simpleAuth: Session timeout check', { now, sessionStart: parseInt(sessionStart, 10), elapsed, sessionTimeout });
+      
       if (elapsed > sessionTimeout) {
         // Session expired, clear it
+        logger.info('simpleAuth: Session expired, clearing auth');
         this.clearMockAuth();
         return false;
       }
       
+      logger.info('simpleAuth: User is authenticated');
       return true;
     } catch (error) {
-      logger.error('Error checking mock authentication:', error);
+              logger.error('Error checking mock authentication:', error);
       return false;
     }
   },
@@ -58,8 +72,13 @@ const simpleAuth = {
   // Start mock authentication session
   startMockSession(): void {
     try {
-      if (!environment.isDevelopment()) return;
+      logger.info('simpleAuth: startMockSession called');
+      if (!environment.isDevelopment()) {
+        logger.info('simpleAuth: Not in development mode, returning early');
+        return;
+      }
       
+      logger.info('simpleAuth: Setting localStorage items');
       localStorage.setItem('dev_auth', 'true');
       localStorage.setItem('session_start', Date.now().toString());
       localStorage.setItem('dev_user', JSON.stringify({
@@ -68,12 +87,15 @@ const simpleAuth = {
         sub: 'dev-user-123'
       }));
       
+      logger.info('simpleAuth: Dispatching authStateChanged event');
       // Dispatch a custom event to notify other components
       window.dispatchEvent(new CustomEvent('authStateChanged', { 
         detail: { isAuthenticated: true, user: this.getMockUser() } 
       }));
+      
+      logger.info('simpleAuth: Mock session started successfully');
     } catch (error) {
-      logger.error('Error starting mock session:', error);
+              logger.error('Error starting mock session:', error);
     }
   },
 
@@ -184,13 +206,15 @@ export const useAuth = () => {
   const checkAuth = useCallback(async () => {
     try {
       setIsLoading(true);
+      logger.info('useAuth: checkAuth called');
       
       if (environment.isDevelopment()) {
+        logger.info('useAuth: Development mode detected, checking mock auth');
         // Development mode - use simple mock authentication
         const isAuth = simpleAuth.isMockAuthenticated();
         const mockUser = simpleAuth.getMockUser();
         
-        logger.info('useAuth: Development auth check', { isAuth, mockUser });
+        logger.info('useAuth: Development auth check result', { isAuth, mockUser });
         
         setIsAuthenticated(isAuth);
         setUser(mockUser);
@@ -268,14 +292,16 @@ export const useAuth = () => {
 
   const login = () => {
     try {
-      logger.info('useAuth: Login called');
-      if (environment.isDevelopment()) {
-        simpleAuth.startMockSession();
-        // Update state immediately
-        setIsAuthenticated(true);
-        setUser(simpleAuth.getMockUser());
-        setError(null);
-        logger.info('useAuth: Development login successful');
+              logger.info('useAuth: Login called');
+        
+        if (environment.isDevelopment()) {
+          logger.info('useAuth: Starting development mock session');
+          simpleAuth.startMockSession();
+          // Update state immediately
+          setIsAuthenticated(true);
+          setUser(simpleAuth.getMockUser());
+          setError(null);
+          logger.info('useAuth: Development login successful');
       } else {
         // In production, redirect to protected route to trigger Cloudflare Access
         // Cloudflare will automatically intercept this and redirect to authentication

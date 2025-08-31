@@ -464,7 +464,7 @@ const ContentCreationPage: React.FC = () => {
           <Button asChild variant="ghost" size="sm" className="text-teal-600 hover:text-teal-700 hover:bg-teal-50">
             <Link to="/protected">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Protected Area
+              Back to Administration
             </Link>
           </Button>
         </div>

@@ -127,8 +127,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
               </div>
               <p className="text-sm text-teal-700">
                 {isDevelopment 
-                  ? 'You are running in development mode. Click the button below to simulate authentication and access protected portfolio content.'
-                  : 'This page is protected by Cloudflare Access. You\'ll need to authenticate using your Google SSO credentials to access your portfolio.'
+                          ? 'You are running in development mode. Click the button below to simulate authentication and access the administration area.'
+        : 'This page is protected by Cloudflare Access. You\'ll need to authenticate using your Google SSO credentials to access the administration area.'
                 }
               </p>
               

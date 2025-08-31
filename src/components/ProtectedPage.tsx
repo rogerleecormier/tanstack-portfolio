@@ -256,7 +256,7 @@ export const ProtectedPage: React.FC = () => {
               </div>
               <CardTitle className="text-2xl font-bold text-teal-900">Portfolio Access Required</CardTitle>
               <CardDescription className="text-teal-700">
-                Authentication needed to view protected portfolio content
+                Authentication needed to view administration area
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-4">
@@ -276,8 +276,8 @@ export const ProtectedPage: React.FC = () => {
                 </div>
                 <P className="text-sm text-teal-700">
                   {isDevelopment 
-                    ? 'This content is protected in development mode. Use the development authentication system to simulate authentication.'
-                    : 'This content is protected by Cloudflare Access. Please authenticate to access your portfolio.'
+                                    ? 'This content is protected in development mode. Use the development authentication system to simulate authentication.'
+                : 'This content is protected by Cloudflare Access. Please authenticate to access the administration area.'
                   }
                 </P>
               </div>
@@ -308,7 +308,7 @@ export const ProtectedPage: React.FC = () => {
           </CardTitle>
           <CardDescription className="text-teal-700">
             {isDevelopment 
-              ? 'Development Environment - Protected Content Access'
+              ? 'Development Environment - Administration Access'
               : 'Production Environment - Cloudflare Access Authenticated'
             }
           </CardDescription>

@@ -3,7 +3,8 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
 import { Shield, ArrowRight, Loader2, Lock } from 'lucide-react';
-import { login, isDevelopment } from '../utils/cloudflareAuth';
+import { isDevelopment } from '../utils/cloudflareAuth';
+import { useAuth } from '../hooks/useAuth';
 
 interface LoginPageProps {
   onClose: () => void;
@@ -11,6 +12,7 @@ interface LoginPageProps {
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
   const isDevMode = isDevelopment();
 
   const handleLogin = async () => {
@@ -36,20 +38,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
             <Shield className="h-8 w-8 text-teal-700" />
           </div>
           <CardTitle className="text-2xl font-bold text-teal-900">
-            Protected Content Access
+            Administration Access
           </CardTitle>
           <CardDescription className="text-teal-700">
-            Authenticate to access protected projects
+            Authenticate to access administration area
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center space-x-2 text-sm text-teal-600 mb-4">
               <Lock className="h-4 w-4" />
-              <span>Access protected projects</span>
+              <span>Access administration area</span>
             </div>
             <P className="text-sm text-teal-700 leading-relaxed">
-              Click below to authenticate and access protected content including HealthBridge Analysis and other private projects.
+              Click below to authenticate and access the administration area including HealthBridge Analysis and other private projects.
             </P>
             
             {/* Development Mode Notice */}
@@ -88,7 +90,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               ) : (
                 <>
                   <span>
-                    {isDevMode ? 'Access Protected Content' : 'Sign In with Cloudflare Access'}
+                    {isDevMode ? 'Access Administration' : 'Sign In with Cloudflare Access'}
                   </span>
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </>
@@ -100,13 +102,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
             <>
               <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
                 <P className="text-xs text-teal-800">
-                  <strong className="font-semibold">What happens next:</strong> You'll be authenticated and redirected to the protected content. Protected projects will then appear in your navigation menu.
+                  <strong className="font-semibold">What happens next:</strong> You'll be authenticated and redirected to the administration area. Administration will then appear in your navigation menu.
                 </P>
               </div>
               
               <div className="bg-teal-100 border border-teal-300 rounded-lg p-4">
                 <P className="text-xs text-teal-900">
-                  <strong className="font-semibold">Protected Content:</strong> HealthBridge Analysis and other private projects will be accessible after authentication.
+                  <strong className="font-semibold">Administration Area:</strong> HealthBridge Analysis and other private projects will be accessible after authentication.
                 </P>
               </div>
             </>
@@ -120,7 +122,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               
               <div className="bg-teal-100 border border-teal-300 rounded-lg p-4">
                 <P className="text-xs text-teal-900">
-                  <strong className="font-semibold">Protected Content:</strong> HealthBridge Analysis and other private projects will be accessible after authentication.
+                  <strong className="font-semibold">Administration Area:</strong> HealthBridge Analysis and other private projects will be accessible after authentication.
                 </P>
               </div>
             </>

@@ -71,7 +71,7 @@ export const portfolioItems = [
 // Protected routes that only show when authenticated
 export const protectedProjectItems = [
   {
-    title: "Protected Content",
+    title: "Administration",
     url: "protected",
     icon: User,
     requiresAuth: true,
