@@ -31,6 +31,8 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 
 ## 🛠️ Technology Stack
 
+> 📚 **For detailed technology stack information, see [Tech Stack Documentation](./docs/TECH_STACK.md)**
+
 ### Frontend
 - **React 19**: Latest React with concurrent features
 - **TanStack Router**: Type-safe routing with file-based routing
@@ -39,11 +41,18 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 - **Radix UI**: Accessible component primitives
 - **TipTap**: Rich text editor for markdown creation
 
+### Cloudflare Infrastructure
+- **Cloudflare Pages**: Static site hosting with global CDN
+- **Cloudflare R2**: Object storage for content and assets
+- **Cloudflare Workers**: Serverless functions for AI, email, and content delivery
+- **Cloudflare D1**: Serverless SQLite database
+- **Cloudflare Secrets Store**: Secure environment variable management
+
 ### AI & Backend Services
 - **Cloudflare AI Workers**: AI-powered contact form analysis
-- **Cloudflare Workers**: Serverless functions for email and subscriptions
 - **Fuse.js**: Fuzzy search implementation
 - **Gray Matter**: Markdown frontmatter parsing
+- **Resend**: Email delivery service for contact forms and blog subscriptions
 
 ### Development Tools
 - **Vite**: Fast build tool and development server
