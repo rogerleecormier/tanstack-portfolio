@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code, FileText } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 import { cachedContentService } from '@/api/cachedContentService';
+import { Link } from '@tanstack/react-router';
 
 
 export const ProtectedPage: React.FC = () => {
@@ -379,6 +380,37 @@ export const ProtectedPage: React.FC = () => {
                           {isDevelopment ? 'Development Mode' : 'Production Security'}
                         </span>
                       </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Content Creation Studio Access */}
+              <Card className="border-teal-200 bg-teal-50/30">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="h-5 w-5 text-teal-600" />
+                    <CardTitle className="text-lg text-teal-900">Content Management</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="bg-white p-4 rounded-lg border border-teal-200">
+                    <div className="text-center space-y-3">
+                      <div className="flex items-center justify-center space-x-2">
+                        <FileText className="h-5 w-5 text-teal-600" />
+                        <span className="font-semibold text-teal-800">Content Creation Studio</span>
+                      </div>
+                      <P className="text-sm text-teal-700">
+                        Create and manage blog posts, portfolio items, and project content
+                      </P>
+                      <Link to="/content-creation">
+                        <Button 
+                          className="w-full bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center space-x-2"
+                        >
+                          <span>Open Content Studio</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </CardContent>

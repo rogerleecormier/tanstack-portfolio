@@ -15,7 +15,7 @@ import { H1 } from '@/components/ui/typography'
 // Lazy load ContentCreationStudio for code splitting
 const ContentCreationStudio = React.lazy(() => import('@/components/ContentCreationStudio'))
 
-import { ProtectedRoute } from '@/components/ProtectedRoute'
+
 
 import FileBrowser from '@/components/FileBrowser'
 import { FileManagementService } from '@/utils/fileManagementService'
@@ -394,9 +394,7 @@ const ContentCreationPage: React.FC = () => {
   }, [contentType])
 
   return (
-    <ProtectedRoute>
-      {/* Full-width container for content creation */}
-      <div className={`w-full ${isFullWidth ? 'px-4' : 'px-4 max-w-7xl mx-auto'}`}>
+    <div className={`w-full ${isFullWidth ? 'px-4' : 'px-4 max-w-7xl mx-auto'}`}>
           {/* Modern Header with Controls */}
           <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200 mb-6 -mx-4 px-4 py-4">
             <div className="flex items-center justify-between">
@@ -1050,7 +1048,6 @@ You can create tables using the table button in the toolbar or by typing markdow
             }}
           />
         </div>
-    </ProtectedRoute>
   )
 }
 

@@ -76,10 +76,4 @@ export const protectedProjectItems = [
     icon: User,
     requiresAuth: true,
   },
-  {
-    title: "Content Creation Studio",
-    url: "content-creation",
-    icon: FileText,
-    requiresAuth: true,
-  },
 ];
