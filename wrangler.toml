@@ -1,23 +1,14 @@
-[build]
-command = "npm run build"
-watch_dir = "src"
-
-[site]
-bucket = "./dist"
-entry-point = "."
+name = "tanstack-portfolio"
+compatibility_date = "2024-01-01"
 
 [env.production]
-name = "rcormier-dev"
-route = "rcormier.dev/*"
+name = "tanstack-portfolio"
+pages_build_output_dir = "dist"
 
-[env.production.site]
-bucket = "./dist"
+[env.cloudflare-access-test]
+name = "tanstack-portfolio-cloudflare-test"
+pages_build_output_dir = "dist"
 
-# Ensure proper MIME types for assets
-[[env.production.rules]]
-type = "ESModule"
-globs = ["**/*.js"]
-
-[[env.production.rules]]
-type = "Data"
-globs = ["**/*.css", "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.svg", "**/*.ico", "**/*.webmanifest"]
+# Branch deployment configuration
+[env.cloudflare-access-test.pages]
+branch = "cloudflare-access-test"

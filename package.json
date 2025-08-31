@@ -5,18 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/build-content-index.js && tsc -b && vite build",
-    "build:prod": "NODE_ENV=production node scripts/build-content-index.js && tsc -b && vite build",
-    "build:dev": "tsc -b && vite build",
-    "index-content": "node scripts/build-content-index.js",
+    "build": "tsc && vite build && node scripts/content-indexer.js",
+    "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit",
-    "preview": "vite preview",
-    "deploy": "npm run build:prod && wrangler pages deploy dist --project-name rcormier-dev",
-    "worker:dev": "wrangler dev",
-    "worker:deploy": "wrangler deploy",
-    "worker:deploy:prod": "wrangler deploy --env production",
-    "worker:type-check": "tsc --noEmit --project tsconfig.worker.json"
+    "test-cloudflare": "node debug-cloudflare.js",
+    "deploy-branch": "npm run build && echo 'Branch built successfully. Push to GitHub to deploy.'"
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.11",
