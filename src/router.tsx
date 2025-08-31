@@ -31,6 +31,7 @@ import ToolsListPage from './pages/ToolsListPage'
 import { ProtectedPage } from './components/ProtectedPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 import { CloudflareAccessDebugger } from './components/CloudflareAccessDebugger'
+import { CloudflareAccessTestPage } from './components/CloudflareAccessTestPage'
 import { PortfolioPageWrapper, ProjectsPageWrapper, RootErrorBoundary } from './components/RouteWrappers'
 
 
@@ -135,6 +136,13 @@ const cloudflareAccessDebugRoute = createRoute({
   component: CloudflareAccessDebugger,
 })
 
+// Cloudflare Access test route
+const cloudflareAccessTestRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'access-test',
+  component: CloudflareAccessTestPage,
+})
+
 // Newsletter preferences route
 const newsletterPreferencesRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -180,6 +188,7 @@ const routeTree = rootRoute.addChildren([
   protectedRoute,
   cloudflareStatusRoute,
   cloudflareAccessDebugRoute,
+  cloudflareAccessTestRoute,
   newsletterPreferencesRoute,
   toolsListRoute,
   markdownEditorRoute,
