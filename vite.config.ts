@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: process.env.NODE_ENV === 'production' ? '/' : './', // Use absolute paths in production
+  base: './', // Always use relative paths to avoid domain issues
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
