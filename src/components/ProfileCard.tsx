@@ -1,5 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import React from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 interface ProfileCardProps {
   name: string
@@ -9,61 +10,51 @@ interface ProfileCardProps {
   imageAlt: string
   badges: Array<{
     text: string
-    variant?: "default" | "secondary" | "destructive" | "outline"
-    className?: string
+    className: string
   }>
 }
 
-export function ProfileCard({
+export const ProfileCard: React.FC<ProfileCardProps> = ({
   name,
   title,
   description,
   imageUrl,
   imageAlt,
   badges
-}: ProfileCardProps) {
+}) => {
   return (
-    <div className="not-prose mb-12">
-      <Card className="overflow-hidden">
-        <CardContent className="p-6 md:p-8">
-          <div className="flex flex-col sm:flex-row items-start gap-8">
-            <div className="flex-shrink-0 flex justify-center sm:justify-start">
-              <div className="w-50 h-60 rounded-full border-4 border-white dark:border-gray-700 shadow-xl overflow-hidden">
-                <img 
-                  src={imageUrl} 
-                  alt={imageAlt}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-            <div className="flex-1 space-y-4">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  {name}
-                </h2>
-                <hr className="border-gray-300 dark:border-gray-600 mb-3" />
-                <p className="text-lg text-blue-600 dark:text-blue-400 font-semibold">
-                  {title}
-                </p>
-              </div>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                {description}
-              </p>
-              <div className="flex flex-wrap gap-2 pt-2">
-                {badges.map((badge, index) => (
-                  <Badge 
-                    key={index}
-                    variant={badge.variant || "secondary"}
-                    className={badge.className}
-                  >
-                    {badge.text}
-                  </Badge>
-                ))}
-              </div>
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-4">
+        <div className="flex items-start gap-6">
+          <div className="flex-shrink-0">
+            <img
+              src={imageUrl}
+              alt={imageAlt}
+              className="w-24 h-24 rounded-full object-cover border-3 border-teal-200 shadow-lg"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              {name}
+            </h2>
+            <p className="text-lg text-teal-600 dark:text-teal-400 font-medium mb-3">
+              {title}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {badges.map((badge, index) => (
+                <Badge key={index} variant="outline" className={badge.className}>
+                  {badge.text}
+                </Badge>
+              ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-base">
+          {description}
+        </p>
+      </CardContent>
+    </Card>
   )
 }

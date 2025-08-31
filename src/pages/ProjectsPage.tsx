@@ -3,13 +3,14 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import slugify from 'slugify'
-import { Badge } from '@/components/ui/badge'
+
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
-import { MessageSquare } from "lucide-react";
+import { Badge } from '@/components/ui/badge'
+import { MessageSquare, Tag } from "lucide-react";
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 import UnifiedChartRenderer from '@/components/UnifiedChartRenderer'
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
@@ -246,10 +247,16 @@ export default function ProjectsPage({ file }: { file: string }) {
                   </P>
                 )}
                 {frontmatter.tags && (
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {frontmatter.tags.map((tag: string) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
+                  <div className="flex flex-wrap gap-1.5 mt-4">
+                    {[...new Set(frontmatter.tags)].map((tag: string, index: number) => (
+                      <Badge 
+                        key={`${tag}-${index}`}
+                        variant="secondary"
+                        className="text-xs px-1.5 py-0.5 h-auto"
+                        title={tag}
+                      >
+                        <Tag className="h-3 w-3 mr-1" />
+                        <span className="truncate max-w-[90px]">{tag}</span>
                       </Badge>
                     ))}
                   </div>

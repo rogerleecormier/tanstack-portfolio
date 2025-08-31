@@ -1,321 +1,444 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Search as SearchIcon, Filter, Calendar, User, Tag, ExternalLink } from 'lucide-react'
-import { useRouter } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { Input } from './ui/input'
-import { Badge } from './ui/badge'
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
-import Fuse from 'fuse.js'
-import { MarkdownContentService, type MarkdownContentItem } from '@/api/markdownContentService'
-import { logger } from '@/utils/logger'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Search, Clock, Tag, ExternalLink, FileText, Briefcase, BookOpen, Sparkles, X, Command } from 'lucide-react'
+import { cachedContentService, type CachedContentItem } from '@/api/cachedContentService'
+import { cn } from '@/lib/utils'
 
-export default function RedesignedSearch() {
+interface SearchResult {
+  item: CachedContentItem
+  relevanceScore: number
+}
+
+const RedesignedSearch: React.FC = () => {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState<MarkdownContentItem[]>([])
+  const [results, setResults] = useState<SearchResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [allItems, setAllItems] = useState<MarkdownContentItem[]>([])
-  const [selectedContentType, setSelectedContentType] = useState<'all' | 'blog' | 'portfolio' | 'project' | 'page'>('all')
-  const router = useRouter()
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
-  // Initialize Fuse.js search index
-  const fuseIndex = useMemo(() => {
-    if (allItems.length === 0) return null
-
-    const fuseOptions = {
-      keys: [
-        { name: 'title', weight: 0.4 },
-        { name: 'description', weight: 0.3 },
-        { name: 'tags', weight: 0.2 },
-        { name: 'content', weight: 0.1 } // Full content for semantic search
-      ],
-      threshold: 0.3,
-      includeScore: true,
-      includeMatches: true,
-      minMatchCharLength: 2,
-      ignoreLocation: true,
-      useExtendedSearch: true
-    }
-
-    return new Fuse(allItems, fuseOptions)
-  }, [allItems])
-
-  // Load all content items on component mount
+  // Load recent searches from localStorage
   useEffect(() => {
-    const loadContent = async () => {
-      setIsLoading(true)
+    const saved = localStorage.getItem('recentSearches')
+    if (saved) {
       try {
-        const service = new MarkdownContentService()
-        const items = await service.getAllContentItems()
-        setAllItems(items)
-        logger.debug('Loaded content items:', items.length)
-      } catch (error) {
-        logger.error('Failed to load content:', error)
-      } finally {
-        setIsLoading(false)
+        setRecentSearches(JSON.parse(saved))
+      } catch {
+        setRecentSearches([])
       }
     }
-
-    loadContent()
   }, [])
 
-  // Handle search with Fuse.js
-  useEffect(() => {
-    if (!fuseIndex || query.length < 2) {
+  // Save recent searches to localStorage
+  const saveRecentSearch = useCallback((searchTerm: string) => {
+    if (!searchTerm.trim()) return
+    
+    setRecentSearches(prev => {
+      const filtered = prev.filter(term => term !== searchTerm)
+      const updated = [searchTerm, ...filtered].slice(0, 5)
+      localStorage.setItem('recentSearches', JSON.stringify(updated))
+      return updated
+    })
+  }, [])
+
+  // Perform semantic search
+  const performSearch = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
       setResults([])
-      setIsSearching(false)
       return
     }
 
     setIsSearching(true)
-    
     try {
-      // Perform Fuse.js search
-      const searchResults = fuseIndex.search(query)
-      
-      // Filter by content type if specified
-      let filteredResults = searchResults
-      if (selectedContentType !== 'all') {
-        filteredResults = searchResults.filter(result => 
-          result.item.contentType === selectedContentType
-        )
+      const response = await cachedContentService.getRecommendations({
+        query: searchQuery,
+        contentType: 'all',
+        maxResults: 8,
+        tags: searchQuery.split(' ').filter(word => word.length > 2)
+      })
+
+      if (response.success && response.results) {
+        const searchResults: SearchResult[] = response.results.map(item => ({
+          item,
+          relevanceScore: item.relevanceScore || 0
+        }))
+
+        searchResults.sort((a, b) => b.relevanceScore - a.relevanceScore)
+        setResults(searchResults)
+      } else {
+        setResults([])
       }
-
-      // Convert to MarkdownContentItem array and limit results
-      const items = filteredResults
-        .slice(0, 12)
-        .map(result => result.item)
-
-      setResults(items)
-      logger.debug('Search results:', items.length)
     } catch (error) {
-      logger.error('Search error:', error)
+      console.error('Search failed:', error)
       setResults([])
     } finally {
       setIsSearching(false)
     }
-  }, [query, fuseIndex, selectedContentType])
+  }, [])
 
-  // Navigate to selected result
-  const navigateToResult = (url: string) => {
-    router.navigate({ to: url.startsWith('/') ? url : `/${url}` })
+  // Debounced search
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+
+    if (query.trim()) {
+      searchTimeoutRef.current = setTimeout(() => {
+        performSearch(query)
+      }, 300)
+    } else {
+      setResults([])
+    }
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [query, performSearch])
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault()
+        setOpen(true)
+        setTimeout(() => searchInputRef.current?.focus(), 100)
+      }
+      
+      if (event.key === 'Escape') {
+        setOpen(false)
+        setQuery('')
+        setResults([])
+        setSelectedIndex(-1)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Handle keyboard navigation
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setSelectedIndex(prev => 
+        prev < results.length - 1 ? prev + 1 : prev
+      )
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setSelectedIndex(prev => prev > 0 ? prev - 1 : -1)
+    } else if (event.key === 'Enter' && selectedIndex >= 0) {
+      event.preventDefault()
+      handleResultSelect(results[selectedIndex])
+    }
+  }
+
+  // Handle result selection
+  const handleResultSelect = useCallback((result: SearchResult) => {
+    saveRecentSearch(query)
     setOpen(false)
     setQuery('')
     setResults([])
-  }
+    setSelectedIndex(-1)
+    
+    try {
+      window.location.href = result.item.url
+    } catch (error) {
+      console.warn('Navigation failed:', error)
+      window.open(result.item.url, '_blank')
+    }
+  }, [query, saveRecentSearch])
 
   // Get content type icon and color
   const getContentTypeInfo = (contentType: string) => {
     switch (contentType) {
-      case 'blog':
-        return { icon: '📝', color: 'bg-blue-100 text-blue-800', label: 'Blog Post' }
       case 'portfolio':
-        return { icon: '💼', color: 'bg-teal-100 text-teal-800', label: 'Portfolio' }
+        return { icon: Briefcase, color: 'bg-teal-100 text-teal-800 border-teal-200' }
+      case 'blog':
+        return { icon: BookOpen, color: 'bg-blue-100 text-blue-800 border-blue-200' }
       case 'project':
-        return { icon: '🚀', color: 'bg-purple-100 text-purple-800', label: 'Project' }
+        return { icon: FileText, color: 'bg-purple-100 text-purple-800 border-purple-200' }
       default:
-        return { icon: '📄', color: 'bg-gray-100 text-gray-800', label: 'Page' }
+        return { icon: FileText, color: 'bg-gray-100 text-gray-800 border-gray-200' }
     }
   }
 
-  // Format date
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return null
-    try {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      })
-    } catch {
-      return null
+  // Format relevance score
+  const formatRelevanceScore = (score: number) => {
+    if (score >= 90) return { text: 'Excellent', color: 'text-green-600 bg-green-50' }
+    if (score >= 75) return { text: 'Very Good', color: 'text-blue-600 bg-blue-50' }
+    if (score >= 60) return { text: 'Good', color: 'text-yellow-600 bg-yellow-50' }
+    if (score >= 40) return { text: 'Fair', color: 'text-orange-600 bg-orange-50' }
+    return { text: 'Basic', color: 'text-gray-600 bg-gray-50' }
+  }
+
+  // Clear search
+  const clearSearch = () => {
+    setQuery('')
+    setResults([])
+    setSelectedIndex(-1)
+    searchInputRef.current?.focus()
+  }
+
+  // Handle dialog open change
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen)
+    if (!newOpen) {
+      setQuery('')
+      setResults([])
+      setSelectedIndex(-1)
     }
+  }
+
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setQuery(value)
   }
 
   return (
-    <div className="w-full min-w-[192px] sm:w-48 md:w-56 lg:w-64 h-10 flex-shrink-0">
-      <Button
-        variant="outline"
-        className="w-full h-10 justify-start text-sm text-muted-foreground border-teal-300 hover:bg-teal-50 hover:text-teal-900 dark:border-teal-600 dark:hover:bg-teal-950 dark:hover:text-teal-100 relative pr-16"
-        onClick={() => setOpen(true)}
-      >
-        <SearchIcon className="mr-2 h-4 w-4" />
-        <span className="hidden sm:inline">Search...</span>
-        <span className="sm:hidden">Search</span>
-        <span className="absolute right-1.5 inset-y-0 my-auto h-5 flex items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-0 lg:opacity-100 pointer-events-none select-none transition-opacity">
-          <span className="text-xs">⌘</span>K
-        </span>
-      </Button>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-4xl p-0 z-[150]">
-          <VisuallyHidden>
-            <DialogTitle>Search Portfolio Content</DialogTitle>
-            <DialogDescription>Search through blog posts, portfolio, and projects</DialogDescription>
-          </VisuallyHidden>
-          
-          {/* Search Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b bg-gradient-to-r from-teal-50 to-blue-50">
-            <div className="flex items-center gap-3 flex-1">
-              <SearchIcon className="h-5 w-5 text-teal-600" />
-              <Input
-                placeholder="Search blog posts, portfolio, and projects..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-lg placeholder:text-muted-foreground"
-                autoFocus
-              />
-            </div>
-            
-            {/* Content Type Filter */}
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <select
-                value={selectedContentType}
-                onChange={(e) => setSelectedContentType(e.target.value as 'all' | 'blog' | 'portfolio' | 'project' | 'page')}
-                className="text-sm border rounded-md px-2 py-1 bg-white"
-              >
-                <option value="all">All Content</option>
-                <option value="blog">Blog Posts</option>
-                <option value="portfolio">Portfolio</option>
-                <option value="project">Projects</option>
-                <option value="page">Pages</option>
-              </select>
-            </div>
+    <>
+      {/* Search Trigger Button */}
+      <div className="relative w-full max-w-2xl">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+          <Input
+            ref={inputRef}
+            type="text"
+            placeholder="Search portfolio, blog, projects..."
+            value={query}
+            onChange={handleInputChange}
+            onFocus={() => setOpen(true)}
+            className="pl-10 pr-20 h-10 bg-white/95 backdrop-blur-sm border-gray-200 text-gray-700 placeholder:text-gray-400 focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
+            readOnly
+          />
+          <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+            <kbd className="pointer-events-none inline-flex h-6 select-none items-center gap-1 rounded border bg-gray-100 px-2 font-mono text-xs font-medium text-gray-600">
+              <span className="text-xs">⌘</span>K
+            </kbd>
           </div>
+        </div>
+      </div>
+
+      {/* Search Dialog */}
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="max-w-4xl max-h-[85vh] p-0 border-0 shadow-2xl">
+          <DialogHeader className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+            <DialogTitle className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Search className="h-5 w-5 text-teal-600" />
+                <span className="text-lg font-semibold text-gray-900">Smart Search</span>
+              </div>
+              <Badge variant="secondary" className="ml-2 bg-teal-50 text-teal-700 border-teal-200">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Semantic Search
+              </Badge>
+            </DialogTitle>
+          </DialogHeader>
           
-          {/* Results */}
-          <div className="max-h-[600px] overflow-y-auto">
-            {isLoading && (
-              <div className="py-12 text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto mb-4"></div>
-                <p className="text-sm text-muted-foreground">Loading content...</p>
+          <div className="flex flex-col h-full">
+            {/* Search Input */}
+            <div className="px-6 py-4 border-b border-gray-100">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Search for content, tags, keywords..."
+                  value={query}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  className="pl-10 pr-20 h-10 bg-white border-gray-200 text-gray-700 placeholder:text-gray-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-base"
+                />
+                {query && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute right-16 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 rounded-md transition-colors"
+                  >
+                    <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                  </button>
+                )}
+                <kbd className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none inline-flex h-6 select-none items-center gap-1 rounded border bg-gray-100 px-2 font-mono text-xs font-medium text-gray-600">
+                  <span className="text-xs">⌘</span>K
+                </kbd>
               </div>
-            )}
+            </div>
             
-            {!isLoading && query.length < 2 && (
-              <div className="py-12 text-center">
-                <SearchIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Search Your Portfolio</h3>
-                <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Start typing to search through your blog posts, portfolio items, and project case studies. 
-                  Search by title, description, tags, or content.
-                </p>
-              </div>
-            )}
-            
-            {isSearching && (
-              <div className="py-8 text-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600 mx-auto mb-3"></div>
-                <p className="text-sm text-muted-foreground">Searching...</p>
-              </div>
-            )}
-            
-            {!isLoading && query.length >= 2 && !isSearching && results.length === 0 && (
-              <div className="py-12 text-center">
-                <SearchIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No results found</h3>
-                <p className="text-sm text-muted-foreground">
-                  No content matches "{query}". Try different keywords or check your spelling.
-                </p>
-              </div>
-            )}
-            
-            {results.length > 0 && !isSearching && (
-              <div className="p-4">
-                <div className="text-xs text-muted-foreground px-2 py-1 mb-4 flex items-center justify-between">
-                  <span>{results.length} results found</span>
-                  <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 bg-teal-500 rounded-full"></span>
-                    Powered by Fuse.js
-                  </span>
-                </div>
-                
-                <div className="grid gap-4">
-                  {results.map((result) => {
-                    const contentTypeInfo = getContentTypeInfo(result.contentType)
-                    const formattedDate = result.lastModified ? formatDate(result.lastModified) : null
-                    
-                    return (
-                      <div
-                        key={result.id}
-                        onClick={() => navigateToResult(result.url)}
-                        className="group p-4 rounded-lg border border-gray-200 hover:border-teal-300 hover:shadow-md cursor-pointer transition-all duration-200 bg-white hover:bg-gradient-to-r hover:from-teal-50/50 hover:to-blue-50/50"
+            {/* Search Results */}
+            <div className="flex-1 overflow-y-auto">
+              {!query && recentSearches.length > 0 && (
+                <div className="p-6 border-b border-gray-100">
+                  <h3 className="text-sm font-medium text-gray-700 mb-4 flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    Recent Searches
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {recentSearches.map((searchTerm, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setQuery(searchTerm)
+                          performSearch(searchTerm)
+                        }}
+                        className="px-4 py-2 text-sm bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors border border-gray-200 hover:border-gray-300 hover:shadow-sm"
                       >
-                        {/* Header */}
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-teal-700 transition-colors truncate">
-                              {result.title}
-                            </h3>
-                            {result.description && (
-                              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                                {result.description}
-                              </p>
-                            )}
-                          </div>
-                          
-                          {/* Content Type Badge */}
-                          <div className="flex items-center gap-2 ml-4">
-                            <Badge className={`${contentTypeInfo.color} text-xs font-medium`}>
-                              {contentTypeInfo.icon} {contentTypeInfo.label}
-                            </Badge>
-                            <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </div>
-                        </div>
-                        
-                        {/* Metadata Row */}
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
-                          {formattedDate && (
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {formattedDate}
-                            </div>
-                          )}
-                          {result.author && (
-                            <div className="flex items-center gap-1">
-                              <User className="h-3 w-3" />
-                              {result.author}
-                            </div>
-                          )}
-                          {result.category && (
-                            <div className="flex items-center gap-1">
-                              <Tag className="h-3 w-3" />
-                              {result.category}
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Tags */}
-                        {result.tags && result.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {result.tags.slice(0, 6).map((tag, idx) => (
-                              <Badge
-                                key={idx}
-                                variant="secondary"
-                                className="text-xs px-2 py-1 bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                            {result.tags.length > 6 && (
-                              <Badge variant="outline" className="text-xs px-2 py-1">
-                                +{result.tags.length - 6} more
-                              </Badge>
-                            )}
-                          </div>
-                        )}
+                        {searchTerm}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {query && (
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                      <Search className="h-4 w-4 text-gray-400" />
+                      Search Results
+                      {results.length > 0 && (
+                        <Badge variant="secondary" className="ml-2 bg-blue-50 text-blue-700 border-blue-200">
+                          {results.length} found
+                        </Badge>
+                      )}
+                    </h3>
+                    {isSearching && (
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-teal-600"></div>
+                        Searching...
                       </div>
-                    )
-                  })}
+                    )}
+                  </div>
+                  
+                  {results.length > 0 ? (
+                    <div className="space-y-4">
+                      {results.map((result, index) => {
+                        const contentTypeInfo = getContentTypeInfo(result.item.contentType)
+                        const relevanceInfo = formatRelevanceScore(result.relevanceScore)
+                        const IconComponent = contentTypeInfo.icon
+                        const isSelected = index === selectedIndex
+                        
+                        return (
+                          <div
+                            key={index}
+                            className={cn(
+                              "group p-5 rounded-xl border cursor-pointer transition-all duration-200",
+                              isSelected 
+                                ? "border-teal-300 bg-teal-50 shadow-lg ring-2 ring-teal-200" 
+                                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-md"
+                            )}
+                            onClick={() => handleResultSelect(result)}
+                          >
+                            <div className="flex items-start gap-4">
+                              <div className="flex-shrink-0 mt-1">
+                                <div className={cn(
+                                  "p-2 rounded-lg",
+                                  contentTypeInfo.color
+                                )}>
+                                  <IconComponent className="h-5 w-5 text-current" />
+                                </div>
+                              </div>
+                              
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-teal-700 transition-colors text-lg">
+                                    {result.item.title}
+                                  </h4>
+                                  <Badge 
+                                    variant="secondary" 
+                                    className={`text-xs px-3 py-1 ${contentTypeInfo.color}`}
+                                  >
+                                    {result.item.contentType}
+                                  </Badge>
+                                  <Badge 
+                                    variant="outline" 
+                                    className={`text-xs px-3 py-1 ${relevanceInfo.color}`}
+                                  >
+                                    {relevanceInfo.text}
+                                  </Badge>
+                                </div>
+                                
+                                <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">
+                                  {result.item.description}
+                                </p>
+                                
+                                {result.item.tags && result.item.tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-2 mb-4">
+                                    {result.item.tags.slice(0, 4).map((tag, tagIndex) => (
+                                      <Badge 
+                                        key={tagIndex}
+                                        variant="outline" 
+                                        className="text-xs px-2 py-1 h-auto bg-gray-50 border-gray-200 text-gray-600"
+                                      >
+                                        <Tag className="h-3 w-3 mr-1" />
+                                        {tag}
+                                      </Badge>
+                                    ))}
+                                    {result.item.tags.length > 4 && (
+                                      <span className="text-xs text-gray-400 px-2 py-1">
+                                        +{result.item.tags.length - 4} more
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                                
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                                    <span className="font-medium">Relevance: {result.relevanceScore}%</span>
+                                    {result.item.category && (
+                                      <>
+                                        <span>•</span>
+                                        <span className="bg-gray-100 px-2 py-1 rounded text-gray-600">{result.item.category}</span>
+                                      </>
+                                    )}
+                                  </div>
+                                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-teal-600 transition-colors" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : query && !isSearching ? (
+                    <div className="text-center py-12">
+                      <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-xl font-medium text-gray-700 mb-3">
+                        No results found for "{query}"
+                      </h3>
+                      <p className="text-sm text-gray-500 max-w-md mx-auto">
+                        Try different keywords, check your spelling, or browse recent searches below
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+              )}
+            </div>
+            
+            {/* Footer */}
+            <div className="p-4 border-t border-gray-100 bg-gray-50">
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span className="flex items-center gap-2">
+                  <Command className="h-3 w-3" />
+                  Powered by Fuse.js fuzzy search
+                </span>
+                <div className="flex items-center gap-4">
+                  <span>↑↓ Navigate</span>
+                  <span>Enter Select</span>
+                  <span>Esc Close</span>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   )
 }
+
+export default RedesignedSearch

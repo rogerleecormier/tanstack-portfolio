@@ -48,9 +48,19 @@ export function UnifiedRelatedContent({
       return
     }
 
-    // Check if cached service is ready
+    // Check if cached service is ready with retry logic
+    let retryCount = 0
+    const maxRetries = 3
+    
+    while (!cachedContentService.isReady() && retryCount < maxRetries) {
+      retryCount++
+      console.log(`🔄 Waiting for content service to be ready... (attempt ${retryCount}/${maxRetries})`)
+      await new Promise(resolve => setTimeout(resolve, 500))
+    }
+
     if (!cachedContentService.isReady()) {
-      setError('Content service not ready')
+      console.warn('⚠️ Content service not ready after retries, showing error state')
+      setError('Content service not ready after multiple attempts')
       setIsLoading(false)
       return
     }
@@ -62,6 +72,8 @@ export function UnifiedRelatedContent({
       setIsLoading(true)
       setError(null)
 
+      console.log('🔍 Getting recommendations from cached content service...')
+
       // Use the cached content service for recommendations
       const response = await cachedContentService.getRecommendations({
         query: title || tags.join(' '),
@@ -72,13 +84,17 @@ export function UnifiedRelatedContent({
       })
 
       if (response.success && response.results) {
+        console.log(`✅ Found ${response.results.length} recommendations`)
+        
         // Filter out the current page and limit results
         const filteredResults = response.results
           .filter((item: ContentItem) => item.url !== currentUrl)
           .slice(0, maxResults)
         
+        console.log(`📋 Filtered to ${filteredResults.length} relevant results`)
         setRecommendations(filteredResults)
       } else {
+        console.log('❌ No recommendations found or service error')
         setRecommendations([])
       }
     } catch (err) {
@@ -114,7 +130,7 @@ export function UnifiedRelatedContent({
         </div>
         <div className="space-y-4">
           {Array.from({ length: maxResults }, (_, i) => (
-            <Card key={i} className="border-dashed">
+            <Card key={i} className="border-dashed border-gray-200">
               <CardHeader className="pb-3">
                 <Skeleton className="h-5 w-4/5" />
               </CardHeader>
@@ -125,6 +141,9 @@ export function UnifiedRelatedContent({
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-500">Loading recommendations...</p>
         </div>
       </div>
     )
@@ -256,14 +275,15 @@ export function UnifiedRelatedContent({
                         return (
                           <>
                             {cleanTags.slice(0, 3).map((tag: string, index: number) => (
-                              <span 
+                              <Badge 
                                 key={index}
-                                className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-md font-medium"
+                                variant="secondary"
+                                className="text-xs px-1.5 py-0.5 h-auto"
                                 title={parseContentForSearch(tag)}
                               >
-                                <Tag className="h-3 w-3" />
+                                <Tag className="h-3 w-3 mr-1" />
                                 <span className="truncate max-w-[70px]">{parseContentForSearch(tag)}</span>
-                              </span>
+                              </Badge>
                             ))}
                             {cleanTags.length > 3 && (
                               <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
@@ -371,14 +391,15 @@ export function UnifiedRelatedContent({
                       return (
                         <>
                           {cleanTags.slice(0, 3).map((tag: string, index: number) => (
-                            <span 
+                            <Badge 
                               key={index}
-                              className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-md font-medium truncate max-w-[90px]"
+                              variant="secondary"
+                              className="text-xs px-1.5 py-0.5 h-auto"
                               title={parseContentForSearch(tag)}
                             >
-                              <Tag className="h-3 w-3 flex-shrink-0" />
-                              <span className="truncate">{parseContentForSearch(tag)}</span>
-                            </span>
+                              <Tag className="h-3 w-3 mr-1" />
+                              <span className="truncate max-w-[90px]">{parseContentForSearch(tag)}</span>
+                            </Badge>
                           ))}
                           {cleanTags.length > 3 && (
                             <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">

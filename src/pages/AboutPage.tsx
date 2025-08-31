@@ -186,8 +186,8 @@ export default function AboutPage() {
           )}
           {frontmatter.tags && (
             <div className="flex flex-wrap gap-2 mt-4">
-              {frontmatter.tags.map((tag: string) => (
-                <Badge key={tag} variant="secondary">
+              {[...new Set(frontmatter.tags)].map((tag: string, index: number) => (
+                <Badge key={`${tag}-${index}`} variant="secondary">
                   {tag}
                 </Badge>
               ))}

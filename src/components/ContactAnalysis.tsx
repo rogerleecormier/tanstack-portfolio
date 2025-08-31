@@ -116,18 +116,29 @@ export function ContactAnalysis({
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
-  // Smart content recommendations function
+  // Smart content recommendations function with enhanced context awareness
   const getContentRecommendations = useCallback(async (analysis: AIAnalysisResult) => {
     try {
       const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`
       const tags = [analysis.inquiryType, analysis.industry, analysis.projectScope].filter(Boolean)
       
-      // Use the cached content service for recommendations
+      // Log semantic search status
+      const isSemanticReady = cachedContentService.isFuseReady()
+      console.log(`🔍 Semantic search ${isSemanticReady ? 'ready' : 'falling back to traditional search'}`)
+      
+      // Enhanced context-aware recommendations using the improved cached content service
       const response = await cachedContentService.getRecommendations({
         query: title,
         contentType: 'all', // Get cross-content type recommendations
         maxResults: 4,
-        tags: tags
+        tags: tags,
+        context: {
+          inquiryType: analysis.inquiryType,
+          industry: analysis.industry,
+          projectScope: analysis.projectScope,
+          messageType: analysis.messageType,
+          priorityLevel: analysis.priorityLevel
+        }
       })
 
       if (response.success && response.results && response.results.length > 0) {
@@ -142,8 +153,10 @@ export function ContactAnalysis({
             tags: parseTagsSafely(item.tags || [])
           }))
         
+        console.log(`📚 Found ${relevantContent.length} relevant content items with semantic matching`)
         setRelevantContent(relevantContent)
       } else {
+        console.log('📚 No relevant content found')
         setRelevantContent([])
       }
     } catch (error) {
@@ -152,7 +165,7 @@ export function ContactAnalysis({
     }
   }, [])
 
-  // Debounced content recommendations
+  // Enhanced content recommendations with immediate updates for AI analysis changes
   useEffect(() => {
     if (analysis && !isLoading) {
       // Clear existing timeout
@@ -160,10 +173,13 @@ export function ContactAnalysis({
         clearTimeout(searchTimeoutRef.current)
       }
       
+      // For AI analysis updates, use shorter debounce to be more responsive
+      const debounceTime = analysis.fallback ? 500 : 300
+      
       // Set new timeout for debounced search
       searchTimeoutRef.current = setTimeout(() => {
         getContentRecommendations(analysis)
-      }, 500)
+      }, debounceTime)
     }
     
     // Cleanup timeout on unmount

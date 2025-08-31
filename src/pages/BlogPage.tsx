@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import slugify from 'slugify'
+
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
@@ -226,11 +227,16 @@ export default function BlogPage({ slug }: { slug: string }) {
 
               {/* Tags */}
               {frontmatter.tags && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {frontmatter.tags.map((tag: string, index: number) => (
-                    <Badge key={`${frontmatter.title}-${tag}-${index}`} variant="secondary" className="text-sm">
+                    <Badge 
+                      key={`${frontmatter.title}-${tag}-${index}`}
+                      variant="secondary"
+                      className="text-xs px-1.5 py-0.5 h-auto"
+                      title={tag}
+                    >
                       <Tag className="h-3 w-3 mr-1" />
-                      {tag}
+                      <span className="truncate max-w-[90px]">{tag}</span>
                     </Badge>
                   ))}
                 </div>

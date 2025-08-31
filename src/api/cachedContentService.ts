@@ -1,4 +1,5 @@
 import { logger } from '@/utils/logger'
+import Fuse, { IFuseOptions } from 'fuse.js'
 
 // Import cached content data
 import contentCache from '@/data/content-cache.json'
@@ -43,6 +44,13 @@ export interface CachedRecommendationsRequest {
   maxResults?: number
   excludeUrl?: string
   tags?: string[]
+  context?: {
+    inquiryType?: string
+    industry?: string
+    projectScope?: string
+    messageType?: string
+    priorityLevel?: string
+  }
 }
 
 export interface CachedRecommendationsResponse {
@@ -63,9 +71,12 @@ export class CachedContentService {
   private blogItems: CachedContentItem[] = []
   private projectItems: CachedContentItem[] = []
   private allItems: CachedContentItem[] = []
+  private fuse: Fuse<CachedContentItem> | null = null
+  private isFuseInitialized = false
 
   constructor() {
     this.initializeContent()
+    this.initializeFuse()
     
     // If initialization failed, try fallback after a short delay
     if (!this.isReady()) {
@@ -74,6 +85,51 @@ export class CachedContentService {
           this.fallbackInitialize()
         }
       }, 1000)
+    }
+    
+    // Add a small delay to ensure initialization is complete
+    setTimeout(() => {
+      if (this.isReady()) {
+        logger.info(`✅ Cached content service fully initialized with ${this.allItems.length} items`)
+      }
+    }, 100)
+  }
+
+  /**
+   * Initialize Fuse.js for semantic search
+   */
+  private async initializeFuse() {
+    try {
+      if (this.allItems.length === 0) {
+        // Wait for content to be initialized
+        return
+      }
+
+      // Configure Fuse.js for optimal semantic matching
+      const fuseOptions: IFuseOptions<CachedContentItem> = {
+        keys: [
+          { name: 'title', weight: 0.4 },
+          { name: 'description', weight: 0.3 },
+          { name: 'content', weight: 0.2 },
+          { name: 'tags', weight: 0.15 },
+          { name: 'keywords', weight: 0.15 },
+          { name: 'category', weight: 0.1 }
+        ],
+        threshold: 0.3, // Lower threshold for more precise matches
+        distance: 100, // Allow for more flexible matching
+        includeScore: true,
+        includeMatches: true,
+        minMatchCharLength: 3,
+        ignoreLocation: true, // Better for content matching
+        useExtendedSearch: true
+      }
+
+      this.fuse = new Fuse(this.allItems, fuseOptions)
+      this.isFuseInitialized = true
+      
+      logger.info(`✅ Fuse.js semantic search initialized with ${this.allItems.length} items`)
+    } catch (error) {
+      logger.error('❌ Failed to initialize Fuse.js:', error)
     }
   }
 
@@ -92,6 +148,11 @@ export class CachedContentService {
       logger.info(`📁 Portfolio: ${this.portfolioItems.length}`)
       logger.info(`📝 Blog: ${this.blogItems.length}`)
       logger.info(`🚀 Projects: ${this.projectItems.length}`)
+
+      // Initialize Fuse.js after content is loaded
+      if (this.allItems.length > 0) {
+        this.initializeFuse()
+      }
     } catch (error) {
       logger.error('❌ Failed to initialize cached content service:', error)
       // Fallback to empty arrays
@@ -351,6 +412,22 @@ export class CachedContentService {
    */
   isReady(): boolean {
     return this.allItems.length > 0
+  }
+
+  /**
+   * Force reinitialization of Fuse.js (useful for content updates)
+   */
+  async reinitializeFuse(): Promise<void> {
+    this.isFuseInitialized = false
+    this.fuse = null
+    await this.initializeFuse()
+  }
+
+  /**
+   * Check if Fuse.js semantic search is ready
+   */
+  isFuseReady(): boolean {
+    return this.isFuseInitialized && this.fuse !== null
   }
 }
 
