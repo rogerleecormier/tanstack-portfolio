@@ -96,6 +96,22 @@ const simpleAuth = {
   // Check Cloudflare Access authentication (production)
   async checkCloudflareAuth(): Promise<{ isAuthenticated: boolean; user: CloudflareUser | null }> {
     try {
+      // First check if we're in a browser environment
+      if (typeof window === 'undefined') {
+        logger.debug('Not in browser environment, skipping Cloudflare auth check');
+        return { isAuthenticated: false, user: null };
+      }
+
+      // Check if Cloudflare Access cookies exist
+      const hasCfCookies = document.cookie.includes('CF_Authorization') || 
+                           document.cookie.includes('CF_Access_JWT') ||
+                           document.cookie.includes('CF_Access_JWT_Header');
+
+      if (!hasCfCookies) {
+        logger.debug('No Cloudflare Access cookies found, user not authenticated');
+        return { isAuthenticated: false, user: null };
+      }
+
       const response = await fetch('/cdn-cgi/access/get-identity', {
         credentials: 'include',
         headers: {
@@ -112,8 +128,27 @@ const simpleAuth = {
             name: identity.name || identity.given_name || identity.family_name || 'Authenticated User',
             sub: identity.sub || identity.user_uuid,
           };
+          logger.debug('Cloudflare Access authentication successful', { user });
           return { isAuthenticated: true, user };
         }
+      }
+      
+      // Handle specific error cases
+      if (response.status === 400) {
+        logger.warn('Cloudflare Access configuration issue - endpoint returned 400');
+        // This might indicate a configuration issue, but don't block the app
+        return { isAuthenticated: false, user: null };
+      }
+      
+      if (response.status === 403) {
+        logger.debug('Cloudflare Access forbidden - user not authenticated');
+        return { isAuthenticated: false, user: null };
+      }
+      
+      if (response.status === 404) {
+        logger.warn('Cloudflare Access endpoint not found - service may not be configured');
+        // If the endpoint doesn't exist, Cloudflare Access might not be set up
+        return { isAuthenticated: false, user: null };
       }
       
       // If we get here, user is not authenticated
