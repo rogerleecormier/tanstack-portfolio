@@ -11,7 +11,7 @@ export interface Env {
 }
 
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     // Handle CORS preflight requests
     if (request.method === 'OPTIONS') {
       return new Response(null, {
