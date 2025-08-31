@@ -461,7 +461,11 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
         </div>
 
         {/* Main Editor Area - Optimized for Dual Pane */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className={`grid gap-6 ${
+          showPreviewState 
+            ? 'grid-cols-1 xl:grid-cols-2' 
+            : 'grid-cols-1'
+        }`}>
           {/* Editor Panel */}
           <Card className="border-0 shadow-lg bg-white">
             <CardHeader className="pb-3 border-b border-gray-100">
