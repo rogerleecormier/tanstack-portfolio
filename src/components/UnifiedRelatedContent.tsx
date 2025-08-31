@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { ContentItem } from '../types/content'
 import { parseContentForSearch } from '../utils/characterParser'
-import { workerContentService } from '@/api/workerContentService'
+import { cachedContentService } from '@/api/cachedContentService'
 
 interface UnifiedRelatedContentProps {
   title?: string
@@ -48,6 +48,13 @@ export function UnifiedRelatedContent({
       return
     }
 
+    // Check if cached service is ready
+    if (!cachedContentService.isReady()) {
+      setError('Content service not ready')
+      setIsLoading(false)
+      return
+    }
+
     const controller = new AbortController()
     abortControllerRef.current = controller
 
@@ -55,8 +62,8 @@ export function UnifiedRelatedContent({
       setIsLoading(true)
       setError(null)
 
-      // Use the updated R2-based content service for recommendations
-      const response = await workerContentService.getRecommendations({
+      // Use the cached content service for recommendations
+      const response = await cachedContentService.getRecommendations({
         query: title || tags.join(' '),
         contentType: 'all', // Always use 'all' for cross-content type recommendations
         maxResults: maxResults + 1, // Get one extra to account for current page

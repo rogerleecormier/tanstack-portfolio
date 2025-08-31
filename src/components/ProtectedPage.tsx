@@ -5,6 +5,7 @@ import { P } from './ui/typography';
 import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, FileText, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
+import { cachedContentService } from '@/api/cachedContentService';
 
 export const ProtectedPage: React.FC = () => {
   const { isAuthenticated, user, isLoading, isDevelopment, logout } = useAuth();
@@ -123,19 +124,17 @@ export const ProtectedPage: React.FC = () => {
   const testContentSearchWorkerConnectivity = async () => {
     setApiStatus(prev => ({ ...prev, contentSearch: 'testing' }));
     try {
-      // Try a simple GET request first to check basic connectivity
-      await fetch('https://tanstack-portfolio-content-search.rcormier.workers.dev', {
-        method: 'GET',
-        mode: 'no-cors', // This bypasses CORS for basic connectivity testing
-        headers: {
-          'Accept': 'application/json'
-        }
+      // Test the cached content service instead of the old worker
+      const response = await cachedContentService.getRecommendations({
+        query: 'test',
+        contentType: 'all',
+        maxResults: 1,
+        tags: []
       });
       
-      // With no-cors mode, we can't read the response, but if we get here, the worker is reachable
       const result = {
-        success: true, // Worker is reachable
-        status: 200, // Assume success since we can't read the actual status
+        success: response.success,
+        status: 200,
         statusText: 'OK',
         cors: true
       };
@@ -180,19 +179,17 @@ export const ProtectedPage: React.FC = () => {
   const testSmartRecommendationsAPI = async () => {
     setApiStatus(prev => ({ ...prev, smartRecommendations: 'testing' }));
     try {
-      // Try a simple GET request to check basic connectivity
-      await fetch('https://tanstack-portfolio-content-search.rcormier.workers.dev', {
-        method: 'GET',
-        mode: 'no-cors', // This bypasses CORS for basic connectivity testing
-        headers: {
-          'Accept': 'application/json'
-        }
+      // Test the cached content service instead of the old worker
+      const response = await cachedContentService.getRecommendations({
+        query: 'test',
+        contentType: 'all',
+        maxResults: 1,
+        tags: []
       });
       
-      // With no-cors mode, we can't read the response, but if we get here, the worker is reachable
       const result = {
-        success: true, // Worker is reachable
-        status: 200, // Assume success since we can't read the actual status
+        success: response.success,
+        status: 200,
         statusText: 'OK',
         cors: true
       };

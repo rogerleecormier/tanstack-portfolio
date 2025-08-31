@@ -48,7 +48,7 @@ export interface WorkerRecommendationsResponse {
 
 /**
  * Service for content search and recommendations using R2 storage
- * Replaces the GitHub API-based content-search worker
+ * Note: This service is being phased out in favor of the cached content service
  */
 export class WorkerContentService {
   private portfolioItems: PortfolioItem[] = []

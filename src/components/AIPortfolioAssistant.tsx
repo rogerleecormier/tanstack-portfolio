@@ -19,7 +19,7 @@ import {
   Globe
 } from 'lucide-react'
 import { PortfolioItem } from '@/utils/portfolioLoader'
-import { workerContentService } from '@/api/workerContentService'
+import { cachedContentService } from '@/api/cachedContentService'
 
 
 
@@ -54,53 +54,31 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
 
-  // Get content recommendations from worker API
+  // Get content recommendations from cached content service
   const getContentRecommendations = useCallback(async (query: string): Promise<ContentRecommendation[]> => {
     try {
-      // Use the updated content search worker for actual relevance scores
-      const response = await fetch('https://content-search.rcormier.workers.dev/api/recommendations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: query,
-          contentType: 'all', // Get cross-content type recommendations
-          maxResults: 3,
-          tags: []
-        })
+      // Use the cached content service for recommendations
+      const response = await cachedContentService.getRecommendations({
+        query: query,
+        contentType: 'all', // Get cross-content type recommendations
+        maxResults: 3,
+        tags: []
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        
-        if (data.success && data.results && data.results.length > 0) {
-          return data.results.map((item: { title: string; description: string; url: string; contentType: string; relevanceScore?: number }) => ({
-            type: 'content' as const,
-            title: item.title,
-            description: item.description,
-            url: item.url,
-            contentType: item.contentType,
-            confidence: (item.relevanceScore || 0) / 100, // Convert percentage to decimal
-            icon: BookOpen,
-            category: item.contentType.charAt(0).toUpperCase() + item.contentType.slice(1)
-          }))
-        }
+      if (response.success && response.results && response.results.length > 0) {
+        return response.results.map((item) => ({
+          type: 'content' as const,
+          title: item.title,
+          description: item.description,
+          url: item.url,
+          contentType: item.contentType,
+          confidence: (item.relevanceScore || 0) / 100, // Convert percentage to decimal
+          icon: BookOpen,
+          category: item.contentType.charAt(0).toUpperCase() + item.contentType.slice(1)
+        }))
       }
       
-      // Fallback to old service if new API fails
-      const contentItems = await workerContentService.searchByQuery(query, 'all', 3)
-      
-      return contentItems.map(item => ({
-        type: 'content' as const,
-        title: item.title,
-        description: item.description,
-        url: item.url,
-        contentType: item.contentType,
-        confidence: 0.65, // Lower confidence for fallback content
-        icon: BookOpen,
-        category: item.category || 'Content'
-      }))
+      return []
     } catch (error) {
       console.error('Error getting content recommendations:', error)
       return []

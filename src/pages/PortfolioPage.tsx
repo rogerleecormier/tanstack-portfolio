@@ -462,7 +462,7 @@ export default function PortfolioPage({ file }: { file: string }) {
                 content={content}
                 title={frontmatter.title || ''}
                 tags={frontmatter.tags || []}
-                currentUrl={window.location.pathname}
+                currentUrl={`/portfolio/${file.replace('portfolio/', '')}`}
                 maxResults={2}
                 variant="sidebar"
               />

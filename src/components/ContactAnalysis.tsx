@@ -21,7 +21,7 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { workerContentService } from '@/api/workerContentService'
+import { cachedContentService } from '@/api/cachedContentService'
 
 
 
@@ -122,82 +122,33 @@ export function ContactAnalysis({
       const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`
       const tags = [analysis.inquiryType, analysis.industry, analysis.projectScope].filter(Boolean)
       
-      // Use the updated content search worker for actual relevance scores
-      const response = await fetch('https://content-search.rcormier.workers.dev/api/recommendations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: title,
-          contentType: 'all', // Get cross-content type recommendations
-          maxResults: 4,
-          tags: tags
-        })
+      // Use the cached content service for recommendations
+      const response = await cachedContentService.getRecommendations({
+        query: title,
+        contentType: 'all', // Get cross-content type recommendations
+        maxResults: 4,
+        tags: tags
       })
 
-      if (response.ok) {
-        const data = await response.json()
+      if (response.success && response.results && response.results.length > 0) {
+        const relevantContent = response.results
+          .filter((item) => item.contentType !== 'page')
+          .map((item) => ({
+            title: item.title,
+            path: item.url,
+            description: item.description,
+            relevance: (item.relevanceScore || 0) / 100, // Convert percentage to decimal
+            contentType: item.contentType as 'blog' | 'portfolio' | 'project',
+            tags: parseTagsSafely(item.tags || [])
+          }))
         
-        if (data.success && data.results && data.results.length > 0) {
-          const relevantContent = data.results
-            .filter((item: { contentType: string }) => item.contentType !== 'page')
-            .map((item: { title: string; url: string; description: string; relevanceScore?: number; contentType: string; tags?: string[] }) => ({
-              title: item.title,
-              path: item.url,
-              description: item.description,
-              relevance: (item.relevanceScore || 0) / 100, // Convert percentage to decimal
-              contentType: item.contentType as 'blog' | 'portfolio' | 'project',
-              tags: parseTagsSafely(item.tags || [])
-            }))
-          
-          setRelevantContent(relevantContent)
-        } else {
-          // Fallback to type-based recommendations
-          const fallbackResponse = await workerContentService.searchByQuery('portfolio', 'portfolio', 4)
-          if (fallbackResponse && fallbackResponse.length > 0) {
-            const relevantContent = fallbackResponse
-              .filter((item: { contentType: string }) => item.contentType !== 'page')
-              .map((item: { title: string; url: string; description: string; contentType: string; tags?: string[] }) => ({
-                title: item.title,
-                path: item.url,
-                description: item.description,
-                relevance: 0.65, // Lower relevance for fallback content
-                contentType: item.contentType as 'blog' | 'portfolio' | 'project',
-                tags: parseTagsSafely(item.tags || [])
-              }))
-            setRelevantContent(relevantContent)
-          } else {
-            setRelevantContent([])
-          }
-        }
+        setRelevantContent(relevantContent)
       } else {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        setRelevantContent([])
       }
     } catch (error) {
-      console.warn('Smart recommendations failed, using fallback:', error)
-              // Fallback to type-based recommendations
-        try {
-          const fallbackResponse = await workerContentService.searchByQuery('portfolio', 'portfolio', 4)
-          if (fallbackResponse && fallbackResponse.length > 0) {
-            const relevantContent = fallbackResponse
-              .filter((item: { contentType: string }) => item.contentType !== 'page')
-              .map((item: { title: string; url: string; description: string; contentType: string; tags?: string[] }) => ({
-                title: item.title,
-                path: item.url,
-                description: item.description,
-                relevance: 0.45, // Lower relevance for fallback content
-                contentType: item.contentType as 'blog' | 'portfolio' | 'project',
-                tags: parseTagsSafely(item.tags || [])
-              }))
-            setRelevantContent(relevantContent)
-          } else {
-            setRelevantContent([])
-          }
-        } catch (fallbackError) {
-          console.error('Fallback recommendations also failed:', fallbackError)
-          setRelevantContent([])
-        }
+      console.warn('Smart recommendations failed:', error)
+      setRelevantContent([])
     }
   }, [])
 

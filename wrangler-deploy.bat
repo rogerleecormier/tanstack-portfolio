@@ -13,21 +13,10 @@ echo.
 
 REM Track deployment results
 set /a success_count=0
-set /a total_count=5
+set /a total_count=4
 
-REM 1. Deploy Content Search Worker
-echo 📡 [1/5] Deploying Content Search Worker...
-call wrangler deploy --config wrangler-content-search.toml
-if %errorlevel% equ 0 (
-    echo ✅ Content Search Worker deployed successfully
-    set /a success_count+=1
-) else (
-    echo ❌ Content Search Worker deployment failed
-)
-echo.
-
-REM 2. Deploy GitHub File Manager Worker
-echo 📡 [2/5] Deploying GitHub File Manager Worker...
+REM 1. Deploy GitHub File Manager Worker
+echo 📡 [1/4] Deploying GitHub File Manager Worker...
 call wrangler deploy --config wrangler-file-manager.toml
 if %errorlevel% equ 0 (
     echo ✅ GitHub File Manager Worker deployed successfully
@@ -37,8 +26,8 @@ if %errorlevel% equ 0 (
 )
 echo.
 
-REM 3. Deploy AI Contact Analyzer Worker
-echo 📡 [3/5] Deploying AI Contact Analyzer Worker...
+REM 2. Deploy AI Contact Analyzer Worker
+echo 📡 [2/4] Deploying AI Contact Analyzer Worker...
 call wrangler deploy --config wrangler-contact-ai.toml
 if %errorlevel% equ 0 (
     echo ✅ AI Contact Analyzer Worker deployed successfully
@@ -48,8 +37,8 @@ if %errorlevel% equ 0 (
 )
 echo.
 
-REM 4. Deploy Email Worker
-echo 📡 [4/5] Deploying Email Worker...
+REM 3. Deploy Email Worker
+echo 📡 [3/4] Deploying Email Worker...
 call wrangler deploy --config wrangler-email.toml
 if %errorlevel% equ 0 (
     echo ✅ Email Worker deployed successfully
@@ -59,8 +48,8 @@ if %errorlevel% equ 0 (
 )
 echo.
 
-REM 5. Deploy Blog Subscription Worker
-echo 📡 [5/5] Deploying Blog Subscription Worker...
+REM 4. Deploy Blog Subscription Worker
+echo 📡 [4/4] Deploying Blog Subscription Worker...
 call wrangler deploy --config wrangler-blog-subscription.toml
 if %errorlevel% equ 0 (
     echo ✅ Blog Subscription Worker deployed successfully
@@ -82,7 +71,6 @@ if %success_count% equ %total_count% (
     echo 🎉 All workers deployed successfully!
     echo.
     echo 📋 Worker URLs:
-    echo • Content Search: https://content-search.your-subdomain.workers.dev
     echo • GitHub File Manager: https://github-file-manager.your-subdomain.workers.dev
     echo • AI Contact Analyzer: https://tanstack-portfolio-ai-contact-analyzer.your-subdomain.workers.dev
     echo • Email Worker: https://tanstack-portfolio-email-worker.your-subdomain.workers.dev

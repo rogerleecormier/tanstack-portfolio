@@ -463,7 +463,7 @@ export default function ProjectsPage({ file }: { file: string }) {
                 content={content}
                 title={frontmatter.title || ''}
                 tags={frontmatter.tags || []}
-                currentUrl={window.location.pathname}
+                currentUrl={`/projects/${file.replace('projects/', '')}`}
                 maxResults={2}
                 variant="sidebar"
               />
