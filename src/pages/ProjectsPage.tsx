@@ -269,7 +269,7 @@ export default function ProjectsPage({ file }: { file: string }) {
                           // Split by hyphens and process each part
                           if (word.includes('-')) {
                             const parts = word.split('-');
-                            return parts.map((part, partIndex) => {
+                            return parts.map((part) => {
                               const lowerPart = part.toLowerCase();
                               
                               // Check if this part is an acronym

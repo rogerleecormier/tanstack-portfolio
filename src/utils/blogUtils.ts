@@ -6,7 +6,7 @@ export interface BlogPost {
   slug: string
   title: string
   description: string
-  date: string
+  date?: string
   author: string
   tags: string[]
   readTime: number
@@ -34,14 +34,41 @@ function calculateReadingTime(content: string): number {
 }
 
 // Format date for display
-export function formatDate(dateString: string): string {
-  // Create date and adjust for timezone to ensure it displays as the intended date
-  const date = new Date(dateString + 'T00:00:00')
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
+export function formatDate(dateString: string | undefined): string {
+  try {
+    // Handle undefined, null, or empty date strings
+    if (!dateString || dateString.trim() === '') {
+      return 'Date not available'
+    }
+
+    // Parse the date string directly without adding time to avoid timezone issues
+    // Split the date string to get year, month, day
+    const [year, month, day] = dateString.split('-').map(Number)
+    
+    // Check if we have valid year, month, day
+    if (!year || !month || !day || isNaN(year) || isNaN(month) || isNaN(day)) {
+      logger.warn(`⚠️ Invalid date format: ${dateString}`)
+      return 'Date not available'
+    }
+
+    // Create date using UTC to avoid timezone shifts
+    const date = new Date(Date.UTC(year, month - 1, day))
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      logger.warn(`⚠️ Invalid date: ${dateString}`)
+      return 'Date not available'
+    }
+
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  } catch (error) {
+    logger.error(`❌ Error formatting date: ${dateString}`, error)
+    return 'Date not available'
+  }
 }
 
 // Load all blog posts from R2 storage
@@ -65,6 +92,10 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
         const frontmatter = attributes as BlogFrontmatter
         
         logger.info(`📝 Frontmatter parsed:`, frontmatter)
+        logger.info(`📅 Frontmatter date type: ${typeof frontmatter.date}, value: ${frontmatter.date}`)
+        logger.info(`📅 Frontmatter date exists: ${!!frontmatter.date}`)
+        logger.info(`📄 Content preview: ${item.content.substring(0, 200)}...`)
+        logger.info(`📄 Body preview: ${body.substring(0, 200)}...`)
 
         // Remove import statements from markdown content
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -80,7 +111,7 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
           slug,
           title: (frontmatter.title as string) || item.title,
           description: (frontmatter.description as string) || item.description,
-          date: (frontmatter.date as string) || new Date().toISOString(),
+          date: item.date || frontmatter.date as string, // Use date from R2 loader first
           author: (frontmatter.author as string) || 'Roger Lee Cormier',
           tags: (frontmatter.tags as string[]) || (frontmatter.keywords as string[]) || item.tags,
           readTime: (frontmatter.readTime as number) || calculatedReadingTime,
@@ -89,6 +120,7 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
           keywords: (frontmatter.keywords as string[]) || item.keywords
         }
 
+        logger.info(`📅 Final post date: ${post.date}`)
         posts.push(post)
         logger.info(`✅ Successfully loaded blog post: ${post.title}`)
       } catch (error) {
@@ -97,9 +129,31 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
     }
 
     // Sort by date (most recent first)
-    const sortedPosts = posts.sort((a, b) => 
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
+    const sortedPosts = posts.sort((a, b) => {
+      try {
+        // Handle posts without dates by putting them at the end
+        if (!a.date && !b.date) return 0
+        if (!a.date) return 1
+        if (!b.date) return -1
+        
+        // Parse dates using UTC to avoid timezone shifts
+        const [yearA, monthA, dayA] = a.date.split('-').map(Number)
+        const [yearB, monthB, dayB] = b.date.split('-').map(Number)
+        
+        const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA))
+        const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB))
+        
+        // Handle invalid dates by putting them at the end
+        if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0
+        if (isNaN(dateA.getTime())) return 1
+        if (isNaN(dateB.getTime())) return -1
+        
+        return dateB.getTime() - dateA.getTime()
+      } catch (error) {
+        logger.error('❌ Error sorting blog posts by date:', error)
+        return 0
+      }
+    })
 
     logger.info(`✅ Successfully loaded ${sortedPosts.length} blog posts from R2`)
     return sortedPosts
@@ -132,7 +186,7 @@ export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
         slug,
         title: frontmatter.title || item.title,
         description: frontmatter.description || item.description,
-        date: frontmatter.date || item.date || new Date().toISOString(),
+        date: item.date || frontmatter.date || 'Date not available',
         author: frontmatter.author || 'Roger Lee Cormier',
         tags: frontmatter.tags || item.tags,
         readTime: frontmatter.readTime || calculatedReadingTime,

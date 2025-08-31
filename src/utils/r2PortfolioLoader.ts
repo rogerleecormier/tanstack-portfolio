@@ -277,6 +277,7 @@ export async function loadBlogItems(): Promise<BlogItem[]> {
           frontmatter
         }
         
+        logger.info(`📅 R2 Loader - Blog item date: ${item.date}`)
         items.push(item)
         logger.info(`✅ Loaded blog item: ${item.title}`)
         
@@ -287,10 +288,27 @@ export async function loadBlogItems(): Promise<BlogItem[]> {
     
     // Sort by date (newest first)
     const sortedItems = items.sort((a, b) => {
-      if (a.date && b.date) {
-        return new Date(b.date).getTime() - new Date(a.date).getTime()
+      try {
+        if (a.date && b.date) {
+          // Parse dates using UTC to avoid timezone shifts
+          const [yearA, monthA, dayA] = a.date.split('-').map(Number)
+          const [yearB, monthB, dayB] = b.date.split('-').map(Number)
+          
+          const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA))
+          const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB))
+          
+          // Handle invalid dates by putting them at the end
+          if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0
+          if (isNaN(dateA.getTime())) return 1
+          if (isNaN(dateB.getTime())) return -1
+          
+          return dateB.getTime() - dateA.getTime()
+        }
+        return 0
+      } catch (error) {
+        logger.error('❌ Error sorting blog items by date:', error)
+        return 0
       }
-      return 0
     })
     
     logger.info(`🎉 Successfully loaded ${sortedItems.length} blog items from R2`)
