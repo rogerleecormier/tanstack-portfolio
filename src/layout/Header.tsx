@@ -30,7 +30,7 @@ const Header: React.FC = () => {
     <>
       {/* Fixed Header - Always visible */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-teal-600 to-teal-700">
+        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-700">
           {/* Left Section: Hamburger + Logo + Name */}
           <div className="flex items-center gap-3">
             {/* Hamburger Menu */}
@@ -39,65 +39,29 @@ const Header: React.FC = () => {
               <span className="sr-only">Toggle navigation menu</span>
             </SidebarTrigger>
             
-                                      {/* Modern Logo Icon - Crosshairs Bullseye Design */}
-             <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-               {/* White background */}
-               <rect width="32" height="32" rx="6" fill="white"/>
-               
-               {/* Crosshairs bullseye design */}
-               <g>
-                 {/* Outer bullseye ring */}
-                 <circle cx="16" cy="16" r="14" fill="none" stroke="url(#outerRingGradient)" strokeWidth="2"/>
-                 
-                 {/* Middle bullseye ring */}
-                 <circle cx="16" cy="16" r="10" fill="none" stroke="url(#middleRingGradient)" strokeWidth="2"/>
-                 
-                 {/* Inner bullseye ring */}
-                 <circle cx="16" cy="16" r="6" fill="none" stroke="url(#innerRingGradient)" strokeWidth="2"/>
-                 
-                 {/* Horizontal crosshair line */}
-                 <line x1="4" y1="16" x2="28" y2="16" stroke="url(#crosshairGradient)" strokeWidth="1" strokeLinecap="round"/>
-                 
-                 {/* Vertical crosshair line */}
-                 <line x1="16" y1="4" x2="16" y2="28" stroke="url(#crosshairGradient)" strokeWidth="1" strokeLinecap="round"/>
-                 
-                 {/* Center dot */}
-                 <circle cx="16" cy="16" r="1.5" fill="url(#centerGradient)"/>
-               </g>
-               
-               {/* Gradient definitions */}
-               <defs>
-                 <linearGradient id="outerRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                   <stop offset="0%" style={{stopColor:"#0066FF",stopOpacity:1}} />
-                   <stop offset="100%" style={{stopColor:"#00D4FF",stopOpacity:1}} />
-                 </linearGradient>
-                 
-                 <linearGradient id="middleRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                   <stop offset="0%" style={{stopColor:"#0099FF",stopOpacity:1}} />
-                   <stop offset="100%" style={{stopColor:"#00E6FF",stopOpacity:1}} />
-                 </linearGradient>
-                 
-                 <linearGradient id="innerRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                   <stop offset="0%" style={{stopColor:"#00CCFF",stopOpacity:1}} />
-                   <stop offset="100%" style={{stopColor:"#00F0FF",stopOpacity:1}} />
-                 </linearGradient>
-                 
-                 <linearGradient id="crosshairGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                   <stop offset="0%" style={{stopColor:"#FFFFFF",stopOpacity:0.9}} />
-                   <stop offset="100%" style={{stopColor:"#F0F9FF",stopOpacity:0.9}} />
-                 </linearGradient>
-                 
-                 <linearGradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                   <stop offset="0%" style={{stopColor:"#00D4FF",stopOpacity:1}} />
-                   <stop offset="100%" style={{stopColor:"#00F5FF",stopOpacity:1}} />
-                 </linearGradient>
-               </defs>
-             </svg>
+                                                  {/* Larger Logo */}
+            <img 
+              src="/header-logo.svg" 
+              alt="RCormier Logo" 
+              className="w-16 h-16"
+              onError={(e) => {
+                console.error('Failed to load header logo:', e);
+                e.currentTarget.style.display = 'none';
+              }}
+              onLoad={() => console.log('Header logo loaded successfully')}
+            />
             
-            {/* Name */}
-            <h1 className="text-lg font-bold text-white hidden sm:block">
-              Roger Lee Cormier
-            </h1>
+            {/* Name and Tagline Container */}
+            <div className="hidden sm:block">
+              {/* Name with custom font styling */}
+              <h1 className="header-name text-xl text-white leading-tight">
+                Roger Lee Cormier
+              </h1>
+              {/* Creative tagline fitting the targeting reticle theme */}
+              <p className="header-tagline text-sm text-teal-100 leading-tight">
+                Targeting Digital Transformation
+              </p>
+            </div>
           </div>
 
           {/* Center Section: Search Bar */}
