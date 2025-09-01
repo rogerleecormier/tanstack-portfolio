@@ -75,15 +75,15 @@ export const SiteAdminPage: React.FC = () => {
     smartRecommendations?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
 
     r2Bucket?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
-    cloudflareAccess?: { 
-      success: boolean; 
-      status: number; 
-      statusText: string; 
-      identity?: any; 
-      cookies?: string[]; 
-      headers?: Record<string, string>; 
-      error?: string 
-    };
+         cloudflareAccess?: { 
+       success: boolean; 
+       status: number; 
+       statusText: string; 
+       identity?: Record<string, unknown>; 
+       cookies?: string[]; 
+       headers?: Record<string, string>; 
+       error?: string 
+     };
   }>({});
 
   // API testing functions
@@ -312,9 +312,9 @@ export const SiteAdminPage: React.FC = () => {
         if (response.ok) {
           try {
             identity = await response.json();
-          } catch (e) {
-            // Response might not be JSON
-          }
+                   } catch {
+           // Response might not be JSON
+         }
         }
       }
 
@@ -335,10 +335,10 @@ export const SiteAdminPage: React.FC = () => {
         headers['CF-Bot-Score'] = '0';
         headers['CF-Request-ID'] = 'dev-request-456';
       } else {
-        cfHeaders.forEach(header => {
-          const value = (window as any)[header] || 'Not found';
-          headers[header] = value;
-        });
+                 cfHeaders.forEach(header => {
+           const value = (window as unknown as Record<string, string>)[header] || 'Not found';
+           headers[header] = value;
+         });
       }
 
       const result = {
@@ -890,9 +890,9 @@ export const SiteAdminPage: React.FC = () => {
                                <div className="bg-white p-2 rounded border border-teal-200">
                                  <div className="font-semibold text-teal-800 mb-1">Identity:</div>
                                  <div className="text-teal-700 space-y-1">
-                                   <div><span className="font-medium">Email:</span> {apiResults.cloudflareAccess.identity.email}</div>
-                                   <div><span className="font-medium">Name:</span> {apiResults.cloudflareAccess.identity.name}</div>
-                                   <div><span className="font-medium">ID:</span> {apiResults.cloudflareAccess.identity.id || apiResults.cloudflareAccess.identity.user_uuid}</div>
+                                                                       <div><span className="font-medium">Email:</span> {String(apiResults.cloudflareAccess.identity.email || '')}</div>
+                                    <div><span className="font-medium">Name:</span> {String(apiResults.cloudflareAccess.identity.name || '')}</div>
+                                    <div><span className="font-medium">ID:</span> {String(apiResults.cloudflareAccess.identity.id || apiResults.cloudflareAccess.identity.user_uuid || '')}</div>
                                  </div>
                                </div>
                              )}

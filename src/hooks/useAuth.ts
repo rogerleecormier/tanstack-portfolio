@@ -134,13 +134,15 @@ const simpleAuth = {
       logger.debug('Cookie check:', { 
         allCookies: allCookies.length, 
         cfCookies, 
-        hasCfCookies 
+        hasCfCookies,
+        fullCookieString: document.cookie
       });
 
       // Even if we don't see CF_ cookies, try the identity endpoint
       // as it might be working (as shown in your debugger)
       logger.debug('Proceeding to check identity endpoint regardless of cookies');
 
+      logger.debug('Making identity endpoint request...');
       const response = await fetch('/cdn-cgi/access/get-identity', {
         credentials: 'include',
         headers: {
@@ -149,16 +151,31 @@ const simpleAuth = {
         signal: AbortSignal.timeout(5000) // 5 second timeout
       });
 
+      logger.debug('Identity endpoint response:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        url: response.url
+      });
+
       if (response.ok) {
-        const identity = await response.json();
-        if (identity.email) {
-          const user: CloudflareUser = {
-            email: identity.email,
-            name: identity.name || identity.given_name || identity.family_name || 'Authenticated User',
-            sub: identity.sub || identity.user_uuid,
-          };
-          logger.debug('Cloudflare Access authentication successful', { user });
-          return { isAuthenticated: true, user };
+        try {
+          const identity = await response.json();
+          logger.debug('Identity response data:', identity);
+          
+          if (identity.email) {
+            const user: CloudflareUser = {
+              email: identity.email,
+              name: identity.name || identity.given_name || identity.family_name || 'Authenticated User',
+              sub: identity.sub || identity.user_uuid,
+            };
+            logger.debug('Cloudflare Access authentication successful', { user });
+            return { isAuthenticated: true, user };
+          } else {
+            logger.warn('Identity response missing email field:', identity);
+          }
+        } catch (parseError) {
+          logger.error('Failed to parse identity response as JSON:', parseError);
         }
       }
       
@@ -261,8 +278,11 @@ export const useAuth = () => {
         setUser(mockUser);
         setError(null);
       } else {
+        logger.info('useAuth: Production mode detected, checking Cloudflare Access');
         // Production mode - check Cloudflare Access
         const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
+        
+        logger.info('useAuth: Cloudflare Access check result', { isAuth, userInfo });
         
         setIsAuthenticated(isAuth);
         setUser(userInfo);
