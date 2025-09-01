@@ -406,19 +406,14 @@ export default function PortfolioListPage() {
           </div>
         </div>
 
-        {/* Results Count */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex items-center justify-between">
-            <p className="text-slate-600 dark:text-slate-300 font-medium">
-              Showing {filteredItems.length} of {portfolioItems.length} items
-            </p>
-            {filteredItems.length > 0 && (
-              <div className="text-sm text-slate-500 dark:text-slate-400">
-                {Math.ceil(filteredItems.length / 3)} page{Math.ceil(filteredItems.length / 3) !== 1 ? 's' : ''}
-              </div>
-            )}
-          </div>
-        </div>
+                 {/* Results Count */}
+         <div className="max-w-4xl mx-auto mb-8">
+           <div className="flex items-center justify-between">
+             <p className="text-slate-600 dark:text-slate-300 font-medium">
+               Showing {filteredItems.length} of {portfolioItems.length} items
+             </p>
+           </div>
+         </div>
 
         {/* Portfolio Grid */}
         {filteredItems.length === 0 ? (
