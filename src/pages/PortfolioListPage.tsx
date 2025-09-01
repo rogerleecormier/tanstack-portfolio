@@ -170,6 +170,11 @@ export default function PortfolioListPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isTagFilterOpen, setIsTagFilterOpen] = useState(false)
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [])
+
   // Load portfolio items on component mount
   useEffect(() => {
     const loadItems = async () => {

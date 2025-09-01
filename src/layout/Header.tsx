@@ -52,13 +52,13 @@ const Header: React.FC = () => {
             />
             
             {/* Name and Tagline Container */}
-            <div className="hidden sm:block">
-              {/* Name with custom font styling */}
-              <h1 className="header-name text-xl text-white leading-tight">
+            <div className="block">
+              {/* Name with custom font styling - responsive sizing */}
+              <h1 className="header-name text-lg sm:text-xl text-white leading-tight">
                 Roger Lee Cormier
               </h1>
-              {/* Creative tagline fitting the targeting reticle theme */}
-              <p className="header-tagline text-sm text-teal-100 leading-tight">
+              {/* Creative tagline fitting the targeting reticle theme - hidden on very small screens */}
+              <p className="header-tagline text-xs sm:text-sm text-teal-100 leading-tight hidden xs:block">
                 Targeting Digital Transformation
               </p>
             </div>
