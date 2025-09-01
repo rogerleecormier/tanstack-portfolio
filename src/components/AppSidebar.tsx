@@ -21,14 +21,14 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent className="pt-6">
+      <SidebarContent className="pt-6 gap-0">
         {/* Main Navigation Group */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">
             Main Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu className="space-y-0">
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
@@ -58,7 +58,7 @@ export function AppSidebar() {
               Administration
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
+              <SidebarMenu className="space-y-0">
                 {protectedProjectItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild tooltip={item.title}>
