@@ -15,15 +15,26 @@ export const ProtectedPage: React.FC = () => {
   // Handle Cloudflare Access redirect timing
   useEffect(() => {
     if (!isDevelopment && !isLoading && !isAuthenticated) {
-      // Give Cloudflare Access a moment to redirect
-      const timer = setTimeout(() => {
-        // If still not authenticated after 2 seconds, try to trigger redirect
-        if (!isAuthenticated) {
-          window.location.reload();
-        }
-      }, 2000);
+      // Only reload once to avoid infinite loops
+      const hasReloaded = sessionStorage.getItem('cf_access_reload_attempted');
       
-      return () => clearTimeout(timer);
+      if (!hasReloaded) {
+        // Give Cloudflare Access a moment to redirect
+        const timer = setTimeout(() => {
+          // If still not authenticated after 2 seconds, try to trigger redirect
+          if (!isAuthenticated) {
+            sessionStorage.setItem('cf_access_reload_attempted', 'true');
+            window.location.reload();
+          }
+        }, 2000);
+        
+        return () => clearTimeout(timer);
+      }
+    }
+    
+    // Clear the reload flag if authentication succeeds
+    if (isAuthenticated) {
+      sessionStorage.removeItem('cf_access_reload_attempted');
     }
   }, [isAuthenticated, isLoading, isDevelopment]);
   

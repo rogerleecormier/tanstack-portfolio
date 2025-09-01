@@ -124,15 +124,22 @@ const simpleAuth = {
         return { isAuthenticated: false, user: null };
       }
 
-      // Check if Cloudflare Access cookies exist
-      const hasCfCookies = document.cookie.includes('CF_Authorization') || 
-                           document.cookie.includes('CF_Access_JWT') ||
-                           document.cookie.includes('CF_Access_JWT_Header');
+      // Check if Cloudflare Access cookies exist - look for any CF_ cookies
+      const allCookies = document.cookie.split(';').map(c => c.trim());
+      const cfCookies = allCookies.filter(cookie => 
+        cookie.startsWith('CF_') || cookie.startsWith('cf_')
+      );
+      const hasCfCookies = cfCookies.length > 0;
 
-      if (!hasCfCookies) {
-        logger.debug('No Cloudflare Access cookies found, user not authenticated');
-        return { isAuthenticated: false, user: null };
-      }
+      logger.debug('Cookie check:', { 
+        allCookies: allCookies.length, 
+        cfCookies, 
+        hasCfCookies 
+      });
+
+      // Even if we don't see CF_ cookies, try the identity endpoint
+      // as it might be working (as shown in your debugger)
+      logger.debug('Proceeding to check identity endpoint regardless of cookies');
 
       const response = await fetch('/cdn-cgi/access/get-identity', {
         credentials: 'include',
