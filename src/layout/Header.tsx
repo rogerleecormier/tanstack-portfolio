@@ -57,8 +57,8 @@ const Header: React.FC = () => {
               <h1 className="header-name text-lg sm:text-xl text-white leading-tight">
                 Roger Lee Cormier
               </h1>
-              {/* Creative tagline fitting the targeting reticle theme - hidden on very small screens */}
-              <p className="header-tagline text-xs sm:text-sm text-teal-100 leading-tight hidden xs:block">
+              {/* Creative tagline fitting the targeting reticle theme */}
+              <p className="header-tagline text-xs sm:text-sm text-teal-100 leading-tight">
                 Targeting Digital Transformation
               </p>
             </div>
