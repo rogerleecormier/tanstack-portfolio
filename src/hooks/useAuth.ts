@@ -440,7 +440,7 @@ export const useAuth = () => {
         
         // Redirect to Cloudflare Access logout with redirect back to site
         const redirectUrl = encodeURIComponent(customRedirectUrl || window.location.origin);
-        const logoutUrl = `/cdn-cgi/access/logout?redirectTo=${redirectUrl}`;
+        const logoutUrl = `/cdn-cgi/access/logout?returnTo=${redirectUrl}`;
         window.location.href = logoutUrl;
       }
     } catch (error) {
