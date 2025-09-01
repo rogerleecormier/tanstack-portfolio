@@ -201,6 +201,40 @@ const simpleAuth = {
       
       return { isAuthenticated: false, user: null };
     }
+  },
+
+  // Enhanced development authentication that simulates Cloudflare Access
+  async checkDevCloudflareAuth(): Promise<{ isAuthenticated: boolean; user: CloudflareUser | null }> {
+    try {
+      // Simulate the same flow as production but with mock data
+      const allCookies = document.cookie.split(';').map(c => c.trim());
+      const cfCookies = allCookies.filter(cookie => 
+        cookie.startsWith('CF_') || cookie.startsWith('cf_')
+      );
+
+      // Simulate a successful response like Cloudflare Access would return
+      const mockIdentity = {
+        email: 'dev@rcormier.dev',
+        name: 'Development User',
+        id: 'dev-user-123',
+        user_uuid: 'dev-uuid-456',
+        given_name: 'Development',
+        family_name: 'User'
+      };
+
+      // Simulate the same user object structure
+      const user: CloudflareUser = {
+        email: mockIdentity.email,
+        name: mockIdentity.name,
+        sub: mockIdentity.id,
+      };
+
+      logger.debug('Development Cloudflare Access simulation successful', { user, cfCookies });
+      return { isAuthenticated: true, user };
+    } catch (error) {
+      logger.debug('Development Cloudflare Access simulation failed:', error);
+      return { isAuthenticated: false, user: null };
+    }
   }
 };
 

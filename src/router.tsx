@@ -28,7 +28,7 @@ import ContentCreationPage from './pages/ContentCreationPage'
 import ToolsListPage from './pages/ToolsListPage'
 
 
-import { ProtectedPage } from './components/ProtectedPage'
+import { SiteAdminPage } from './components/SiteAdminPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 import { CloudflareAccessDebugger } from './components/CloudflareAccessDebugger'
 import { CloudflareAccessTestPage } from './components/CloudflareAccessTestPage'
@@ -101,11 +101,25 @@ const healthBridgeAnalysisRoute = createRoute({
   component: HealthBridge
 })
 
-// Protected route - PROTECTED
+// Protected routes - all under /protected/* namespace
 const protectedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'protected',
-  component: ProtectedPage
+  component: SiteAdminPage
+})
+
+// Site Admin route - PROTECTED
+const siteAdminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'protected/site-admin',
+  component: SiteAdminPage
+})
+
+// Content Studio route - PROTECTED
+const contentStudioRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'protected/content-studio',
+  component: ContentCreationPage
 })
 
 // Contact route
@@ -164,12 +178,7 @@ const markdownEditorRoute = createRoute({
   component: MarkdownEditorPage,
 })
 
-// Content Creation route (Protected)
-const contentCreationRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'content-creation',
-  component: ContentCreationPage
-})
+
 
 
 
@@ -186,14 +195,14 @@ const routeTree = rootRoute.addChildren([
   contactRoute,
   privacyRoute,
   protectedRoute,
+  siteAdminRoute,
+  contentStudioRoute,
   cloudflareStatusRoute,
   cloudflareAccessDebugRoute,
   cloudflareAccessTestRoute,
   newsletterPreferencesRoute,
   toolsListRoute,
   markdownEditorRoute,
-  contentCreationRoute,
-
 ])
 
 // Create router instance

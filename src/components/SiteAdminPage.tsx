@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code, FileText } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 import { cachedContentService } from '@/api/cachedContentService';
-import { Link } from '@tanstack/react-router';
 
 
-export const ProtectedPage: React.FC = () => {
+
+export const SiteAdminPage: React.FC = () => {
   const { isAuthenticated, user, isLoading, isDevelopment, logout } = useAuth();
   
   // Handle Cloudflare Access redirect timing
@@ -51,6 +51,7 @@ export const ProtectedPage: React.FC = () => {
     smartRecommendations: 'idle' | 'testing' | 'success' | 'error';
 
     r2Bucket: 'idle' | 'testing' | 'success' | 'error';
+    cloudflareAccess: 'idle' | 'testing' | 'success' | 'error';
   }>({
     ai: 'idle',
     email: 'idle',
@@ -60,7 +61,8 @@ export const ProtectedPage: React.FC = () => {
     healthBridge: 'idle',
     smartRecommendations: 'idle',
 
-    r2Bucket: 'idle'
+    r2Bucket: 'idle',
+    cloudflareAccess: 'idle'
   });
   
   const [apiResults, setApiResults] = useState<{
@@ -73,6 +75,15 @@ export const ProtectedPage: React.FC = () => {
     smartRecommendations?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
 
     r2Bucket?: { success: boolean; status: number; statusText: string; cors: boolean; error?: string };
+    cloudflareAccess?: { 
+      success: boolean; 
+      status: number; 
+      statusText: string; 
+      identity?: any; 
+      cookies?: string[]; 
+      headers?: Record<string, string>; 
+      error?: string 
+    };
   }>({});
 
   // API testing functions
@@ -262,6 +273,103 @@ export const ProtectedPage: React.FC = () => {
     }
   };
 
+  const testCloudflareAccess = async () => {
+    setApiStatus(prev => ({ ...prev, cloudflareAccess: 'testing' }));
+    try {
+      // Check for Cloudflare cookies
+      const allCookies = document.cookie.split(';').map(c => c.trim());
+      const cfCookies = allCookies.filter(cookie => 
+        cookie.startsWith('CF_') || cookie.startsWith('cf_')
+      );
+
+      let response, identity = null, status = 0, statusText = '';
+
+      if (isDevelopment) {
+        // In development, simulate Cloudflare Access
+        status = 200;
+        statusText = 'OK (Development Simulation)';
+        identity = {
+          email: 'dev@rcormier.dev',
+          name: 'Development User',
+          id: 'dev-user-123',
+          user_uuid: 'dev-uuid-456',
+          given_name: 'Development',
+          family_name: 'User'
+        };
+      } else {
+        // In production, test real Cloudflare Access
+        response = await fetch('/cdn-cgi/access/get-identity', {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          signal: AbortSignal.timeout(5000)
+        });
+
+        status = response.status;
+        statusText = response.statusText;
+
+        if (response.ok) {
+          try {
+            identity = await response.json();
+          } catch (e) {
+            // Response might not be JSON
+          }
+        }
+      }
+
+      // Get Cloudflare headers (or simulate them in development)
+      const headers: Record<string, string> = {};
+      const cfHeaders = [
+        'CF-Connecting-IP', 'CF-Ray', 'CF-Visitor', 'CF-IPCountry', 
+        'CF-Device-Type', 'CF-Bot-Score', 'CF-Request-ID'
+      ];
+      
+      if (isDevelopment) {
+        // Simulate Cloudflare headers in development
+        headers['CF-Connecting-IP'] = '127.0.0.1 (Development)';
+        headers['CF-Ray'] = 'dev-simulation-123';
+        headers['CF-Visitor'] = '{"scheme":"http"}';
+        headers['CF-IPCountry'] = 'US (Development)';
+        headers['CF-Device-Type'] = 'desktop';
+        headers['CF-Bot-Score'] = '0';
+        headers['CF-Request-ID'] = 'dev-request-456';
+      } else {
+        cfHeaders.forEach(header => {
+          const value = (window as any)[header] || 'Not found';
+          headers[header] = value;
+        });
+      }
+
+      const result = {
+        success: status === 200 && identity?.email,
+        status,
+        statusText,
+        identity,
+        cookies: cfCookies,
+        headers,
+        error: status === 200 ? undefined : `HTTP ${status}: ${statusText}`
+      };
+      
+      setApiResults(prev => ({ ...prev, cloudflareAccess: result }));
+      setApiStatus(prev => ({ ...prev, cloudflareAccess: result.success ? 'success' : 'error' }));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setApiResults(prev => ({ 
+        ...prev, 
+        cloudflareAccess: { 
+          success: false, 
+          status: 0, 
+          statusText: 'Error', 
+          error: errorMessage,
+          cookies: [],
+          headers: {}
+        } 
+      }));
+      setApiStatus(prev => ({ ...prev, cloudflareAccess: 'error' }));
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -338,15 +446,15 @@ export const ProtectedPage: React.FC = () => {
           <div className="mx-auto p-3 bg-teal-100 rounded-full w-fit border-2 border-teal-200 mb-4">
             <Briefcase className="h-6 w-6 text-teal-700" />
           </div>
-          <CardTitle className="flex items-center justify-center space-x-2 text-teal-900">
-            <span>Site Administration & Monitoring</span>
-          </CardTitle>
-          <CardDescription className="text-teal-700">
-            {isDevelopment 
-              ? 'Development Environment - Administration Access'
-              : 'Production Environment - Cloudflare Access Authenticated'
-            }
-          </CardDescription>
+                     <CardTitle className="flex items-center justify-center space-x-2 text-teal-900">
+             <span>Site Administration & Monitoring</span>
+           </CardTitle>
+           <CardDescription className="text-teal-700">
+             {isDevelopment 
+               ? 'Development Environment - Site Administration'
+               : 'Production Environment - Cloudflare Access Protected'
+             }
+           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -416,36 +524,7 @@ export const ProtectedPage: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {/* Content Creation Studio Access */}
-              <Card className="border-teal-200 bg-teal-50/30">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center space-x-2">
-                    <FileText className="h-5 w-5 text-teal-600" />
-                    <CardTitle className="text-lg text-teal-900">Content Management</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="bg-white p-4 rounded-lg border border-teal-200">
-                    <div className="text-center space-y-3">
-                      <div className="flex items-center justify-center space-x-2">
-                        <FileText className="h-5 w-5 text-teal-600" />
-                        <span className="font-semibold text-teal-800">Content Creation Studio</span>
-                      </div>
-                      <P className="text-sm text-teal-700">
-                        Create and manage blog posts, portfolio items, and project content
-                      </P>
-                      <Link to="/content-creation">
-                        <Button 
-                          className="w-full bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center space-x-2"
-                        >
-                          <span>Open Content Studio</span>
-                          <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              
             </div>
             
             {/* Right Column - API Health Monitoring */}
@@ -458,7 +537,25 @@ export const ProtectedPage: React.FC = () => {
                     <CardTitle className="text-lg text-teal-900">API Health Monitoring</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                                 <CardContent className="space-y-4">
+                   {/* Test All Button */}
+                   <div className="flex justify-center pb-4">
+                     <Button
+                       onClick={async () => {
+                         await testAIWorkerConnectivity();
+                         await testEmailWorkerConnectivity();
+                         await testNewsletterWorkerConnectivity();
+                         await testContentSearchWorkerConnectivity();
+                         await testHealthBridgeAPI();
+                         await testSmartRecommendationsAPI();
+                         await testR2BucketConnectivity();
+                         await testCloudflareAccess();
+                       }}
+                       className="bg-teal-600 hover:bg-teal-700 text-white"
+                     >
+                       Test All Services
+                     </Button>
+                   </div>
                   {/* AI Contact Analyzer */}
                   <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
                     <div className="flex items-center space-x-2">
@@ -619,36 +716,62 @@ export const ProtectedPage: React.FC = () => {
 
 
 
-                  {/* R2 Bucket */}
-                  <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
-                    <div className="flex items-center space-x-2">
-                      <Database className="h-4 w-4 text-teal-600" />
-                      <div>
-                        <div className="font-medium text-teal-800">R2 Bucket</div>
-                        <div className="text-xs text-teal-600">files.rcormier.dev connectivity</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      {apiStatus.r2Bucket === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
-                      {apiStatus.r2Bucket === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
-                      {apiStatus.r2Bucket === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
-                      {apiStatus.r2Bucket === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={testR2BucketConnectivity}
-                        disabled={apiStatus.r2Bucket === 'testing'}
-                        className="text-xs border-teal-300 text-teal-700 hover:bg-teal-50"
-                      >
-                        Test
-                      </Button>
-                    </div>
-                  </div>
+                                     {/* R2 Bucket */}
+                   <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
+                     <div className="flex items-center space-x-2">
+                       <Database className="h-4 w-4 text-teal-600" />
+                       <div>
+                         <div className="font-medium text-teal-800">R2 Bucket</div>
+                         <div className="text-xs text-teal-600">files.rcormier.dev connectivity</div>
+                       </div>
+                     </div>
+                     <div className="flex items-center space-x-2">
+                       {apiStatus.r2Bucket === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
+                       {apiStatus.r2Bucket === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
+                       {apiStatus.r2Bucket === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                       {apiStatus.r2Bucket === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
+                       <Button
+                         size="sm"
+                         variant="outline"
+                         onClick={testR2BucketConnectivity}
+                         disabled={apiStatus.r2Bucket === 'testing'}
+                         className="text-xs border-teal-300 text-teal-700 hover:bg-teal-50"
+                       >
+                         Test
+                       </Button>
+                     </div>
+                   </div>
+
+                   {/* Cloudflare Access */}
+                   <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200">
+                     <div className="flex items-center space-x-2">
+                       <Shield className="h-4 w-4 text-teal-600" />
+                       <div>
+                         <div className="font-medium text-teal-800">Cloudflare Access</div>
+                         <div className="text-xs text-teal-600">Authentication & identity verification</div>
+                       </div>
+                     </div>
+                     <div className="flex items-center space-x-2">
+                       {apiStatus.cloudflareAccess === 'idle' && <div className="w-3 h-3 rounded-full bg-gray-300" />}
+                       {apiStatus.cloudflareAccess === 'testing' && <Loader2 className="h-4 w-4 animate-spin text-teal-600" />}
+                       {apiStatus.cloudflareAccess === 'success' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                       {apiStatus.cloudflareAccess === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
+                       <Button
+                         size="sm"
+                         variant="outline"
+                         onClick={testCloudflareAccess}
+                         disabled={apiStatus.cloudflareAccess === 'testing'}
+                         className="text-xs border-teal-300 text-teal-700 hover:bg-teal-50"
+                       >
+                         Test
+                       </Button>
+                     </div>
+                   </div>
                 </CardContent>
               </Card>
 
-              {/* Test Results Summary */}
-              {(apiResults.ai || apiResults.email || apiResults.newsletter || apiResults.contentSearch || apiResults.healthBridge || apiResults.smartRecommendations || apiResults.r2Bucket) && (
+                             {/* Test Results Summary */}
+               {(apiResults.ai || apiResults.email || apiResults.newsletter || apiResults.contentSearch || apiResults.healthBridge || apiResults.smartRecommendations || apiResults.r2Bucket || apiResults.cloudflareAccess) && (
                 <Card className="border-teal-200 bg-teal-50/30">
                   <CardHeader className="pb-3">
                     <div className="flex items-center space-x-2">
@@ -726,17 +849,63 @@ export const ProtectedPage: React.FC = () => {
                         </div>
                       )}
 
-                      {apiResults.r2Bucket && (
-                        <div className="flex items-center justify-between p-2 bg-white rounded border border-teal-200">
-                          <span className="font-medium text-teal-800">R2 Bucket</span>
-                          <div className="flex items-center space-x-2">
-                            {apiResults.r2Bucket.success ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
-                            <span className={apiResults.r2Bucket.success ? 'text-green-600' : 'text-red-600'}>
-                              {apiResults.r2Bucket.success ? 'Connected' : 'Failed'}
-                            </span>
-                          </div>
-                        </div>
-                      )}
+                                             {apiResults.r2Bucket && (
+                         <div className="flex items-center justify-between p-2 bg-white rounded border border-teal-200">
+                           <span className="font-medium text-teal-800">R2 Bucket</span>
+                           <div className="flex items-center space-x-2">
+                             {apiResults.r2Bucket.success ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
+                             <span className={apiResults.r2Bucket.success ? 'text-green-600' : 'text-red-600'}>
+                               {apiResults.r2Bucket.success ? 'Connected' : 'Failed'}
+                             </span>
+                           </div>
+                         </div>
+                       )}
+
+                       {apiResults.cloudflareAccess && (
+                         <div className="space-y-2">
+                           <div className="flex items-center justify-between p-2 bg-white rounded border border-teal-200">
+                             <span className="font-medium text-teal-800">Cloudflare Access</span>
+                             <div className="flex items-center space-x-2">
+                               {apiResults.cloudflareAccess.success ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
+                               <span className={apiResults.cloudflareAccess.success ? 'text-green-600' : 'text-red-600'}>
+                                 {apiResults.cloudflareAccess.success ? 'Authenticated' : 'Failed'}
+                               </span>
+                             </div>
+                           </div>
+                           
+                           {/* Detailed Cloudflare Access Info */}
+                           <div className="bg-teal-50 p-3 rounded border border-teal-200 text-xs space-y-2">
+                             <div className="grid grid-cols-2 gap-2">
+                               <div>
+                                 <span className="font-semibold text-teal-800">Status:</span>
+                                 <span className="ml-1 text-teal-700">{apiResults.cloudflareAccess.status} {apiResults.cloudflareAccess.statusText}</span>
+                               </div>
+                               <div>
+                                 <span className="font-semibold text-teal-800">Cookies:</span>
+                                 <span className="ml-1 text-teal-700">{apiResults.cloudflareAccess.cookies?.length || 0} found</span>
+                               </div>
+                             </div>
+                             
+                             {apiResults.cloudflareAccess.identity && (
+                               <div className="bg-white p-2 rounded border border-teal-200">
+                                 <div className="font-semibold text-teal-800 mb-1">Identity:</div>
+                                 <div className="text-teal-700 space-y-1">
+                                   <div><span className="font-medium">Email:</span> {apiResults.cloudflareAccess.identity.email}</div>
+                                   <div><span className="font-medium">Name:</span> {apiResults.cloudflareAccess.identity.name}</div>
+                                   <div><span className="font-medium">ID:</span> {apiResults.cloudflareAccess.identity.id || apiResults.cloudflareAccess.identity.user_uuid}</div>
+                                 </div>
+                               </div>
+                             )}
+                             
+                             {apiResults.cloudflareAccess.error && (
+                               <div className="bg-red-50 p-2 rounded border border-red-200">
+                                 <div className="font-semibold text-red-800 mb-1">Error:</div>
+                                 <div className="text-red-700">{apiResults.cloudflareAccess.error}</div>
+                               </div>
+                             )}
+                           </div>
+                         </div>
+                       )}
                     </div>
                   </CardContent>
                 </Card>
