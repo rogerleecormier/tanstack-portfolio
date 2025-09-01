@@ -299,7 +299,7 @@ export const useAuth = () => {
           // Redirect to home page if we're on a protected route after authentication
           if (window.location.pathname.startsWith('/protected')) {
             logger.info('useAuth: Redirecting to home page after successful authentication');
-            window.location.href = '/';
+            window.location.href = '/protected/site-admin';
           }
         }
       }
