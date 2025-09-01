@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
@@ -11,6 +11,21 @@ import { Link } from '@tanstack/react-router';
 
 export const ProtectedPage: React.FC = () => {
   const { isAuthenticated, user, isLoading, isDevelopment, logout } = useAuth();
+  
+  // Handle Cloudflare Access redirect timing
+  useEffect(() => {
+    if (!isDevelopment && !isLoading && !isAuthenticated) {
+      // Give Cloudflare Access a moment to redirect
+      const timer = setTimeout(() => {
+        // If still not authenticated after 2 seconds, try to trigger redirect
+        if (!isAuthenticated) {
+          window.location.reload();
+        }
+      }, 2000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthenticated, isLoading, isDevelopment]);
   
 
   
@@ -244,6 +259,11 @@ export const ProtectedPage: React.FC = () => {
           <P className="text-teal-600">
             {isDevelopment ? 'Verifying development authentication...' : 'Authenticating with Cloudflare Access...'}
           </P>
+          {!isDevelopment && (
+            <P className="text-sm text-teal-500 mt-2">
+              If you're not redirected to login, please refresh the page
+            </P>
+          )}
         </div>
       </div>
     );
