@@ -296,11 +296,11 @@ export const useAuth = () => {
             logger.warn('Could not store user info in localStorage');
           }
           
-          // Redirect to home page if we're on a protected route after authentication
-          if (window.location.pathname.startsWith('/protected')) {
-            logger.info('useAuth: Redirecting to home page after successful authentication');
-            window.location.href = '/protected/site-admin';
-          }
+                     // Only redirect if we're on the root /protected route, not on specific protected pages
+           if (window.location.pathname === '/protected') {
+             logger.info('useAuth: Redirecting to site admin after successful authentication');
+             window.location.href = '/protected/site-admin';
+           }
         }
       }
     } catch (error) {
@@ -393,15 +393,15 @@ export const useAuth = () => {
           currentUrl: window.location.href
         });
         
-        // For mobile Edge, we might need to handle the redirect differently
-        if (isMobile && isEdge) {
-          logger.info('useAuth: Mobile Edge detected - using alternative redirect method');
-          // Try using window.location.replace for mobile Edge
-          window.location.replace('/protected');
-        } else {
-          // Standard redirect for other browsers
-          window.location.href = '/protected';
-        }
+                 // For mobile Edge, we might need to handle the redirect differently
+         if (isMobile && isEdge) {
+           logger.info('useAuth: Mobile Edge detected - using alternative redirect method');
+           // Try using window.location.replace for mobile Edge
+           window.location.replace('/protected/site-admin');
+         } else {
+           // Standard redirect for other browsers
+           window.location.href = '/protected/site-admin';
+         }
       }
     } catch (error) {
       logger.error('Login failed:', error);
