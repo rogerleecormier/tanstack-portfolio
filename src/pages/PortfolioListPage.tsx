@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
-import { H1, H2, H3, P } from '@/components/ui/typography'
+import { H1, H3, P } from '@/components/ui/typography'
 import {
   DropdownMenu,
   DropdownMenuContent,
