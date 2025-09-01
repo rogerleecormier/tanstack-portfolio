@@ -916,7 +916,7 @@ export const SiteAdminPage: React.FC = () => {
         
         <div className="flex justify-center pb-6">
           <Button 
-            onClick={logout}
+                         onClick={() => logout()}
             variant="outline"
             className="flex items-center space-x-2 border-teal-300 text-teal-700 hover:bg-teal-50 hover:text-teal-800 transition-colors duration-200"
           >

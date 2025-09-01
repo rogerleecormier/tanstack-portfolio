@@ -295,6 +295,12 @@ export const useAuth = () => {
           } catch {
             logger.warn('Could not store user info in localStorage');
           }
+          
+          // Redirect to home page if we're on a protected route after authentication
+          if (window.location.pathname.startsWith('/protected')) {
+            logger.info('useAuth: Redirecting to home page after successful authentication');
+            window.location.href = '/';
+          }
         }
       }
     } catch (error) {
@@ -317,8 +323,8 @@ export const useAuth = () => {
                            window.location.pathname.includes('logout') ||
                            document.referrer.includes('logout');
     
-          if (isLogoutRedirect) {
-        logger.info('useAuth: Detected logout redirect, clearing auth state');
+    if (isLogoutRedirect) {
+      logger.info('useAuth: Detected logout redirect, clearing auth state');
       setIsAuthenticated(false);
       setUser(null);
       setError(null);
@@ -329,6 +335,15 @@ export const useAuth = () => {
         newUrl.searchParams.delete('logout');
         window.history.replaceState({}, '', newUrl.toString());
       }
+    }
+    
+    // Check if we're returning from Cloudflare Access login
+    const isLoginRedirect = document.referrer.includes('cloudflareaccess.com') || 
+                           document.referrer.includes('rcormier.cloudflareaccess.com');
+    
+    if (isLoginRedirect && window.location.pathname.startsWith('/protected')) {
+      logger.info('useAuth: Detected login redirect from Cloudflare Access, will redirect to home');
+      // The redirect will happen after authentication check completes
     }
   }, [checkAuth]);
 
@@ -394,7 +409,7 @@ export const useAuth = () => {
     }
   };
 
-  const logout = () => {
+  const logout = (customRedirectUrl?: string) => {
     try {
       logger.info('useAuth: Logout called');
       if (environment.isDevelopment()) {
@@ -423,8 +438,10 @@ export const useAuth = () => {
           setError(null);
         }
         
-        // Redirect to Cloudflare Access logout
-        window.location.href = '/cdn-cgi/access/logout';
+        // Redirect to Cloudflare Access logout with redirect back to site
+        const redirectUrl = encodeURIComponent(customRedirectUrl || window.location.origin);
+        const logoutUrl = `/cdn-cgi/access/logout?redirectTo=${redirectUrl}`;
+        window.location.href = logoutUrl;
       }
     } catch (error) {
       logger.error('Logout failed:', error);
