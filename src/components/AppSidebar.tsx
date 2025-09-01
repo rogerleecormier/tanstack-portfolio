@@ -21,7 +21,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent className="pt-4">
+      <SidebarContent className="pt-6">
         {/* Main Navigation Group */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-teal-900 font-semibold px-4 mb-2">

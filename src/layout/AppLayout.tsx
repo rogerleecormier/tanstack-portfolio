@@ -100,7 +100,7 @@ export default function AppLayout() {
   return (
     <SidebarProvider defaultOpen={true}>
       <Header />
-      <div className="min-h-screen flex bg-gray-50 pt-36 md:pt-32">
+      <div className="min-h-screen flex bg-gray-50 pt-32 md:pt-28">
         <AppSidebar />
         {/* Main content area - Header is now fixed at top */}
         <div className="flex-1 min-w-0">
