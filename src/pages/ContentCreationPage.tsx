@@ -71,7 +71,6 @@ const ContentCreationPage: React.FC = () => {
   const [loadedFileName, setLoadedFileName] = useState('')
   
   // Layout state
-  const [isFullWidth, setIsFullWidth] = useState(false)
   const [showPreview, setShowPreview] = useState(true)
   const [showFullScreenEditor, setShowFullScreenEditor] = useState(false)
   
@@ -395,7 +394,7 @@ const ContentCreationPage: React.FC = () => {
   }, [contentType])
 
   return (
-    <div className={`w-full ${isFullWidth ? 'px-4' : 'px-4 max-w-7xl mx-auto'}`}>
+    <div className="w-full px-4 max-w-7xl mx-auto">
           {/* Modern Header with Controls */}
           <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200 mb-6 -mx-4 px-4 py-4">
             <div className="flex items-center justify-between">
@@ -426,24 +425,28 @@ const ContentCreationPage: React.FC = () => {
               {/* Right side - Controls */}
               <div className="flex items-center gap-3">
                 {/* Layout Controls */}
-                <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                <div className="flex items-center gap-2">
                   <Button
-                    variant={showPreview ? "default" : "ghost"}
+                    variant={showPreview ? "default" : "outline"}
                     size="sm"
                     onClick={() => setShowPreview(!showPreview)}
-                    className="h-8 px-3"
+                    className={`h-8 px-3 transition-all duration-200 ${
+                      showPreview 
+                        ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-md hover:shadow-lg' 
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-teal-400 hover:text-teal-700 hover:shadow-sm'
+                    }`}
                   >
                     {showPreview ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                    <span className="ml-2 text-xs">Preview</span>
+                    <span className="ml-2 text-xs font-medium">Preview</span>
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={() => setShowFullScreenEditor(true)}
-                    className="h-8 px-3"
+                    className="h-8 px-3 border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700 hover:shadow-sm transition-all duration-200"
                   >
                     <Maximize2 className="h-4 w-4" />
-                    <span className="ml-2 text-xs">Full Width</span>
+                    <span className="ml-2 text-xs font-medium">Full Width</span>
                   </Button>
                 </div>
 
@@ -681,10 +684,9 @@ You can create tables using the table button in the toolbar or by typing markdow
                     showPreview={showPreview}
                     showToolbar={true}
                     minHeight="800px"
-                    contentType={contentType}
-                    onDirectoryChange={(directory) => setCustomDirectory(directory)}
-                    isFullWidth={isFullWidth}
-                  />
+                                         contentType={contentType}
+                     onDirectoryChange={(directory) => setCustomDirectory(directory)}
+                   />
                 </Suspense>
               )}
             </div>
@@ -1073,15 +1075,15 @@ You can create tables using the table button in the toolbar or by typing markdow
                    </div>
                    
                    <div className="flex items-center gap-2">
-                     <Button
-                       variant="outline"
-                       size="sm"
-                       onClick={() => setShowFullScreenEditor(false)}
-                       className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                     >
-                       <Minimize2 className="h-4 w-4 mr-2" />
-                       Exit Full Screen
-                     </Button>
+                                           <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowFullScreenEditor(false)}
+                        className="border-gray-300 text-gray-700 hover:bg-red-50 hover:border-red-400 hover:text-red-700 hover:shadow-sm transition-all duration-200"
+                      >
+                        <Minimize2 className="h-4 w-4 mr-2" />
+                        Exit Full Screen
+                      </Button>
                    </div>
                  </div>
 

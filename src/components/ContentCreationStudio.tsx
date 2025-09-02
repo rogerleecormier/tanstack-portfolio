@@ -424,7 +424,11 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               variant={viewMode === 'html' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('html')}
-              className="bg-teal-600 hover:bg-teal-700"
+              className={`transition-all duration-200 ${
+                viewMode === 'html' 
+                  ? 'bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg' 
+                  : 'border-gray-300 text-gray-700 hover:bg-teal-50 hover:border-teal-400 hover:text-teal-700 hover:shadow-sm'
+              }`}
             >
               <FileText className="w-4 h-4 mr-2" />
               HTML
@@ -434,7 +438,11 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               variant={viewMode === 'markdown' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('markdown')}
-              className="bg-blue-600 hover:bg-blue-700"
+              className={`transition-all duration-200 ${
+                viewMode === 'markdown' 
+                  ? 'bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg' 
+                  : 'border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700 hover:shadow-sm'
+              }`}
             >
               <Edit3 className="w-4 h-4 mr-2" />
               Markdown
@@ -444,7 +452,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               variant="outline"
               size="sm"
               onClick={() => setShowFrontmatterDialog(true)}
-              className="border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="border-gray-300 text-gray-700 hover:bg-purple-50 hover:border-purple-400 hover:text-purple-700 hover:shadow-sm transition-all duration-200"
             >
               <Settings className="w-4 h-4 mr-2" />
               Frontmatter
@@ -454,7 +462,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               variant="outline"
               size="sm"
               onClick={() => setShowPreviewState(!showPreviewState)}
-              className="border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="border-gray-300 text-gray-700 hover:bg-green-50 hover:border-green-400 hover:text-green-700 hover:shadow-sm transition-all duration-200"
             >
               {showPreviewState ? <EyeOff className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
               {showPreviewState ? 'Hide Preview' : 'Show Preview'}
@@ -484,7 +492,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
                     variant="outline"
                     size="sm"
                     onClick={handleViewModeSwitch}
-                    className="text-xs border-gray-200 text-gray-600 hover:bg-gray-50"
+                    className="text-xs border-gray-200 text-gray-600 hover:bg-orange-50 hover:border-orange-400 hover:text-orange-700 hover:shadow-sm transition-all duration-200"
                   >
                     Switch to {viewMode === 'html' ? 'Markdown' : 'HTML'}
                   </Button>
