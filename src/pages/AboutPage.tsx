@@ -7,7 +7,7 @@ import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { AboutProfileCard } from '@/components/AboutProfileCard'
+
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
@@ -15,6 +15,8 @@ import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as R
 import { MessageSquare } from "lucide-react";
 import { logger } from '@/utils/logger'
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer'
+
+import { renderCardComponent } from '@/utils/markdownCardParser'
 import aboutContent from '../content/about.md?raw'
 
 
@@ -63,6 +65,7 @@ export default function AboutPage() {
   const [frontmatter, setFrontmatter] = React.useState<Frontmatter>({})
   const [isLoading, setIsLoading] = React.useState(true)
 
+
   // Scroll to top on route change
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -98,7 +101,7 @@ export default function AboutPage() {
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
         setContent(cleanedBody)
 
-        // Extract headings for TOC - ONLY H2 headings
+        // Extract headings for TOC - ONLY H2 headings (use original content for TOC)
         const headingRegex = /^#{2}\s+(.+)$/gm
         const headings: TOCEntry[] = []
         let match
@@ -196,10 +199,7 @@ export default function AboutPage() {
         </header>
       )}
       
-      {/* Profile card below title and tagline */}
-      <div className="not-prose mb-12">
-        <AboutProfileCard />
-      </div>
+
       
       {/* Main content area */}
       <div>
@@ -263,6 +263,36 @@ export default function AboutPage() {
               code: ({ children, className, ...props }) => {
                 const match = /language-(\w+)/.exec(className || "");
                 const language = match ? match[1] : "";
+
+                // CUSTOM CARD COMPONENTS
+                if (language === "card") {
+                  try {
+                    const cardData = JSON.parse(String(children));
+                    
+                    // Create the card component directly using the parsed data
+                    const cardComponent = renderCardComponent({
+                      type: cardData.type,
+                      props: cardData.props || {},
+                      content: cardData.content || ''
+                    });
+                    
+                    if (cardComponent) {
+                      return (
+                        <div className="my-6">
+                          {cardComponent}
+                        </div>
+                      );
+                    }
+                  } catch (error) {
+                    console.warn('Error parsing card data:', error);
+                    return (
+                      <div className="p-4 border border-red-200 bg-red-50 rounded-lg">
+                        <p className="text-red-600">Error rendering card: {String(error)}</p>
+                        <pre className="text-xs mt-2">{String(children)}</pre>
+                      </div>
+                    );
+                  }
+                }
 
                 // SCATTER/BUBBLE CHARTS WITH GROUPING, BUBBLE SIZE, LABELS, CI ERROR BARS
                 if (
@@ -623,6 +653,9 @@ export default function AboutPage() {
                     showSorting={true}
                   />
                 )
+              },
+              div: ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+                return <div className={className} {...props}>{children}</div>
               },
             }}
           >

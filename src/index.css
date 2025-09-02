@@ -141,8 +141,7 @@
   }
   
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    @apply bg-background text-foreground font-sans;
   }
 }
 
@@ -198,80 +197,70 @@
 
   /* Header name styling */
   .header-name {
-    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    font-weight: 900;
-    letter-spacing: -0.025em;
+    @apply font-black tracking-tighter font-sans;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .header-tagline {
-    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    font-weight: 500;
-    letter-spacing: 0.025em;
+    @apply font-medium tracking-wide font-sans;
   }
 
-
-
-  
-  
   /* Mobile sidebar overlay styling */
   @media (max-width: 768px) {
     [data-sidebar="sidebar"] {
-      position: fixed !important;
-      z-index: 50;
+      @apply fixed z-50;
       transition: transform 200ms ease-in-out;
     }
     
     [data-sidebar="sidebar"][data-state="expanded"] {
-      transform: translateX(0);
+      @apply translate-x-0;
     }
     
     [data-sidebar="sidebar"][data-state="collapsed"] {
-      transform: translateX(-100%);
+      @apply -translate-x-full;
     }
   }
   
   /* Desktop sidebar fixed positioning */
   @media (min-width: 769px) {
     [data-sidebar="sidebar"] {
-      position: relative !important;
+      @apply relative;
       transform: none !important;
     }
   }
 
   /* TipTap Editor List Styling */
   .ProseMirror ul {
-    list-style-type: disc !important;
-    padding-left: 1.5rem !important;
-    margin: 0.5rem 0 !important;
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
   }
   
   .ProseMirror ol {
-    list-style-type: decimal !important;
-    padding-left: 1.5rem !important;
-    margin: 0.5rem 0 !important;
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
   }
   
   .ProseMirror li {
-    margin-top: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
-    display: list-item !important;
+    margin: 0.5rem 0;
+    display: block;
   }
   
   .ProseMirror li::marker {
-    color: hsl(var(--foreground)) !important;
-    font-weight: 500 !important;
+    color: hsl(var(--foreground));
+    font-weight: 500;
   }
   
   /* Ensure list markers are visible */
   .ProseMirror ul li::marker {
-    content: "•" !important;
-    color: hsl(var(--foreground)) !important;
+    content: "•";
+    color: hsl(var(--foreground));
   }
   
   .ProseMirror ol li::marker {
-    content: counter(list-item) "." !important;
-    color: hsl(var(--foreground)) !important;
+    content: counter(list-item) ".";
+    color: hsl(var(--foreground));
   }
   
   /* Override any potential list-style: none */
@@ -289,31 +278,32 @@
   /* Force list display */
   .ProseMirror ul li,
   .ProseMirror ol li {
-    list-style-position: outside !important;
-    padding-left: 0.5rem !important;
+    list-style-position: outside;
+    margin-left: 0;
+    padding-left: 0.5rem;
   }
   
   /* Debug: Make sure lists are visible */
   .ProseMirror ul,
   .ProseMirror ol {
-    border: 1px solid transparent !important;
-    min-height: 1em !important;
+    border: 1px solid transparent;
+    min-height: 1em;
   }
   
   /* More specific list styling */
   .ProseMirror .list-disc {
-    list-style-type: disc !important;
+    list-style-type: disc;
   }
   
   .ProseMirror .list-decimal {
-    list-style-type: decimal !important;
+    list-style-type: decimal;
   }
   
   /* Ensure list items are properly displayed */
   .ProseMirror li {
-    list-style-position: outside !important;
-    margin-left: 0 !important;
-    padding-left: 0.5rem !important;
+    list-style-position: outside;
+    margin-left: 0;
+    padding-left: 0.5rem;
   }
   
   /* Override any global list resets */
@@ -328,58 +318,225 @@
 
   /* Ensure proper scrolling behavior */
   html, body {
-    overflow-x: hidden;
+    @apply overflow-x-hidden;
     scroll-behavior: smooth;
   }
 
   /* Fix dialog scrolling issues */
   [data-radix-dialog-content] {
-    overflow: hidden !important;
+    @apply overflow-hidden;
   }
 
   /* Ensure search results can scroll properly */
   .search-results-container {
-    overflow-y: auto;
+    @apply overflow-y-auto;
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--muted)) transparent;
   }
 
   .search-results-container::-webkit-scrollbar {
-    width: 6px;
+    @apply w-1.5;
   }
 
   .search-results-container::-webkit-scrollbar-track {
-    background: transparent;
+    @apply bg-transparent;
   }
 
   .search-results-container::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted));
-    border-radius: 3px;
+    @apply bg-muted rounded;
   }
 
   .search-results-container::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground));
+    @apply bg-muted-foreground;
   }
 
   /* Fix sidebar positioning to start below fixed header */
   [data-sidebar="sidebar"] {
-    top: 6rem !important; /* 96px - accounts for header height */
-    height: calc(100vh - 6rem) !important;
+    @apply top-24 h-[calc(100vh-6rem)];
   }
   
   /* Mobile sidebar positioning fix */
   [data-mobile="true"][data-sidebar="sidebar"] {
-    top: 0 !important;
-    height: 100vh !important;
+    @apply top-0 h-screen;
   }
   
   /* Fix sidebar gap positioning for desktop */
   .group[data-side="left"] > div:first-child {
-    margin-top: 0rem !important; 
+    @apply mt-0;
   }
   
   /* Ensure sidebar content doesn't overlap header */
   .group[data-side="left"] > div:last-child {
-    margin-top: 0em !important; 
+    @apply mt-0;
+  }
+
+  /* Override monospace font for card components */
+  .card-content * {
+    @apply font-sans;
+  }
+
+  /* Ensure text wrapping in cards */
+  .card-content {
+    @apply break-words hyphens-auto max-w-full;
+  }
+
+  .card-content p,
+  .card-content div,
+  .card-content span,
+  .card-content strong,
+  .card-content em,
+  .card-content li {
+    @apply break-words hyphens-auto max-w-full whitespace-normal;
+  }
+
+  /* Fix markdown card content styling */
+  .markdown-card-content {
+    @apply break-words whitespace-normal text-base leading-relaxed font-sans;
+  }
+
+  .markdown-card-content * {
+    @apply break-words whitespace-normal;
+  }
+
+  /* Override any pre/code styling that might be applied */
+  .markdown-card-content pre,
+  .markdown-card-content code {
+    @apply font-sans whitespace-normal break-words;
+  }
+
+  /* Ensure hero-profile card content is properly styled */
+  .hero-profile-content {
+    @apply break-words whitespace-normal text-base leading-relaxed font-sans;
+  }
+
+  .hero-profile-content * {
+    @apply break-words whitespace-normal;
+  }
+
+  /* Reduce top margin from h2 in hero-profile cards */
+  .hero-profile-card h2 {
+    @apply mt-2.5;
+  }
+
+  /* Control pre tag spacing in hero-profile cards */
+  .hero-profile-card pre,
+  .hero-profile-card .prose pre,
+  .hero-profile-card .prose * pre,
+  .hero-profile-card pre.prose-pre,
+  .hero-profile-card .prose-pre {
+    @apply mt-0 mb-0 p-0 bg-transparent border-none rounded-none shadow-none m-0;
+    background-image: none !important;
+  }
+
+  /* Remove background and padding from pre tags with specific classes in hero-profile cards */
+  .hero-profile-card pre.overflow-x-auto.rounded-lg.border.bg-muted.p-4.w-full {
+    @apply bg-transparent p-0 border-none rounded-none;
+  }
+
+  /* Ensure tagline in hero profile card wraps properly */
+  .hero-profile-content p,
+  .hero-profile-content h2,
+  .hero-profile-content h3 {
+    @apply break-words whitespace-normal max-w-full;
+  }
+
+  /* Target the specific tagline paragraph in CardHeader */
+  .hero-profile-content .text-lg.text-teal-600,
+  .hero-profile-content .text-lg.text-teal-400 {
+    @apply break-words whitespace-normal max-w-full leading-tight;
+  }
+
+  /* Remove all backgrounds from hero-profile cards and their containers */
+  .hero-profile-card,
+  .hero-profile-card .card,
+  .hero-profile-card .card-header,
+  .hero-profile-card .card-content,
+  .hero-profile-card .card-footer {
+    @apply bg-transparent;
+  }
+
+  /* Remove any box-shadow or border-radius that might create the card appearance */
+  .hero-profile-card .card {
+    @apply shadow-none rounded-none;
+  }
+
+  /* Target parent containers that might have backgrounds */
+  .hero-profile-card ~ *,
+  .hero-profile-card + *,
+  .hero-profile-card {
+    @apply bg-transparent;
+  }
+
+  /* Target the about page content area and any containers */
+  .about-page-content,
+  .page-content,
+  .content-area,
+  [data-page="about"],
+  main,
+  article,
+  section {
+    @apply bg-transparent;
+  }
+
+  /* Force all backgrounds to be transparent in the about page area */
+  .about-page *,
+  .about-content *,
+  .hero-profile-section * {
+    @apply bg-transparent;
+  }
+
+  /* Override monospaced font for badges inside pre tags in hero-profile cards */
+  .hero-profile-card pre,
+  .hero-profile-card pre *,
+  .hero-profile-card pre code,
+  .hero-profile-card pre kbd,
+  .hero-profile-card pre samp {
+    @apply font-sans;
+  }
+
+  /* Specifically target badges and colored elements inside pre tags */
+  .hero-profile-card pre .badge,
+  .hero-profile-card pre [class*="badge"],
+  .hero-profile-card pre .bg-blue-100,
+  .hero-profile-card pre .bg-green-100,
+  .hero-profile-card pre .bg-orange-100,
+  .hero-profile-card pre .bg-red-100,
+  .hero-profile-card pre .bg-purple-100,
+  .hero-profile-card pre .bg-teal-100,
+  .hero-profile-card pre .bg-gray-100,
+  .hero-profile-card pre .bg-slate-100,
+  .hero-profile-card pre .bg-zinc-100,
+  .hero-profile-card pre .bg-neutral-100,
+  .hero-profile-card pre .bg-stone-100,
+  .hero-profile-card pre .bg-amber-100,
+  .hero-profile-card pre .bg-lime-100,
+  .hero-profile-card pre .bg-emerald-100,
+  .hero-profile-card pre .bg-cyan-100,
+  .hero-profile-card pre .bg-sky-100,
+  .hero-profile-card pre .bg-indigo-100,
+  .hero-profile-card pre .bg-violet-100,
+  .hero-profile-card pre .bg-fuchsia-100,
+  .hero-profile-card pre .bg-pink-100,
+  .hero-profile-card pre .bg-rose-100 {
+    @apply font-sans;
+  }
+
+  /* Override any prose or markdown styling that might affect pre tags */
+  .hero-profile-card .prose pre,
+  .hero-profile-card .prose pre *,
+  .hero-profile-card .markdown-card-content pre,
+  .hero-profile-card .markdown-card-content pre * {
+    @apply font-sans;
+  }
+
+  /* Ensure all text elements inside pre tags use the correct font */
+  .hero-profile-card pre span,
+  .hero-profile-card pre div,
+  .hero-profile-card pre p,
+  .hero-profile-card pre strong,
+  .hero-profile-card pre em,
+  .hero-profile-card pre b,
+  .hero-profile-card pre i {
+    @apply font-sans;
   }
 }
