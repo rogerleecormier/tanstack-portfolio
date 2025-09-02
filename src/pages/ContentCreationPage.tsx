@@ -71,8 +71,9 @@ const ContentCreationPage: React.FC = () => {
   const [loadedFileName, setLoadedFileName] = useState('')
   
   // Layout state
-  const [isFullWidth, setIsFullWidth] = useState(true)
+  const [isFullWidth, setIsFullWidth] = useState(false)
   const [showPreview, setShowPreview] = useState(true)
+  const [showFullScreenEditor, setShowFullScreenEditor] = useState(false)
   
   // File service instance
   const fileService = useMemo(() => new FileManagementService(), [])
@@ -436,12 +437,12 @@ const ContentCreationPage: React.FC = () => {
                     <span className="ml-2 text-xs">Preview</span>
                   </Button>
                   <Button
-                    variant={isFullWidth ? "default" : "ghost"}
+                    variant="ghost"
                     size="sm"
-                    onClick={() => setIsFullWidth(!isFullWidth)}
+                    onClick={() => setShowFullScreenEditor(true)}
                     className="h-8 px-3"
                   >
-                    {isFullWidth ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                    <Maximize2 className="h-4 w-4" />
                     <span className="ml-2 text-xs">Full Width</span>
                   </Button>
                 </div>
@@ -682,6 +683,7 @@ You can create tables using the table button in the toolbar or by typing markdow
                     minHeight="800px"
                     contentType={contentType}
                     onDirectoryChange={(directory) => setCustomDirectory(directory)}
+                    isFullWidth={isFullWidth}
                   />
                 </Suspense>
               )}
@@ -1034,20 +1036,96 @@ You can create tables using the table button in the toolbar or by typing markdow
             </DialogContent>
           </Dialog>
 
-          {/* File Save Dialog */}
-          <FileSaveDialog
-            open={showSaveDialog}
-            onOpenChange={setShowSaveDialog}
-            frontmatter={frontmatter || {}}
-            markdown={markdown}
-            contentType={contentType}
-            customDirectory={customDirectory}
-            onSaveSuccess={(filePath) => {
-              setCurrentFilePath(filePath)
-              setIsEditingExisting(true)
-            }}
-          />
-        </div>
+                     {/* File Save Dialog */}
+           <FileSaveDialog
+             open={showSaveDialog}
+             onOpenChange={setShowSaveDialog}
+             frontmatter={frontmatter || {}}
+             markdown={markdown}
+             contentType={contentType}
+             customDirectory={customDirectory}
+             onSaveSuccess={(filePath) => {
+               setCurrentFilePath(filePath)
+               setIsEditingExisting(true)
+             }}
+           />
+
+           {/* Full Screen Editor Dialog */}
+           <Dialog open={showFullScreenEditor} onOpenChange={setShowFullScreenEditor}>
+             <DialogContent className="max-w-none w-[95vw] h-[95vh] max-h-[95vh] overflow-hidden p-0">
+               <div className="flex flex-col h-full">
+                 {/* Full Screen Header */}
+                 <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-blue-50 border-b border-gray-200">
+                   <div className="flex items-center gap-3">
+                     <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                       <FileText className="h-4 w-4 text-white" />
+                     </div>
+                     <div>
+                       <h2 className="text-xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                         Content Creation Studio - Full Screen
+                       </h2>
+                       {isEditingExisting && currentFilePath && (
+                         <p className="text-sm text-gray-600">
+                           Editing: {currentFilePath.split('/').pop()}
+                         </p>
+                       )}
+                     </div>
+                   </div>
+                   
+                   <div className="flex items-center gap-2">
+                     <Button
+                       variant="outline"
+                       size="sm"
+                       onClick={() => setShowFullScreenEditor(false)}
+                       className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                     >
+                       <Minimize2 className="h-4 w-4 mr-2" />
+                       Exit Full Screen
+                     </Button>
+                   </div>
+                 </div>
+
+                 {/* Full Screen Editor Content */}
+                 <div className="flex-1 overflow-hidden">
+                   <Suspense fallback={<div className="flex items-center justify-center h-full">Loading Content Creation Studio...</div>}>
+                     <ContentCreationStudio
+                       key={`fullscreen-${currentFilePath || 'new-content'}`}
+                       initialContent={content || `# Start Writing Your Content
+
+Welcome to the Content Creation Studio! Use the toolbar above to format your content with headers, bold, italic, lists, and more.
+
+## Table Support
+
+You can create tables using the table button in the toolbar or by typing markdown:
+
+| Feature | Description | Status |
+|---------|-------------|---------|
+| Tables | Full table support with editing | ✅ |
+| Charts | Interactive chart insertion | ✅ |
+| Code | Syntax highlighting | ✅ |
+| Lists | Bullet and numbered lists | ✅ |
+
+## Getting Started
+
+1. Use the toolbar for formatting
+2. Click the table icon to insert tables
+3. Click the chart icon to add charts
+4. Use the Frontmatter button in the toolbar to edit metadata
+5. Save your content`}
+                       onContentChange={handleContentChange}
+                       showPreview={showPreview}
+                       showToolbar={true}
+                       minHeight="100%"
+                       contentType={contentType}
+                       onDirectoryChange={(directory) => setCustomDirectory(directory)}
+                       isFullWidth={true}
+                     />
+                   </Suspense>
+                 </div>
+               </div>
+             </DialogContent>
+           </Dialog>
+         </div>
   )
 }
 

@@ -106,6 +106,7 @@ interface ContentCreationStudioProps {
   minHeight?: string
   contentType?: 'blog' | 'portfolio' | 'project'
   onDirectoryChange?: (directory: string) => void
+  isFullWidth?: boolean
 }
 
 
@@ -119,7 +120,8 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
   className = '',
   minHeight = '600px',
   contentType,
-  onDirectoryChange
+  onDirectoryChange,
+  isFullWidth = false
 }) => {
   const [viewMode, setViewMode] = useState<'html' | 'markdown'>('html')
   const [showPreviewState, setShowPreviewState] = useState(showPreview)
@@ -228,7 +230,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
     ],
     editorProps: {
       attributes: {
-        class: `focus:outline-none p-6 min-h-[${minHeight}] transition-colors duration-200 bg-white ${className}`,
+        class: `focus:outline-none p-6 transition-colors duration-200 bg-white ${isFullWidth ? 'h-full' : `min-h-[${minHeight}]`} ${className}`,
       },
       handleKeyDown: (_view, event) => {
         // Ctrl/Cmd + T to insert table
@@ -461,13 +463,17 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
         </div>
 
         {/* Main Editor Area - Optimized for Dual Pane */}
-        <div className={`grid gap-6 ${
+        <div className={`grid gap-6 h-full ${
           showPreviewState 
             ? 'grid-cols-1 xl:grid-cols-2' 
             : 'grid-cols-1'
+        } ${
+          isFullWidth
+            ? 'w-full h-full'
+            : 'max-w-7xl mx-auto'
         }`}>
           {/* Editor Panel */}
-          <Card className="border-0 shadow-lg bg-white">
+          <Card className={`border-0 shadow-lg bg-white ${isFullWidth ? 'h-full flex flex-col' : ''}`}>
             <CardHeader className="pb-3 border-b border-gray-100">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">
@@ -486,7 +492,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               </div>
             </CardHeader>
             
-            <CardContent className="p-0">
+            <CardContent className={`p-0 ${isFullWidth ? 'flex-1 overflow-hidden' : ''}`}>
               {viewMode === 'html' ? (
                 <>
                   {/* HTML Editor Toolbar */}
@@ -657,16 +663,16 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
                   )}
                   
                   {/* HTML Editor Content */}
-                  <EditorContent editor={editor} className="min-h-[600px]" />
+                  <EditorContent editor={editor} className={isFullWidth ? "h-full" : "min-h-[600px]"} />
                 </>
               ) : (
                 /* Markdown Editor */
-                <div className="p-4">
+                <div className={`p-4 ${isFullWidth ? 'h-full' : ''}`}>
                   <Textarea
                     value={markdownContent}
                     onChange={(e) => handleMarkdownChange(e.target.value)}
                     placeholder="Write your markdown content here..."
-                    className="min-h-[600px] font-mono text-sm border-gray-200 focus:border-teal-400 focus:ring-teal-400"
+                    className={`font-mono text-sm border-gray-200 focus:border-teal-400 focus:ring-teal-400 ${isFullWidth ? 'h-full resize-none' : 'min-h-[600px]'}`}
                   />
                 </div>
               )}
@@ -675,13 +681,13 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
 
           {/* Preview Panel */}
           {showPreviewState && (
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-blue-50">
+            <Card className={`border-0 shadow-lg bg-gradient-to-br from-white to-blue-50 ${isFullWidth ? 'h-full flex flex-col' : ''}`}>
               <CardHeader className="pb-3 border-b border-blue-100">
                 <h3 className="text-lg font-medium text-blue-900">Live Preview</h3>
               </CardHeader>
-              <CardContent className="p-4">
-                          <div 
-            className="max-w-none min-h-[600px] space-y-6"
+              <CardContent className={`p-4 ${isFullWidth ? 'flex-1 overflow-auto' : ''}`}>
+                <div 
+                  className={`max-w-none space-y-6 ${isFullWidth ? 'h-full' : 'min-h-[600px]'}`}
                   dangerouslySetInnerHTML={{ 
                     __html: viewMode === 'html' 
                       ? editor.getHTML() 
