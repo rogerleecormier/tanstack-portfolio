@@ -1,0 +1,38 @@
+name = "healthbridge-enhanced"
+main = "workers/healthbridge-enhanced.js"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "healthbridge-enhanced"
+database_id = "your-database-id-here"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+API_VERSION = "v2"
+
+# KV Namespace for caching (optional)
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "your-kv-namespace-id"
+
+# R2 for file storage (optional)
+# [[r2_buckets]]
+# binding = "STORAGE"
+# bucket_name = "healthbridge-files"
+
+# Cron triggers for automated tasks
+[triggers]
+crons = [
+  "0 0 * * *"  # Daily at midnight - calculate projections
+]
+
+# Routes (if using custom domain)
+# routes = [
+#   "healthbridge.yourdomain.com/*"
+# ]
+
+# Zone ID (if using custom domain)
+# zone_id = "your-zone-id"
