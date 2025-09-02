@@ -7,7 +7,7 @@ This document explains how to use the custom markdown card syntax in your conten
 The basic syntax for custom cards uses code blocks with the "card" language identifier (same pattern as charts):
 
 ```markdown
-```card
+``` card
 {
   "type": "info",
   "props": {
@@ -17,6 +17,8 @@ The basic syntax for custom cards uses code blocks with the "card" language iden
   "content": "Your card content here with **markdown** support."
 }
 ```
+
+**Important Note**: There must be a space between the backticks and "card" (```` card`) for the syntax to work properly. This ensures ReactMarkdown recognizes the block as a code block that needs special processing.
 
 ## Markdown Formatting Support
 
@@ -41,7 +43,7 @@ The markdown is rendered with styling that matches your card design and maintain
 Creates a simple informational card with teal styling.
 
 ```markdown
-```card
+``` card
 {
   "type": "info",
   "props": {
@@ -65,7 +67,7 @@ Creates a simple informational card with teal styling.
 Large, prominent cards for key content with gradient backgrounds and optional images.
 
 ```markdown
-```card
+``` card
 {
   "type": "hero",
   "props": {
@@ -98,7 +100,7 @@ Large, prominent cards for key content with gradient backgrounds and optional im
 A specialized profile card designed for main profile display with image, name, tagline, and multi-colored badges.
 
 ```markdown
-```card
+``` card
 {
   "type": "hero-profile",
   "props": {
@@ -131,7 +133,7 @@ A specialized profile card designed for main profile display with image, name, t
 Green-accented cards for positive content with icons.
 
 ```markdown
-```card
+``` card
 {
   "type": "success",
   "props": {
@@ -152,7 +154,7 @@ Green-accented cards for positive content with icons.
 Orange-accented cards for important notices with icons.
 
 ```markdown
-```card
+``` card
 {
   "type": "warning",
   "props": {
@@ -173,7 +175,7 @@ Orange-accented cards for important notices with icons.
 Blue-accented cards for technical content with technology badges.
 
 ```markdown
-```card
+``` card
 {
   "type": "tech",
   "props": {
@@ -194,7 +196,7 @@ Blue-accented cards for technical content with technology badges.
 Creates a feature card with an icon, badges, and optional link.
 
 ```markdown
-```card
+``` card
 {
   "type": "feature",
   "props": {
@@ -217,7 +219,7 @@ Creates a feature card with an icon, badges, and optional link.
 Creates a profile card with image, contact info, and badges.
 
 ```markdown
-```card
+``` card
 {
   "type": "profile",
   "props": {
@@ -237,7 +239,7 @@ Creates a profile card with image, contact info, and badges.
 Creates a card displaying statistics and metrics.
 
 ```markdown
-```card
+``` card
 {
   "type": "stats",
   "props": {
@@ -253,7 +255,7 @@ Creates a card displaying statistics and metrics.
 Creates a timeline card showing chronological events.
 
 ```markdown
-```card
+``` card
 {
   "type": "timeline",
   "props": {
@@ -269,7 +271,7 @@ Creates a timeline card showing chronological events.
 Create 2 or 3 column layouts with different card types.
 
 ```markdown
-```card
+``` card
 {
   "type": "columns",
   "props": {},
@@ -341,7 +343,7 @@ Date | Title | Description | Badge
 ```markdown
 ## Professional Focus
 
-```card
+``` card
 {
   "type": "hero-profile",
   "props": {
@@ -358,7 +360,7 @@ Date | Title | Description | Badge
 
 ### Multi-Column Showcase
 ```markdown
-```card
+``` card
 {
   "type": "columns",
   "props": {},
@@ -375,8 +377,9 @@ All cards use your site's teal-blue brand colors and follow shadcn/ui design pat
 - Hover effects for interactive elements
 - Dark mode support
 - Mobile-responsive design
-- Proper font rendering (Inter font family)
+- **Proper font rendering** - All cards use Inter font family with comprehensive CSS overrides to prevent monospaced fonts
 - Word wrapping and text overflow handling
+- **Automatic badge color cycling** - Badges display with consistent styling and automatic color selection
 
 ## Integration
 
@@ -396,12 +399,18 @@ The custom card syntax is automatically processed when rendering markdown conten
 ## Troubleshooting
 
 If a card doesn't render correctly:
-1. Check the JSON syntax - ensure proper brackets and braces
-2. Verify prop values are properly quoted
-3. Check that the card type is supported
-4. Ensure content follows the expected format for the card type
-5. For arrays/strings, use comma-separated values or proper JSON arrays
-6. Verify that badges are properly formatted as comma-separated strings or arrays
+1. **Check the syntax spacing** - Ensure there's a space between backticks and "card" (```` card`)
+2. Check the JSON syntax - ensure proper brackets and braces
+3. Verify prop values are properly quoted
+4. Check that the card type is supported
+5. Ensure content follows the expected format for the card type
+6. For arrays/strings, use comma-separated values or proper JSON arrays
+7. Verify that badges are properly formatted as comma-separated strings or arrays
+
+**Common Issues:**
+- **Cards not rendering**: Make sure to use ```` card` (with space) not ````card`
+- **Monospaced fonts**: This issue has been resolved with comprehensive CSS overrides
+- **Badge styling**: All badges now use proper sans-serif fonts with automatic color cycling
 
 For complex layouts, consider using multiple smaller cards or the multi-column layout rather than one large card with lots of content.
 
@@ -412,3 +421,7 @@ For complex layouts, consider using multiple smaller cards or the multi-column l
 - **Enhanced typography** with proper font rendering and word wrapping
 - **Improved responsive design** for better mobile experience
 - **Multi-colored badge support** with automatic color cycling
+- **Fixed monospaced font issues** - All cards now use proper sans-serif fonts (Inter font family)
+- **Resolved card rendering issues** - Cards now render properly with correct syntax (```` card`)
+- **Enhanced CSS overrides** - Comprehensive font-family overrides ensure consistent typography across all card types
+- **Improved badge styling** - Badges now display with proper fonts and automatic color cycling

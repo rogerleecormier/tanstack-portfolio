@@ -200,7 +200,6 @@ export function renderCardComponent(cardData: CardData): React.ReactElement | nu
           } else if (typeof content === 'object') {
             columnsData = content
           } else {
-            console.warn('Invalid content type for columns card:', typeof content)
             return null
           }
           
@@ -209,8 +208,7 @@ export function renderCardComponent(cardData: CardData): React.ReactElement | nu
             cards: columnsData.cards || [],
             ...props
           })
-        } catch (error) {
-          console.warn('Error parsing columns data:', error)
+        } catch {
           return null
         }
       }
@@ -296,6 +294,8 @@ export function createCardComponent(type: string) {
         return React.createElement(WarningCard, { ...props, children: content })
       case 'tech':
         return React.createElement(TechCard, { ...props, children: content })
+      case 'hero-profile':
+        return React.createElement(HeroProfileCard, { ...props, children: content })
       case 'columns':
         // MultiColumnCards doesn't accept children, it needs cards array
         return React.createElement(MultiColumnCards, { 

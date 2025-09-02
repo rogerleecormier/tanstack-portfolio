@@ -66,6 +66,7 @@ export default function AboutPage() {
   const [isLoading, setIsLoading] = React.useState(true)
 
 
+
   // Scroll to top on route change
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -99,6 +100,8 @@ export default function AboutPage() {
         
         // Remove import statements from markdown content
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+        
+        // Store the cleaned markdown content directly
         setContent(cleanedBody)
 
         // Extract headings for TOC - ONLY H2 headings (use original content for TOC)
@@ -190,7 +193,11 @@ export default function AboutPage() {
           {frontmatter.tags && (
             <div className="flex flex-wrap gap-2 mt-4">
               {[...new Set(frontmatter.tags)].map((tag: string, index: number) => (
-                <Badge key={`${tag}-${index}`} variant="secondary">
+                <Badge 
+                  key={`${tag}-${index}`} 
+                  variant="secondary"
+                  className="border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
                   {tag}
                 </Badge>
               ))}
@@ -223,6 +230,11 @@ export default function AboutPage() {
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
             components={{
+              p: ({ children, ...props }) => (
+                <P {...props}>
+                  {children}
+                </P>
+              ),
               h1: ({ children, ...props }) => {
                 const text = String(children)
                 const id = slugify(text, { lower: true, strict: true })
@@ -250,11 +262,6 @@ export default function AboutPage() {
                   </h3>
                 )
               },
-              p: ({ children, ...props }) => (
-                <P {...props}>
-                  {children}
-                </P>
-              ),
               blockquote: ({ children, ...props }) => (
                 <Blockquote {...props}>
                   {children}
@@ -265,7 +272,7 @@ export default function AboutPage() {
                 const language = match ? match[1] : "";
 
                 // CUSTOM CARD COMPONENTS
-                if (language === "card") {
+                if (language === "card" || language === "json") {
                   try {
                     const cardData = JSON.parse(String(children));
                     
@@ -280,6 +287,14 @@ export default function AboutPage() {
                       return (
                         <div className="my-6">
                           {cardComponent}
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div className="p-4 border border-yellow-200 bg-yellow-50 rounded-lg">
+                          <p className="text-yellow-600">Card component not rendered for type: {cardData.type}</p>
+                          <p className="text-xs text-gray-600">Content type: {typeof cardData.content}</p>
+                          <p className="text-xs text-gray-600">Content: {JSON.stringify(cardData.content, null, 2)}</p>
                         </div>
                       );
                     }
@@ -654,9 +669,7 @@ export default function AboutPage() {
                   />
                 )
               },
-              div: ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-                return <div className={className} {...props}>{children}</div>
-              },
+
             }}
           >
             {content}

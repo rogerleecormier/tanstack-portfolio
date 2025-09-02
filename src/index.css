@@ -485,12 +485,38 @@
     @apply bg-transparent;
   }
 
-  /* Override monospaced font for badges inside pre tags in hero-profile cards */
-  .hero-profile-card pre,
-  .hero-profile-card pre *,
-  .hero-profile-card pre code,
-  .hero-profile-card pre kbd,
-  .hero-profile-card pre samp {
+  /* Override monospaced font for ALL elements in hero-profile cards */
+  .hero-profile-card,
+  .hero-profile-card *,
+  .hero-profile-card *::before,
+  .hero-profile-card *::after {
+    @apply font-sans;
+  }
+
+  /* Specifically target badges and colored elements */
+  .hero-profile-card .badge,
+  .hero-profile-card [class*="badge"],
+  .hero-profile-card .bg-blue-100,
+  .hero-profile-card .bg-green-100,
+  .hero-profile-card .bg-orange-100,
+  .hero-profile-card .bg-red-100,
+  .hero-profile-card .bg-purple-100,
+  .hero-profile-card .bg-teal-100,
+  .hero-profile-card .bg-gray-100,
+  .hero-profile-card .bg-slate-100,
+  .hero-profile-card .bg-zinc-100,
+  .hero-profile-card .bg-neutral-100,
+  .hero-profile-card .bg-stone-100,
+  .hero-profile-card .bg-amber-100,
+  .hero-profile-card .bg-lime-100,
+  .hero-profile-card .bg-emerald-100,
+  .hero-profile-card .bg-cyan-100,
+  .hero-profile-card .bg-sky-100,
+  .hero-profile-card .bg-indigo-100,
+  .hero-profile-card .bg-violet-100,
+  .hero-profile-card .bg-fuchsia-100,
+  .hero-profile-card .bg-pink-100,
+  .hero-profile-card .bg-rose-100 {
     @apply font-sans;
   }
 
@@ -537,6 +563,184 @@
   .hero-profile-card pre em,
   .hero-profile-card pre b,
   .hero-profile-card pre i {
+    @apply font-sans;
+  }
+
+  /* Override monospace fonts for ALL card types */
+  .card,
+  .card *,
+  .card *::before,
+  .card *::after,
+  [class*="Card"],
+  [class*="Card"] *,
+  [class*="Card"] *::before,
+  [class*="Card"] *::after {
+    @apply font-sans;
+  }
+
+  /* Specifically target badges in all cards */
+  .badge,
+  [class*="badge"],
+  .bg-blue-100,
+  .bg-green-100,
+  .bg-orange-100,
+  .bg-red-100,
+  .bg-purple-100,
+  .bg-teal-100,
+  .bg-gray-100,
+  .bg-slate-100,
+  .bg-zinc-100,
+  .bg-neutral-100,
+  .bg-stone-100,
+  .bg-amber-100,
+  .bg-lime-100,
+  .bg-emerald-100,
+  .bg-cyan-100,
+  .bg-sky-100,
+  .bg-indigo-100,
+  .bg-violet-100,
+  .bg-fuchsia-100,
+  .bg-pink-100,
+  .bg-rose-100 {
+    @apply font-sans;
+  }
+
+  /* Target specific card title and description components */
+  .card-title,
+  .card-description,
+  [class*="card-title"],
+  [class*="card-description"],
+  .CardTitle,
+  .CardDescription,
+  [class*="CardTitle"],
+  [class*="CardDescription"] {
+    @apply font-sans;
+  }
+
+  /* Target all possible badge variations */
+  .badge,
+  [class*="badge"],
+  .Badge,
+  [class*="Badge"],
+  [data-radix-collection-item],
+  [class*="border-green-200"],
+  [class*="border-orange-200"],
+  [class*="border-blue-200"],
+  [class*="text-green-700"],
+  [class*="text-orange-700"],
+  [class*="text-blue-700"] {
+    @apply font-sans;
+  }
+
+  /* Target badges specifically inside columns cards and nested feature cards */
+  .grid [class*="grid-cols"] .badge,
+  .grid [class*="grid-cols"] [class*="badge"],
+  .grid [class*="grid-cols"] .Badge,
+  .grid [class*="grid-cols"] [class*="Badge"],
+  /* Target badges in feature cards specifically */
+  [class*="FeatureCard"] .badge,
+  [class*="FeatureCard"] [class*="badge"],
+  [class*="FeatureCard"] .Badge,
+  [class*="FeatureCard"] [class*="Badge"],
+  /* Target badges in any nested card structure */
+  .card .card .badge,
+  .card .card [class*="badge"],
+  [class*="Card"] [class*="Card"] .badge,
+  [class*="Card"] [class*="Card"] [class*="badge"] {
+    @apply font-sans;
+  }
+
+  /* Nuclear option for education card badges - target ANY badge element */
+  .badge,
+  [class*="badge"],
+  .Badge,
+  [class*="Badge"],
+  /* Target any element that looks like a badge */
+  [class*="border-"],
+  [class*="text-"],
+  [class*="bg-"],
+  /* Target any element with badge-like styling */
+  [class*="outline"],
+  [class*="variant"],
+  /* Target any element inside a grid or card structure */
+  .grid *,
+  [class*="grid"] *,
+  .card *,
+  [class*="Card"] * {
+    @apply font-sans;
+  }
+
+  /* Target all text elements in cards to ensure no monospace fonts */
+  .card h1,
+  .card h2,
+  .card h3,
+  .card h4,
+  .card h5,
+  .card h6,
+  .card p,
+  .card span,
+  .card div,
+  .card strong,
+  .card em,
+  .card b,
+  .card i,
+  [class*="Card"] h1,
+  [class*="Card"] h2,
+  [class*="Card"] h3,
+  [class*="Card"] h4,
+  [class*="Card"] h5,
+  [class*="Card"] h6,
+  [class*="Card"] p,
+  [class*="Card"] span,
+  [class*="Card"] div,
+  [class*="Card"] strong,
+  [class*="Card"] em,
+  [class*="Card"] b,
+  [class*="Card"] i {
+    @apply font-sans;
+  }
+
+  /* Nuclear option: Override ALL elements in cards with !important */
+  .card *,
+  [class*="Card"] *,
+  .card *::before,
+  .card *::after,
+  [class*="Card"] *::before,
+  [class*="Card"] *::after {
+    @apply font-sans;
+  }
+
+
+
+  /* Target specific shadcn components that might have their own font styling */
+  [data-radix-collection-item],
+  [data-radix-slot],
+  [class*="radix-"],
+  [class*="shadcn-"] {
+    @apply font-sans;
+  }
+
+  /* Target card titles specifically - these are the h2/h3 elements in cards */
+  .card h2,
+  .card h3,
+  .card h4,
+  .card h5,
+  .card h6,
+  [class*="Card"] h2,
+  [class*="Card"] h3,
+  [class*="Card"] h4,
+  [class*="Card"] h5,
+  [class*="Card"] h6,
+  /* Target the specific text-2xl font-bold classes used in card titles */
+  .text-2xl.font-bold,
+  [class*="text-2xl"][class*="font-bold"],
+  /* Target any element with card title styling */
+  [class*="card-title"],
+  [class*="CardTitle"],
+  /* Target specific text size classes that might be used in titles */
+  .text-2xl,
+  .text-xl,
+  .text-lg {
     @apply font-sans;
   }
 }
