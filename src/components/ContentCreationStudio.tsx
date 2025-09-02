@@ -259,7 +259,8 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
         setMarkdownContent(markdown)
         
         if (onContentChange) {
-          onContentChange(html, markdown, frontmatter)
+          const unifiedHtml = markdownToHtml(markdown)
+          onContentChange(unifiedHtml, markdown, frontmatter)
         }
       }
     },
@@ -336,10 +337,11 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
     setFrontmatter(updatedFrontmatter)
     
     if (onContentChange) {
-      const html = editor?.getHTML() || ''
-      onContentChange(html, markdownContent, updatedFrontmatter)
+      const content = viewMode === 'html' ? htmlToMarkdown(editor?.getHTML() || '') : markdownContent
+      const html = markdownToHtml(content)
+      onContentChange(html, content, updatedFrontmatter)
     }
-  }, [onContentChange, editor, markdownContent])
+  }, [onContentChange, editor, markdownContent, viewMode])
 
   // Insert table
   const insertTable = useCallback(() => {
@@ -370,14 +372,40 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
     setShowTableDialog(false)
   }, [editor, tableConfig])
 
-  // Insert chart
-  const insertChart = useCallback(() => {
+
+
+  // Generate frontmatter from content
+  const generateFrontmatter = useCallback(() => {
+    if (!contentType) return
+    
+    const content = viewMode === 'html' ? htmlToMarkdown(editor?.getHTML() || '') : markdownContent
+    const generated = FrontmatterGenerator.generateFrontmatter(content, contentType)
+    setFrontmatter(generated)
+  }, [contentType, viewMode, editor, markdownContent])
+
+  /**
+   * Get unified HTML content with consistent styling for both editor modes
+   */
+  const getUnifiedHtml = (): string => {
+    if (viewMode === 'html') {
+      // Convert TipTap HTML to markdown, then to enhanced HTML for consistent styling
+      const markdown = htmlToMarkdown(editor.getHTML())
+      return markdownToHtml(markdown)
+    } else {
+      // Markdown mode already uses enhanced converter
+      return markdownToHtml(markdownContent)
+    }
+  }
+
+  /**
+   * Handle chart insertion
+   */
+  const handleChartInsertion = useCallback(() => {
     if (!editor) return
     
     const { type, data, title, xAxisLabel, yAxisLabel, width, height } = chartConfig
     
     try {
-      // Validate JSON data
       JSON.parse(data)
       
       const chartHTML = `<div data-type="chart" data-chart-type="${type}" data-chart-data="${encodeURIComponent(data)}" data-chart-title="${title}" data-chart-x-axis-label="${xAxisLabel}" data-chart-y-axis-label="${yAxisLabel}" data-chart-width="${width}" data-chart-height="${height}" class="my-6"></div>`
@@ -388,15 +416,6 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
       logger.error('Invalid chart data:', error)
     }
   }, [editor, chartConfig])
-
-  // Generate frontmatter from content
-  const generateFrontmatter = useCallback(() => {
-    if (!contentType) return
-    
-    const content = viewMode === 'html' ? (editor?.getHTML() || '') : markdownContent
-    const generated = FrontmatterGenerator.generateFrontmatter(content, contentType)
-    setFrontmatter(generated)
-  }, [contentType, viewMode, editor, markdownContent])
 
   if (!editor) {
     return <div className="flex items-center justify-center h-64">Loading editor...</div>
@@ -695,11 +714,9 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
               </CardHeader>
               <CardContent className={`p-4 ${isFullWidth ? 'flex-1 overflow-auto' : ''}`}>
                 <div 
-                  className={`max-w-none space-y-6 ${isFullWidth ? 'h-full' : 'min-h-[600px]'}`}
+                  className={`prose prose-teal max-w-none space-y-6 ${isFullWidth ? 'h-full' : 'min-h-[600px]'}`}
                   dangerouslySetInnerHTML={{ 
-                    __html: viewMode === 'html' 
-                      ? editor.getHTML() 
-                      : markdownToHtml(markdownContent) 
+                    __html: getUnifiedHtml()
                   }} 
                 />
               </CardContent>
@@ -714,7 +731,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
           frontmatter={frontmatter}
           onFrontmatterChange={handleFrontmatterChange}
           contentType={contentType}
-          content={viewMode === 'html' ? (editor?.getHTML() || '') : markdownContent}
+          content={viewMode === 'html' ? htmlToMarkdown(editor?.getHTML() || '') : markdownContent}
           onGenerateFromContent={generateFrontmatter}
         />
 
@@ -812,7 +829,7 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
                   Cancel
                 </Button>
                 <Button
-                  onClick={insertChart}
+                  onClick={handleChartInsertion}
                   className="bg-teal-600 hover:bg-teal-700"
                 >
                   <Plus className="w-4 h-4 mr-2" />
