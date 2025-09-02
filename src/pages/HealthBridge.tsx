@@ -1015,7 +1015,7 @@ export default function HealthBridgePage() {
               <>
                 <Card className="p-4 min-w-[160px]">
                   <div className="text-sm text-muted-foreground">
-                    Lbs Lost/Gained
+                    Weight Change
                   </div>
                   <div className="text-xl font-bold">{metrics.lbsLost} lbs</div>
                 </Card>

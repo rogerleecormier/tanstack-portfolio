@@ -135,19 +135,20 @@ async function createWeightMeasurement(request, env, corsHeaders) {
     // Convert to pounds if needed
     const weightLbs = unit === 'kg' ? weight * 2.20462 : weight;
 
-    // Insert into enhanced weight_measurements table
+    // Insert into existing weight table
     const stmt = env.DB.prepare(`
-      INSERT INTO weight_measurements (weight_lbs, body_fat_percentage, muscle_mass_lbs, water_percentage, timestamp, source)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO weight (uuid, startDate, endDate, kg, sourceBundleId, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
     const result = await stmt.bind(
-      weightLbs,
-      bodyFat || null,
-      muscleMass ? (unit === 'kg' ? muscleMass * 2.20462 : muscleMass) : null,
-      waterPercentage || null,
-      timestamp,
-      source
+      crypto.randomUUID(), // Generate UUID
+      timestamp.split('T')[0], // startDate
+      timestamp.split('T')[0], // endDate (same as startDate for single measurement)
+      unit === 'kg' ? weight : weight / 2.20462, // kg
+      'healthbridge-enhanced', // sourceBundleId
+      new Date().toISOString(), // createdAt
+      new Date().toISOString()  // updatedAt
     ).run();
 
     // Calculate and store projections
@@ -182,34 +183,36 @@ async function getWeightMeasurements(request, env, corsHeaders) {
     const endDate = url.searchParams.get('end_date');
 
     let query = `
-      SELECT id, weight_lbs, body_fat_percentage, muscle_mass_lbs, water_percentage, timestamp, source
-      FROM weight_measurements
+      SELECT startDate, kg
+      FROM weight
     `;
     let params = [];
 
     if (days) {
-      query += ` WHERE timestamp >= datetime('now', '-${days} days')`;
+      // Calculate the date X days ago using JavaScript
+      const daysAgo = new Date();
+      daysAgo.setDate(daysAgo.getDate() - parseInt(days));
+      const daysAgoStr = daysAgo.toISOString().split('T')[0];
+      query += ` WHERE startDate >= ?`;
+      params.push(daysAgoStr);
     } else if (startDate && endDate) {
-      query += ` WHERE timestamp BETWEEN ? AND ?`;
+      query += ` WHERE startDate BETWEEN ? AND ?`;
       params = [startDate, endDate];
     }
 
-    query += ` ORDER BY timestamp DESC LIMIT ?`;
+    query += ` ORDER BY startDate DESC LIMIT ?`;
     params.push(limit);
 
     const stmt = env.DB.prepare(query);
     const result = await stmt.bind(...params).all();
 
     const measurements = result.results.map(row => ({
-      id: row.id,
-      weight: row.weight_lbs, // Primary weight in pounds
-      weight_lb: row.weight_lbs.toFixed(2), // Formatted pounds
-      weight_kg: (row.weight_lbs / 2.20462).toFixed(2), // Converted to kg for display
-      body_fat_percentage: row.body_fat_percentage,
-      muscle_mass: row.muscle_mass_lbs,
-      water_percentage: row.water_percentage,
-      timestamp: row.timestamp,
-      source: row.source
+      id: Math.floor(Math.random() * 10000) + 1, // Generate ID since weight table doesn't have one
+      weight: parseFloat((row.kg * 2.20462).toFixed(1)), // Convert kg to pounds with xx.x format
+      weight_lb: (row.kg * 2.20462).toFixed(1), // Formatted pounds with xx.x format
+      weight_kg: row.kg.toFixed(1), // Weight in kg with xx.x format
+      timestamp: new Date(row.startDate).toISOString(), // Ensure valid ISO timestamp
+      source: 'legacy'
     }));
 
     return new Response(
@@ -235,8 +238,8 @@ async function getWeightProjections(request, env, corsHeaders) {
 
     // Get recent weight data for projections
     const stmt = env.DB.prepare(`
-      SELECT weight_lbs, timestamp FROM weight_measurements 
-      ORDER BY timestamp DESC LIMIT 30
+      SELECT kg, startDate FROM weight 
+      ORDER BY startDate DESC LIMIT 30
     `);
     const result = await stmt.all();
 
@@ -268,21 +271,21 @@ async function getWeightProjections(request, env, corsHeaders) {
 function calculateWeightProjections(measurements, days) {
   // Sort by date (oldest first)
   const sortedMeasurements = measurements
-    .map(m => ({ ...m, date: new Date(m.timestamp) }))
+    .map(m => ({ ...m, date: new Date(m.startDate) }))
     .sort((a, b) => a.date.getTime() - b.date.getTime());
 
-  // Calculate daily weight loss rate
+  // Calculate daily weight loss rate (convert kg to lbs)
   const totalDays = (sortedMeasurements[sortedMeasurements.length - 1].date - sortedMeasurements[0].date) / (1000 * 60 * 60 * 24);
-  const totalWeightLoss = sortedMeasurements[0].weight_lbs - sortedMeasurements[sortedMeasurements.length - 1].weight_lbs;
+  const totalWeightLoss = (sortedMeasurements[0].kg - sortedMeasurements[sortedMeasurements.length - 1].kg) * 2.20462; // Convert to lbs
   const dailyRate = totalWeightLoss / totalDays;
 
   // Calculate confidence based on data consistency
-  const variance = calculateVariance(sortedMeasurements.map(m => m.weight_lbs));
+  const variance = calculateVariance(sortedMeasurements.map(m => m.kg * 2.20462)); // Convert to lbs
   const confidence = Math.max(0.1, Math.min(0.95, 1 - (variance / 100)));
 
   // Generate projections
   const projections = [];
-  const currentWeight = sortedMeasurements[sortedMeasurements.length - 1].weight_lbs;
+  const currentWeight = sortedMeasurements[sortedMeasurements.length - 1].kg * 2.20462; // Convert to lbs
   const currentDate = new Date();
 
   for (let i = 1; i <= days; i++) {
@@ -293,16 +296,16 @@ function calculateWeightProjections(measurements, days) {
     
     projections.push({
       date: projectedDate.toISOString().split('T')[0],
-      projected_weight: Math.max(0, projectedWeight),
+      projected_weight: parseFloat(Math.max(0, projectedWeight).toFixed(1)), // xx.x format
       confidence: confidence,
-      daily_rate: dailyRate,
+      daily_rate: parseFloat(dailyRate.toFixed(1)), // xx.x format
       days_from_now: i
     });
   }
 
   return {
-    current_weight: currentWeight,
-    daily_rate: dailyRate,
+    current_weight: parseFloat(currentWeight.toFixed(1)), // xx.x format
+    daily_rate: parseFloat(dailyRate.toFixed(1)), // xx.x format
     confidence: confidence,
     projections: projections,
     algorithm: 'linear_regression_v2_pounds'
@@ -327,12 +330,17 @@ async function getWeightTrends(request, env, corsHeaders) {
     const period = url.searchParams.get('period') || '30';
 
     // Get weight data for trend analysis
+    const periodDays = parseInt(period);
+    const periodAgo = new Date();
+    periodAgo.setDate(periodAgo.getDate() - periodDays);
+    const periodAgoStr = periodAgo.toISOString().split('T')[0];
+    
     const stmt = env.DB.prepare(`
-      SELECT weight_lbs FROM weight_measurements 
-      WHERE timestamp >= datetime('now', '-${period} days')
-      ORDER BY timestamp ASC
+      SELECT kg, startDate FROM weight 
+      WHERE startDate >= ?
+      ORDER BY startDate ASC
     `);
-    const result = await stmt.all();
+    const result = await stmt.bind(periodAgoStr).all();
 
     if (result.results.length === 0) {
       return new Response(
@@ -360,8 +368,8 @@ async function getWeightTrends(request, env, corsHeaders) {
  * Analyze weight trends and patterns (pounds only)
  */
 function analyzeWeightTrends(measurements) {
-  const weights = measurements.map(m => m.weight_lbs);
-  const dates = measurements.map(m => new Date(m.timestamp));
+  const weights = measurements.map(m => m.kg * 2.20462); // Convert to lbs
+  const dates = measurements.map(m => new Date(m.startDate));
 
   // Calculate moving averages
   const movingAverages = {
@@ -469,30 +477,35 @@ async function getAnalyticsDashboard(request, env, corsHeaders) {
  */
 async function calculateAnalytics(env, period) {
   // Get weight measurements
+  const periodDays = parseInt(period);
+  const periodAgo = new Date();
+  periodAgo.setDate(periodAgo.getDate() - periodDays);
+  const periodAgoStr = periodAgo.toISOString().split('T')[0];
+  
   const weightStmt = env.DB.prepare(`
-    SELECT weight_lbs FROM weight_measurements 
-    WHERE timestamp >= datetime('now', '-${period} days')
-    ORDER BY timestamp ASC
+    SELECT kg, startDate FROM weight 
+    WHERE startDate >= ?
+    ORDER BY startDate ASC
   `);
-  const weightResult = await weightStmt.all();
+  const weightResult = await weightStmt.bind(periodAgoStr).all();
 
   if (weightResult.results.length === 0) {
     return { error: 'No data available for analytics' };
   }
 
-  const weights = weightResult.results.map(r => r.weight_lbs);
-  const dates = weightResult.results.map(r => new Date(r.timestamp));
+  const weights = weightResult.results.map(r => r.kg * 2.20462); // Convert to lbs
+  const dates = weightResult.results.map(r => new Date(r.startDate));
 
   // Calculate key metrics
   const metrics = {
     total_measurements: weights.length,
     period_days: period,
-    current_weight: weights[weights.length - 1],
-    starting_weight: weights[0],
-    total_change: weights[weights.length - 1] - weights[0],
-    average_weight: weights.reduce((a, b) => a + b, 0) / weights.length,
-    min_weight: Math.min(...weights),
-    max_weight: Math.max(...weights)
+    current_weight: parseFloat(weights[weights.length - 1].toFixed(1)), // xx.x format
+    starting_weight: parseFloat(weights[0].toFixed(1)), // xx.x format
+    total_change: parseFloat((weights[weights.length - 1] - weights[0]).toFixed(1)), // xx.x format
+    average_weight: parseFloat((weights.reduce((a, b) => a + b, 0) / weights.length).toFixed(1)), // xx.x format
+    min_weight: parseFloat(Math.min(...weights).toFixed(1)), // xx.x format
+    max_weight: parseFloat(Math.max(...weights).toFixed(1)) // xx.x format
   };
 
   // Calculate trends
@@ -523,7 +536,7 @@ function calculateWeeklyAverage(weights, dates) {
   for (let i = 6; i < weights.length; i += 7) {
     const weekWeights = weights.slice(Math.max(0, i - 6), i + 1);
     const average = weekWeights.reduce((a, b) => a + b, 0) / weekWeights.length;
-    weeklyAverages.push(average);
+    weeklyAverages.push(parseFloat(average.toFixed(1))); // xx.x format
   }
   
   return weeklyAverages;
@@ -545,7 +558,7 @@ function calculateConsistencyScore(weights) {
     }
   }
   
-  return (consistentDays / (weights.length - 1)) * 100;
+  return parseFloat(((consistentDays / (weights.length - 1)) * 100).toFixed(1)); // xx.x format
 }
 
 /**
@@ -592,8 +605,8 @@ function compareAnalytics(analytics1, analytics2, period1, period2) {
     period1: { days: period1, analytics: analytics1 },
     period2: { days: period2, analytics: analytics2 },
     comparison: {
-      weight_change: change,
-      weight_change_percentage: changePercentage,
+      weight_change: parseFloat(change.toFixed(1)), // xx.x format
+      weight_change_percentage: parseFloat(changePercentage.toFixed(1)), // xx.x format
       improvement: change < 0, // Negative change means weight loss
       trend_comparison: analytics1.trends.overall_trend === analytics2.trends.overall_trend,
       consistency_improvement: analytics2.trends.consistency_score > analytics1.trends.consistency_score
@@ -608,8 +621,8 @@ async function calculateAndStoreProjections(env) {
   try {
     // Get recent weight data
     const stmt = env.DB.prepare(`
-      SELECT weight_lbs, timestamp FROM weight_measurements 
-      ORDER BY timestamp DESC LIMIT 30
+      SELECT kg, startDate FROM weight 
+      ORDER BY startDate DESC LIMIT 30
     `);
     const result = await stmt.all();
 
@@ -646,8 +659,8 @@ async function getLegacyWeights(request, env, corsHeaders) {
     const limit = url.searchParams.get('limit') || '100';
 
     const stmt = env.DB.prepare(`
-      SELECT weight_lbs as lbs, timestamp as date FROM weight_measurements 
-      ORDER BY timestamp DESC LIMIT ?
+      SELECT kg as lbs, startDate FROM weight 
+      ORDER BY startDate DESC LIMIT ?
     `);
     const result = await stmt.bind(parseInt(limit)).all();
 
@@ -679,11 +692,19 @@ async function createLegacyWeight(request, env, corsHeaders) {
     const weightLbs = unit === 'kg' ? weight * 2.20462 : weight;
 
     const stmt = env.DB.prepare(`
-      INSERT INTO weight_measurements (weight_lbs, timestamp, source)
-      VALUES (?, ?, 'legacy_api')
+      INSERT INTO weight (uuid, startDate, endDate, kg, sourceBundleId, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
-    const result = await stmt.bind(weightLbs, timestamp).run();
+    const result = await stmt.bind(
+      crypto.randomUUID(), // Generate UUID
+      timestamp.split('T')[0], // startDate
+      timestamp.split('T')[0], // endDate (same as startDate for single measurement)
+      unit === 'kg' ? weight : weight / 2.20462, // kg
+      'healthbridge-legacy', // sourceBundleId
+      new Date().toISOString(), // createdAt
+      new Date().toISOString()  // updatedAt
+    ).run();
 
     return new Response(
       JSON.stringify({ success: true, id: result.meta.last_row_id }),

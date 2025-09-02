@@ -15,8 +15,8 @@
 
 // import { environment } from '../config/environment';
 
-// Use existing API worker
-const API_BASE_URL = 'https://health-bridge-api.rcormier.workers.dev';
+// Use healthbridge-enhanced worker
+const API_BASE_URL = 'https://healthbridge-enhanced.rcormier.workers.dev';
 
 // TypeScript interfaces for enhanced data structures
 export interface WeightMeasurement {
