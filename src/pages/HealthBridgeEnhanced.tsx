@@ -40,23 +40,19 @@
  * "Advanced weight loss tracking dashboard with projections, goal setting, and comprehensive health analytics. Features weight loss projections, trend analysis, and goal progress tracking."
  */
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format, subDays, startOfDay, endOfDay } from "date-fns";
-import { CalendarIcon, Target, TrendingUp, BarChart3, Goal, Activity, Zap } from "lucide-react";
+import { format } from "date-fns";
+import { CalendarIcon, TrendingUp, BarChart3, Goal, Activity, Zap } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 
 // Enhanced API imports
 import HealthBridgeEnhancedAPI, {
-  WeightMeasurement,
-  WeightProjectionsResponse,
-  WeightTrends,
   GoalProgress,
-  AnalyticsDashboard,
   CreateWeightMeasurementRequest,
-  SetGoalRequest,
-  HealthDataUtils
+  SetGoalRequest
 } from "../api/healthBridgeEnhanced";
+import type { AnalyticsDashboard } from "../api/healthBridgeEnhanced";
 
 // shadcn/ui components
 import { Button } from "@/components/ui/button";
@@ -70,18 +66,16 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { H1, H2, H3 } from "@/components/ui/typography";
+import { H1 } from "@/components/ui/typography";
 
 // shadcn charts
 import {
-  ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  ChartTooltipTrigger,
 } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar } from "recharts";
 
-const PAGE_SIZE = 10;
+// const PAGE_SIZE = 10;
 
 /**
  * Enhanced weight entry component with additional health metrics
@@ -557,28 +551,21 @@ function WeightProjections() {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
-              <ChartTooltip>
-                <ChartTooltipTrigger />
-                <ChartTooltipContent>
-                  {({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0].payload;
-                      return (
-                        <div className="space-y-1">
-                          <p className="font-medium">{data.date}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Projected: {data.projected.toFixed(1)} kg
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            Confidence: {data.confidence.toFixed(0)}%
-                          </p>
-                        </div>
-                      );
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[200px]"
+                    nameKey="projected"
+                    labelFormatter={(value) =>
+                      new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
                     }
-                    return null;
-                  }}
-                </ChartTooltipContent>
-              </ChartTooltip>
+                  />
+                }
+              />
               <Line 
                 type="monotone" 
                 dataKey="projected" 
@@ -693,25 +680,14 @@ function AnalyticsDashboard() {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="metric" />
               <YAxis />
-              <ChartTooltip>
-                <ChartTooltipTrigger />
-                <ChartTooltipContent>
-                  {({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0].payload;
-                      return (
-                        <div className="space-y-1">
-                          <p className="font-medium">{data.metric}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Weight: {data.value.toFixed(1)} kg
-                          </p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                </ChartTooltipContent>
-              </ChartTooltip>
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    nameKey="value"
+                  />
+                }
+              />
               <Bar dataKey="value" fill="#3b82f6" />
             </BarChart>
           </ResponsiveContainer>
@@ -729,6 +705,8 @@ function AnalyticsDashboard() {
  * Enhanced HealthBridge main component
  */
 export default function HealthBridgeEnhancedPage() {
+  const [activeTab, setActiveTab] = useState("overview");
+  
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -794,7 +772,7 @@ export default function HealthBridgeEnhancedPage() {
         </p>
       </div>
 
-      <Tabs defaultValue="overview" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="goals">Goals</TabsTrigger>

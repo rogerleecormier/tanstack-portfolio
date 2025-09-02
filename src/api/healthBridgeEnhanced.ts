@@ -13,7 +13,7 @@
  * - Comprehensive TypeScript interfaces
  */
 
-import { environment } from '../config/environment';
+// import { environment } from '../config/environment';
 
 // Enhanced API base URL
 const API_BASE_URL = 'https://healthbridge-enhanced.rcormier.workers.dev';
