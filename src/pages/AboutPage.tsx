@@ -92,13 +92,18 @@ export default function AboutPage() {
         logger.debug('Loading about markdown file')
         
         const text = aboutContent
+        console.log('AboutPage: aboutContent length:', text.length)
+        console.log('AboutPage: aboutContent first 200 chars:', text.substring(0, 200))
 
         // Parse frontmatter
         const { attributes, body } = fm(text)
+        console.log('AboutPage: Frontmatter parsed:', attributes)
+        console.log('AboutPage: Body length:', body.length)
         setFrontmatter(attributes as Frontmatter)
         
         // Remove import statements from markdown content
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+        console.log('AboutPage: Cleaned body length:', cleanedBody.length)
         
         // Store the cleaned markdown content directly
         setContent(cleanedBody)
@@ -106,13 +111,28 @@ export default function AboutPage() {
         // Extract headings for TOC - ONLY H2 headings (use original content for TOC)
         const headingRegex = /^#{2}\s+(.+)$/gm
         const headings: TOCEntry[] = []
+        const seenSlugs = new Set<string>()
         let match
 
         while ((match = headingRegex.exec(cleanedBody)) !== null) {
           const title = match[1].trim()
-          const slug = slugify(title, { lower: true, strict: true })
+          let slug = slugify(title, { lower: true, strict: true })
+          
+          // Handle duplicate slugs by adding a number suffix
+          let counter = 1
+          while (seenSlugs.has(slug)) {
+            slug = `${slugify(title, { lower: true, strict: true })}-${counter}`
+            counter++
+          }
+          
+          seenSlugs.add(slug)
           headings.push({ title, slug })
         }
+
+        // Debug: Log the headings found
+        console.log('AboutPage: TOC Headings found:', headings)
+        console.log('AboutPage: Raw markdown content length:', cleanedBody.length)
+        console.log('AboutPage: First 500 chars:', cleanedBody.substring(0, 500))
 
         // Dispatch custom event to update sidebar TOC
         window.dispatchEvent(new CustomEvent('toc-updated', { 

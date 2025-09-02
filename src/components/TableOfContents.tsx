@@ -16,6 +16,7 @@ export function TableOfContents() {
   // Listen for TOC updates from MarkdownPage
   useEffect(() => {
     const handleTocUpdate = (event: CustomEvent) => {
+      console.log('TOC received toc-updated event:', event.detail)
       setCurrentToc(event.detail.toc || [])
     }
 
@@ -29,6 +30,7 @@ export function TableOfContents() {
   // Listen for blog TOC updates from BlogPage
   useEffect(() => {
     const handleBlogTocUpdate = (event: CustomEvent) => {
+      console.log('TOC received blog-toc-updated event:', event.detail)
       setCurrentToc(event.detail.toc || [])
     }
 
@@ -71,8 +73,14 @@ export function TableOfContents() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [currentToc])
 
+  // Debug: Log the current state
+  console.log('TOC Component: state =', state, 'currentToc.length =', currentToc.length)
+  
   // Don't render TOC when sidebar is collapsed or when there's no content
-  if (state === 'collapsed' || currentToc.length === 0) return null
+  if (state === 'collapsed' || currentToc.length === 0) {
+    console.log('TOC Component: Not rendering because state =', state, 'or currentToc.length =', currentToc.length)
+    return null
+  }
 
   return (
     <div className="border-t border-teal-200 mt-4 pt-4">

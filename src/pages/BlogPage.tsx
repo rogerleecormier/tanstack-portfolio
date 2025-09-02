@@ -35,7 +35,7 @@ interface BlogFrontmatter {
 export type BlogTOCEntry = {
   title: string
   slug: string
-  level: 2 | 3
+  level: 2
 }
 
 
@@ -98,17 +98,31 @@ export default function BlogPage({ slug }: { slug: string }) {
           // Set reading time
           setReadingTime(blogPost.readTime)
 
-          // Extract headings for content analysis (used by related content service)
-          const headingRegex = /^#{2,3}\s+(.+)$/gm
+          // Extract headings for TOC - ONLY H2 headings
+          const headingRegex = /^#{2}\s+(.+)$/gm
           const headings: BlogTOCEntry[] = []
+          const seenSlugs = new Set<string>()
           let match
 
           while ((match = headingRegex.exec(blogPost.content)) !== null) {
             const title = match[1].trim()
-            const headingSlug = slugify(title, { lower: true, strict: true })
-            const level = match[0].match(/^#+/)?.[0].length || 2
-            headings.push({ title, slug: headingSlug, level: level as 2 | 3 })
+            let headingSlug = slugify(title, { lower: true, strict: true })
+            
+            // Handle duplicate slugs by adding a number suffix
+            let counter = 1
+            while (seenSlugs.has(headingSlug)) {
+              headingSlug = `${slugify(title, { lower: true, strict: true })}-${counter}`
+              counter++
+            }
+            
+            seenSlugs.add(headingSlug)
+            headings.push({ title, slug: headingSlug, level: 2 })
           }
+
+          // Dispatch custom event to update sidebar TOC
+          window.dispatchEvent(new CustomEvent('blog-toc-updated', { 
+            detail: { toc: headings, file: slug } 
+          }))
         } else {
           console.error('Blog post not found:', slug)
         }
@@ -121,6 +135,15 @@ export default function BlogPage({ slug }: { slug: string }) {
 
     loadMarkdown()
   }, [slug])
+
+  // Clean up event when component unmounts
+  React.useEffect(() => {
+    return () => {
+      window.dispatchEvent(new CustomEvent('blog-toc-updated', { 
+        detail: { toc: [], file: null } 
+      }))
+    }
+  }, [])
 
 
 

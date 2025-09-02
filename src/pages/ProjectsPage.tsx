@@ -152,11 +152,21 @@ export default function ProjectsPage({ file }: { file: string }) {
           // Extract headings for TOC - ONLY H2 headings
           const headingRegex = /^#{2}\s+(.+)$/gm
           const headings: TOCEntry[] = []
+          const seenSlugs = new Set<string>()
           let match
 
           while ((match = headingRegex.exec(content)) !== null) {
             const title = match[1].trim()
-            const slug = slugify(title, { lower: true, strict: true })
+            let slug = slugify(title, { lower: true, strict: true })
+            
+            // Handle duplicate slugs by adding a number suffix
+            let counter = 1
+            while (seenSlugs.has(slug)) {
+              slug = `${slugify(title, { lower: true, strict: true })}-${counter}`
+              counter++
+            }
+            
+            seenSlugs.add(slug)
             headings.push({ title, slug })
           }
 
