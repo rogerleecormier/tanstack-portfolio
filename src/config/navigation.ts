@@ -82,4 +82,16 @@ export const protectedProjectItems = [
     icon: FileText,
     requiresAuth: true,
   },
+  {
+    title: "HealthBridge Enhanced",
+    url: "protected/healthbridge-enhanced",
+    icon: Target,
+    requiresAuth: true,
+  },
+  {
+    title: "Settings",
+    url: "protected/settings",
+    icon: Settings,
+    requiresAuth: true,
+  },
 ];

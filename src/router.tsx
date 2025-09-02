@@ -15,6 +15,8 @@ import AppLayout from './layout/AppLayout'
 import ProjectsListPage from './pages/ProjectsListPage'
 import NotFound from './pages/NotFound'
 import HealthBridge from './pages/HealthBridge'
+import HealthBridgeEnhanced from './pages/HealthBridgeEnhanced'
+import Settings from './pages/Settings'
 import ContactPage from './pages/ContactPage'
 import PrivacyPage from './pages/PrivacyPage'
 import BlogListPage from './pages/BlogListPage'
@@ -100,6 +102,20 @@ const healthBridgeAnalysisRoute = createRoute({
   component: HealthBridge
 })
 
+// Enhanced HealthBridge route - PROTECTED
+const healthBridgeEnhancedRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'protected/healthbridge-enhanced',
+  component: HealthBridgeEnhanced
+})
+
+// Settings route - PROTECTED
+const settingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'protected/settings',
+  component: Settings
+})
+
 // Protected routes - all under /protected/* namespace
 const protectedRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -177,6 +193,8 @@ const routeTree = rootRoute.addChildren([
   projectsListRoute,
   projectsRoute,
   healthBridgeAnalysisRoute,
+  healthBridgeEnhancedRoute,
+  settingsRoute,
   blogListRoute,
   blogPostRoute,
   contactRoute,

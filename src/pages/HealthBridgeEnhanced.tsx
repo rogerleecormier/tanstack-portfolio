@@ -1,17 +1,17 @@
 /**
  * @fileoverview Enhanced HealthBridge Weight Analysis Dashboard
- * @description Advanced weight loss tracking with projections, goals, and comprehensive analytics
+ * @description Advanced weight loss tracking with projections and comprehensive analytics (pounds only)
  * @author Roger Lee Cormier
- * @version 2.0.0
+ * @version 3.0.0
  * @lastUpdated 2024
  * 
  * @features
- * - Weight loss projections with confidence intervals
- * - Goal setting and progress tracking
+ * - Weight loss projections with confidence intervals (pounds only)
  * - Advanced trend analysis and analytics
  * - Enhanced data visualization with shadcn charts
  * - Comprehensive health metrics tracking
  * - Mobile-responsive design with modern UI
+ * - Goals are managed in Settings page only
  * 
  * @technologies
  * - React 19 with TypeScript
@@ -23,7 +23,7 @@
  * @searchKeywords
  * - weight loss projections
  * - health analytics
- * - fitness goals
+ * - fitness tracking
  * - weight tracking
  * - health metrics
  * - fitness dashboard
@@ -31,26 +31,24 @@
  * - health data visualization
  * 
  * @searchTags
- * ["health", "fitness", "analytics", "weight-loss", "projections", "goals", "tracking", "dashboard", "metrics"]
+ * ["health", "fitness", "analytics", "weight-loss", "projections", "tracking", "dashboard", "metrics"]
  * 
  * @searchSection
  * "Health Analysis"
  * 
  * @searchDescription
- * "Advanced weight loss tracking dashboard with projections, goal setting, and comprehensive health analytics. Features weight loss projections, trend analysis, and goal progress tracking."
+ * "Advanced weight loss tracking dashboard with projections and comprehensive health analytics. Features weight loss projections, trend analysis, and data visualization in pounds."
  */
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { CalendarIcon, TrendingUp, BarChart3, Goal, Activity, Zap } from "lucide-react";
+import { CalendarIcon, TrendingUp, BarChart3, Activity, Zap, Loader2, TableIcon } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 
 // Enhanced API imports
 import HealthBridgeEnhancedAPI, {
-  GoalProgress,
-  CreateWeightMeasurementRequest,
-  SetGoalRequest
+  CreateWeightMeasurementRequest
 } from "../api/healthBridgeEnhanced";
 import type { AnalyticsDashboard } from "../api/healthBridgeEnhanced";
 
@@ -67,18 +65,18 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { H1 } from "@/components/ui/typography";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-// shadcn charts
+// shadcn charts and recharts
 import {
+  ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar } from "recharts";
-
-// const PAGE_SIZE = 10;
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
 
 /**
- * Enhanced weight entry component with additional health metrics
+ * Enhanced weight entry component with additional health metrics (pounds only)
  */
 function EnhancedWeightEntry() {
   const queryClient = useQueryClient();
@@ -87,9 +85,6 @@ function EnhancedWeightEntry() {
   const [weight, setWeight] = useState("");
   const [unit, setUnit] = useState<"lb" | "kg">("lb");
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [bodyFat, setBodyFat] = useState("");
-  const [muscleMass, setMuscleMass] = useState("");
-  const [waterPercentage, setWaterPercentage] = useState("");
 
   const mutation = useMutation({
     mutationFn: async (data: CreateWeightMeasurementRequest) => {
@@ -98,9 +93,6 @@ function EnhancedWeightEntry() {
     onSuccess: () => {
       setSuccess(true);
       setWeight("");
-      setBodyFat("");
-      setMuscleMass("");
-      setWaterPercentage("");
       queryClient.invalidateQueries({ queryKey: ["enhanced-weights"] });
       queryClient.invalidateQueries({ queryKey: ["projections"] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
@@ -128,9 +120,7 @@ function EnhancedWeightEntry() {
       weight: val,
       unit,
       timestamp: date.toISOString(),
-      bodyFat: bodyFat ? Number(bodyFat) : undefined,
-      muscleMass: muscleMass ? Number(muscleMass) : undefined,
-      waterPercentage: waterPercentage ? Number(waterPercentage) : undefined,
+      source: "Manual Entry"
     };
 
     mutation.mutate(data);
@@ -141,10 +131,10 @@ function EnhancedWeightEntry() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Activity className="h-5 w-5" />
-          Add Weight & Health Metrics
+          Add Weight Measurement
         </CardTitle>
         <CardDescription>
-          Track your weight along with body composition and other health metrics
+          Track your weight to monitor your weight loss progress (all data displayed in pounds)
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -195,44 +185,6 @@ function EnhancedWeightEntry() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="bodyFat">Body Fat %</Label>
-              <Input
-                id="bodyFat"
-                type="number"
-                step="0.1"
-                placeholder="Optional"
-                value={bodyFat}
-                onChange={(e) => setBodyFat(e.target.value)}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="muscleMass">Muscle Mass (kg)</Label>
-              <Input
-                id="muscleMass"
-                type="number"
-                step="0.1"
-                placeholder="Optional"
-                value={muscleMass}
-                onChange={(e) => setMuscleMass(e.target.value)}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="waterPercentage">Water %</Label>
-              <Input
-                id="waterPercentage"
-                type="number"
-                step="0.1"
-                placeholder="Optional"
-                value={waterPercentage}
-                onChange={(e) => setWaterPercentage(e.target.value)}
-              />
-            </div>
-          </div>
-
           {error && (
             <div className="text-red-500 text-sm">{error}</div>
           )}
@@ -251,232 +203,7 @@ function EnhancedWeightEntry() {
 }
 
 /**
- * Goal setting and progress tracking component
- */
-function GoalTracker() {
-  const [showGoalForm, setShowGoalForm] = useState(false);
-  const [goalData, setGoalData] = useState({
-    targetWeight: "",
-    startWeight: "",
-    startDate: new Date(),
-    targetDate: undefined as Date | undefined,
-    weeklyGoal: ""
-  });
-
-  const { data: goalProgress } = useQuery({
-    queryKey: ["goal-progress"],
-    queryFn: () => HealthBridgeEnhancedAPI.getGoalProgress(),
-  });
-
-  const setGoalMutation = useMutation({
-    mutationFn: async (data: SetGoalRequest) => {
-      return await HealthBridgeEnhancedAPI.setGoal(data);
-    },
-    onSuccess: () => {
-      setShowGoalForm(false);
-      setGoalData({
-        targetWeight: "",
-        startWeight: "",
-        startDate: new Date(),
-        targetDate: undefined,
-        weeklyGoal: ""
-      });
-    },
-  });
-
-  const handleSetGoal = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!goalData.targetWeight || !goalData.startWeight || !goalData.startDate) {
-      return;
-    }
-
-    const data: SetGoalRequest = {
-      target_weight: Number(goalData.targetWeight),
-      start_weight: Number(goalData.startWeight),
-      start_date: goalData.startDate.toISOString().split('T')[0],
-      target_date: goalData.targetDate?.toISOString().split('T')[0],
-      weekly_goal: goalData.weeklyGoal ? Number(goalData.weeklyGoal) : undefined,
-    };
-
-    setGoalMutation.mutate(data);
-  };
-
-  if ('message' in (goalProgress || {})) {
-    return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Goal className="h-5 w-5" />
-            Weight Loss Goals
-          </CardTitle>
-          <CardDescription>
-            Set and track your weight loss goals
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={() => setShowGoalForm(true)} className="w-full">
-            Set Your First Goal
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const progress = goalProgress as GoalProgress;
-
-  return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Goal className="h-5 w-5" />
-          Goal Progress
-        </CardTitle>
-        <CardDescription>
-          Track your progress toward your weight loss goal
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-blue-600">
-              {progress.progress_percentage.toFixed(1)}%
-            </div>
-            <div className="text-sm text-muted-foreground">Progress</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-green-600">
-              {progress.weight_lost.toFixed(1)} kg
-            </div>
-            <div className="text-sm text-muted-foreground">Lost</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-orange-600">
-              {progress.weight_remaining.toFixed(1)} kg
-            </div>
-            <div className="text-sm text-muted-foreground">Remaining</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-purple-600">
-              {progress.days_since_start}
-            </div>
-            <div className="text-sm text-muted-foreground">Days</div>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Progress to Goal</span>
-            <span>{progress.progress_percentage.toFixed(1)}%</span>
-          </div>
-          <Progress value={progress.progress_percentage} className="h-2" />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Badge variant={progress.is_on_track ? "default" : "destructive"}>
-            {progress.is_on_track ? "On Track" : "Behind Schedule"}
-          </Badge>
-          {progress.weekly_goal && (
-            <span className="text-sm text-muted-foreground">
-              Weekly goal: {progress.weekly_goal} kg
-            </span>
-          )}
-        </div>
-
-        <Button onClick={() => setShowGoalForm(true)} variant="outline" className="w-full">
-          Update Goal
-        </Button>
-      </CardContent>
-
-      {showGoalForm && (
-        <Card className="mt-4">
-          <CardContent className="pt-6">
-            <form onSubmit={handleSetGoal} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="startWeight">Starting Weight (kg)</Label>
-                  <Input
-                    id="startWeight"
-                    type="number"
-                    step="0.1"
-                    placeholder="Enter starting weight"
-                    value={goalData.startWeight}
-                    onChange={(e) => setGoalData({ ...goalData, startWeight: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="targetWeight">Target Weight (kg)</Label>
-                  <Input
-                    id="targetWeight"
-                    type="number"
-                    step="0.1"
-                    placeholder="Enter target weight"
-                    value={goalData.targetWeight}
-                    onChange={(e) => setGoalData({ ...goalData, targetWeight: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="startDate">Start Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full justify-start text-left font-normal">
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {format(goalData.startDate, "PPP")}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={goalData.startDate}
-                        onSelect={(date) => date && setGoalData({ ...goalData, startDate: date })}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="weeklyGoal">Weekly Goal (kg)</Label>
-                  <Input
-                    id="weeklyGoal"
-                    type="number"
-                    step="0.1"
-                    placeholder="Optional"
-                    value={goalData.weeklyGoal}
-                    onChange={(e) => setGoalData({ ...goalData, weeklyGoal: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <Button type="submit" disabled={setGoalMutation.isPending} className="flex-1">
-                  {setGoalMutation.isPending ? "Setting Goal..." : "Set Goal"}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setShowGoalForm(false)}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-    </Card>
-  );
-}
-
-/**
- * Weight projections component with confidence intervals
+ * Weight projections component with confidence intervals (pounds only)
  */
 function WeightProjections() {
   const { data: projections, isLoading, error } = useQuery({
@@ -520,20 +247,20 @@ function WeightProjections() {
           Weight Loss Projections
         </CardTitle>
         <CardDescription>
-          Based on your current trajectory with confidence intervals
+          Based on your current trajectory with confidence intervals (pounds)
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-2xl font-bold text-blue-600">
-              {projections.current_weight.toFixed(1)} kg
+              {projections.current_weight.toFixed(1)} lbs
             </div>
             <div className="text-sm text-muted-foreground">Current Weight</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-green-600">
-              {Math.abs(projections.daily_rate * 7).toFixed(2)} kg/week
+              {Math.abs(projections.daily_rate * 7).toFixed(2)} lbs/week
             </div>
             <div className="text-sm text-muted-foreground">Weekly Rate</div>
           </div>
@@ -545,12 +272,30 @@ function WeightProjections() {
           </div>
         </div>
 
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
+        <div className="h-64 w-full">
+          <ChartContainer
+            config={{
+              projected: {
+                label: "Projected Weight (lbs)",
+                color: "#3b82f6"
+              }
+            }}
+            className="h-full w-full"
+          >
+            <LineChart data={chartData} width={400} height={250}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis 
+                dataKey="date" 
+                tick={{ fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis 
+                tick={{ fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+                domain={['dataMin - 5', 'dataMax + 5']}
+              />
               <ChartTooltip
                 content={
                   <ChartTooltipContent
@@ -572,9 +317,10 @@ function WeightProjections() {
                 stroke="#3b82f6" 
                 strokeWidth={2}
                 dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, stroke: "#3b82f6", strokeWidth: 2 }}
               />
             </LineChart>
-          </ResponsiveContainer>
+          </ChartContainer>
         </div>
 
         <div className="text-sm text-muted-foreground text-center">
@@ -587,7 +333,7 @@ function WeightProjections() {
 }
 
 /**
- * Analytics dashboard component
+ * Analytics dashboard component (pounds only)
  */
 function AnalyticsDashboard() {
   const { data: analytics, isLoading, error } = useQuery({
@@ -633,7 +379,7 @@ function AnalyticsDashboard() {
           Analytics Dashboard
         </CardTitle>
         <CardDescription>
-          Comprehensive analysis of your weight loss journey
+          Comprehensive analysis of your weight loss journey (pounds)
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -674,12 +420,30 @@ function AnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="h-48">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="metric" />
-              <YAxis />
+        <div className="h-48 w-full">
+          <ChartContainer
+            config={{
+              value: {
+                label: "Weight (lbs)",
+                color: "#3b82f6"
+              }
+            }}
+            className="h-full w-full"
+          >
+            <BarChart data={trendData} width={400} height={200}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis 
+                dataKey="metric" 
+                tick={{ fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis 
+                tick={{ fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+                domain={['dataMin - 5', 'dataMax + 5']}
+              />
               <ChartTooltip
                 content={
                   <ChartTooltipContent
@@ -688,13 +452,140 @@ function AnalyticsDashboard() {
                   />
                 }
               />
-              <Bar dataKey="value" fill="#3b82f6" />
+              <Bar 
+                dataKey="value" 
+                fill="#3b82f6"
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
-          </ResponsiveContainer>
+          </ChartContainer>
         </div>
 
         <div className="text-sm text-muted-foreground text-center">
           Generated: {format(new Date(analytics.generated_at), "PPP 'at' p")}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+/**
+ * Weight data table component with shadcn table (pounds only)
+ */
+function WeightDataTable() {
+  const { data: measurements, isLoading, error } = useQuery({
+    queryKey: ["weight-measurements"],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeightMeasurements({ limit: 50 }),
+  });
+
+  if (isLoading) {
+    return (
+      <Card className="w-full">
+        <CardContent className="pt-6">
+          <div className="text-center">Loading weight data...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error || !measurements) {
+    return (
+      <Card className="w-full">
+        <CardContent className="pt-6">
+          <div className="text-center text-red-500">
+            Failed to load weight data. Please try again.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Mock data for development since API isn't deployed yet
+  const mockMeasurements = [
+    {
+      id: 1,
+      weight: 168.7,
+      weight_lb: "168.7 lbs",
+      weight_kg: "76.5 kg",
+      timestamp: "2024-01-15T08:00:00Z",
+      source: "Scale"
+    },
+    {
+      id: 2,
+      weight: 169.3,
+      weight_lb: "169.3 lbs",
+      weight_kg: "76.8 kg",
+      timestamp: "2024-01-14T08:00:00Z",
+      source: "Scale"
+    },
+    {
+      id: 3,
+      weight: 170.0,
+      weight_lb: "170.0 lbs",
+      weight_kg: "77.1 kg",
+      timestamp: "2024-01-13T08:00:00Z",
+      source: "Scale"
+    },
+    {
+      id: 4,
+      weight: 170.6,
+      weight_lb: "170.6 lbs",
+      weight_kg: "77.4 kg",
+      timestamp: "2024-01-12T08:00:00Z",
+      source: "Scale"
+    },
+    {
+      id: 5,
+      weight: 171.3,
+      weight_lb: "171.3 lbs",
+      weight_kg: "77.7 kg",
+      timestamp: "2024-01-11T08:00:00Z",
+      source: "Scale"
+    }
+  ];
+
+  const displayData = measurements.length > 0 ? measurements : mockMeasurements;
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <TableIcon className="h-5 w-5" />
+          Weight Measurements Data
+        </CardTitle>
+        <CardDescription>
+          Detailed view of all your weight measurements for trend analysis (pounds)
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Weight (lbs)</TableHead>
+                <TableHead>Weight (kg)</TableHead>
+                <TableHead>Source</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {displayData.map((measurement) => (
+                <TableRow key={measurement.id}>
+                  <TableCell className="font-medium">
+                    {format(new Date(measurement.timestamp), "MMM dd, yyyy")}
+                  </TableCell>
+                  <TableCell>{measurement.weight_lb}</TableCell>
+                  <TableCell>{measurement.weight_kg}</TableCell>
+                  <TableCell className="capitalize">{measurement.source}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        
+        <div className="mt-4 text-sm text-muted-foreground text-center">
+          Showing {displayData.length} measurements • 
+          Last updated: {displayData.length > 0 ? format(new Date(displayData[0].timestamp), "PPP 'at' p") : 'N/A'}
         </div>
       </CardContent>
     </Card>
@@ -716,9 +607,9 @@ export default function HealthBridgeEnhancedPage() {
   useEffect(() => {
     const tocEntries = [
       { title: "📊 Weight Entry", slug: "weight-entry" },
-      { title: "🎯 Goal Tracking", slug: "goal-tracking" },
       { title: "📈 Projections", slug: "projections" },
-      { title: "📊 Analytics", slug: "analytics" }
+      { title: "📊 Analytics", slug: "analytics" },
+      { title: "📋 Data Table", slug: "data-table" }
     ];
 
     // Dispatch custom event to update sidebar TOC
@@ -768,27 +659,23 @@ export default function HealthBridgeEnhancedPage() {
           HealthBridge Enhanced
         </H1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Advanced weight loss tracking with AI-powered projections, goal setting, and comprehensive analytics
+          Advanced weight loss tracking with AI-powered projections and comprehensive analytics (pounds only)
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          💡 Weight goals are managed in your <a href="/settings" className="text-blue-600 hover:underline">Settings page</a>
         </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="goals">Goals</TabsTrigger>
           <TabsTrigger value="projections">Projections</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="data">Data Table</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <EnhancedWeightEntry />
-            <GoalTracker />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="goals" className="space-y-6">
-          <GoalTracker />
+          <EnhancedWeightEntry />
         </TabsContent>
 
         <TabsContent value="projections" className="space-y-6">
@@ -797,6 +684,10 @@ export default function HealthBridgeEnhancedPage() {
 
         <TabsContent value="analytics" className="space-y-6">
           <AnalyticsDashboard />
+        </TabsContent>
+
+        <TabsContent value="data" className="space-y-6">
+          <WeightDataTable />
         </TabsContent>
       </Tabs>
     </div>

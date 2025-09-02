@@ -56,7 +56,7 @@ import {
   TableHead,
   TableFooter,
 } from "../components/ui/table";
-import { Card } from "../components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 // Remove MermaidChart import
 // import MermaidChart from "../components/MermaidChart";
 import { format } from "date-fns";
@@ -64,8 +64,10 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { FilterIcon } from "lucide-react";
+import { FilterIcon, TrendingUp, Activity } from "lucide-react";
 import { H1, H2 } from "@/components/ui/typography";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 // Add shadcn chart imports
 import {
   ChartContainer,
@@ -80,8 +82,25 @@ import {
   CartesianGrid
 } from "recharts";
 import { useAuth } from "../hooks/useAuth";
+import { 
+  UserProfilesAPI, 
+  calculateAge, 
+  calculateBMR, 
+  calculateTDEE,
+  calculateMedicationProjection,
+  formatDateInTimezone
+} from "@/api/userProfiles";
+import { useMedicationTypes } from "@/hooks/useMedications";
 
 const PAGE_SIZE = 10;
+
+const ACTIVITY_LEVELS = [
+  { value: 'sedentary', label: 'Sedentary (little or no exercise)', multiplier: 1.2 },
+  { value: 'light', label: 'Light (light exercise/sports 1-3 days/week)', multiplier: 1.375 },
+  { value: 'moderate', label: 'Moderate (moderate exercise/sports 3-5 days/week)', multiplier: 1.55 },
+  { value: 'active', label: 'Active (hard exercise/sports 6-7 days a week)', multiplier: 1.725 },
+  { value: 'very_active', label: 'Very Active (very hard exercise/sports & physical job)', multiplier: 1.9 }
+];
 
 /**
  * Helper functions for date filtering and data processing
@@ -440,6 +459,8 @@ export default function HealthBridgePage() {
     const tocEntries = [
       { title: "📊 Summary Statistics", slug: "summary-statistics" },
       { title: "📈 Weight Trend", slug: "weight-trend" },
+      { title: "💊 Medication Impact Analysis", slug: "medication-impact" },
+      { title: "⚡ Metabolic Information", slug: "metabolic-info" },
       { title: "🔍 Data Filters", slug: "data-filters" },
       { title: "📋 Weight Data Table", slug: "weight-data-table" }
     ];
@@ -468,6 +489,25 @@ export default function HealthBridgePage() {
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
+
+  // Fetch user profile, weight goal, and medications for analysis
+  const { data: profile } = useQuery({
+    queryKey: ['userProfile', '1'],
+    queryFn: () => UserProfilesAPI.getUserProfile('1'),
+  });
+
+  const { data: goal } = useQuery({
+    queryKey: ['weightGoal', '1'],
+    queryFn: () => UserProfilesAPI.getWeightGoal('1'),
+  });
+
+  const { data: medications } = useQuery({
+    queryKey: ['userMedications', '1'],
+    queryFn: () => UserProfilesAPI.getUserMedications('1'),
+  });
+
+  // Get medication types
+  const { data: medicationTypes } = useMedicationTypes();
 
   // Sort state
   const [sortBy, setSortBy] = useState<"date" | "weight">("date");
@@ -602,6 +642,48 @@ export default function HealthBridgePage() {
       endDate,
     };
   }, [filteredData]);
+
+  // Calculate medication projections if medication and goal exist
+  const medicationProjection = useMemo(() => {
+    if (!profile || !goal || !medications?.length || !medicationTypes) return null;
+    
+    const activeMedication = medications.find(m => m.is_active);
+    if (!activeMedication) return null;
+    
+    // Get current weight from the most recent weight entry
+    const currentWeight = filteredData.length > 0 ? filteredData[0].kg * 2.20462 : 0;
+    if (currentWeight === 0) return null;
+    
+    // Get medication type for multiplier
+    const medicationType = medicationTypes.find(mt => mt.id === activeMedication.medication_type_id);
+    if (!medicationType) return null;
+    
+    // Calculate natural weekly loss (assume 1-2 lbs per week naturally)
+    const naturalWeeklyLoss = 1.5; // Default natural weight loss
+    
+    return calculateMedicationProjection(
+      currentWeight,
+      goal.target_weight_lbs,
+      naturalWeeklyLoss,
+      medicationType.weekly_efficacy_multiplier
+    );
+  }, [profile, goal, medications, medicationTypes, filteredData]);
+
+  // Calculate current age, BMR, and TDEE
+  const currentAge = useMemo(() => {
+    if (!profile?.birthdate) return null;
+    return calculateAge(profile.birthdate);
+  }, [profile?.birthdate]);
+
+  const currentBMR = useMemo(() => {
+    if (!profile) return null;
+    return calculateBMR(profile);
+  }, [profile]);
+
+  const currentTDEE = useMemo(() => {
+    if (!profile || !currentBMR) return null;
+    return calculateTDEE(profile);
+  }, [profile, currentBMR]);
 
   // Prepare chart data for shadcn chart
   const chartData = useMemo(() => {
@@ -1030,7 +1112,153 @@ export default function HealthBridgePage() {
             </ChartContainer>
           </Card>
         </section>
-                 {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
+
+        {/* Medication Impact Analysis Section */}
+        {medicationProjection && (
+          <section className="mb-8">
+            <H2 id="medication-impact" className="mb-4">💊 Medication Impact Analysis</H2>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-teal-600" />
+                  How your medication affects your weight loss timeline
+                </CardTitle>
+                <CardDescription>
+                  Analysis based on your current medication and weight goal
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-gray-900">Natural Weight Loss (No Medication)</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Weekly Loss:</span>
+                        <span className="font-medium">{medicationProjection.natural_weekly_loss} lbs/week</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Timeline:</span>
+                        <span className="font-medium">{medicationProjection.natural_timeline_weeks} weeks</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Completion:</span>
+                        <span className="font-medium">
+                          {goal?.target_date ? formatDateInTimezone(goal.target_date, profile?.timezone || 'America/New_York') : 'Not set'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-gray-900">With Medication</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Weekly Loss:</span>
+                        <span className="font-medium text-green-600">{medicationProjection.medication_weekly_loss} lbs/week</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Timeline:</span>
+                        <span className="font-medium text-green-600">{medicationProjection.medication_timeline_weeks} weeks</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">Completion:</span>
+                        <span className="font-medium text-green-600">
+                          {new Date(medicationProjection.projected_completion_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator className="my-6" />
+
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">
+                    {medicationProjection.medication_impact_percentage}% Faster
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Your medication accelerates weight loss by {medicationProjection.medication_impact_percentage}%
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
+        {/* Metabolic Information Section */}
+        {currentBMR && currentTDEE && (
+          <section className="mb-8">
+            <H2 id="metabolic-info" className="mb-4">⚡ Metabolic Information</H2>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-teal-600" />
+                  Calculated based on your profile and activity level
+                </CardTitle>
+                <CardDescription>
+                  Your body's energy requirements and metabolism
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-teal-600">{currentAge}</div>
+                    <div className="text-sm text-gray-500">Age (years)</div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">{currentBMR}</div>
+                    <div className="text-sm text-gray-500">BMR (calories/day)</div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">{currentTDEE}</div>
+                    <div className="text-sm text-gray-500">TDEE (calories/day)</div>
+                  </div>
+                </div>
+
+                <Separator className="my-6" />
+
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-3">Activity Level Impact Analysis</h4>
+                  <div className="space-y-2">
+                    {ACTIVITY_LEVELS.map((level) => {
+                      const projectedTDEE = Math.round((currentBMR || 0) * level.multiplier);
+                      const isCurrent = level.value === profile?.activity_level;
+                      
+                      return (
+                        <div key={level.value} className={`flex items-center justify-between p-3 rounded-lg border ${
+                          isCurrent ? 'border-teal-200 bg-teal-50' : 'border-gray-200'
+                        }`}>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-sm font-medium capitalize ${
+                              isCurrent ? 'text-teal-700' : 'text-gray-700'
+                            }`}>
+                              {level.value.replace('_', ' ')}
+                            </span>
+                            {isCurrent && <Badge variant="secondary">Current</Badge>}
+                          </div>
+                          <div className="text-right">
+                            <div className={`font-medium ${
+                              isCurrent ? 'text-teal-700' : 'text-gray-700'
+                            }`}>
+                              {projectedTDEE} cal/day
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {level.multiplier}x multiplier
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
+        {/* Filters Section: Quick Filters & Custom Range side by side on desktop, stacked on mobile */}
          <section className="mb-8">
            <H2 id="data-filters" className="mb-4">🔍 Data Filters</H2>
           <Popover>

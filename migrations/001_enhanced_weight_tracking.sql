@@ -147,3 +147,5 @@ CREATE TRIGGER IF NOT EXISTS update_weight_goals_timestamp
 
 -- INSERT INTO weight_goals (target_weight, start_weight, start_date, weekly_goal) 
 -- VALUES (75.0, 80.5, '2024-01-01', 0.5);
+
+-- End of migration

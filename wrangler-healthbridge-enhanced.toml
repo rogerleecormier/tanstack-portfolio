@@ -5,13 +5,17 @@ compatibility_date = "2024-01-01"
 # D1 Database binding
 [[d1_databases]]
 binding = "DB"
-database_name = "healthbridge-enhanced"
-database_id = "your-database-id-here"
+database_name = "health_bridge"
+database_id = "dd2b4664-fa2b-4534-8f07-3d1d0361ec06"
 
 # Environment variables
 [vars]
 ENVIRONMENT = "production"
 API_VERSION = "v2"
+
+# Enable logging for production
+[observability.logs]
+enabled = true
 
 # KV Namespace for caching (optional)
 # [[kv_namespaces]]

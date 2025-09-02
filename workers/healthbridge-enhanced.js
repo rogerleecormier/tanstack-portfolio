@@ -2,22 +2,20 @@
  * @fileoverview Enhanced HealthBridge Worker
  * @description Advanced weight loss tracking and projection API with D1 database integration
  * @author Roger Lee Cormier
- * @version 2.0.0
+ * @version 3.0.0
  * @lastUpdated 2024
  * 
  * @features
- * - Weight loss projections with confidence intervals
+ * - Weight loss projections with confidence intervals (pounds only)
  * - Advanced health metrics tracking
- * - Goal setting and progress tracking
  * - Trend analysis and analytics
  * - Enhanced data schema for comprehensive health tracking
+ * - Goals are managed in Settings page only
  * 
  * @endpoints
  * - POST /api/v2/weight/measurement
  * - GET /api/v2/weight/projections
  * - GET /api/v2/weight/trends
- * - GET /api/v2/goals/progress
- * - POST /api/v2/goals/set
  * - GET /api/v2/analytics/dashboard
  * - GET /api/v2/analytics/comparative
  */
@@ -88,19 +86,6 @@ async function handleV2API(request, env, ctx, corsHeaders) {
     return await getWeightTrends(request, env, corsHeaders);
   }
 
-  // Goals endpoints
-  if (path === '/api/v2/goals/progress') {
-    return await getGoalProgress(request, env, corsHeaders);
-  }
-  if (path === '/api/v2/goals/set') {
-    if (request.method === 'POST') {
-      return await setGoal(request, env, corsHeaders);
-    }
-    if (request.method === 'GET') {
-      return await getGoals(request, env, corsHeaders);
-    }
-  }
-
   // Analytics endpoints
   if (path === '/api/v2/analytics/dashboard') {
     return await getAnalyticsDashboard(request, env, corsHeaders);
@@ -132,12 +117,12 @@ async function handleLegacyAPI(request, env, ctx, corsHeaders) {
 }
 
 /**
- * Create a new weight measurement with enhanced data
+ * Create a new weight measurement (pounds only)
  */
 async function createWeightMeasurement(request, env, corsHeaders) {
   try {
     const body = await request.json();
-    const { weight, unit, timestamp, bodyFat, muscleMass, waterPercentage, source = 'apple_health' } = body;
+    const { weight, unit, timestamp, bodyFat, muscleMass, waterPercentage, source = 'manual' } = body;
 
     // Validate required fields
     if (!weight || !unit || !timestamp) {
@@ -147,19 +132,19 @@ async function createWeightMeasurement(request, env, corsHeaders) {
       );
     }
 
-    // Convert to kg if needed
-    const weightKg = unit === 'lb' ? weight * 0.453592 : weight;
+    // Convert to pounds if needed
+    const weightLbs = unit === 'kg' ? weight * 2.20462 : weight;
 
     // Insert into enhanced weight_measurements table
     const stmt = env.DB.prepare(`
-      INSERT INTO weight_measurements (weight, body_fat_percentage, muscle_mass, water_percentage, timestamp, source)
+      INSERT INTO weight_measurements (weight_lbs, body_fat_percentage, muscle_mass_lbs, water_percentage, timestamp, source)
       VALUES (?, ?, ?, ?, ?, ?)
     `);
 
     const result = await stmt.bind(
-      weightKg,
+      weightLbs,
       bodyFat || null,
-      muscleMass || null,
+      muscleMass ? (unit === 'kg' ? muscleMass * 2.20462 : muscleMass) : null,
       waterPercentage || null,
       timestamp,
       source
@@ -186,7 +171,7 @@ async function createWeightMeasurement(request, env, corsHeaders) {
 }
 
 /**
- * Get weight measurements with enhanced filtering
+ * Get weight measurements with enhanced filtering (pounds only)
  */
 async function getWeightMeasurements(request, env, corsHeaders) {
   try {
@@ -197,7 +182,7 @@ async function getWeightMeasurements(request, env, corsHeaders) {
     const endDate = url.searchParams.get('end_date');
 
     let query = `
-      SELECT id, weight, body_fat_percentage, muscle_mass, water_percentage, timestamp, source
+      SELECT id, weight_lbs, body_fat_percentage, muscle_mass_lbs, water_percentage, timestamp, source
       FROM weight_measurements
     `;
     let params = [];
@@ -217,10 +202,11 @@ async function getWeightMeasurements(request, env, corsHeaders) {
 
     const measurements = result.results.map(row => ({
       id: row.id,
-      weight: row.weight,
-      weight_lb: (row.weight * 2.20462).toFixed(2),
+      weight: row.weight_lbs, // Primary weight in pounds
+      weight_lb: row.weight_lbs.toFixed(2), // Formatted pounds
+      weight_kg: (row.weight_lbs / 2.20462).toFixed(2), // Converted to kg for display
       body_fat_percentage: row.body_fat_percentage,
-      muscle_mass: row.muscle_mass,
+      muscle_mass: row.muscle_mass_lbs,
       water_percentage: row.water_percentage,
       timestamp: row.timestamp,
       source: row.source
@@ -240,7 +226,7 @@ async function getWeightMeasurements(request, env, corsHeaders) {
 }
 
 /**
- * Get weight loss projections with confidence intervals
+ * Get weight loss projections with confidence intervals (pounds only)
  */
 async function getWeightProjections(request, env, corsHeaders) {
   try {
@@ -249,7 +235,7 @@ async function getWeightProjections(request, env, corsHeaders) {
 
     // Get recent weight data for projections
     const stmt = env.DB.prepare(`
-      SELECT weight, timestamp FROM weight_measurements 
+      SELECT weight_lbs, timestamp FROM weight_measurements 
       ORDER BY timestamp DESC LIMIT 30
     `);
     const result = await stmt.all();
@@ -277,7 +263,7 @@ async function getWeightProjections(request, env, corsHeaders) {
 }
 
 /**
- * Calculate weight loss projections using linear regression
+ * Calculate weight loss projections using linear regression (pounds only)
  */
 function calculateWeightProjections(measurements, days) {
   // Sort by date (oldest first)
@@ -287,16 +273,16 @@ function calculateWeightProjections(measurements, days) {
 
   // Calculate daily weight loss rate
   const totalDays = (sortedMeasurements[sortedMeasurements.length - 1].date - sortedMeasurements[0].date) / (1000 * 60 * 60 * 24);
-  const totalWeightLoss = sortedMeasurements[0].weight - sortedMeasurements[sortedMeasurements.length - 1].weight;
+  const totalWeightLoss = sortedMeasurements[0].weight_lbs - sortedMeasurements[sortedMeasurements.length - 1].weight_lbs;
   const dailyRate = totalWeightLoss / totalDays;
 
   // Calculate confidence based on data consistency
-  const variance = calculateVariance(sortedMeasurements.map(m => m.weight));
+  const variance = calculateVariance(sortedMeasurements.map(m => m.weight_lbs));
   const confidence = Math.max(0.1, Math.min(0.95, 1 - (variance / 100)));
 
   // Generate projections
   const projections = [];
-  const currentWeight = sortedMeasurements[sortedMeasurements.length - 1].weight;
+  const currentWeight = sortedMeasurements[sortedMeasurements.length - 1].weight_lbs;
   const currentDate = new Date();
 
   for (let i = 1; i <= days; i++) {
@@ -319,7 +305,7 @@ function calculateWeightProjections(measurements, days) {
     daily_rate: dailyRate,
     confidence: confidence,
     projections: projections,
-    algorithm: 'linear_regression_v1'
+    algorithm: 'linear_regression_v2_pounds'
   };
 }
 
@@ -333,7 +319,7 @@ function calculateVariance(values) {
 }
 
 /**
- * Get weight trends and analysis
+ * Get weight trends and analysis (pounds only)
  */
 async function getWeightTrends(request, env, corsHeaders) {
   try {
@@ -342,7 +328,7 @@ async function getWeightTrends(request, env, corsHeaders) {
 
     // Get weight data for trend analysis
     const stmt = env.DB.prepare(`
-      SELECT weight, timestamp FROM weight_measurements 
+      SELECT weight_lbs FROM weight_measurements 
       WHERE timestamp >= datetime('now', '-${period} days')
       ORDER BY timestamp ASC
     `);
@@ -371,10 +357,10 @@ async function getWeightTrends(request, env, corsHeaders) {
 }
 
 /**
- * Analyze weight trends and patterns
+ * Analyze weight trends and patterns (pounds only)
  */
 function analyzeWeightTrends(measurements) {
-  const weights = measurements.map(m => m.weight);
+  const weights = measurements.map(m => m.weight_lbs);
   const dates = measurements.map(m => new Date(m.timestamp));
 
   // Calculate moving averages
@@ -419,7 +405,7 @@ function calculateMovingAverage(values, window) {
  */
 function detectPlateaus(weights, dates) {
   const plateaus = [];
-  const threshold = 0.5; // kg threshold for plateau detection
+  const threshold = 1.0; // 1 lb threshold for plateau detection
   
   for (let i = 2; i < weights.length; i++) {
     const change = Math.abs(weights[i] - weights[i - 1]);
@@ -449,160 +435,13 @@ function calculateOverallTrend(weights, dates) {
   
   const dailyRate = totalChange / totalDays;
   
-  if (dailyRate > 0.1) return 'gaining';
-  if (dailyRate < -0.1) return 'losing';
+  if (dailyRate > 0.2) return 'gaining'; // 0.2 lbs per day threshold
+  if (dailyRate < -0.2) return 'losing'; // -0.2 lbs per day threshold
   return 'stable';
 }
 
 /**
- * Get goal progress and achievements
- */
-async function getGoalProgress(request, env, corsHeaders) {
-  try {
-    const stmt = env.DB.prepare(`
-      SELECT * FROM weight_goals WHERE is_active = 1 ORDER BY start_date DESC LIMIT 1
-    `);
-    const goalResult = await stmt.all();
-
-    if (goalResult.results.length === 0) {
-      return new Response(
-        JSON.stringify({ message: 'No active goals found' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const goal = goalResult.results[0];
-    
-    // Get current weight
-    const currentWeightStmt = env.DB.prepare(`
-      SELECT weight FROM weight_measurements ORDER BY timestamp DESC LIMIT 1
-    `);
-    const currentWeightResult = await currentWeightStmt.all();
-    
-    if (currentWeightResult.results.length === 0) {
-      return new Response(
-        JSON.stringify({ error: 'No weight data available' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const currentWeight = currentWeightResult.results[0].weight;
-    const progress = calculateGoalProgress(goal, currentWeight);
-
-    return new Response(
-      JSON.stringify(progress),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    console.error('Error getting goal progress:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to get goal progress', message: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  }
-}
-
-/**
- * Calculate goal progress and achievements
- */
-function calculateGoalProgress(goal, currentWeight) {
-  const totalWeightToLose = goal.start_weight - goal.target_weight;
-  const weightLost = goal.start_weight - currentWeight;
-  const progressPercentage = (weightLost / totalWeightToLose) * 100;
-  
-  const daysSinceStart = Math.floor((new Date() - new Date(goal.start_date)) / (1000 * 60 * 60 * 24));
-  const projectedCompletion = goal.target_date ? new Date(goal.target_date) : null;
-  
-  return {
-    goal_id: goal.id,
-    start_weight: goal.start_weight,
-    target_weight: goal.target_weight,
-    current_weight: currentWeight,
-    weight_lost: weightLost,
-    weight_remaining: totalWeightToLose - weightLost,
-    progress_percentage: Math.min(100, Math.max(0, progressPercentage)),
-    days_since_start: daysSinceStart,
-    projected_completion: projectedCompletion,
-    weekly_goal: goal.weekly_goal,
-    is_on_track: progressPercentage >= (daysSinceStart / 7) * (goal.weekly_goal || 1)
-  };
-}
-
-/**
- * Set or update weight loss goals
- */
-async function setGoal(request, env, corsHeaders) {
-  try {
-    const body = await request.json();
-    const { target_weight, start_weight, start_date, target_date, weekly_goal } = body;
-
-    // Validate required fields
-    if (!target_weight || !start_weight || !start_date) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields: target_weight, start_weight, start_date' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Deactivate existing goals
-    await env.DB.prepare('UPDATE weight_goals SET is_active = 0').run();
-
-    // Insert new goal
-    const stmt = env.DB.prepare(`
-      INSERT INTO weight_goals (target_weight, start_weight, start_date, target_date, weekly_goal, is_active)
-      VALUES (?, ?, ?, ?, ?, 1)
-    `);
-
-    const result = await stmt.bind(
-      target_weight,
-      start_weight,
-      start_date,
-      target_date || null,
-      weekly_goal || null
-    ).run();
-
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        goal_id: result.meta.last_row_id,
-        message: 'Goal set successfully' 
-      }),
-      { status: 201, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    console.error('Error setting goal:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to set goal', message: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  }
-}
-
-/**
- * Get all goals (active and inactive)
- */
-async function getGoals(request, env, corsHeaders) {
-  try {
-    const stmt = env.DB.prepare(`
-      SELECT * FROM weight_goals ORDER BY start_date DESC
-    `);
-    const result = await stmt.all();
-
-    return new Response(
-      JSON.stringify(result.results),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    console.error('Error fetching goals:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to fetch goals', message: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  }
-}
-
-/**
- * Get analytics dashboard data
+ * Get analytics dashboard data (pounds only)
  */
 async function getAnalyticsDashboard(request, env, corsHeaders) {
   try {
@@ -626,12 +465,12 @@ async function getAnalyticsDashboard(request, env, corsHeaders) {
 }
 
 /**
- * Calculate comprehensive analytics data
+ * Calculate comprehensive analytics data (pounds only)
  */
 async function calculateAnalytics(env, period) {
   // Get weight measurements
   const weightStmt = env.DB.prepare(`
-    SELECT weight, timestamp FROM weight_measurements 
+    SELECT weight_lbs FROM weight_measurements 
     WHERE timestamp >= datetime('now', '-${period} days')
     ORDER BY timestamp ASC
   `);
@@ -641,7 +480,7 @@ async function calculateAnalytics(env, period) {
     return { error: 'No data available for analytics' };
   }
 
-  const weights = weightResult.results.map(r => r.weight);
+  const weights = weightResult.results.map(r => r.weight_lbs);
   const dates = weightResult.results.map(r => new Date(r.timestamp));
 
   // Calculate key metrics
@@ -697,7 +536,7 @@ function calculateConsistencyScore(weights) {
   if (weights.length < 2) return 0;
   
   let consistentDays = 0;
-  const threshold = 0.5; // kg threshold for consistency
+  const threshold = 1.0; // 1 lb threshold for consistency
   
   for (let i = 1; i < weights.length; i++) {
     const change = Math.abs(weights[i] - weights[i - 1]);
@@ -769,7 +608,7 @@ async function calculateAndStoreProjections(env) {
   try {
     // Get recent weight data
     const stmt = env.DB.prepare(`
-      SELECT weight, timestamp FROM weight_measurements 
+      SELECT weight_lbs, timestamp FROM weight_measurements 
       ORDER BY timestamp DESC LIMIT 30
     `);
     const result = await stmt.all();
@@ -780,7 +619,7 @@ async function calculateAndStoreProjections(env) {
     
     // Store projections in database for caching
     const insertStmt = env.DB.prepare(`
-      INSERT OR REPLACE INTO weight_projections (projected_date, projected_weight, confidence_interval, calculation_date, algorithm_version)
+      INSERT OR REPLACE INTO weight_projections (projected_date, projected_weight_lbs, confidence_interval, calculation_date, algorithm_version)
       VALUES (?, ?, ?, ?, ?)
     `);
 
@@ -799,7 +638,7 @@ async function calculateAndStoreProjections(env) {
 }
 
 /**
- * Legacy API functions for backward compatibility
+ * Legacy API functions for backward compatibility (pounds only)
  */
 async function getLegacyWeights(request, env, corsHeaders) {
   try {
@@ -807,7 +646,7 @@ async function getLegacyWeights(request, env, corsHeaders) {
     const limit = url.searchParams.get('limit') || '100';
 
     const stmt = env.DB.prepare(`
-      SELECT weight as kg, timestamp as date FROM weight_measurements 
+      SELECT weight_lbs as lbs, timestamp as date FROM weight_measurements 
       ORDER BY timestamp DESC LIMIT ?
     `);
     const result = await stmt.bind(parseInt(limit)).all();
@@ -837,14 +676,14 @@ async function createLegacyWeight(request, env, corsHeaders) {
       );
     }
 
-    const weightKg = unit === 'lb' ? weight * 0.453592 : weight;
+    const weightLbs = unit === 'kg' ? weight * 2.20462 : weight;
 
     const stmt = env.DB.prepare(`
-      INSERT INTO weight_measurements (weight, timestamp, source)
+      INSERT INTO weight_measurements (weight_lbs, timestamp, source)
       VALUES (?, ?, 'legacy_api')
     `);
 
-    const result = await stmt.bind(weightKg, timestamp).run();
+    const result = await stmt.bind(weightLbs, timestamp).run();
 
     return new Response(
       JSON.stringify({ success: true, id: result.meta.last_row_id }),

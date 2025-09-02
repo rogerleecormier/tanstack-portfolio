@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code, FileText, Target } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 import { cachedContentService } from '@/api/cachedContentService';
@@ -457,7 +457,7 @@ export const SiteAdminPage: React.FC = () => {
            </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - System Status & User Info */}
             <div className="space-y-6">
               {/* User Profile Card */}
@@ -525,6 +525,65 @@ export const SiteAdminPage: React.FC = () => {
               </Card>
 
               
+            </div>
+            
+            {/* Middle Column - Protected Pages Navigation */}
+            <div className="space-y-6">
+              <Card className="border-teal-200 bg-teal-50/30">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center space-x-2">
+                    <Briefcase className="h-5 w-5 text-teal-600" />
+                    <CardTitle className="text-lg text-teal-900">Protected Pages</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="grid grid-cols-1 gap-3">
+                    <a
+                      href="/protected/site-admin"
+                      className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200 hover:bg-teal-50 transition-colors duration-200"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Settings className="h-4 w-4 text-teal-600" />
+                        <span className="font-medium text-teal-800">Site Administration</span>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-teal-600" />
+                    </a>
+                    
+                    <a
+                      href="/protected/content-studio"
+                      className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200 hover:bg-teal-50 transition-colors duration-200"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-teal-600" />
+                        <span className="font-medium text-teal-800">Content Studio</span>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-teal-600" />
+                    </a>
+                    
+                    <a
+                      href="/protected/healthbridge-enhanced"
+                      className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200 hover:bg-teal-50 transition-colors duration-200"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Target className="h-4 w-4 text-teal-600" />
+                        <span className="font-medium text-teal-800">HealthBridge Enhanced</span>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-teal-600" />
+                    </a>
+                    
+                    <a
+                      href="/protected/settings"
+                      className="flex items-center justify-between p-3 bg-white rounded-lg border border-teal-200 hover:bg-teal-50 transition-colors duration-200"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Settings className="h-4 w-4 text-teal-600" />
+                        <span className="font-medium text-teal-800">Settings</span>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-teal-600" />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
             
             {/* Right Column - API Health Monitoring */}
