@@ -419,11 +419,7 @@
   }
 
   /* Control pre tag spacing in hero-profile cards */
-  .hero-profile-card pre,
-  .hero-profile-card .prose pre,
-  .hero-profile-card .prose * pre,
-  .hero-profile-card pre.prose-pre,
-  .hero-profile-card .prose-pre {
+  .hero-profile-card pre {
     @apply mt-0 mb-0 p-0 bg-transparent border-none rounded-none shadow-none m-0;
     background-image: none !important;
   }
@@ -547,9 +543,7 @@
     @apply font-sans;
   }
 
-  /* Override any prose or markdown styling that might affect pre tags */
-  .hero-profile-card .prose pre,
-  .hero-profile-card .prose pre *,
+  /* Override any markdown styling that might affect pre tags */
   .hero-profile-card .markdown-card-content pre,
   .hero-profile-card .markdown-card-content pre * {
     @apply font-sans;
@@ -616,6 +610,8 @@
   [class*="CardDescription"] {
     @apply font-sans;
   }
+
+
 
   /* Target all possible badge variations */
   .badge,

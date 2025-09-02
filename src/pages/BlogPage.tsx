@@ -6,7 +6,7 @@ import slugify from 'slugify'
 
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { cn } from '@/lib/utils'
+
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { H1, H2, P, Blockquote } from "@/components/ui/typography";
@@ -288,23 +288,7 @@ export default function BlogPage({ slug }: { slug: string }) {
           )}
 
           {/* Blog Content */}
-          <article
-            className={cn(
-              "prose prose-neutral dark:prose-invert max-w-none w-full",
-              "prose-headings:tracking-tight",
-              "prose-h1:text-4xl prose-h1:font-extrabold",
-              "prose-h2:text-3xl prose-h2:font-semibold prose-h2:border-b prose-h2:pb-2 prose-h2:mt-12 prose-h2:mb-6",
-              "prose-h3:text-2xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-4",
-              "prose-h4:text-xl prose-h4:font-semibold prose-h4:mt-6 prose-h4:mb-3",
-              "prose-p:leading-7 prose-p:text-base",
-              "prose-blockquote:border-l-4 prose-blockquote:border-teal-500 prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:bg-teal-50 prose-blockquote:py-2 prose-blockquote:rounded-r",
-              "prose-code:relative prose-code:rounded prose-code:bg-muted prose-code:px-[0.3rem] prose-code:py-[0.2rem] prose-code:font-mono prose-code:text-sm",
-              "prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:border prose-pre:bg-muted prose-pre:p-4",
-              "prose-strong:font-semibold prose-strong:text-gray-900",
-              "prose-a:text-teal-600 prose-a:no-underline hover:prose-a:text-teal-700 hover:prose-a:underline",
-              "prose-img:rounded-lg prose-img:shadow-md"
-            )}
-          >
+                                <article className="max-w-none w-full space-y-6">
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}

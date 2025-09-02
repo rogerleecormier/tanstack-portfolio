@@ -680,8 +680,8 @@ const ContentCreationStudio: React.FC<ContentCreationStudioProps> = ({
                 <h3 className="text-lg font-medium text-blue-900">Live Preview</h3>
               </CardHeader>
               <CardContent className="p-4">
-                <div 
-                  className="prose prose-teal max-w-none min-h-[600px]"
+                          <div 
+            className="max-w-none min-h-[600px] space-y-6"
                   dangerouslySetInnerHTML={{ 
                     __html: viewMode === 'html' 
                       ? editor.getHTML() 

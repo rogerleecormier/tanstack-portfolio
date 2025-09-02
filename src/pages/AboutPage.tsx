@@ -6,11 +6,10 @@ import fm from 'front-matter'
 import slugify from 'slugify'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { cn } from '@/lib/utils'
 
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
-import { H1, H2, P, Blockquote } from "@/components/ui/typography";
+import { H1, H2, H3, H4, P, Blockquote, InlineCode } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
 import { MessageSquare } from "lucide-react";
 import { logger } from '@/utils/logger'
@@ -156,7 +155,7 @@ export default function AboutPage() {
         </header>
 
          {/* Profile card skeleton for about page */}
-         <div className="not-prose mb-12">
+                     <div className="mb-12">
            <Skeleton className="h-64 w-full rounded-lg" />
          </div>
 
@@ -212,20 +211,7 @@ export default function AboutPage() {
       <div>
 
             {/* Markdown Content */}
-            <article
-              className={cn(
-                "prose prose-neutral dark:prose-invert max-w-none w-full",
-                "prose-headings:tracking-tight",
-                "prose-h1:text-4xl prose-h1:font-extrabold",
-                "prose-h2:text-3xl prose-h2:font-semibold prose-h2:border-b prose-h2:pb-2",
-                "prose-h3:text-2xl prose-h3:font-semibold",
-                "prose-h4:text-xl prose-h4:font-semibold",
-                "prose-p:leading-7",
-                "prose-blockquote:border-l-2 prose-blockquote:pl-6 prose-blockquote:italic",
-                "prose-code:relative prose-code:rounded prose-code:bg-muted prose-code:px-[0.3rem] prose-code:py-[0.2rem] prose-code:font-mono prose-code:text-sm",
-                "prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:border prose-pre:bg-muted prose-pre:p-4"
-              )}
-            >
+                          <article className="max-w-none w-full space-y-6">
           <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
@@ -253,15 +239,24 @@ export default function AboutPage() {
                   </H2>
                 )
               },
-              h3: ({ children, ...props }) => {
-                const text = String(children)
-                const id = slugify(text, { lower: true, strict: true })
-                return (
-                  <h3 id={id} className="scroll-m-20 text-2xl font-semibold tracking-tight" {...props}>
-                    {children}
-                  </h3>
-                )
-              },
+                              h3: ({ children, ...props }) => {
+                  const text = String(children)
+                  const id = slugify(text, { lower: true, strict: true })
+                  return (
+                    <H3 id={id} {...props}>
+                      {children}
+                    </H3>
+                  )
+                },
+                h4: ({ children, ...props }) => {
+                  const text = String(children)
+                  const id = slugify(text, { lower: true, strict: true })
+                  return (
+                    <H4 id={id} {...props}>
+                      {children}
+                    </H4>
+                  )
+                },
               blockquote: ({ children, ...props }) => (
                 <Blockquote {...props}>
                   {children}
@@ -619,18 +614,15 @@ export default function AboutPage() {
                   )
                 }
 
-                // Inline code and other code blocks
-                const isInline = !className?.includes("language-")
-                if (isInline) {
-                  return (
-                    <code
-                      className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
-                      {...props}
-                    >
-                      {children}
-                    </code>
-                  )
-                }
+                                  // Inline code and other code blocks
+                  const isInline = !className?.includes("language-")
+                  if (isInline) {
+                    return (
+                      <InlineCode {...props}>
+                        {children}
+                      </InlineCode>
+                    )
+                  }
 
                 return (
                   <code className={`font-mono text-sm ${className || ""}`} {...props}>

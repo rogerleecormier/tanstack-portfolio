@@ -1005,7 +1005,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       <div className="space-y-6">
         {/* Editor */}
         <div className="w-full">
-          <div className="prose prose-sm max-w-none">
+                        <div className="max-w-none space-y-6">
             <EditorContent 
               editor={editor} 
               className="min-h-[600px] max-h-[800px] overflow-y-auto border border-teal-200 rounded-lg"

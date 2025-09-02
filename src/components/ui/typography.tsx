@@ -69,4 +69,50 @@ export function Blockquote(
   );
 }
 
-// Add Small, Muted, InlineCode, Table wrappers as needed using the docs' classes
+export function Small(props: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <small
+      {...props}
+      className={["text-sm font-medium leading-none", props.className].join(" ")}
+    />
+  );
+}
+
+export function Muted(props: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      {...props}
+      className={["text-sm text-muted-foreground", props.className].join(" ")}
+    />
+  );
+}
+
+export function InlineCode(props: React.HTMLAttributes<HTMLElement>) {
+  return (
+    <code
+      {...props}
+      className={[
+        "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold",
+        props.className,
+      ].join(" ")}
+    />
+  );
+}
+
+export function Lead(props: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      {...props}
+      className={["text-xl text-muted-foreground", props.className].join(" ")}
+    />
+  );
+}
+
+export function Large(props: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      {...props}
+      className={["text-lg font-semibold", props.className].join(" ")}
+    />
+  );
+}

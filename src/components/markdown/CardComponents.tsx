@@ -895,7 +895,7 @@ export const HeroProfileCard: React.FC<BaseCardProps & {
       </CardHeader>
       {children && (
         <CardContent>
-          <div className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans prose prose-sm max-w-none hero-profile-content markdown-card-content">
+          <div className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans max-w-none hero-profile-content markdown-card-content space-y-6">
             <CardMarkdownContent content={children} />
           </div>
         </CardContent>
