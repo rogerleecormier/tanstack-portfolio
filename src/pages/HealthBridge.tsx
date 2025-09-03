@@ -492,8 +492,8 @@ export default function HealthBridgePage() {
   });
 
   // Fetch user profile, weight goal, and medications for analysis
-  // Use authenticated user ID if available, otherwise fall back to '1' for development
-  const userId = user?.sub || '1';
+  // Use authenticated user email if available, otherwise fall back to '1' for development
+  const userId = user?.email || user?.sub || '1';
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ['userProfile', userId],
     queryFn: () => UserProfilesAPI.getUserProfile(userId),

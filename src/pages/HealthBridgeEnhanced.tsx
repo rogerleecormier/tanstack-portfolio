@@ -294,17 +294,17 @@ function WeightProjections() {
   
   // Always call hooks, but conditionally use their data
   const weightGoalQuery = useQuery({
-    queryKey: ["weightGoal", user?.sub],
-    queryFn: () => UserProfilesAPI.getWeightGoal(user?.sub || ''),
-    enabled: !!user?.sub && isAuthenticated,
+    queryKey: ["weightGoal", user?.email || user?.sub],
+    queryFn: () => UserProfilesAPI.getWeightGoal(user?.email || user?.sub || ''),
+    enabled: !!(user?.email || user?.sub) && isAuthenticated,
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const userMedicationsQuery = useQuery({
-    queryKey: ["userMedications", user?.sub],
-    queryFn: () => UserProfilesAPI.getUserMedications(user?.sub || ''),
-    enabled: !!user?.sub && isAuthenticated,
+    queryKey: ["userMedications", user?.email || user?.sub],
+    queryFn: () => UserProfilesAPI.getUserMedications(user?.email || user?.sub || ''),
+    enabled: !!(user?.email || user?.sub) && isAuthenticated,
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -319,7 +319,7 @@ function WeightProjections() {
 
   const projectionsQuery = useQuery({
     queryKey: ["projections"],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, user?.sub), // 90 days for better trend analysis
+    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, user?.email || user?.sub), // 90 days for better trend analysis
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -1022,7 +1022,7 @@ function AnalyticsDashboard() {
   // Always call hooks, but conditionally use their data
   const analyticsQuery = useQuery({
     queryKey: ["analytics"],
-    queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30, user?.sub),
+    queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30, user?.email || user?.sub),
     enabled: isAuthenticated,
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -1038,25 +1038,25 @@ function AnalyticsDashboard() {
 
   // Bring goals and projections into Analytics for richer insights
   const weightGoalQuery = useQuery({
-    queryKey: ["weightGoal", user?.sub],
-    queryFn: () => UserProfilesAPI.getWeightGoal(user?.sub || ''),
-    enabled: !!user?.sub && isAuthenticated,
+    queryKey: ["weightGoal", user?.email || user?.sub],
+    queryFn: () => UserProfilesAPI.getWeightGoal(user?.email || user?.sub || ''),
+    enabled: !!(user?.email || user?.sub) && isAuthenticated,
     retry: 2,
     staleTime: 5 * 60 * 1000,
   });
 
   const projectionsQuery = useQuery({
-    queryKey: ["projections", user?.sub],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, user?.sub),
+    queryKey: ["projections", user?.email || user?.sub],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, user?.email || user?.sub),
     enabled: isAuthenticated,
     retry: 2,
     staleTime: 5 * 60 * 1000,
   });
 
   const userMedicationsQuery = useQuery({
-    queryKey: ["userMedications", user?.sub],
-    queryFn: () => UserProfilesAPI.getUserMedications(user?.sub || ''),
-    enabled: !!user?.sub && isAuthenticated,
+    queryKey: ["userMedications", user?.email || user?.sub],
+    queryFn: () => UserProfilesAPI.getUserMedications(user?.email || user?.sub || ''),
+    enabled: !!(user?.email || user?.sub) && isAuthenticated,
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
