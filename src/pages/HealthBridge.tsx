@@ -88,7 +88,8 @@ import {
   calculateBMR, 
   calculateTDEE,
   calculateMedicationProjection,
-  formatDateInTimezone
+  formatDateInTimezone,
+  MedicationType
 } from "@/api/userProfiles";
 import { useMedicationTypes } from "@/hooks/useMedications";
 
@@ -655,7 +656,7 @@ export default function HealthBridgePage() {
     if (currentWeight === 0) return null;
     
     // Get medication type for multiplier
-    const medicationType = medicationTypes.find(mt => mt.id === activeMedication.medication_type_id);
+    const medicationType = medicationTypes.find((mt: MedicationType) => mt.id === activeMedication.medication_type_id);
     if (!medicationType) return null;
     
     // Calculate natural weekly loss (assume 1-2 lbs per week naturally)

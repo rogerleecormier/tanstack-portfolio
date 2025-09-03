@@ -535,51 +535,9 @@ function WeightProjections() {
   }, [currentWeight, startingWeight, targetWeight, projections, medicationMultiplier, projectionDays, weightData]);
 
   // Calculate key metrics
-  const totalWeightToLose = useMemo(() => {
-    return startingWeight && currentWeight ? startingWeight - currentWeight : 0;
-  }, [startingWeight, currentWeight]);
+  // Note: weeksToTargetNoMed is calculated in AnalyticsDashboard component where it's actually used
 
-  const weightLostPercentage = useMemo(() => {
-    return startingWeight && totalWeightToLose > 0 ? ((totalWeightToLose / startingWeight) * 100).toFixed(1) : '0.0';
-  }, [startingWeight, totalWeightToLose]);
 
-  const weeksToTargetNoMed = useMemo(() => {
-    if (!currentWeight || !targetWeight || !projections?.daily_rate) return 0;
-    const dailyRate = Math.abs(projections.daily_rate);
-    return dailyRate > 0 ? Math.ceil((currentWeight - targetWeight) / (dailyRate * 7)) : 0;
-  }, [currentWeight, targetWeight, projections]);
-
-  const weeksToTargetWithMed = useMemo(() => {
-    if (!currentWeight || !targetWeight || !projections?.daily_rate || medicationMultiplier <= 0) return weeksToTargetNoMed;
-    const dailyRate = Math.abs(projections.daily_rate * (1 + medicationMultiplier));
-    return dailyRate > 0 ? Math.ceil((currentWeight - targetWeight) / (dailyRate * 7)) : 0;
-  }, [currentWeight, targetWeight, projections, medicationMultiplier, weeksToTargetNoMed]);
-
-  const medicationBenefit = useMemo(() => {
-    return Math.max(0, weeksToTargetNoMed - weeksToTargetWithMed);
-  }, [weeksToTargetNoMed, weeksToTargetWithMed]);
-
-  // Get active medication names for display
-  const activeMedicationNames = useMemo(() => {
-    if (!userMedications || userMedications.length === 0) return 'No active medications';
-    
-    return userMedications
-      .filter(med => med.is_active)
-      .map(med => {
-        // Get medication name from medication_type relationship
-        let name = 'Unknown Medication';
-        if (med.medication_type?.name) {
-          name = med.medication_type.name;
-        } else if (med.medication_type?.generic_name) {
-          name = med.medication_type.generic_name;
-        }
-        
-        const dosage = med.dosage_mg ? ` ${med.dosage_mg}mg` : '';
-        const frequency = med.frequency ? ` (${med.frequency})` : '';
-        return `${name}${dosage}${frequency}`;
-      })
-      .join(', ');
-  }, [userMedications]);
 
   // Loading states
   if (isLoadingWeights || isLoadingWeightGoal || isLoadingMedications) {
@@ -1184,88 +1142,6 @@ function AnalyticsDashboard() {
       }
     };
   }, [weightData]);
-
-  // Calculate medication impact analysis
-  const medicationAnalysis = useMemo(() => {
-    if (!userMedications || userMedications.length === 0) return null;
-
-    const activeMedications = userMedications.filter(med => med.is_active);
-    if (activeMedications.length === 0) return null;
-
-    let totalMultiplier = 0;
-    const medicationDetails = activeMedications.map(medication => {
-      let baseMultiplier = 0;
-      let dosageMultiplier = 1;
-      
-      if (medication.medication_type?.weekly_efficacy_multiplier) {
-        baseMultiplier = medication.medication_type.weekly_efficacy_multiplier - 1;
-      } else {
-        switch (medication.medication_type?.name?.toLowerCase()) {
-          case 'ozempic':
-          case 'wegovy':
-            baseMultiplier = 0.4;
-            break;
-          case 'zepbound':
-          case 'mounjaro':
-            baseMultiplier = 0.75;
-            break;
-          default:
-            baseMultiplier = 0.2;
-        }
-      }
-
-      if (medication.dosage_mg) {
-        const dosage = medication.dosage_mg;
-        if (medication.medication_type?.name?.toLowerCase() === 'zepbound' || 
-            medication.medication_type?.generic_name?.toLowerCase() === 'tirzepatide') {
-          if (dosage <= 2.5) dosageMultiplier = 0.3;
-          else if (dosage <= 5) dosageMultiplier = 0.6;
-          else if (dosage <= 7.5) dosageMultiplier = 0.75;
-          else if (dosage <= 10) dosageMultiplier = 0.85;
-          else if (dosage <= 12.5) dosageMultiplier = 0.95;
-          else dosageMultiplier = 1.0;
-        } else if (medication.medication_type?.name?.toLowerCase() === 'ozempic' || 
-                   medication.medication_type?.name?.toLowerCase() === 'wegovy' ||
-                   medication.medication_type?.generic_name?.toLowerCase() === 'semaglutide') {
-          if (dosage <= 0.25) dosageMultiplier = 0.2;
-          else if (dosage <= 0.5) dosageMultiplier = 0.4;
-          else if (dosage <= 1.0) dosageMultiplier = 0.6;
-          else if (dosage <= 1.7) dosageMultiplier = 0.8;
-          else dosageMultiplier = 1.0;
-        } else {
-          dosageMultiplier = Math.min(dosage / 10, 1.0);
-        }
-      }
-
-      let frequencyMultiplier = 1;
-      switch (medication.frequency?.toLowerCase()) {
-        case 'daily': frequencyMultiplier = 1.0; break;
-        case 'weekly': frequencyMultiplier = 1.0; break;
-        case 'bi-weekly':
-        case 'biweekly': frequencyMultiplier = 0.7; break;
-        case 'monthly': frequencyMultiplier = 0.4; break;
-        default: frequencyMultiplier = 1.0;
-      }
-
-      const medicationContribution = baseMultiplier * dosageMultiplier * frequencyMultiplier;
-      totalMultiplier += medicationContribution;
-
-      return {
-        name: medication.medication_type?.name || 'Unknown',
-        generic: medication.medication_type?.generic_name || 'Unknown',
-        dosage: medication.dosage_mg,
-        frequency: medication.frequency,
-        efficacy: medicationContribution,
-        startDate: medication.start_date
-      };
-    });
-
-    return {
-      totalMultiplier: Math.min(totalMultiplier, 1.0),
-      medications: medicationDetails,
-      estimatedWeeklyBoost: enhancedMetrics ? Math.abs(enhancedMetrics.totalChange / enhancedMetrics.weeklyChanges.length * totalMultiplier) : 0
-    };
-  }, [userMedications, enhancedMetrics]);
 
   // Derive projections-based metrics (moved from Projections tab)
   const currentWeight = useMemo(() => {

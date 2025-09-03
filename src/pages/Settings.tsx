@@ -13,6 +13,7 @@ import {
   UserProfile, 
   WeightGoal, 
   UserMedication,
+  MedicationType,
   convertLbsToKg,
   TIMEZONES,
   getCurrentTimezone,
@@ -696,7 +697,7 @@ export default function SettingsPage() {
                          <SelectTrigger className="min-h-[40px]">
                            <SelectValue placeholder={medicationTypesLoading ? "Loading..." : "Select medication"}>
                              {(() => {
-                               const selectedType = medicationTypes?.find(type => type.id === editingMedication?.medication_type_id);
+                                                               const selectedType = medicationTypes?.find((type: MedicationType) => type.id === editingMedication?.medication_type_id);
                                return selectedType ? selectedType.name : undefined;
                              })()}
                            </SelectValue>
@@ -712,7 +713,7 @@ export default function SettingsPage() {
                            ) : (medicationTypes && Array.isArray(medicationTypes) && medicationTypes.length === 0) ? (
                              <div className="p-2 text-center text-sm text-red-500">No medications available</div>
                            ) : (
-                             medicationTypes?.map((type) => (
+                                                           medicationTypes?.map((type: MedicationType) => (
                                <SelectItem key={type.id} value={type.id.toString()}>
                                  <div className="flex flex-col space-y-1 py-2">
                                    <div className="flex items-center gap-2">
