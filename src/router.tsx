@@ -32,6 +32,7 @@ import ToolsListPage from './pages/ToolsListPage'
 
 import { SiteAdminPage } from './pages/SiteAdminPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
+import CloudflareDebugPage from './pages/CloudflareDebugPage'
 
 import { PortfolioPageWrapper, ProjectsPageWrapper, RootErrorBoundary } from './components/RouteWrappers'
 
@@ -158,6 +159,13 @@ const cloudflareStatusRoute = createRoute({
   component: CloudflareStatusChecker,
 })
 
+// Cloudflare debug route
+const cloudflareDebugRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'cloudflare-debug',
+  component: CloudflareDebugPage,
+})
+
 
 
 // Newsletter preferences route
@@ -203,6 +211,7 @@ const routeTree = rootRoute.addChildren([
   siteAdminRoute,
   contentStudioRoute,
   cloudflareStatusRoute,
+  cloudflareDebugRoute,
   newsletterPreferencesRoute,
   toolsListRoute,
   markdownEditorRoute,

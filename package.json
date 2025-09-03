@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit",
-    "test-cloudflare": "node debug-cloudflare.js",
+    "test-cloudflare": "node scripts/test-cloudflare-access.js",
     "deploy-branch": "npm run build && echo 'Branch built successfully. Push to GitHub to deploy.'"
   },
   "dependencies": {
