@@ -5,7 +5,7 @@ compatibility_date = "2024-01-01"
 # Custom domain for the worker
 [env.production]
 name = "r2-content-proxy"
-route = "r2-content-proxy.rcormier.dev/*"
+# route = "r2-content-proxy.rcormier.dev/*"
 
 # R2 bucket bindings for production
 [[env.production.r2_buckets]]
