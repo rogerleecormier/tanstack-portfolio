@@ -313,6 +313,7 @@ function WeightProjections() {
     queryKey: ["enhanced-weights"],
     queryFn: () => HealthBridgeEnhancedAPI.getWeights(),
     enabled: isAuthenticated,
+    retry: 2,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
@@ -1049,208 +1050,7 @@ function WeightProjections() {
         </CardContent>
       </Card>
 
-      {/* Enhanced Analytical Insights */}
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Projection Analysis & Insights</CardTitle>
-          <CardDescription>
-            Detailed breakdown of your weight loss journey and medication impact
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-            <div className="p-4 bg-muted rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">
-                {totalWeightToLose.toFixed(1)} lbs
-              </div>
-              <div className="text-sm text-muted-foreground">Total Lost</div>
-              <div className="text-xs text-blue-500 mt-1">{weightLostPercentage}% of starting weight</div>
-            </div>
-            <div className="p-4 bg-muted rounded-lg">
-              <div className="text-2xl font-bold text-red-600">
-                {weeksToTargetNoMed} weeks
-              </div>
-              <div className="text-sm text-muted-foreground">To Target (Natural)</div>
-              <div className="text-xs text-red-500 mt-1">Without medication</div>
-            </div>
-            <div className="p-4 bg-muted rounded-lg">
-              <div className="text-2xl font-bold text-green-600">
-                {weeksToTargetWithMed} weeks
-              </div>
-              <div className="text-sm text-muted-foreground">To Target (Medication)</div>
-              <div className="text-xs text-green-500 mt-1">With current medications</div>
-            </div>
-            <div className="p-4 bg-muted rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">
-                {medicationBenefit} weeks
-              </div>
-              <div className="text-sm text-muted-foreground">Time Saved</div>
-              <div className="text-xs text-purple-500 mt-1">Medication benefit</div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Detailed Analysis */}
-          <div className="space-y-6">
-            <div>
-              <h4 className="font-semibold text-lg mb-3">Weight Loss Journey Analysis</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>
-                    <strong>Starting Weight:</strong> {startingWeight?.toFixed(1)} lbs
-                  </p>
-                  <p>
-                    <strong>Current Weight:</strong> {currentWeight?.toFixed(1)} lbs
-                  </p>
-                  <p>
-                    <strong>Target Weight:</strong> {targetWeight?.toFixed(1)} lbs
-                  </p>
-                  <p>
-                    <strong>Total Lost:</strong> {totalWeightToLose.toFixed(1)} lbs ({weightLostPercentage}%)
-                  </p>
-                </div>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>
-                    <strong>Current Trajectory:</strong> {projections?.daily_rate ? Math.abs(projections.daily_rate * 7).toFixed(2) : 'N/A'} lbs per week
-                  </p>
-                  <p>
-                    <strong>Data Points:</strong> {weightData?.length || 0} weight measurements
-                  </p>
-                  <p>
-                    <strong>Confidence Level:</strong> {projections?.confidence ? `${(projections.confidence * 100).toFixed(0)}%` : 'N/A'}
-                  </p>
-                  <p>
-                    <strong>Algorithm:</strong> {projections?.algorithm || 'Linear Regression'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-lg mb-3">Medication Impact Analysis</h4>
-              <div className="space-y-3 text-sm text-muted-foreground">
-                {medicationMultiplier > 0 ? (
-                  <>
-                    <p>
-                      <strong>Active Medications:</strong> {activeMedicationNames}
-                    </p>
-                    <p>
-                      <strong>Effectiveness Boost:</strong> Your current medications provide a {(medicationMultiplier * 100).toFixed(0)}% improvement in weight loss rate.
-                    </p>
-                    <p>
-                      <strong>Enhanced Weekly Rate:</strong> {projections?.daily_rate ? Math.abs(projections.daily_rate * (1 + medicationMultiplier) * 7).toFixed(2) : 'N/A'} lbs per week with medication vs. {projections?.daily_rate ? Math.abs(projections.daily_rate * 7).toFixed(2) : 'N/A'} lbs per week naturally.
-                    </p>
-                    <p>
-                      <strong>Time to Target:</strong> {weeksToTargetWithMed} weeks with medication vs. {weeksToTargetNoMed} weeks without medication.
-                    </p>
-                    <p>
-                      <strong>Time Saved:</strong> {medicationBenefit} weeks faster to reach your target weight.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p>
-                      <strong>No Active Medications:</strong> You're currently using natural weight loss methods only.
-                    </p>
-                    <p>
-                      <strong>Consideration:</strong> Discuss weight loss medications with your healthcare provider to potentially accelerate your progress.
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-lg mb-3">Activity Level Impact Analysis</h4>
-              <div className="space-y-3 text-sm text-muted-foreground">
-                <p>
-                  <strong>Current Activity Level:</strong> {projections?.activity_level ? projections.activity_level.replace('_', ' ').toUpperCase() : 'MODERATE'}
-                </p>
-                <p>
-                  <strong>Activity Multiplier:</strong> {projections?.activity_multiplier ? `${projections.activity_multiplier.toFixed(2)}x` : '1.0x'} - This affects your base weight loss rate.
-                </p>
-                {projections?.activity_level && projections.activity_level !== 'moderate' ? (
-                  <>
-                    <p>
-                      <strong>Impact:</strong> Your {projections.activity_level.replace('_', ' ')} activity level 
-                      {projections.activity_multiplier && projections.activity_multiplier > 1.0 ? 
-                        ` increases your weight loss rate by ${((projections.activity_multiplier - 1) * 100).toFixed(0)}%` :
-                        projections.activity_multiplier && projections.activity_multiplier < 1.0 ?
-                        ` reduces your weight loss rate by ${((1 - projections.activity_multiplier) * 100).toFixed(0)}%` :
-                        ' maintains your standard weight loss rate'
-                      }.
-                    </p>
-                    <p>
-                      <strong>Recommendation:</strong> 
-                      {projections.activity_multiplier && projections.activity_multiplier < 1.0 ? 
-                        ' Consider increasing your daily activity to improve weight loss results.' :
-                        ' Your high activity level is optimizing your weight loss potential.'
-                      }
-                    </p>
-                  </>
-                ) : (
-                  <p>
-                    <strong>Standard Activity:</strong> Your moderate activity level provides a balanced weight loss rate.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-lg mb-3">Recommendations & Insights</h4>
-              <div className="space-y-3 text-sm text-muted-foreground">
-                {medicationBenefit > 0 ? (
-                  <>
-                    <p>
-                      <strong>Medication Benefits:</strong> Your current medication regimen could save you {medicationBenefit} weeks in reaching your target weight of {targetWeight} lbs.
-                    </p>
-                    <p>
-                      <strong>Consistency is Key:</strong> Whether using medication or not, maintaining your current daily routine of {projections?.daily_rate ? Math.abs(projections.daily_rate).toFixed(3) : 'N/A'} lbs/day will be crucial for success.
-                    </p>
-                    <p>
-                      <strong>Monitoring:</strong> Continue tracking your weight regularly to monitor medication effectiveness and adjust projections as needed.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p>
-                      <strong>Natural Progress:</strong> You're making steady progress toward your target weight. Consider if medication could provide additional benefits.
-                    </p>
-                    <p>
-                      <strong>Lifestyle Factors:</strong> Focus on diet, exercise, and sleep quality to optimize your natural weight loss rate.
-                    </p>
-                  </>
-                )}
-                
-                <p>
-                  <strong>Target Achievement:</strong> Reaching your goal of {targetWeight} lbs will take {weeksToTargetNoMed} weeks naturally
-                  {medicationMultiplier > 0 ? ` or ${weeksToTargetWithMed} weeks with your current medications.` : '.'}
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-lg mb-3">Data Quality & Confidence</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <p>
-                  <strong>Data Points:</strong> Projections based on {weightData?.length || 0} weight measurements over {projectionDays} days.
-                </p>
-                <p>
-                  <strong>Confidence Level:</strong> {projections?.confidence ? `${(projections.confidence * 100).toFixed(0)}%` : 'N/A'} confidence in current projections.
-                </p>
-                <p>
-                  <strong>Algorithm:</strong> Using {projections?.algorithm || 'Linear Regression'} for trend analysis and future predictions.
-                </p>
-                <p>
-                  <strong>Disclaimer:</strong> These projections are estimates based on historical data. Individual results may vary based on lifestyle changes, medical conditions, and adherence to treatment plans.
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Enhanced Analytical Insights moved to Analytics */}
     </div>
   );
 }
@@ -1270,9 +1070,344 @@ function AnalyticsDashboard() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
+  const weightDataQuery = useQuery({
+    queryKey: ["enhanced-weights"],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeights(),
+    enabled: isAuthenticated,
+    retry: 2,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+
+  // Bring goals and projections into Analytics for richer insights
+  const weightGoalQuery = useQuery({
+    queryKey: ["weightGoal", user?.sub],
+    queryFn: () => UserProfilesAPI.getWeightGoal(user?.sub || ''),
+    enabled: !!user?.sub && isAuthenticated,
+    retry: 2,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const projectionsQuery = useQuery({
+    queryKey: ["projections", user?.sub],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, user?.sub),
+    enabled: isAuthenticated,
+    retry: 2,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const userMedicationsQuery = useQuery({
+    queryKey: ["userMedications", user?.sub],
+    queryFn: () => UserProfilesAPI.getUserMedications(user?.sub || ''),
+    enabled: !!user?.sub && isAuthenticated,
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   const analytics = isAuthenticated ? analyticsQuery.data : DUMMY_DATA.analytics;
-  const isLoading = isAuthenticated && analyticsQuery.isLoading;
-  const error = isAuthenticated && analyticsQuery.error;
+  const weightData = isAuthenticated ? weightDataQuery.data : DUMMY_DATA.weightData;
+  const userMedications = isAuthenticated ? userMedicationsQuery.data : DUMMY_DATA.userMedications;
+  const weightGoal = isAuthenticated ? weightGoalQuery.data : DUMMY_DATA.weightGoal;
+  const projections = isAuthenticated ? projectionsQuery.data : DUMMY_DATA.projections;
+  
+  const isLoading = isAuthenticated && (analyticsQuery.isLoading || weightDataQuery.isLoading);
+  const error = isAuthenticated && (analyticsQuery.error || weightDataQuery.error);
+
+  // Calculate enhanced analytics metrics
+  const enhancedMetrics = useMemo(() => {
+    if (!weightData || weightData.length === 0) return null;
+
+    // Extract and convert weights to numbers
+    const weights = weightData.map(w => {
+      const weight = w.weight_lb || w.weight;
+      return typeof weight === 'string' ? parseFloat(weight) : weight;
+    }).filter((w): w is number => !isNaN(w));
+    
+    if (weights.length === 0) return null;
+    
+    // Sort weight data by timestamp
+    const sortedWeightData = [...weightData].sort((a, b) => {
+      const dateA = new Date(a.timestamp || '');
+      const dateB = new Date(b.timestamp || '');
+      return dateA.getTime() - dateB.getTime();
+    });
+    
+    // Extract sorted weights as numbers
+    const sortedWeights = sortedWeightData.map(w => {
+      const weight = w.weight_lb || w.weight;
+      return typeof weight === 'string' ? parseFloat(weight) : weight;
+    }).filter((w): w is number => !isNaN(w));
+    
+    if (sortedWeights.length === 0) return null;
+    
+    const currentWeight = sortedWeights[sortedWeights.length - 1];
+    const startingWeight = sortedWeights[0];
+    const totalChange = currentWeight - startingWeight;
+    const totalChangePercentage = ((totalChange / startingWeight) * 100);
+    
+    // Calculate weekly averages for trend analysis
+    const weeklyAverages: number[] = [];
+    const weeklyChanges: number[] = [];
+    for (let i = 7; i < sortedWeights.length; i += 7) {
+      const weekStart = sortedWeights[i - 7];
+      const weekEnd = sortedWeights[i];
+      const weeklyAvg = (weekStart + weekEnd) / 2;
+      const weeklyChange = weekEnd - weekStart;
+      weeklyAverages.push(weeklyAvg);
+      weeklyChanges.push(weeklyChange);
+    }
+
+    // Calculate statistical measures
+    const mean = weights.reduce((a, b) => a + b, 0) / weights.length;
+    const variance = weights.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / weights.length;
+    const standardDeviation = Math.sqrt(variance);
+    const coefficientOfVariation = (standardDeviation / mean) * 100;
+
+    // Calculate trend consistency
+    const positiveChanges = weeklyChanges.filter((change: number) => change < 0).length;
+    const consistencyScore = weeklyChanges.length > 0 ? (positiveChanges / weeklyChanges.length) * 100 : 0;
+
+    return {
+      currentWeight,
+      startingWeight,
+      totalChange,
+      totalChangePercentage,
+      mean,
+      standardDeviation,
+      coefficientOfVariation,
+      weeklyAverages,
+      weeklyChanges,
+      consistencyScore,
+      dataPoints: weights.length,
+      dateRange: {
+        start: new Date(sortedWeightData[sortedWeightData.length - 1].timestamp || ''),
+        end: new Date(sortedWeightData[0].timestamp || '')
+      }
+    };
+  }, [weightData]);
+
+  // Calculate medication impact analysis
+  const medicationAnalysis = useMemo(() => {
+    if (!userMedications || userMedications.length === 0) return null;
+
+    const activeMedications = userMedications.filter(med => med.is_active);
+    if (activeMedications.length === 0) return null;
+
+    let totalMultiplier = 0;
+    const medicationDetails = activeMedications.map(medication => {
+      let baseMultiplier = 0;
+      let dosageMultiplier = 1;
+      
+      if (medication.medication_type?.weekly_efficacy_multiplier) {
+        baseMultiplier = medication.medication_type.weekly_efficacy_multiplier - 1;
+      } else {
+        switch (medication.medication_type?.name?.toLowerCase()) {
+          case 'ozempic':
+          case 'wegovy':
+            baseMultiplier = 0.4;
+            break;
+          case 'zepbound':
+          case 'mounjaro':
+            baseMultiplier = 0.75;
+            break;
+          default:
+            baseMultiplier = 0.2;
+        }
+      }
+
+      if (medication.dosage_mg) {
+        const dosage = medication.dosage_mg;
+        if (medication.medication_type?.name?.toLowerCase() === 'zepbound' || 
+            medication.medication_type?.generic_name?.toLowerCase() === 'tirzepatide') {
+          if (dosage <= 2.5) dosageMultiplier = 0.3;
+          else if (dosage <= 5) dosageMultiplier = 0.6;
+          else if (dosage <= 7.5) dosageMultiplier = 0.75;
+          else if (dosage <= 10) dosageMultiplier = 0.85;
+          else if (dosage <= 12.5) dosageMultiplier = 0.95;
+          else dosageMultiplier = 1.0;
+        } else if (medication.medication_type?.name?.toLowerCase() === 'ozempic' || 
+                   medication.medication_type?.name?.toLowerCase() === 'wegovy' ||
+                   medication.medication_type?.generic_name?.toLowerCase() === 'semaglutide') {
+          if (dosage <= 0.25) dosageMultiplier = 0.2;
+          else if (dosage <= 0.5) dosageMultiplier = 0.4;
+          else if (dosage <= 1.0) dosageMultiplier = 0.6;
+          else if (dosage <= 1.7) dosageMultiplier = 0.8;
+          else dosageMultiplier = 1.0;
+        } else {
+          dosageMultiplier = Math.min(dosage / 10, 1.0);
+        }
+      }
+
+      let frequencyMultiplier = 1;
+      switch (medication.frequency?.toLowerCase()) {
+        case 'daily': frequencyMultiplier = 1.0; break;
+        case 'weekly': frequencyMultiplier = 1.0; break;
+        case 'bi-weekly':
+        case 'biweekly': frequencyMultiplier = 0.7; break;
+        case 'monthly': frequencyMultiplier = 0.4; break;
+        default: frequencyMultiplier = 1.0;
+      }
+
+      const medicationContribution = baseMultiplier * dosageMultiplier * frequencyMultiplier;
+      totalMultiplier += medicationContribution;
+
+      return {
+        name: medication.medication_type?.name || 'Unknown',
+        generic: medication.medication_type?.generic_name || 'Unknown',
+        dosage: medication.dosage_mg,
+        frequency: medication.frequency,
+        efficacy: medicationContribution,
+        startDate: medication.start_date
+      };
+    });
+
+    return {
+      totalMultiplier: Math.min(totalMultiplier, 1.0),
+      medications: medicationDetails,
+      estimatedWeeklyBoost: enhancedMetrics ? Math.abs(enhancedMetrics.totalChange / enhancedMetrics.weeklyChanges.length * totalMultiplier) : 0
+    };
+  }, [userMedications, enhancedMetrics]);
+
+  // Derive projections-based metrics (moved from Projections tab)
+  const currentWeight = useMemo(() => {
+    if (weightData && weightData.length > 0) {
+      const weight = weightData[0].weight_lb || weightData[0].weight;
+      return typeof weight === 'string' ? parseFloat(weight) : weight;
+    }
+    return null;
+  }, [weightData]);
+
+  const startingWeight = useMemo(() => {
+    if (weightData && weightData.length > 0) {
+      const sortedWeightData = [...weightData].sort((a, b) => {
+        const dateA = new Date(a.timestamp || 0);
+        const dateB = new Date(b.timestamp || 0);
+        return dateA.getTime() - dateB.getTime();
+      });
+      const weight = sortedWeightData[0].weight_lb || sortedWeightData[0].weight;
+      return typeof weight === 'string' ? parseFloat(weight) : weight;
+    }
+    return null;
+  }, [weightData]);
+
+  const targetWeight = useMemo(() => {
+    return weightGoal?.target_weight_lbs || null;
+  }, [weightGoal]);
+
+  const medicationMultiplier = useMemo(() => {
+    if (!userMedications || userMedications.length === 0) return 0;
+    const activeMedications = userMedications.filter(med => med.is_active);
+    if (activeMedications.length === 0) return 0;
+
+    let totalMultiplier = 0;
+    activeMedications.forEach(medication => {
+      let baseMultiplier = 0;
+      let dosageMultiplier = 1;
+
+      if (medication.medication_type?.weekly_efficacy_multiplier) {
+        baseMultiplier = medication.medication_type.weekly_efficacy_multiplier - 1;
+      } else {
+        switch (medication.medication_type?.name?.toLowerCase()) {
+          case 'ozempic':
+          case 'wegovy':
+            baseMultiplier = 0.4;
+            break;
+          case 'zepbound':
+          case 'mounjaro':
+            baseMultiplier = 0.75;
+            break;
+          default:
+            baseMultiplier = 0.2;
+        }
+      }
+
+      if (medication.dosage_mg) {
+        const dosage = medication.dosage_mg;
+        if (medication.medication_type?.name?.toLowerCase() === 'zepbound' || 
+            medication.medication_type?.generic_name?.toLowerCase() === 'tirzepatide') {
+          if (dosage <= 2.5) dosageMultiplier = 0.3;
+          else if (dosage <= 5) dosageMultiplier = 0.6;
+          else if (dosage <= 7.5) dosageMultiplier = 0.75;
+          else if (dosage <= 10) dosageMultiplier = 0.85;
+          else if (dosage <= 12.5) dosageMultiplier = 0.95;
+          else dosageMultiplier = 1.0;
+        } else if (medication.medication_type?.name?.toLowerCase() === 'ozempic' || 
+                   medication.medication_type?.name?.toLowerCase() === 'wegovy' ||
+                   medication.medication_type?.generic_name?.toLowerCase() === 'semaglutide') {
+          if (dosage <= 0.25) dosageMultiplier = 0.2;
+          else if (dosage <= 0.5) dosageMultiplier = 0.4;
+          else if (dosage <= 1.0) dosageMultiplier = 0.6;
+          else if (dosage <= 1.7) dosageMultiplier = 0.8;
+          else dosageMultiplier = 1.0;
+        } else {
+          dosageMultiplier = Math.min(dosage / 10, 1.0);
+        }
+      }
+
+      let frequencyMultiplier = 1;
+      switch (medication.frequency?.toLowerCase()) {
+        case 'daily': frequencyMultiplier = 1.0; break;
+        case 'weekly': frequencyMultiplier = 1.0; break;
+        case 'bi-weekly':
+        case 'biweekly': frequencyMultiplier = 0.7; break;
+        case 'monthly': frequencyMultiplier = 0.4; break;
+        default: frequencyMultiplier = 1.0;
+      }
+
+      const medicationContribution = baseMultiplier * dosageMultiplier * frequencyMultiplier;
+      totalMultiplier += medicationContribution;
+    });
+
+    return Math.min(totalMultiplier, 1.0);
+  }, [userMedications]);
+
+  const weeksToTargetNoMed = useMemo(() => {
+    if (!currentWeight || !targetWeight || !projections?.daily_rate) return 0;
+    const dailyRate = Math.abs(projections.daily_rate);
+    return dailyRate > 0 ? Math.ceil((currentWeight - targetWeight) / (dailyRate * 7)) : 0;
+  }, [currentWeight, targetWeight, projections]);
+
+  const weeksToTargetWithMed = useMemo(() => {
+    if (!currentWeight || !targetWeight || !projections?.daily_rate || medicationMultiplier <= 0) return weeksToTargetNoMed;
+    const dailyRate = Math.abs(projections.daily_rate * (1 + medicationMultiplier));
+    return dailyRate > 0 ? Math.ceil((currentWeight - targetWeight) / (dailyRate * 7)) : 0;
+  }, [currentWeight, targetWeight, projections, medicationMultiplier, weeksToTargetNoMed]);
+
+  const medicationBenefit = useMemo(() => {
+    return Math.max(0, weeksToTargetNoMed - weeksToTargetWithMed);
+  }, [weeksToTargetNoMed, weeksToTargetWithMed]);
+
+  const activeMedicationNames = useMemo(() => {
+    if (!userMedications || userMedications.length === 0) return 'No active medications';
+    return userMedications
+      .filter(med => med.is_active)
+      .map(med => {
+        let name = 'Unknown Medication';
+        if (med.medication_type?.name) {
+          name = med.medication_type.name;
+        } else if (med.medication_type?.generic_name) {
+          name = med.medication_type.generic_name;
+        }
+        const dosage = med.dosage_mg ? ` ${med.dosage_mg}mg` : '';
+        const frequency = med.frequency ? ` (${med.frequency})` : '';
+        return `${name}${dosage}${frequency}`;
+      })
+      .join(', ');
+  }, [userMedications]);
+
+  // Safe derived values for presentation
+  const hasWeights = currentWeight != null && startingWeight != null;
+  const totalLostLbs = hasWeights ? (startingWeight as number) - (currentWeight as number) : 0;
+  const totalLostPct = hasWeights && (startingWeight as number) > 0
+    ? (totalLostLbs / (startingWeight as number)) * 100
+    : 0;
+  const dailyRate = projections?.daily_rate ?? null;
+  const confidence = projections?.confidence ?? null;
+  const activityLevel = projections?.activity_level;
+  const activityMultiplier = projections?.activity_multiplier;
+  const stdDev = enhancedMetrics?.standardDeviation ?? null;
+  const cv = enhancedMetrics?.coefficientOfVariation ?? null;
+  const consistencyPct = enhancedMetrics?.consistencyScore ?? analytics?.trends?.consistency_score ?? null;
+  const dataPointsCount = enhancedMetrics?.dataPoints ?? (weightData?.length || 0);
 
   if (isLoading) {
     return (
@@ -1305,6 +1440,7 @@ function AnalyticsDashboard() {
   ];
 
   return (
+    <>
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -1419,11 +1555,403 @@ function AnalyticsDashboard() {
           </ChartContainer>
         </div>
 
+        {(() => {
+          const start = analytics.metrics.starting_weight;
+          const curr = analytics.metrics.current_weight;
+          const min = analytics.metrics.min_weight;
+          const max = analytics.metrics.max_weight;
+          const delta = Number((curr - start).toFixed(1));
+          const direction = delta === 0 ? 'no net change' : (delta < 0 ? 'loss' : 'gain');
+          return (
+            <div className="text-sm text-muted-foreground mt-2 text-center">
+              {`Since start: ${Math.abs(delta).toFixed(1)} lbs ${direction}. Range: ${min.toFixed(1)}–${max.toFixed(1)} lbs.`}
+            </div>
+          );
+        })()}
+
         <div className="text-sm text-muted-foreground text-center">
           Generated: {format(new Date(analytics.generated_at), "PPP 'at' p")}
         </div>
       </CardContent>
     </Card>
+
+    {/* Actual vs 7-day Moving Average */}
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Actual vs 7-day Moving Average</CardTitle>
+        <CardDescription>Short-term smoothing to reveal the underlying trend</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {weightData && weightData.length > 1 ? (
+          <>
+            {(() => {
+              // Prepare chronological series
+              const sorted = [...weightData]
+                .sort((a, b) => new Date(a.timestamp || 0).getTime() - new Date(b.timestamp || 0).getTime())
+                .map((d) => ({
+                  date: format(new Date(d.timestamp || ''), 'MMM dd'),
+                  weight: typeof (d.weight_lb ?? d.weight) === 'string' ? parseFloat(String(d.weight_lb ?? d.weight)) : Number(d.weight_lb ?? d.weight)
+                }));
+
+              // 7-point moving average (approx 1 week if daily)
+              const ma = sorted.map((_, idx) => {
+                const start = Math.max(0, idx - 6);
+                const window = sorted.slice(start, idx + 1);
+                const avg = window.reduce((sum, v) => sum + (v.weight || 0), 0) / window.length;
+                return Number(avg.toFixed(2));
+              });
+
+              const chartData = sorted.map((row, i) => ({ name: row.date, actual: row.weight, ma7: ma[i] }));
+
+              return (
+                <div className="h-64 w-full">
+                  <ChartContainer
+                    config={{
+                      actual: { label: 'Actual (lbs)', color: '#2563eb' },
+                      ma7: { label: '7-day MA (lbs)', color: '#10b981' },
+                    }}
+                    className="h-full w-full"
+                  >
+                    <LineChart data={chartData} width={800} height={256}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis dataKey="name" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                      <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                      <ChartTooltip content={<ChartTooltipContent className="w-[180px]" />} />
+                      <Line type="monotone" dataKey="actual" stroke="#2563eb" strokeWidth={2} dot={false} name="Actual" />
+                      <Line type="monotone" dataKey="ma7" stroke="#10b981" strokeWidth={2} dot={false} name="7-day MA" />
+                    </LineChart>
+                  </ChartContainer>
+                </div>
+              );
+            })()}
+            <p className="text-sm text-muted-foreground">
+              The blue line shows your raw daily weights. The green line smooths short-term noise by averaging the last 7 readings,
+              making your underlying trend easier to see.
+            </p>
+            {(() => {
+              // Recompute quick metrics for the notes
+              const sorted = [...weightData]
+                .sort((a, b) => new Date(a.timestamp || 0).getTime() - new Date(b.timestamp || 0).getTime())
+                .map((d) => ({
+                  date: format(new Date(d.timestamp || ''), 'MMM dd'),
+                  weight: typeof (d.weight_lb ?? d.weight) === 'string' ? parseFloat(String(d.weight_lb ?? d.weight)) : Number(d.weight_lb ?? d.weight)
+                }));
+              const ma = sorted.map((_, idx) => {
+                const start = Math.max(0, idx - 6);
+                const window = sorted.slice(start, idx + 1);
+                const avg = window.reduce((sum, v) => sum + (v.weight || 0), 0) / window.length;
+                return Number(avg.toFixed(2));
+              });
+              if (ma.length === 0) return null;
+              const lastIdx = ma.length - 1;
+              const compareIdx = Math.max(0, lastIdx - 7);
+              const weeklyChange = Number((ma[lastIdx] - ma[compareIdx]).toFixed(2));
+              const actualVsMA = sorted[lastIdx].weight < ma[lastIdx] ? 'below' : 'above';
+              return (
+                <p className="text-sm text-muted-foreground">
+                  {`Past week, the smoothed trend ${weeklyChange < 0 ? 'decreased' : weeklyChange > 0 ? 'increased' : 'held steady'} by ${Math.abs(weeklyChange).toFixed(2)} lbs. Latest actual is ${actualVsMA} the trendline.`}
+                </p>
+              );
+            })()}
+          </>
+        ) : (
+          <div className="text-sm text-muted-foreground">Not enough data to render moving average yet.</div>
+        )}
+      </CardContent>
+    </Card>
+
+    {/* Medication Effect Comparison */}
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Medication Effect on Weekly Rate</CardTitle>
+        <CardDescription>Comparison of natural vs. with-medication projected weekly loss</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {dailyRate != null ? (
+          (() => {
+            const natural = Math.abs(dailyRate * 7);
+            const withMed = Math.abs(dailyRate * (1 + medicationMultiplier) * 7);
+            const medData = [
+              { label: 'Natural', value: Number(natural.toFixed(2)) },
+              { label: 'With Medication', value: Number(withMed.toFixed(2)) },
+            ];
+            return (
+              <>
+                <div className="h-56 w-full">
+                  <ChartContainer
+                    config={{ value: { label: 'Weekly Rate (lbs/wk)', color: '#3b82f6' } }}
+                    className="h-full w-full"
+                  >
+                    <BarChart data={medData} width={800} height={224}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                      <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                      <ChartTooltip content={<ChartTooltipContent className="w-[160px]" nameKey="value" />} />
+                      <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ChartContainer>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Bars compare your projected weekly loss without medication versus with your current regimen applied.
+                  The difference reflects your estimated medication effectiveness.
+                </p>
+                {(() => {
+                  if (dailyRate == null) return null;
+                  const natural = Math.abs(dailyRate * 7);
+                  const withMed = Math.abs(dailyRate * (1 + medicationMultiplier) * 7);
+                  const delta = withMed - natural;
+                  const pct = natural > 0 ? (delta / natural) * 100 : 0;
+                  return (
+                    <p className="text-sm text-muted-foreground">
+                      {`With medication, projected weekly loss improves by ${delta.toFixed(2)} lbs (${pct.toFixed(0)}%) versus natural.`}
+                    </p>
+                  );
+                })()}
+              </>
+            );
+          })()
+        ) : (
+          <div className="text-sm text-muted-foreground">No trajectory available to compute medication effect.</div>
+        )}
+      </CardContent>
+    </Card>
+
+    {/* Activity Impact (scenario comparison) */}
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Activity Impact Scenarios</CardTitle>
+        <CardDescription>How weekly rate changes across typical activity levels</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {dailyRate != null ? (
+          (() => {
+            const ACTIVITY: Record<string, number> = { sedentary: 0.9, moderate: 1.0, active: 1.1, very_active: 1.2 };
+            const actData = Object.entries(ACTIVITY).map(([k, mult]) => ({
+              label: k.replace('_', ' ').replace(/^./, (c) => c.toUpperCase()),
+              value: Number(Math.abs(dailyRate * mult * 7).toFixed(2)),
+              key: k,
+            }));
+            return (
+              <>
+                <div className="h-56 w-full">
+                  <ChartContainer
+                    config={{ value: { label: 'Weekly Rate (lbs/wk)', color: '#10b981' } }}
+                    className="h-full w-full"
+                  >
+                    <BarChart data={actData} width={800} height={224}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                      <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                      <ChartTooltip content={<ChartTooltipContent className="w-[160px]" nameKey="value" />} />
+                      <Bar dataKey="value" fill="#10b981" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ChartContainer>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  These scenarios illustrate how your weekly loss could vary with different activity levels. Your current
+                  activity setting is {activityLevel ? activityLevel.replace('_', ' ') : 'moderate'} with a multiplier of
+                  {" "}{activityMultiplier != null ? activityMultiplier.toFixed(2) : '1.00'}x.
+                </p>
+                {(() => {
+                  if (dailyRate == null) return null;
+                  const ACTIVITY: Record<string, number> = { sedentary: 0.9, moderate: 1.0, active: 1.1, very_active: 1.2 };
+                  const currentKey = activityLevel ?? 'moderate';
+                  const currentWeekly = Math.abs(dailyRate * (ACTIVITY[currentKey] ?? 1.0) * 7);
+                  const entries = Object.entries(ACTIVITY).map(([k, m]) => ({ k, v: Math.abs(dailyRate * m * 7) }));
+                  const best = entries.reduce((a, b) => (b.v > a.v ? b : a), entries[0]);
+                  const delta = best.v - currentWeekly;
+                  if (delta <= 0.01) {
+                    return (
+                      <p className="text-sm text-muted-foreground">Your current activity setting is already near the best-case weekly rate.</p>
+                    );
+                  }
+                  const label = best.k.replace('_', ' ');
+                  return (
+                    <p className="text-sm text-muted-foreground">{`Shifting to ${label} could increase weekly loss by ~${delta.toFixed(2)} lbs.`}</p>
+                  );
+                })()}
+              </>
+            );
+          })()
+        ) : (
+          <div className="text-sm text-muted-foreground">No trajectory available to estimate activity impact.</div>
+        )}
+      </CardContent>
+    </Card>
+
+    {/* Weekly Change Trend */}
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Weekly Change Trend</CardTitle>
+        <CardDescription>Week-over-week weight change (negative is loss)</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {enhancedMetrics && enhancedMetrics.weeklyChanges && enhancedMetrics.weeklyChanges.length > 0 ? (
+          (() => {
+            const wc = enhancedMetrics.weeklyChanges.map((c: number, i: number) => ({ week: `W${i + 1}`, change: Number(c.toFixed(2)) }));
+            return (
+              <>
+                <div className="h-56 w-full">
+                  <ChartContainer
+                    config={{ change: { label: 'Weekly Change (lbs)', color: '#f59e0b' } }}
+                    className="h-full w-full"
+                  >
+                    <BarChart data={wc} width={800} height={224}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis dataKey="week" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                      <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                      <ChartTooltip content={<ChartTooltipContent className="w-[160px]" nameKey="change" />} />
+                      <Bar dataKey="change" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ChartContainer>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Each bar shows the change from one week to the next. Taller negative bars indicate larger weekly losses;
+                  positive bars indicate weeks with gains or rebounds.
+                </p>
+                {(() => {
+                  const changes = (enhancedMetrics?.weeklyChanges as number[]) || [];
+                  if (!changes.length) return null;
+                  const avg = changes.reduce((s, v) => s + v, 0) / changes.length;
+                  const best = Math.min(...changes); // most negative = biggest loss
+                  const worst = Math.max(...changes);
+                  return (
+                    <p className="text-sm text-muted-foreground">
+                      {`Avg weekly change: ${avg.toFixed(2)} lbs. Best week: ${best.toFixed(2)} lbs. Toughest week: ${worst.toFixed(2)} lbs.`}
+                    </p>
+                  );
+                })()}
+              </>
+            );
+          })()
+        ) : (
+          <div className="text-sm text-muted-foreground">Not enough data to compute weekly change trend.</div>
+        )}
+      </CardContent>
+    </Card>
+
+    {/* Projection Analysis & Insights (moved from Projections tab) */}
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Projection Analysis & Insights</CardTitle>
+        <CardDescription>
+          Detailed breakdown of projections, medication impact, and recommendations
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+          <div className="p-4 bg-muted rounded-lg">
+            <div className="text-2xl font-bold text-blue-600">
+              {hasWeights ? totalLostLbs.toFixed(1) : '0.0'} lbs
+            </div>
+            <div className="text-sm text-muted-foreground">Total Lost</div>
+            {hasWeights ? (
+              <div className="text-xs text-blue-500 mt-1">
+                {totalLostPct.toFixed(1)}% of starting weight
+              </div>
+            ) : null}
+          </div>
+          <div className="p-4 bg-muted rounded-lg">
+            <div className="text-2xl font-bold text-red-600">
+              {weeksToTargetNoMed} weeks
+            </div>
+            <div className="text-sm text-muted-foreground">To Target (Natural)</div>
+          </div>
+          <div className="p-4 bg-muted rounded-lg">
+            <div className="text-2xl font-bold text-green-600">
+              {weeksToTargetWithMed} weeks
+            </div>
+            <div className="text-sm text-muted-foreground">To Target (Medication)</div>
+          </div>
+          <div className="p-4 bg-muted rounded-lg">
+            <div className="text-2xl font-bold text-purple-600">
+              {medicationBenefit} weeks
+            </div>
+            <div className="text-sm text-muted-foreground">Time Saved</div>
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* Detailed Analysis */}
+        <div className="space-y-6">
+          <div>
+            <h4 className="font-semibold text-lg mb-3">Weight Loss Journey Analysis</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p><strong>Starting Weight:</strong> {startingWeight != null ? startingWeight.toFixed(1) : 'N/A'} lbs</p>
+                <p><strong>Current Weight:</strong> {currentWeight != null ? currentWeight.toFixed(1) : 'N/A'} lbs</p>
+                <p><strong>Target Weight:</strong> {targetWeight != null ? targetWeight.toFixed(1) : 'Not set'} lbs</p>
+              </div>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p><strong>Current Trajectory:</strong> {dailyRate != null ? Math.abs(dailyRate * 7).toFixed(2) : 'N/A'} lbs/week</p>
+                <p><strong>Data Points:</strong> {weightData?.length || 0} weight measurements</p>
+                <p><strong>Confidence Level:</strong> {confidence != null ? `${(confidence * 100).toFixed(0)}%` : 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-lg mb-3">Medication Impact Analysis</h4>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              {medicationMultiplier > 0 ? (
+                <>
+                  <p><strong>Active Medications:</strong> {activeMedicationNames}</p>
+                  <p><strong>Effectiveness Boost:</strong> {(medicationMultiplier * 100).toFixed(0)}%</p>
+                  <p><strong>Enhanced Weekly Rate:</strong> {dailyRate != null ? Math.abs(dailyRate * (1 + medicationMultiplier) * 7).toFixed(2) : 'N/A'} lbs/week</p>
+                </>
+              ) : (
+                <p><strong>No Active Medications:</strong> Natural trajectory only.</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-lg mb-3">Activity Level Impact</h4>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p><strong>Activity Level:</strong> {activityLevel ? activityLevel.replace('_', ' ').toUpperCase() : 'MODERATE'}</p>
+              <p><strong>Activity Multiplier:</strong> {activityMultiplier != null ? activityMultiplier.toFixed(2) : '1.00'}x</p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-lg mb-3">Statistical Insights</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="p-3 bg-muted rounded">
+                <div className="text-lg font-semibold">{stdDev != null ? stdDev.toFixed(2) : 'N/A'}</div>
+                <div className="text-xs text-muted-foreground">Std Dev (lbs)</div>
+              </div>
+              <div className="p-3 bg-muted rounded">
+                <div className="text-lg font-semibold">{cv != null ? cv.toFixed(1) : 'N/A'}%</div>
+                <div className="text-xs text-muted-foreground">Variability</div>
+              </div>
+              <div className="p-3 bg-muted rounded">
+                <div className="text-lg font-semibold">{consistencyPct != null ? String(Math.round(consistencyPct)) : 'N/A'}%</div>
+                <div className="text-xs text-muted-foreground">Consistency</div>
+              </div>
+              <div className="p-3 bg-muted rounded">
+                <div className="text-lg font-semibold">{dataPointsCount}</div>
+                <div className="text-xs text-muted-foreground">Data Points</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-lg mb-3">Recommendations</h4>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              {medicationBenefit > 0 ? (
+                <p><strong>Medication Benefit:</strong> Your regimen could save ~{medicationBenefit} weeks to reach {targetWeight != null ? targetWeight.toFixed(1) : 'target'} lbs.</p>
+              ) : (
+                <p><strong>Natural Progress:</strong> Steady progress observed. Consider medical options if appropriate.</p>
+              )}
+              <p><strong>Consistency:</strong> Maintain current weekly rate {dailyRate != null ? Math.abs(dailyRate * 7).toFixed(2) : 'N/A'} lbs/week.</p>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+    </>
   );
 }
 
@@ -1905,9 +2433,11 @@ export default function HealthBridgeEnhancedPage() {
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           Advanced weight loss tracking with AI-powered projections and comprehensive analytics (pounds only)
         </p>
-                 <p className="text-sm text-muted-foreground mt-2">
-           💡 Weight goals are managed in your <a href="/protected/settings" className="text-blue-600 hover:underline">Settings page</a>
-         </p>
+        {isAuthenticated && (
+          <p className="text-sm text-muted-foreground mt-2">
+            💡 Weight goals are managed in your <a href="/protected/settings" className="text-blue-600 hover:underline">Settings page</a>
+          </p>
+        )}
       </div>
 
              {!isAuthenticated && (
