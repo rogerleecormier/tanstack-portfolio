@@ -1028,7 +1028,7 @@ function WeightProjections() {
  * Analytics dashboard component (pounds only)
  */
 function AnalyticsDashboard() {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   
   // Use default userId for non-authenticated users to get dummy data
   const userId = user?.email || user?.sub || 'dev-user-123';
