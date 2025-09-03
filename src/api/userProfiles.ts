@@ -355,22 +355,25 @@ export class UserProfilesAPI {
       return profile;
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      // Fallback to mock data if API fails
-      const mockProfile: UserProfile = {
-        id: '1',
-        name: 'Roger Lee Cormier',
-        age: 35,
-        birthdate: '1989-01-01',
-        gender: 'male',
-        height_ft: 5,
-        height_in: 10,
-        activity_level: 'moderate',
-        timezone: 'America/New_York',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      
-      return mockProfile;
+      // Only return mock data in development mode
+      if (process.env.NODE_ENV === 'development') {
+        const mockProfile: UserProfile = {
+          id: userId,
+          name: 'Demo User',
+          age: 35,
+          birthdate: '1989-01-01',
+          gender: 'male',
+          height_ft: 5,
+          height_in: 10,
+          activity_level: 'moderate',
+          timezone: 'America/New_York',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        return mockProfile;
+      }
+      throw error; // Re-throw in production
     }
   }
   
@@ -452,21 +455,24 @@ export class UserProfilesAPI {
       return goal;
     } catch (error) {
       console.error('Error fetching weight goal:', error);
-      // Fallback to mock data if API fails
-      const mockGoal: WeightGoal = {
-        id: 1,
-        user_id: userId,
-        target_weight_lbs: 180.0,
-        start_weight_lbs: 200.0,
-        start_date: new Date().toISOString().split('T')[0],
-        target_date: new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        weekly_goal_lbs: 1.5,
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      
-      return mockGoal;
+      // Only return mock data in development mode
+      if (process.env.NODE_ENV === 'development') {
+        const mockGoal: WeightGoal = {
+          id: 1,
+          user_id: userId,
+          target_weight_lbs: 180.0,
+          start_weight_lbs: 200.0,
+          start_date: new Date().toISOString().split('T')[0],
+          target_date: new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          weekly_goal_lbs: 1.5,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        return mockGoal;
+      }
+      throw error; // Re-throw in production
     }
   }
   
@@ -567,9 +573,12 @@ export class UserProfilesAPI {
       return medications;
     } catch (error) {
       console.error('Error fetching user medications:', error);
-      // Fallback to mock implementation if API fails
-      console.log(`Mock API: Fetching medications for user: ${userId}`);
-      return [];
+      // Only return mock data in development mode
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Mock API: Fetching medications for user: ${userId}`);
+        return [];
+      }
+      throw error; // Re-throw in production
     }
   }
   
@@ -612,23 +621,26 @@ export class UserProfilesAPI {
       return updatedMedication;
     } catch (error) {
       console.error('Error updating medication:', error);
-      // Fallback to mock implementation if API fails
-      console.log(`Mock API: Updating medication: ${data.id}`);
-      const mockMedication: UserMedication = {
-        id: data.id,
-        user_id: data.user_id || '1',
-        medication_type_id: data.medication_type_id || 1,
-        start_date: data.start_date || new Date().toISOString().split('T')[0],
-        end_date: data.end_date,
-        dosage_mg: data.dosage_mg,
-        frequency: data.frequency || 'weekly',
-        is_active: data.is_active ?? true,
-        notes: data.notes,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      
-      return mockMedication;
+      // Only return mock data in development mode
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Mock API: Updating medication: ${data.id}`);
+        const mockMedication: UserMedication = {
+          id: data.id,
+          user_id: data.user_id || '',
+          medication_type_id: data.medication_type_id || 1,
+          start_date: data.start_date || new Date().toISOString().split('T')[0],
+          end_date: data.end_date,
+          dosage_mg: data.dosage_mg,
+          frequency: data.frequency || 'weekly',
+          is_active: data.is_active ?? true,
+          notes: data.notes,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        return mockMedication;
+      }
+      throw error; // Re-throw in production
     }
   }
   
