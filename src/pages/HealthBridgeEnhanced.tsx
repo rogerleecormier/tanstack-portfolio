@@ -1816,9 +1816,9 @@ export default function HealthBridgeEnhancedPage() {
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           Advanced weight loss tracking with AI-powered projections and comprehensive analytics (pounds only)
         </p>
-        <p className="text-sm text-muted-foreground mt-2">
-          💡 Weight goals are managed in your <a href="/protected/settings" className="text-blue-600 hover:underline">Settings page</a>
-        </p>
+                 <p className="text-sm text-muted-foreground mt-2">
+           💡 Weight goals are managed in your <a href="/protected/settings" className="text-blue-600 hover:underline">Settings page</a>
+         </p>
       </div>
 
              {!isAuthenticated && (
@@ -1868,12 +1868,12 @@ export default function HealthBridgeEnhancedPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button 
-                  onClick={() => window.location.href = '/protected/site-admin'}
-                  className="w-full"
-                >
-                  Sign In
-                </Button>
+                                 <Button 
+                   onClick={() => window.location.href = '/projects/healthbridge-enhanced'}
+                   className="w-full"
+                 >
+                   Sign In
+                 </Button>
               </CardContent>
             </Card>
           ) : (

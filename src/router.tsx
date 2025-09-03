@@ -30,7 +30,7 @@ import ContentCreationPage from './pages/ContentCreationPage'
 import ToolsListPage from './pages/ToolsListPage'
 
 
-import { SiteAdminPage } from './components/SiteAdminPage'
+import { SiteAdminPage } from './pages/SiteAdminPage'
 import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
 
 import { PortfolioPageWrapper, ProjectsPageWrapper, RootErrorBoundary } from './components/RouteWrappers'
