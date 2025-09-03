@@ -1189,20 +1189,18 @@ function WeightProjections() {
 function AnalyticsDashboard() {
   const { isAuthenticated } = useAuth();
   
-  const analytics = isAuthenticated ? useQuery({
+  // Always call hooks, but conditionally use their data
+  const analyticsQuery = useQuery({
     queryKey: ["analytics"],
     queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30),
-  }).data : DUMMY_DATA.analytics;
+    enabled: isAuthenticated,
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-  const isLoading = isAuthenticated && useQuery({
-    queryKey: ["analytics"],
-    queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30),
-  }).isLoading;
-
-  const error = isAuthenticated && useQuery({
-    queryKey: ["analytics"],
-    queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30),
-  }).error;
+  const analytics = isAuthenticated ? analyticsQuery.data : DUMMY_DATA.analytics;
+  const isLoading = isAuthenticated && analyticsQuery.isLoading;
+  const error = isAuthenticated && analyticsQuery.error;
 
   if (isLoading) {
     return (
@@ -1346,26 +1344,25 @@ function AnalyticsDashboard() {
 function WeightDataTable() {
   const { isAuthenticated } = useAuth();
   
-  const measurements = isAuthenticated ? useQuery({
+  // Always call hooks, but conditionally use their data
+  const measurementsQuery = useQuery({
     queryKey: ["weight-measurements"],
     queryFn: () => HealthBridgeEnhancedAPI.getWeightMeasurements({ limit: 50 }),
-  }).data : [];
+    enabled: isAuthenticated,
+    retry: 2,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
 
-  const isLoading = isAuthenticated && useQuery({
-    queryKey: ["weight-measurements"],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeightMeasurements({ limit: 50 }),
-  }).isLoading;
-
-  const error = isAuthenticated && useQuery({
-    queryKey: ["weight-measurements"],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeightMeasurements({ limit: 50 }),
-  }).error;
+  const measurements = isAuthenticated ? measurementsQuery.data : [];
+  const isLoading = isAuthenticated && measurementsQuery.isLoading;
+  const error = isAuthenticated && measurementsQuery.error;
 
   // State for chart filtering and sorting
   const [chartPeriod, setChartPeriod] = useState<"7" | "30" | "90" | "all">(isAuthenticated ? "30" : "all");
   const [chartSort, setChartSort] = useState<"asc" | "desc">("asc");
   const [showTrendline, setShowTrendline] = useState(true);
   const [showMovingAverage, setShowMovingAverage] = useState(true);
+  const [movingAveragePeriod, setMovingAveragePeriod] = useState(3);
 
   if (isLoading) {
     return (
@@ -1399,7 +1396,7 @@ function WeightDataTable() {
     source: "Scale"
   }));
 
-  const displayData = isAuthenticated ? (measurements.length > 0 ? measurements : mockMeasurements) : mockMeasurements;
+  const displayData = isAuthenticated ? (measurements && measurements.length > 0 ? measurements : mockMeasurements) : mockMeasurements;
 
   // Prepare chart data with filtering and sorting
   const chartData = displayData
@@ -1431,12 +1428,17 @@ function WeightDataTable() {
 
   // Calculate moving average for the selected period
   const calculateMovingAverage = (data: typeof simpleChartData, period: number) => {
-    if (data.length < period) return [];
+    if (data.length === 0) return [];
     
     const movingAverages = [];
-    for (let i = period - 1; i < data.length; i++) {
-      const sum = data.slice(i - period + 1, i + 1).reduce((acc, item) => acc + item.weight, 0);
-      const average = sum / period;
+    for (let i = 0; i < data.length; i++) {
+      // For early points, use all available data up to current index + 1
+      const startIndex = Math.max(0, i - period + 1);
+      const endIndex = i + 1;
+      const dataSlice = data.slice(startIndex, endIndex);
+      const sum = dataSlice.reduce((acc, item) => acc + item.weight, 0);
+      const average = sum / dataSlice.length;
+      
       movingAverages.push({
         name: data[i].name,
         avgWeight: average,
@@ -1468,7 +1470,7 @@ function WeightDataTable() {
 
   // Generate trend line and moving average data
   const trendLineData = showTrendline ? calculateTrendLine(simpleChartData) : [];
-  const movingAverageData = showMovingAverage ? calculateMovingAverage(simpleChartData, 3) : [];
+  const movingAverageData = showMovingAverage ? calculateMovingAverage(simpleChartData, movingAveragePeriod) : [];
 
   // Combine all data into a single dataset to prevent chart shrinking
   const combinedChartData = simpleChartData.map((item, index) => {
@@ -1558,6 +1560,19 @@ function WeightDataTable() {
                   <BarChart3 className="h-4 w-4 mr-1" />
                   Avg
                 </Button>
+                {showMovingAverage && (
+                  <Select value={movingAveragePeriod.toString()} onValueChange={(value) => setMovingAveragePeriod(parseInt(value))}>
+                    <SelectTrigger className="w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="3">3-day</SelectItem>
+                      <SelectItem value="5">5-day</SelectItem>
+                      <SelectItem value="7">7-day</SelectItem>
+                      <SelectItem value="10">10-day</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
           </div>
@@ -1575,7 +1590,9 @@ function WeightDataTable() {
              </div>
              <div className="flex items-center gap-2">
                <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-               <span className="text-sm text-muted-foreground">Moving Average</span>
+               <span className="text-sm text-muted-foreground">
+                 {showMovingAverage ? `${movingAveragePeriod}-day Moving Average` : "Moving Average"}
+               </span>
              </div>
            </div>
            
@@ -1593,7 +1610,7 @@ function WeightDataTable() {
                               color: "#ef4444"
                             },
                             avgWeight: {
-                              label: "Moving Average",
+                              label: `${movingAveragePeriod}-day Moving Average`,
                               color: "#10b981"
                            }
                          }}
@@ -1651,7 +1668,7 @@ function WeightDataTable() {
                                   stroke="#10b981" 
                                   strokeWidth={2}
                                   dot={{ fill: "#10b981", strokeWidth: 1, r: 3 }}
-                                  name="Moving Average"
+                                  name={`${movingAveragePeriod}-day Moving Average`}
                                 />
                               )}
                          </LineChart>
