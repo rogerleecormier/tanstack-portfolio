@@ -24,11 +24,23 @@ interface DebugResult {
   timestamp: Date;
 }
 
+interface AuthState {
+  status: number;
+  statusText: string;
+  isAuthenticated: boolean;
+  timestamp: string;
+  cookies: string[];
+  allCookies: string[];
+  identity?: CloudflareIdentity;
+  parseError?: string;
+  error?: string;
+}
+
 export default function CloudflareDebugPage() {
   const [results, setResults] = useState<DebugResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cookies, setCookies] = useState<string[]>([]);
-  const [authState, setAuthState] = useState<any>(null);
+  const [authState, setAuthState] = useState<AuthState | null>(null);
 
   useEffect(() => {
     // Get current cookies on page load
@@ -135,7 +147,7 @@ export default function CloudflareDebugPage() {
         signal: AbortSignal.timeout(5000)
       });
 
-      const authInfo: any = {
+      const authInfo: AuthState = {
         status: response.status,
         statusText: response.statusText,
         isAuthenticated: response.ok,
@@ -163,7 +175,10 @@ export default function CloudflareDebugPage() {
       console.log('🔍 Auth state check complete:', authInfo);
       
     } catch (error) {
-      const errorInfo = {
+      const errorInfo: AuthState = {
+        status: 0,
+        statusText: 'Network Error',
+        isAuthenticated: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
         cookies: document.cookie.split(';').map(c => c.trim()).filter(cookie => 
