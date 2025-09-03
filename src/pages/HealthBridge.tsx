@@ -492,22 +492,24 @@ export default function HealthBridgePage() {
   });
 
   // Fetch user profile, weight goal, and medications for analysis
+  // Use authenticated user ID if available, otherwise fall back to '1' for development
+  const userId = user?.sub || '1';
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
-    queryKey: ['userProfile', user?.sub],
-    queryFn: () => UserProfilesAPI.getUserProfile(user?.sub || ''),
-    enabled: !!user?.sub && isAuthenticated,
+    queryKey: ['userProfile', userId],
+    queryFn: () => UserProfilesAPI.getUserProfile(userId),
+    enabled: !!userId,
   });
 
   const { data: goal, isLoading: isLoadingGoal } = useQuery({
-    queryKey: ['weightGoal', user?.sub],
-    queryFn: () => UserProfilesAPI.getWeightGoal(user?.sub || ''),
-    enabled: !!user?.sub && isAuthenticated,
+    queryKey: ['weightGoal', userId],
+    queryFn: () => UserProfilesAPI.getWeightGoal(userId),
+    enabled: !!userId,
   });
 
   const { data: medications, isLoading: isLoadingMedications } = useQuery({
-    queryKey: ['userMedications', user?.sub],
-    queryFn: () => UserProfilesAPI.getUserMedications(user?.sub || ''),
-    enabled: !!user?.sub && isAuthenticated,
+    queryKey: ['userMedications', userId],
+    queryFn: () => UserProfilesAPI.getUserMedications(userId),
+    enabled: !!userId,
   });
 
   // Get medication types

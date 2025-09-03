@@ -35,6 +35,10 @@ export const cspConfig: CSPDirective = {
   'connect-src': [
     "'self'",
     "https://health-bridge-api.rcormier.workers.dev",
+    "https://r2-content-proxy.rcormier.workers.dev",
+    "https://rcormier.dev",
+    "https://www.rcormier.dev",
+    "https://*.pages.dev", // Allow all Cloudflare Pages preview URLs
     "wss:", // For development hot reload
     "ws:"   // For development hot reload
   ],

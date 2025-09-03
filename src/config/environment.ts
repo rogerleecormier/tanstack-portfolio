@@ -24,7 +24,14 @@ export const securityConfig = {
     'script-src': ["'self'", "'unsafe-inline'"],
     'style-src': ["'self'", "'unsafe-inline'"],
     'img-src': ["'self'", "data:", "https:"],
-    'connect-src': ["'self'", "https://health-bridge-api.rcormier.workers.dev"],
+    'connect-src': [
+      "'self'", 
+      "https://health-bridge-api.rcormier.workers.dev",
+      "https://r2-content-proxy.rcormier.workers.dev",
+      "https://rcormier.dev",
+      "https://www.rcormier.dev",
+      "https://*.pages.dev" // Allow all Cloudflare Pages preview URLs
+    ],
     'frame-src': ["'none'"],
     'object-src': ["'none'"],
     'base-uri': ["'self'"],

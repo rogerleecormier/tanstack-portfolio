@@ -297,8 +297,13 @@ async function getWeightProjections(request, env, corsHeaders) {
     
     // Map authenticated user IDs to database user IDs
     let dbUserId = userId;
-    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
-      dbUserId = '1'; // Map to existing user data
+    if (userId === 'dev-user-123') {
+      // Map development users to the existing user profile in the database
+      dbUserId = '1'; // This is where our development data is stored
+    } else if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+      // For Cloudflare Access users, use their actual user ID or create a mapping
+      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
+      dbUserId = userId;
     }
     
     const profileResult = await profileStmt.bind(dbUserId).first();
@@ -970,9 +975,13 @@ async function getUserProfile(request, env, corsHeaders) {
 
     // Map authenticated user IDs to database user IDs
     let dbUserId = userId;
-    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
-      // Map authenticated users to the existing user profile in the database
-      dbUserId = '1'; // This is where our real data is stored
+    if (userId === 'dev-user-123') {
+      // Map development users to the existing user profile in the database
+      dbUserId = '1'; // This is where our development data is stored
+    } else if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+      // For Cloudflare Access users, use their actual user ID or create a mapping
+      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
+      dbUserId = userId;
     }
 
     // Query the actual database
@@ -1058,8 +1067,13 @@ async function updateUserProfile(request, env, corsHeaders) {
 
     // Map authenticated user IDs to database user IDs
     let dbUserId = id;
-    if (id === 'dev-user-123' || id.startsWith('auth0|') || id.includes('cloudflare')) {
-      dbUserId = '1'; // Map to existing user data
+    if (id === 'dev-user-123') {
+      // Map development users to the existing user profile in the database
+      dbUserId = '1'; // This is where our development data is stored
+    } else if (id.startsWith('auth0|') || id.includes('cloudflare') || id.includes('@')) {
+      // For Cloudflare Access users, use their actual user ID or create a mapping
+      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
+      dbUserId = id;
     }
 
     // Update the database
@@ -1114,8 +1128,13 @@ async function getWeightGoal(request, env, corsHeaders) {
 
     // Map authenticated user IDs to database user IDs
     let dbUserId = userId;
-    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
-      dbUserId = '1'; // Map to existing user data
+    if (userId === 'dev-user-123') {
+      // Map development users to the existing user profile in the database
+      dbUserId = '1'; // This is where our development data is stored
+    } else if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+      // For Cloudflare Access users, use their actual user ID or create a mapping
+      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
+      dbUserId = userId;
     }
 
     // Query the actual database
@@ -1248,8 +1267,13 @@ async function getUserMedications(request, env, corsHeaders) {
 
     // Map authenticated user IDs to database user IDs
     let dbUserId = userId;
-    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
-      dbUserId = '1'; // Map to existing user data
+    if (userId === 'dev-user-123') {
+      // Map development users to the existing user profile in the database
+      dbUserId = '1'; // This is where our development data is stored
+    } else if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+      // For Cloudflare Access users, use their actual user ID or create a mapping
+      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
+      dbUserId = userId;
     }
 
     // Query the actual database with JOIN to get medication type details
