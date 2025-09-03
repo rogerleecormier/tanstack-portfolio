@@ -35,6 +35,16 @@ export default function CloudflareDebugPage() {
     const cfCookies = allCookies.filter(cookie => 
       cookie.startsWith('CF_') || cookie.startsWith('cf_')
     );
+    
+    console.log('🔍 Cookie Debug Info:', {
+      rawCookieString: document.cookie,
+      allCookies: allCookies,
+      cfCookies: cfCookies,
+      documentDomain: document.domain,
+      currentUrl: window.location.href,
+      hasCookies: !!document.cookie
+    });
+    
     setCookies(cfCookies);
   }, []);
 
@@ -130,22 +140,90 @@ export default function CloudflareDebugPage() {
         <CardContent className="space-y-6">
           {/* Current Cookies */}
           <div>
-            <h3 className="text-lg font-semibold mb-2">Current Cloudflare Cookies</h3>
-            {cookies.length > 0 ? (
-              <div className="space-y-2">
-                {cookies.map((cookie, index) => (
-                  <div key={index} className="text-sm font-mono bg-gray-100 p-2 rounded">
-                    {cookie}
-                  </div>
-                ))}
+            <h3 className="text-lg font-semibold mb-2">Cookie Analysis</h3>
+            
+            {/* All Cookies */}
+            <div className="mb-4">
+              <h4 className="text-md font-medium mb-2">All Cookies ({document.cookie.split(';').length})</h4>
+              {document.cookie ? (
+                <div className="space-y-2">
+                  {document.cookie.split(';').map((cookie, index) => (
+                    <div key={index} className="text-sm font-mono bg-gray-50 p-2 rounded border">
+                      {cookie.trim()}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500 italic">No cookies found</div>
+              )}
+            </div>
+
+            {/* Cloudflare Cookies */}
+            <div className="mb-4">
+              <h4 className="text-md font-medium mb-2">Cloudflare Cookies ({cookies.length})</h4>
+              {cookies.length > 0 ? (
+                <div className="space-y-2">
+                  {cookies.map((cookie, index) => (
+                    <div key={index} className="text-sm font-mono bg-blue-50 p-2 rounded border border-blue-200">
+                      {cookie}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <Alert>
+                  <AlertDescription>
+                    No Cloudflare cookies found. This may indicate that Cloudflare Access is not properly configured.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+
+            {/* Cookie Debug Info */}
+            <div className="bg-gray-50 p-3 rounded text-sm">
+              <div><strong>Raw cookie string:</strong> <code className="bg-white px-1 rounded">{document.cookie || 'empty'}</code></div>
+              <div><strong>Cookie count:</strong> {document.cookie.split(';').filter(c => c.trim()).length}</div>
+              <div><strong>Has cookies:</strong> {document.cookie ? 'Yes' : 'No'}</div>
+              <div><strong>Document domain:</strong> {document.domain}</div>
+              <div><strong>Current URL:</strong> {window.location.href}</div>
+            </div>
+
+            {/* Storage Debug */}
+            <div className="mt-4">
+              <h4 className="text-md font-medium mb-2">Storage Analysis</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Local Storage */}
+                <div className="bg-gray-50 p-3 rounded text-sm">
+                  <div className="font-medium mb-2">Local Storage</div>
+                  {Object.keys(localStorage).length > 0 ? (
+                    <div className="space-y-1">
+                      {Object.keys(localStorage).map(key => (
+                        <div key={key} className="text-xs">
+                          <strong>{key}:</strong> {localStorage.getItem(key)?.substring(0, 50)}...
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-gray-500 italic">Empty</div>
+                  )}
+                </div>
+
+                {/* Session Storage */}
+                <div className="bg-gray-50 p-3 rounded text-sm">
+                  <div className="font-medium mb-2">Session Storage</div>
+                  {Object.keys(sessionStorage).length > 0 ? (
+                    <div className="space-y-1">
+                      {Object.keys(sessionStorage).map(key => (
+                        <div key={key} className="text-xs">
+                          <strong>{key}:</strong> {sessionStorage.getItem(key)?.substring(0, 50)}...
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-gray-500 italic">Empty</div>
+                  )}
+                </div>
               </div>
-            ) : (
-              <Alert>
-                <AlertDescription>
-                  No Cloudflare cookies found. This may indicate that Cloudflare Access is not properly configured.
-                </AlertDescription>
-              </Alert>
-            )}
+            </div>
           </div>
 
           <Separator />
@@ -157,6 +235,19 @@ export default function CloudflareDebugPage() {
             </Button>
             <Button variant="outline" onClick={clearResults}>
               Clear Results
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                const allCookies = document.cookie.split(';').map(c => c.trim());
+                const cfCookies = allCookies.filter(cookie => 
+                  cookie.startsWith('CF_') || cookie.startsWith('cf_')
+                );
+                setCookies(cfCookies);
+                console.log('🔄 Refreshed cookies:', { allCookies, cfCookies });
+              }}
+            >
+              🔄 Refresh Cookies
             </Button>
           </div>
 
