@@ -5,8 +5,8 @@
  * This script helps diagnose Cloudflare Access configuration issues
  */
 
-const https = require('https');
-const http = require('http');
+import https from 'https';
+import http from 'http';
 
 const DOMAIN = 'www.rcormier.dev';
 const ENDPOINTS = [

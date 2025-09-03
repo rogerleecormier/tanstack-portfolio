@@ -121,7 +121,15 @@ const settingsRoute = createRoute({
 const protectedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'protected',
-  component: SiteAdminPage
+  component: () => {
+    // Get the original page the user was trying to access
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnTo = urlParams.get('returnTo') || urlParams.get('redirect_url') || '/';
+    
+    // Redirect back to the original page, now authenticated
+    window.location.href = returnTo;
+    return null;
+  }
 })
 
 // Site Admin route - PROTECTED
