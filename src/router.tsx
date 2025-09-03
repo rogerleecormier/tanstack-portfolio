@@ -14,7 +14,7 @@ import { createBrowserHistory } from '@tanstack/history'
 import AppLayout from './layout/AppLayout'
 import ProjectsListPage from './pages/ProjectsListPage'
 import NotFound from './pages/NotFound'
-import HealthBridge from './pages/HealthBridge'
+// import HealthBridge from './pages/HealthBridge' // DISABLED - old app being taken offline
 import HealthBridgeEnhanced from './pages/HealthBridgeEnhanced'
 import Settings from './pages/Settings'
 import ContactPage from './pages/ContactPage'
@@ -95,17 +95,17 @@ const projectsRoute = createRoute({
 
 
 
-// Health Bridge Analysis route - moved under projects path
-const healthBridgeAnalysisRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'projects/healthbridge-analysis',
-  component: HealthBridge
-})
+// Health Bridge Analysis route - DISABLED (old app being taken offline)
+// const healthBridgeAnalysisRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: 'projects/healthbridge-analysis',
+//   component: HealthBridge
+// })
 
-// Enhanced HealthBridge route - PROTECTED
+// Enhanced HealthBridge route - PUBLIC
 const healthBridgeEnhancedRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'protected/healthbridge-enhanced',
+  path: 'projects/healthbridge-enhanced',
   component: HealthBridgeEnhanced
 })
 
@@ -192,7 +192,7 @@ const routeTree = rootRoute.addChildren([
   portfolioItemRoute,
   projectsListRoute,
   projectsRoute,
-  healthBridgeAnalysisRoute,
+  // healthBridgeAnalysisRoute, // DISABLED - old app being taken offline
   healthBridgeEnhancedRoute,
   settingsRoute,
   blogListRoute,

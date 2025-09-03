@@ -129,37 +129,37 @@ export default function ProjectsListPage() {
                   </Button>
                 </div>
               </CardContent>
-            </Card>
+                        </Card>
 
-            {/* HealthBridge Analysis - More Compact */}
+            {/* HealthBridge Enhanced - NEW */}
             <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
               <CardHeader className="pb-3 flex-shrink-0">
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline" className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300 text-xs">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    Strategy
+                    Health Analytics
                   </Badge>
                   <span className="text-xs text-gray-500 dark:text-gray-400">2025</span>
                 </div>
                 <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  HealthBridge Analysis
+                  HealthBridge Enhanced
                 </CardTitle>
                 <CardDescription className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Personal weight loss journey analysis using data tracking, trend analysis, and 
-                  behavioral insights to optimize health outcomes and sustainable habits.
+                  Advanced weight loss journey analysis with medication tracking, predictive modeling, 
+                  and personalized insights for optimal health outcomes.
                 </CardDescription>
               </CardHeader>
               
               <CardContent className="flex flex-col h-full pt-0">
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
-                    Health Analytics
+                    Predictive Analytics
                   </Badge>
                   <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
-                    Data Tracking
+                    Medication Tracking
                   </Badge>
                   <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
-                    Behavioral Insights
+                    Weight Projections
                   </Badge>
                 </div>
                 
@@ -177,7 +177,7 @@ export default function ProjectsListPage() {
                     </div>
                   </div>
                   <Button 
-                    onClick={() => handleProjectClick('/projects/healthbridge-analysis')}
+                    onClick={() => handleProjectClick('/projects/healthbridge-enhanced')}
                     className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 text-sm py-2"
                   >
                     View Project

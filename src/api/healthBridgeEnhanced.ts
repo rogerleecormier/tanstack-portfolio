@@ -174,7 +174,7 @@ export class HealthBridgeEnhancedAPI {
   /**
    * Get weight loss projections with confidence intervals (pounds only)
    */
-  static async getWeightProjections(days: number = 30): Promise<WeightProjectionsResponse> {
+  static async getWeightProjections(days: number = 30, userId?: string): Promise<WeightProjectionsResponse> {
     try {
       // TODO: Replace with actual API call once enhanced worker is deployed
       // For now, return mock data for development
@@ -207,7 +207,11 @@ export class HealthBridgeEnhancedAPI {
         };
       }
       
-      const response = await this.makeRequest(`/api/v2/weight/projections?days=${days}`);
+      const params = new URLSearchParams();
+      params.append('days', days.toString());
+      if (userId) params.append('userId', userId);
+      
+      const response = await this.makeRequest(`/api/v2/weight/projections?${params.toString()}`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch weight projections: ${response.statusText}`);
@@ -218,6 +222,13 @@ export class HealthBridgeEnhancedAPI {
       console.error('Error fetching weight projections:', error);
       throw error;
     }
+  }
+
+  /**
+   * Get weight measurements (alias for getWeightMeasurements for backward compatibility)
+   */
+  static async getWeights(): Promise<WeightMeasurement[]> {
+    return this.getWeightMeasurements({ limit: 100, days: 365 }); // Get last year of data
   }
 
   /**

@@ -94,6 +94,40 @@ async function handleV2API(request, env, ctx, corsHeaders) {
     return await getComparativeAnalytics(request, env, corsHeaders);
   }
 
+  // User profile endpoints
+  if (path === '/api/v2/user/profile') {
+    if (request.method === 'GET') {
+      return await getUserProfile(request, env, corsHeaders);
+    }
+    if (request.method === 'PUT') {
+      return await updateUserProfile(request, env, corsHeaders);
+    }
+  }
+
+  if (path === '/api/v2/user/weight-goal') {
+    if (request.method === 'GET') {
+      return await getWeightGoal(request, env, corsHeaders);
+    }
+    if (request.method === 'PUT') {
+      return await updateWeightGoal(request, env, corsHeaders);
+    }
+  }
+
+  if (path === '/api/v2/user/medications') {
+    if (request.method === 'GET') {
+      return await getUserMedications(request, env, corsHeaders);
+    }
+    if (request.method === 'POST') {
+      return await createUserMedication(request, env, corsHeaders);
+    }
+    if (request.method === 'PUT') {
+      return await updateUserMedication(request, env, corsHeaders);
+    }
+    if (request.method === 'DELETE') {
+      return await deleteUserMedication(request, env, corsHeaders);
+    }
+  }
+
   return new Response('Not Found', { status: 404, headers: corsHeaders });
 }
 
@@ -230,11 +264,13 @@ async function getWeightMeasurements(request, env, corsHeaders) {
 
 /**
  * Get weight loss projections with confidence intervals (pounds only)
+ * Now includes medication vs non-medication scenarios
  */
 async function getWeightProjections(request, env, corsHeaders) {
   try {
     const url = new URL(request.url);
     const days = parseInt(url.searchParams.get('days') || '30');
+    const userId = url.searchParams.get('userId') || 'dev-user-123';
 
     // Get recent weight data for projections
     const stmt = env.DB.prepare(`
@@ -250,7 +286,32 @@ async function getWeightProjections(request, env, corsHeaders) {
       );
     }
 
-    const projections = calculateWeightProjections(result.results, days);
+    // Get user medications for accurate projections
+    const medicationStmt = env.DB.prepare(`
+      SELECT 
+        um.*,
+        mt.name as medication_name,
+        mt.generic_name,
+        mt.weekly_efficacy_multiplier,
+        mt.max_weight_loss_percentage,
+        mt.typical_duration_weeks,
+        mt.description as medication_description
+      FROM user_medications um
+      LEFT JOIN medication_types mt ON um.medication_type_id = mt.id
+      WHERE um.user_id = ? AND um.is_active = 1
+      ORDER BY um.start_date DESC
+    `);
+    
+    // Map authenticated user IDs to database user IDs
+    let dbUserId = userId;
+    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
+      dbUserId = '1'; // Map to existing user data
+    }
+    
+    const medicationsResult = await medicationStmt.bind(dbUserId).all();
+    const userMedications = medicationsResult.results || [];
+
+    const projections = calculateWeightProjectionsWithMedications(result.results, days, userMedications);
 
     return new Response(
       JSON.stringify(projections),
@@ -266,9 +327,9 @@ async function getWeightProjections(request, env, corsHeaders) {
 }
 
 /**
- * Calculate weight loss projections using linear regression (pounds only)
+ * Calculate weight loss projections using linear regression with medication scenarios (pounds only)
  */
-function calculateWeightProjections(measurements, days) {
+function calculateWeightProjectionsWithMedications(measurements, days, userMedications) {
   // Sort by date (oldest first)
   const sortedMeasurements = measurements
     .map(m => ({ ...m, date: new Date(m.startDate) }))
@@ -283,22 +344,45 @@ function calculateWeightProjections(measurements, days) {
   const variance = calculateVariance(sortedMeasurements.map(m => m.kg * 2.20462)); // Convert to lbs
   const confidence = Math.max(0.1, Math.min(0.95, 1 - (variance / 100)));
 
-  // Generate projections
-  const projections = [];
+  // Get current weight from most recent measurement
   const currentWeight = sortedMeasurements[sortedMeasurements.length - 1].kg * 2.20462; // Convert to lbs
   const currentDate = new Date();
+
+  // Calculate medication multiplier based on user's actual medications
+  const medicationMultiplier = calculateMedicationMultiplier(userMedications);
+  const medicationDailyRate = dailyRate * (1 + medicationMultiplier);
+
+  // Generate projections for both scenarios
+  const projections = [];
+  const noMedicationProjections = [];
+  const withMedicationProjections = [];
 
   for (let i = 1; i <= days; i++) {
     const projectedDate = new Date(currentDate);
     projectedDate.setDate(currentDate.getDate() + i);
     
-    const projectedWeight = currentWeight - (dailyRate * i);
+    const projectedWeightNoMed = currentWeight - (dailyRate * i);
+    const projectedWeightWithMed = currentWeight - (medicationDailyRate * i);
     
+    // Add to main projections array
     projections.push({
       date: projectedDate.toISOString().split('T')[0],
-      projected_weight: parseFloat(Math.max(0, projectedWeight).toFixed(1)), // xx.x format
+      projected_weight: parseFloat(Math.max(0, projectedWeightNoMed).toFixed(1)), // xx.x format
       confidence: confidence,
       daily_rate: parseFloat(dailyRate.toFixed(1)), // xx.x format
+      days_from_now: i
+    });
+
+    // Add to scenario-specific arrays
+    noMedicationProjections.push({
+      date: projectedDate.toISOString().split('T')[0],
+      weight: parseFloat(Math.max(0, projectedWeightNoMed).toFixed(1)),
+      days_from_now: i
+    });
+
+    withMedicationProjections.push({
+      date: projectedDate.toISOString().split('T')[0],
+      weight: parseFloat(Math.max(0, projectedWeightWithMed).toFixed(1)),
       days_from_now: i
     });
   }
@@ -308,8 +392,109 @@ function calculateWeightProjections(measurements, days) {
     daily_rate: parseFloat(dailyRate.toFixed(1)), // xx.x format
     confidence: confidence,
     projections: projections,
-    algorithm: 'linear_regression_v2_pounds'
+    algorithm: 'linear_regression_v3_medication_scenarios',
+    medication_scenarios: {
+      no_medication: {
+        daily_rate: parseFloat(dailyRate.toFixed(1)),
+        projections: noMedicationProjections
+      },
+      with_medication: {
+        daily_rate: parseFloat(medicationDailyRate.toFixed(1)),
+        multiplier: medicationMultiplier,
+        projections: withMedicationProjections
+      }
+    },
+    user_medications: userMedications.map(med => ({
+      name: med.medication_name || med.generic_name || 'Unknown',
+      dosage_mg: med.dosage_mg,
+      frequency: med.frequency,
+      efficacy_multiplier: med.weekly_efficacy_multiplier || 1.0
+    }))
   };
+}
+
+/**
+ * Calculate medication multiplier based on user's medications and dosage
+ */
+function calculateMedicationMultiplier(userMedications) {
+  if (!userMedications || userMedications.length === 0) {
+    return 0; // No active medications
+  }
+
+  // Find active medications
+  const activeMedications = userMedications.filter(med => med.is_active);
+  if (activeMedications.length === 0) {
+    return 0; // No active medications
+  }
+
+  // Calculate combined multiplier for all active medications
+  let totalMultiplier = 0;
+  
+  activeMedications.forEach(medication => {
+    let baseMultiplier = 0;
+    
+    // Base multiplier from medication type (from database)
+    if (medication.weekly_efficacy_multiplier) {
+      baseMultiplier = medication.weekly_efficacy_multiplier - 1; // Convert to boost percentage
+    } else {
+      // Fallback multipliers by medication name
+      switch (medication.medication_name?.toLowerCase()) {
+        case 'ozempic':
+        case 'wegovy':
+          baseMultiplier = 0.4; // 40% improvement (semaglutide)
+          break;
+        case 'zepbound':
+        case 'mounjaro':
+          baseMultiplier = 0.75; // 75% improvement (tirzepatide)
+          break;
+        default:
+          baseMultiplier = 0.2; // 20% default
+      }
+    }
+
+    // Adjust for dosing frequency
+    let frequencyMultiplier = 1;
+    switch (medication.frequency?.toLowerCase()) {
+      case 'daily':
+        frequencyMultiplier = 1.0;
+        break;
+      case 'weekly':
+        frequencyMultiplier = 1.0; // Standard dosing
+        break;
+      case 'bi-weekly':
+      case 'biweekly':
+        frequencyMultiplier = 0.7; // Reduced effectiveness
+        break;
+      case 'monthly':
+        frequencyMultiplier = 0.4; // Much reduced effectiveness
+        break;
+      default:
+        frequencyMultiplier = 1.0;
+    }
+
+    // Adjust for dosage (higher dosage = better effectiveness)
+    let dosageMultiplier = 1.0;
+    if (medication.dosage_mg) {
+      // Standard dosages: Ozempic 0.5-2.0mg, Zepbound 2.5-15mg
+      const standardDosage = medication.medication_name?.toLowerCase().includes('ozempic') || 
+                             medication.medication_name?.toLowerCase().includes('wegovy') ? 1.0 : 7.5;
+      const maxDosage = medication.medication_name?.toLowerCase().includes('ozempic') || 
+                        medication.medication_name?.toLowerCase().includes('wegovy') ? 2.0 : 15.0;
+      
+      if (medication.dosage_mg >= standardDosage) {
+        dosageMultiplier = 1.0; // Standard or higher dosage
+      } else if (medication.dosage_mg >= standardDosage * 0.5) {
+        dosageMultiplier = 0.8; // Lower than standard dosage
+      } else {
+        dosageMultiplier = 0.6; // Much lower than standard dosage
+      }
+    }
+
+    totalMultiplier += baseMultiplier * frequencyMultiplier * dosageMultiplier;
+  });
+
+  // Cap the maximum combined multiplier at 100% improvement
+  return Math.min(totalMultiplier, 1.0);
 }
 
 /**
@@ -714,6 +899,428 @@ async function createLegacyWeight(request, env, corsHeaders) {
     console.error('Error creating legacy weight:', error);
     return new Response(
       JSON.stringify({ error: 'Failed to create weight', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+/**
+ * User Profile Management Functions
+ */
+
+async function getUserProfile(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get('userId');
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing userId parameter' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Map authenticated user IDs to database user IDs
+    let dbUserId = userId;
+    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
+      // Map authenticated users to the existing user profile in the database
+      dbUserId = '1'; // This is where our real data is stored
+    }
+
+    // Query the actual database
+    const stmt = env.DB.prepare('SELECT * FROM user_profiles WHERE id = ?');
+    const profile = await stmt.bind(dbUserId).first();
+
+    if (!profile) {
+      // If no profile exists, create a default one
+      const defaultProfile = {
+        id: dbUserId,
+        name: userId === 'dev-user-123' ? 'Development User' : 'New User',
+        birthdate: '1990-01-01',
+        gender: 'male',
+        height_ft: 6,
+        height_in: 0,
+        activity_level: 'moderate',
+        timezone: 'America/New_York',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      // Insert the new profile
+      const insertStmt = env.DB.prepare(`
+        INSERT INTO user_profiles (id, name, birthdate, gender, height_ft, height_in, activity_level, timezone, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      
+      await insertStmt.bind(
+        defaultProfile.id,
+        defaultProfile.name,
+        defaultProfile.birthdate,
+        defaultProfile.gender,
+        defaultProfile.height_ft,
+        defaultProfile.height_in,
+        defaultProfile.activity_level,
+        defaultProfile.timezone,
+        defaultProfile.created_at,
+        defaultProfile.updated_at
+      ).run();
+
+      return new Response(
+        JSON.stringify(defaultProfile),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Calculate age from birthdate
+    const birthDate = new Date(profile.birthdate);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear() - 
+      (today.getMonth() < birthDate.getMonth() || 
+       (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate()) ? 1 : 0);
+
+    const profileWithAge = {
+      ...profile,
+      age
+    };
+
+    return new Response(
+      JSON.stringify(profileWithAge),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch profile', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function updateUserProfile(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { id, name, birthdate, gender, height_ft, height_in, activity_level, timezone } = body;
+
+    if (!id) {
+      return new Response(
+        JSON.stringify({ error: 'Missing user ID' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Map authenticated user IDs to database user IDs
+    let dbUserId = id;
+    if (id === 'dev-user-123' || id.startsWith('auth0|') || id.includes('cloudflare')) {
+      dbUserId = '1'; // Map to existing user data
+    }
+
+    // Update the database
+    const stmt = env.DB.prepare(`
+      UPDATE user_profiles 
+      SET name = ?, birthdate = ?, gender = ?, height_ft = ?, height_in = ?, activity_level = ?, timezone = ?, updated_at = ?
+      WHERE id = ?
+    `);
+    
+    const updatedAt = new Date().toISOString();
+    const result = await stmt.bind(
+      name, birthdate, gender, height_ft, height_in, activity_level, timezone, updatedAt, dbUserId
+    ).run();
+
+    if (result.changes === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Profile not found or no changes made' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const updatedProfile = {
+      ...body,
+      id: dbUserId,
+      updated_at: updatedAt
+    };
+
+    return new Response(
+      JSON.stringify({ success: true, profile: updatedProfile }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to update profile', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function getWeightGoal(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get('userId');
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing userId parameter' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Map authenticated user IDs to database user IDs
+    let dbUserId = userId;
+    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
+      dbUserId = '1'; // Map to existing user data
+    }
+
+    // Query the actual database
+    const stmt = env.DB.prepare('SELECT * FROM weight_goals WHERE user_id = ? AND is_active = 1 ORDER BY created_at DESC LIMIT 1');
+    const goal = await stmt.bind(dbUserId).first();
+
+    if (!goal) {
+      // If no goal exists, create a default one
+      const defaultGoal = {
+        user_id: dbUserId,
+        target_weight_lbs: 180.0,
+        start_weight_lbs: 200.0,
+        start_date: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+        target_date: new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 6 months from now
+        weekly_goal_lbs: 1.5,
+        is_active: 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      // Insert the new goal
+      const insertStmt = env.DB.prepare(`
+        INSERT INTO weight_goals (user_id, target_weight_lbs, start_weight_lbs, start_date, target_date, weekly_goal_lbs, is_active, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      
+      const result = await insertStmt.bind(
+        defaultGoal.user_id,
+        defaultGoal.target_weight_lbs,
+        defaultGoal.start_weight_lbs,
+        defaultGoal.start_date,
+        defaultGoal.target_date,
+        defaultGoal.weekly_goal_lbs,
+        defaultGoal.is_active,
+        defaultGoal.created_at,
+        defaultGoal.updated_at
+      ).run();
+
+      const goalWithId = {
+        id: result.meta.last_row_id,
+        ...defaultGoal
+      };
+
+      return new Response(
+        JSON.stringify(goalWithId),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    return new Response(
+      JSON.stringify(goal),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error fetching weight goal:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch weight goal', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function updateWeightGoal(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { id, user_id, start_weight_lbs, target_weight_lbs, weekly_goal_lbs, target_date } = body;
+
+    if (!id || !user_id) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Map authenticated user IDs to database user IDs
+    let dbUserId = user_id;
+    if (user_id === 'dev-user-123' || user_id.startsWith('auth0|') || user_id.includes('cloudflare')) {
+      dbUserId = '1'; // Map to existing user data
+    }
+
+    // Update the database
+    const stmt = env.DB.prepare(`
+      UPDATE weight_goals 
+      SET start_weight_lbs = ?, target_weight_lbs = ?, weekly_goal_lbs = ?, target_date = ?, updated_at = ?
+      WHERE id = ? AND user_id = ?
+    `);
+    
+    const updatedAt = new Date().toISOString();
+    const result = await stmt.bind(
+      start_weight_lbs, target_weight_lbs, weekly_goal_lbs, target_date, updatedAt, id, dbUserId
+    ).run();
+
+    if (result.changes === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Weight goal not found or no changes made' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const updatedGoal = {
+      ...body,
+      user_id: dbUserId,
+      updated_at: updatedAt
+    };
+
+    return new Response(
+      JSON.stringify({ success: true, goal: updatedGoal }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error updating weight goal:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to update weight goal', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function getUserMedications(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get('userId');
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing userId parameter' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Map authenticated user IDs to database user IDs
+    let dbUserId = userId;
+    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
+      dbUserId = '1'; // Map to existing user data
+    }
+
+    // Query the actual database with JOIN to get medication type details
+    const stmt = env.DB.prepare(`
+      SELECT 
+        um.*,
+        mt.name as medication_name,
+        mt.generic_name,
+        mt.weekly_efficacy_multiplier,
+        mt.max_weight_loss_percentage,
+        mt.typical_duration_weeks,
+        mt.description as medication_description
+      FROM user_medications um
+      LEFT JOIN medication_types mt ON um.medication_type_id = mt.id
+      WHERE um.user_id = ? AND um.is_active = 1
+      ORDER BY um.start_date DESC
+    `);
+    
+    const medications = await stmt.bind(dbUserId).all();
+
+    return new Response(
+      JSON.stringify(medications.results || []),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error fetching user medications:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch medications', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function createUserMedication(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { user_id, medication_type_id, start_date, dosage_mg, frequency, notes } = body;
+
+    if (!user_id || !medication_type_id || !start_date) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // For now, just return success with mock ID
+    const newMedication = {
+      id: `med_${Date.now()}`,
+      ...body,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    return new Response(
+      JSON.stringify({ success: true, medication: newMedication }),
+      { status: 201, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error creating medication:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to create medication', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function updateUserMedication(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { id, user_id, medication_type_id, start_date, dosage_mg, frequency, notes, is_active } = body;
+
+    if (!id || !user_id) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // For now, just return success
+    const updatedMedication = {
+      ...body,
+      updated_at: new Date().toISOString()
+    };
+
+    return new Response(
+      JSON.stringify({ success: true, medication: updatedMedication }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error updating medication:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to update medication', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function deleteUserMedication(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const medicationId = url.searchParams.get('id');
+
+    if (!medicationId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing medication ID' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // For now, just return success
+    return new Response(
+      JSON.stringify({ success: true, message: 'Medication deleted' }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error deleting medication:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to delete medication', message: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

@@ -51,7 +51,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               <span>Access administration area</span>
             </div>
             <P className="text-sm text-teal-700 leading-relaxed">
-              Click below to authenticate and access the administration area including HealthBridge Analysis and other private projects.
+              Click below to authenticate and access the administration area including HealthBridge Enhanced and other private projects.
             </P>
             
             {/* Development Mode Notice */}
@@ -108,7 +108,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               
               <div className="bg-teal-100 border border-teal-300 rounded-lg p-4">
                 <P className="text-xs text-teal-900">
-                  <strong className="font-semibold">Administration Area:</strong> HealthBridge Analysis and other private projects will be accessible after authentication.
+                  <strong className="font-semibold">Administration Area:</strong> HealthBridge Enhanced and other private projects will be accessible after authentication.
                 </P>
               </div>
             </>
@@ -122,7 +122,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               
               <div className="bg-teal-100 border border-teal-300 rounded-lg p-4">
                 <P className="text-xs text-teal-900">
-                  <strong className="font-semibold">Administration Area:</strong> HealthBridge Analysis and other private projects will be accessible after authentication.
+                  <strong className="font-semibold">Administration Area:</strong> HealthBridge Enhanced and other private projects will be accessible after authentication.
                 </P>
               </div>
             </>

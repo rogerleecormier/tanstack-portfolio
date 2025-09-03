@@ -1056,7 +1056,7 @@ export default function HealthBridgePage() {
           <Card className="p-4 mb-6" style={{ width: "100%", maxWidth: "none" }}>
             <ChartContainer
               config={{
-                weight: {
+                weightData: {
                   label: "Weight",
                   color: "#14b8a6",
                 },
@@ -1090,7 +1090,7 @@ export default function HealthBridgePage() {
                   content={
                     <ChartTooltipContent
                       className="w-[150px]"
-                      nameKey="weight"
+                      nameKey="weightData"
                       labelFormatter={(value) =>
                         new Date(value).toLocaleDateString("en-US", {
                           month: "short",
@@ -1102,7 +1102,7 @@ export default function HealthBridgePage() {
                   }
                 />
                 <Line
-                  dataKey="weight"
+                  dataKey="weightData"
                   type="monotone"
                   stroke="#14b8a6"
                   strokeWidth={2}

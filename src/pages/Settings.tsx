@@ -32,16 +32,20 @@ import {
   getMedicationTypeById,
   formatMedicationFrequency
 } from "@/hooks/useMedications";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function SettingsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingGoal, setIsEditingGoal] = useState(false);
   const [isEditingMedication, setIsEditingMedication] = useState(false);
 
-  // Use custom hooks for data fetching
-  const { data: profile, isLoading: profileLoading } = useUserProfile('1');
-  const { data: goal, isLoading: goalLoading } = useWeightGoal('1');
-  const { data: medications, isLoading: medicationsLoading } = useUserMedications('1');
+  // Get authenticated user
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+
+  // Use custom hooks for data fetching - only when authenticated
+  const { data: profile, isLoading: profileLoading } = useUserProfile(user?.sub || '');
+  const { data: goal, isLoading: goalLoading } = useWeightGoal(user?.sub || '');
+  const { data: medications, isLoading: medicationsLoading } = useUserMedications(user?.sub || '');
   const { data: medicationTypes, isLoading: medicationTypesLoading } = useMedicationTypes();
 
   // Use custom hooks for mutations
@@ -162,6 +166,37 @@ export default function SettingsPage() {
     }
   };
 
+  // Check if we're still loading authentication or if user is not authenticated
+  if (authLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <Settings className="h-8 w-8 text-teal-600 mx-auto mb-4 animate-spin" />
+            <p className="text-gray-600">Loading authentication...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <Card className="max-w-md mx-auto">
+            <CardHeader>
+              <CardTitle>Authentication Required</CardTitle>
+              <CardDescription>
+                Please sign in to access your settings.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   if (profileLoading || goalLoading || medicationsLoading || medicationTypesLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -175,11 +210,31 @@ export default function SettingsPage() {
     );
   }
 
+  // Handle case where profile or goal data failed to load
   if (!profile || !goal) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <p className="text-red-600">Failed to load profile data</p>
+          <Card className="max-w-md mx-auto">
+            <CardHeader>
+              <CardTitle>Data Loading Issue</CardTitle>
+              <CardDescription>
+                Unable to load your profile data. This might be because:
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-left space-y-2">
+              <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                <li>The backend API is not yet deployed</li>
+                <li>You need to create your initial profile</li>
+                <li>There was a temporary connection issue</li>
+              </ul>
+              <div className="mt-4 text-center">
+                <Button onClick={() => window.location.reload()} variant="outline">
+                  Try Again
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );

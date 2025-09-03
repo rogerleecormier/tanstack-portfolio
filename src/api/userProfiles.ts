@@ -541,6 +541,29 @@ export class UserProfilesAPI {
       }
 
       const medications = await response.json();
+      
+      // If the API doesn't return medication_type data, fetch it separately and join
+      if (medications.length > 0 && !medications[0].medication_type) {
+        try {
+          const medicationTypes = await getMedicationTypes();
+          
+          // Join medication data with medication type data
+          const enrichedMedications = medications.map((med: { medication_type_id: number; [key: string]: unknown }) => {
+            const medicationType = medicationTypes.find(type => type.id === med.medication_type_id);
+            return {
+              ...med,
+              medication_type: medicationType || null
+            };
+          });
+          
+          return enrichedMedications;
+        } catch (typeError) {
+          console.error('Error fetching medication types:', typeError);
+          // Return medications without type data if that fails
+          return medications;
+        }
+      }
+      
       return medications;
     } catch (error) {
       console.error('Error fetching user medications:', error);
