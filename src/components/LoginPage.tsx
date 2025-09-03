@@ -3,8 +3,7 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
 import { Shield, ArrowRight, Loader2, Lock } from 'lucide-react';
-import { isDevelopment } from '../utils/cloudflareAuth';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth, isDevelopment } from '../hooks/useAuth';
 
 interface LoginPageProps {
   onClose: () => void;

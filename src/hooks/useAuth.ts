@@ -1,7 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { environment } from '../config/environment';
-import { CloudflareUser } from '../utils/cloudflareAuth';
 import { logger } from '@/utils/logger';
+
+// CloudflareUser interface moved from cloudflareAuth.ts
+export interface CloudflareUser {
+  email: string;
+  name?: string;
+  picture?: string;
+  sub?: string; // Subject identifier
+}
+
+// isDevelopment function moved from cloudflareAuth.ts
+export const isDevelopment = (): boolean => {
+  // Use the same environment detection as the main environment config
+  return import.meta.env.DEV;
+};
 
 // Simplified authentication without complex classes that could cause hanging
 const simpleAuth = {
@@ -278,26 +291,52 @@ export const useAuth = () => {
         setUser(mockUser);
         setError(null);
       } else {
-        logger.info('useAuth: Production mode detected, checking Cloudflare Access');
-        // Production mode - check Cloudflare Access
-        const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
+        // Production mode - only check Cloudflare Access if we're on a protected route
+        const isProtectedRoute = window.location.pathname.startsWith('/protected');
         
-        logger.info('useAuth: Cloudflare Access check result', { isAuth, userInfo });
-        
-        setIsAuthenticated(isAuth);
-        setUser(userInfo);
-        setError(null);
-        
-        // Store user info if authenticated
-        if (isAuth && userInfo) {
-          try {
-            localStorage.setItem('cf_user', JSON.stringify(userInfo));
-          } catch {
-            logger.warn('Could not store user info in localStorage');
-          }
+        if (isProtectedRoute) {
+          logger.info('useAuth: Production mode detected, checking Cloudflare Access for protected route');
+          // Production mode - check Cloudflare Access
+          const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
           
-                     // The router will handle redirecting from /protected to home page
-           logger.info('useAuth: Authentication successful, router will handle redirect');
+          logger.info('useAuth: Cloudflare Access check result', { isAuth, userInfo });
+          
+          setIsAuthenticated(isAuth);
+          setUser(userInfo);
+          setError(null);
+          
+          // Store user info if authenticated
+          if (isAuth && userInfo) {
+            try {
+              localStorage.setItem('cf_user', JSON.stringify(userInfo));
+            } catch {
+              logger.warn('Could not store user info in localStorage');
+            }
+            
+                       // The router will handle redirecting from /protected to home page
+             logger.info('useAuth: Authentication successful, router will handle redirect');
+          }
+        } else {
+          // For public pages, check if we have stored user info
+          logger.info('useAuth: Public page, checking stored user info');
+          try {
+            const storedUser = localStorage.getItem('cf_user');
+            if (storedUser) {
+              const userInfo = JSON.parse(storedUser);
+              setIsAuthenticated(true);
+              setUser(userInfo);
+              setError(null);
+              logger.info('useAuth: Found stored user info', { userInfo });
+            } else {
+              setIsAuthenticated(false);
+              setUser(null);
+              setError(null);
+            }
+          } catch {
+            setIsAuthenticated(false);
+            setUser(null);
+            setError(null);
+          }
         }
       }
     } catch (error) {

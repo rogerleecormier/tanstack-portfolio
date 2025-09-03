@@ -1,6 +1,6 @@
 /**
  * Router Configuration for Portfolio Site
- * 
+ *
  * Portfolio pages are now dynamically loaded from the API worker
  * No need to manually add new portfolio pages to the router
  */
@@ -9,92 +9,90 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
-} from '@tanstack/react-router'
-import { createBrowserHistory } from '@tanstack/history'
-import AppLayout from './layout/AppLayout'
-import ProjectsListPage from './pages/ProjectsListPage'
-import NotFound from './pages/NotFound'
+} from "@tanstack/react-router";
+import { createBrowserHistory } from "@tanstack/history";
+import AppLayout from "./layout/AppLayout";
+import ProjectsListPage from "./pages/ProjectsListPage";
+import NotFound from "./pages/NotFound";
 // import HealthBridge from './pages/HealthBridge' // DISABLED - old app being taken offline
-import HealthBridgeEnhanced from './pages/HealthBridgeEnhanced'
-import Settings from './pages/Settings'
-import ContactPage from './pages/ContactPage'
-import PrivacyPage from './pages/PrivacyPage'
-import BlogListPage from './pages/BlogListPage'
-import BlogPostWrapper from './components/BlogPostWrapper'
-import PortfolioListPage from './pages/PortfolioListPage'
-import AboutPage from './pages/AboutPage'
-import NewsletterPreferencesPage from './pages/NewsletterPreferencesPage'
-import MarkdownEditorPage from './pages/MarkdownEditorPage'
-import ContentCreationPage from './pages/ContentCreationPage'
+import HealthBridgeEnhanced from "./pages/HealthBridgeEnhanced";
+import Settings from "./pages/Settings";
+import ContactPage from "./pages/ContactPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import BlogListPage from "./pages/BlogListPage";
+import BlogPostWrapper from "./components/BlogPostWrapper";
+import PortfolioListPage from "./pages/PortfolioListPage";
+import AboutPage from "./pages/AboutPage";
+import NewsletterPreferencesPage from "./pages/NewsletterPreferencesPage";
+import MarkdownEditorPage from "./pages/MarkdownEditorPage";
+import ContentCreationPage from "./pages/ContentCreationPage";
 
-import ToolsListPage from './pages/ToolsListPage'
+import ToolsListPage from "./pages/ToolsListPage";
 
+import { SiteAdminPage } from "./pages/SiteAdminPage";
+import { CloudflareStatusChecker } from "./components/CloudflareStatusChecker";
 
-import { SiteAdminPage } from './pages/SiteAdminPage'
-import { CloudflareStatusChecker } from './components/CloudflareStatusChecker'
-import CloudflareDebugPage from './pages/CloudflareDebugPage'
-
-import { PortfolioPageWrapper, ProjectsPageWrapper, RootErrorBoundary } from './components/RouteWrappers'
-
-
+import {
+  PortfolioPageWrapper,
+  ProjectsPageWrapper,
+  RootErrorBoundary,
+} from "./components/RouteWrappers";
 
 // Root route
 const rootRoute = createRootRoute({
   component: AppLayout,
   notFoundComponent: NotFound,
   errorComponent: RootErrorBoundary,
-})
+});
 
 // Index route (About page at root)
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/', // root path for About
-  component: AboutPage
-})
+  path: "/", // root path for About
+  component: AboutPage,
+});
 
 // Blog list route
 const blogListRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'blog',
-  component: BlogListPage
-})
+  path: "blog",
+  component: BlogListPage,
+});
 
 // Portfolio route
 const portfolioRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'portfolio',
-  component: PortfolioListPage
-})
+  path: "portfolio",
+  component: PortfolioListPage,
+});
 
 // Projects list route
 const projectsListRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'projects',
-  component: ProjectsListPage
-})
+  path: "projects",
+  component: ProjectsListPage,
+});
 
 // Blog post route
 const blogPostRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'blog/$slug',
-  component: BlogPostWrapper
-})
+  path: "blog/$slug",
+  component: BlogPostWrapper,
+});
 
 // Portfolio items route - dynamically handles all portfolio pages
 const portfolioItemRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'portfolio/$slug',
-  component: PortfolioPageWrapper
-})
+  path: "portfolio/$slug",
+  component: PortfolioPageWrapper,
+});
 
 // Projects route - handles all project pages under /projects/*
 const projectsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'projects/$slug',
-  component: ProjectsPageWrapper
-})
-
-
+  path: "projects/$slug",
+  component: ProjectsPageWrapper,
+});
 
 // Health Bridge Analysis route - DISABLED (old app being taken offline)
 // const healthBridgeAnalysisRoute = createRoute({
@@ -106,100 +104,88 @@ const projectsRoute = createRoute({
 // Enhanced HealthBridge route - PUBLIC
 const healthBridgeEnhancedRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'projects/healthbridge-enhanced',
-  component: HealthBridgeEnhanced
-})
+  path: "projects/healthbridge-enhanced",
+  component: HealthBridgeEnhanced,
+});
 
 // Settings route - PROTECTED
 const settingsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'protected/settings',
-  component: Settings
-})
+  path: "protected/settings",
+  component: Settings,
+});
 
 // Protected routes - all under /protected/* namespace
 const protectedRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'protected',
+  path: "protected",
   component: () => {
     // Get the original page the user was trying to access
     const urlParams = new URLSearchParams(window.location.search);
-    const returnTo = urlParams.get('returnTo') || urlParams.get('redirect_url') || '/';
-    
+    const returnTo =
+      urlParams.get("returnTo") || urlParams.get("redirect_url") || "/";
+
     // Redirect back to the original page, now authenticated
     window.location.href = returnTo;
     return null;
-  }
-})
+  },
+});
 
 // Site Admin route - PROTECTED
 const siteAdminRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'protected/site-admin',
-  component: SiteAdminPage
-})
+  path: "protected/site-admin",
+  component: SiteAdminPage,
+});
 
 // Content Studio route - PROTECTED
 const contentStudioRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'protected/content-studio',
-  component: ContentCreationPage
-})
+  path: "protected/content-studio",
+  component: ContentCreationPage,
+});
 
 // Contact route
 const contactRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'contact',
-  component: ContactPage
-})
+  path: "contact",
+  component: ContactPage,
+});
 
 // Privacy route
 const privacyRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'privacy',
-  component: PrivacyPage
-})
+  path: "privacy",
+  component: PrivacyPage,
+});
 
 // Cloudflare status checker route
 const cloudflareStatusRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'cloudflare-status',
+  path: "cloudflare-status",
   component: CloudflareStatusChecker,
-})
-
-// Cloudflare debug route
-const cloudflareDebugRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'cloudflare-debug',
-  component: CloudflareDebugPage,
-})
-
-
+});
 
 // Newsletter preferences route
 const newsletterPreferencesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'newsletter-preferences',
+  path: "newsletter-preferences",
   component: NewsletterPreferencesPage,
-})
+});
 
 // Tools list route
 const toolsListRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'tools',
+  path: "tools",
   component: ToolsListPage,
-})
+});
 
 // Markdown Editor route
 const markdownEditorRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'markdown-editor',
+  path: "markdown-editor",
   component: MarkdownEditorPage,
-})
-
-
-
-
+});
 
 // Create route tree
 const routeTree = rootRoute.addChildren([
@@ -219,17 +205,15 @@ const routeTree = rootRoute.addChildren([
   siteAdminRoute,
   contentStudioRoute,
   cloudflareStatusRoute,
-  cloudflareDebugRoute,
   newsletterPreferencesRoute,
   toolsListRoute,
   markdownEditorRoute,
-])
+]);
 
 // Create router instance
 export const router = createRouter({
   routeTree,
   history: createBrowserHistory(),
-  defaultPreload: 'intent',
+  defaultPreload: "intent",
   defaultNotFoundComponent: NotFound,
-})
-
+});
