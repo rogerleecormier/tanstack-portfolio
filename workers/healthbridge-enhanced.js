@@ -286,6 +286,18 @@ async function getWeightProjections(request, env, corsHeaders) {
       );
     }
 
+    // Get user profile for activity level and other factors
+    const profileStmt = env.DB.prepare('SELECT * FROM user_profiles WHERE id = ?');
+    
+    // Map authenticated user IDs to database user IDs
+    let dbUserId = userId;
+    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
+      dbUserId = '1'; // Map to existing user data
+    }
+    
+    const profileResult = await profileStmt.bind(dbUserId).first();
+    const userProfile = profileResult || { activity_level: 'moderate' }; // Default to moderate if no profile
+
     // Get user medications for accurate projections
     const medicationStmt = env.DB.prepare(`
       SELECT 
@@ -302,16 +314,10 @@ async function getWeightProjections(request, env, corsHeaders) {
       ORDER BY um.start_date DESC
     `);
     
-    // Map authenticated user IDs to database user IDs
-    let dbUserId = userId;
-    if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
-      dbUserId = '1'; // Map to existing user data
-    }
-    
     const medicationsResult = await medicationStmt.bind(dbUserId).all();
     const userMedications = medicationsResult.results || [];
 
-    const projections = calculateWeightProjectionsWithMedications(result.results, days, userMedications);
+    const projections = calculateWeightProjectionsWithMedications(result.results, days, userMedications, userProfile);
 
     return new Response(
       JSON.stringify(projections),
@@ -329,7 +335,7 @@ async function getWeightProjections(request, env, corsHeaders) {
 /**
  * Calculate weight loss projections using linear regression with medication scenarios (pounds only)
  */
-function calculateWeightProjectionsWithMedications(measurements, days, userMedications) {
+function calculateWeightProjectionsWithMedications(measurements, days, userMedications, userProfile) {
   // Sort by date (oldest first)
   const sortedMeasurements = measurements
     .map(m => ({ ...m, date: new Date(m.startDate) }))
@@ -348,9 +354,15 @@ function calculateWeightProjectionsWithMedications(measurements, days, userMedic
   const currentWeight = sortedMeasurements[sortedMeasurements.length - 1].kg * 2.20462; // Convert to lbs
   const currentDate = new Date();
 
+  // Calculate activity level multiplier
+  const activityMultiplier = calculateActivityLevelMultiplier(userProfile.activity_level || 'moderate');
+  
   // Calculate medication multiplier based on user's actual medications
   const medicationMultiplier = calculateMedicationMultiplier(userMedications);
-  const medicationDailyRate = dailyRate * (1 + medicationMultiplier);
+  
+  // Apply both activity and medication multipliers to daily rate
+  const adjustedDailyRate = dailyRate * activityMultiplier;
+  const medicationDailyRate = adjustedDailyRate * (1 + medicationMultiplier);
 
   // Generate projections for both scenarios
   const projections = [];
@@ -361,7 +373,7 @@ function calculateWeightProjectionsWithMedications(measurements, days, userMedic
     const projectedDate = new Date(currentDate);
     projectedDate.setDate(currentDate.getDate() + i);
     
-    const projectedWeightNoMed = currentWeight - (dailyRate * i);
+    const projectedWeightNoMed = currentWeight - (adjustedDailyRate * i);
     const projectedWeightWithMed = currentWeight - (medicationDailyRate * i);
     
     // Add to main projections array
@@ -369,7 +381,7 @@ function calculateWeightProjectionsWithMedications(measurements, days, userMedic
       date: projectedDate.toISOString().split('T')[0],
       projected_weight: parseFloat(Math.max(0, projectedWeightNoMed).toFixed(1)), // xx.x format
       confidence: confidence,
-      daily_rate: parseFloat(dailyRate.toFixed(1)), // xx.x format
+      daily_rate: parseFloat(adjustedDailyRate.toFixed(1)), // xx.x format
       days_from_now: i
     });
 
@@ -389,13 +401,15 @@ function calculateWeightProjectionsWithMedications(measurements, days, userMedic
 
   return {
     current_weight: parseFloat(currentWeight.toFixed(1)), // xx.x format
-    daily_rate: parseFloat(dailyRate.toFixed(1)), // xx.x format
+    daily_rate: parseFloat(adjustedDailyRate.toFixed(1)), // xx.x format
     confidence: confidence,
     projections: projections,
-    algorithm: 'linear_regression_v3_medication_scenarios',
+    algorithm: 'linear_regression_v4_activity_medication_scenarios',
+    activity_level: userProfile.activity_level || 'moderate',
+    activity_multiplier: activityMultiplier,
     medication_scenarios: {
       no_medication: {
-        daily_rate: parseFloat(dailyRate.toFixed(1)),
+        daily_rate: parseFloat(adjustedDailyRate.toFixed(1)),
         projections: noMedicationProjections
       },
       with_medication: {
@@ -411,6 +425,21 @@ function calculateWeightProjectionsWithMedications(measurements, days, userMedic
       efficacy_multiplier: med.weekly_efficacy_multiplier || 1.0
     }))
   };
+}
+
+/**
+ * Calculate activity level multiplier for weight loss projections
+ */
+function calculateActivityLevelMultiplier(activityLevel) {
+  const activityMultipliers = {
+    sedentary: 0.8,      // 20% reduction in weight loss rate (less active)
+    light: 0.9,           // 10% reduction in weight loss rate
+    moderate: 1.0,        // Base rate (no adjustment)
+    active: 1.15,         // 15% increase in weight loss rate
+    very_active: 1.3      // 30% increase in weight loss rate
+  };
+  
+  return activityMultipliers[activityLevel] || 1.0;
 }
 
 /**
@@ -640,9 +669,10 @@ async function getAnalyticsDashboard(request, env, corsHeaders) {
   try {
     const url = new URL(request.url);
     const period = url.searchParams.get('period') || '30';
+    const userId = url.searchParams.get('userId') || 'dev-user-123';
 
     // Get comprehensive analytics data
-    const analytics = await calculateAnalytics(env, period);
+    const analytics = await calculateAnalytics(env, period, userId);
 
     return new Response(
       JSON.stringify(analytics),
@@ -660,7 +690,7 @@ async function getAnalyticsDashboard(request, env, corsHeaders) {
 /**
  * Calculate comprehensive analytics data (pounds only)
  */
-async function calculateAnalytics(env, period) {
+async function calculateAnalytics(env, period, userId) {
   // Get weight measurements
   const periodDays = parseInt(period);
   const periodAgo = new Date();
@@ -677,6 +707,18 @@ async function calculateAnalytics(env, period) {
   if (weightResult.results.length === 0) {
     return { error: 'No data available for analytics' };
   }
+
+  // Get user profile for activity level
+  const profileStmt = env.DB.prepare('SELECT * FROM user_profiles WHERE id = ?');
+  
+  // Map authenticated user IDs to database user IDs
+  let dbUserId = userId;
+  if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
+    dbUserId = '1'; // Map to existing user data
+  }
+  
+  const profileResult = await profileStmt.bind(dbUserId).first();
+  const userProfile = profileResult || { activity_level: 'moderate' }; // Default to moderate if no profile
 
   const weights = weightResult.results.map(r => r.kg * 2.20462); // Convert to lbs
   const dates = weightResult.results.map(r => new Date(r.startDate));
@@ -700,8 +742,8 @@ async function calculateAnalytics(env, period) {
     consistency_score: calculateConsistencyScore(weights)
   };
 
-  // Calculate projections
-  const projections = calculateWeightProjections(weightResult.results, 30);
+  // Calculate projections with activity level consideration
+  const projections = calculateWeightProjectionsWithMedications(weightResult.results, 30, [], userProfile);
 
   return {
     metrics,

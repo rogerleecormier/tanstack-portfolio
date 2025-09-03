@@ -42,6 +42,25 @@ export interface WeightProjectionsResponse {
   confidence: number;
   projections: WeightProjection[];
   algorithm: string;
+  activity_level?: string;
+  activity_multiplier?: number;
+  medication_scenarios?: {
+    no_medication: {
+      daily_rate: number;
+      projections: WeightProjection[];
+    };
+    with_medication: {
+      daily_rate: number;
+      multiplier: number;
+      projections: WeightProjection[];
+    };
+  };
+  user_medications?: Array<{
+    name: string;
+    dosage_mg?: number;
+    frequency?: string;
+    efficacy_multiplier?: number;
+  }>;
 }
 
 export interface WeightTrends {
@@ -202,8 +221,25 @@ export class HealthBridgeEnhancedAPI {
           current_weight: currentWeight,
           daily_rate: dailyRate,
           confidence: 0.95,
-          algorithm: 'Linear Regression v2 (Pounds)',
-          projections: mockProjections
+          algorithm: 'linear_regression_v4_activity_medication_scenarios',
+          activity_level: 'moderate',
+          activity_multiplier: 1.0,
+          projections: mockProjections,
+          medication_scenarios: {
+            no_medication: {
+              daily_rate: dailyRate,
+              projections: mockProjections
+            },
+            with_medication: {
+              daily_rate: dailyRate * 1.4, // Assume 40% improvement with medication
+              multiplier: 0.4,
+              projections: mockProjections.map(p => ({
+                ...p,
+                weight: Math.max(p.projected_weight * 0.9, 154.0) // 10% better with medication
+              }))
+            }
+          },
+          user_medications: []
         };
       }
       
@@ -247,7 +283,7 @@ export class HealthBridgeEnhancedAPI {
   /**
    * Get analytics dashboard data (pounds only)
    */
-  static async getAnalyticsDashboard(period: number = 30): Promise<AnalyticsDashboard> {
+  static async getAnalyticsDashboard(period: number = 30, userId?: string): Promise<AnalyticsDashboard> {
     try {
       // TODO: Replace with actual API call once enhanced worker is deployed
       // For now, return mock data for development
@@ -283,7 +319,11 @@ export class HealthBridgeEnhancedAPI {
         };
       }
       
-      const response = await this.makeRequest(`/api/v2/analytics/dashboard?period=${period}`);
+      const params = new URLSearchParams();
+      params.append('period', period.toString());
+      if (userId) params.append('userId', userId);
+      
+      const response = await this.makeRequest(`/api/v2/analytics/dashboard?${params.toString()}`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch analytics dashboard: ${response.statusText}`);

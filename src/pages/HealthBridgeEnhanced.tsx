@@ -86,7 +86,21 @@ const DUMMY_DATA = {
   projections: {
     daily_rate: -0.15,
     confidence: 0.89,
-    algorithm: "Linear Regression"
+    algorithm: "linear_regression_v4_activity_medication_scenarios",
+    activity_level: "moderate",
+    activity_multiplier: 1.0,
+    medication_scenarios: {
+      no_medication: {
+        daily_rate: -0.15,
+        projections: []
+      },
+      with_medication: {
+        daily_rate: -0.21,
+        multiplier: 0.4,
+        projections: []
+      }
+    },
+    user_medications: []
   },
   analytics: {
     metrics: {
@@ -99,6 +113,15 @@ const DUMMY_DATA = {
     trends: {
       overall_trend: "losing",
       consistency_score: 87
+    },
+    projections: {
+      current_weight: 178.5,
+      daily_rate: -0.15,
+      confidence: 0.89,
+      algorithm: "linear_regression_v4_activity_medication_scenarios",
+      activity_level: "moderate",
+      activity_multiplier: 1.0,
+      projections: []
     },
     generated_at: new Date().toISOString()
   }
@@ -295,7 +318,7 @@ function WeightProjections() {
 
   const projectionsQuery = useQuery({
     queryKey: ["projections"],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90), // 90 days for better trend analysis
+    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, user?.sub), // 90 days for better trend analysis
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -838,6 +861,19 @@ function WeightProjections() {
                 {medicationMultiplier > 0 ? 'Enhanced weight loss' : 'Natural weight loss only'}
               </div>
             </div>
+
+            <div className="space-y-2">
+              <Label>Activity Level Impact</Label>
+              <div className="text-2xl font-bold text-teal-600">
+                {projections?.activity_level ? projections.activity_level.replace('_', ' ').toUpperCase() : 'MODERATE'}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {projections?.activity_multiplier ? 
+                  `Multiplier: ${projections.activity_multiplier.toFixed(2)}x` : 
+                  'Standard activity level'
+                }
+              </div>
+            </div>
           </div>
 
           {/* Scenario Toggles */}
@@ -1127,6 +1163,42 @@ function WeightProjections() {
             </div>
 
             <div>
+              <h4 className="font-semibold text-lg mb-3">Activity Level Impact Analysis</h4>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  <strong>Current Activity Level:</strong> {projections?.activity_level ? projections.activity_level.replace('_', ' ').toUpperCase() : 'MODERATE'}
+                </p>
+                <p>
+                  <strong>Activity Multiplier:</strong> {projections?.activity_multiplier ? `${projections.activity_multiplier.toFixed(2)}x` : '1.0x'} - This affects your base weight loss rate.
+                </p>
+                {projections?.activity_level && projections.activity_level !== 'moderate' ? (
+                  <>
+                    <p>
+                      <strong>Impact:</strong> Your {projections.activity_level.replace('_', ' ')} activity level 
+                      {projections.activity_multiplier && projections.activity_multiplier > 1.0 ? 
+                        ` increases your weight loss rate by ${((projections.activity_multiplier - 1) * 100).toFixed(0)}%` :
+                        projections.activity_multiplier && projections.activity_multiplier < 1.0 ?
+                        ` reduces your weight loss rate by ${((1 - projections.activity_multiplier) * 100).toFixed(0)}%` :
+                        ' maintains your standard weight loss rate'
+                      }.
+                    </p>
+                    <p>
+                      <strong>Recommendation:</strong> 
+                      {projections.activity_multiplier && projections.activity_multiplier < 1.0 ? 
+                        ' Consider increasing your daily activity to improve weight loss results.' :
+                        ' Your high activity level is optimizing your weight loss potential.'
+                      }
+                    </p>
+                  </>
+                ) : (
+                  <p>
+                    <strong>Standard Activity:</strong> Your moderate activity level provides a balanced weight loss rate.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div>
               <h4 className="font-semibold text-lg mb-3">Recommendations & Insights</h4>
               <div className="space-y-3 text-sm text-muted-foreground">
                 {medicationBenefit > 0 ? (
@@ -1187,12 +1259,12 @@ function WeightProjections() {
  * Analytics dashboard component (pounds only)
  */
 function AnalyticsDashboard() {
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   
   // Always call hooks, but conditionally use their data
   const analyticsQuery = useQuery({
     queryKey: ["analytics"],
-    queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30),
+    queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30, user?.sub),
     enabled: isAuthenticated,
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -1278,7 +1350,24 @@ function AnalyticsDashboard() {
                 {analytics.trends.consistency_score.toFixed(0)}%
               </span>
             </div>
-                     </div>
+          </div>
+
+          {analytics.projections?.activity_level && (
+            <div>
+              <Label>Activity Level Impact</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Badge variant="outline" className="capitalize">
+                  {analytics.projections.activity_level.replace('_', ' ')}
+                </Badge>
+                <span className="text-sm text-muted-foreground">
+                  {analytics.projections.activity_multiplier ? 
+                    `${analytics.projections.activity_multiplier.toFixed(2)}x multiplier` : 
+                    'Standard rate'
+                  }
+                </span>
+              </div>
+            </div>
+          )}
          </div>
 
          {/* Chart Legend */}
