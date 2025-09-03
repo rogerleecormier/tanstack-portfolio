@@ -20,6 +20,7 @@ export default {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Credentials': 'false', // Explicitly disable credentials for content proxy
           'Access-Control-Max-Age': '86400',
         },
       })
@@ -65,6 +66,7 @@ export default {
           status: 404,
           headers: {
             'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': 'false',
             'Content-Type': 'text/plain',
           }
         })
@@ -73,10 +75,11 @@ export default {
       // Prepare response headers
       const headers = new Headers()
       
-      // Set CORS headers
+      // Set CORS headers - be more restrictive to avoid conflicts with authentication
       headers.set('Access-Control-Allow-Origin', '*')
       headers.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS')
       headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+      headers.set('Access-Control-Allow-Credentials', 'false') // Explicitly disable credentials for content proxy
       
       // Set content type based on file extension
       if (fileName.endsWith('.md')) {
@@ -111,6 +114,7 @@ export default {
         status: 500,
         headers: {
           'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': 'false',
           'Content-Type': 'text/plain',
         }
       })

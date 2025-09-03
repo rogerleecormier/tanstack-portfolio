@@ -43,7 +43,7 @@ const PROJECT_FILES = [
 ]
 
 // R2 URLs (same as in r2Config.ts)
-const R2_BASE_URL = 'https://pub-d976666cda3244a8a0fa73abc1043959.r2.dev'
+const R2_BASE_URL = 'https://r2-content-proxy.rcormier.workers.dev'
 const PORTFOLIO_BASE_URL = `${R2_BASE_URL}/portfolio`
 const BLOG_BASE_URL = `${R2_BASE_URL}/blog`
 const PROJECT_BASE_URL = `${R2_BASE_URL}/projects`
