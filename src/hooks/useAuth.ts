@@ -279,6 +279,19 @@ export const useAuth = () => {
       setIsLoading(true);
       logger.info('useAuth: checkAuth called');
       
+      // Check if we just returned from authentication (URL contains returnTo parameter)
+      const urlParams = new URLSearchParams(window.location.search);
+      const returnTo = urlParams.get('returnTo');
+      const isReturningFromAuth = returnTo !== null;
+      
+      if (isReturningFromAuth) {
+        logger.info('useAuth: Detected return from authentication, checking auth state');
+        // Clean up the URL by removing the returnTo parameter
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete('returnTo');
+        window.history.replaceState({}, '', newUrl.toString());
+      }
+      
       if (environment.isDevelopment()) {
         logger.info('useAuth: Development mode detected, checking mock auth');
         // Development mode - use simple mock authentication
@@ -317,25 +330,70 @@ export const useAuth = () => {
              logger.info('useAuth: Authentication successful, router will handle redirect');
           }
         } else {
-          // For public pages, check if we have stored user info
-          logger.info('useAuth: Public page, checking stored user info');
-          try {
-            const storedUser = localStorage.getItem('cf_user');
-            if (storedUser) {
-              const userInfo = JSON.parse(storedUser);
+          // For public pages, check authentication state
+          logger.info('useAuth: Public page, checking authentication state');
+          
+          // If we're returning from authentication, always check Cloudflare Access first
+          if (isReturningFromAuth) {
+            logger.info('useAuth: Returning from auth, checking Cloudflare Access');
+            const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
+            
+            if (isAuth && userInfo) {
+              // User is authenticated, store the info and update state
+              try {
+                localStorage.setItem('cf_user', JSON.stringify(userInfo));
+              } catch {
+                logger.warn('Could not store user info in localStorage');
+              }
               setIsAuthenticated(true);
               setUser(userInfo);
               setError(null);
-              logger.info('useAuth: Found stored user info', { userInfo });
+              logger.info('useAuth: Authentication successful after redirect', { userInfo });
             } else {
               setIsAuthenticated(false);
               setUser(null);
               setError(null);
+              logger.info('useAuth: Authentication failed after redirect');
             }
-          } catch {
-            setIsAuthenticated(false);
-            setUser(null);
-            setError(null);
+          } else {
+            // Not returning from auth, check stored user info first
+            try {
+              const storedUser = localStorage.getItem('cf_user');
+              if (storedUser) {
+                const userInfo = JSON.parse(storedUser);
+                setIsAuthenticated(true);
+                setUser(userInfo);
+                setError(null);
+                logger.info('useAuth: Found stored user info', { userInfo });
+              } else {
+                // No stored user info, check Cloudflare Access as fallback
+                logger.info('useAuth: No stored user info, checking Cloudflare Access');
+                const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
+                
+                if (isAuth && userInfo) {
+                  // User is authenticated, store the info and update state
+                  try {
+                    localStorage.setItem('cf_user', JSON.stringify(userInfo));
+                  } catch {
+                    logger.warn('Could not store user info in localStorage');
+                  }
+                  setIsAuthenticated(true);
+                  setUser(userInfo);
+                  setError(null);
+                  logger.info('useAuth: Found authentication via Cloudflare Access', { userInfo });
+                } else {
+                  setIsAuthenticated(false);
+                  setUser(null);
+                  setError(null);
+                  logger.info('useAuth: No authentication found');
+                }
+              }
+            } catch (error) {
+              logger.error('useAuth: Error checking authentication state:', error);
+              setIsAuthenticated(false);
+              setUser(null);
+              setError(null);
+            }
           }
         }
       }
