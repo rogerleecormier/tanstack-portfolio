@@ -480,7 +480,7 @@ export default function HealthBridgePage() {
   }, []);
 
   // Get authentication status
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["weights"],
@@ -492,19 +492,22 @@ export default function HealthBridgePage() {
   });
 
   // Fetch user profile, weight goal, and medications for analysis
-  const { data: profile } = useQuery({
-    queryKey: ['userProfile', '1'],
-    queryFn: () => UserProfilesAPI.getUserProfile('1'),
+  const { data: profile, isLoading: isLoadingProfile } = useQuery({
+    queryKey: ['userProfile', user?.sub],
+    queryFn: () => UserProfilesAPI.getUserProfile(user?.sub || ''),
+    enabled: !!user?.sub && isAuthenticated,
   });
 
-  const { data: goal } = useQuery({
-    queryKey: ['weightGoal', '1'],
-    queryFn: () => UserProfilesAPI.getWeightGoal('1'),
+  const { data: goal, isLoading: isLoadingGoal } = useQuery({
+    queryKey: ['weightGoal', user?.sub],
+    queryFn: () => UserProfilesAPI.getWeightGoal(user?.sub || ''),
+    enabled: !!user?.sub && isAuthenticated,
   });
 
-  const { data: medications } = useQuery({
-    queryKey: ['userMedications', '1'],
-    queryFn: () => UserProfilesAPI.getUserMedications('1'),
+  const { data: medications, isLoading: isLoadingMedications } = useQuery({
+    queryKey: ['userMedications', user?.sub],
+    queryFn: () => UserProfilesAPI.getUserMedications(user?.sub || ''),
+    enabled: !!user?.sub && isAuthenticated,
   });
 
   // Get medication types
@@ -946,8 +949,11 @@ export default function HealthBridgePage() {
     setPage(1);
   };
 
+  // Combined loading state for all data dependencies
+  const isLoadingAllData = isLoading || isLoadingProfile || isLoadingGoal || isLoadingMedications;
+
   // Now check loading/error AFTER all hooks
-     if (isLoading) {
+     if (isLoadingAllData) {
      return (
        <div className="flex items-center justify-center min-h-screen p-4">
          <div className="text-center">

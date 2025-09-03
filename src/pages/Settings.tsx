@@ -130,7 +130,7 @@ export default function SettingsPage() {
     
     const newMedication: UserMedication = {
       id: `temp_${Date.now()}`, // Generate temporary ID for new medications
-      user_id: '1',
+      user_id: user?.sub || '',
       medication_type_id: 1,
       start_date: todayString,
       end_date: undefined, // Set explicit undefined for optional field
