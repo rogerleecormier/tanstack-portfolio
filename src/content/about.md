@@ -1,253 +1,88 @@
 ---
-title: "About Me"
-description: "PMP-certified Technical Project Manager and U.S. Army veteran specializing in digital transformation, ERP/SaaS integrations, and AI-augmented delivery."
-author: "Roger Lee Cormier"
-image: "https://www.rcormier.dev/assets/images/roger-cormier-profile.jpg"
-tags: ["Technical Project Manager", "Digital Transformation", "ERP", "SaaS", "AI", "Cloudflare Workers", "Azure Functions", "Leadership", "Veteran", "PMP"]
-keywords: ["Technical Project Manager", "ERP modernization", "NetSuite integration", "Ramp automation", "Vena forecasting", "Cloudflare Workers", "Azure Functions", "AI copilots", "agentic development", "governance frameworks"]
+title: "About Roger Cormier"
+description: "PMP-certified Technical Project Manager, military veteran, and Christian leader with AAS in Technical Studies, BS in Information Technology, and MS in Organizational Leadership (in progress). Specializing in digital transformation, AI automation, and satellite communications."
+tags: ["About", "Biography", "Christian Faith", "Military Service", "Family", "AI Automation", "Digital Transformation", "Leadership", "Technology", "Satellite Communications", "RF Communications", "PMP Certified", "Education", "Lifelong Learning"]
+date: "2024-12-19"
+author: "Roger Cormier"
+keywords: ["Roger Cormier", "Technical Project Manager", "PMP Certified", "Christian", "Military Veteran", "Operation New Dawn", "Iraq Deployment", "Satellite Communications", "RF Communications", "AI Automation", "Digital Transformation", "Family", "Leadership", "Technology", "AAS Technical Studies", "BS Information Technology", "MS Organizational Leadership", "Lifelong Learning"]
 ---
+
+## Meet Roger Cormier
 
 ```card
 {
   "type": "hero-profile",
   "props": {
     "name": "Roger Lee Cormier",
-    "title": "Technical Project Manager & U.S. Army Veteran",
-    "description": "Transforming legacy systems into cloud-native, AI-augmented ecosystems",
+    "title": "PMP-Certified Technical Project Manager & U.S. Army Veteran",
+    "description": "Christian leader, military veteran, and digital transformation specialist with a passion for AI automation, family values, and targeting organizational excellence in the AI age.",
     "image": "/images/IMG_1242.JPG",
-    "imageAlt": "Roger Lee Cormier - Technical Program Manager",
-    "badges": "PMP Certified, U.S. Army NCO, Cloud & DevOps, ERP Integration"
-  },
-  "content": "I'm a **PMP-certified Technical Project Manager** and **U.S. Army veteran** who thrives at the intersection of **technology, governance, and leadership**. My mission is to take **fragmented, spreadsheet-driven workflows** and transform them into **cloud-native, API-first, AI-augmented ecosystems** that are reliable, auditable, and trusted by users."
-}
-```
-
-My journey began as a **Signal Corps Non-Commissioned Officer**, where I learned that uptime was mission-critical and clarity could mean the difference between success and failure. Today, I apply those lessons to ERP modernization, SaaS integrations, and AI-assisted DevOps, delivering systems that teams can rely on and scale with.
-
-## Leadership Philosophy
-
-> *Effective leadership isn't authority — it's responsibility for outcomes and creating more leaders.*
-
-This philosophy drives everything I do - from technical project management to team building and organizational transformation. I believe in servant leadership, radical clarity, and creating systems that empower teams to deliver exceptional results.
-
-## Professional Excellence
-
-```card
-{
-  "type": "columns",
-  "props": {
-    "columns": 3
-  },
-  "content": {
-    "cards": [
-      {
-        "type": "success",
-        "props": {
-          "title": "Project Success",
-          "description": "Consistent delivery excellence",
-          "icon": "target",
-          "badges": "Scope, Documentation, Delivery"
-        },
-        "content": "98% on-time delivery rate across 25+ enterprise projects with zero critical failures."
-      },
-      {
-        "type": "tech",
-        "props": {
-          "title": "Cloud Expertise",
-          "description": "Modern platform mastery",
-          "icon": "cloud",
-          "badges": "Azure, Cloudflare, GitHub Actions"
-        },
-        "content": "Specialized in cloud-native architectures, edge computing, and AI-augmented development workflows."
-      },
-      {
-        "type": "warning",
-        "props": {
-          "title": "Security First",
-          "description": "Enterprise-grade protection",
-          "icon": "shield",
-          "badges": "Audit-Ready, Compliance-Focused"
-        },
-        "content": "All implementations follow zero-trust principles with comprehensive audit trails and compliance frameworks."
-      }
-    ]
+    "imageAlt": "Roger Lee Cormier - Technical Project Manager",
+    "badges": ["PMP Certified", "U.S. Army Veteran", "Operation New Dawn", "Satellite Communications", "BS Information Technology", "MS Organizational Leadership (In Progress)"]
   }
 }
 ```
-
-## Core Competencies
-
-### ERP & SaaS Modernization
-- **NetSuite**: Governance, saved searches, SuiteScript development
-- **Ramp**: AP, procurement, expense management automation
-- **Vena**: Forecasting automation and workflow optimization
-- **Box**: Document workflows and collaboration systems
-- **Smartsheet**: Project orchestration and resource management
-- **Checkbook.io**: ACH payment processing and reconciliation
-
-### Cloud & Edge Platforms
-- **Azure Functions**: ETL and API automation
-- **GitHub Actions**: CI/CD pipeline management
-- **Cloudflare Workers**: Edge-native applications and AI inference
-- **D1 Database**: Edge persistence and data management
-- **KV Storage**: High-performance caching solutions
-
-### AI & Automation
-- **GitHub Copilot & Cursor**: AI-assisted development workflows
-- **Asana AI**: Intelligent status reporting and project insights
-- **Power Automate**: Workflow automation across enterprise systems
-- **Automated Reconciliation**: Cross-platform financial data validation
-
-## Military Leadership Foundation
-
-As a **Signal Corps NCO**, I led global communication operations and 24/7 Network Operations Centers supporting missions with 99.99% uptime. I trained and mentored soldiers into leaders, introduced structured mentorship programs that raised certification pass rates, and directed high-stakes deployments under limited resources.
-
-### Leadership DNA
-- **Be** — Character and integrity under pressure
-- **Know** — Technical competence and stakeholder fluency
-- **Do** — Execution with clarity, urgency, and ownership
-
-## Education & Certifications
-
-```card
-{
-  "type": "columns",
-  "props": {
-    "columns": 3
-  },
-  "content": {
-    "cards": [
-      {
-        "type": "feature",
-        "props": {
-          "title": "Current Education",
-          "description": "M.S., Organizational Leadership",
-          "icon": "graduation",
-          "badges": "In Progress, Expected June 2026"
-        },
-        "content": "Excelsior University - Focus on digital transformation leadership and organizational change management."
-      },
-      {
-        "type": "feature",
-        "props": {
-          "title": "Completed Degrees",
-          "description": "B.S., IT & A.A.S., Technical Studies",
-          "icon": "award",
-          "badges": "Excelsior University"
-        },
-        "content": "Comprehensive foundation in technology management, systems architecture, and technical implementation."
-      },
-      {
-        "type": "feature",
-        "props": {
-          "title": "Professional Certifications",
-          "description": "PMP & CompTIA Network+",
-          "icon": "star",
-          "badges": "Project Management Institute, CompTIA"
-        },
-        "content": "Project Management Professional (PMP) certification and network infrastructure expertise."
-      }
-    ]
-  }
-}
-```
-
-### Planned Development
-- **Cloud Solutions Architect** (Azure/AWS)
-- **Lean Six Sigma Green Belt**
-- **Certified ScrumMaster** (CSM/SAFe)
-- **Doctor of Business Administration (DBA)** in Digital Strategy & Technology Leadership
-
-## Governance & PMO Excellence
-
-```card
-{
-  "type": "columns",
-  "props": {
-    "columns": 3
-  },
-  "content": {
-    "cards": [
-      {
-        "type": "info",
-        "props": {
-          "title": "Risk Management",
-          "description": "Comprehensive governance frameworks"
-        },
-        "content": "RAG/RAID dashboards, risk registers with triggers and owners, SOP libraries, UAT playbooks with rollback evidence, embedded approvals/validations."
-      },
-      {
-        "type": "info",
-        "props": {
-          "title": "Team Leadership",
-          "description": "Culture of excellence and growth"
-        },
-        "content": "Servant leadership rooted in Army values, radical clarity in communication, DEI-aware team building, culture of constructive challenge and feedback."
-      },
-      {
-        "type": "info",
-        "props": {
-          "title": "Process Excellence",
-          "description": "Standardized delivery frameworks"
-        },
-        "content": "Agile methodologies, stakeholder communication protocols, quality assurance processes, and continuous improvement cycles."
-      }
-    ]
-  }
-}
-```
-
-## Technical Expertise Areas
-
-```card
-{
-  "type": "columns",
-  "props": {
-    "columns": 3
-  },
-  "content": {
-    "cards": [
-      {
-        "type": "tech",
-        "props": {
-          "title": "ERP Systems",
-          "description": "Enterprise resource planning",
-          "icon": "database",
-          "badges": "NetSuite, Ramp, Vena, Box"
-        },
-        "content": "Deep expertise in ERP modernization, custom integrations, and workflow automation across financial and operational systems."
-      },
-      {
-        "type": "tech",
-        "props": {
-          "title": "Cloud Platforms",
-          "description": "Modern infrastructure",
-          "icon": "cloud",
-          "badges": "Azure, Cloudflare, GitHub"
-        },
-        "content": "Specialized in serverless architectures, edge computing, and AI-augmented development workflows."
-      },
-      {
-        "type": "tech",
-        "props": {
-          "title": "AI & Automation",
-          "description": "Intelligent workflows",
-          "icon": "zap",
-          "badges": "Copilot, Power Automate, RPA"
-        },
-        "content": "Expertise in AI-assisted development, workflow automation, and intelligent process optimization."
-      }
-    ]
-  }
-}
-```
-
-## Closing Vision
-
-I build systems people can **trust, audit, and scale** — so work gets easier, compliance gets simpler, and organizations can grow with confidence.
-
-My commitment is to deliver **cloud-native, AI-augmented solutions** that transform how teams work, how data flows, and how organizations achieve their mission-critical objectives.
 
 ---
 
-*Ready to transform your digital workflows? Let's build something extraordinary together.*
+## Professional Foundation: Military Service & Leadership
+
+My professional foundation was built through **U.S. Army service**, where I specialized in **satellite and RF communications technology**. This experience taught me the critical importance of reliable, mission-critical systems and the leadership skills necessary to operate in high-stakes environments.
+
+### Key Military Experience
+- **Operation New Dawn Deployment**: Played an essential role in the drawdown of the Iraq conflict
+- **Satellite & RF Communications**: Ensured reliable mission-critical systems in challenging environments
+- **Leadership Training**: Both received and provided leadership training to teams
+- **Strategic Planning**: Coordinated complex operations with multiple stakeholders and tight deadlines
+
+The leadership principles I learned during military service continue to influence my approach to project management and team development. I learned that true leadership is about serving others, making difficult decisions with integrity, and always putting the mission and team first.
+
+---
+
+## Education & Continuous Learning
+
+My commitment to continuous growth is reflected in my educational journey and professional certifications. I believe that true leadership in the digital age requires an insatiable thirst for knowledge and the humility to recognize that learning never ends. Every degree, certification, and skill I've acquired represents not just achievement, but a stepping stone toward greater understanding and capability.
+
+``` card
+{
+  "type": "columns",
+  "props": {},
+  "content": "{\n  \"columns\": 2,\n  \"cards\": [\n    {\n      \"type\": \"feature\",\n      \"props\": {\n        \"title\": \"Educational Journey\",\n        \"description\": \"Progressive educational path demonstrating commitment to both technical excellence and leadership development\",\n        \"badges\": \"AAS Technical Studies, BS Information Technology, MS Organizational Leadership (In Progress), PMP Certified\",\n        \"icon\": \"graduation\"\n      },\n      \"content\": \"My educational progression demonstrates my passion for learning and commitment to staying current with both technical and leadership best practices.\"\n    },\n    {\n      \"type\": \"feature\",\n      \"props\": {\n        \"title\": \"Professional Certifications\",\n        \"description\": \"Industry-recognized credentials that validate expertise and commitment to excellence\",\n        \"badges\": \"PMP Certified, U.S. Army Veteran, Satellite Communications, Leadership Training\",\n        \"icon\": \"award\"\n      },\n      \"content\": \"I believe effective leaders must be lifelong learners, constantly adapting to meet the evolving challenges of the digital age.\"\n    }\n  ]\n}"
+}
+```
+
+---
+
+## Core Values & Personal Mission
+
+The foundation of my lifelong learning journey and professional approach is built upon deeply held values that guide every decision and action. These principles aren't just words on a page—they're the compass that directs my path forward and the standards by which I measure success. My mission is to embody these values in everything I do, creating a ripple effect that inspires others to pursue their own growth while contributing to something greater than themselves.
+
+``` card
+{
+  "type": "columns",
+  "props": {},
+  "content": "{\n  \"columns\": 2,\n  \"cards\": [\n    {\n      \"type\": \"feature\",\n      \"props\": {\n        \"title\": \"Christian Faith & Values\",\n        \"description\": \"My life is anchored by my Christian faith and deep commitment to ethical leadership\",\n        \"badges\": \"Christian Faith, Integrity, Service, Stewardship, Compassion\",\n        \"icon\": \"heart\"\n      },\n      \"content\": \"I strive to bring integrity, compassion, and ethical leadership to every project I undertake. My faith shapes both my personal life and professional approach—emphasizing honesty, stewardship, and the belief that our work should serve others and glorify God.\"\n    },\n    {\n      \"type\": \"feature\",\n      \"props\": {\n        \"title\": \"Vision for Family\",\n        \"description\": \"Building a legacy through family and nurturing the next generation\",\n        \"badges\": \"Family First, Large Family, Children, Legacy, Nurturing\",\n        \"icon\": \"users\"\n      },\n      \"content\": \"One of my greatest aspirations is to build a large, loving family with children of many ages. I envision a home filled with laughter, learning, and the joy that comes from raising children who will grow up to make their own positive impact on the world.\"\n    }\n  ]\n}"
+}
+```
+
+---
+
+## Professional Expertise: Digital Transformation & AI
+
+The intersection of my core values and technical expertise creates a unique approach to digital transformation and AI implementation. I don't just deploy technology—I architect solutions that align with human values, ethical principles, and genuine business needs.
+
+``` card
+{
+  "type": "columns",
+  "props": {},
+  "content": "{\n  \"columns\": 3,\n  \"cards\": [\n    {\n      \"type\": \"tech\",\n      \"props\": {\n        \"title\": \"Digital Transformation\",\n        \"description\": \"Leading organizations through technological change and modernization\",\n        \"badges\": \"Digital Strategy, Change Management, Modernization, Legacy Systems\",\n        \"icon\": \"trending\"\n      },\n      \"content\": \"Expertise in guiding organizations through complex digital transformations while maintaining operational continuity and stakeholder alignment.\"\n    },\n    {\n      \"type\": \"tech\",\n      \"props\": {\n        \"title\": \"AI & Automation\",\n        \"description\": \"Implementing intelligent solutions to streamline processes and enhance decision-making\",\n        \"badges\": \"AI Integration, Process Automation, Machine Learning, Workflow Optimization\",\n        \"icon\": \"zap\"\n      },\n      \"content\": \"Specialized in deploying AI-powered solutions that drive efficiency and unlock new capabilities for businesses.\"\n    },\n    {\n      \"type\": \"tech\",\n      \"props\": {\n        \"title\": \"Technical Leadership\",\n        \"description\": \"PMP-certified expertise in complex project delivery and team development\",\n        \"badges\": \"PMP Certified, Project Management, Team Leadership, System Integration\",\n        \"icon\": \"target\"\n      },\n      \"content\": \"Combining technical expertise with proven leadership skills to deliver successful outcomes in complex environments.\"\n    }\n  ]\n}"
+}
+```
+
+---
+
+## What Drives Me
+
+I am passionate about solving challenging problems and building solutions that make a tangible difference. My goal is to lead with integrity, innovate with purpose, and inspire those around me to embrace the possibilities of the digital age.
+
+> My goal is to lead with integrity, innovate with purpose, and inspire those around me to embrace the possibilities of the digital age while maintaining strong ethical principles and a servant's heart.

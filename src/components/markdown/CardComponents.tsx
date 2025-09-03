@@ -141,17 +141,17 @@ export const InfoCard: React.FC<BaseCardProps> = ({
       : []
 
   return (
-    <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 font-sans", className)}>
+    <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 font-sans info-card", className)}>
       {/* Teal accent line */}
       <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
       
       {title && (
         <CardHeader className="pb-4">
-          <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 break-words overflow-wrap-break-word whitespace-normal">
             {title}
           </CardTitle>
           {description && (
-            <CardDescription className="text-lg text-teal-600 dark:text-teal-400 font-medium font-sans break-words">
+            <CardDescription className="text-lg text-teal-600 dark:text-teal-400 font-medium font-sans break-words overflow-wrap-break-word whitespace-normal">
               {description}
             </CardDescription>
           )}
@@ -167,7 +167,7 @@ export const InfoCard: React.FC<BaseCardProps> = ({
         </CardHeader>
       )}
       <CardContent className={cn("flex-1 min-w-0", !title && "pt-6")}>
-        <div className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content">
+        <div className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words overflow-wrap-break-word whitespace-normal font-sans min-w-0 card-content">
           <CardMarkdownContent content={children} />
         </div>
       </CardContent>
@@ -212,7 +212,7 @@ export const FeatureCard: React.FC<BaseCardProps & {
       : []
 
   return (
-    <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900", className)}>
+    <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 feature-card", className)}>
       {/* Teal accent line */}
       <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
       
@@ -223,12 +223,12 @@ export const FeatureCard: React.FC<BaseCardProps & {
           </div>
           <div className="flex-1 min-w-0">
             {title && (
-              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 font-sans break-words">
+              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 font-sans break-words overflow-wrap-break-word whitespace-normal">
                 {title}
               </CardTitle>
             )}
             {description && (
-              <CardDescription className="text-lg text-teal-600 dark:text-teal-400 font-medium mb-3 font-sans break-words">
+              <CardDescription className="text-lg text-teal-600 dark:text-teal-400 font-medium mb-3 font-sans break-words overflow-wrap-break-word whitespace-normal">
                 {description}
               </CardDescription>
             )}
@@ -245,7 +245,7 @@ export const FeatureCard: React.FC<BaseCardProps & {
         </div>
       </CardHeader>
       <CardContent className="flex-1 min-w-0">
-        <div className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content">
+        <div className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words overflow-wrap-break-word whitespace-normal font-sans min-w-0 card-content">
           <CardMarkdownContent content={children} />
         </div>
       </CardContent>
@@ -778,7 +778,7 @@ export const TechCard: React.FC<BaseCardProps & {
       : []
 
   return (
-    <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900", className)}>
+    <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 tech-card", className)}>
       {/* Blue accent line */}
       <div className="h-1 bg-gradient-to-r from-blue-600 to-teal-600"></div>
       
@@ -789,12 +789,12 @@ export const TechCard: React.FC<BaseCardProps & {
           </div>
           <div className="flex-1 min-w-0">
             {title && (
-              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 break-words overflow-wrap-break-word whitespace-normal">
                 {title}
               </CardTitle>
             )}
             {description && (
-              <CardDescription className="text-lg text-blue-600 dark:text-blue-400 font-medium mb-3 font-sans break-words">
+              <CardDescription className="text-lg text-blue-600 dark:text-blue-400 font-medium mb-3 font-sans break-words overflow-wrap-break-word whitespace-normal">
                 {description}
               </CardDescription>
             )}
@@ -812,7 +812,7 @@ export const TechCard: React.FC<BaseCardProps & {
       </CardHeader>
       {children && (
         <CardContent className="flex-1 min-w-0">
-          <div className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content">
+          <div className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words overflow-wrap-break-word whitespace-normal font-sans min-w-0 card-content">
             <CardMarkdownContent content={children} />
           </div>
         </CardContent>

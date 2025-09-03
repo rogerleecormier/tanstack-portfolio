@@ -140,29 +140,65 @@ export default function BlogListPage() {
   }, [isLoading, isLoadingMore, displayedPosts.length, filteredPosts.length])
 
   return (
-    <div className="min-h-screen">
-      {/* Header with Subtle Blue Accent */}
-      <div className="bg-gradient-to-b from-blue-50/50 via-gray-50 to-white dark:from-blue-950/30 dark:via-gray-950 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50 rounded-xl flex items-center justify-center">
-              <BookOpen className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-teal-100 dark:from-teal-950 dark:via-blue-950 dark:to-teal-900">
+      {/* Header with Targeting Theme - More Compact */}
+      <div className="relative overflow-hidden border-b border-teal-200 dark:border-teal-800">
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10"></div>
+        
+        <div className="relative px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            {/* Icon and Title with Targeting Theme */}
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <BookOpen className="h-7 w-7 text-white" />
+                </div>
+                {/* Targeting indicator dots */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+              </div>
+              <div>
+                <H1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl" style={{fontWeight: 700}}>
+                  <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                    Insights & Articles
+                  </span>
+                </H1>
+                <div className="h-1 w-20 bg-gradient-to-r from-teal-500 to-blue-500 mx-auto mt-2 rounded-full"></div>
+              </div>
             </div>
-            <div>
-              <H1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
-                Insights & Articles
-              </H1>
-              <div className="w-16 h-0.5 bg-gradient-to-r from-blue-600 to-teal-600 mx-auto mt-3"></div>
+            
+            {/* Description with Targeting Language */}
+            <P className="text-lg leading-7 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Strategic insights, technical deep-dives, and leadership perspectives on enterprise technology transformation. 
+              <span className="font-medium text-teal-700 dark:text-teal-300"> Target your knowledge </span>
+              with precision-curated content and expert analysis.
+            </P>
+            
+            {/* Quick Stats with Targeting Theme */}
+            <div className="flex justify-center gap-6 mt-6">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                <span>Strategic Insights</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span>Technical Deep-dives</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <span>Expert Analysis</span>
+              </div>
             </div>
           </div>
-          <P className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Strategic insights, technical deep-dives, and leadership perspectives on enterprise technology transformation
-          </P>
         </div>
       </div>
 
       {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Search and Filters with Blue Accent */}
         <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8 shadow-sm">
           <div className="flex flex-col sm:flex-row gap-4">

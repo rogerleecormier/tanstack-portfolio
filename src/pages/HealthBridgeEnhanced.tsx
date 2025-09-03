@@ -2316,21 +2316,71 @@ export default function HealthBridgeEnhancedPage() {
 
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 text-center">
-        <H1 className="flex items-center justify-center gap-3 mb-4">
-          <Zap className="h-8 w-8 text-blue-600" />
-          HealthBridge Enhanced
-        </H1>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Advanced weight loss tracking with AI-powered projections and comprehensive analytics (pounds only)
-        </p>
-        {isAuthenticated && (
-          <p className="text-sm text-muted-foreground mt-2">
-            💡 Weight goals are managed in your <a href="/protected/settings" className="text-blue-600 hover:underline">Settings page</a>
-          </p>
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-teal-100 dark:from-teal-950 dark:via-blue-950 dark:to-teal-900">
+      {/* Hero Section - Compact with Targeting Theme */}
+      <div className="relative overflow-hidden border-b border-teal-200 dark:border-teal-800">
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10"></div>
+        
+        <div className="relative px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            {/* Icon and Title with Targeting Theme */}
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Zap className="h-7 w-7 text-white" />
+                </div>
+                {/* Targeting indicator dots */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+              </div>
+              <div>
+                <H1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl" style={{fontWeight: 700}}>
+                  <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                    HealthBridge Enhanced
+                  </span>
+                </H1>
+                <div className="h-1 w-20 bg-gradient-to-r from-teal-500 to-blue-500 mx-auto mt-2 rounded-full"></div>
+              </div>
+            </div>
+            
+            {/* Description with Targeting Language */}
+            <p className="text-lg leading-7 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Advanced weight loss tracking with AI-powered projections and comprehensive analytics. 
+              <span className="font-medium text-teal-700 dark:text-teal-300"> Target your health goals </span>
+              with precision-driven insights and data-driven decision making.
+            </p>
+            
+            {/* Quick Stats with Targeting Theme */}
+            <div className="flex justify-center gap-6 mt-6">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                <span>Precision Analytics</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span>AI Projections</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <span>Goal Targeting</span>
+              </div>
+            </div>
+            
+            {isAuthenticated && (
+              <p className="text-sm text-muted-foreground mt-4">
+                💡 Weight goals are managed in your <a href="/protected/settings" className="text-blue-600 hover:underline">Settings page</a>
+              </p>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
              {!isAuthenticated && (
          <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-teal-50 border border-blue-200 rounded-xl">
@@ -2360,31 +2410,43 @@ export default function HealthBridgeEnhancedPage() {
        )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className={`grid w-full ${isAuthenticated ? 'grid-cols-4' : 'grid-cols-3'}`}>
+        <TabsList className={`grid w-full ${isAuthenticated ? 'grid-cols-4' : 'grid-cols-3'} bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-teal-200 dark:border-teal-800`}>
           {isAuthenticated && (
-            <TabsTrigger value="overview">Enter Weight</TabsTrigger>
+            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-0">
+              <Scale className="w-4 h-4 mr-2" />
+              Enter Weight
+            </TabsTrigger>
           )}
-          <TabsTrigger value="data">Current Progress</TabsTrigger>
-          <TabsTrigger value="projections">Projections</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="data" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-0">
+            <TableIcon className="w-4 h-4 mr-2" />
+            Current Progress
+          </TabsTrigger>
+          <TabsTrigger value="projections" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-0">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Projections
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-0">
+            <BarChart3 className="w-4 h-4 mr-2" />
+            Analytics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
           {!isAuthenticated ? (
-            <Card className="max-w-md mx-auto">
+            <Card className="max-w-md mx-auto border-teal-200 dark:border-teal-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle>Authentication Required</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-teal-900 dark:text-teal-100">Authentication Required</CardTitle>
+                <CardDescription className="text-teal-700 dark:text-teal-300">
                   Please sign in to enter weight data and access personalized features.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                                 <Button 
-                   onClick={() => window.location.href = '/projects/healthbridge-enhanced'}
-                   className="w-full"
-                 >
-                   Sign In
-                 </Button>
+                <Button 
+                  onClick={() => window.location.href = '/projects/healthbridge-enhanced'}
+                  className="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0"
+                >
+                  Sign In
+                </Button>
               </CardContent>
             </Card>
           ) : (
@@ -2394,8 +2456,8 @@ export default function HealthBridgeEnhancedPage() {
 
         <TabsContent value="data" className="space-y-6">
           {!isAuthenticated && (
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-700">
+            <div className="mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg dark:bg-teal-950/50 dark:border-teal-800">
+              <p className="text-sm text-teal-700 dark:text-teal-300">
                 💡 <strong>Demo Mode:</strong> Showing sample data to demonstrate the dashboard features
               </p>
             </div>
@@ -2405,8 +2467,8 @@ export default function HealthBridgeEnhancedPage() {
 
         <TabsContent value="projections" className="space-y-6">
           {!isAuthenticated && (
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-700">
+            <div className="mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg dark:bg-teal-950/50 dark:border-teal-800">
+              <p className="text-sm text-teal-700 dark:text-teal-300">
                 💡 <strong>Demo Mode:</strong> Showing sample projections to demonstrate the dashboard features
               </p>
             </div>
@@ -2416,8 +2478,8 @@ export default function HealthBridgeEnhancedPage() {
 
         <TabsContent value="analytics" className="space-y-6">
           {!isAuthenticated && (
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-700">
+            <div className="mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg dark:bg-teal-950/50 dark:border-teal-800">
+              <p className="text-sm text-teal-700 dark:text-teal-300">
                 💡 <strong>Demo Mode:</strong> Showing sample analytics to demonstrate the dashboard features
               </p>
             </div>
@@ -2425,6 +2487,7 @@ export default function HealthBridgeEnhancedPage() {
           <AnalyticsDashboard />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }

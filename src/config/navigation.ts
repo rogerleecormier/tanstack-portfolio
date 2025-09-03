@@ -5,7 +5,7 @@ import { User, BarChart3, Mail, FileText, Briefcase, Users, Settings, Code, Targ
 export const navigationItems = [
   {
     title: "About",
-    url: "", // root route
+    url: "about",
     icon: User,
   },
   {

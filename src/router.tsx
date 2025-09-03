@@ -23,6 +23,7 @@ import BlogListPage from "./pages/BlogListPage";
 import BlogPostWrapper from "./components/BlogPostWrapper";
 import PortfolioListPage from "./pages/PortfolioListPage";
 import AboutPage from "./pages/AboutPage";
+import IndexPage from "./pages/IndexPage";
 import NewsletterPreferencesPage from "./pages/NewsletterPreferencesPage";
 import MarkdownEditorPage from "./pages/MarkdownEditorPage";
 import ContentCreationPage from "./pages/ContentCreationPage";
@@ -45,10 +46,17 @@ const rootRoute = createRootRoute({
   errorComponent: RootErrorBoundary,
 });
 
-// Index route (About page at root)
+// Index route (Home page at root)
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/", // root path for About
+  path: "/", // root path for Home
+  component: IndexPage,
+});
+
+// About route
+const aboutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "about",
   component: AboutPage,
 });
 
@@ -185,6 +193,7 @@ const markdownEditorRoute = createRoute({
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  aboutRoute,
   portfolioRoute,
   portfolioItemRoute,
   projectsListRoute,

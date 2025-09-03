@@ -23,7 +23,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
   badges
 }) => {
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden max-w-4xl mx-auto">
       <CardHeader className="pb-4">
         <div className="flex items-start gap-6">
           <div className="flex-shrink-0">
@@ -34,10 +34,10 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 break-words">
               {name}
             </h2>
-            <p className="text-lg text-teal-600 dark:text-teal-400 font-medium mb-3">
+            <p className="text-lg text-teal-600 dark:text-teal-400 font-medium mb-3 break-words">
               {title}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -51,7 +51,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-base">
+        <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words overflow-wrap-break-word whitespace-normal">
           {description}
         </p>
       </CardContent>
