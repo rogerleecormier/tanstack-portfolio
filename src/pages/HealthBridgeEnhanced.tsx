@@ -46,8 +46,30 @@ import { format } from "date-fns";
 import { CalendarIcon, TrendingUp, TrendingDown, BarChart3, Activity, Zap, TableIcon, Scale, Pill } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 
-// Dummy data for non-authenticated users
-const DUMMY_DATA = {
+// Enhanced API imports
+import HealthBridgeEnhancedAPI, {
+  CreateWeightMeasurementRequest
+} from "../api/healthBridgeEnhanced";
+import { UserProfilesAPI } from "../api/userProfiles";
+
+// shadcn/ui components
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
+import { Calendar } from "../components/ui/calendar";
+import { Badge } from "../components/ui/badge";
+import { Progress } from "../components/ui/progress";
+import { Separator } from "../components/ui/separator";
+
+// shadcn/ui charts
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, BarChart, Bar } from "recharts";
+
+// Dummy data for non-authenticated users (no longer used - backend handles dummy data)
+/* const DUMMY_DATA = {
   weightGoal: {
     target_weight_lbs: 165,
     target_date: "2024-06-15T00:00:00.000Z"
@@ -55,15 +77,22 @@ const DUMMY_DATA = {
   userMedications: [
     {
       id: "1",
+      user_id: "dev-user-123",
+      medication_type_id: 1,
       medication_type: {
-        name: "Zepbound",
-        generic_name: "Tirzepatide",
-        weekly_efficacy_multiplier: 1.75
+        name: "Wegovy",
+        generic_name: "Semaglutide",
+        weekly_efficacy_multiplier: 1.5
       },
-      dosage_mg: 5,
+      medication_name: "Wegovy",
+      generic_name: "Semaglutide",
+      weekly_efficacy_multiplier: 1.5,
+      dosage_mg: 2.4,
       frequency: "weekly",
       start_date: "2024-01-01T00:00:00.000Z",
-      is_active: true
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }
   ],
   weightData: [
@@ -125,39 +154,12 @@ const DUMMY_DATA = {
     },
     generated_at: new Date().toISOString()
   }
-};
+}; */
 
-// Enhanced API imports
-import HealthBridgeEnhancedAPI, {
-  CreateWeightMeasurementRequest
-} from "../api/healthBridgeEnhanced";
-import type { AnalyticsDashboard } from "../api/healthBridgeEnhanced";
-
-// User profiles API for weight goals
-import { UserProfilesAPI } from "../api/userProfiles";
-
-// shadcn/ui components
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { H1 } from "@/components/ui/typography";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-// shadcn charts and recharts
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
+// Additional imports needed
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { H1 } from "../components/ui/typography";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 
 /**
  * Enhanced weight entry component with additional health metrics (pounds only)
@@ -293,47 +295,50 @@ function WeightProjections() {
   const { user, isAuthenticated } = useAuth();
   
   // Always call hooks, but conditionally use their data
+  // Use default userId for non-authenticated users to get dummy data
+  const userId = user?.email || user?.sub || 'dev-user-123';
+
   const weightGoalQuery = useQuery({
-    queryKey: ["weightGoal", user?.email || user?.sub],
-    queryFn: () => UserProfilesAPI.getWeightGoal(user?.email || user?.sub || ''),
-    enabled: !!(user?.email || user?.sub) && isAuthenticated,
+    queryKey: ["weightGoal", userId],
+    queryFn: () => UserProfilesAPI.getWeightGoal(userId),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const userMedicationsQuery = useQuery({
-    queryKey: ["userMedications", user?.email || user?.sub],
-    queryFn: () => UserProfilesAPI.getUserMedications(user?.email || user?.sub || ''),
-    enabled: !!(user?.email || user?.sub) && isAuthenticated,
+    queryKey: ["userMedications", userId],
+    queryFn: () => UserProfilesAPI.getUserMedications(userId),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const weightDataQuery = useQuery({
-    queryKey: ["enhanced-weights"],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeights(),
-    enabled: isAuthenticated,
+    queryKey: ["enhanced-weights", userId],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeights(userId),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   const projectionsQuery = useQuery({
-    queryKey: ["projections"],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, user?.email || user?.sub), // 90 days for better trend analysis
-    enabled: isAuthenticated,
+    queryKey: ["projections", userId],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, userId), // 90 days for better trend analysis
+    enabled: true, // Always enabled to get dummy data when not authenticated
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Use dummy data when not authenticated, real data when authenticated
-  const weightGoal = isAuthenticated ? weightGoalQuery.data : DUMMY_DATA.weightGoal;
-  const userMedications = isAuthenticated ? userMedicationsQuery.data : DUMMY_DATA.userMedications;
-  const weightData = isAuthenticated ? weightDataQuery.data : DUMMY_DATA.weightData;
-  const projections = isAuthenticated ? projectionsQuery.data : DUMMY_DATA.projections;
+  // Use data from API calls (backend handles dummy data for dev users)
+  const weightGoal = weightGoalQuery.data;
+  const userMedications = userMedicationsQuery.data;
+  const weightData = weightDataQuery.data;
+  const projections = projectionsQuery.data;
 
-  // Set loading states based on authentication
-  const isLoadingWeightGoal = isAuthenticated && weightGoalQuery.isLoading;
-  const isLoadingMedications = isAuthenticated && userMedicationsQuery.isLoading;
-  const isLoadingWeights = isAuthenticated && weightDataQuery.isLoading;
+  // Set loading states
+  const isLoadingWeightGoal = weightGoalQuery.isLoading;
+  const isLoadingMedications = userMedicationsQuery.isLoading;
+  const isLoadingWeights = weightDataQuery.isLoading;
   const projectionsError = isAuthenticated && projectionsQuery.error;
 
   // State for projection controls
@@ -375,7 +380,10 @@ function WeightProjections() {
   }, [weightGoal]);
 
   const targetDate = useMemo(() => {
-    return weightGoal?.target_date ? new Date(weightGoal.target_date) : null;
+    if (!weightGoal?.target_date) return null;
+    // Handle both ISO date strings and date-only strings
+    const dateStr = weightGoal.target_date.includes('T') ? weightGoal.target_date : weightGoal.target_date + 'T00:00:00';
+    return new Date(dateStr);
   }, [weightGoal]);
 
   // Calculate medication multiplier based on user's actual medications
@@ -618,7 +626,7 @@ function WeightProjections() {
             <div className="text-center p-4 bg-purple-50 rounded-lg">
               <div className="text-sm text-purple-600 font-medium mb-2">Target Date</div>
               <div className="text-3xl font-bold text-purple-700">
-                {targetDate ? targetDate.toLocaleDateString() : 'Not set'}
+                {targetDate ? targetDate.toLocaleDateString('en-US', { timeZone: 'America/New_York' }) : 'Not set'}
               </div>
               {targetDate && (
                 <div className="text-xs text-purple-500 mt-1">
@@ -661,10 +669,10 @@ function WeightProjections() {
                      <div className="flex justify-between items-start">
                        <div>
                                                   <h4 className="font-semibold text-lg">
-                           {medication.medication_type?.name || 'Unknown Medication'}
+                           {medication.medication_name || medication.medication_type?.name || 'Unknown Medication'}
                          </h4>
                          <p className="text-sm text-muted-foreground">
-                           {medication.medication_type?.generic_name || 'Generic name not available'}
+                           {medication.generic_name || medication.medication_type?.generic_name || 'Generic name not available'}
                          </p>
                          <div className="flex gap-4 mt-2 text-sm">
                            {medication.dosage_mg && (
@@ -679,7 +687,7 @@ function WeightProjections() {
                            )}
                            {medication.start_date && (
                              <span className="text-purple-600">
-                               <strong>Started:</strong> {new Date(medication.start_date).toLocaleDateString()}
+                               <strong>Started:</strong> {new Date(medication.start_date + 'T00:00:00').toLocaleDateString('en-US', { timeZone: 'America/New_York' })}
                              </span>
                            )}
                          </div>
@@ -691,11 +699,14 @@ function WeightProjections() {
                             let baseMultiplier = 0;
                             let dosageMultiplier = 1;
                             
-                            if (medication.medication_type?.weekly_efficacy_multiplier) {
+                            if (medication.weekly_efficacy_multiplier) {
+                              baseMultiplier = medication.weekly_efficacy_multiplier - 1;
+                            } else if (medication.medication_type?.weekly_efficacy_multiplier) {
                               baseMultiplier = medication.medication_type.weekly_efficacy_multiplier - 1;
                             } else {
                               // Fallback calculation
-                              switch (medication.medication_type?.name?.toLowerCase()) {
+                              const medName = (medication.medication_name || medication.medication_type?.name || '').toLowerCase();
+                              switch (medName) {
                                 case 'ozempic':
                                 case 'wegovy':
                                   baseMultiplier = 0.4;
@@ -871,7 +882,7 @@ function WeightProjections() {
           <CardTitle>Weight Loss Trajectory Projections</CardTitle>
                    <CardDescription>
            Projected weight loss from {startingWeight?.toFixed(1)} lbs to {targetWeight?.toFixed(1)} lbs
-           {targetDate && `, targeting ${targetDate.toLocaleDateString()}`}
+           {targetDate && `, targeting ${targetDate.toLocaleDateString('en-US', { timeZone: 'America/New_York' })}`}
            <br />
            <span className="text-sm text-muted-foreground">
              Showing {projectionDays} day projection period • X-axis range: {projectionDays} days
@@ -1019,56 +1030,60 @@ function WeightProjections() {
 function AnalyticsDashboard() {
   const { user, isAuthenticated } = useAuth();
   
+  // Use default userId for non-authenticated users to get dummy data
+  const userId = user?.email || user?.sub || 'dev-user-123';
+  
   // Always call hooks, but conditionally use their data
   const analyticsQuery = useQuery({
-    queryKey: ["analytics"],
-    queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30, user?.email || user?.sub),
-    enabled: isAuthenticated,
+    queryKey: ["analytics", userId],
+    queryFn: () => HealthBridgeEnhancedAPI.getAnalyticsDashboard(30, userId),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const weightDataQuery = useQuery({
-    queryKey: ["enhanced-weights"],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeights(),
-    enabled: isAuthenticated,
+    queryKey: ["enhanced-weights", userId],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeights(userId),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   // Bring goals and projections into Analytics for richer insights
   const weightGoalQuery = useQuery({
-    queryKey: ["weightGoal", user?.email || user?.sub],
-    queryFn: () => UserProfilesAPI.getWeightGoal(user?.email || user?.sub || ''),
-    enabled: !!(user?.email || user?.sub) && isAuthenticated,
+    queryKey: ["weightGoal", userId],
+    queryFn: () => UserProfilesAPI.getWeightGoal(userId),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 5 * 60 * 1000,
   });
 
   const projectionsQuery = useQuery({
-    queryKey: ["projections", user?.email || user?.sub],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, user?.email || user?.sub),
-    enabled: isAuthenticated,
+    queryKey: ["projections", userId],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeightProjections(90, userId),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 5 * 60 * 1000,
   });
 
   const userMedicationsQuery = useQuery({
-    queryKey: ["userMedications", user?.email || user?.sub],
-    queryFn: () => UserProfilesAPI.getUserMedications(user?.email || user?.sub || ''),
-    enabled: !!(user?.email || user?.sub) && isAuthenticated,
+    queryKey: ["userMedications", userId],
+    queryFn: () => UserProfilesAPI.getUserMedications(userId),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const analytics = isAuthenticated ? analyticsQuery.data : DUMMY_DATA.analytics;
-  const weightData = isAuthenticated ? weightDataQuery.data : DUMMY_DATA.weightData;
-  const userMedications = isAuthenticated ? userMedicationsQuery.data : DUMMY_DATA.userMedications;
-  const weightGoal = isAuthenticated ? weightGoalQuery.data : DUMMY_DATA.weightGoal;
-  const projections = isAuthenticated ? projectionsQuery.data : DUMMY_DATA.projections;
+  // Use data from API calls (backend handles dummy data for dev users)
+  const analytics = analyticsQuery.data;
+  const weightData = weightDataQuery.data;
+  const userMedications = userMedicationsQuery.data;
+  const weightGoal = weightGoalQuery.data;
+  const projections = projectionsQuery.data;
   
-  const isLoading = isAuthenticated && (analyticsQuery.isLoading || weightDataQuery.isLoading);
-  const error = isAuthenticated && (analyticsQuery.error || weightDataQuery.error);
+  const isLoading = analyticsQuery.isLoading || weightDataQuery.isLoading;
+  const error = analyticsQuery.error || weightDataQuery.error;
 
   // Calculate enhanced analytics metrics
   const enhancedMetrics = useMemo(() => {
@@ -1179,10 +1194,13 @@ function AnalyticsDashboard() {
       let baseMultiplier = 0;
       let dosageMultiplier = 1;
 
-      if (medication.medication_type?.weekly_efficacy_multiplier) {
+      if (medication.weekly_efficacy_multiplier) {
+        baseMultiplier = medication.weekly_efficacy_multiplier - 1;
+      } else if (medication.medication_type?.weekly_efficacy_multiplier) {
         baseMultiplier = medication.medication_type.weekly_efficacy_multiplier - 1;
       } else {
-        switch (medication.medication_type?.name?.toLowerCase()) {
+        const medName = (medication.medication_name || medication.medication_type?.name || '').toLowerCase();
+        switch (medName) {
           case 'ozempic':
           case 'wegovy':
             baseMultiplier = 0.4;
@@ -1258,8 +1276,12 @@ function AnalyticsDashboard() {
       .filter(med => med.is_active)
       .map(med => {
         let name = 'Unknown Medication';
-        if (med.medication_type?.name) {
+        if (med.medication_name) {
+          name = med.medication_name;
+        } else if (med.medication_type?.name) {
           name = med.medication_type.name;
+        } else if (med.generic_name) {
+          name = med.generic_name;
         } else if (med.medication_type?.generic_name) {
           name = med.medication_type.generic_name;
         }
@@ -1835,20 +1857,23 @@ function AnalyticsDashboard() {
  * Weight data table component with shadcn table and chart (pounds only)
  */
 function WeightDataTable() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  
+  // Use default userId for non-authenticated users to get dummy data
+  const userId = user?.email || user?.sub || 'dev-user-123';
   
   // Always call hooks, but conditionally use their data
   const measurementsQuery = useQuery({
-    queryKey: ["weight-measurements"],
-    queryFn: () => HealthBridgeEnhancedAPI.getWeightMeasurements({ limit: 50 }),
-    enabled: isAuthenticated,
+    queryKey: ["weight-measurements", userId],
+    queryFn: () => HealthBridgeEnhancedAPI.getWeightMeasurements({ limit: 50, userId }),
+    enabled: true, // Always enabled to get dummy data when not authenticated
     retry: 2,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
-  const measurements = isAuthenticated ? measurementsQuery.data : [];
-  const isLoading = isAuthenticated && measurementsQuery.isLoading;
-  const error = isAuthenticated && measurementsQuery.error;
+  const measurements = measurementsQuery.data || [];
+  const isLoading = measurementsQuery.isLoading;
+  const error = measurementsQuery.error;
 
   // State for chart filtering and sorting
   const [chartPeriod, setChartPeriod] = useState<"7" | "30" | "90" | "all">(isAuthenticated ? "30" : "all");
@@ -1879,17 +1904,8 @@ function WeightDataTable() {
     );
   }
 
-  // Use dummy data when not authenticated, real data when authenticated
-  const mockMeasurements = isAuthenticated ? [] : DUMMY_DATA.weightData.map((item, index) => ({
-    id: index + 1,
-    weight: item.weight,
-    weight_lb: `${item.weight} lbs`,
-    weight_kg: `${(item.weight * 0.453592).toFixed(1)} kg`,
-    timestamp: item.timestamp,
-    source: "Scale"
-  }));
-
-  const displayData = isAuthenticated ? (measurements && measurements.length > 0 ? measurements : mockMeasurements) : mockMeasurements;
+  // Use data from API calls (backend handles dummy data for dev users)
+  const displayData = measurements || [];
 
   // Prepare chart data with filtering and sorting
   const chartData = displayData

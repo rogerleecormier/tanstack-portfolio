@@ -221,6 +221,28 @@ async function getWeightMeasurements(request, env, corsHeaders) {
     const days = url.searchParams.get('days');
     const startDate = url.searchParams.get('start_date');
     const endDate = url.searchParams.get('end_date');
+    const userId = url.searchParams.get('userId');
+
+    // Return dummy weight data for development users
+    if (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') {
+      const dummyWeights = [
+        { id: 1, weight: 192.2, weight_lb: "192.2", weight_kg: "87.2", timestamp: "2024-01-01T08:00:00.000Z", source: "dummy" },
+        { id: 2, weight: 190.8, weight_lb: "190.8", weight_kg: "86.5", timestamp: "2024-01-08T08:00:00.000Z", source: "dummy" },
+        { id: 3, weight: 189.4, weight_lb: "189.4", weight_kg: "85.9", timestamp: "2024-01-15T08:00:00.000Z", source: "dummy" },
+        { id: 4, weight: 187.9, weight_lb: "187.9", weight_kg: "85.2", timestamp: "2024-01-22T08:00:00.000Z", source: "dummy" },
+        { id: 5, weight: 186.3, weight_lb: "186.3", weight_kg: "84.5", timestamp: "2024-01-29T08:00:00.000Z", source: "dummy" },
+        { id: 6, weight: 184.7, weight_lb: "184.7", weight_kg: "83.8", timestamp: "2024-02-05T08:00:00.000Z", source: "dummy" },
+        { id: 7, weight: 183.1, weight_lb: "183.1", weight_kg: "83.0", timestamp: "2024-02-12T08:00:00.000Z", source: "dummy" },
+        { id: 8, weight: 181.4, weight_lb: "181.4", weight_kg: "82.3", timestamp: "2024-02-19T08:00:00.000Z", source: "dummy" },
+        { id: 9, weight: 179.7, weight_lb: "179.7", weight_kg: "81.5", timestamp: "2024-02-26T08:00:00.000Z", source: "dummy" },
+        { id: 10, weight: 178.5, weight_lb: "178.5", weight_kg: "81.0", timestamp: "2024-03-05T08:00:00.000Z", source: "dummy" }
+      ];
+      
+      return new Response(
+        JSON.stringify(dummyWeights),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     let query = `
       SELECT startDate, kg
@@ -279,7 +301,7 @@ async function getWeightProjections(request, env, corsHeaders) {
     const userId = url.searchParams.get('userId') || 'dev-user-123';
 
     // Return dummy data for development users
-    if (userId === 'dev-user-123') {
+    if (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') {
       const dummyProjections = {
         current_weight: 178.5,
         daily_rate: -0.15,
@@ -802,7 +824,7 @@ function getDummyAnalytics(period) {
  */
 async function calculateAnalytics(env, period, userId) {
   // Return dummy data for development users
-  if (userId === 'dev-user-123') {
+  if (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') {
     return getDummyAnalytics(period);
   }
 
@@ -1083,9 +1105,9 @@ async function getUserProfile(request, env, corsHeaders) {
     }
 
     // Return dummy data for development users
-    if (userId === 'dev-user-123') {
+    if (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') {
       const dummyProfile = {
-        id: 'dev-user-123',
+        id: userId,
         name: 'Development User',
         birthdate: '1990-01-01',
         gender: 'male',
@@ -1122,7 +1144,7 @@ async function getUserProfile(request, env, corsHeaders) {
       // If no profile exists, create a default one
       const defaultProfile = {
         id: dbUserId,
-        name: userId === 'dev-user-123' ? 'Development User' : 'New User',
+        name: (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') ? 'Development User' : 'New User',
         birthdate: '1990-01-01',
         gender: 'male',
         height_ft: 6,
@@ -1196,10 +1218,10 @@ async function updateUserProfile(request, env, corsHeaders) {
     }
 
     // Return dummy success for development users (don't actually update database)
-    if (id === 'dev-user-123') {
+    if (id === 'dev-user-123' || id === 'dev@rcormier.dev') {
       const updatedProfile = {
         ...body,
-        id: 'dev-user-123',
+        id: id,
         updated_at: new Date().toISOString()
       };
       
@@ -1271,9 +1293,9 @@ async function getWeightGoal(request, env, corsHeaders) {
     }
 
     // Return dummy data for development users
-    if (userId === 'dev-user-123') {
+    if (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') {
       const dummyGoal = {
-        user_id: 'dev-user-123',
+        user_id: userId,
         target_weight_lbs: 165,
         target_date: '2024-06-15T00:00:00.000Z',
         is_active: true,
@@ -1371,11 +1393,11 @@ async function updateWeightGoal(request, env, corsHeaders) {
     }
 
     // Return dummy success for development users (don't actually update database)
-    if (user_id === 'dev-user-123') {
+    if (user_id === 'dev-user-123' || user_id === 'dev@rcormier.dev') {
       const updatedGoal = {
         ...body,
         id: id,
-        user_id: 'dev-user-123',
+        user_id: user_id,
         updated_at: new Date().toISOString()
       };
       
@@ -1447,11 +1469,11 @@ async function getUserMedications(request, env, corsHeaders) {
     }
 
     // Return dummy data for development users
-    if (userId === 'dev-user-123') {
+    if (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') {
       const dummyMedications = [
         {
           id: "1",
-          user_id: "dev-user-123",
+          user_id: userId,
           medication_type_id: 1,
           dosage_mg: 2.4,
           frequency: "weekly",

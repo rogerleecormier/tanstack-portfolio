@@ -53,6 +53,13 @@ export interface UserMedication {
   created_at: string;
   updated_at: string;
   medication_type?: MedicationType;
+  // Flat structure fields from API JOIN query
+  medication_name?: string;
+  generic_name?: string;
+  weekly_efficacy_multiplier?: number;
+  max_weight_loss_percentage?: number;
+  typical_duration_weeks?: number;
+  medication_description?: string;
 }
 
 export interface MedicationProjection {

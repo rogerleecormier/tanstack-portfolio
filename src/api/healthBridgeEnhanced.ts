@@ -174,12 +174,14 @@ export class HealthBridgeEnhancedAPI {
     days?: number;
     startDate?: string;
     endDate?: string;
+    userId?: string;
   } = {}): Promise<WeightMeasurement[]> {
     const params = new URLSearchParams();
     if (options.limit) params.append('limit', options.limit.toString());
     if (options.days) params.append('days', options.days.toString());
     if (options.startDate) params.append('start_date', options.startDate);
     if (options.endDate) params.append('end_date', options.endDate);
+    if (options.userId) params.append('userId', options.userId);
 
     const response = await this.makeRequest(`/api/v2/weight/measurement?${params.toString()}`);
     
@@ -263,8 +265,8 @@ export class HealthBridgeEnhancedAPI {
   /**
    * Get weight measurements (alias for getWeightMeasurements for backward compatibility)
    */
-  static async getWeights(): Promise<WeightMeasurement[]> {
-    return this.getWeightMeasurements({ limit: 100, days: 365 }); // Get last year of data
+  static async getWeights(userId?: string): Promise<WeightMeasurement[]> {
+    return this.getWeightMeasurements({ limit: 100, days: 365, userId }); // Get last year of data
   }
 
   /**
