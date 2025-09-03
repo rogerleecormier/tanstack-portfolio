@@ -28,6 +28,7 @@ export default function CloudflareDebugPage() {
   const [results, setResults] = useState<DebugResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cookies, setCookies] = useState<string[]>([]);
+  const [authState, setAuthState] = useState<any>(null);
 
   useEffect(() => {
     // Get current cookies on page load
@@ -46,6 +47,9 @@ export default function CloudflareDebugPage() {
     });
     
     setCookies(cfCookies);
+    
+    // Also check auth state on page load
+    checkAuthState();
   }, []);
 
   const testEndpoint = async (endpoint: string): Promise<DebugResult> => {
@@ -116,6 +120,60 @@ export default function CloudflareDebugPage() {
 
   const clearResults = () => {
     setResults([]);
+  };
+
+  const checkAuthState = async () => {
+    try {
+      console.log('🔍 Checking authentication state...');
+      
+      // Test the identity endpoint to see if user is already authenticated
+      const response = await fetch('/cdn-cgi/access/get-identity', {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: AbortSignal.timeout(5000)
+      });
+
+      const authInfo: any = {
+        status: response.status,
+        statusText: response.statusText,
+        isAuthenticated: response.ok,
+        timestamp: new Date().toISOString(),
+        cookies: document.cookie.split(';').map(c => c.trim()).filter(cookie => 
+          cookie.startsWith('CF_') || cookie.startsWith('cf_')
+        ),
+        allCookies: document.cookie.split(';').map(c => c.trim())
+      };
+
+      if (response.ok) {
+        try {
+          const identity = await response.json();
+          authInfo.identity = identity;
+          console.log('✅ User is authenticated:', identity);
+        } catch (parseError) {
+          console.log('⚠️ Response OK but not JSON:', parseError);
+          authInfo.parseError = parseError instanceof Error ? parseError.message : 'Unknown parse error';
+        }
+      } else {
+        console.log('❌ User not authenticated:', response.status, response.statusText);
+      }
+
+      setAuthState(authInfo);
+      console.log('🔍 Auth state check complete:', authInfo);
+      
+    } catch (error) {
+      const errorInfo = {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString(),
+        cookies: document.cookie.split(';').map(c => c.trim()).filter(cookie => 
+          cookie.startsWith('CF_') || cookie.startsWith('cf_')
+        ),
+        allCookies: document.cookie.split(';').map(c => c.trim())
+      };
+      setAuthState(errorInfo);
+      console.log('❌ Auth state check failed:', errorInfo);
+    }
   };
 
   const getStatusBadge = (status: number) => {
@@ -236,20 +294,124 @@ export default function CloudflareDebugPage() {
             <Button variant="outline" onClick={clearResults}>
               Clear Results
             </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                const allCookies = document.cookie.split(';').map(c => c.trim());
-                const cfCookies = allCookies.filter(cookie => 
-                  cookie.startsWith('CF_') || cookie.startsWith('cf_')
-                );
-                setCookies(cfCookies);
-                console.log('🔄 Refreshed cookies:', { allCookies, cfCookies });
-              }}
-            >
-              🔄 Refresh Cookies
-            </Button>
+                         <Button 
+               variant="outline" 
+               onClick={() => {
+                 const allCookies = document.cookie.split(';').map(c => c.trim());
+                 const cfCookies = allCookies.filter(cookie => 
+                   cookie.startsWith('CF_') || cookie.startsWith('cf_')
+                 );
+                 setCookies(cfCookies);
+                 console.log('🔄 Refreshed cookies:', { allCookies, cfCookies });
+               }}
+             >
+               🔄 Refresh Cookies
+             </Button>
+             <Button 
+               variant="outline" 
+               onClick={checkAuthState}
+             >
+               🔐 Check Auth State
+             </Button>
+             <Button 
+               variant="outline" 
+               onClick={() => {
+                 console.log('🔄 Testing login redirect...');
+                 window.location.href = '/cdn-cgi/access/login?redirect_url=' + encodeURIComponent(window.location.href);
+               }}
+             >
+               🔑 Test Login Redirect
+             </Button>
+             <Button 
+               variant="outline" 
+               onClick={() => {
+                 console.log('🔄 Testing logout redirect...');
+                 window.location.href = '/cdn-cgi/access/logout?returnTo=' + encodeURIComponent(window.location.href);
+               }}
+             >
+               🚪 Test Logout Redirect
+             </Button>
           </div>
+
+          {/* Authentication State */}
+          {authState && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Authentication State</h3>
+              <Card className="border-l-4 border-l-green-500">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base">Current Auth Status</CardTitle>
+                    <div className="flex items-center gap-2">
+                      {authState.isAuthenticated ? (
+                        <Badge variant="default">✅ Authenticated</Badge>
+                      ) : authState.error ? (
+                        <Badge variant="destructive">❌ Error</Badge>
+                      ) : (
+                        <Badge variant="secondary">❌ Not Authenticated</Badge>
+                      )}
+                      <span className="text-sm text-gray-500">
+                        {new Date(authState.timestamp).toLocaleTimeString()}
+                      </span>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="space-y-2">
+                    <div className="text-sm">
+                      <strong>Status:</strong> {authState.status} {authState.statusText}
+                    </div>
+                    
+                    {authState.identity && (
+                      <div className="text-sm">
+                        <strong>User Identity:</strong>
+                        <pre className="mt-1 p-2 bg-gray-100 rounded text-xs overflow-x-auto">
+                          {JSON.stringify(authState.identity, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+
+                    {authState.error && (
+                      <div className="text-sm text-red-600">
+                        <strong>Error:</strong> {authState.error}
+                      </div>
+                    )}
+
+                    {authState.parseError && (
+                      <div className="text-sm text-orange-600">
+                        <strong>Parse Error:</strong> {authState.parseError}
+                      </div>
+                    )}
+
+                    <div className="text-sm">
+                      <strong>Cloudflare Cookies:</strong> {authState.cookies?.length || 0}
+                      {authState.cookies?.length > 0 && (
+                        <div className="mt-1 space-y-1">
+                          {authState.cookies.map((cookie: string, index: number) => (
+                            <div key={index} className="font-mono bg-blue-50 p-1 rounded text-xs">
+                              {cookie}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="text-sm">
+                      <strong>All Cookies:</strong> {authState.allCookies?.length || 0}
+                      {authState.allCookies?.length > 0 && (
+                        <div className="mt-1 space-y-1">
+                          {authState.allCookies.map((cookie: string, index: number) => (
+                            <div key={index} className="font-mono bg-gray-50 p-1 rounded text-xs">
+                              {cookie}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           {/* Test Results */}
           {results.length > 0 && (
