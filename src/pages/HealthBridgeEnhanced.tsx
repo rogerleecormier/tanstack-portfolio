@@ -87,8 +87,8 @@ const DUMMY_DATA = {
     daily_rate: -0.15,
     confidence: 0.89,
     algorithm: "linear_regression_v4_activity_medication_scenarios",
-    activity_level: "moderate",
-    activity_multiplier: 1.0,
+    activity_level: "sedentary",
+    activity_multiplier: 0.8,
     medication_scenarios: {
       no_medication: {
         daily_rate: -0.15,
@@ -119,8 +119,8 @@ const DUMMY_DATA = {
       daily_rate: -0.15,
       confidence: 0.89,
       algorithm: "linear_regression_v4_activity_medication_scenarios",
-      activity_level: "moderate",
-      activity_multiplier: 1.0,
+      activity_level: "sedentary",
+      activity_multiplier: 0.8,
       projections: []
     },
     generated_at: new Date().toISOString()

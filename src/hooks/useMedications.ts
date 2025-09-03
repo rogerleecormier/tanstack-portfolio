@@ -16,45 +16,13 @@ export const useMedicationTypes = () => {
   return useQuery({
     queryKey: medicationKeys.types(),
     queryFn: async () => {
-      // For now, return hardcoded medication types since the API method doesn't exist yet
-      return [
-        {
-          id: 1,
-          name: 'Ozempic',
-          generic_name: 'Semaglutide',
-          weekly_efficacy_multiplier: 1.4,
-          max_weight_loss_percentage: 20.0,
-          typical_duration_weeks: 68,
-          description: 'Weekly injection, GLP-1 receptor agonist, typically results in 15-20% weight loss over 68 weeks'
-        },
-        {
-          id: 2,
-          name: 'Zepbound',
-          generic_name: 'Tirzepatide',
-          weekly_efficacy_multiplier: 1.75,
-          max_weight_loss_percentage: 25.0,
-          typical_duration_weeks: 72,
-          description: 'Weekly injection, dual GIP/GLP-1 receptor agonist, typically results in 20-25% weight loss over 72 weeks'
-        },
-        {
-          id: 3,
-          name: 'Wegovy',
-          generic_name: 'Semaglutide',
-          weekly_efficacy_multiplier: 1.4,
-          max_weight_loss_percentage: 20.0,
-          typical_duration_weeks: 68,
-          description: 'Higher dose semaglutide specifically for weight loss, same efficacy as Ozempic'
-        },
-        {
-          id: 4,
-          name: 'Mounjaro',
-          generic_name: 'Tirzepatide',
-          weekly_efficacy_multiplier: 1.75,
-          max_weight_loss_percentage: 25.0,
-          typical_duration_weeks: 72,
-          description: 'Same medication as Zepbound but marketed for diabetes, same weight loss efficacy'
-        }
-      ];
+      // Fetch medication types from the API
+      const response = await fetch('https://healthbridge-enhanced.rcormier.workers.dev/api/v2/medication-types');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch medication types: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.medication_types || [];
     },
     staleTime: 10 * 60 * 1000, // 10 minutes - medication types don't change often
     gcTime: 30 * 60 * 1000, // 30 minutes

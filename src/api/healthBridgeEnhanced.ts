@@ -222,8 +222,8 @@ export class HealthBridgeEnhancedAPI {
           daily_rate: dailyRate,
           confidence: 0.95,
           algorithm: 'linear_regression_v4_activity_medication_scenarios',
-          activity_level: 'moderate',
-          activity_multiplier: 1.0,
+          activity_level: 'sedentary',
+          activity_multiplier: 0.8,
           projections: mockProjections,
           medication_scenarios: {
             no_medication: {
@@ -313,8 +313,22 @@ export class HealthBridgeEnhancedAPI {
             current_weight: 168.7,
             daily_rate: -0.26,
             confidence: 0.95,
-            algorithm: 'Linear Regression v2 (Pounds)',
-            projections: []
+            algorithm: 'linear_regression_v4_activity_medication_scenarios',
+            activity_level: 'sedentary',
+            activity_multiplier: 0.8,
+            projections: [],
+            medication_scenarios: {
+              no_medication: {
+                daily_rate: -0.26,
+                projections: []
+              },
+              with_medication: {
+                daily_rate: -0.36,
+                multiplier: 0.4,
+                projections: []
+              }
+            },
+            user_medications: []
           }
         };
       }

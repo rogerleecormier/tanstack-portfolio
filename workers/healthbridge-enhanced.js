@@ -128,6 +128,12 @@ async function handleV2API(request, env, ctx, corsHeaders) {
     }
   }
 
+  if (path === '/api/v2/medication-types') {
+    if (request.method === 'GET') {
+      return await getMedicationTypes(request, env, corsHeaders);
+    }
+  }
+
   return new Response('Not Found', { status: 404, headers: corsHeaders });
 }
 
@@ -1364,6 +1370,60 @@ async function deleteUserMedication(request, env, corsHeaders) {
     return new Response(
       JSON.stringify({ error: 'Failed to delete medication', message: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+/**
+ * Get medication types for the dropdown
+ */
+async function getMedicationTypes(request, env, corsHeaders) {
+  try {
+    // Get all medication types from the database
+    const stmt = env.DB.prepare(`
+      SELECT 
+        id,
+        name,
+        generic_name,
+        weekly_efficacy_multiplier,
+        max_weight_loss_percentage,
+        typical_duration_weeks,
+        description,
+        created_at,
+        updated_at
+      FROM medication_types 
+      ORDER BY name ASC
+    `);
+    
+    const result = await stmt.all();
+    
+    return new Response(
+      JSON.stringify({
+        success: true,
+        medication_types: result.results || []
+      }),
+      { 
+        status: 200, 
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        } 
+      }
+    );
+  } catch (error) {
+    console.error('Error fetching medication types:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: 'Failed to fetch medication types',
+        details: error.message 
+      }),
+      { 
+        status: 500, 
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        } 
+      }
     );
   }
 }

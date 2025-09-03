@@ -215,7 +215,7 @@ export const calculateMedicationProjection = (
 
 export const getMedicationTypes = async (): Promise<MedicationType[]> => {
   try {
-    const response = await fetch('https://healthbridge-enhanced.rcormier.workers.dev/api/v2/medication/types');
+    const response = await fetch('https://healthbridge-enhanced.rcormier.workers.dev/api/v2/medication-types');
     if (!response.ok) {
       throw new Error(`Failed to fetch medication types: ${response.status}`);
     }
