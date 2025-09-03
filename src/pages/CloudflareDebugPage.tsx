@@ -346,6 +346,27 @@ export default function CloudflareDebugPage() {
              >
                🚪 Test Logout Redirect
              </Button>
+             <Button 
+               variant="outline" 
+               onClick={() => {
+                 console.log('🧪 Testing cookie setting...');
+                 // Test if we can set cookies at all
+                 document.cookie = 'test_cookie=test_value; path=/; domain=.rcormier.dev';
+                 document.cookie = 'test_cookie_www=test_value_www; path=/; domain=www.rcormier.dev';
+                 document.cookie = 'test_cookie_local=test_value_local; path=/';
+                 
+                 setTimeout(() => {
+                   console.log('🍪 Cookies after setting:', document.cookie);
+                   const allCookies = document.cookie.split(';').map(c => c.trim());
+                   const cfCookies = allCookies.filter(cookie => 
+                     cookie.startsWith('CF_') || cookie.startsWith('cf_')
+                   );
+                   setCookies(cfCookies);
+                 }, 100);
+               }}
+             >
+               🧪 Test Cookie Setting
+             </Button>
           </div>
 
           {/* Authentication State */}
