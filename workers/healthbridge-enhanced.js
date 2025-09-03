@@ -278,6 +278,42 @@ async function getWeightProjections(request, env, corsHeaders) {
     const days = parseInt(url.searchParams.get('days') || '30');
     const userId = url.searchParams.get('userId') || 'dev-user-123';
 
+    // Return dummy data for development users
+    if (userId === 'dev-user-123') {
+      const dummyProjections = {
+        current_weight: 178.5,
+        daily_rate: -0.15,
+        confidence: 0.89,
+        algorithm: "linear_regression_v4_activity_medication_scenarios",
+        activity_level: "sedentary",
+        activity_multiplier: 0.8,
+        medication_scenarios: {
+          no_medication: {
+            daily_rate: -0.15,
+            projections: []
+          },
+          with_medication: {
+            daily_rate: -0.21,
+            multiplier: 0.4,
+            projections: []
+          }
+        },
+        user_medications: [
+          {
+            id: "1",
+            medication_name: "Wegovy",
+            generic_name: "Semaglutide",
+            weekly_efficacy_multiplier: 1.5
+          }
+        ]
+      };
+      
+      return new Response(
+        JSON.stringify(dummyProjections),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Get recent weight data for projections
     const stmt = env.DB.prepare(`
       SELECT kg, startDate FROM weight 
@@ -297,13 +333,13 @@ async function getWeightProjections(request, env, corsHeaders) {
     
     // Map authenticated user IDs to database user IDs
     let dbUserId = userId;
-    if (userId === 'dev-user-123') {
-      // Map development users to the existing user profile in the database
-      dbUserId = '1'; // This is where our development data is stored
-    } else if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-      // For Cloudflare Access users, use their actual user ID or create a mapping
-      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
-      dbUserId = userId;
+    if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
+      if (userId.includes('rogerleecormier@gmail.com')) {
+        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
+      } else {
+        dbUserId = userId; // Use their actual user ID
+      }
     }
     
     const profileResult = await profileStmt.bind(dbUserId).first();
@@ -699,9 +735,77 @@ async function getAnalyticsDashboard(request, env, corsHeaders) {
 }
 
 /**
+ * Get dummy analytics data for development users
+ */
+function getDummyAnalytics(period) {
+  const periodDays = parseInt(period);
+  
+  // Generate dummy weight data for the period
+  const dummyWeights = [
+    { weight: 192.2, date: new Date(Date.now() - (periodDays - 1) * 24 * 60 * 60 * 1000) },
+    { weight: 191.2, date: new Date(Date.now() - (periodDays - 2) * 24 * 60 * 60 * 1000) },
+    { weight: 190.3, date: new Date(Date.now() - (periodDays - 3) * 24 * 60 * 60 * 1000) },
+    { weight: 189.7, date: new Date(Date.now() - (periodDays - 4) * 24 * 60 * 60 * 1000) },
+    { weight: 188.9, date: new Date(Date.now() - (periodDays - 5) * 24 * 60 * 60 * 1000) },
+    { weight: 187.6, date: new Date(Date.now() - (periodDays - 6) * 24 * 60 * 60 * 1000) },
+    { weight: 186.4, date: new Date(Date.now() - (periodDays - 7) * 24 * 60 * 60 * 1000) },
+    { weight: 185.1, date: new Date(Date.now() - (periodDays - 8) * 24 * 60 * 60 * 1000) },
+    { weight: 184.2, date: new Date(Date.now() - (periodDays - 9) * 24 * 60 * 60 * 1000) },
+    { weight: 183.5, date: new Date(Date.now() - (periodDays - 10) * 24 * 60 * 60 * 1000) },
+    { weight: 182.8, date: new Date(Date.now() - (periodDays - 11) * 24 * 60 * 60 * 1000) },
+    { weight: 181.3, date: new Date(Date.now() - (periodDays - 12) * 24 * 60 * 60 * 1000) },
+    { weight: 180.1, date: new Date(Date.now() - (periodDays - 13) * 24 * 60 * 60 * 1000) },
+    { weight: 179.2, date: new Date(Date.now() - (periodDays - 14) * 24 * 60 * 60 * 1000) },
+    { weight: 178.5, date: new Date(Date.now() - (periodDays - 15) * 24 * 60 * 60 * 1000) }
+  ].filter(w => w.date >= new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000));
+
+  const weights = dummyWeights.map(w => w.weight);
+  const dates = dummyWeights.map(w => w.date);
+
+  const metrics = {
+    total_measurements: weights.length,
+    period_days: period,
+    current_weight: parseFloat(weights[weights.length - 1].toFixed(1)),
+    starting_weight: parseFloat(weights[0].toFixed(1)),
+    total_change: parseFloat((weights[weights.length - 1] - weights[0]).toFixed(1)),
+    average_weight: parseFloat((weights.reduce((a, b) => a + b, 0) / weights.length).toFixed(1)),
+    min_weight: parseFloat(Math.min(...weights).toFixed(1)),
+    max_weight: parseFloat(Math.max(...weights).toFixed(1))
+  };
+
+  const trends = {
+    overall_trend: "losing",
+    weekly_average: calculateWeeklyAverage(weights, dates),
+    consistency_score: 87.0
+  };
+
+  const projections = {
+    current_weight: 178.5,
+    daily_rate: -0.15,
+    confidence: 0.89,
+    algorithm: "linear_regression_v4_activity_medication_scenarios",
+    activity_level: "sedentary",
+    activity_multiplier: 0.8,
+    projections: []
+  };
+
+  return {
+    metrics,
+    trends,
+    projections,
+    generated_at: new Date().toISOString()
+  };
+}
+
+/**
  * Calculate comprehensive analytics data (pounds only)
  */
 async function calculateAnalytics(env, period, userId) {
+  // Return dummy data for development users
+  if (userId === 'dev-user-123') {
+    return getDummyAnalytics(period);
+  }
+
   // Get weight measurements
   const periodDays = parseInt(period);
   const periodAgo = new Date();
@@ -724,8 +828,13 @@ async function calculateAnalytics(env, period, userId) {
   
   // Map authenticated user IDs to database user IDs
   let dbUserId = userId;
-  if (userId === 'dev-user-123' || userId.startsWith('auth0|') || userId.includes('cloudflare')) {
-    dbUserId = '1'; // Map to existing user data
+  if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+    // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
+    if (userId.includes('rogerleecormier@gmail.com')) {
+      dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
+    } else {
+      dbUserId = userId; // Use their actual user ID
+    }
   }
   
   const profileResult = await profileStmt.bind(dbUserId).first();
@@ -973,15 +1082,36 @@ async function getUserProfile(request, env, corsHeaders) {
       );
     }
 
+    // Return dummy data for development users
+    if (userId === 'dev-user-123') {
+      const dummyProfile = {
+        id: 'dev-user-123',
+        name: 'Development User',
+        birthdate: '1990-01-01',
+        gender: 'male',
+        height_ft: 6,
+        height_in: 0,
+        activity_level: 'moderate',
+        timezone: 'America/New_York',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      return new Response(
+        JSON.stringify(dummyProfile),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Map authenticated user IDs to database user IDs
     let dbUserId = userId;
-    if (userId === 'dev-user-123') {
-      // Map development users to the existing user profile in the database
-      dbUserId = '1'; // This is where our development data is stored
-    } else if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-      // For Cloudflare Access users, use their actual user ID or create a mapping
-      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
-      dbUserId = userId;
+    if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
+      if (userId.includes('rogerleecormier@gmail.com')) {
+        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
+      } else {
+        dbUserId = userId; // Use their actual user ID
+      }
     }
 
     // Query the actual database
@@ -1065,15 +1195,29 @@ async function updateUserProfile(request, env, corsHeaders) {
       );
     }
 
+    // Return dummy success for development users (don't actually update database)
+    if (id === 'dev-user-123') {
+      const updatedProfile = {
+        ...body,
+        id: 'dev-user-123',
+        updated_at: new Date().toISOString()
+      };
+      
+      return new Response(
+        JSON.stringify({ success: true, profile: updatedProfile }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Map authenticated user IDs to database user IDs
     let dbUserId = id;
-    if (id === 'dev-user-123') {
-      // Map development users to the existing user profile in the database
-      dbUserId = '1'; // This is where our development data is stored
-    } else if (id.startsWith('auth0|') || id.includes('cloudflare') || id.includes('@')) {
-      // For Cloudflare Access users, use their actual user ID or create a mapping
-      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
-      dbUserId = id;
+    if (id.startsWith('auth0|') || id.includes('cloudflare') || id.includes('@')) {
+      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
+      if (id.includes('rogerleecormier@gmail.com')) {
+        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
+      } else {
+        dbUserId = id; // Use their actual user ID
+      }
     }
 
     // Update the database
@@ -1126,15 +1270,32 @@ async function getWeightGoal(request, env, corsHeaders) {
       );
     }
 
+    // Return dummy data for development users
+    if (userId === 'dev-user-123') {
+      const dummyGoal = {
+        user_id: 'dev-user-123',
+        target_weight_lbs: 165,
+        target_date: '2024-06-15T00:00:00.000Z',
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      return new Response(
+        JSON.stringify(dummyGoal),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Map authenticated user IDs to database user IDs
     let dbUserId = userId;
-    if (userId === 'dev-user-123') {
-      // Map development users to the existing user profile in the database
-      dbUserId = '1'; // This is where our development data is stored
-    } else if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-      // For Cloudflare Access users, use their actual user ID or create a mapping
-      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
-      dbUserId = userId;
+    if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
+      if (userId.includes('rogerleecormier@gmail.com')) {
+        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
+      } else {
+        dbUserId = userId; // Use their actual user ID
+      }
     }
 
     // Query the actual database
@@ -1209,10 +1370,30 @@ async function updateWeightGoal(request, env, corsHeaders) {
       );
     }
 
+    // Return dummy success for development users (don't actually update database)
+    if (user_id === 'dev-user-123') {
+      const updatedGoal = {
+        ...body,
+        id: id,
+        user_id: 'dev-user-123',
+        updated_at: new Date().toISOString()
+      };
+      
+      return new Response(
+        JSON.stringify({ success: true, goal: updatedGoal }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Map authenticated user IDs to database user IDs
     let dbUserId = user_id;
-    if (user_id === 'dev-user-123' || user_id.startsWith('auth0|') || user_id.includes('cloudflare')) {
-      dbUserId = '1'; // Map to existing user data
+    if (user_id.startsWith('auth0|') || user_id.includes('cloudflare') || user_id.includes('@')) {
+      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
+      if (user_id.includes('rogerleecormier@gmail.com')) {
+        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
+      } else {
+        dbUserId = user_id; // Use their actual user ID
+      }
     }
 
     // Update the database
@@ -1265,15 +1446,41 @@ async function getUserMedications(request, env, corsHeaders) {
       );
     }
 
+    // Return dummy data for development users
+    if (userId === 'dev-user-123') {
+      const dummyMedications = [
+        {
+          id: "1",
+          user_id: "dev-user-123",
+          medication_type_id: 1,
+          dosage_mg: 2.4,
+          frequency: "weekly",
+          start_date: "2024-01-01T00:00:00.000Z",
+          is_active: true,
+          medication_name: "Wegovy",
+          generic_name: "Semaglutide",
+          weekly_efficacy_multiplier: 1.5,
+          max_weight_loss_percentage: 15,
+          typical_duration_weeks: 68,
+          medication_description: "GLP-1 receptor agonist for weight management"
+        }
+      ];
+      
+      return new Response(
+        JSON.stringify(dummyMedications),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Map authenticated user IDs to database user IDs
     let dbUserId = userId;
-    if (userId === 'dev-user-123') {
-      // Map development users to the existing user profile in the database
-      dbUserId = '1'; // This is where our development data is stored
-    } else if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-      // For Cloudflare Access users, use their actual user ID or create a mapping
-      // For now, we'll use the user ID as-is, but you might want to create a proper mapping
-      dbUserId = userId;
+    if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
+      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
+      if (userId.includes('rogerleecormier@gmail.com')) {
+        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
+      } else {
+        dbUserId = userId; // Use their actual user ID
+      }
     }
 
     // Query the actual database with JOIN to get medication type details
