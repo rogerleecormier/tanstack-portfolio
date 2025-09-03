@@ -331,6 +331,23 @@ export default function CloudflareDebugPage() {
              <Button 
                variant="outline" 
                onClick={() => {
+                 console.log('🔄 Manually refreshing authentication...');
+                 // Trigger a manual auth refresh
+                 window.dispatchEvent(new CustomEvent('authStateChanged', { 
+                   detail: { isAuthenticated: false, user: null } 
+                 }));
+                 
+                 // Force a page reload to trigger fresh auth check
+                 setTimeout(() => {
+                   window.location.reload();
+                 }, 500);
+               }}
+             >
+               🔄 Force Auth Refresh
+             </Button>
+             <Button 
+               variant="outline" 
+               onClick={() => {
                  console.log('🔄 Testing login redirect...');
                  window.location.href = '/cdn-cgi/access/login?redirect_url=' + encodeURIComponent(window.location.href);
                }}

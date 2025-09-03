@@ -317,6 +317,14 @@ export const useAuth = () => {
   useEffect(() => {
     checkAuth();
     
+    // Additional auth check after a delay to catch cookies that might be set after page load
+    const delayedAuthCheck = setTimeout(() => {
+      logger.info('useAuth: Running delayed auth check to catch late-set cookies');
+      checkAuth();
+    }, 2000);
+    
+    return () => clearTimeout(delayedAuthCheck);
+    
     // Check if we're returning from a logout redirect (common on mobile)
     const urlParams = new URLSearchParams(window.location.search);
     const isLogoutRedirect = urlParams.get('logout') === 'true' || 
@@ -342,8 +350,12 @@ export const useAuth = () => {
                            document.referrer.includes('rcormier.cloudflareaccess.com');
     
     if (isLoginRedirect && window.location.pathname.startsWith('/protected')) {
-      logger.info('useAuth: Detected login redirect from Cloudflare Access, will redirect to home');
-      // The redirect will happen after authentication check completes
+      logger.info('useAuth: Detected login redirect from Cloudflare Access, will check auth state');
+      // Force an additional auth check after a short delay to ensure cookies are set
+      setTimeout(() => {
+        logger.info('useAuth: Running delayed auth check after Cloudflare Access redirect');
+        checkAuth();
+      }, 1000);
     }
   }, [checkAuth]);
 
