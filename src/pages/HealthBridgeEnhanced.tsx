@@ -335,6 +335,24 @@ function WeightProjections() {
   const weightData = weightDataQuery.data;
   const projections = projectionsQuery.data;
 
+  // State for dropdown selections
+  const [medicationMode, setMedicationMode] = useState<'with' | 'without'>('without');
+  const [activityLevel, setActivityLevel] = useState<string>('moderate');
+
+  // Set proper defaults based on user profile
+  useEffect(() => {
+    if (userMedications && userMedications.length > 0) {
+      const hasActiveMedications = userMedications.some(med => med.is_active);
+      if (hasActiveMedications) {
+        setMedicationMode('with');
+      }
+    }
+    
+    if (projections?.activity_level) {
+      setActivityLevel(projections.activity_level);
+    }
+  }, [userMedications, projections]);
+
   // Set loading states
   const isLoadingWeightGoal = weightGoalQuery.isLoading;
   const isLoadingMedications = userMedicationsQuery.isLoading;
@@ -343,8 +361,6 @@ function WeightProjections() {
 
   // State for projection controls
   const [projectionDays, setProjectionDays] = useState(90);
-  const [showMedication, setShowMedication] = useState(true);
-  const [showNoMedication, setShowNoMedication] = useState(true);
 
   // Handle projection period change
   const handleProjectionPeriodChange = (value: string) => {
@@ -482,6 +498,42 @@ function WeightProjections() {
     return Math.min(totalMultiplier, 1.0);
   }, [userMedications]);
 
+  // Calculate activity level multiplier
+  const activityMultiplier = useMemo(() => {
+    const activityMultipliers = {
+      sedentary: 1.2,
+      light: 1.375,
+      moderate: 1.55,
+      active: 1.725,
+      very_active: 1.9
+    };
+    return activityMultipliers[activityLevel as keyof typeof activityMultipliers] || 1.55;
+  }, [activityLevel]);
+
+  // Calculate current profile-based projection (unchangeable)
+  const currentProfileProjection = useMemo(() => {
+    if (!projections?.activity_level || !projections?.activity_multiplier) {
+      return null;
+    }
+    
+    const baseDailyRate = projections.daily_rate;
+    const currentActivityMultiplier = projections.activity_multiplier;
+    const currentMedicationMultiplier = medicationMultiplier; // User's actual medication multiplier
+    
+    // Calculate current profile rate
+    const currentActivityRate = baseDailyRate * currentActivityMultiplier;
+    const currentProfileRate = currentMedicationMultiplier > 0 
+      ? currentActivityRate * (1 + currentMedicationMultiplier)
+      : currentActivityRate;
+    
+    return {
+      dailyRate: currentProfileRate,
+      activityLevel: projections.activity_level,
+      activityMultiplier: currentActivityMultiplier,
+      medicationMultiplier: currentMedicationMultiplier
+    };
+  }, [projections, medicationMultiplier]);
+
   // Calculate projections with proper domain and range
   const projectionData = useMemo(() => {
     if (!currentWeight || !startingWeight || !targetWeight || !projections?.daily_rate) {
@@ -489,7 +541,15 @@ function WeightProjections() {
     }
 
     const baseDailyRate = projections.daily_rate;
-    const medicationDailyRate = baseDailyRate * (1 + medicationMultiplier);
+    
+    // Calculate current profile projection rate (unchangeable)
+    const currentProfileRate = currentProfileProjection?.dailyRate || baseDailyRate;
+    
+    // Calculate adjustable projection rate
+    const activityAdjustedRate = baseDailyRate * activityMultiplier;
+    const adjustableDailyRate = medicationMode === 'with' && medicationMultiplier > 0 
+      ? activityAdjustedRate * (1 + medicationMultiplier)
+      : activityAdjustedRate;
     
     const projectionResults = [];
     const today = new Date();
@@ -517,9 +577,9 @@ function WeightProjections() {
       
       const days = i;
       
-      // Calculate weights with validation
-      const noMedWeight = Math.max(targetWeight, currentWeight + (baseDailyRate * days));
-      const medWeight = Math.max(targetWeight, currentWeight + (medicationDailyRate * days));
+      // Calculate both projections
+      const currentProfileWeight = Math.max(targetWeight, currentWeight + (currentProfileRate * days));
+      const adjustableWeight = Math.max(targetWeight, currentWeight + (adjustableDailyRate * days));
       
       // Format date based on the projection period
       let dateFormat = "MMM dd";
@@ -532,15 +592,15 @@ function WeightProjections() {
       projectionResults.push({
         date: format(date, dateFormat),
         day: days,
-        noMedication: noMedWeight,
-        withMedication: medWeight,
+        currentProfileWeight: currentProfileWeight,
+        projectedWeight: adjustableWeight,
         target: targetWeight,
         currentWeight: i === 0 ? currentWeight : undefined // Mark starting point
       });
     }
     
     return projectionResults;
-  }, [currentWeight, startingWeight, targetWeight, projections, medicationMultiplier, projectionDays, weightData]);
+  }, [currentWeight, startingWeight, targetWeight, projections, medicationMultiplier, medicationMode, activityMultiplier, projectionDays, weightData, currentProfileProjection]);
 
   // Calculate key metrics
   // Note: weeksToTargetNoMed is calculated in AnalyticsDashboard component where it's actually used
@@ -846,31 +906,37 @@ function WeightProjections() {
             </div>
           </div>
 
-          {/* Scenario Toggles */}
+          {/* Projection Settings */}
           <div className="flex gap-4">
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="showMedication"
-                checked={showMedication}
-                onChange={(e) => setShowMedication(e.target.checked)}
-                className="rounded"
-              />
-              <Label htmlFor="showMedication" className="text-sm font-medium">
-                With Medication ({medicationMultiplier > 0 ? `+${(medicationMultiplier * 100).toFixed(0)}% boost` : 'No active medications'})
-              </Label>
+            <div className="space-y-2">
+              <Label>Medication Mode</Label>
+              <Select value={medicationMode} onValueChange={(value: 'with' | 'without') => setMedicationMode(value)}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="without">Without Medication</SelectItem>
+                  <SelectItem value="with" disabled={medicationMultiplier === 0}>
+                    With Medication {medicationMultiplier > 0 ? `(+${(medicationMultiplier * 100).toFixed(0)}% boost)` : '(No active medications)'}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="showNoMedication"
-                checked={showNoMedication}
-                onChange={(e) => setShowNoMedication(e.target.checked)}
-                className="rounded"
-              />
-              <Label htmlFor="showNoMedication" className="text-sm font-medium">
-                Without Medication (Natural trajectory)
-              </Label>
+            
+            <div className="space-y-2">
+              <Label>Activity Level</Label>
+              <Select value={activityLevel} onValueChange={setActivityLevel}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sedentary">Sedentary (1.2x)</SelectItem>
+                  <SelectItem value="light">Light (1.375x)</SelectItem>
+                  <SelectItem value="moderate">Moderate (1.55x)</SelectItem>
+                  <SelectItem value="active">Active (1.725x)</SelectItem>
+                  <SelectItem value="very_active">Very Active (1.9x)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardContent>
@@ -880,14 +946,18 @@ function WeightProjections() {
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Weight Loss Trajectory Projections</CardTitle>
-                   <CardDescription>
-           Projected weight loss from {startingWeight?.toFixed(1)} lbs to {targetWeight?.toFixed(1)} lbs
-           {targetDate && `, targeting ${targetDate.toLocaleDateString('en-US', { timeZone: 'America/New_York' })}`}
-           <br />
-           <span className="text-sm text-muted-foreground">
-             Showing {projectionDays} day projection period • X-axis range: {projectionDays} days
-           </span>
-         </CardDescription>
+          <CardDescription>
+            Projected weight loss from {startingWeight?.toFixed(1)} lbs to {targetWeight?.toFixed(1)} lbs
+            {targetDate && `, targeting ${targetDate.toLocaleDateString('en-US', { timeZone: 'America/New_York' })}`}
+            <br />
+            <span className="text-sm text-muted-foreground">
+              Showing {projectionDays} day projection period • X-axis range: {projectionDays} days
+            </span>
+            <br />
+            <span className="text-sm text-amber-600 font-medium">
+              Orange line shows your current profile projection (unchangeable). Teal line shows scenario projection based on your selected settings above.
+            </span>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {/* Chart Legend */}
@@ -897,12 +967,16 @@ function WeightProjections() {
               <span className="text-sm text-muted-foreground">Current Weight</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-              <span className="text-sm text-muted-foreground">Without Medication</span>
+              <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+              <span className="text-sm text-muted-foreground">
+                Current Profile ({currentProfileProjection?.activityLevel?.replace('_', ' ') || 'moderate'}{(currentProfileProjection?.medicationMultiplier || 0) > 0 ? ', with medication' : ''})
+              </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-              <span className="text-sm text-muted-foreground">With Medication</span>
+              <div className="w-4 h-4 bg-teal-500 rounded-full"></div>
+              <span className="text-sm text-muted-foreground">
+                Scenario ({medicationMode === 'with' ? 'With Medication' : 'Without Medication'}, {activityLevel.replace('_', ' ')})
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-purple-500 rounded-full"></div>
@@ -917,13 +991,13 @@ function WeightProjections() {
                   label: "Current Weight (lbs)",
                   color: "#3b82f6"
                 },
-                noMedication: {
-                  label: "Without Medication (lbs)",
-                  color: "#ef4444"
+                currentProfileWeight: {
+                  label: "Current Profile Projection (lbs)",
+                  color: "#f97316"
                 },
-                withMedication: {
-                  label: "With Medication (lbs)",
-                  color: "#10b981"
+                projectedWeight: {
+                  label: "Scenario Projection (lbs)",
+                  color: "#14b8a6"
                 },
                 target: {
                   label: "Target Weight (lbs)",
@@ -934,34 +1008,35 @@ function WeightProjections() {
             >
               <LineChart data={projectionData} width={800} height={320}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                                 <XAxis 
-                   dataKey="date" 
-                   tick={{ fontSize: 12 }}
-                   tickLine={false}
-                   axisLine={false}
-                   interval={Math.max(0, Math.floor(projectionData.length / 8))} // Show ~8 ticks for readability
-                   tickFormatter={(value) => {
-                     // Show more detailed date formatting for longer periods
-                     if (projectionDays > 90) {
-                       return value;
-                     } else if (projectionDays > 30) {
-                       return value;
-                     } else {
-                       return value;
-                     }
-                   }}
-                 />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  interval={Math.max(0, Math.floor(projectionData.length / 8))} // Show ~8 ticks for readability
+                  tickFormatter={(value) => {
+                    // Show more detailed date formatting for longer periods
+                    if (projectionDays > 90) {
+                      return value;
+                    } else if (projectionDays > 30) {
+                      return value;
+                    } else {
+                      return value;
+                    }
+                  }}
+                />
                 <YAxis 
                   tick={{ fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
                   domain={[targetWeight - 5, Math.max(startingWeight + 10, currentWeight + 20)]}
+                  reversed={true} // This makes the chart display in reverse (weight goes down on the right)
                 />
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
                       className="w-[200px]"
-                      nameKey="noMedication"
+                      nameKey="projectedWeight"
                     />
                   }
                 />
@@ -988,31 +1063,28 @@ function WeightProjections() {
                   name="Current Weight"
                 />
                 
-                {/* Without Medication */}
-                {showNoMedication && (
-                  <Line 
-                    type="monotone" 
-                    dataKey="noMedication" 
-                    stroke="#ef4444" 
-                    strokeWidth={3}
-                    dot={{ fill: "#ef4444", strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, stroke: "#ef4444", strokeWidth: 2 }}
-                    name="Without Medication"
-                  />
-                )}
+                {/* Current Profile Projection Line (unchangeable) */}
+                <Line 
+                  type="monotone" 
+                  dataKey="currentProfileWeight" 
+                  stroke="#f97316" 
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  dot={{ fill: "#f97316", strokeWidth: 2, r: 3 }}
+                  activeDot={{ r: 5, stroke: "#f97316", strokeWidth: 2 }}
+                  name="Current Profile Projection"
+                />
                 
-                {/* With Medication */}
-                {showMedication && medicationMultiplier > 0 && (
-                  <Line 
-                    type="monotone" 
-                    dataKey="withMedication" 
-                    stroke="#10b981" 
-                    strokeWidth={3}
-                    dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, stroke: "#10b981", strokeWidth: 2 }}
-                    name="With Medication"
-                  />
-                )}
+                {/* Adjustable Scenario Projection Line */}
+                <Line 
+                  type="monotone" 
+                  dataKey="projectedWeight" 
+                  stroke="#14b8a6" 
+                  strokeWidth={3}
+                  dot={{ fill: "#14b8a6", strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, stroke: "#14b8a6", strokeWidth: 2 }}
+                  name="Scenario Projection"
+                />
               </LineChart>
             </ChartContainer>
           </div>
