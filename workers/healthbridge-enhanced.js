@@ -134,6 +134,13 @@ async function handleV2API(request, env, ctx, corsHeaders) {
     }
   }
 
+  // Debug endpoint to check user mapping
+  if (path === '/api/v2/debug/user-mapping') {
+    if (request.method === 'GET') {
+      return await debugUserMapping(request, env, corsHeaders);
+    }
+  }
+
   return new Response('Not Found', { status: 404, headers: corsHeaders });
 }
 
@@ -354,15 +361,7 @@ async function getWeightProjections(request, env, corsHeaders) {
     const profileStmt = env.DB.prepare('SELECT * FROM user_profiles WHERE id = ?');
     
     // Map authenticated user IDs to database user IDs
-    let dbUserId = userId;
-    if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
-      if (userId.includes('rogerleecormier@gmail.com')) {
-        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
-      } else {
-        dbUserId = userId; // Use their actual user ID
-      }
-    }
+    const dbUserId = await mapUserIdToDbUserId(userId, env);
     
     const profileResult = await profileStmt.bind(dbUserId).first();
     const userProfile = profileResult || { activity_level: 'moderate' }; // Default to moderate if no profile
@@ -849,15 +848,7 @@ async function calculateAnalytics(env, period, userId) {
   const profileStmt = env.DB.prepare('SELECT * FROM user_profiles WHERE id = ?');
   
   // Map authenticated user IDs to database user IDs
-  let dbUserId = userId;
-  if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-    // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
-    if (userId.includes('rogerleecormier@gmail.com')) {
-      dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
-    } else {
-      dbUserId = userId; // Use their actual user ID
-    }
-  }
+  const dbUserId = await mapUserIdToDbUserId(userId, env);
   
   const profileResult = await profileStmt.bind(dbUserId).first();
   const userProfile = profileResult || { activity_level: 'moderate' }; // Default to moderate if no profile
@@ -1089,6 +1080,98 @@ async function createLegacyWeight(request, env, corsHeaders) {
 }
 
 /**
+ * Debug function to check user mapping
+ */
+async function debugUserMapping(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get('userId');
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing userId parameter' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Try to map the user ID
+    const mappedUserId = await mapUserIdToDbUserId(userId, env);
+
+    // Get all mappings for debugging
+    const allMappingsStmt = env.DB.prepare('SELECT * FROM user_authentication_mapping');
+    const allMappings = await allMappingsStmt.all();
+
+    return new Response(
+      JSON.stringify({
+        input_userId: userId,
+        mapped_userId: mappedUserId,
+        all_mappings: allMappings.results,
+        mapping_worked: mappedUserId !== userId
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error in debug user mapping:', error);
+    return new Response(
+      JSON.stringify({ error: 'Debug failed', message: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+/**
+ * Helper function to map authenticated user IDs to database user IDs
+ * Uses the user_authentication_mapping table for flexible user management
+ */
+async function mapUserIdToDbUserId(userId, env) {
+  try {
+    // First, try to determine the auth provider based on the userId format
+    let authProvider = 'unknown';
+    if (userId.startsWith('auth0|')) {
+      authProvider = 'auth0';
+    } else if (userId.includes('@') || userId.includes('cloudflare')) {
+      authProvider = 'cloudflare_access';
+    } else if (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') {
+      authProvider = 'development';
+    }
+
+    // Query the mapping table
+    const stmt = env.DB.prepare(`
+      SELECT internal_user_id 
+      FROM user_authentication_mapping 
+      WHERE auth_provider = ? AND auth_user_id = ? AND is_active = 1
+    `);
+    const result = await stmt.bind(authProvider, userId).first();
+
+    if (result) {
+      return result.internal_user_id;
+    }
+
+    // If no mapping found, also try by email (for cases where auth_user_id might be different)
+    if (userId.includes('@')) {
+      const emailStmt = env.DB.prepare(`
+        SELECT internal_user_id 
+        FROM user_authentication_mapping 
+        WHERE auth_provider = ? AND email = ? AND is_active = 1
+      `);
+      const emailResult = await emailStmt.bind(authProvider, userId).first();
+      
+      if (emailResult) {
+        return emailResult.internal_user_id;
+      }
+    }
+
+    // Fallback: return the original userId if no mapping found
+    console.log(`No mapping found for userId: ${userId}, authProvider: ${authProvider}`);
+    return userId;
+  } catch (error) {
+    console.error('Error mapping user ID:', error);
+    // Fallback to original userId on error
+    return userId;
+  }
+}
+
+/**
  * User Profile Management Functions
  */
 
@@ -1126,15 +1209,7 @@ async function getUserProfile(request, env, corsHeaders) {
     }
 
     // Map authenticated user IDs to database user IDs
-    let dbUserId = userId;
-    if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
-      if (userId.includes('rogerleecormier@gmail.com')) {
-        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
-      } else {
-        dbUserId = userId; // Use their actual user ID
-      }
-    }
+    const dbUserId = await mapUserIdToDbUserId(userId, env);
 
     // Query the actual database
     const stmt = env.DB.prepare('SELECT * FROM user_profiles WHERE id = ?');
@@ -1232,15 +1307,7 @@ async function updateUserProfile(request, env, corsHeaders) {
     }
 
     // Map authenticated user IDs to database user IDs
-    let dbUserId = id;
-    if (id.startsWith('auth0|') || id.includes('cloudflare') || id.includes('@')) {
-      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
-      if (id.includes('rogerleecormier@gmail.com')) {
-        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
-      } else {
-        dbUserId = id; // Use their actual user ID
-      }
-    }
+    const dbUserId = await mapUserIdToDbUserId(id, env);
 
     // Update the database
     const stmt = env.DB.prepare(`
@@ -1310,15 +1377,7 @@ async function getWeightGoal(request, env, corsHeaders) {
     }
 
     // Map authenticated user IDs to database user IDs
-    let dbUserId = userId;
-    if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
-      if (userId.includes('rogerleecormier@gmail.com')) {
-        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
-      } else {
-        dbUserId = userId; // Use their actual user ID
-      }
-    }
+    const dbUserId = await mapUserIdToDbUserId(userId, env);
 
     // Query the actual database
     const stmt = env.DB.prepare('SELECT * FROM weight_goals WHERE user_id = ? AND is_active = 1 ORDER BY created_at DESC LIMIT 1');
@@ -1408,15 +1467,7 @@ async function updateWeightGoal(request, env, corsHeaders) {
     }
 
     // Map authenticated user IDs to database user IDs
-    let dbUserId = user_id;
-    if (user_id.startsWith('auth0|') || user_id.includes('cloudflare') || user_id.includes('@')) {
-      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
-      if (user_id.includes('rogerleecormier@gmail.com')) {
-        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
-      } else {
-        dbUserId = user_id; // Use their actual user ID
-      }
-    }
+    const dbUserId = await mapUserIdToDbUserId(user_id, env);
 
     // Update the database
     const stmt = env.DB.prepare(`
@@ -1495,15 +1546,7 @@ async function getUserMedications(request, env, corsHeaders) {
     }
 
     // Map authenticated user IDs to database user IDs
-    let dbUserId = userId;
-    if (userId.startsWith('auth0|') || userId.includes('cloudflare') || userId.includes('@')) {
-      // For production users, check if they should map to user ID 1 (rogerleecormier@gmail.com)
-      if (userId.includes('rogerleecormier@gmail.com')) {
-        dbUserId = '1'; // Map rogerleecormier@gmail.com to existing user data
-      } else {
-        dbUserId = userId; // Use their actual user ID
-      }
-    }
+    const dbUserId = await mapUserIdToDbUserId(userId, env);
 
     // Query the actual database with JOIN to get medication type details
     const stmt = env.DB.prepare(`

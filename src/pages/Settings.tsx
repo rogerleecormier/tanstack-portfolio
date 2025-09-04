@@ -44,9 +44,11 @@ export default function SettingsPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
   // Use custom hooks for data fetching - only when authenticated
-  const { data: profile, isLoading: profileLoading } = useUserProfile(user?.sub || '');
-  const { data: goal, isLoading: goalLoading } = useWeightGoal(user?.sub || '');
-  const { data: medications, isLoading: medicationsLoading } = useUserMedications(user?.sub || '');
+  // Use email instead of sub for more reliable mapping
+  const userId = user?.email || user?.sub || '';
+  const { data: profile, isLoading: profileLoading } = useUserProfile(userId);
+  const { data: goal, isLoading: goalLoading } = useWeightGoal(userId);
+  const { data: medications, isLoading: medicationsLoading } = useUserMedications(userId);
   const { data: medicationTypes, isLoading: medicationTypesLoading } = useMedicationTypes();
 
   // Use custom hooks for mutations
