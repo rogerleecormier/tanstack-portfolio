@@ -617,12 +617,6 @@ function WeightProjections() {
     // Ensure daily rate is negative for weight loss (fix for production API issue)
     const baseDailyRate = projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate;
     
-    // DEBUG: Log the daily rate values
-    console.log('DEBUG - original daily_rate:', projections.daily_rate);
-    console.log('DEBUG - corrected baseDailyRate:', baseDailyRate);
-    console.log('DEBUG - activityMultiplier:', activityMultiplier);
-    console.log('DEBUG - medicationMultiplier:', medicationMultiplier);
-    console.log('DEBUG - medicationMode:', medicationMode);
     
     // Calculate current profile projection rate (unchangeable)
     const currentProfileRate = currentProfileProjection?.dailyRate || baseDailyRate;
@@ -633,9 +627,6 @@ function WeightProjections() {
       ? activityAdjustedRate * (1 + medicationMultiplier)
       : activityAdjustedRate;
     
-    console.log('DEBUG - currentProfileRate:', currentProfileRate);
-    console.log('DEBUG - activityAdjustedRate:', activityAdjustedRate);
-    console.log('DEBUG - adjustableDailyRate:', adjustableDailyRate);
     
     const projectionResults = [];
     const today = new Date();
@@ -1000,17 +991,6 @@ function WeightProjections() {
               <div className="text-sm text-muted-foreground">
                 Based on recent weight data
               </div>
-              {/* DEBUG INFO */}
-              <div className="text-xs text-red-500 p-2 bg-red-50 rounded">
-                <div>DEBUG - original daily_rate: {projections?.daily_rate}</div>
-                <div>DEBUG - corrected baseDailyRate: {projections?.daily_rate ? (projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) : 'N/A'}</div>
-                <div>DEBUG - activityMultiplier: {activityMultiplier}</div>
-                <div>DEBUG - medicationMultiplier: {medicationMultiplier}</div>
-                <div>DEBUG - medicationMode: {medicationMode}</div>
-                <div>DEBUG - currentProfileRate: {currentProfileProjection?.dailyRate || (projections?.daily_rate ? (projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) : 'N/A')}</div>
-                <div>DEBUG - activityAdjustedRate: {projections?.daily_rate ? ((projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) * activityMultiplier).toFixed(4) : 'N/A'}</div>
-                <div>DEBUG - adjustableDailyRate: {projections?.daily_rate ? (medicationMode === 'with' && medicationMultiplier > 0 ? ((projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) * activityMultiplier * (1 + medicationMultiplier)).toFixed(4) : ((projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) * activityMultiplier).toFixed(4)) : 'N/A'}</div>
-              </div>
             </div>
 
             <div className="space-y-2">
@@ -1217,6 +1197,47 @@ function WeightProjections() {
                 />
               </LineChart>
             </ChartContainer>
+          </div>
+          
+          {/* Medical Disclaimer Tooltip */}
+          <div className="mt-4 flex justify-center">
+            <div className="group relative inline-flex items-center gap-2 px-3 py-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg cursor-help">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <span>Medical Disclaimer</span>
+              
+              {/* Tooltip */}
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-96 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="text-sm text-gray-800">
+                  <h4 className="font-semibold mb-2 text-amber-700">Important Medical Disclaimer</h4>
+                  <div className="space-y-2">
+                    <p>
+                      <strong>These projections are estimates only and should not be considered medical advice or guarantees.</strong> 
+                      Weight loss results vary significantly between individuals due to factors including genetics, metabolism, 
+                      medical conditions, lifestyle, and adherence to treatment plans.
+                    </p>
+                    <p>
+                      <strong>Clinical Study Basis:</strong> Projection calculations are based on published clinical trial data 
+                      from studies including SURMOUNT (tirzepatide), STEP (semaglutide), SCALE (liraglutide), EQUIP (phentermine-topiramate), 
+                      COR-II (naltrexone-bupropion), and other peer-reviewed research. However, individual results may differ substantially 
+                      from study averages.
+                    </p>
+                    <p>
+                      <strong>Consult Your Healthcare Provider:</strong> Always consult with your healthcare provider before making 
+                      any changes to your medication, diet, or exercise routine. These projections do not replace professional 
+                      medical advice, diagnosis, or treatment.
+                    </p>
+                    <p>
+                      <strong>Limitations:</strong> Projections assume consistent medication adherence, stable activity levels, 
+                      and do not account for plateaus, metabolic adaptation, or other factors that may affect weight loss over time.
+                    </p>
+                  </div>
+                </div>
+                {/* Arrow */}
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white"></div>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
