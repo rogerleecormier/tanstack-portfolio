@@ -2,29 +2,19 @@ import React, { useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Menu, User, LogOut } from "lucide-react";
+import { Menu } from "lucide-react";
 import RedesignedSearch from "../components/RedesignedSearch";
 import { LoginPage } from "../components/LoginPage";
 import Breadcrumbs from "../components/Breadcrumbs";
+import ProfileDropdown from "../components/ProfileDropdown";
 import { useAuth } from "../hooks/useAuth";
 
 const Header: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
-  const { user, isAuthenticated, logout, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   const handleLoginClick = () => setShowLogin(true);
   const handleCloseLogin = () => setShowLogin(false);
-  const handleLogout = () => {
-    logout();
-    setShowLogin(false);
-  };
-
-  const getUserEmail = (): string => {
-    if (user && typeof user === 'object' && 'email' in user) {
-      return user.email || '';
-    }
-    return '';
-  };
 
   return (
     <>
@@ -52,50 +42,39 @@ const Header: React.FC = () => {
                 }}
                 onLoad={() => console.log('Header logo loaded successfully')}
               />
-              {/* Targeting indicator dots */}
+              {/* Targeting indicator dots - matching footer style */}
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
                 <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+              </div>
+              <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center">
+                <div className="w-1 h-1 bg-white rounded-full"></div>
               </div>
             </div>
             
             {/* Name and Tagline Container */}
             <div className="block">
-              {/* Name with custom font styling - responsive sizing */}
-              <h1 className="header-name text-lg sm:text-xl text-white leading-tight" style={{fontWeight: 700}}>
-                Roger Cormier
+              {/* Name with custom font styling - matching footer */}
+              <h1 className="header-name text-2xl font-semibold text-white bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent">
+                Roger Lee Cormier
               </h1>
               {/* Creative tagline fitting the targeting reticle theme */}
-              <p className="header-tagline text-xs sm:text-sm text-teal-100 leading-tight">
+              <p className="header-tagline text-sm text-teal-200 font-medium">
                 Targeting Digital Transformation
               </p>
             </div>
           </div>
 
           {/* Right Section: Search + Login/Logout */}
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-col items-end gap-2 flex-shrink-0">
             {/* Search Bar - Right justified on desktop */}
             <div className="hidden md:block">
               <RedesignedSearch />
             </div>
             
-            {/* Login/Logout Section */}
-            <div className="flex items-center gap-2">
-              {isAuthenticated ? (
-                <div className="flex items-center gap-2">
-                  <div className="hidden sm:flex items-center gap-2 text-white text-sm">
-                    <User className="h-4 w-4" />
-                    <span className="text-xs">{getUserEmail()}</span>
-                  </div>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="bg-red-600 hover:bg-red-700 text-white border-0 rounded-lg"
-                  >
-                    <LogOut className="h-4 w-4 mr-1" />
-                    <span className="hidden sm:inline">Logout</span>
-                  </Button>
-                </div>
+            {/* Login/Profile Section */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {isAuthenticated && user ? (
+                <ProfileDropdown user={user} />
               ) : (
                 <Button
                   variant="secondary"

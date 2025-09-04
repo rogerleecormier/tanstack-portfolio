@@ -48,28 +48,50 @@ export function TableOfContents() {
         .map(entry => document.getElementById(entry.slug))
         .filter(Boolean) as HTMLElement[];
 
+      if (headings.length === 0) return;
+
       let activeHeading: HTMLElement | null = null;
-      let maxOffset = -Infinity;
+      let minDistance = Infinity;
 
       for (const heading of headings) {
-        const offset = heading.getBoundingClientRect().top - STICKY_HEADER_HEIGHT;
-        // Find the heading closest to but not above the sticky header
-        if (offset <= 0 && offset > maxOffset) {
-          maxOffset = offset;
+        const rect = heading.getBoundingClientRect();
+        const distanceFromTop = Math.abs(rect.top - STICKY_HEADER_HEIGHT);
+        
+        // If heading is in viewport and closest to the target position
+        if (rect.top <= STICKY_HEADER_HEIGHT + 100 && distanceFromTop < minDistance) {
+          minDistance = distanceFromTop;
           activeHeading = heading;
         }
       }
 
+      // If no heading is close to the target position, find the first visible one
+      if (!activeHeading) {
+        for (const heading of headings) {
+          const rect = heading.getBoundingClientRect();
+          if (rect.top >= STICKY_HEADER_HEIGHT && rect.top <= window.innerHeight) {
+            activeHeading = heading;
+            break;
+          }
+        }
+      }
+
+      // Fallback to first heading if none are visible
+      if (!activeHeading && headings.length > 0) {
+        activeHeading = headings[0];
+      }
+
       if (activeHeading) {
         setActiveId(activeHeading.id);
-      } else if (headings.length > 0) {
-        // If none are above the header, highlight the first one
-        setActiveId(headings[0].id);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Run on mount
+    
+    // Run on mount with multiple attempts to ensure DOM is ready
+    setTimeout(handleScroll, 100);
+    setTimeout(handleScroll, 300);
+    setTimeout(handleScroll, 500);
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, [currentToc])
 
@@ -83,22 +105,22 @@ export function TableOfContents() {
   }
 
   return (
-    <div className="border-t border-teal-200 mt-4 pt-4">
-      <div className="px-4 mb-3">
-        <h3 className="text-sm font-semibold text-teal-900">
-          On This Page
+    <div className="border-t border-teal-200/40 dark:border-teal-800/40 mt-1 pt-1">
+      <div className="px-2 mb-0.5">
+        <h3 className="text-teal-600 dark:text-teal-400 font-medium text-xs uppercase tracking-wide">
+          TOC
         </h3>
       </div>
       <nav>
-        <ul className="space-y-1 text-sm">
+        <ul className="space-y-0">
           {currentToc.map((entry) => (
             <li key={entry.slug}>
               <a
                 href={`#${entry.slug}`}
-                className={`block py-1 px-4 rounded-r transition-colors ${
+                className={`block py-0.5 px-2 text-sm transition-all duration-150 rounded-sm ${
                   activeId === entry.slug
-                    ? 'bg-teal-200 text-teal-900 font-medium border-r-2 border-teal-600'
-                    : 'text-teal-800 hover:text-teal-900 hover:bg-teal-100'
+                    ? 'bg-teal-100 text-teal-900 font-semibold border-l-2 border-teal-500 dark:bg-teal-800/40 dark:text-teal-100'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-teal-800 dark:hover:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-900/20'
                 }`}
                 onClick={e => {
                   e.preventDefault();

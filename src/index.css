@@ -353,11 +353,53 @@
   /* Fix sidebar positioning to start below fixed header */
   [data-sidebar="sidebar"] {
     @apply top-24 h-[calc(100vh-6rem)];
+    background: linear-gradient(135deg, hsl(168 100% 97%) 0%, hsl(199 89% 97%) 100%);
+    overflow-y: auto;
+  }
+  
+  /* Ultra-compact sidebar content spacing */
+  [data-sidebar="sidebar"] .sidebar-content {
+    @apply gap-0.5;
+  }
+  
+  /* Minimal spacing between sidebar groups */
+  [data-sidebar="sidebar"] [data-sidebar="group"] {
+    @apply mb-0.5;
+  }
+  
+  /* Compact sidebar menu items */
+  [data-sidebar="sidebar"] [data-sidebar="menu"] {
+    @apply space-y-0;
+  }
+  
+  /* Minimal sidebar group labels */
+  [data-sidebar="sidebar"] [data-sidebar="group-label"] {
+    @apply text-xs font-medium py-0.5 px-2;
+  }
+  
+  /* Ultra-compact sidebar menu items */
+  [data-sidebar="sidebar"] [data-sidebar="menu-item"] {
+    @apply py-0.5;
+  }
+  
+  /* Dark mode sidebar background */
+  .dark [data-sidebar="sidebar"] {
+    background: linear-gradient(135deg, hsl(168 100% 10%) 0%, hsl(199 89% 10%) 100%);
   }
   
   /* Mobile sidebar positioning fix */
   [data-mobile="true"][data-sidebar="sidebar"] {
     @apply top-0 h-screen;
+  }
+  
+  /* Enhanced sidebar hover effects */
+  [data-sidebar="sidebar"] .group:hover {
+    transform: translateX(2px);
+  }
+  
+  /* Smooth transitions for sidebar interactions */
+  [data-sidebar="sidebar"] * {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   /* Fix sidebar gap positioning for desktop */
@@ -777,5 +819,26 @@
   .text-xl,
   .text-lg {
     @apply font-sans;
+  }
+
+  /* Fix dropdown menu layout shift issues */
+  [data-radix-dropdown-menu-content] {
+    @apply fixed;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Ensure dropdown doesn't cause layout shifts */
+  [data-radix-dropdown-menu-trigger] {
+    @apply relative;
+  }
+
+  /* Prevent any layout shifts from dropdown menus */
+  [data-radix-dropdown-menu-portal] {
+    @apply fixed inset-0 pointer-events-none;
+  }
+
+  [data-radix-dropdown-menu-content] {
+    @apply pointer-events-auto;
   }
 }

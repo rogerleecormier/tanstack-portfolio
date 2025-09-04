@@ -242,32 +242,46 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-        <p className="text-gray-600">Manage your profile, goals, and preferences</p>
-      </div>
-
-      {/* User Profile Section */}
-      <Card className="mb-8">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 text-teal-600" />
-                Profile Information
-              </CardTitle>
-              <CardDescription>
-                Your personal information and activity level
-              </CardDescription>
-            </div>
-            {!isEditing && (
-              <Button onClick={() => setIsEditing(true)} variant="outline">
-                Edit Profile
-              </Button>
-            )}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        {/* Modern Header */}
+        <div className="mb-12 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-teal-500 to-blue-600 rounded-2xl mb-4">
+            <Settings className="h-8 w-8 text-white" />
           </div>
-        </CardHeader>
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">Settings</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Manage your profile, goals, and preferences in one place
+          </p>
+        </div>
+
+        {/* User Profile Section */}
+        <Card className="mb-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-r from-teal-100 to-blue-100 rounded-xl">
+                  <User className="h-6 w-6 text-teal-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold text-gray-900">
+                    Profile Information
+                  </CardTitle>
+                  <CardDescription className="text-gray-600">
+                    Your personal information and activity level
+                  </CardDescription>
+                </div>
+              </div>
+              {!isEditing && (
+                <Button 
+                  onClick={() => setIsEditing(true)} 
+                  className="bg-teal-600 hover:bg-teal-700 text-white border-0 rounded-lg px-6"
+                >
+                  Edit Profile
+                </Button>
+              )}
+            </div>
+          </CardHeader>
         <CardContent>
           {isEditing ? (
             <div className="space-y-4">
@@ -381,11 +395,19 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="flex gap-2 pt-4">
-                <Button onClick={handleProfileSave} disabled={profileMutation.isPending}>
+              <div className="flex gap-3 pt-6">
+                <Button 
+                  onClick={handleProfileSave} 
+                  disabled={profileMutation.isPending}
+                  className="bg-teal-600 hover:bg-teal-700 text-white border-0 rounded-lg px-8"
+                >
                   {profileMutation.isPending ? 'Saving...' : 'Save Profile'}
                 </Button>
-                <Button onClick={handleProfileCancel} variant="outline">
+                <Button 
+                  onClick={handleProfileCancel} 
+                  variant="outline"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg px-8"
+                >
                   Cancel
                 </Button>
               </div>
@@ -456,26 +478,33 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Weight Goals Section */}
-      <Card className="mb-8">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-teal-600" />
-                Weight Loss Goals
-              </CardTitle>
-              <CardDescription>
-                Set and track your weight loss objectives
-              </CardDescription>
+        {/* Weight Goals Section */}
+        <Card className="mb-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl">
+                  <TrendingUp className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold text-gray-900">
+                    Weight Loss Goals
+                  </CardTitle>
+                  <CardDescription className="text-gray-600">
+                    Set and track your weight loss objectives
+                  </CardDescription>
+                </div>
+              </div>
+              {!isEditingGoal && (
+                <Button 
+                  onClick={() => setIsEditingGoal(true)} 
+                  className="bg-blue-600 hover:bg-blue-700 text-white border-0 rounded-lg px-6"
+                >
+                  Edit Goals
+                </Button>
+              )}
             </div>
-            {!isEditingGoal && (
-              <Button onClick={() => setIsEditingGoal(true)} variant="outline">
-                Edit Goals
-              </Button>
-            )}
-          </div>
-        </CardHeader>
+          </CardHeader>
         <CardContent>
           {isEditingGoal ? (
             <div className="space-y-4">
@@ -534,11 +563,19 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="flex gap-2 pt-4">
-                <Button onClick={handleGoalSave} disabled={goalMutation.isPending}>
+              <div className="flex gap-3 pt-6">
+                <Button 
+                  onClick={handleGoalSave} 
+                  disabled={goalMutation.isPending}
+                  className="bg-blue-600 hover:bg-blue-700 text-white border-0 rounded-lg px-8"
+                >
                   {goalMutation.isPending ? 'Saving...' : 'Save Goals'}
                 </Button>
-                <Button onClick={handleGoalCancel} variant="outline">
+                <Button 
+                  onClick={handleGoalCancel} 
+                  variant="outline"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg px-8"
+                >
                   Cancel
                 </Button>
               </div>
@@ -559,25 +596,31 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label className="text-sm font-medium text-gray-500">Starting Weight</Label>
-                <p className="text-lg font-medium">{goal.start_weight_lbs} lbs</p>
+                <p className="text-lg font-medium">
+                  {goal.start_weight_lbs ? `${goal.start_weight_lbs} lbs` : 'Not set'}
+                </p>
                 <p className="text-sm text-gray-500">
-                  {Math.round(convertLbsToKg(goal.start_weight_lbs) * 10) / 10} kg
+                  {goal.start_weight_lbs && !isNaN(goal.start_weight_lbs) ? `${Math.round(convertLbsToKg(goal.start_weight_lbs) * 10) / 10} kg` : 'Not set'}
                 </p>
               </div>
 
               <div>
                 <Label className="text-sm font-medium text-gray-500">Target Weight</Label>
-                <p className="text-lg font-medium">{goal.target_weight_lbs} lbs</p>
+                <p className="text-lg font-medium">
+                  {goal.target_weight_lbs ? `${goal.target_weight_lbs} lbs` : 'Not set'}
+                </p>
                 <p className="text-sm text-gray-500">
-                  {Math.round(convertLbsToKg(goal.target_weight_lbs) * 10) / 10} kg
+                  {goal.target_weight_lbs && !isNaN(goal.target_weight_lbs) ? `${Math.round(convertLbsToKg(goal.target_weight_lbs) * 10) / 10} kg` : 'Not set'}
                 </p>
               </div>
 
               <div>
                 <Label className="text-sm font-medium text-gray-500">Weekly Goal</Label>
-                <p className="text-lg font-medium">{goal.weekly_goal_lbs} lbs/week</p>
+                <p className="text-lg font-medium">
+                  {goal.weekly_goal_lbs ? `${goal.weekly_goal_lbs} lbs/week` : 'Not set'}
+                </p>
                 <p className="text-sm text-gray-500">
-                  {Math.round(convertLbsToKg(goal.weekly_goal_lbs) * 10) / 10} kg/week
+                  {goal.weekly_goal_lbs && !isNaN(goal.weekly_goal_lbs) ? `${Math.round(convertLbsToKg(goal.weekly_goal_lbs) * 10) / 10} kg/week` : 'Not set'}
                 </p>
               </div>
 
@@ -590,52 +633,63 @@ export default function SettingsPage() {
 
               <div className="md:col-span-2">
                 <Label className="text-sm font-medium text-gray-500">Total Weight to Lose</Label>
-                <p className="text-lg font-medium text-red-600">
-                  {Math.round((goal.start_weight_lbs - goal.target_weight_lbs) * 10) / 10} lbs
-                </p>
-                <p className="text-sm text-gray-500">
-                  {Math.round(convertLbsToKg(goal.start_weight_lbs - goal.target_weight_lbs) * 10) / 10} kg
-                </p>
+                {goal.start_weight_lbs && goal.target_weight_lbs && 
+                 !isNaN(goal.start_weight_lbs) && !isNaN(goal.target_weight_lbs) ? (
+                  <>
+                    <p className="text-lg font-medium text-red-600">
+                      {Math.round((goal.start_weight_lbs - goal.target_weight_lbs) * 10) / 10} lbs
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {Math.round(convertLbsToKg(goal.start_weight_lbs - goal.target_weight_lbs) * 10) / 10} kg
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-lg font-medium text-gray-400">Set starting and target weights to calculate</p>
+                )}
               </div>
             </div>
           )}
         </CardContent>
       </Card>
 
-             {/* Medication Tracking Section */}
-       <Card className="mb-8 pb-12">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-teal-600" />
-                Medication Tracking
-              </CardTitle>
-              <CardDescription>
-                Track weight loss medications and their impact on your goals
-              </CardDescription>
+        {/* Medication Tracking Section */}
+        <Card className="mb-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl">
+                  <Activity className="h-6 w-6 text-purple-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold text-gray-900">
+                    Medication Tracking
+                  </CardTitle>
+                  <CardDescription className="text-gray-600">
+                    Track weight loss medications and their impact on your goals
+                  </CardDescription>
+                </div>
+              </div>
+              {!isEditingMedication && (
+                <Button 
+                  onClick={handleAddMedication} 
+                  className="bg-purple-600 hover:bg-purple-700 text-white border-0 rounded-lg px-6"
+                  disabled={medicationsLoading || medicationTypesLoading}
+                >
+                  {medicationTypesLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                      Loading...
+                    </div>
+                  ) : (
+                    <>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Medication
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
-            {!isEditingMedication && (
-              <Button 
-                onClick={handleAddMedication} 
-                variant="outline"
-                disabled={medicationsLoading || medicationTypesLoading}
-              >
-                {medicationTypesLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin h-4 w-4 border-2 border-teal-600 border-t-transparent rounded-full"></div>
-                    Loading...
-                  </div>
-                ) : (
-                  <>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Medication
-                  </>
-                )}
-              </Button>
-            )}
-          </div>
-        </CardHeader>
+          </CardHeader>
         <CardContent>
           {medicationsLoading ? (
             <div className="space-y-4">
@@ -808,11 +862,11 @@ export default function SettingsPage() {
                      </div>
                                      </div>
 
-                   <div className="flex gap-2 pt-8">
+                   <div className="flex gap-3 pt-8">
                      <Button 
                        onClick={handleMedicationSave} 
                       disabled={medicationMutation.isPending || deleteMedicationMutation.isPending}
-                      className="flex-1"
+                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white border-0 rounded-lg"
                     >
                       {medicationMutation.isPending ? (
                         <div className="flex items-center gap-2">
@@ -826,7 +880,7 @@ export default function SettingsPage() {
                     <Button 
                       onClick={handleMedicationCancel} 
                       variant="outline"
-                      className="flex-1"
+                      className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg"
                       disabled={medicationMutation.isPending || deleteMedicationMutation.isPending}
                     >
                       Cancel
@@ -953,6 +1007,7 @@ export default function SettingsPage() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

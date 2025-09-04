@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { P } from './ui/typography';
-import { Shield, ArrowRight, Loader2, Lock } from 'lucide-react';
+import { Target, ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth, isDevelopment } from '../hooks/useAuth';
 
 interface LoginPageProps {
@@ -33,52 +33,56 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
     <div className="w-full flex justify-center">
       <Card className="w-full max-w-md border-teal-200 shadow-xl">
         <CardHeader className="text-center space-y-3">
-          <div className="mx-auto p-3 bg-teal-100 rounded-full w-fit border-2 border-teal-200">
-            <Shield className="h-8 w-8 text-teal-700" />
+          <div className="mx-auto relative">
+            <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg p-3">
+              <img 
+                src="/header-logo.svg" 
+                alt="RCormier Logo" 
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  console.error('Failed to load login logo:', e);
+                  // Fallback to Target icon if logo fails to load
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'block';
+                }}
+              />
+              {/* Fallback Target icon (hidden by default) */}
+              <Target className="w-8 h-8 text-white hidden" />
+            </div>
+            {/* Targeting indicator dots */}
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+            <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+            </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-teal-900">
-            Administration Access
+          <CardTitle className="text-2xl font-semibold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+            Roger Lee Cormier
           </CardTitle>
           <CardDescription className="text-teal-700">
-            Authenticate to access administration area
+            Access your portfolio administration area
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center space-y-4">
-            <div className="flex items-center justify-center space-x-2 text-sm text-teal-600 mb-4">
-              <Lock className="h-4 w-4" />
-              <span>Access administration area</span>
-            </div>
             <P className="text-sm text-teal-700 leading-relaxed">
-              Click below to authenticate and access the administration area including HealthBridge Enhanced and other private projects.
+              Authenticate to access your portfolio administration area and private projects.
             </P>
             
-            {/* Development Mode Notice */}
-            {isDevMode && (
-              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                <div className="text-sm text-teal-800">
-                  <strong className="font-semibold">Development Mode:</strong> Using simulated authentication for testing.
-                </div>
+            {/* Authentication Notice */}
+            <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+              <div className="text-sm text-teal-800">
+                <strong className="font-semibold">🔒 Secure Access:</strong> {isDevMode ? 'Development mode authentication' : 'Enterprise-grade Cloudflare Access protection'}
               </div>
-            )}
-
-            {/* Production Mode Notice */}
-            {!isDevMode && (
-              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                <div className="text-sm text-teal-800 mb-2">
-                  <strong className="font-semibold">🔒 Cloudflare Access Protected:</strong> This site uses enterprise-grade authentication.
-                </div>
-                <div className="text-xs text-teal-700">
-                  You can sign in with Google or receive a one-time PIN via email.
-                </div>
-              </div>
-            )}
+            </div>
 
             {/* Login Button */}
             <Button 
               onClick={handleLogin}
               disabled={isLoading}
-              className="w-full bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl"
               size="lg"
             >
               {isLoading ? (
@@ -97,35 +101,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
             </Button>
           </div>
           
-          {isDevMode ? (
-            <>
-              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                <P className="text-xs text-teal-800">
-                  <strong className="font-semibold">What happens next:</strong> You'll be authenticated and redirected to the administration area. Administration will then appear in your navigation menu.
-                </P>
-              </div>
-              
-              <div className="bg-teal-100 border border-teal-300 rounded-lg p-4">
-                <P className="text-xs text-teal-900">
-                  <strong className="font-semibold">Administration Area:</strong> HealthBridge Enhanced and other private projects will be accessible after authentication.
-                </P>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                <P className="text-xs text-teal-800">
-                  <strong className="font-semibold">What happens next:</strong> You'll be redirected to Cloudflare Access to authenticate. Choose Google sign-in or request an email PIN code.
-                </P>
-              </div>
-              
-              <div className="bg-teal-100 border border-teal-300 rounded-lg p-4">
-                <P className="text-xs text-teal-900">
-                  <strong className="font-semibold">Administration Area:</strong> HealthBridge Enhanced and other private projects will be accessible after authentication.
-                </P>
-              </div>
-            </>
-          )}
+          {/* Simplified Information */}
+          <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+            <P className="text-xs text-teal-800">
+              <strong className="font-semibold">What happens next:</strong> {isDevMode ? 'You\'ll be authenticated and redirected to the administration area.' : 'You\'ll be redirected to Cloudflare Access to authenticate with Google or email PIN.'}
+            </P>
+          </div>
           
           <div className="text-center pt-2">
             <Button 

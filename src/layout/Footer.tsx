@@ -1,4 +1,4 @@
-import { MapPin, Mail, ExternalLink, Heart, ArrowUpRight } from 'lucide-react'
+import { MapPin, Mail, ExternalLink, Heart, ArrowUpRight, Target } from 'lucide-react'
 import { FaLinkedin, FaGithub } from 'react-icons/fa'
 import { H3, H4, P } from '@/components/ui/typography'
 import { Separator } from '@/components/ui/separator'
@@ -7,27 +7,66 @@ import NewsletterSignup from '@/components/NewsletterSignup'
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 border-t border-teal-500/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-gradient-to-br from-teal-900 via-blue-900 to-teal-900 border-t border-teal-500/30 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-teal-400 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-400 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-teal-300 rounded-full blur-2xl"></div>
+      </div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           
           {/* Brand Section */}
-          <div className="lg:col-span-2 space-y-4">
-            <H3 className="text-white !mt-0 bg-gradient-to-r from-teal-400 to-teal-300 bg-clip-text text-transparent">
-              Roger Lee Cormier
-            </H3>
-            <P className="text-slate-300 !mt-0 text-sm">
-              Strategic Technology Leadership | Digital Transformation | Enterprise Integration
+          <div className="lg:col-span-2 space-y-6">
+            {/* Logo and Name with Targeting Theme */}
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <img 
+                  src="/header-logo.svg" 
+                  alt="RCormier Logo" 
+                  className="w-16 h-16"
+                  onError={(e) => {
+                    console.error('Failed to load footer logo:', e);
+                    // Fallback to Target icon if logo fails to load
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+                {/* Fallback Target icon (hidden by default) */}
+                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl items-center justify-center shadow-lg hidden">
+                  <Target className="w-8 h-8 text-white" />
+                </div>
+                {/* Targeting indicator dots */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+              </div>
+              <div>
+                <H3 className="text-white !mt-0 bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent text-2xl">
+                  Roger Lee Cormier
+                </H3>
+                <p className="text-teal-200 text-sm font-medium">Targeting Digital Transformation</p>
+              </div>
+            </div>
+            
+            <P className="text-slate-300 !mt-0 text-base leading-relaxed">
+              PMP-certified Technical Project Manager specializing in digital transformation, AI automation, and strategic technology implementation. Military veteran with a passion for leading with integrity and purpose.
             </P>
             
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2 text-slate-300 hover:text-teal-300 transition-colors">
+            <div className="flex flex-col gap-3 text-sm">
+              <div className="flex items-center gap-3 text-slate-300 hover:text-teal-300 transition-colors">
                 <MapPin className="h-4 w-4 text-teal-400" />
                 <span>Wellsville, NY</span>
               </div>
               
-              <div className="flex items-center gap-2 text-slate-300 hover:text-teal-300 transition-colors">
+              <div className="flex items-center gap-3 text-slate-300 hover:text-teal-300 transition-colors">
                 <Mail className="h-4 w-4 text-teal-400" />
                 <a 
                   href="mailto:roger@rcormier.dev" 

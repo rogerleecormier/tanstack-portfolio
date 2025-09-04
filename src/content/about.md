@@ -1,13 +1,49 @@
 ---
-title: "About Roger Cormier"
+title: "About Roger Lee Cormier"
 description: "PMP-certified Technical Project Manager, military veteran, and Christian leader with AAS in Technical Studies, BS in Information Technology, and MS in Organizational Leadership (in progress). Specializing in digital transformation, AI automation, and satellite communications."
-tags: ["About", "Biography", "Christian Faith", "Military Service", "Family", "AI Automation", "Digital Transformation", "Leadership", "Technology", "Satellite Communications", "RF Communications", "PMP Certified", "Education", "Lifelong Learning"]
+tags:
+  [
+    "About",
+    "Biography",
+    "Christian Faith",
+    "Military Service",
+    "Family",
+    "AI Automation",
+    "Digital Transformation",
+    "Leadership",
+    "Technology",
+    "Satellite Communications",
+    "RF Communications",
+    "PMP Certified",
+    "Education",
+    "Lifelong Learning",
+  ]
 date: "2024-12-19"
-author: "Roger Cormier"
-keywords: ["Roger Cormier", "Technical Project Manager", "PMP Certified", "Christian", "Military Veteran", "Operation New Dawn", "Iraq Deployment", "Satellite Communications", "RF Communications", "AI Automation", "Digital Transformation", "Family", "Leadership", "Technology", "AAS Technical Studies", "BS Information Technology", "MS Organizational Leadership", "Lifelong Learning"]
+author: "Roger Lee Cormier"
+keywords:
+  [
+    "Roger Lee Cormier",
+    "Technical Project Manager",
+    "PMP Certified",
+    "Christian",
+    "Military Veteran",
+    "Operation New Dawn",
+    "Iraq Deployment",
+    "Satellite Communications",
+    "RF Communications",
+    "AI Automation",
+    "Digital Transformation",
+    "Family",
+    "Leadership",
+    "Technology",
+    "AAS Technical Studies",
+    "BS Information Technology",
+    "MS Organizational Leadership",
+    "Lifelong Learning",
+  ]
 ---
 
-## Meet Roger Cormier
+## Meet Roger Lee Cormier
 
 ```card
 {
@@ -30,6 +66,7 @@ keywords: ["Roger Cormier", "Technical Project Manager", "PMP Certified", "Chris
 My professional foundation was built through **U.S. Army service**, where I specialized in **satellite and RF communications technology**. This experience taught me the critical importance of reliable, mission-critical systems and the leadership skills necessary to operate in high-stakes environments.
 
 ### Key Military Experience
+
 - **Operation New Dawn Deployment**: Played an essential role in the drawdown of the Iraq conflict
 - **Satellite & RF Communications**: Ensured reliable mission-critical systems in challenging environments
 - **Leadership Training**: Both received and provided leadership training to teams
@@ -43,7 +80,7 @@ The leadership principles I learned during military service continue to influenc
 
 My commitment to continuous growth is reflected in my educational journey and professional certifications. I believe that true leadership in the digital age requires an insatiable thirst for knowledge and the humility to recognize that learning never ends. Every degree, certification, and skill I've acquired represents not just achievement, but a stepping stone toward greater understanding and capability.
 
-``` card
+```card
 {
   "type": "columns",
   "props": {},
@@ -57,7 +94,7 @@ My commitment to continuous growth is reflected in my educational journey and pr
 
 The foundation of my lifelong learning journey and professional approach is built upon deeply held values that guide every decision and action. These principles aren't just words on a page—they're the compass that directs my path forward and the standards by which I measure success. My mission is to embody these values in everything I do, creating a ripple effect that inspires others to pursue their own growth while contributing to something greater than themselves.
 
-``` card
+```card
 {
   "type": "columns",
   "props": {},
@@ -71,7 +108,7 @@ The foundation of my lifelong learning journey and professional approach is buil
 
 The intersection of my core values and technical expertise creates a unique approach to digital transformation and AI implementation. I don't just deploy technology—I architect solutions that align with human values, ethical principles, and genuine business needs.
 
-``` card
+```card
 {
   "type": "columns",
   "props": {},
