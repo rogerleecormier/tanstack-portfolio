@@ -511,8 +511,9 @@ export default function ProjectsPage({ file }: { file: string }) {
                 title={frontmatter.title || ''}
                 tags={frontmatter.tags || []}
                 currentUrl={`/projects/${file.replace('projects/', '')}`}
-                maxResults={2}
+                maxResults={4}
                 variant="sidebar"
+                dynamicHeight={false}
               />
             </div>
           </div>

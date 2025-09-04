@@ -509,8 +509,9 @@ export default function PortfolioPage({ file }: { file: string }) {
                 title={frontmatter.title || ''}
                 tags={frontmatter.tags || []}
                 currentUrl={`/portfolio/${file.replace('portfolio/', '')}`}
-                maxResults={2}
+                maxResults={4}
                 variant="sidebar"
+                dynamicHeight={false}
               />
             </div>
           </div>

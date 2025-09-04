@@ -503,15 +503,14 @@ export default function BlogPage({ slug }: { slug: string }) {
 
             {/* Smart Related Content Sidebar */}
             <div className="bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-900 dark:to-gray-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm backdrop-blur-sm">
-
-
               <UnifiedRelatedContent
                 content={content}
                 title={frontmatter.title || ''}
                 tags={frontmatter.tags || []}
                 currentUrl={`/blog/${slug}`}
-                maxResults={2}
+                maxResults={4}
                 variant="sidebar"
+                dynamicHeight={false}
               />
             </div>
 

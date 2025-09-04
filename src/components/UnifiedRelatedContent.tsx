@@ -14,6 +14,7 @@ import {
 import { ContentItem } from '../types/content'
 import { parseContentForSearch } from '../utils/characterParser'
 import { cachedContentService } from '@/api/cachedContentService'
+import { useDynamicHeight, useRelatedContentHeight } from '@/hooks/useDynamicHeight'
 
 interface UnifiedRelatedContentProps {
   title?: string
@@ -23,6 +24,9 @@ interface UnifiedRelatedContentProps {
   maxResults?: number
   variant?: 'sidebar' | 'inline'
   content?: string
+  dynamicHeight?: boolean
+  containerRef?: React.RefObject<HTMLElement>
+  mainContentRef?: React.RefObject<HTMLElement>
 }
 
 // Extended ContentItem interface to include relevance score
@@ -36,12 +40,29 @@ export function UnifiedRelatedContent({
   currentUrl,
   className = '',
   maxResults = 2,
-  variant = 'sidebar'
+  variant = 'sidebar',
+  dynamicHeight = false,
+  containerRef,
+  mainContentRef
 }: UnifiedRelatedContentProps) {
   const [recommendations, setRecommendations] = useState<ExtendedContentItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+
+  // Dynamic height calculation - simplified approach
+  const dynamicMaxResults = useDynamicHeight({
+    containerRef: containerRef || sidebarRef,
+    itemHeight: 100, // Conservative height estimate for each related content card
+    minItems: 2, // Always show at least 2 items
+    maxItems: 6, // Reasonable maximum
+    padding: 40 // Minimal padding buffer
+  })
+
+  // Use dynamic height if enabled, otherwise use the provided maxResults
+  // For now, let's use a simple approach: show more items by default when dynamic is enabled
+  const effectiveMaxResults = dynamicHeight ? Math.max(3, dynamicMaxResults) : maxResults
 
   const getRecommendations = useCallback(async () => {
     if (!title && (!tags || tags.length === 0)) {
@@ -86,20 +107,24 @@ export function UnifiedRelatedContent({
       const response = await cachedContentService.getRecommendations({
         query: title || tags.join(' '),
         contentType: 'all', // Always use 'all' for cross-content type recommendations
-        maxResults: maxResults + 1, // Get one extra to account for current page
+        maxResults: effectiveMaxResults + 1, // Get one extra to account for current page
         excludeUrl: currentUrl,
         tags: tags || []
       })
 
       if (response.success && response.results) {
         console.log(`✅ Found ${response.results.length} recommendations`)
+        console.log('🔍 Raw recommendations:', response.results.map(r => ({ url: r.url, title: r.title })))
+        console.log('🔍 Current URL:', currentUrl)
+        console.log('🔍 Effective max results:', effectiveMaxResults)
         
         // Filter out the current page and limit results
         const filteredResults = response.results
           .filter((item: ContentItem) => item.url !== currentUrl)
-          .slice(0, maxResults)
+          .slice(0, effectiveMaxResults)
         
         console.log(`📋 Filtered to ${filteredResults.length} relevant results`)
+        console.log('🔍 Final recommendations:', filteredResults.map(r => ({ url: r.url, title: r.title })))
         setRecommendations(filteredResults)
       } else {
         console.log('❌ No recommendations found or service error')
@@ -116,7 +141,7 @@ export function UnifiedRelatedContent({
         setIsLoading(false)
       }
     }
-  }, [title, tags, currentUrl, maxResults])
+  }, [title, tags, currentUrl, effectiveMaxResults])
 
   useEffect(() => {
     getRecommendations()
@@ -137,7 +162,7 @@ export function UnifiedRelatedContent({
           <div className="w-16 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full"></div>
         </div>
         <div className="space-y-4">
-          {Array.from({ length: maxResults }, (_, i) => (
+          {Array.from({ length: effectiveMaxResults }, (_, i) => (
             <Card key={i} className="border-dashed border-gray-200">
               <CardHeader className="pb-3">
                 <Skeleton className="h-5 w-4/5" />
@@ -184,7 +209,7 @@ export function UnifiedRelatedContent({
           <div className="w-16 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full"></div>
         </div>
         <div className="space-y-4">
-          {Array.from({ length: maxResults }, (_, i) => (
+          {Array.from({ length: effectiveMaxResults }, (_, i) => (
             <Card key={i} className="border-dashed opacity-50">
               <CardHeader className="pb-3">
                 <Skeleton className="h-5 w-4/5" />
@@ -234,7 +259,7 @@ export function UnifiedRelatedContent({
     }
 
     return (
-      <div className={className}>
+      <div ref={sidebarRef} className={className}>
         <div className="mb-6">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
             Related Content
