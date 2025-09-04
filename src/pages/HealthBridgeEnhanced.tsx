@@ -613,10 +613,12 @@ function WeightProjections() {
       return [];
     }
 
-    const baseDailyRate = projections.daily_rate;
+    // Ensure daily rate is negative for weight loss (fix for production API issue)
+    const baseDailyRate = projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate;
     
     // DEBUG: Log the daily rate values
-    console.log('DEBUG - baseDailyRate:', baseDailyRate);
+    console.log('DEBUG - original daily_rate:', projections.daily_rate);
+    console.log('DEBUG - corrected baseDailyRate:', baseDailyRate);
     console.log('DEBUG - activityMultiplier:', activityMultiplier);
     console.log('DEBUG - medicationMultiplier:', medicationMultiplier);
     console.log('DEBUG - medicationMode:', medicationMode);
@@ -999,13 +1001,14 @@ function WeightProjections() {
               </div>
               {/* DEBUG INFO */}
               <div className="text-xs text-red-500 p-2 bg-red-50 rounded">
-                <div>DEBUG - baseDailyRate: {projections?.daily_rate}</div>
+                <div>DEBUG - original daily_rate: {projections?.daily_rate}</div>
+                <div>DEBUG - corrected baseDailyRate: {projections?.daily_rate ? (projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) : 'N/A'}</div>
                 <div>DEBUG - activityMultiplier: {activityMultiplier}</div>
                 <div>DEBUG - medicationMultiplier: {medicationMultiplier}</div>
                 <div>DEBUG - medicationMode: {medicationMode}</div>
-                <div>DEBUG - currentProfileRate: {currentProfileProjection?.dailyRate || projections?.daily_rate}</div>
-                <div>DEBUG - activityAdjustedRate: {projections?.daily_rate ? (projections.daily_rate * activityMultiplier).toFixed(4) : 'N/A'}</div>
-                <div>DEBUG - adjustableDailyRate: {projections?.daily_rate ? (medicationMode === 'with' && medicationMultiplier > 0 ? (projections.daily_rate * activityMultiplier * (1 + medicationMultiplier)).toFixed(4) : (projections.daily_rate * activityMultiplier).toFixed(4)) : 'N/A'}</div>
+                <div>DEBUG - currentProfileRate: {currentProfileProjection?.dailyRate || (projections?.daily_rate ? (projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) : 'N/A')}</div>
+                <div>DEBUG - activityAdjustedRate: {projections?.daily_rate ? ((projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) * activityMultiplier).toFixed(4) : 'N/A'}</div>
+                <div>DEBUG - adjustableDailyRate: {projections?.daily_rate ? (medicationMode === 'with' && medicationMultiplier > 0 ? ((projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) * activityMultiplier * (1 + medicationMultiplier)).toFixed(4) : ((projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate) * activityMultiplier).toFixed(4)) : 'N/A'}</div>
               </div>
             </div>
 
