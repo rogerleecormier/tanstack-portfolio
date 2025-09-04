@@ -1,4 +1,4 @@
-import fm from 'front-matter'
+import fm from 'gray-matter'
 import { logger } from './logger'
 import { getPortfolioUrl, getBlogUrl, getProjectUrl } from '@/config/r2Config'
 

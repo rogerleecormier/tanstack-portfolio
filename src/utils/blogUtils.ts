@@ -1,4 +1,4 @@
-import fm from 'front-matter'
+import fm from 'gray-matter'
 import { logger } from './logger'
 import { loadBlogItems, getBlogItem } from '@/utils/r2PortfolioLoader'
 

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import fm from 'front-matter'
+import fm from 'gray-matter'
 
 // Get current directory for ESM
 const __filename = fileURLToPath(import.meta.url)
