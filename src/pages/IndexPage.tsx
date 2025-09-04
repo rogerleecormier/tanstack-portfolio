@@ -26,6 +26,7 @@ import { ScrollToTop } from '@/components/ScrollToTop'
 import { useNavigate } from '@tanstack/react-router'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { useEffect, useState } from 'react'
+import { cachedContentService } from '@/api/cachedContentService'
 
 // Types for blog, projects, and tools data
 interface BlogPost {
@@ -73,21 +74,45 @@ export default function IndexPage() {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        // Load content cache
-        const response = await fetch('/src/data/content-cache.json')
-        const data = await response.json()
+        // Wait for cached content service to be ready
+        let retryCount = 0
+        const maxRetries = 5
+        
+        while (!cachedContentService.isReady() && retryCount < maxRetries) {
+          retryCount++
+          console.log(`🔄 Waiting for content service to be ready... (attempt ${retryCount}/${maxRetries})`)
+          await new Promise(resolve => setTimeout(resolve, 200))
+        }
+
+        if (!cachedContentService.isReady()) {
+          console.warn('⚠️ Content service not ready after retries')
+          return
+        }
+
+        // Get all content from cached service
+        const allContent = await cachedContentService.getAllContent()
         
         // Get recent blog posts (sorted by date, most recent first)
-        const blogs = data.blog || []
+        const blogs = allContent.filter(item => item.contentType === 'blog')
         const sortedBlogs = blogs
-          .sort((a: BlogPost, b: BlogPost) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .filter(blog => blog.date) // Only include blogs with dates
+          .sort((a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime())
           .slice(0, 6) // Get 6 most recent
+          .map(blog => ({
+            id: blog.id,
+            title: blog.title,
+            description: blog.description,
+            date: blog.date!,
+            tags: blog.tags,
+            category: blog.category,
+            url: blog.url
+          }))
         
         setRecentBlogs(sortedBlogs)
         
-        // Get featured work from projects and tools
-        const projects = data.projects || []
-        const tools = data.tools || []
+        // Get featured work from projects and portfolio items
+        const projects = allContent.filter(item => item.contentType === 'project')
+        const portfolioItems = allContent.filter(item => item.contentType === 'portfolio')
         
         // Create a HealthBridge project entry since it's a project, not a portfolio item
         const healthBridgeProject = {
@@ -99,18 +124,32 @@ export default function IndexPage() {
           url: '/healthbridge-enhanced'
         }
         
-        // Combine projects, tools, and add HealthBridge as a project
-        let allWork = [...projects, healthBridgeProject, ...tools]
+        // Filter to get the most relevant portfolio items for featured work
+        const workPortfolio = portfolioItems.filter(item => 
+          ['ai-automation', 'analytics', 'capabilities', 'devops'].includes(item.id)
+        )
         
-        // If we still don't have enough items, supplement with portfolio items that represent actual work
-        if (allWork.length < 3) {
-          const portfolio = data.portfolio || []
-          const workPortfolio = portfolio.filter((item: { id: string }) => 
-            ['ai-automation', 'analytics', 'capabilities', 'devops'].includes(item.id)
-          )
-          allWork = [...allWork, ...workPortfolio]
-        }
+        // Map projects and portfolio items to the expected format
+        const mappedProjects = projects.map(project => ({
+          id: project.id,
+          title: project.title,
+          description: project.description,
+          tags: project.tags,
+          category: project.category,
+          url: project.url
+        }))
         
+        const mappedPortfolio = workPortfolio.map(item => ({
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          tags: item.tags,
+          category: item.category,
+          url: item.url
+        }))
+        
+        // Combine projects, portfolio items, and add HealthBridge as a project
+        const allWork = [...mappedProjects, healthBridgeProject, ...mappedPortfolio]
         const featured = allWork.slice(0, 6) // Get up to 6 featured items
         
         setFeaturedWork(featured)
