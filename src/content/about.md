@@ -1,6 +1,6 @@
 ---
 title: "About Roger Lee Cormier"
-description: "PMP-certified Technical Project Manager, military veteran, and Christian leader with AAS in Technical Studies, BS in Information Technology, and MS in Organizational Leadership (in progress). Specializing in digital transformation, AI automation, and satellite communications."
+description: "PMP-certified Technical Project Manager, military veteran, and Christian leader with AAS in Technical Studies, BS in Information Technology, and MS in Organizational Leadership (in progress). Specializing in precision-targeting digital transformation, AI automation, and satellite communications."
 tags:
   [
     "About",
@@ -51,7 +51,7 @@ keywords:
   "props": {
     "name": "Roger Lee Cormier",
     "title": "PMP-Certified Technical Project Manager & U.S. Army Veteran",
-    "description": "Christian leader, military veteran, and digital transformation specialist with a passion for AI automation, family values, and targeting organizational excellence in the AI age.",
+    "description": "Christian leader, military veteran, and digital transformation specialist with a passion for AI automation, family values, and precision-targeting organizational excellence in the AI age.",
     "image": "/images/IMG_1242.JPG",
     "imageAlt": "Roger Lee Cormier - Technical Project Manager",
     "badges": ["PMP Certified", "U.S. Army Veteran", "Operation New Dawn", "Satellite Communications", "BS Information Technology", "MS Organizational Leadership (In Progress)"]
@@ -106,7 +106,7 @@ The foundation of my lifelong learning journey and professional approach is buil
 
 ## Professional Expertise: Digital Transformation & AI
 
-The intersection of my core values and technical expertise creates a unique approach to digital transformation and AI implementation. I don't just deploy technology—I architect solutions that align with human values, ethical principles, and genuine business needs.
+The intersection of my core values and technical expertise creates a unique approach to digital transformation and AI implementation. I don't just deploy technology—I architect precision-targeted solutions that align with human values, ethical principles, and genuine business needs.
 
 ```card
 {

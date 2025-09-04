@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator'
 
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ScrollToTop } from '@/components/ScrollToTop'
 import { H1, H2, H3, H4, P, Blockquote, InlineCode } from "@/components/ui/typography";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Legend, Tooltip as RechartsTooltip, LineChart, Line, ScatterChart, Scatter, ZAxis, ResponsiveContainer, LabelList, ErrorBar } from "recharts";
 import { MessageSquare } from "lucide-react";
@@ -699,15 +700,18 @@ export default function AboutPage() {
               </P>
               <a
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 <MessageSquare className="h-4 w-4" />
-                Get in Touch
+                Target Your Next Project
               </a>
             </div>
           </div>
         </article>
       </div>
+      
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   )
 }

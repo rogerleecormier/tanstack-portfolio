@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
+import { ScrollToTop } from '@/components/ScrollToTop'
 import { H1, H2, H3, P } from '@/components/ui/typography'
 import {
   Dialog,
@@ -140,7 +141,7 @@ export default function BlogListPage() {
   }, [isLoading, isLoadingMore, displayedPosts.length, filteredPosts.length])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-teal-100 dark:from-teal-950 dark:via-blue-950 dark:to-teal-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950">
       {/* Header with Targeting Theme - More Compact */}
       <div className="relative overflow-hidden border-b border-teal-200 dark:border-teal-800">
         <div className="absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10"></div>
@@ -175,22 +176,22 @@ export default function BlogListPage() {
             <P className="text-lg leading-7 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Strategic insights, technical deep-dives, and leadership perspectives on enterprise technology transformation. 
               <span className="font-medium text-teal-700 dark:text-teal-300"> Target your knowledge </span>
-              with precision-curated content and expert analysis.
+              with expertly curated content and on-point analysis.
             </P>
             
             {/* Quick Stats with Targeting Theme */}
             <div className="flex justify-center gap-6 mt-6">
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
-                <span>Strategic Insights</span>
+                <span>Strategic Targeting</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span>Technical Deep-dives</span>
+                <span>Precision Analysis</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <span>Expert Analysis</span>
+                <span>On-Point Insights</span>
               </div>
             </div>
           </div>
@@ -411,6 +412,9 @@ export default function BlogListPage() {
           <NewsletterSignup />
         </div>
       </div>
+      
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   )
 }

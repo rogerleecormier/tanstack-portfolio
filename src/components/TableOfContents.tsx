@@ -105,22 +105,22 @@ export function TableOfContents() {
   }
 
   return (
-    <div className="border-t border-teal-200/40 dark:border-teal-800/40 mt-1 pt-1">
-      <div className="px-2 mb-0.5">
-        <h3 className="text-teal-600 dark:text-teal-400 font-medium text-xs uppercase tracking-wide">
-          TOC
+    <div className="border-t border-slate-200/50 dark:border-slate-700/50 mt-2 pt-3">
+      <div className="px-3 mb-2">
+        <h3 className="text-slate-600 dark:text-slate-400 font-semibold text-xs uppercase tracking-wider">
+          Table of Contents
         </h3>
       </div>
       <nav>
-        <ul className="space-y-0">
+        <ul className="space-y-0.5 px-2">
           {currentToc.map((entry) => (
             <li key={entry.slug}>
               <a
                 href={`#${entry.slug}`}
-                className={`block py-0.5 px-2 text-sm transition-all duration-150 rounded-sm ${
+                className={`block py-2 px-3 text-sm transition-all duration-200 rounded-lg ${
                   activeId === entry.slug
-                    ? 'bg-teal-100 text-teal-900 font-semibold border-l-2 border-teal-500 dark:bg-teal-800/40 dark:text-teal-100'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-teal-800 dark:hover:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-900/20'
+                    ? 'bg-gradient-to-r from-teal-50 to-blue-50 text-slate-900 font-semibold border-l-3 border-teal-600 dark:from-teal-900/30 dark:to-blue-900/30 dark:text-slate-100'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-200 hover:bg-teal-100/80 dark:hover:bg-teal-800/30'
                 }`}
                 onClick={e => {
                   e.preventDefault();

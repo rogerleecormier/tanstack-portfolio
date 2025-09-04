@@ -143,7 +143,7 @@ export const InfoCard: React.FC<BaseCardProps> = ({
   return (
     <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 font-sans info-card", className)}>
       {/* Teal accent line */}
-      <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
+      <div className="h-1 bg-gradient-to-r from-teal-800 to-blue-800"></div>
       
       {title && (
         <CardHeader className="pb-4">
@@ -214,11 +214,11 @@ export const FeatureCard: React.FC<BaseCardProps & {
   return (
     <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 feature-card", className)}>
       {/* Teal accent line */}
-      <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
+      <div className="h-1 bg-gradient-to-r from-teal-800 to-blue-800"></div>
       
       <CardHeader className="pb-4">
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 p-3 rounded-xl bg-gradient-to-br from-teal-100 to-blue-100 dark:from-teal-900/50 dark:to-blue-900/50 text-teal-600 dark:text-teal-400 shadow-sm">
+          <div className="flex-shrink-0 p-3 rounded-xl bg-gradient-to-br from-slate-100 to-teal-100 dark:from-slate-800/50 dark:to-teal-800/50 text-teal-800 dark:text-teal-300 shadow-sm">
             {getIcon(icon)}
           </div>
           <div className="flex-1 min-w-0">
@@ -293,7 +293,7 @@ export const ProfileCard: React.FC<BaseCardProps & {
   return (
     <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900", className)}>
       {/* Teal accent line */}
-      <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
+      <div className="h-1 bg-gradient-to-r from-teal-800 to-blue-800"></div>
       
       <CardHeader className="pb-4">
         <div className="flex items-start gap-6">
@@ -386,7 +386,7 @@ export const StatsCard: React.FC<BaseCardProps & {
   return (
     <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900", className)}>
       {/* Teal accent line */}
-      <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
+      <div className="h-1 bg-gradient-to-r from-teal-800 to-blue-800"></div>
       
       {(title || description) && (
         <CardHeader className="pb-4">
@@ -408,7 +408,7 @@ export const StatsCard: React.FC<BaseCardProps & {
             {statsArray.map((stat: string, index: number) => {
               const [label, value] = stat.split(':').map((s: string) => s.trim())
               return (
-                <div key={index} className="text-center p-4 bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-900/20 dark:to-blue-900/20 rounded-lg border border-teal-200 dark:border-teal-700">
+                <div key={index} className="text-center p-4 bg-gradient-to-br from-slate-50 to-teal-50 dark:from-slate-800/20 dark:to-teal-800/20 rounded-lg border border-slate-200 dark:border-slate-600">
                   <div className="text-2xl font-bold text-teal-600 dark:text-teal-400">{value}</div>
                   <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">{label}</div>
                 </div>
@@ -444,7 +444,7 @@ export const TimelineCard: React.FC<BaseCardProps & {
   return (
     <Card className={cn("overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900", className)}>
       {/* Teal accent line */}
-      <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
+      <div className="h-1 bg-gradient-to-r from-teal-800 to-blue-800"></div>
       
       {(title || description) && (
         <CardHeader className="pb-4">
@@ -538,7 +538,7 @@ export const HeroCard: React.FC<BaseCardProps & {
   return (
     <Card className={cn("overflow-hidden shadow-lg h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900", className)}>
       {/* Teal accent line */}
-      <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
+      <div className="h-1 bg-gradient-to-r from-teal-800 to-blue-800"></div>
       
       <CardHeader className={cn("pb-4", sizes[size])}>
         <div className="flex items-start gap-6">
@@ -857,7 +857,7 @@ export const HeroProfileCard: React.FC<BaseCardProps & {
   return (
     <Card className={cn("overflow-hidden border-gray-200 dark:border-gray-700 bg-white dark:bg-white hero-profile-card", className)}>
       {/* Teal accent line */}
-      <div className="h-1 bg-gradient-to-r from-teal-600 to-blue-600"></div>
+      <div className="h-1 bg-gradient-to-r from-teal-800 to-blue-800"></div>
       
       <CardHeader className="pb-4 pt-1">
         <div className="flex items-start gap-6">

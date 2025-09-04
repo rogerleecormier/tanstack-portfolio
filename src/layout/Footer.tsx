@@ -1,19 +1,14 @@
-import { MapPin, Mail, ExternalLink, Heart, ArrowUpRight, Target } from 'lucide-react'
+import { MapPin, Mail, ExternalLink, Heart, ArrowUpRight } from 'lucide-react'
 import { FaLinkedin, FaGithub } from 'react-icons/fa'
 import { H3, H4, P } from '@/components/ui/typography'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import { Logo } from '@/components/Logo'
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-teal-900 via-blue-900 to-teal-900 border-t border-teal-500/30 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-teal-400 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-400 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-teal-300 rounded-full blur-2xl"></div>
-      </div>
+    <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-t border-slate-600/30 relative">
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Footer Content */}
@@ -21,38 +16,14 @@ export default function Footer() {
           
           {/* Brand Section */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Logo and Name with Targeting Theme */}
+            {/* Enhanced Logo and Name with Targeting Theme */}
             <div className="flex items-center gap-4">
-              <div className="relative">
-                <img 
-                  src="/header-logo.svg" 
-                  alt="RCormier Logo" 
-                  className="w-16 h-16"
-                  onError={(e) => {
-                    console.error('Failed to load footer logo:', e);
-                    // Fallback to Target icon if logo fails to load
-                    e.currentTarget.style.display = 'none';
-                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
-                />
-                {/* Fallback Target icon (hidden by default) */}
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl items-center justify-center shadow-lg hidden">
-                  <Target className="w-8 h-8 text-white" />
-                </div>
-                {/* Targeting indicator dots */}
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                </div>
-                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-                </div>
-              </div>
+              <Logo size="lg" showTargetingDots={true} />
               <div>
-                <H3 className="text-white !mt-0 bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent text-2xl">
+                <H3 className="text-white !mt-0 bg-gradient-to-r from-teal-300 to-blue-300 bg-clip-text text-transparent text-2xl">
                   Roger Lee Cormier
                 </H3>
-                <p className="text-teal-200 text-sm font-medium">Targeting Digital Transformation</p>
+                <p className="text-orange-200 text-sm font-medium">Targeting Digital Transformation</p>
               </div>
             </div>
             
@@ -106,8 +77,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Newsletter Section - Enhanced design */}
-        <div className="mb-8 p-8 bg-gradient-to-r from-slate-700/50 to-slate-800/50 rounded-2xl border border-teal-500/20 backdrop-blur-sm">
+        {/* Newsletter Section - Clean design */}
+        <div className="mb-8 p-8 bg-slate-800/50 rounded-2xl border border-slate-600/30 backdrop-blur-sm">
           <div className="text-center mb-6">
             <H4 className="text-white !mt-0 text-lg font-semibold mb-2">
               Stay Updated with Strategic Insights
@@ -141,32 +112,32 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a 
               href="https://linkedin.com/in/rogerleecormier" 
-              className="group flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-teal-600/20 hover:to-teal-500/20 border border-slate-500/50 hover:border-teal-400/50 transition-all duration-300"
+              className="group flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-300"
               aria-label="LinkedIn"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaLinkedin size={16} className="text-teal-400 group-hover:text-teal-300 transition-colors" />
+              <FaLinkedin size={16} className="text-slate-300 group-hover:text-white transition-colors" />
               <span className="text-sm text-slate-200 group-hover:text-white font-medium transition-colors">LinkedIn</span>
-              <ExternalLink className="h-3 w-3 text-slate-400 group-hover:text-teal-400 transition-colors" />
+              <ExternalLink className="h-3 w-3 text-slate-400 group-hover:text-slate-300 transition-colors" />
             </a>
             
             <a 
               href="https://github.com/rogerleecormier" 
-              className="group flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-teal-600/20 hover:to-teal-500/20 border border-slate-500/50 hover:border-teal-400/50 transition-all duration-300"
+              className="group flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-300"
               aria-label="GitHub"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaGithub size={16} className="text-teal-400 group-hover:text-teal-300 transition-colors" />
+              <FaGithub size={16} className="text-slate-300 group-hover:text-white transition-colors" />
               <span className="text-sm text-slate-200 group-hover:text-white font-medium transition-colors">GitHub</span>
-              <ExternalLink className="h-3 w-3 text-slate-400 group-hover:text-teal-400 transition-colors" />
+              <ExternalLink className="h-3 w-3 text-slate-400 group-hover:text-slate-300 transition-colors" />
             </a>
           </div>
         </div>
 
-        {/* Separator with teal accent */}
-        <Separator className="bg-gradient-to-r from-transparent via-teal-500/30 to-transparent mb-6" />
+        {/* Separator with refined accent */}
+        <Separator className="bg-gradient-to-r from-transparent via-slate-600/30 to-transparent mb-6" />
 
         {/* Bottom Section - Enhanced with teal accents */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
@@ -177,13 +148,13 @@ export default function Footer() {
             <span className="flex items-center gap-2">
               Built with <Heart className="h-3 w-3 text-red-400" /> using 
               <div className="flex gap-1">
-                <Badge variant="outline" className="text-xs border-teal-500/50 text-teal-300 bg-slate-700/50 hover:bg-teal-500/10 transition-colors">
+                <Badge variant="outline" className="text-xs border-slate-500/50 text-slate-300 bg-slate-700/50 hover:bg-slate-600/50 transition-colors">
                   React
                 </Badge>
-                <Badge variant="outline" className="text-xs border-teal-500/50 text-teal-300 bg-slate-700/50 hover:bg-teal-500/10 transition-colors">
+                <Badge variant="outline" className="text-xs border-slate-500/50 text-slate-300 bg-slate-700/50 hover:bg-slate-600/50 transition-colors">
                   TypeScript
                 </Badge>
-                <Badge variant="outline" className="text-xs border-teal-500/50 text-teal-300 bg-slate-700/50 hover:bg-teal-500/10 transition-colors">
+                <Badge variant="outline" className="text-xs border-slate-500/50 text-slate-300 bg-slate-700/50 hover:bg-slate-600/50 transition-colors">
                   TanStack Router
                 </Badge>
               </div>
@@ -194,13 +165,13 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <a 
               href="/privacy" 
-              className="text-slate-400 hover:text-teal-300 transition-colors"
+              className="text-slate-400 hover:text-slate-300 transition-colors"
             >
               Privacy Policy
             </a>
             <a 
               href="/contact" 
-              className="text-slate-400 hover:text-teal-300 transition-colors"
+              className="text-slate-400 hover:text-slate-300 transition-colors"
             >
               Contact
             </a>
