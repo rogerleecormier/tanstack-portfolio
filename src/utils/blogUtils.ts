@@ -88,17 +88,17 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
         logger.info(`🔄 Processing blog item: ${item.title}`)
         
         // Parse frontmatter from the content
-        const { attributes, body } = fm(item.content)
-        const frontmatter = attributes as BlogFrontmatter
+        const { data, content } = fm(item.content)
+        const frontmatter = data as BlogFrontmatter
         
         logger.info(`📝 Frontmatter parsed:`, frontmatter)
         logger.info(`📅 Frontmatter date type: ${typeof frontmatter.date}, value: ${frontmatter.date}`)
         logger.info(`📅 Frontmatter date exists: ${!!frontmatter.date}`)
         logger.info(`📄 Content preview: ${item.content.substring(0, 200)}...`)
-        logger.info(`📄 Body preview: ${body.substring(0, 200)}...`)
+        logger.info(`📄 Body preview: ${content.substring(0, 200)}...`)
 
         // Remove import statements from markdown content
-        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+        const cleanedBody = content.replace(/^import\s+.*$/gm, '').trim()
 
         // Calculate reading time
         const calculatedReadingTime = calculateReadingTime(cleanedBody)
@@ -173,11 +173,11 @@ export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
     
     if (item) {
       // Parse frontmatter from the content
-      const { attributes, body } = fm(item.content)
-      const frontmatter = attributes as BlogFrontmatter
+      const { data, content } = fm(item.content)
+      const frontmatter = data as BlogFrontmatter
 
       // Remove import statements from markdown content
-      const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+      const cleanedBody = content.replace(/^import\s+.*$/gm, '').trim()
 
       // Calculate reading time
       const calculatedReadingTime = calculateReadingTime(cleanedBody)

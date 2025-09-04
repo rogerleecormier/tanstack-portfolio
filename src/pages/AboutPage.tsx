@@ -97,13 +97,13 @@ export default function AboutPage() {
         console.log('AboutPage: aboutContent first 200 chars:', text.substring(0, 200))
 
         // Parse frontmatter
-        const { attributes, body } = fm(text)
-        console.log('AboutPage: Frontmatter parsed:', attributes)
-        console.log('AboutPage: Body length:', body.length)
-        setFrontmatter(attributes as Frontmatter)
+        const { data, content } = fm(text)
+        console.log('AboutPage: Frontmatter parsed:', data)
+        console.log('AboutPage: Body length:', content.length)
+        setFrontmatter(data as Frontmatter)
         
         // Remove import statements from markdown content
-        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
+        const cleanedBody = content.replace(/^import\s+.*$/gm, '').trim()
         console.log('AboutPage: Cleaned body length:', cleanedBody.length)
         
         // Store the cleaned markdown content directly

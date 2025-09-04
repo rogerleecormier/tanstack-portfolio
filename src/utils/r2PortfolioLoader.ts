@@ -175,8 +175,8 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
         }
         
         // Parse frontmatter
-        const { attributes, body } = fm(content)
-        const frontmatter = attributes as Record<string, unknown>
+        const { data, content: body } = fm(content)
+        const frontmatter = data as Record<string, unknown>
         
         // Remove import statements from markdown content
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -250,8 +250,8 @@ export async function loadBlogItems(): Promise<BlogItem[]> {
         }
         
         // Parse frontmatter
-        const { attributes, body } = fm(content)
-        const frontmatter = attributes as Record<string, unknown>
+        const { data, content: body } = fm(content)
+        const frontmatter = data as Record<string, unknown>
         
         // Remove import statements from markdown content
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -348,8 +348,8 @@ export async function loadProjectItems(): Promise<ProjectItem[]> {
         }
         
         // Parse frontmatter
-        const { attributes, body } = fm(content)
-        const frontmatter = attributes as Record<string, unknown>
+        const { data, content: body } = fm(content)
+        const frontmatter = data as Record<string, unknown>
         
         // Remove import statements from markdown content
         const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -413,8 +413,8 @@ export async function getPortfolioItem(fileName: string): Promise<PortfolioItem 
     }
     
     // Parse frontmatter
-    const { attributes, body } = fm(content)
-    const frontmatter = attributes as Record<string, unknown>
+    const { data, content: body } = fm(content)
+    const frontmatter = data as Record<string, unknown>
     
     // Remove import statements from markdown content
     const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -467,8 +467,8 @@ export async function getBlogItem(fileName: string): Promise<BlogItem | null> {
     }
     
     // Parse frontmatter
-    const { attributes, body } = fm(content)
-    const frontmatter = attributes as Record<string, unknown>
+    const { data, content: body } = fm(content)
+    const frontmatter = data as Record<string, unknown>
     
     // Remove import statements from markdown content
     const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -521,8 +521,8 @@ export async function getProjectItem(fileName: string): Promise<ProjectItem | nu
     }
     
     // Parse frontmatter
-    const { attributes, body } = fm(content)
-    const frontmatter = attributes as Record<string, unknown>
+    const { data, content: body } = fm(content)
+    const frontmatter = data as Record<string, unknown>
     
     // Remove import statements from markdown content
     const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()

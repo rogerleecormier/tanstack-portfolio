@@ -153,8 +153,8 @@ async function processPortfolioItems() {
       if (!content) continue
       
       // Parse frontmatter
-      const { attributes, body } = fm(content)
-      const frontmatter = attributes || {}
+      const { data, content: body } = fm(content)
+      const frontmatter = data || {}
       
       // Remove import statements from markdown content
       const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -205,8 +205,8 @@ async function processBlogItems() {
       if (!content) continue
       
       // Parse frontmatter
-      const { attributes, body } = fm(content)
-      const frontmatter = attributes || {}
+      const { data, content: body } = fm(content)
+      const frontmatter = data || {}
       
       // Remove import statements from markdown content
       const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
@@ -263,8 +263,8 @@ async function processProjectItems() {
       if (!content) continue
       
       // Parse frontmatter
-      const { attributes, body } = fm(content)
-      const frontmatter = attributes || {}
+      const { data, content: body } = fm(content)
+      const frontmatter = data || {}
       
       // Remove import statements from markdown content
       const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()

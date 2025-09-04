@@ -14,7 +14,7 @@ import {
 import { ContentItem } from '../types/content'
 import { parseContentForSearch } from '../utils/characterParser'
 import { cachedContentService } from '@/api/cachedContentService'
-import { useDynamicHeight, useRelatedContentHeight } from '@/hooks/useDynamicHeight'
+import { useDynamicHeight } from '@/hooks/useDynamicHeight'
 
 interface UnifiedRelatedContentProps {
   title?: string
@@ -26,7 +26,6 @@ interface UnifiedRelatedContentProps {
   content?: string
   dynamicHeight?: boolean
   containerRef?: React.RefObject<HTMLElement>
-  mainContentRef?: React.RefObject<HTMLElement>
 }
 
 // Extended ContentItem interface to include relevance score
@@ -43,7 +42,6 @@ export function UnifiedRelatedContent({
   variant = 'sidebar',
   dynamicHeight = false,
   containerRef,
-  mainContentRef
 }: UnifiedRelatedContentProps) {
   const [recommendations, setRecommendations] = useState<ExtendedContentItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -53,7 +51,7 @@ export function UnifiedRelatedContent({
 
   // Dynamic height calculation - simplified approach
   const dynamicMaxResults = useDynamicHeight({
-    containerRef: containerRef || sidebarRef,
+    containerRef: (containerRef || sidebarRef) as React.RefObject<HTMLElement>,
     itemHeight: 100, // Conservative height estimate for each related content card
     minItems: 2, // Always show at least 2 items
     maxItems: 6, // Reasonable maximum
