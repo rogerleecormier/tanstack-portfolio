@@ -589,7 +589,8 @@ function WeightProjections() {
       return null;
     }
     
-    const baseDailyRate = projections.daily_rate;
+    // Ensure daily rate is negative for weight loss (fix for production API issue)
+    const baseDailyRate = projections.daily_rate > 0 ? -projections.daily_rate : projections.daily_rate;
     const currentActivityMultiplier = projections.activity_multiplier;
     const currentMedicationMultiplier = medicationMultiplier; // User's actual medication multiplier
     
