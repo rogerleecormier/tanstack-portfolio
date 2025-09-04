@@ -1029,7 +1029,7 @@ function WeightProjections() {
                   tick={{ fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
-                  domain={[targetWeight - 5, Math.max(startingWeight + 10, currentWeight + 20)]}
+                  domain={[Math.max(startingWeight + 10, currentWeight + 20), targetWeight - 5]}
                   reversed={true} // This makes the chart display in reverse (weight goes down on the right)
                 />
                 <ChartTooltip
