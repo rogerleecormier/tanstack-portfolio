@@ -315,7 +315,7 @@ async function getWeightProjections(request, env, corsHeaders) {
         confidence: 0.89,
         algorithm: "linear_regression_v4_activity_medication_scenarios",
         activity_level: "sedentary",
-        activity_multiplier: 0.8,
+        activity_multiplier: 1.2,
         medication_scenarios: {
           no_medication: {
             daily_rate: -0.15,
@@ -497,17 +497,18 @@ function calculateWeightProjectionsWithMedications(measurements, days, userMedic
 
 /**
  * Calculate activity level multiplier for weight loss projections
+ * Uses TDEE multipliers because higher TDEE = more calories burned = faster weight loss
  */
 function calculateActivityLevelMultiplier(activityLevel) {
   const activityMultipliers = {
-    sedentary: 0.8,      // 20% reduction in weight loss rate (less active)
-    light: 0.9,           // 10% reduction in weight loss rate
-    moderate: 1.0,        // Base rate (no adjustment)
-    active: 1.15,         // 15% increase in weight loss rate
-    very_active: 1.3      // 30% increase in weight loss rate
+    sedentary: 1.2,      // Little or no exercise - lower TDEE
+    light: 1.375,        // Light exercise 1-3 days/week
+    moderate: 1.55,      // Moderate exercise 3-5 days/week
+    active: 1.725,       // Heavy exercise 6-7 days/week
+    very_active: 1.9     // Very heavy exercise, physical job - higher TDEE
   };
   
-  return activityMultipliers[activityLevel] || 1.0;
+  return activityMultipliers[activityLevel] || 1.55; // Default to moderate
 }
 
 /**

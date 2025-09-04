@@ -117,7 +117,7 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, BarChart, Bar } from "rec
     confidence: 0.89,
     algorithm: "linear_regression_v4_activity_medication_scenarios",
     activity_level: "sedentary",
-    activity_multiplier: 0.8,
+    activity_multiplier: 1.2,
     medication_scenarios: {
       no_medication: {
         daily_rate: -0.15,
@@ -1623,7 +1623,7 @@ function AnalyticsDashboard() {
       <CardContent className="space-y-3">
         {dailyRate != null ? (
           (() => {
-            const ACTIVITY: Record<string, number> = { sedentary: 0.9, moderate: 1.0, active: 1.1, very_active: 1.2 };
+            const ACTIVITY: Record<string, number> = { sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725, very_active: 1.9 };
             const actData = Object.entries(ACTIVITY).map(([k, mult]) => ({
               label: k.replace('_', ' ').replace(/^./, (c) => c.toUpperCase()),
               value: Number(Math.abs(dailyRate * mult * 7).toFixed(2)),
@@ -1652,7 +1652,7 @@ function AnalyticsDashboard() {
                 </p>
                 {(() => {
                   if (dailyRate == null) return null;
-                  const ACTIVITY: Record<string, number> = { sedentary: 0.9, moderate: 1.0, active: 1.1, very_active: 1.2 };
+                  const ACTIVITY: Record<string, number> = { sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725, very_active: 1.9 };
                   const currentKey = activityLevel ?? 'moderate';
                   const currentWeekly = Math.abs(dailyRate * (ACTIVITY[currentKey] ?? 1.0) * 7);
                   const entries = Object.entries(ACTIVITY).map(([k, m]) => ({ k, v: Math.abs(dailyRate * m * 7) }));

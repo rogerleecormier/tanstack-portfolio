@@ -225,7 +225,7 @@ export class HealthBridgeEnhancedAPI {
           confidence: 0.95,
           algorithm: 'linear_regression_v4_activity_medication_scenarios',
           activity_level: 'sedentary',
-          activity_multiplier: 0.8,
+          activity_multiplier: 1.2,
           projections: mockProjections,
           medication_scenarios: {
             no_medication: {
@@ -317,7 +317,7 @@ export class HealthBridgeEnhancedAPI {
             confidence: 0.95,
             algorithm: 'linear_regression_v4_activity_medication_scenarios',
             activity_level: 'sedentary',
-            activity_multiplier: 0.8,
+            activity_multiplier: 1.2,
             projections: [],
             medication_scenarios: {
               no_medication: {
