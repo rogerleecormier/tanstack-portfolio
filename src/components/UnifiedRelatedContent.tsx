@@ -41,7 +41,7 @@ export function UnifiedRelatedContent({
   maxResults = 2,
   variant = 'sidebar',
   dynamicHeight = false,
-  containerRef,
+  containerRef
 }: UnifiedRelatedContentProps) {
   const [recommendations, setRecommendations] = useState<ExtendedContentItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
