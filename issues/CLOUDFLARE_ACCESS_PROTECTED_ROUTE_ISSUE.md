@@ -10,7 +10,7 @@ The application currently uses two different protection mechanisms:
 
 1. **ProtectedRoute Component** (`src/components/ProtectedRoute.tsx`)
    - Wraps individual components/pages
-   - Used in `ContentCreationPage.tsx` (lines 396-1052)
+   - Used in protected pages
    - Provides client-side authentication checks
    - Shows loading states and authentication prompts
 
@@ -142,7 +142,7 @@ The authentication system handles several error cases:
 - `src/hooks/useAuth.ts`
 - `src/router.tsx`
 - `src/utils/cloudflareAuth.ts`
-- `src/pages/ContentCreationPage.tsx`
+- Protected pages
 
 ## Priority
 **High** - This affects the security of the administration area and prevents access to protected content.

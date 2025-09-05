@@ -1,15 +1,13 @@
 import React, { useState, useCallback } from 'react'
-import { ArrowLeft, Download, Save } from 'lucide-react'
+import { ArrowLeft, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from '@tanstack/react-router'
 import { H1, P } from '@/components/ui/typography'
 import MarkdownEditor from '@/components/MarkdownEditor'
-import FileSaveDialog from '@/components/FileSaveDialog'
 
 const MarkdownEditorPage: React.FC = () => {
   const [markdownOutput, setMarkdownOutput] = useState('')
-  const [showSaveDialog, setShowSaveDialog] = useState(false)
 
   const handleContentChange = useCallback((_html: string, markdown: string) => {
     setMarkdownOutput(markdown)
@@ -63,15 +61,6 @@ const MarkdownEditorPage: React.FC = () => {
           <div className="flex items-center justify-between">
             <CardTitle className="text-teal-900">Professional Markdown Editor</CardTitle>
             <div className="flex gap-2">
-              <Button
-                onClick={() => setShowSaveDialog(true)}
-                size="sm"
-                className="bg-teal-600 hover:bg-teal-700 text-white"
-                title="Save Markdown"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                Save
-              </Button>
               <Button
                 onClick={downloadMarkdown}
                 size="sm"
@@ -173,26 +162,6 @@ Tables support any number of columns and rows, and will be automatically formatt
         </CardContent>
       </Card>
 
-      {/* File Save Dialog */}
-      <FileSaveDialog
-        open={showSaveDialog}
-        onOpenChange={setShowSaveDialog}
-        frontmatter={{
-          title: 'Markdown Document',
-          description: 'A markdown document created with the Professional Markdown Editor',
-          author: 'Roger Lee Cormier',
-          tags: ['markdown', 'document'],
-          keywords: ['markdown', 'editor', 'documentation'],
-          date: new Date().toISOString().split('T')[0]
-        }}
-        markdown={markdownOutput}
-        contentType="blog"
-        customDirectory="src/content/blog"
-        onSaveSuccess={(filePath) => {
-          console.log('File saved successfully to:', filePath)
-          // You could show a success message here
-        }}
-      />
     </div>
   )
 }

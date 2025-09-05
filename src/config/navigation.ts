@@ -77,12 +77,6 @@ export const protectedProjectItems = [
     requiresAuth: true,
   },
   {
-    title: "Content Studio",
-    url: "protected/content-studio",
-    icon: FileText,
-    requiresAuth: true,
-  },
-  {
     title: "Settings",
     url: "protected/settings",
     icon: Settings,
