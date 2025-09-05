@@ -28,10 +28,11 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
         onInit={(_, editor) => {
           editorRef.current = editor;
         }}
+        tinymceScriptSrc="/tinymce/tinymce.js"
+        licenseKey="gpl"
         value={value}
         onEditorChange={handleEditorChange}
         init={{
-          licenseKey: 'gpl',
           height: '100%',
           menubar: false,
           plugins: [

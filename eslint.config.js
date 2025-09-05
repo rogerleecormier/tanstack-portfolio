@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { globalIgnores } from 'eslint/config'
 
 export default tseslint.config([
-  globalIgnores(['dist', '.vite', 'node_modules', '*.config.js', '*.config.ts']),
+  globalIgnores(['dist', '.vite', 'node_modules', '*.config.js', '*.config.ts', 'public/tinymce/**']),
   {
     files: ['**/*.{ts,tsx}'],
     ignores: [
