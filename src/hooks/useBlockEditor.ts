@@ -105,7 +105,9 @@ export function useBlockEditor() {
         newBlockData
       );
 
-      onMarkdownChange(newMarkdown);
+      if (newMarkdown !== editorState.markdownContent) {
+        onMarkdownChange(newMarkdown);
+      }
       closeBlockEditor();
     },
     [

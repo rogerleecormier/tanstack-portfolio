@@ -8,10 +8,13 @@ vi.mock('@tinymce/tinymce-react', () => ({
   Editor: ({
     onInit,
     value,
+    ...rest
   }: {
     onInit?: (evt: unknown, editor: unknown) => void;
     value: string;
+    [key: string]: unknown;
   }) => {
+    (globalThis as Record<string, unknown>).__lastTinyProps = rest;
     // Simulate TinyMCE initialization
     React.useEffect(() => {
       if (onInit) {
@@ -25,6 +28,8 @@ vi.mock('@tinymce/tinymce-react', () => ({
               setStartAfter: vi.fn(),
               collapse: vi.fn(),
             }),
+            select: vi.fn(() => []),
+            setAttrib: vi.fn(),
           },
           on: vi.fn(),
         };
@@ -90,5 +95,62 @@ describe('Visual Editor Block Protection', () => {
     expect(editor.innerHTML).toContain('[CARD BLOCK]');
     expect(editor.innerHTML).toContain('[BARCHART BLOCK]');
     expect(editor.innerHTML).toContain('[ALERT BLOCK]');
+  });
+
+  it('should pass script src and license to TinyMCE React integration', () => {
+    render(<VisualEditor value="<p>x</p>" onChange={vi.fn()} />);
+
+    const props =
+      ((globalThis as Record<string, unknown>).__lastTinyProps as Record<
+        string,
+        unknown
+      >) || {};
+    expect(props.tinymceScriptSrc).toBe('/tinymce/tinymce.js');
+    expect(props.licenseKey).toBe('gpl');
+    expect(props.init).toBeDefined();
+    expect(Array.isArray((props.init as Record<string, unknown>).plugins)).toBe(
+      true
+    );
+    expect((props.init as Record<string, unknown>).plugins).toContain(
+      'noneditable'
+    );
+    expect((props.init as Record<string, unknown>).noneditable_class).toBe(
+      'shadcn-block-placeholder'
+    );
+  });
+
+  it('BeforeSetContent should force contenteditable="false" on placeholders', () => {
+    render(<VisualEditor value="<p>x</p>" onChange={vi.fn()} />);
+    const props = (globalThis as Record<string, unknown>)
+      .__lastTinyProps as Record<string, unknown>;
+    expect(props).toBeDefined();
+
+    const handlers: Record<string, (e: unknown) => void> = {};
+    const mockEditor: Record<string, unknown> = {
+      dom: {
+        setAttrib: vi.fn(),
+        select: vi.fn(() => []),
+        createRng: () => ({ setStartAfter: vi.fn(), collapse: vi.fn() }),
+      },
+      selection: {
+        getNode: () => document.createElement('div'),
+        setRng: vi.fn(),
+      },
+      on: (event: string, cb: (e: unknown) => void) => {
+        handlers[event] = cb;
+      },
+    };
+
+    // Call setup with our mock editor to register handlers
+    (
+      (props.init as Record<string, unknown>).setup as (editor: unknown) => void
+    )(mockEditor);
+
+    const evt = {
+      content:
+        '<div class="shadcn-block-placeholder" data-block-type="card">[CARD BLOCK]</div>',
+    };
+    handlers['BeforeSetContent']?.(evt);
+    expect(evt.content).toContain('contenteditable="false"');
   });
 });

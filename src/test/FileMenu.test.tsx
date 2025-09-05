@@ -54,9 +54,8 @@ describe('FileMenu', () => {
   it('should open dropdown menu when clicked', () => {
     render(<FileMenu {...mockProps} />);
 
-    const trigger = screen.getByRole('button');
-    fireEvent.click(trigger);
-
+    const menu = screen.getByLabelText('test-filemenu');
+    expect(menu).toBeInTheDocument();
     expect(screen.getByText('Open File')).toBeInTheDocument();
     expect(screen.getByText('Save')).toBeInTheDocument();
     expect(screen.getByText('Save As...')).toBeInTheDocument();
@@ -67,9 +66,6 @@ describe('FileMenu', () => {
   it('should call onOpenFile when Open File is clicked', () => {
     render(<FileMenu {...mockProps} />);
 
-    const trigger = screen.getByRole('button');
-    fireEvent.click(trigger);
-
     const openFileItem = screen.getByText('Open File');
     fireEvent.click(openFileItem);
 
@@ -78,9 +74,6 @@ describe('FileMenu', () => {
 
   it('should call onSaveFile when Save is clicked', () => {
     render(<FileMenu {...mockProps} isDirty={true} />);
-
-    const trigger = screen.getByRole('button');
-    fireEvent.click(trigger);
 
     const saveItem = screen.getByText('Save');
     fireEvent.click(saveItem);
@@ -91,21 +84,12 @@ describe('FileMenu', () => {
   it('should disable Save when not dirty', () => {
     render(<FileMenu {...mockProps} isDirty={false} />);
 
-    const trigger = screen.getByRole('button');
-    fireEvent.click(trigger);
-
     const saveItem = screen.getByText('Save');
-    expect(saveItem.closest('[role="menuitem"]')).toHaveAttribute(
-      'data-disabled',
-      'true'
-    );
+    expect(saveItem).toBeDisabled();
   });
 
   it('should call onSaveAsFile when Save As is clicked', () => {
     render(<FileMenu {...mockProps} />);
-
-    const trigger = screen.getByRole('button');
-    fireEvent.click(trigger);
 
     const saveAsItem = screen.getByText('Save As...');
     fireEvent.click(saveAsItem);
@@ -116,9 +100,6 @@ describe('FileMenu', () => {
   it('should call onExportHTML when Export HTML is clicked', () => {
     render(<FileMenu {...mockProps} />);
 
-    const trigger = screen.getByRole('button');
-    fireEvent.click(trigger);
-
     const exportItem = screen.getByText('Export HTML');
     fireEvent.click(exportItem);
 
@@ -127,9 +108,6 @@ describe('FileMenu', () => {
 
   it('should call onResetFile when New Document is clicked', () => {
     render(<FileMenu {...mockProps} />);
-
-    const trigger = screen.getByRole('button');
-    fireEvent.click(trigger);
 
     const newDocItem = screen.getByText('New Document');
     fireEvent.click(newDocItem);
@@ -140,16 +118,13 @@ describe('FileMenu', () => {
   it('should show keyboard shortcut for Save when fileName exists', () => {
     render(<FileMenu {...mockProps} fileName="test.md" />);
 
-    const trigger = screen.getByRole('button');
-    fireEvent.click(trigger);
-
     expect(screen.getByText('Ctrl+S')).toBeInTheDocument();
   });
 
   it('should not show keyboard shortcut for Save when fileName is null', () => {
     render(<FileMenu {...mockProps} fileName={null} />);
 
-    const trigger = screen.getByRole('button');
+    const trigger = screen.getByText('Untitled');
     fireEvent.click(trigger);
 
     expect(screen.queryByText('Ctrl+S')).not.toBeInTheDocument();

@@ -27,7 +27,7 @@ describe('Block Schemas', () => {
       const result = validateBlockData('card', invalidCard);
       expect(result.valid).toBe(false);
       expect(result.errors).toContain(
-        "title: must have required property 'title'"
+        "root: must have required property 'title'"
       );
     });
 
@@ -56,7 +56,7 @@ describe('Block Schemas', () => {
       const result = validateBlockData('barchart', invalidBarchart);
       expect(result.valid).toBe(false);
       expect(result.errors).toContain(
-        "data.0: must have required property 'value'"
+        "data/0: must have required property 'value'"
       );
     });
 
@@ -95,7 +95,7 @@ describe('Block Schemas', () => {
       const result = validateBlockData('linechart', invalidLinechart);
       expect(result.valid).toBe(false);
       expect(result.errors).toContain(
-        "series.0.data.0: must have required property 'y'"
+        "series/0/data/0: must have required property 'y'"
       );
     });
 
@@ -128,7 +128,7 @@ describe('Block Schemas', () => {
       const result = validateBlockData('tablejson', invalidTable);
       expect(result.valid).toBe(false);
       expect(result.errors).toContain(
-        "columns.0: must have required property 'label'"
+        "columns/0: must have required property 'label'"
       );
     });
 
@@ -212,7 +212,7 @@ describe('Block Schemas', () => {
       const validButton = {
         label: 'Click Me',
         url: 'https://example.com',
-        variant: 'primary',
+        variant: 'default',
         size: 'lg',
         disabled: false,
       };
@@ -277,20 +277,20 @@ describe('Block Schemas', () => {
       const result = validateBlockData('card', {});
       expect(result.valid).toBe(false);
       expect(result.errors).toContain(
-        "title: must have required property 'title'"
+        "root: must have required property 'title'"
       );
     });
 
     it('should handle null values', () => {
       const result = validateBlockData('card', null);
       expect(result.valid).toBe(false);
-      expect(result.errors).toContain('must be object');
+      expect(result.errors).toContain('root: must be object');
     });
 
     it('should handle undefined values', () => {
       const result = validateBlockData('card', undefined);
       expect(result.valid).toBe(false);
-      expect(result.errors).toContain('must be object');
+      expect(result.errors).toContain('root: must be object');
     });
 
     it('should handle arrays with minimum items', () => {

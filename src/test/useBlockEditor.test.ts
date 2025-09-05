@@ -151,7 +151,7 @@ More text.`;
       result.current.openBlockEditor(
         'card',
         { title: 'Test' },
-        0,
+        1, // invalid index (only one block exists at index 0)
         markdownContent
       );
     });
