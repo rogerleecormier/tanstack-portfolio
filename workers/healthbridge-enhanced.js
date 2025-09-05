@@ -219,6 +219,61 @@ async function createWeightMeasurement(request, env, corsHeaders) {
 }
 
 /**
+ * Map sourceBundleId to proper source names
+ * Handles real app bundle identifiers and custom identifiers
+ */
+function mapSourceBundleIdToSource(sourceBundleId) {
+  if (!sourceBundleId) return 'manual';
+  
+  // Direct mapping for known bundle IDs
+  const sourceMap = {
+    'healthbridge-enhanced': 'manual',
+    'healthbridge-legacy': 'legacy',
+    'manual-entry': 'manual',
+    'com.myfitnesspal': 'myfitnesspal',
+    'com.apple.Health': 'apple_health',
+    'com.google.android.apps.fitness': 'google_fit',
+    'com.fitbit.FitbitMobile': 'fitbit',
+    'com.samsung.shealth': 'samsung_health',
+    'com.withings.wiScale': 'scale',
+    'com.withings.wiBody': 'scale',
+    'com.tanita.health': 'scale',
+    'com.omron.health': 'scale'
+  };
+  
+  // Check for direct mapping first
+  if (sourceMap[sourceBundleId]) {
+    return sourceMap[sourceBundleId];
+  }
+  
+  // Parse bundle ID patterns
+  if (sourceBundleId.includes('myfitnesspal')) {
+    return 'myfitnesspal';
+  }
+  if (sourceBundleId.includes('apple') || sourceBundleId.includes('Health')) {
+    return 'apple_health';
+  }
+  if (sourceBundleId.includes('google') || sourceBundleId.includes('fitness')) {
+    return 'google_fit';
+  }
+  if (sourceBundleId.includes('fitbit')) {
+    return 'fitbit';
+  }
+  if (sourceBundleId.includes('samsung') || sourceBundleId.includes('shealth')) {
+    return 'samsung_health';
+  }
+  if (sourceBundleId.includes('scale') || sourceBundleId.includes('withings') || sourceBundleId.includes('tanita') || sourceBundleId.includes('omron')) {
+    return 'scale';
+  }
+  if (sourceBundleId.includes('manual') || sourceBundleId.includes('entry')) {
+    return 'manual';
+  }
+  
+  // Default fallback
+  return 'manual';
+}
+
+/**
  * Get weight measurements with enhanced filtering (pounds only)
  */
 async function getWeightMeasurements(request, env, corsHeaders) {
@@ -252,7 +307,7 @@ async function getWeightMeasurements(request, env, corsHeaders) {
     }
 
     let query = `
-      SELECT startDate, kg
+      SELECT startDate, kg, sourceBundleId
       FROM weight
     `;
     let params = [];
@@ -281,7 +336,7 @@ async function getWeightMeasurements(request, env, corsHeaders) {
       weight_lb: (row.kg * 2.20462).toFixed(1), // Formatted pounds with xx.x format
       weight_kg: row.kg.toFixed(1), // Weight in kg with xx.x format
       timestamp: new Date(row.startDate).toISOString(), // Ensure valid ISO timestamp
-      source: 'legacy'
+      source: mapSourceBundleIdToSource(row.sourceBundleId) // Map sourceBundleId to proper source
     }));
 
     return new Response(

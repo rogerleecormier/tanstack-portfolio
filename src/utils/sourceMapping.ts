@@ -14,6 +14,7 @@ export const getSourceDisplayName = (source: string): string => {
     'scale': 'Scale',
     'unknown': 'Unknown Source',
     'dummy': 'Demo Data', // Handle legacy dummy data
+    'legacy': 'Legacy Data', // Handle legacy database records
     'Manual Entry': 'Manual Entry', // Handle already formatted values
     'Scale': 'Scale' // Handle already formatted values
   };
@@ -35,6 +36,7 @@ export const getSourceIcon = (source: string): string => {
     'scale': '⚖️',
     'unknown': '❓',
     'dummy': '🎭',
+    'legacy': '📜',
     'Manual Entry': '✋',
     'Scale': '⚖️'
   };
