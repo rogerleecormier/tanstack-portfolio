@@ -269,7 +269,10 @@ export const blockSchemas: Record<string, BlockSchema> = {
 };
 
 // Compile schemas for validation
-export const compiledSchemas: Record<string, Ajv.ValidateFunction> = {};
+export const compiledSchemas: Record<
+  string,
+  ReturnType<typeof ajv.compile>
+> = {};
 
 Object.keys(blockSchemas).forEach((blockType) => {
   const schema = blockSchemas[blockType];
@@ -291,10 +294,12 @@ export function validateBlockData(
     return { valid: true };
   }
 
-  const errors = validator.errors?.map((error) => {
-    const path = error.instancePath ? error.instancePath.slice(1) : 'root';
-    return `${path}: ${error.message}`;
-  }) || ['Unknown validation error'];
+  const errors = validator.errors?.map(
+    (error: { instancePath?: string; message?: string }) => {
+      const path = error.instancePath ? error.instancePath.slice(1) : 'root';
+      return `${path}: ${error.message}`;
+    }
+  ) || ['Unknown validation error'];
 
   return { valid: false, errors };
 }

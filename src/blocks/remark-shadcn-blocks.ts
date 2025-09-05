@@ -65,8 +65,11 @@ export function remarkShadcnBlocks() {
       }
 
       // Attach metadata to the node
-      (node as Record<string, unknown>).data = {
-        ...((node as Record<string, unknown>).data as Record<string, unknown>),
+      (node as unknown as Record<string, unknown>).data = {
+        ...(((node as unknown as Record<string, unknown>).data as Record<
+          string,
+          unknown
+        >) || {}),
         blockType: node.lang,
         blockData: blockData,
         isShadcnBlock: true,

@@ -5,6 +5,8 @@ import MarkdownEditor from './MarkdownEditor';
 import VisualEditor from './VisualEditor';
 import PreviewPane from '../preview/PreviewPane';
 import BlockPlaceholderHandler from '../components/BlockPlaceholderHandler';
+import FileMenu from '../components/FileMenu';
+import { useFileIO } from '../hooks/useFileIO';
 import { mdToHtml } from '../compile/mdToHtml';
 import { htmlToMd } from '../compile/htmlToMd';
 
@@ -33,6 +35,9 @@ const DualModeEditor: React.FC<DualModeEditorProps> = ({
 
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastMarkdownRef = useRef(initialValue);
+
+  // File I/O functionality
+  const fileIO = useFileIO(markdownContent, setMarkdownContent);
 
   // Debounced compilation function
   const debouncedCompile = useCallback((content: string) => {
@@ -143,12 +148,57 @@ const DualModeEditor: React.FC<DualModeEditorProps> = ({
     };
   }, []);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey) {
+        switch (event.key) {
+          case 's':
+            event.preventDefault();
+            if (event.shiftKey) {
+              fileIO.saveAsFile();
+            } else {
+              fileIO.saveFile();
+            }
+            break;
+          case 'o':
+            event.preventDefault();
+            fileIO.openFile();
+            break;
+          case 'n':
+            event.preventDefault();
+            fileIO.resetFile();
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [fileIO]);
+
+  // Export HTML handler
+  const handleExportHTML = useCallback(() => {
+    fileIO.exportHTML(previewHtml);
+  }, [fileIO, previewHtml]);
+
   return (
     <div className={`dual-mode-editor h-full flex flex-col ${className}`}>
-      {/* Header with mode toggle */}
+      {/* Header with file menu and mode toggle */}
       <div className="flex items-center justify-between p-4 border-b bg-background">
-        <div className="flex items-center space-x-2">
-          <h2 className="text-lg font-semibold">Content Editor</h2>
+        <div className="flex items-center space-x-4">
+          <FileMenu
+            fileName={fileIO.fileName}
+            isDirty={fileIO.isDirty}
+            hasUnsavedChanges={fileIO.hasUnsavedChanges}
+            lastSaved={fileIO.lastSaved}
+            onOpenFile={fileIO.openFile}
+            onSaveFile={fileIO.saveFile}
+            onSaveAsFile={fileIO.saveAsFile}
+            onExportHTML={handleExportHTML}
+            onResetFile={fileIO.resetFile}
+          />
+
           {isConverting && (
             <div className="text-sm text-muted-foreground">Converting...</div>
           )}

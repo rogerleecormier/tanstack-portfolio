@@ -31,7 +31,7 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
         value={value}
         onEditorChange={handleEditorChange}
         init={{
-          licensekey: 'gpl',
+          licenseKey: 'gpl',
           height: '100%',
           menubar: false,
           plugins: [
@@ -88,15 +88,14 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
           noneditable_class: 'shadcn-block-placeholder',
           noneditable_regexp: /shadcn-block-placeholder/,
           setup: (editor) => {
-            // Prevent editing of shadcn block placeholders
+            // Ensure placeholders have proper contenteditable="false" attribute
             editor.on('BeforeSetContent', (e) => {
-              // Ensure placeholders remain non-editable
               if (e.content.includes('shadcn-block-placeholder')) {
                 e.content = e.content.replace(
-                  /<div[^>]*class="[^"]*shadcn-block-placeholder[^"]*"[^>]*>.*?<\/div>/g,
-                  (match) => {
+                  /<div([^>]*class="[^"]*shadcn-block-placeholder[^"]*"[^>]*)>/g,
+                  (match, attributes) => {
                     if (!match.includes('contenteditable="false"')) {
-                      return match.replace('>', ' contenteditable="false">');
+                      return `<div${attributes} contenteditable="false">`;
                     }
                     return match;
                   }
@@ -104,15 +103,15 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
               }
             });
 
-            // Prevent deletion of block placeholders
+            // Additional protection: prevent deletion of block placeholders
             editor.on('KeyDown', (e) => {
               const selection = editor.selection.getNode();
-              const isInPlaceholder = selection.closest(
+              const placeholder = editor.dom.getParent(
+                selection,
                 '.shadcn-block-placeholder'
               );
 
-              if (isInPlaceholder) {
-                // Prevent backspace, delete, and other destructive keys
+              if (placeholder) {
                 if ([8, 46, 127].includes(e.keyCode)) {
                   // Backspace, Delete, Forward Delete
                   e.preventDefault();
@@ -122,35 +121,31 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
               }
             });
 
-            // Prevent selection within placeholders
+            // Move cursor out of placeholders when clicked
             editor.on('SelectionChange', () => {
               const selection = editor.selection.getNode();
-              const isInPlaceholder = selection.closest(
+              const placeholder = editor.dom.getParent(
+                selection,
                 '.shadcn-block-placeholder'
               );
 
-              if (isInPlaceholder) {
-                // Move cursor outside the placeholder
-                const placeholder = selection.closest(
-                  '.shadcn-block-placeholder'
-                );
-                if (placeholder) {
-                  const range = editor.dom.createRng();
-                  range.setStartAfter(placeholder);
-                  range.collapse(true);
-                  editor.selection.setRng(range);
-                }
+              if (placeholder) {
+                const range = editor.dom.createRng();
+                range.setStartAfter(placeholder);
+                range.collapse(true);
+                editor.selection.setRng(range);
               }
             });
 
-            // Prevent paste operations that might break placeholders
+            // Prevent paste operations inside placeholders
             editor.on('BeforePaste', (e) => {
               const selection = editor.selection.getNode();
-              const isInPlaceholder = selection.closest(
+              const placeholder = editor.dom.getParent(
+                selection,
                 '.shadcn-block-placeholder'
               );
 
-              if (isInPlaceholder) {
+              if (placeholder) {
                 e.preventDefault();
                 return false;
               }
