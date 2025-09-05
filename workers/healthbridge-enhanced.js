@@ -230,19 +230,19 @@ async function getWeightMeasurements(request, env, corsHeaders) {
     const endDate = url.searchParams.get('end_date');
     const userId = url.searchParams.get('userId');
 
-    // Return dummy weight data for development users
+    // Return dummy weight data for development users with variety of sources
     if (userId === 'dev-user-123' || userId === 'dev@rcormier.dev') {
       const dummyWeights = [
-        { id: 1, weight: 192.2, weight_lb: "192.2", weight_kg: "87.2", timestamp: "2024-01-01T08:00:00.000Z", source: "dummy" },
-        { id: 2, weight: 190.8, weight_lb: "190.8", weight_kg: "86.5", timestamp: "2024-01-08T08:00:00.000Z", source: "dummy" },
-        { id: 3, weight: 189.4, weight_lb: "189.4", weight_kg: "85.9", timestamp: "2024-01-15T08:00:00.000Z", source: "dummy" },
-        { id: 4, weight: 187.9, weight_lb: "187.9", weight_kg: "85.2", timestamp: "2024-01-22T08:00:00.000Z", source: "dummy" },
-        { id: 5, weight: 186.3, weight_lb: "186.3", weight_kg: "84.5", timestamp: "2024-01-29T08:00:00.000Z", source: "dummy" },
-        { id: 6, weight: 184.7, weight_lb: "184.7", weight_kg: "83.8", timestamp: "2024-02-05T08:00:00.000Z", source: "dummy" },
-        { id: 7, weight: 183.1, weight_lb: "183.1", weight_kg: "83.0", timestamp: "2024-02-12T08:00:00.000Z", source: "dummy" },
-        { id: 8, weight: 181.4, weight_lb: "181.4", weight_kg: "82.3", timestamp: "2024-02-19T08:00:00.000Z", source: "dummy" },
-        { id: 9, weight: 179.7, weight_lb: "179.7", weight_kg: "81.5", timestamp: "2024-02-26T08:00:00.000Z", source: "dummy" },
-        { id: 10, weight: 178.5, weight_lb: "178.5", weight_kg: "81.0", timestamp: "2024-03-05T08:00:00.000Z", source: "dummy" }
+        { id: 1, weight: 192.2, weight_lb: "192.2", weight_kg: "87.2", timestamp: "2024-01-01T08:00:00.000Z", source: "apple_health" },
+        { id: 2, weight: 190.8, weight_lb: "190.8", weight_kg: "86.5", timestamp: "2024-01-08T08:00:00.000Z", source: "manual" },
+        { id: 3, weight: 189.4, weight_lb: "189.4", weight_kg: "85.9", timestamp: "2024-01-15T08:00:00.000Z", source: "myfitnesspal" },
+        { id: 4, weight: 187.9, weight_lb: "187.9", weight_kg: "85.2", timestamp: "2024-01-22T08:00:00.000Z", source: "scale" },
+        { id: 5, weight: 186.3, weight_lb: "186.3", weight_kg: "84.5", timestamp: "2024-01-29T08:00:00.000Z", source: "google_fit" },
+        { id: 6, weight: 184.7, weight_lb: "184.7", weight_kg: "83.8", timestamp: "2024-02-05T08:00:00.000Z", source: "fitbit" },
+        { id: 7, weight: 183.1, weight_lb: "183.1", weight_kg: "83.0", timestamp: "2024-02-12T08:00:00.000Z", source: "manual" },
+        { id: 8, weight: 181.4, weight_lb: "181.4", weight_kg: "82.3", timestamp: "2024-02-19T08:00:00.000Z", source: "samsung_health" },
+        { id: 9, weight: 179.7, weight_lb: "179.7", weight_kg: "81.5", timestamp: "2024-02-26T08:00:00.000Z", source: "apple_health" },
+        { id: 10, weight: 178.5, weight_lb: "178.5", weight_kg: "81.0", timestamp: "2024-03-05T08:00:00.000Z", source: "manual" }
       ];
       
       return new Response(

@@ -52,6 +52,9 @@ import HealthBridgeEnhancedAPI, {
 } from "../api/healthBridgeEnhanced";
 import { UserProfilesAPI } from "../api/userProfiles";
 
+// Utility imports
+import { getSourceDisplayName } from "../utils/sourceMapping";
+
 // shadcn/ui components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -206,7 +209,7 @@ function EnhancedWeightEntry() {
       weight: val,
       unit,
       timestamp: date.toISOString(),
-      source: "Manual Entry"
+      source: "manual"
     };
 
     mutation.mutate(data);
@@ -2540,7 +2543,7 @@ function WeightDataTable() {
                     </TableCell>
                     <TableCell>{measurement.weight_lb}</TableCell>
                     <TableCell>{measurement.weight_kg}</TableCell>
-                    <TableCell className="capitalize">{measurement.source}</TableCell>
+                    <TableCell>{getSourceDisplayName(measurement.source)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
