@@ -4,3 +4,4 @@ dist
 *.config.js
 *.config.ts
 workers/**/*.js
+public/tinymce/**

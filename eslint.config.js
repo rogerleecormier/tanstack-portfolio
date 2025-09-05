@@ -15,7 +15,8 @@ export default tseslint.config([
       'node_modules/**',
       '*.config.js',
       '*.config.ts',
-      'workers/**/*.js'
+      'workers/**/*.js',
+      'public/tinymce/**'
     ],
     extends: [
       js.configs.recommended,
