@@ -2,7 +2,6 @@
 // We keep the converter here so both editors can share it.
 // Types are provided via local ambient declarations in src/types.
 import TurndownService from 'turndown'
-// @ts-ignore: local ambient types for plugin
 import { gfm } from 'turndown-plugin-gfm'
 
 let td: TurndownService | null = null
@@ -17,7 +16,6 @@ export function htmlToMarkdown(html: string): string {
       strongDelimiter: '**',
     })
     // Enable GFM features like tables/strikethrough/task lists
-    // @ts-ignore
     td.use(gfm)
     // Preserve line breaks inside paragraphs similar to GitHub
     td.addRule('breaks', {

@@ -86,6 +86,13 @@ export function MarkdownEditor({ initialMarkdown = '', onChange, onTypingStateCh
 
     return () => {
       view.destroy();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Separate effect for cleanup to avoid dependency issues
+  useEffect(() => {
+    return () => {
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
       }
