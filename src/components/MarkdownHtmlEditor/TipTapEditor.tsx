@@ -59,6 +59,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
       },
     },
     onUpdate: ({ editor }) => {
+      if (!editor) return;
       const html = editor.getHTML();
       if (lastHtmlRef.current === html) return;
       lastHtmlRef.current = html;
@@ -113,7 +114,9 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
   }, []);
 
   const addLink = useCallback(() => {
-    const previousUrl = editor?.getAttributes('link').href;
+    if (!editor) return;
+
+    const previousUrl = editor.getAttributes('link').href;
     const url = window.prompt('URL', previousUrl);
 
     if (url === null) {
@@ -121,18 +124,20 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
     }
 
     if (url === '') {
-      editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
 
-    editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }, [editor]);
 
   const addImage = useCallback(() => {
+    if (!editor) return;
+
     const url = window.prompt('Image URL');
 
     if (url) {
-      editor?.chain().focus().setImage({ src: url }).run();
+      editor.chain().focus().setImage({ src: url }).run();
     }
   }, [editor]);
 
@@ -146,7 +151,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
           className={`hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-800/50 dark:hover:text-teal-300 transition-all duration-200 ${editor.isActive('heading', { level: 1 }) ? 'bg-teal-100 text-teal-800 dark:bg-teal-800/50 dark:text-teal-200' : ''}`}
         >
           <Heading1 className="h-4 w-4" />
@@ -154,7 +159,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
           className={`hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-800/50 dark:hover:text-teal-300 transition-all duration-200 ${editor.isActive('heading', { level: 2 }) ? 'bg-teal-100 text-teal-800 dark:bg-teal-800/50 dark:text-teal-200' : ''}`}
         >
           <Heading2 className="h-4 w-4" />
@@ -162,7 +167,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
           className={`hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-800/50 dark:hover:text-teal-300 transition-all duration-200 ${editor.isActive('heading', { level: 3 }) ? 'bg-teal-100 text-teal-800 dark:bg-teal-800/50 dark:text-teal-200' : ''}`}
         >
           <Heading3 className="h-4 w-4" />
@@ -170,7 +175,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().toggleBold().run()}
+          onClick={() => editor?.chain().focus().toggleBold().run()}
           className={`hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300 transition-all duration-200 ${editor.isActive('bold') ? 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-200' : ''}`}
         >
           <Bold className="h-4 w-4" />
@@ -178,7 +183,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
+          onClick={() => editor?.chain().focus().toggleItalic().run()}
           className={`hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300 transition-all duration-200 ${editor.isActive('italic') ? 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-200' : ''}`}
         >
           <Italic className="h-4 w-4" />
@@ -194,7 +199,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          onClick={() => editor?.chain().focus().toggleBulletList().run()}
           className={editor.isActive('bulletList') ? 'bg-accent' : ''}
         >
           <List className="h-4 w-4" />
@@ -202,7 +207,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          onClick={() => editor?.chain().focus().toggleOrderedList().run()}
           className={editor.isActive('orderedList') ? 'bg-accent' : ''}
         >
           <ListOrdered className="h-4 w-4" />
@@ -248,17 +253,18 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+          onClick={() => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
         >
           <TableIcon className="h-4 w-4" />
         </Button>
       </div>
       <div className="flex-1 overflow-auto bg-white/50 dark:bg-gray-900/50">
-        <EditorContent
-          editor={editor}
-          className="h-full p-6 max-w-none focus-within:outline-none cursor-text overflow-auto focus-within:ring-2 focus-within:ring-teal-500/20 rounded-b-xl"
-
-        />
+        {editor && (
+          <EditorContent
+            editor={editor}
+            className="h-full p-6 max-w-none focus-within:outline-none cursor-text overflow-auto focus-within:ring-2 focus-within:ring-teal-500/20 rounded-b-xl"
+          />
+        )}
       </div>
     </div>
   );
