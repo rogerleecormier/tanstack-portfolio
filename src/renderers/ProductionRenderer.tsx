@@ -73,17 +73,17 @@ const BlockComponentMap: Record<
 > = {
   card: ({ data }) => (
     <Card className="my-6">
-      {data.title && (
+      {data.title ? (
         <CardHeader>
           <CardTitle>{String(data.title)}</CardTitle>
         </CardHeader>
-      )}
-      {data.description && (
+      ) : null}
+      {data.description ? (
         <CardHeader>
           <CardDescription>{String(data.description)}</CardDescription>
         </CardHeader>
-      )}
-      {data.content && <CardContent>{String(data.content)}</CardContent>}
+      ) : null}
+      {data.content ? <CardContent>{String(data.content)}</CardContent> : null}
     </Card>
   ),
 
@@ -92,10 +92,10 @@ const BlockComponentMap: Record<
       className="my-6"
       variant={(data.variant as 'default' | 'destructive') || 'default'}
     >
-      {data.title && <AlertTitle>{String(data.title)}</AlertTitle>}
-      {data.description && (
+      {data.title ? <AlertTitle>{String(data.title)}</AlertTitle> : null}
+      {data.description ? (
         <AlertDescription>{String(data.description)}</AlertDescription>
-      )}
+      ) : null}
     </Alert>
   ),
 
@@ -131,11 +131,11 @@ const BlockComponentMap: Record<
 
   progress: ({ data }) => (
     <div className="my-4">
-      {data.label && (
+      {data.label ? (
         <p className="text-sm text-muted-foreground mb-2">
           {String(data.label)}
         </p>
-      )}
+      ) : null}
       <Progress value={Number(data.value) || 0} className="w-full" />
     </div>
   ),
@@ -148,9 +148,9 @@ const BlockComponentMap: Record<
 
   avatar: ({ data }) => (
     <Avatar className="my-2">
-      {data.src && (
+      {data.src ? (
         <AvatarImage src={String(data.src)} alt={String(data.alt || '')} />
-      )}
+      ) : null}
       <AvatarFallback>{String(data.fallback || 'U')}</AvatarFallback>
     </Avatar>
   ),
@@ -167,9 +167,9 @@ const BlockComponentMap: Record<
 
     return (
       <div className="my-6">
-        {data.title && (
+        {data.title ? (
           <h4 className="text-lg font-semibold mb-4">{String(data.title)}</h4>
-        )}
+        ) : null}
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -199,9 +199,9 @@ const BlockComponentMap: Record<
 
     return (
       <div className="my-6">
-        {data.title && (
+        {data.title ? (
           <h4 className="text-lg font-semibold mb-4">{String(data.title)}</h4>
-        )}
+        ) : null}
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -229,9 +229,9 @@ const BlockComponentMap: Record<
 
     return (
       <div className="my-6">
-        {data.title && (
+        {data.title ? (
           <h4 className="text-lg font-semibold mb-4">{String(data.title)}</h4>
-        )}
+        ) : null}
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -269,9 +269,9 @@ const BlockComponentMap: Record<
 
     return (
       <div className="my-6">
-        {data.title && (
+        {data.title ? (
           <h4 className="text-lg font-semibold mb-4">{String(data.title)}</h4>
-        )}
+        ) : null}
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -304,9 +304,9 @@ const BlockComponentMap: Record<
 
     return (
       <div className="my-6">
-        {data.title && (
+        {data.title ? (
           <h4 className="text-lg font-semibold mb-4">{String(data.title)}</h4>
-        )}
+        ) : null}
         <ResponsiveContainer width="100%" height={300}>
           <RadarChart data={chartData}>
             <PolarGrid />
@@ -335,9 +335,9 @@ const BlockComponentMap: Record<
 
     return (
       <div className="my-6">
-        {data.title && (
+        {data.title ? (
           <h4 className="text-lg font-semibold mb-4">{String(data.title)}</h4>
-        )}
+        ) : null}
         <ResponsiveContainer width="100%" height={300}>
           <ScatterChart data={chartData}>
             <CartesianGrid />
@@ -358,9 +358,9 @@ const BlockComponentMap: Record<
 
     return (
       <div className="my-6">
-        {data.title && (
+        {data.title ? (
           <h4 className="text-lg font-semibold mb-4">{String(data.title)}</h4>
-        )}
+        ) : null}
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse border border-gray-300">
             <thead>
