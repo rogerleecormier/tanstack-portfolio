@@ -21,6 +21,13 @@ type RequestContext = { request: Request; env: Env; data?: { user?: User }; next
 export async function onRequest(context: RequestContext) {
   const { request, env } = context;
 
+  // Run auth only for full HTML document requests; let assets/api pass
+  const accept = request.headers.get('Accept') || '*/*';
+  const wantsHTML = accept.includes('text/html');
+  if (!wantsHTML || request.method === 'OPTIONS' || request.method === 'HEAD') {
+    return context.next();
+  }
+
   // CF Access adds this header when the app is protected by Access
   const jwt = request.headers.get('CF-Access-Jwt-Assertion');
 
@@ -58,3 +65,5 @@ export async function onRequest(context: RequestContext) {
     return new Response('Unauthorized', { status: 401 });
   }
 }
+
+
