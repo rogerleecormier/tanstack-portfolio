@@ -142,12 +142,12 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
 
   return (
     <div className="h-full flex flex-col">
-      <div className="border-b border-border/50 p-2 flex flex-wrap gap-1 flex-shrink-0">
+      <div className="border-b border-teal-200/30 dark:border-teal-700/30 p-3 flex flex-wrap gap-1.5 flex-shrink-0 bg-gradient-to-r from-teal-50/30 to-blue-50/30 dark:from-teal-900/20 dark:to-blue-900/20">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={editor.isActive('heading', { level: 1 }) ? 'bg-accent' : ''}
+          className={`hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-800/50 dark:hover:text-teal-300 transition-all duration-200 ${editor.isActive('heading', { level: 1 }) ? 'bg-teal-100 text-teal-800 dark:bg-teal-800/50 dark:text-teal-200' : ''}`}
         >
           <Heading1 className="h-4 w-4" />
         </Button>
@@ -155,7 +155,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={editor.isActive('heading', { level: 2 }) ? 'bg-accent' : ''}
+          className={`hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-800/50 dark:hover:text-teal-300 transition-all duration-200 ${editor.isActive('heading', { level: 2 }) ? 'bg-teal-100 text-teal-800 dark:bg-teal-800/50 dark:text-teal-200' : ''}`}
         >
           <Heading2 className="h-4 w-4" />
         </Button>
@@ -163,7 +163,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={editor.isActive('heading', { level: 3 }) ? 'bg-accent' : ''}
+          className={`hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-800/50 dark:hover:text-teal-300 transition-all duration-200 ${editor.isActive('heading', { level: 3 }) ? 'bg-teal-100 text-teal-800 dark:bg-teal-800/50 dark:text-teal-200' : ''}`}
         >
           <Heading3 className="h-4 w-4" />
         </Button>
@@ -171,7 +171,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={editor.isActive('bold') ? 'bg-accent' : ''}
+          className={`hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300 transition-all duration-200 ${editor.isActive('bold') ? 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-200' : ''}`}
         >
           <Bold className="h-4 w-4" />
         </Button>
@@ -179,7 +179,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={editor.isActive('italic') ? 'bg-accent' : ''}
+          className={`hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300 transition-all duration-200 ${editor.isActive('italic') ? 'bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-200' : ''}`}
         >
           <Italic className="h-4 w-4" />
         </Button>
@@ -253,11 +253,11 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
           <TableIcon className="h-4 w-4" />
         </Button>
       </div>
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto bg-white/50 dark:bg-gray-900/50">
         <EditorContent
           editor={editor}
-          className="h-full p-4 max-w-none focus-within:outline-none cursor-text overflow-auto"
-          
+          className="h-full p-6 max-w-none focus-within:outline-none cursor-text overflow-auto focus-within:ring-2 focus-within:ring-teal-500/20 rounded-b-xl"
+
         />
       </div>
     </div>

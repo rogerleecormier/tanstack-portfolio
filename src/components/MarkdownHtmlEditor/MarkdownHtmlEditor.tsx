@@ -60,29 +60,49 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
             <TabsTrigger value="markdown">Markdown</TabsTrigger>
           </TabsList>
         </Tabs>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={handleLoadExample}>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLoadExample}
+            className="hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-teal-900/30 dark:hover:text-teal-300 transition-all duration-200"
+          >
             <FileText className="h-4 w-4 mr-2" />
             Load Example
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleClear}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/30 dark:hover:text-red-300 transition-all duration-200"
+          >
             <Trash2 className="h-4 w-4 mr-2" />
             Clear
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleScrollToTop}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleScrollToTop}
+            className="hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300 transition-all duration-200"
+          >
             <ArrowUp className="h-4 w-4 mr-2" />
             Scroll to Top
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => setShowPreview((v) => !v)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowPreview((v) => !v)}
+            className="hover:bg-purple-50 hover:text-purple-700 dark:hover:bg-purple-900/30 dark:hover:text-purple-300 transition-all duration-200"
+          >
             {showPreview ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
             {showPreview ? 'Hide Preview' : 'Show Preview'}
           </Button>
         </div>
       </div>
 
-      <div className={`grid gap-4 h-full ${showPreview ? 'md:grid-cols-2 grid-cols-1' : 'grid-cols-1'}`}>
+      <div className={`grid gap-6 h-full ${showPreview ? 'md:grid-cols-2 grid-cols-1' : 'grid-cols-1'}`}>
         <div className="flex flex-col">
-          <div className="h-[70vh] min-h-[300px] border border-border/50 rounded-lg bg-background overflow-auto">
+          <div className="h-[70vh] min-h-[300px] border border-teal-200/50 dark:border-teal-700/50 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-auto">
             {activeTab === 'wysiwyg' ? (
               <TipTapEditor initialMarkdown={markdown} onDocChange={handleMarkdownChange} />
             ) : (
@@ -92,11 +112,11 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
         </div>
         {showPreview && (
           <div className="flex flex-col">
-            <div className="h-[70vh] min-h-[300px] border border-border/50 rounded-lg bg-background overflow-auto relative">
+            <div className="h-[70vh] min-h-[300px] border border-blue-200/50 dark:border-blue-700/50 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-auto relative">
               {isPending && (
-                <div className="pointer-events-none absolute top-2 right-3 text-xs text-muted-foreground z-10">Updating�</div>
+                <div className="pointer-events-none absolute top-3 right-3 text-xs text-teal-600 dark:text-teal-400 bg-white/90 dark:bg-gray-800/90 px-2 py-1 rounded-md backdrop-blur-sm z-10 border border-teal-200/30 dark:border-teal-700/30">Updating...</div>
               )}
-              <div className="p-4 prose max-w-none overflow-auto h-full">
+              <div className="p-6 prose prose-slate dark:prose-invert max-w-none overflow-auto h-full prose-headings:text-teal-700 dark:prose-headings:text-teal-300 prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-strong:text-slate-900 dark:prose-strong:text-slate-100">
                 {previewContent}
               </div>
             </div>
