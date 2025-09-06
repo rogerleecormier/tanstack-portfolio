@@ -568,15 +568,10 @@
     @apply mt-2.5;
   }
 
-  /* Control pre tag spacing in hero-profile cards */
+  /* Control pre tag styling in hero-profile cards */
   .hero-profile-card pre {
     @apply mt-0 mb-0 p-0 bg-transparent border-none rounded-none shadow-none m-0;
     background-image: none !important;
-  }
-
-  /* Remove background and padding from pre tags with specific classes in hero-profile cards */
-  .hero-profile-card pre.overflow-x-auto.rounded-lg.border.bg-muted.p-4.w-full {
-    @apply bg-transparent p-0 border-none rounded-none;
   }
 
   /* Ensure tagline in hero profile card wraps properly */

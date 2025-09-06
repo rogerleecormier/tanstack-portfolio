@@ -12,26 +12,28 @@ import {
 } from "@tanstack/react-router";
 import { createBrowserHistory } from "@tanstack/history";
 import AppLayout from "./layout/AppLayout";
+
+// Core pages - loaded immediately
+import { lazy } from 'react';
+import IndexPage from "./pages/IndexPage";
+import AboutPage from "./pages/AboutPage";
+import PortfolioListPage from "./pages/PortfolioListPage";
 import ProjectsListPage from "./pages/ProjectsListPage";
+import BlogListPage from "./pages/BlogListPage";
 import NotFound from "./pages/NotFound";
 
-import HealthBridgeEnhanced from "./pages/HealthBridgeEnhanced";
-import Settings from "./pages/Settings";
-import ContactPage from "./pages/ContactPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import BlogListPage from "./pages/BlogListPage";
-import BlogPostWrapper from "./components/BlogPostWrapper";
-import PortfolioListPage from "./pages/PortfolioListPage";
-import AboutPage from "./pages/AboutPage";
-import IndexPage from "./pages/IndexPage";
-import NewsletterPreferencesPage from "./pages/NewsletterPreferencesPage";
-
-import ToolsListPage from "./pages/ToolsListPage";
-import MarkdownEditorPage from "./pages/MarkdownEditorPage";
-import ContentCreationPage from "./pages/ContentCreationPage";
-
-import { SiteAdminPage } from "./pages/SiteAdminPage";
-import { CloudflareStatusChecker } from "./components/CloudflareStatusChecker";
+// Dynamic imports for heavier components - loaded on demand
+const HealthBridgeEnhanced = lazy(() => import("./pages/HealthBridgeEnhanced"));
+const Settings = lazy(() => import("./pages/Settings"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
+const BlogPostWrapper = lazy(() => import("./components/BlogPostWrapper"));
+const NewsletterPreferencesPage = lazy(() => import("./pages/NewsletterPreferencesPage"));
+const ToolsListPage = lazy(() => import("./pages/ToolsListPage"));
+const MarkdownEditorPage = lazy(() => import("./pages/MarkdownEditorPage"));
+const ContentCreationPage = lazy(() => import("./pages/ContentCreationPage"));
+const SiteAdminPage = lazy(() => import("./pages/SiteAdminPage").then(m => ({ default: m.SiteAdminPage })));
+const CloudflareStatusChecker = lazy(() => import("./components/CloudflareStatusChecker").then(m => ({ default: m.CloudflareStatusChecker })));
 
 import {
   PortfolioPageWrapper,

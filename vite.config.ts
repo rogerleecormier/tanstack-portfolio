@@ -23,12 +23,42 @@ export default defineConfig({
         entryFileNames: 'assets/[name]-[hash].js',
         // Force relative paths for all chunks
         format: 'es',
-        // Ensure dynamic imports use relative paths
-        manualChunks: undefined,
+        // Manual chunking for better performance and smaller initial bundle
+        manualChunks: (id) => {
+          // Vendor chunks for large libraries
+          if (id.includes('node_modules')) {
+            // React and core libraries
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            // TanStack libraries
+            if (id.includes('@tanstack')) {
+              return 'tanstack-vendor';
+            }
+            // Radix UI components (large bundle)
+            if (id.includes('@radix-ui')) {
+              return 'radix-vendor';
+            }
+            // Charts and visualization libraries
+            if (id.includes('recharts') || id.includes('mermaid')) {
+              return 'charts-vendor';
+            }
+            // Markdown processing
+            if (id.includes('react-markdown') || id.includes('remark') || id.includes('rehype') || id.includes('highlight.js')) {
+              return 'markdown-vendor';
+            }
+            // Other UI libraries
+            if (id.includes('lucide-react') || id.includes('cmdk') || id.includes('fuse.js')) {
+              return 'ui-vendor';
+            }
+            // Everything else goes to vendor
+            return 'vendor';
+          }
+        },
       },
     },
-    // Ensure chunks use relative paths
-    chunkSizeWarningLimit: 1000,
+    // Increase chunk size warning limit since we have effective code splitting
+    chunkSizeWarningLimit: 900,
   },
   // Ensure all imports use relative paths
   optimizeDeps: {
