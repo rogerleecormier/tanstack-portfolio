@@ -236,7 +236,7 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
               let content = e.content;
 
               // Remove Google Docs specific classes and inline styles
-              content = content.replace(/class="[^"]*"/g, (match) => {
+              content = content.replace(/class="[^"]*"/g, (match: string) => {
                 // Only keep specific classes that are safe
                 const safeClasses = ['shadcn-block-placeholder'];
                 const classes = match.match(/class="([^"]*)"/);
@@ -244,7 +244,7 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
                   const classList = classes[1]
                     .split(' ')
                     .filter(
-                      (cls) =>
+                      (cls: string) =>
                         safeClasses.includes(cls) || cls.startsWith('mce-')
                     );
                   return classList.length > 0
@@ -255,7 +255,7 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
               });
 
               // Remove inline styles except for specific allow-listed properties
-              content = content.replace(/style="[^"]*"/g, (match) => {
+              content = content.replace(/style="[^"]*"/g, (match: string) => {
                 const styleMatch = match.match(/style="([^"]*)"/);
                 if (styleMatch) {
                   const styles = styleMatch[1];
@@ -277,7 +277,7 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
 
                   const filteredStyles = styles
                     .split(';')
-                    .filter((style) => {
+                    .filter((style: string) => {
                       const [property] = style.split(':');
                       return allowedProperties.includes(property.trim());
                     })

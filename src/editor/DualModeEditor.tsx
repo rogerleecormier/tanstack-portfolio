@@ -6,9 +6,9 @@ import VisualEditor from './VisualEditor';
 import PreviewPane from '../preview/PreviewPane';
 import BlockPlaceholderHandler from '../components/BlockPlaceholderHandler';
 import FileMenu from '../components/FileMenu';
+import PerformanceMetrics from '../components/PerformanceMetrics';
 import { useFileIO } from '../hooks/useFileIO';
-import { mdToHtml } from '../compile/mdToHtml';
-import { htmlToMd } from '../compile/htmlToMd';
+import { getCompilerWorkerManager } from '../workers/compiler-worker-manager';
 
 interface DualModeEditorProps {
   initialValue?: string;
@@ -33,28 +33,36 @@ const DualModeEditor: React.FC<DualModeEditorProps> = ({
   const [activeMode, setActiveMode] = useState<EditorMode>('markdown');
   const [isConverting, setIsConverting] = useState(false);
 
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastMarkdownRef = useRef(initialValue);
+  const workerManagerRef = useRef(getCompilerWorkerManager());
 
   // File I/O functionality
   const fileIO = useFileIO(markdownContent, setMarkdownContent);
 
-  // Debounced compilation function
-  const debouncedCompile = useCallback((content: string) => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
+  // Debounced compilation function using web worker
+  const debouncedCompile = useCallback(async (content: string) => {
+    try {
+      const html = await workerManagerRef.current.mdToHtml(content, 200);
+      setPreviewHtml(html);
+      lastMarkdownRef.current = content;
 
-    debounceTimeoutRef.current = setTimeout(() => {
-      try {
-        const html = mdToHtml(content);
-        setPreviewHtml(html);
-        lastMarkdownRef.current = content;
-      } catch (error) {
-        console.error('Error compiling markdown:', error);
-        setPreviewHtml('<p>Error compiling markdown</p>');
+      // Log performance metrics periodically
+      const metrics = workerManagerRef.current.getMetrics();
+      if (metrics.count > 0 && metrics.count % 10 === 0) {
+        const targets = workerManagerRef.current.checkPerformanceTargets();
+        console.log('Compilation Performance:', {
+          p50: `${metrics.p50.toFixed(2)}ms`,
+          p95: `${metrics.p95.toFixed(2)}ms`,
+          average: `${metrics.average.toFixed(2)}ms`,
+          count: metrics.count,
+          p50Target: targets.p50Target ? '✅' : '❌',
+          p95Target: targets.p95Target ? '✅' : '❌',
+        });
       }
-    }, 200); // 200ms debounce
+    } catch (error) {
+      console.error('Error compiling markdown:', error);
+      setPreviewHtml('<p>Error compiling markdown</p>');
+    }
   }, []);
 
   // Handle markdown changes
@@ -69,11 +77,11 @@ const DualModeEditor: React.FC<DualModeEditorProps> = ({
 
   // Handle visual editor changes
   const handleVisualChange = useCallback(
-    (content: string) => {
+    async (content: string) => {
       setVisualContent(content);
       // Convert visual HTML back to markdown for preview
       try {
-        const markdown = htmlToMd(content);
+        const markdown = await workerManagerRef.current.htmlToMd(content, 0);
         setMarkdownContent(markdown);
         debouncedCompile(markdown);
         onChange?.(markdown);
@@ -91,7 +99,7 @@ const DualModeEditor: React.FC<DualModeEditorProps> = ({
     setIsConverting(true);
     try {
       // Convert current markdown to HTML for visual editor
-      const html = mdToHtml(markdownContent);
+      const html = await workerManagerRef.current.mdToHtml(markdownContent, 0); // No debounce for mode switching
       setVisualContent(html);
       setActiveMode('visual');
     } catch (error) {
@@ -108,7 +116,10 @@ const DualModeEditor: React.FC<DualModeEditorProps> = ({
     setIsConverting(true);
     try {
       // Convert visual HTML back to markdown
-      const markdown = htmlToMd(visualContent);
+      const markdown = await workerManagerRef.current.htmlToMd(
+        visualContent,
+        0
+      ); // No debounce for mode switching
       setMarkdownContent(markdown);
       setActiveMode('markdown');
     } catch (error) {
@@ -139,12 +150,11 @@ const DualModeEditor: React.FC<DualModeEditorProps> = ({
     debouncedCompile(markdownContent);
   }, [debouncedCompile, markdownContent]);
 
-  // Cleanup timeout on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
+      // Worker manager cleanup is handled by the singleton
+      // No need to clean up individual timeouts as they're managed by the worker manager
     };
   }, []);
 
@@ -205,6 +215,8 @@ const DualModeEditor: React.FC<DualModeEditorProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
+          <PerformanceMetrics className="mr-4" />
+
           <Button
             variant={activeMode === 'markdown' ? 'default' : 'outline'}
             size="sm"
