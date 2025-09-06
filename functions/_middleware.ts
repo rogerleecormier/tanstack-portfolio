@@ -13,6 +13,17 @@ interface User {
   role?: string;
 }
 
+interface ContextData {
+  user: User;
+}
+
+interface CloudflareContext {
+  request: Request;
+  env: Env;
+  data?: ContextData;
+  next: () => Promise<Response>;
+}
+
 function decodeJwtPayload<T = Record<string, unknown>>(token: string): T {
   const parts = token.split('.')
   if (parts.length < 2) throw new Error('Invalid JWT')
@@ -23,7 +34,7 @@ function decodeJwtPayload<T = Record<string, unknown>>(token: string): T {
   return JSON.parse(json) as T
 }
 
-export async function onRequest(context: { request: Request; env: Env; data?: any; next: () => Promise<Response> }) {
+export async function onRequest(context: CloudflareContext) {
   const { request } = context
 
   // Extract JWT from CF-Access-Jwt-Assertion header
@@ -44,7 +55,7 @@ export async function onRequest(context: { request: Request; env: Env; data?: an
     }
 
     // Attach user to context.data for downstream functions
-    ;(context as any).data = { ...(context as any).data, user }
+    context.data = { ...context.data, user }
 
     return context.next()
   } catch (error) {
