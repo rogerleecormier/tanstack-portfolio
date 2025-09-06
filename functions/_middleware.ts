@@ -1,52 +1,45 @@
-// Lightweight JWT payload decode without external deps.
-// Cloudflare Access has already verified the token at the edge.
-// We only need the payload claims for app logic.
+import { jwtVerify, createRemoteJWKSet, decodeJwt } from 'jose'
 
 interface Env {
-  ACCESS_AUD?: string;
-  ACCESS_ISS?: string;
+  ACCESS_AUD?: string
+  ACCESS_ISS?: string // e.g. https://your-team.cloudflareaccess.com
 }
 
 interface User {
-  sub: string;
-  email: string;
-  role?: string;
+  sub: string
+  email: string
+  role?: string
 }
 
-interface ContextData {
-  user: User;
+function issuerToJwksUrl(issuer: string): URL {
+  const base = issuer.endsWith('/') ? issuer.slice(0, -1) : issuer
+  return new URL(base + '/cdn-cgi/access/certs')
 }
 
-interface CloudflareContext {
-  request: Request;
-  env: Env;
-  data?: ContextData;
-  next: () => Promise<Response>;
-}
+export async function onRequest(context: { request: Request; env: Env; data?: any; next: () => Promise<Response> }) {
+  const { request, env } = context
 
-function decodeJwtPayload<T = Record<string, unknown>>(token: string): T {
-  const parts = token.split('.')
-  if (parts.length < 2) throw new Error('Invalid JWT')
-  const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
-  const padded = base64 + '==='.slice((base64.length + 3) % 4)
-  const bytes = Uint8Array.from(atob(padded), c => c.charCodeAt(0))
-  const json = new TextDecoder().decode(bytes)
-  return JSON.parse(json) as T
-}
-
-export async function onRequest(context: CloudflareContext) {
-  const { request } = context
-
-  // Extract JWT from CF-Access-Jwt-Assertion header
+  // CF Access adds this header when the app is protected by Access
   const jwt = request.headers.get('CF-Access-Jwt-Assertion')
 
-  if (!jwt) {
-    return new Response('Unauthorized', { status: 401 })
-  }
+  // If no JWT (public route or Access not configured), let it through
+  if (!jwt) return context.next()
 
   try {
-    // Decode payload claims (Access already verified the token)
-    const payload = decodeJwtPayload<Record<string, unknown>>(jwt)
+    let payload: any
+
+    if (env.ACCESS_ISS) {
+      // Verify with CF Access JWKS when issuer is configured
+      const jwks = createRemoteJWKSet(issuerToJwksUrl(env.ACCESS_ISS))
+      const { payload: verified } = await jwtVerify(jwt, jwks, {
+        audience: env.ACCESS_AUD,
+        issuer: env.ACCESS_ISS.endsWith('/') ? env.ACCESS_ISS.slice(0, -1) : env.ACCESS_ISS,
+      })
+      payload = verified
+    } else {
+      // Fallback: decode claims without verification (not recommended for protected routes)
+      payload = decodeJwt(jwt)
+    }
 
     const user: User = {
       sub: (payload.sub as string) || '',
@@ -54,12 +47,10 @@ export async function onRequest(context: CloudflareContext) {
       role: (payload.role as string) || 'reader',
     }
 
-    // Attach user to context.data for downstream functions
-    context.data = { ...context.data, user }
-
+    ;(context as any).data = { ...(context as any).data, user }
     return context.next()
-  } catch (error) {
-    console.error('JWT decode failed:', error)
+  } catch (err) {
+    console.error('Access JWT verify failed', err)
     return new Response('Unauthorized', { status: 401 })
   }
 }
