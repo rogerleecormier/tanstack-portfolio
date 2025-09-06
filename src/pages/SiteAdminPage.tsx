@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { P } from '@/components/ui/typography';
-import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code, FileText } from 'lucide-react';
+import { Shield, ArrowRight, Loader2, UserCheck, Briefcase, CheckCircle, XCircle, Activity, Database, Globe, BarChart3, Settings, Users, Mail, Code } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { testAIWorker } from '../api/contactAnalyzer';
 import { cachedContentService } from '@/api/cachedContentService';
@@ -579,18 +579,6 @@ export const SiteAdminPage: React.FC = () => {
                   <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
                 </a>
                 
-                <a
-                  href="/protected/content-studio"
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
-                      <FileText className="h-4 w-4 text-purple-600" />
-                    </div>
-                    <span className="font-medium text-gray-900">Content Studio</span>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
-                </a>
                 
                 <a
                   href="/protected/settings"

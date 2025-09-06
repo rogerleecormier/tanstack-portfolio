@@ -1,0 +1,7 @@
+node_modules
+dist
+.vite
+*.config.js
+*.config.ts
+workers/**/*.js
+public/tinymce/**

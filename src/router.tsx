@@ -26,7 +26,6 @@ import AboutPage from "./pages/AboutPage";
 import IndexPage from "./pages/IndexPage";
 import NewsletterPreferencesPage from "./pages/NewsletterPreferencesPage";
 import MarkdownEditorPage from "./pages/MarkdownEditorPage";
-import ContentCreationPage from "./pages/ContentCreationPage";
 
 import ToolsListPage from "./pages/ToolsListPage";
 
@@ -141,12 +140,6 @@ const siteAdminRoute = createRoute({
   component: SiteAdminPage,
 });
 
-// Content Studio route - PROTECTED
-const contentStudioRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "protected/content-studio",
-  component: ContentCreationPage,
-});
 
 // Contact route
 const contactRoute = createRoute({
@@ -207,7 +200,6 @@ const routeTree = rootRoute.addChildren([
   privacyRoute,
   protectedRoute,
   siteAdminRoute,
-  contentStudioRoute,
   cloudflareStatusRoute,
   newsletterPreferencesRoute,
   toolsListRoute,
