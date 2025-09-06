@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, BarChart3, TrendingUp, Calendar, User, Briefcase } from 'lucide-react'
+import { ArrowRight, BarChart3, TrendingUp, Calendar, User, Briefcase, Edit, FileText } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { ScrollToTop } from '@/components/ScrollToTop'
@@ -116,7 +116,7 @@ export default function ProjectsListPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {/* Project Method Analysis - More Compact */}
             <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
               <CardHeader className="pb-3 flex-shrink-0">
@@ -228,6 +228,63 @@ export default function ProjectsListPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Markdown Editor - NEW */}
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
+              <CardHeader className="pb-3 flex-shrink-0">
+                <div className="flex items-center justify-between mb-2">
+                  <Badge variant="outline" className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs">
+                    <Edit className="w-3 h-3 mr-1" />
+                    Content Creation
+                  </Badge>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">2025</span>
+                </div>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                  Markdown Editor
+                </CardTitle>
+                <CardDescription className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                  Advanced markdown editing platform with live preview, comprehensive formatting support,
+                  and integrated content management for seamless writing and publishing workflows.
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="flex flex-col h-full pt-0">
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  <Badge variant="secondary" className="bg-purple-50 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 text-xs px-2 py-0.5">
+                    Live Preview
+                  </Badge>
+                  <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
+                    WYSIWYG Editor
+                  </Badge>
+                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
+                    CodeMirror
+                  </Badge>
+                </div>
+
+                <div className="mt-auto">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center">
+                        <FileText className="w-3 h-3 mr-1" />
+                        <span>Markdown Tools</span>
+                      </div>
+                      <div className="flex items-center">
+                        <User className="w-3 h-3 mr-1" />
+                        <span>Roger Cormier</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => handleProjectClick('/projects/markdown')}
+                    className="w-full bg-gradient-to-r from-purple-600 to-teal-600 hover:from-purple-700 hover:to-teal-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 text-sm py-2"
+                  >
+                    Open Markdown Editor
+                    <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
           </div>
 
           {/* Methodology Section - More Compact */}

@@ -29,11 +29,10 @@ const ContactPage = lazy(() => import("./pages/ContactPage"));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const BlogPostWrapper = lazy(() => import("./components/BlogPostWrapper"));
 const NewsletterPreferencesPage = lazy(() => import("./pages/NewsletterPreferencesPage"));
-const ToolsListPage = lazy(() => import("./pages/ToolsListPage"));
-const MarkdownEditorPage = lazy(() => import("./pages/MarkdownEditorPage"));
-const ContentCreationPage = lazy(() => import("./pages/ContentCreationPage"));
 const SiteAdminPage = lazy(() => import("./pages/SiteAdminPage").then(m => ({ default: m.SiteAdminPage })));
 const CloudflareStatusChecker = lazy(() => import("./components/CloudflareStatusChecker").then(m => ({ default: m.CloudflareStatusChecker })));
+const CreationStudioPage = lazy(() => import("./pages/CreationStudioPage").then(m => ({ default: m.CreationStudioPage })));
+const MarkdownOnlyPage = lazy(() => import("./pages/MarkdownOnlyPage").then(m => ({ default: m.MarkdownOnlyPage })));
 
 import {
   PortfolioPageWrapper,
@@ -143,13 +142,6 @@ const siteAdminRoute = createRoute({
   component: SiteAdminPage,
 });
 
-// Content Studio route - STUB PAGE
-const contentStudioRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "protected/content-studio",
-  component: ContentCreationPage,
-});
-
 // Contact route
 const contactRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -178,18 +170,20 @@ const newsletterPreferencesRoute = createRoute({
   component: NewsletterPreferencesPage,
 });
 
-// Tools list route
-const toolsListRoute = createRoute({
+
+
+// Content Studio route - PROTECTED
+const contentStudioRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "tools",
-  component: ToolsListPage,
+  path: "protected/content-studio",
+  component: CreationStudioPage,
 });
 
-// Markdown Editor route - STUB PAGE
-const markdownEditorRoute = createRoute({
+// Markdown Editor route (under projects)
+const markdownOnlyRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "markdown-editor",
-  component: MarkdownEditorPage,
+  path: "projects/markdown",
+  component: MarkdownOnlyPage,
 });
 
 // Create route tree
@@ -200,7 +194,6 @@ const routeTree = rootRoute.addChildren([
   portfolioItemRoute,
   projectsListRoute,
   projectsRoute,
-  // healthBridgeAnalysisRoute, // DISABLED - old app being taken offline
   healthBridgeEnhancedRoute,
   settingsRoute,
   blogListRoute,
@@ -209,11 +202,10 @@ const routeTree = rootRoute.addChildren([
   privacyRoute,
   protectedRoute,
   siteAdminRoute,
-  contentStudioRoute,
   cloudflareStatusRoute,
   newsletterPreferencesRoute,
-  toolsListRoute,
-  markdownEditorRoute,
+  contentStudioRoute,
+  markdownOnlyRoute,
 ]);
 
 // Create router instance

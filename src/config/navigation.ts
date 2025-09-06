@@ -1,6 +1,6 @@
 // Navigation config for TanStack Router and AppSidebar
 
-import { User, BarChart3, Mail, FileText, Briefcase, Users, Settings, Code, Target, Wrench } from "lucide-react";
+import { User, BarChart3, Mail, FileText, Briefcase, Users, Settings, Code, Target, Edit } from "lucide-react";
 
 export const navigationItems = [
   {
@@ -22,11 +22,6 @@ export const navigationItems = [
     title: "Projects",
     url: "projects",
     icon: BarChart3,
-  },
-  {
-    title: "Tools",
-    url: "tools",
-    icon: Wrench,
   },
   {
     title: "Contact",
@@ -68,6 +63,7 @@ export const portfolioItems = [
   },
 ];
 
+
 // Protected routes that only show when authenticated
 export const protectedProjectItems = [
   {
@@ -77,15 +73,14 @@ export const protectedProjectItems = [
     requiresAuth: true,
   },
   {
-    title: "Content Studio",
-    url: "protected/content-studio",
-    icon: FileText,
-    requiresAuth: true,
-  },
-  {
     title: "Settings",
     url: "protected/settings",
     icon: Settings,
     requiresAuth: true,
   },
-];
+  {
+    title: "Content Studio",
+    url: "protected/content-studio",
+    icon: Edit,
+    requiresAuth: true,
+  },];

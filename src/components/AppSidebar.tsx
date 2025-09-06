@@ -52,7 +52,6 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        
 
         {/* Table of Contents - Only show when there's content */}
         <TableOfContents />

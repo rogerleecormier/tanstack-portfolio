@@ -190,6 +190,15 @@ The site uses several Cloudflare Workers for enhanced functionality:
 - Syntax highlighting for code blocks
 - Export functionality
 
+### Content Studio
+- **Secure CMS**: Cloudflare Access JWT authentication
+- **Rich Editor**: WYSIWYG, Markdown, and split-view modes
+- **Fenced Blocks**: Custom components (cards, charts, tables)
+- **R2 Integration**: Cloudflare R2 object storage
+- **Front-matter Management**: Auto-generation and validation
+- **ETag Conflict Resolution**: Prevents silent overwrites
+- **Sanitized Rendering**: XSS protection with rehype-sanitize
+
 ## 🔍 Search & Discovery
 
 ### Search Features
@@ -243,6 +252,96 @@ The site uses several Cloudflare Workers for enhanced functionality:
 - Tailwind CSS responsive utilities
 - Touch-friendly interactions
 - Optimized for all screen sizes
+
+## 🎨 Content Studio
+
+The Content Studio is a secure, cloud-based CMS built with modern web technologies and Cloudflare infrastructure.
+
+### Features
+
+#### Editor Modes
+- **WYSIWYG**: Rich text editing with TipTap
+- **Markdown**: CodeMirror 6 with syntax highlighting
+- **Split View**: Simultaneous editing and preview
+
+#### Custom Components
+- **Fenced Blocks**: `card {json}`, `chart {json}`, `component:type {json}`
+- **Interactive Tables**: Sortable TanStack tables
+- **Charts**: Recharts integration (bar, line, area)
+- **Custom Components**: Extensible component registry
+
+#### Security & Performance
+- **JWT Authentication**: Cloudflare Access integration
+- **Content Sanitization**: rehype-sanitize with strict schema
+- **ETag Concurrency**: Prevents silent overwrites
+- **File Size Limits**: Configurable upload restrictions
+
+### Environment Setup
+
+#### Cloudflare Pages Configuration
+Set these environment variables in your Cloudflare Pages project:
+
+```bash
+# R2 Bucket Configuration
+R2_CONTENT = your-r2-bucket-name
+
+# Security Settings
+ALLOWED_PREFIX = content/
+MAX_FILE_BYTES = 2000000
+
+# Cloudflare Access (optional)
+ACCESS_AUD = your-access-audience
+ACCESS_ISS = your-access-issuer
+```
+
+#### Cloudflare Access Setup
+1. Enable Cloudflare Access for your domain
+2. Configure JWT tokens with user roles
+3. Set up role-based permissions (reader, author, admin)
+4. Include `CF-Access-Jwt-Assertion` header in requests
+
+### Usage
+
+#### Accessing the Studio
+- **Full Studio**: `/studio` - Complete CMS with R2 integration
+- **Markdown Only**: `/markdown` - Local editor without server features
+
+#### File Management
+- Browse R2 bucket contents with pagination
+- Open files with automatic frontmatter extraction
+- Save with ETag conflict resolution
+- Download files locally
+
+#### Front-matter Management
+- Auto-generate from content using Fuse.js
+- Validate against Zod schemas
+- Diff view before applying changes
+- Manual editing with form validation
+
+### API Endpoints
+
+```
+GET  /api/content/list     - List R2 objects
+GET  /api/content/read     - Read file content
+POST /api/content/write    - Write file with ETag
+POST /api/validate/frontmatter - Validate frontmatter
+POST /api/generate         - Generate frontmatter suggestions
+GET  /api/health          - Health check
+```
+
+### Testing
+
+Run the test suite to ensure security and functionality:
+
+```bash
+npm run test
+```
+
+Tests cover:
+- XSS sanitization (scripts, event handlers, javascript: URLs)
+- Markdown roundtrip preservation
+- Frontmatter extraction and assembly
+- Fenced block parsing and rendering
 
 ## 🔧 Configuration
 
