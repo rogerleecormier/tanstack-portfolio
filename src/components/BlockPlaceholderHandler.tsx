@@ -57,41 +57,63 @@ const BlockPlaceholderHandler: React.FC<BlockPlaceholderHandlerProps> = ({
 
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      const placeholder = target.closest('.shadcn-block-placeholder');
+      const placeholder = target.closest(
+        '.shadcn-block-placeholder'
+      ) as HTMLElement;
 
       if (placeholder) {
         event.preventDefault();
         event.stopPropagation();
+        openBlockEditorFromPlaceholder(placeholder);
+      }
+    };
 
-        const blockType = placeholder.getAttribute('data-block-type');
-        const blockJson = placeholder.getAttribute('data-json');
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      const placeholder = target.closest(
+        '.shadcn-block-placeholder'
+      ) as HTMLElement;
 
-        if (blockType && blockJson) {
-          try {
-            // Decode HTML entities and newlines
-            const decodedJson = blockJson
-              .replace(/&quot;/g, '"')
-              .replace(/\\n/g, '\n');
+      if (placeholder && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
+        event.stopPropagation();
+        openBlockEditorFromPlaceholder(placeholder);
+      }
+    };
 
-            const blockData = JSON.parse(decodedJson);
+    const openBlockEditorFromPlaceholder = (placeholder: HTMLElement) => {
+      const blockType = placeholder.getAttribute('data-block-type');
+      const blockJson = placeholder.getAttribute('data-json');
 
-            // Find the block index in the markdown content
-            const blockIndex = findBlockIndex(
-              markdownContent,
-              blockType,
-              blockData
-            );
+      if (blockType && blockJson) {
+        try {
+          // Decode HTML entities and newlines
+          const decodedJson = blockJson
+            .replace(/&quot;/g, '"')
+            .replace(/\\n/g, '\n');
 
-            openBlockEditor(blockType, blockData, blockIndex, markdownContent);
-          } catch {
-            console.error('Error parsing block JSON');
-          }
+          const blockData = JSON.parse(decodedJson);
+
+          // Find the block index in the markdown content
+          const blockIndex = findBlockIndex(
+            markdownContent,
+            blockType,
+            blockData
+          );
+
+          openBlockEditor(blockType, blockData, blockIndex, markdownContent);
+        } catch {
+          console.error('Error parsing block JSON');
         }
       }
     };
 
     container.addEventListener('click', handleClick);
-    return () => container.removeEventListener('click', handleClick);
+    container.addEventListener('keydown', handleKeyDown);
+    return () => {
+      container.removeEventListener('click', handleClick);
+      container.removeEventListener('keydown', handleKeyDown);
+    };
   }, [markdownContent, openBlockEditor, findBlockIndex]);
 
   const extractBlockContent = (

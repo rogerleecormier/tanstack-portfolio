@@ -88,7 +88,22 @@ export function rehypePlaceholders() {
               .map((child) => (child as { value: string }).value)
               .join('');
 
-            // Convert the pre element to a placeholder div
+            // Parse JSON to get a summary for screen readers
+            let blockSummary = `${blockType} block`;
+            try {
+              const parsedJson = JSON.parse(jsonContent);
+              if (parsedJson.title) {
+                blockSummary = `${blockType} block: ${parsedJson.title}`;
+              } else if (parsedJson.label) {
+                blockSummary = `${blockType} block: ${parsedJson.label}`;
+              } else if (parsedJson.name) {
+                blockSummary = `${blockType} block: ${parsedJson.name}`;
+              }
+            } catch {
+              // If JSON parsing fails, use default summary
+            }
+
+            // Convert the pre element to a placeholder div with accessibility attributes
             node.tagName = 'div';
             node.properties = {
               class: 'shadcn-block-placeholder',
@@ -97,11 +112,29 @@ export function rehypePlaceholders() {
                 .replace(/"/g, '&quot;')
                 .replace(/\n/g, '\\n'), // Escape quotes and newlines
               contentEditable: 'false',
+              role: 'img',
+              'aria-label': blockSummary,
+              'aria-describedby': `block-description-${blockType}`,
+              tabIndex: 0,
             };
             node.children = [
               {
                 type: 'text' as const,
                 value: `[${blockType.toUpperCase()} BLOCK]`,
+              },
+              {
+                type: 'element' as const,
+                tagName: 'span',
+                properties: {
+                  id: `block-description-${blockType}`,
+                  class: 'sr-only',
+                },
+                children: [
+                  {
+                    type: 'text' as const,
+                    value: `This is a ${blockType} block. ${blockSummary}. Use the block editor to configure this component.`,
+                  },
+                ],
               },
             ];
           }

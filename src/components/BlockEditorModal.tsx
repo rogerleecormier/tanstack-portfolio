@@ -140,7 +140,14 @@ const BlockEditorModal: React.FC<BlockEditorModalProps> = ({
     setFormData(newData);
   };
 
-  const renderField = (field: FormField, path: string, value: unknown) => {
+  const renderField = (
+    field: FormField,
+    path: string,
+    value: unknown,
+    fieldId?: string,
+    hasError?: boolean,
+    errorId?: string
+  ) => {
     const fieldPath = path ? `${path}.${field.key}` : field.key;
     const fieldValue =
       value ||
@@ -154,7 +161,10 @@ const BlockEditorModal: React.FC<BlockEditorModalProps> = ({
               value={fieldValue as string}
               onValueChange={(val) => updateField(fieldPath, val)}
             >
-              <SelectTrigger>
+              <SelectTrigger
+                aria-invalid={hasError}
+                aria-describedby={hasError ? errorId : undefined}
+              >
                 <SelectValue placeholder={`Select ${field.label}`} />
               </SelectTrigger>
               <SelectContent>
@@ -171,10 +181,13 @@ const BlockEditorModal: React.FC<BlockEditorModalProps> = ({
         if (field.format === 'uri') {
           return (
             <Input
+              id={fieldId}
               type="url"
               value={fieldValue as string}
               onChange={(e) => updateField(fieldPath, e.target.value)}
               placeholder={`Enter ${field.label}`}
+              aria-invalid={hasError}
+              aria-describedby={hasError ? errorId : undefined}
             />
           );
         }
@@ -182,26 +195,33 @@ const BlockEditorModal: React.FC<BlockEditorModalProps> = ({
         if (field.key === 'content' || field.key === 'message') {
           return (
             <Textarea
+              id={fieldId}
               value={fieldValue as string}
               onChange={(e) => updateField(fieldPath, e.target.value)}
               placeholder={`Enter ${field.label}`}
               rows={3}
+              aria-invalid={hasError}
+              aria-describedby={hasError ? errorId : undefined}
             />
           );
         }
 
         return (
           <Input
+            id={fieldId}
             type="text"
             value={fieldValue as string}
             onChange={(e) => updateField(fieldPath, e.target.value)}
             placeholder={`Enter ${field.label}`}
+            aria-invalid={hasError}
+            aria-describedby={hasError ? errorId : undefined}
           />
         );
 
       case 'number':
         return (
           <Input
+            id={fieldId}
             type="number"
             value={fieldValue as number}
             onChange={(e) =>
@@ -210,6 +230,8 @@ const BlockEditorModal: React.FC<BlockEditorModalProps> = ({
             placeholder={`Enter ${field.label}`}
             min={field.minimum}
             max={field.maximum}
+            aria-invalid={hasError}
+            aria-describedby={hasError ? errorId : undefined}
           />
         );
 
@@ -367,27 +389,71 @@ const BlockEditorModal: React.FC<BlockEditorModalProps> = ({
 
         <div className="space-y-4">
           {errors.length > 0 && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
+            <Alert
+              variant="destructive"
+              role="alert"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <AlertCircle className="h-4 w-4" aria-hidden="true" />
               <AlertDescription>
-                <ul className="list-disc list-inside space-y-1">
+                <span className="sr-only">Validation errors: </span>
+                <ul className="list-disc list-inside space-y-1" role="list">
                   {errors.map((error, index) => (
-                    <li key={index}>{error}</li>
+                    <li key={index} role="listitem">
+                      {error}
+                    </li>
                   ))}
                 </ul>
               </AlertDescription>
             </Alert>
           )}
 
-          {getFormFields().map((field) => (
-            <div key={field.key} className="space-y-2">
-              <Label htmlFor={field.key}>
-                {field.label}
-                {field.required && <span className="text-red-500 ml-1">*</span>}
-              </Label>
-              {renderField(field, '', formData[field.key])}
-            </div>
-          ))}
+          {getFormFields().map((field) => {
+            const fieldErrors = errors.filter(
+              (error) =>
+                error.toLowerCase().includes(field.key.toLowerCase()) ||
+                error.toLowerCase().includes(field.label.toLowerCase())
+            );
+            const hasError = fieldErrors.length > 0;
+            const fieldId = `field-${field.key}`;
+            const errorId = `error-${field.key}`;
+
+            return (
+              <div key={field.key} className="space-y-2">
+                <Label htmlFor={fieldId}>
+                  {field.label}
+                  {field.required && (
+                    <span className="text-red-500 ml-1" aria-label="required">
+                      *
+                    </span>
+                  )}
+                </Label>
+                <div>
+                  {renderField(
+                    field,
+                    '',
+                    formData[field.key],
+                    fieldId,
+                    hasError,
+                    errorId
+                  )}
+                  {hasError && (
+                    <div
+                      id={errorId}
+                      className="text-sm text-red-600 mt-1"
+                      role="alert"
+                      aria-live="polite"
+                    >
+                      {fieldErrors.map((error, index) => (
+                        <div key={index}>{error}</div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <DialogFooter>

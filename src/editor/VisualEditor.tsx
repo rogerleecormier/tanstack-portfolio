@@ -206,16 +206,89 @@ const VisualEditor: React.FC<VisualEditorProps> = ({
               color: #6b7280;
               font-weight: 500;
               cursor: pointer;
+              position: relative;
             }
             .shadcn-block-placeholder:hover {
               background-color: #e5e7eb;
               border-color: #9ca3af;
+            }
+            .shadcn-block-placeholder:focus {
+              outline: 2px solid #3b82f6;
+              outline-offset: 2px;
+            }
+            .sr-only {
+              position: absolute;
+              width: 1px;
+              height: 1px;
+              padding: 0;
+              margin: -1px;
+              overflow: hidden;
+              clip: rect(0, 0, 0, 0);
+              white-space: nowrap;
+              border: 0;
             }
           `,
           placeholder: placeholder,
           noneditable_class: 'shadcn-block-placeholder',
           noneditable_regexp: /shadcn-block-placeholder/,
           setup: (editor) => {
+            // Enhance placeholder accessibility
+            editor.on('init', () => {
+              // Add accessibility attributes to existing placeholders
+              const placeholders = editor.dom.select(
+                '.shadcn-block-placeholder'
+              );
+              placeholders.forEach((placeholder, index) => {
+                const blockType = editor.dom.getAttrib(
+                  placeholder,
+                  'data-block-type'
+                );
+                const jsonData = editor.dom.getAttrib(placeholder, 'data-json');
+
+                if (blockType) {
+                  // Parse JSON to get a summary for screen readers
+                  let blockSummary = `${blockType} block`;
+                  try {
+                    const parsedJson = JSON.parse(jsonData);
+                    if (parsedJson.title) {
+                      blockSummary = `${blockType} block: ${parsedJson.title}`;
+                    } else if (parsedJson.label) {
+                      blockSummary = `${blockType} block: ${parsedJson.label}`;
+                    } else if (parsedJson.name) {
+                      blockSummary = `${blockType} block: ${parsedJson.name}`;
+                    }
+                  } catch {
+                    // If JSON parsing fails, use default summary
+                  }
+
+                  // Add accessibility attributes
+                  editor.dom.setAttrib(placeholder, 'role', 'img');
+                  editor.dom.setAttrib(placeholder, 'aria-label', blockSummary);
+                  editor.dom.setAttrib(placeholder, 'tabindex', '0');
+
+                  // Add screen reader description
+                  const descriptionId = `block-description-${blockType}-${index}`;
+                  editor.dom.setAttrib(
+                    placeholder,
+                    'aria-describedby',
+                    descriptionId
+                  );
+
+                  // Create hidden description element
+                  const description = editor.dom.create(
+                    'span',
+                    {
+                      id: descriptionId,
+                      class: 'sr-only',
+                    },
+                    `This is a ${blockType} block. ${blockSummary}. Use the block editor to configure this component.`
+                  );
+
+                  editor.dom.insertAfter(description, placeholder);
+                }
+              });
+            });
+
             // Custom paste pre-processor for sanitization and placeholder protection
             editor.on('BeforePaste', (e) => {
               // Check for placeholder protection first
