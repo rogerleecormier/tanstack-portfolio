@@ -17,18 +17,7 @@ interface Tool {
   status: 'active' | 'beta' | 'coming-soon'
 }
 
-const tools: Tool[] = [
-  {
-    id: 'markdown-editor',
-    title: 'Markdown Editor',
-    description: 'A rich text editor for creating and editing markdown content with real-time markdown generation and syntax highlighting.',
-    category: 'Content Creation',
-    icon: FileText,
-    url: '/markdown-editor',
-    features: ['Rich text editing', 'Real-time markdown generation', 'Syntax highlighting', 'Export functionality'],
-    status: 'coming-soon'
-  }
-]
+const tools: Tool[] = []
 
 const ToolsListPage: React.FC = () => {
   // Scroll to top when component mounts

@@ -25,10 +25,10 @@ import PortfolioListPage from "./pages/PortfolioListPage";
 import AboutPage from "./pages/AboutPage";
 import IndexPage from "./pages/IndexPage";
 import NewsletterPreferencesPage from "./pages/NewsletterPreferencesPage";
-import MarkdownEditorPage from "./pages/MarkdownEditorPage";
-import ContentCreationPage from "./pages/ContentCreationPage";
 
 import ToolsListPage from "./pages/ToolsListPage";
+import MarkdownEditorPage from "./pages/MarkdownEditorPage";
+import ContentCreationPage from "./pages/ContentCreationPage";
 
 import { SiteAdminPage } from "./pages/SiteAdminPage";
 import { CloudflareStatusChecker } from "./components/CloudflareStatusChecker";
@@ -141,7 +141,7 @@ const siteAdminRoute = createRoute({
   component: SiteAdminPage,
 });
 
-// Content Studio route - PROTECTED
+// Content Studio route - STUB PAGE
 const contentStudioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "protected/content-studio",
@@ -183,7 +183,7 @@ const toolsListRoute = createRoute({
   component: ToolsListPage,
 });
 
-// Markdown Editor route
+// Markdown Editor route - STUB PAGE
 const markdownEditorRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "markdown-editor",
