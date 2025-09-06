@@ -5,6 +5,7 @@
 
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeSanitize from 'rehype-sanitize';
@@ -57,6 +58,7 @@ export function mdToHtml(markdown: string): string {
   try {
     const processor = unified()
       .use(remarkParse)
+      .use(remarkFrontmatter, ['yaml', 'toml'])
       .use(remarkShadcnBlocks)
       .use(remarkGfm)
       .use(remarkRehype, { allowDangerousHtml: true })

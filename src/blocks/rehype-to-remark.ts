@@ -17,14 +17,22 @@ export function rehypeToRemark() {
             node.properties?.className.includes('shadcn-block-placeholder')))
       ) {
         // HTML attributes with hyphens get converted to camelCase
-        const blockType = node.properties?.['dataBlockType'] as string;
-        const blockJson = node.properties?.['dataJson'] as string;
+        const blockType =
+          (node.properties?.['dataBlockType'] as string) ||
+          (node.properties?.['data-block-type'] as string);
+        const blockJson =
+          (node.properties?.['dataJson'] as string) ||
+          (node.properties?.['data-json'] as string);
 
         if (blockType && blockJson) {
           // Decode HTML entities and newlines back to JSON
           const actualJsonContent = blockJson
             .replace(/&quot;/g, '"')
-            .replace(/\\n/g, '\n');
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/\\n/g, '\n')
+            .replace(/\\"/g, '"');
 
           // Convert back to fenced code block structure
           node.tagName = 'pre';
