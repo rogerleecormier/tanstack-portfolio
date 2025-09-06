@@ -391,6 +391,11 @@
     scroll-behavior: smooth;
   }
 
+  /* Typography consistency with shadcn's Blockquote */
+  .prose blockquote {
+    @apply mt-6 border-l-2 pl-6 italic text-muted-foreground;
+  }
+
   /* Fix dialog scrolling issues */
   [data-radix-dialog-content] {
     @apply overflow-hidden;
@@ -568,15 +573,10 @@
     @apply mt-2.5;
   }
 
-  /* Control pre tag spacing in hero-profile cards */
+  /* Control pre tag styling in hero-profile cards */
   .hero-profile-card pre {
     @apply mt-0 mb-0 p-0 bg-transparent border-none rounded-none shadow-none m-0;
     background-image: none !important;
-  }
-
-  /* Remove background and padding from pre tags with specific classes in hero-profile cards */
-  .hero-profile-card pre.overflow-x-auto.rounded-lg.border.bg-muted.p-4.w-full {
-    @apply bg-transparent p-0 border-none rounded-none;
   }
 
   /* Ensure tagline in hero profile card wraps properly */
@@ -910,4 +910,108 @@
   [data-radix-dropdown-menu-content] {
     @apply pointer-events-auto;
   }
+}
+
+/* TipTap Editor Styles */
+.ProseMirror {
+  min-height: 100%;
+  cursor: text;
+  outline: none;
+  padding: 1rem;
+}
+
+.ProseMirror h1 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+  line-height: 1.2;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  margin-top: 1.25rem;
+  line-height: 1.3;
+}
+
+.ProseMirror h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  line-height: 1.4;
+}
+
+.ProseMirror p {
+  margin-bottom: 1rem;
+  line-height: 1.625;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+/* List Styles - Ensure bullets are visible */
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  list-style-position: outside;
+}
+
+.ProseMirror li {
+  margin-bottom: 0.25rem;
+  line-height: 1.625;
+  display: list-item;
+}
+
+.ProseMirror ul li {
+  list-style-type: disc !important;
+}
+
+.ProseMirror ul ul li {
+  list-style-type: circle !important;
+}
+
+.ProseMirror ul ul ul li {
+  list-style-type: square !important;
+}
+
+.ProseMirror ol li {
+  list-style-type: decimal !important;
+}
+
+.ProseMirror ol ol li {
+  list-style-type: lower-alpha !important;
+}
+
+.ProseMirror ol ol ol li {
+  list-style-type: lower-roman !important;
+}
+
+/* Blockquote Styles */
+.ProseMirror blockquote {
+  @apply border-l-2 pl-6 italic text-muted-foreground my-6;
+}
+
+/* Code Block Styles */
+.ProseMirror pre {
+  background-color: hsl(var(--muted));
+  padding: 1rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.ProseMirror code {
+  background-color: hsl(var(--muted));
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
 }

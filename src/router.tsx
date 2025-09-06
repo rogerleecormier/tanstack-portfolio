@@ -12,26 +12,27 @@ import {
 } from "@tanstack/react-router";
 import { createBrowserHistory } from "@tanstack/history";
 import AppLayout from "./layout/AppLayout";
+
+// Core pages - loaded immediately
+import { lazy } from 'react';
+import IndexPage from "./pages/IndexPage";
+import AboutPage from "./pages/AboutPage";
+import PortfolioListPage from "./pages/PortfolioListPage";
 import ProjectsListPage from "./pages/ProjectsListPage";
+import BlogListPage from "./pages/BlogListPage";
 import NotFound from "./pages/NotFound";
 
-import HealthBridgeEnhanced from "./pages/HealthBridgeEnhanced";
-import Settings from "./pages/Settings";
-import ContactPage from "./pages/ContactPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import BlogListPage from "./pages/BlogListPage";
-import BlogPostWrapper from "./components/BlogPostWrapper";
-import PortfolioListPage from "./pages/PortfolioListPage";
-import AboutPage from "./pages/AboutPage";
-import IndexPage from "./pages/IndexPage";
-import NewsletterPreferencesPage from "./pages/NewsletterPreferencesPage";
-import MarkdownEditorPage from "./pages/MarkdownEditorPage";
-import ContentCreationPage from "./pages/ContentCreationPage";
-
-import ToolsListPage from "./pages/ToolsListPage";
-
-import { SiteAdminPage } from "./pages/SiteAdminPage";
-import { CloudflareStatusChecker } from "./components/CloudflareStatusChecker";
+// Dynamic imports for heavier components - loaded on demand
+const HealthBridgeEnhanced = lazy(() => import("./pages/HealthBridgeEnhanced"));
+const Settings = lazy(() => import("./pages/Settings"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
+const BlogPostWrapper = lazy(() => import("./components/BlogPostWrapper"));
+const NewsletterPreferencesPage = lazy(() => import("./pages/NewsletterPreferencesPage"));
+const SiteAdminPage = lazy(() => import("./pages/SiteAdminPage").then(m => ({ default: m.SiteAdminPage })));
+const CloudflareStatusChecker = lazy(() => import("./components/CloudflareStatusChecker").then(m => ({ default: m.CloudflareStatusChecker })));
+const CreationStudioPage = lazy(() => import("./pages/CreationStudioPage").then(m => ({ default: m.CreationStudioPage })));
+const MarkdownOnlyPage = lazy(() => import("./pages/MarkdownOnlyPage").then(m => ({ default: m.MarkdownOnlyPage })));
 
 import {
   PortfolioPageWrapper,
@@ -141,13 +142,6 @@ const siteAdminRoute = createRoute({
   component: SiteAdminPage,
 });
 
-// Content Studio route - PROTECTED
-const contentStudioRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "protected/content-studio",
-  component: ContentCreationPage,
-});
-
 // Contact route
 const contactRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -176,18 +170,20 @@ const newsletterPreferencesRoute = createRoute({
   component: NewsletterPreferencesPage,
 });
 
-// Tools list route
-const toolsListRoute = createRoute({
+
+
+// Content Studio route - PROTECTED
+const contentStudioRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "tools",
-  component: ToolsListPage,
+  path: "protected/content-studio",
+  component: CreationStudioPage,
 });
 
-// Markdown Editor route
-const markdownEditorRoute = createRoute({
+// Markdown Editor route (under projects)
+const markdownOnlyRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "markdown-editor",
-  component: MarkdownEditorPage,
+  path: "projects/markdown",
+  component: MarkdownOnlyPage,
 });
 
 // Create route tree
@@ -198,7 +194,6 @@ const routeTree = rootRoute.addChildren([
   portfolioItemRoute,
   projectsListRoute,
   projectsRoute,
-  // healthBridgeAnalysisRoute, // DISABLED - old app being taken offline
   healthBridgeEnhancedRoute,
   settingsRoute,
   blogListRoute,
@@ -207,11 +202,10 @@ const routeTree = rootRoute.addChildren([
   privacyRoute,
   protectedRoute,
   siteAdminRoute,
-  contentStudioRoute,
   cloudflareStatusRoute,
   newsletterPreferencesRoute,
-  toolsListRoute,
-  markdownEditorRoute,
+  contentStudioRoute,
+  markdownOnlyRoute,
 ]);
 
 // Create router instance

@@ -3,16 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     
-    <!-- Favicon Links -->
+    <!-- Favicon and Icons -->
+    <!-- Modern browsers: SVG favicon for crisp scaling -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/svg+xml" sizes="16x16" href="/favicon-16x16.svg" />
-    <link rel="icon" type="image/svg+xml" sizes="32x32" href="/favicon-32x32.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
-    <link rel="icon" type="image/svg+xml" sizes="192x192" href="/android-chrome-192x192.svg" />
-    <link rel="icon" type="image/svg+xml" sizes="512x512" href="/android-chrome-512x512.svg" />
-    
+
+    <!-- Fallback PNG icons for broader browser support -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons-192.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons-192.png" />
+
+    <!-- Apple Touch Icon for iOS devices -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Android/Chrome icons as specified in manifest -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons-512.png" />
+
+    <!-- Fallback for very old browsers -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!-- Theme color for better integration -->
+    <meta name="theme-color" content="#1c263a" />
+
     <!-- Optional: Web App Manifest -->
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Roger Lee Cormier - rcormier.dev</title>
