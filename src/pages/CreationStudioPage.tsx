@@ -11,8 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
-import { Download, Save, AlertTriangle, Maximize, Minimize, FileText } from 'lucide-react';
-import { Badge } from '../components/ui/badge';
+import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2 } from 'lucide-react';
 
 export function CreationStudioPage() {
   const [markdown, setMarkdown] = useState('');
@@ -102,8 +101,15 @@ export function CreationStudioPage() {
       const response = await apiClient.readContent(key);
       if (response.success && response.data) {
         const { attributes, body } = extractFrontMatter(response.data.body);
+
+        // Convert any Date objects to strings to prevent React rendering errors
+        const processedAttributes = Object.entries(attributes).reduce((acc, [key, value]) => {
+          acc[key] = value instanceof Date ? value.toISOString().split('T')[0] : value;
+          return acc;
+        }, {} as Record<string, unknown>);
+
         setMarkdown(body);
-        setFrontmatter(attributes);
+        setFrontmatter(processedAttributes);
         setCurrentFile(key);
         setCurrentEtag(response.data.etag);
         setIsDirty(false);
@@ -155,7 +161,7 @@ export function CreationStudioPage() {
       setSaveStatus('saved');
       setBrowserNonce((n) => n + 1);
       setTimeout(() => setSaveStatus('idle'), 1500);
-    } else if (response.error?.code === 'etag_conflict') {
+    } else if (response.error?.code === 'etag_conflict' || response.error?.code === 'HTTP_409') {
       setConflictModal({
         open: true,
         message: 'The file has been modified by another user. What would you like to do?',
@@ -248,40 +254,13 @@ export function CreationStudioPage() {
                 <div className="h-1 w-32 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 rounded-full mt-1"></div>
               </div>
             </div>
-            {/* Enhanced Status Badges */}
-            <div className="flex gap-2 items-center">
-              {(() => {
-                const proxyBase = (import.meta as any).env?.VITE_R2_PROXY_BASE as string | undefined;
-                const apiTarget = (import.meta as any).env?.VITE_API_PROXY_TARGET as string | undefined;
-                return (
-                  <>
-                    <Badge
-                      variant="secondary"
-                      className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 border border-teal-200 dark:border-teal-700"
-                      title={proxyBase || 'Reads via /api/content/read'}
-                    >
-                      <div className="w-1.5 h-1.5 bg-teal-600 rounded-full mr-2"></div>
-                      Read: {proxyBase ? 'R2 Proxy' : 'Functions'}
-                    </Badge>
-                    <Badge
-                      variant="secondary"
-                      className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
-                      title={apiTarget || 'Writes to local Functions'}
-                    >
-                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></div>
-                      Write: {apiTarget ? 'Prod API' : 'Local API'}
-                    </Badge>
-                  </>
-                );
-              })()}
-            </div>
             {/* Enhanced File Status - Always present to prevent layout shifts */}
             <div className="flex items-center gap-2 min-h-[20px]">
               {currentFile ? (
                 <>
                   <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    {currentFile.split('/').pop()} {isDirty && (
+                    <span className="font-medium">Currently Editing:</span> {currentFile} {isDirty && (
                       <span className="text-orange-600 dark:text-orange-400 font-medium">• Unsaved changes</span>
                     )}
                   </p>
@@ -318,6 +297,7 @@ export function CreationStudioPage() {
               }}
               className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
             >
+              <Plus className="h-4 w-4 mr-2" />
               New
             </Button>
             <Button
@@ -342,6 +322,7 @@ export function CreationStudioPage() {
               onClick={() => setIsSaveAsOpen(true)}
               className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 transition-all duration-200"
             >
+              <SaveIcon className="h-4 w-4 mr-2" />
               Save As
             </Button>
             <div className="min-w-[70px]">
@@ -368,6 +349,7 @@ export function CreationStudioPage() {
                   }}
                   className="bg-red-600 hover:bg-red-700 border-0 shadow-lg hover:shadow-xl transition-all duration-200 w-full"
                 >
+                  <Trash2 className="h-4 w-4 mr-2" />
                   Delete
                 </Button>
               ) : (
@@ -377,6 +359,7 @@ export function CreationStudioPage() {
                   className="border-red-200 text-red-400 cursor-not-allowed opacity-50 w-full"
                   title="No file selected"
                 >
+                  <Trash2 className="h-4 w-4 mr-2" />
                   Delete
                 </Button>
               )}
@@ -386,6 +369,7 @@ export function CreationStudioPage() {
               onClick={() => setTrashOpen(true)}
               className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
             >
+              <Trash2 className="h-4 w-4 mr-2" />
               Trash
             </Button>
             <Button
@@ -539,7 +523,7 @@ export function CreationStudioPage() {
                       <>
                         <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
                         <p className="text-sm text-slate-600 dark:text-slate-400">
-                          {currentFile.split('/').pop()} {isDirty && (
+                          {currentFile} {isDirty && (
                             <span className="text-orange-600 dark:text-orange-400 font-medium">• Unsaved changes</span>
                           )}
                         </p>

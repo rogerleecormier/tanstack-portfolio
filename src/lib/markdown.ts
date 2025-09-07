@@ -68,10 +68,44 @@ export function extractFrontMatter(markdown: string): { attributes: Record<strin
   return fm(markdown);
 }
 
+function serializeYamlValue(value: unknown): string {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  if (typeof value === 'string') {
+    // For strings, check if they need quotes
+    if (value.includes('\n') || value.includes(':') || value.startsWith(' ') || value.endsWith(' ')) {
+      return JSON.stringify(value); // Use JSON for multiline or special chars
+    }
+    return value; // No quotes needed for simple strings
+  }
+
+  if (typeof value === 'boolean' || typeof value === 'number') {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return `[${value.map(item => serializeYamlValue(item)).join(', ')}]`;
+  }
+
+  if (value instanceof Date) {
+    // Convert Date objects to ISO date strings (YYYY-MM-DD format)
+    return value.toISOString().split('T')[0];
+  }
+
+  if (typeof value === 'object') {
+    // For objects, use JSON stringify as fallback
+    return JSON.stringify(value);
+  }
+
+  return String(value);
+}
+
 export function assemble(frontmatter: Record<string, unknown>, body: string): string {
   const yaml = Object.keys(frontmatter).length > 0
     ? `---\n${Object.entries(frontmatter)
-        .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+        .map(([key, value]) => `${key}: ${serializeYamlValue(value)}`)
         .join('\n')}\n---\n`
     : '';
   return yaml + body;

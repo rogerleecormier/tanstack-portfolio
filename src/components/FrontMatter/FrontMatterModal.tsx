@@ -94,11 +94,10 @@ export function FrontMatterModal({ open, onOpenChange, value, onCancel, onSave, 
           <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
           <div className="flex gap-2">
             <Button type="button" variant="secondary" onClick={async () => { await onGenerate(); }}>Generate</Button>
-            <Button type="button" onClick={() => onSave(fm as Record<string, unknown>)}>Save</Button>
+            <Button type="button" onClick={() => onSave(fm as Record<string, unknown>)}>Update</Button>
           </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
-

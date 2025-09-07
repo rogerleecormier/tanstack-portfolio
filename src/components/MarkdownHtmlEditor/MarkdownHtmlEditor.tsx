@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import { Button } from '../ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 import { TooltipPortal } from '@radix-ui/react-tooltip'
-import { Eye, EyeOff, FileText, Trash2, ArrowUp } from 'lucide-react'
+import { Eye, EyeOff, FileText, Trash2 } from 'lucide-react'
 import { TipTapEditor } from './TipTapEditor'
 import { MarkdownEditor } from './MarkdownEditor'
 import { renderMarkdownForPreview } from '../../lib/markdown'
@@ -47,14 +47,6 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
     onChange('')
   }, [onChange])
 
-  const handleScrollToTop = useCallback(() => {
-    if (editorRef.current) {
-      editorRef.current.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
-    }
-  }, [])
 
   const previewContent = renderMarkdownForPreview(debouncedMarkdown)
 
@@ -86,11 +78,6 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
                 </TabsList>
               </Tabs>
 
-              {/* Status Indicator */}
-              <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-md border border-slate-200/60 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60">
-                <div className="w-1.5 h-1.5 bg-teal-600 rounded-full animate-pulse"></div>
-                <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Live editor</span>
-              </div>
             </div>
 
             {/* Action Buttons */}
@@ -98,10 +85,10 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
                       onClick={handleLoadExample}
-                      className="rounded-md"
+                      className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 rounded-md"
                     >
                       <FileText className="h-4 w-4" />
                       <span className="hidden sm:inline ml-2">Example</span>
@@ -114,10 +101,10 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
                       onClick={handleClear}
-                      className="rounded-md"
+                      className="border-red-600 text-red-600 hover:bg-red-50 dark:hover:bg-red-950 rounded-md"
                     >
                       <Trash2 className="h-4 w-4" />
                       <span className="hidden sm:inline ml-2">Clear</span>
@@ -130,26 +117,10 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleScrollToTop}
-                      className="rounded-md"
-                    >
-                      <ArrowUp className="h-4 w-4" />
-                      <span className="hidden sm:inline ml-2">Top</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipPortal>
-                    <TooltipContent>Scroll to top</TooltipContent>
-                  </TooltipPortal>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
                       onClick={() => setShowPreview((v) => !v)}
-                      className="rounded-md"
+                      className="border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 rounded-md"
                     >
                       {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       <span className="hidden sm:inline ml-2">{showPreview ? 'Hide' : 'Show'} Preview</span>

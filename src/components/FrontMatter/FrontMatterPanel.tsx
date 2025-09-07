@@ -70,7 +70,14 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                 <div className="w-1.5 h-1.5 bg-purple-600 rounded-full"></div>
                 <span className="text-xs uppercase font-semibold text-purple-700 dark:text-purple-300">Date</span>
               </div>
-              <div className="text-sm text-slate-800 dark:text-slate-200">{(frontmatter as any).date || 'Not set'}</div>
+              <div className="text-sm text-slate-800 dark:text-slate-200">
+                {(frontmatter as any).date
+                  ? (frontmatter as any).date instanceof Date
+                    ? (frontmatter as any).date.toISOString().split('T')[0]
+                    : String((frontmatter as any).date)
+                  : 'Not set'
+                }
+              </div>
             </div>
 
             <div className="p-3 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-700">

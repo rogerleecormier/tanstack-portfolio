@@ -104,8 +104,11 @@ export class ApiClient {
     const proxyBase = (import.meta as any).env?.VITE_R2_PROXY_BASE as string | undefined;
     if (proxyBase) {
       try {
-        const url = `${proxyBase}/${key}`;
-        const res = await fetch(url, { headers: { 'Accept': 'text/markdown' } });
+        const url = `${proxyBase}/${key}?ts=${Date.now()}`;
+        const res = await fetch(url, {
+          headers: { 'Accept': 'text/markdown' },
+          cache: 'no-store'
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const body = await res.text();
         const etag = res.headers.get('ETag') || '';
