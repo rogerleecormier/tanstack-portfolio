@@ -1,6 +1,6 @@
 interface Env {
   R2_CONTENT: R2Bucket;
-  ALLOWED_PREFIX: string;
+  ALLOWED_DIRS?: string;
 }
 
 export async function onRequest(context: { request: Request; env: Env }) {
@@ -13,8 +13,14 @@ export async function onRequest(context: { request: Request; env: Env }) {
     return Response.json({ error: 'Key parameter required' }, { status: 400 });
   }
 
-  // Security: Ensure key is under allowed path
-  if (!key.startsWith(env.ALLOWED_PREFIX)) {
+  const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  // Security: Ensure key is under allowed directories
+  const isAllowed = allowedDirs.some((d) => key === `${d}` || key.startsWith(`${d}/`));
+  if (!isAllowed) {
     return Response.json({ error: 'Invalid key' }, { status: 400 });
   }
 
@@ -27,12 +33,8 @@ export async function onRequest(context: { request: Request; env: Env }) {
 
     const body = await object.text();
 
-    return new Response(body, {
-      headers: {
-        'Content-Type': 'text/markdown; charset=utf-8',
-        'ETag': object.etag,
-      },
-    });
+    // Return JSON with body and ETag so the client can parse easily
+    return Response.json({ body, etag: object.etag });
   } catch (error) {
     console.error('Read error:', error);
     return Response.json({ error: 'Failed to read object' }, { status: 500 });

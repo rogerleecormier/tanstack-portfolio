@@ -1,142 +1,242 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { apiClient } from '../../lib/api';
-import { FileText, Download, Search } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { apiClient } from '../../lib/api'
+import { FileText, Download, Search, Folder, ArrowLeft, Loader } from 'lucide-react'
 
 interface R2Object {
-  key: string;
-  size: number;
-  uploaded: string;
-  etag: string;
+  key: string
+  size: number
+  uploaded: string
+  etag: string
 }
 
 interface R2BrowserProps {
-  onFileSelect: (key: string) => void;
-  onFileDownload: (key: string) => void;
+  onFileSelect: (key: string) => void
+  onFileDownload: (key: string) => void
+  refreshSignal?: number
 }
 
-export function R2Browser({ onFileSelect, onFileDownload }: R2BrowserProps) {
-  const [objects, setObjects] = useState<R2Object[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [cursor, setCursor] = useState<string>();
-  const [hasMore, setHasMore] = useState(false);
+export function R2Browser({ onFileSelect, onFileDownload, refreshSignal }: R2BrowserProps) {
+  const [objects, setObjects] = useState<R2Object[]>([])
+  const [prefixes, setPrefixes] = useState<string[]>([])
+  const [currentPrefix, setCurrentPrefix] = useState<string>('')
+  const [loading, setLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [cursor, setCursor] = useState<string>()
+  const [hasMore, setHasMore] = useState(false)
+  const [loadingFile, setLoadingFile] = useState<string | null>(null)
 
-  const loadObjects = useCallback(async (reset = false) => {
-    setLoading(true);
+  const loadListing = useCallback(async (reset = false) => {
+    setLoading(true)
     try {
       const response = await apiClient.listContent(
-        'content/',
+        currentPrefix,
         reset ? undefined : cursor,
         50
-      );
-
+      )
       if (response.success && response.data) {
-        const data = response.data;
+        const data = response.data
         if (reset) {
-          setObjects(data.objects || []);
+          setObjects(data.objects || [])
         } else {
-          setObjects(prev => [...prev, ...(data.objects || [])]);
+          setObjects((prev) => [...prev, ...(data.objects || [])])
         }
-        setCursor(data.cursor);
-        setHasMore(!!data.cursor);
+        setPrefixes(data.prefixes || [])
+        setCursor(data.cursor)
+        setHasMore(!!data.cursor)
       }
     } catch (error) {
-      console.error('Failed to load objects:', error);
+      console.error('Failed to load listing:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [cursor]);
+  }, [currentPrefix, cursor])
 
   useEffect(() => {
-    loadObjects(true);
-  }, [loadObjects]);
+    // whenever prefix changes, reset list
+    loadListing(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPrefix])
 
-  const filteredObjects = objects.filter(obj =>
+  useEffect(() => {
+    if (typeof refreshSignal !== 'undefined') {
+      loadListing(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshSignal])
+
+  const filteredObjects = objects.filter((obj) =>
     obj.key.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  )
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+    if (bytes === 0) return '0 B'
+    const k = 1024
+    const sizes = ['B', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+    return new Date(dateString).toLocaleDateString()
+  }
+
+  const handleFileDoubleClick = async (key: string) => {
+    setLoadingFile(key)
+    try {
+      await onFileSelect(key)
+    } finally {
+      // Add a small delay to show the loading state briefly
+      setTimeout(() => setLoadingFile(null), 300)
+    }
+  }
 
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5" />
-          Content Browser
+    <Card className="flex flex-col bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
+      <CardHeader className="flex-shrink-0 relative bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10 border-b border-teal-200 dark:border-teal-800">
+        <CardTitle className="flex items-center gap-3">
+          <div className="p-2 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 dark:from-slate-700 dark:via-slate-600 dark:to-slate-800 rounded-lg shadow-md">
+            <FileText className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white" style={{fontWeight: 700}}>
+              <span className="bg-gradient-to-r from-teal-800 to-blue-800 bg-clip-text text-transparent">
+                Content Browser
+              </span>
+            </h3>
+            <div className="h-0.5 w-16 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 rounded-full mt-1"></div>
+          </div>
         </CardTitle>
-        <div className="flex gap-2">
+        <div className="flex gap-3 mt-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Search files..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
+              className="pl-9 border-slate-200 dark:border-slate-700 focus:border-teal-500 dark:focus:border-teal-400"
             />
           </div>
-          <Button onClick={() => loadObjects(true)} disabled={loading}>
-            Refresh
+          <Button
+            onClick={() => loadListing(true)}
+            disabled={loading}
+            className="bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-200"
+          >
+            {loading ? 'Loading...' : 'Refresh'}
           </Button>
         </div>
+
+        {/* Enhanced Navigation */}
+        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+          {currentPrefix && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const parts = currentPrefix.split('/').filter(Boolean)
+                parts.pop()
+                setCurrentPrefix(parts.length ? parts.join('/') + '/' : '')
+              }}
+              className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" /> Up
+            </Button>
+          )}
+          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+            <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+            <span className="font-medium">{currentPrefix || 'root'}</span>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-2 max-h-[600px] overflow-y-auto">
+      <CardContent className="px-4 pt-1 pb-4">
+        <div className="space-y-1">
+          {prefixes.map((p) => {
+            const parts = p.split('/').filter(Boolean)
+            const name = parts[parts.length - 1] || p
+            return (
+              <div
+                key={p}
+                className="flex items-center justify-between px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-gradient-to-r hover:from-teal-50 hover:to-blue-50 dark:hover:from-teal-900/30 dark:hover:to-blue-900/30 hover:border-teal-300 dark:hover:border-teal-600 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md"
+                onClick={() => setCurrentPrefix(p)}
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-1.5 bg-gradient-to-br from-slate-700 to-slate-800 dark:from-slate-600 dark:to-slate-700 rounded-md">
+                    <Folder className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <div className="font-medium text-sm truncate text-slate-800 dark:text-slate-200">{name}</div>
+                </div>
+              </div>
+            )
+          })}
+
           {filteredObjects.map((obj) => (
             <div
               key={obj.key}
-              className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer"
-              onClick={() => onFileSelect(obj.key)}
+              className={`flex items-center justify-between px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md ${
+                loadingFile === obj.key
+                  ? 'bg-gradient-to-r from-blue-50 to-teal-50 dark:from-blue-900/30 dark:to-teal-900/30 border-blue-300 dark:border-blue-600'
+                  : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-slate-100 dark:hover:from-slate-800/50 dark:hover:to-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600'
+              }`}
+              onDoubleClick={() => handleFileDoubleClick(obj.key)}
             >
-              <div className="flex-1">
-                <div className="font-medium truncate">{obj.key.replace('content/', '')}</div>
-                <div className="text-sm text-muted-foreground">
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-sm truncate flex items-center gap-2 text-slate-800 dark:text-slate-200">
+                  {loadingFile === obj.key && <Loader className="h-3 w-3 animate-spin text-teal-600" />}
+                  <div className="p-1 bg-gradient-to-br from-slate-600 to-slate-700 rounded">
+                    <FileText className="h-2.5 w-2.5 text-white" />
+                  </div>
+                  {obj.key.replace(currentPrefix, '')}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   {formatFileSize(obj.size)} • {formatDate(obj.uploaded)}
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-1">
                 <Button
                   variant="ghost"
                   size="sm"
+                  className="h-7 w-7 p-0 hover:bg-slate-100 dark:hover:bg-slate-700"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    onFileDownload(obj.key);
+                    e.stopPropagation()
+                    onFileDownload(obj.key)
                   }}
+                  disabled={loadingFile === obj.key}
                 >
-                  <Download className="h-4 w-4" />
+                  <Download className="h-3 w-3" />
                 </Button>
               </div>
             </div>
           ))}
-          {filteredObjects.length === 0 && !loading && (
-            <div className="text-center text-muted-foreground py-8">
-              No files found
+          {prefixes.length === 0 && filteredObjects.length === 0 && !loading && (
+            <div className="text-center text-slate-500 dark:text-slate-400 py-8">
+              <div className="p-3 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-full w-fit mx-auto mb-3">
+                <FileText className="h-6 w-6 text-slate-400" />
+              </div>
+              <p className="text-sm font-medium">No items found</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Try adjusting your search or navigate to a different folder</p>
             </div>
           )}
           {hasMore && (
             <Button
               variant="outline"
-              onClick={() => loadObjects()}
+              onClick={() => loadListing()}
               disabled={loading}
-              className="w-full"
+              className="w-full mt-3 border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 shadow-md hover:shadow-lg transition-all duration-200"
             >
-              {loading ? 'Loading...' : 'Load More'}
+              {loading ? (
+                <>
+                  <Loader className="h-4 w-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                'Load More Files'
+              )}
             </Button>
           )}
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
