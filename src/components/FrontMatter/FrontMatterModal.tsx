@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -13,7 +13,8 @@ interface Props {
   value: Record<string, unknown>
   onCancel: () => void
   onSave: (frontmatter: Record<string, unknown>) => void
-  onGenerate: () => Promise<void>
+  // Returns generated frontmatter to be applied locally in the modal
+  onGenerate: () => Promise<Record<string, unknown> | void>
 }
 
 export function FrontMatterModal({ open, onOpenChange, value, onCancel, onSave, onGenerate }: Props) {
@@ -33,6 +34,9 @@ export function FrontMatterModal({ open, onOpenChange, value, onCancel, onSave, 
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Edit Front Matter</DialogTitle>
+          <DialogDescription className="sr-only">
+            Generate fills the fields in this dialog. Press Update to apply them to the document.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-2">
@@ -93,7 +97,18 @@ export function FrontMatterModal({ open, onOpenChange, value, onCancel, onSave, 
         <DialogFooter className="flex items-center justify-between gap-2">
           <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
           <div className="flex gap-2">
-            <Button type="button" variant="secondary" onClick={async () => { await onGenerate(); }}>Generate</Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={async () => {
+                const generated = await onGenerate();
+                if (generated && typeof generated === 'object') {
+                  setFm(generated as Partial<Frontmatter>);
+                }
+              }}
+            >
+              Generate
+            </Button>
             <Button type="button" onClick={() => onSave(fm as Record<string, unknown>)}>Update</Button>
           </div>
         </DialogFooter>

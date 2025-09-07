@@ -1,0 +1,18 @@
+name = "tanstack-portfolio-ai-generator"
+main = "src/index.ts"
+compatibility_date = "2024-06-20"
+
+[ai]
+binding = "AI"
+
+[vars]
+# Comma-separated list of allowed origins for CORS.
+# Example: "http://localhost:5173,https://rcormier.dev"
+ALLOWED_ORIGINS = "*"
+
+# Enable Workers Observability to capture logs/traces in the dashboard
+[observability]
+enabled = true
+# 0.0–1.0 sampling for traces; 1.0 = sample all
+head_sampling_rate = 1.0
+

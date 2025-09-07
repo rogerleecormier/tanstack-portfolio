@@ -1,3 +1,5 @@
+import { generateSmartFrontmatter } from './frontmatterGen';
+
 export interface ApiError {
   code: string;
   message: string;
@@ -145,13 +147,24 @@ export class ApiClient {
   }
 
   async generateFrontmatter(markdown: string) {
-    return this.request<{ frontmatter: Record<string, unknown> }>(
+    const apiResp = await this.request<{ frontmatter: Record<string, unknown> }>(
       '/generate',
       {
         method: 'POST',
         body: JSON.stringify({ markdown }),
       }
     );
+
+    if (apiResp.success) return apiResp;
+
+    // Fallback: generate smart frontmatter client-side if API is unavailable (e.g., 405/404)
+    try {
+      console.warn('Frontmatter generate API unavailable, using client-side fallback:', apiResp.error);
+      const fm = generateSmartFrontmatter(markdown);
+      return { success: true, data: { frontmatter: fm } } as ApiResponse<{ frontmatter: Record<string, unknown> }>;
+    } catch (e) {
+      return apiResp; // keep original error if fallback fails
+    }
   }
 
   async existsContent(key: string) {
@@ -184,3 +197,4 @@ export const apiClient = new ApiClient();
 export const setAccessJwt = (jwt: string) => {
   apiClient['accessJwt'] = jwt;
 };
+// Old basic helpers removed; using generateSmartFrontmatter instead.

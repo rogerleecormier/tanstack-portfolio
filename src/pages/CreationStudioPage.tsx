@@ -143,15 +143,16 @@ export function CreationStudioPage() {
     }
   };
 
-  const handleSave = async (force = false) => {
-    if (!currentFile) {
+  const handleSave = async (force = false, fileKey?: string) => {
+    const keyToUse = fileKey || currentFile;
+    if (!keyToUse) {
       setIsSaveAsOpen(true);
       return;
     }
     const fullContent = assemble(frontmatter, markdown);
     setSaveStatus('saving');
     const response = await apiClient.writeContent(
-      currentFile,
+      keyToUse,
       fullContent,
       force ? undefined : currentEtag
     );
@@ -160,6 +161,10 @@ export function CreationStudioPage() {
       setIsDirty(false);
       setSaveStatus('saved');
       setBrowserNonce((n) => n + 1);
+      // Update current file if a new key was provided
+      if (fileKey) {
+        setCurrentFile(fileKey);
+      }
       setTimeout(() => setSaveStatus('idle'), 1500);
     } else if (response.error?.code === 'etag_conflict' || response.error?.code === 'HTTP_409') {
       setConflictModal({
@@ -454,9 +459,9 @@ export function CreationStudioPage() {
         onGenerate={async () => {
           const resp = await apiClient.generateFrontmatter(markdown);
           if (resp.success && resp.data) {
-            // Replace entirely per requirement
-            setFrontmatter(resp.data.frontmatter || {});
+            return resp.data.frontmatter || {};
           }
+          return undefined;
         }}
       />
       <SaveAsModal
@@ -467,7 +472,7 @@ export function CreationStudioPage() {
         onConfirm={async (key) => {
           setCurrentFile(key);
           setIsSaveAsOpen(false);
-          await handleSave(true);
+          await handleSave(true, key);
         }}
       />
       <ConfirmDialog
