@@ -238,14 +238,12 @@ export function CreationStudioPage() {
           <div className="flex flex-col gap-2">
             {/* Enhanced Title with Targeting Theme */}
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 dark:from-slate-700 dark:via-slate-600 dark:to-slate-800 rounded-xl shadow-lg">
+              <div className="p-3 bg-gradient-to-br from-teal-600 to-blue-600 rounded-xl shadow-lg">
                 <FileText className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white" style={{fontWeight: 700}}>
-                  <span className="bg-gradient-to-r from-teal-800 to-blue-800 bg-clip-text text-transparent">
-                    Content Creation Studio
-                  </span>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white" style={{fontWeight: 700}}>
+                  Content Creation Studio
                 </h1>
                 <div className="h-1 w-32 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 rounded-full mt-1"></div>
               </div>
@@ -277,17 +275,21 @@ export function CreationStudioPage() {
                 );
               })()}
             </div>
-            {/* Enhanced File Status */}
-            {currentFile && (
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {currentFile.split('/').pop()} {isDirty && (
-                    <span className="text-orange-600 dark:text-orange-400 font-medium">• Unsaved changes</span>
-                  )}
-                </p>
-              </div>
-            )}
+            {/* Enhanced File Status - Always present to prevent layout shifts */}
+            <div className="flex items-center gap-2 min-h-[20px]">
+              {currentFile ? (
+                <>
+                  <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    {currentFile.split('/').pop()} {isDirty && (
+                      <span className="text-orange-600 dark:text-orange-400 font-medium">• Unsaved changes</span>
+                    )}
+                  </p>
+                </>
+              ) : (
+                <div className="w-1.5 h-1.5 bg-slate-300 rounded-full"></div>
+              )}
+            </div>
           </div>
           <div className="flex gap-2">
             <Button
@@ -328,21 +330,66 @@ export function CreationStudioPage() {
             </Button>
             <Button
               onClick={() => handleSave()}
-              className="bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200"
+              className="bg-teal-600 hover:bg-teal-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 min-w-[80px]"
             >
               <Save className="h-4 w-4 mr-2" />
-              {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? 'Saved!' : 'Save'}
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => setIsSaveAsOpen(true)}
-              className="text-slate-600 hover:text-slate-800 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800"
-            >
-              Save As
+              <span className="min-w-[50px] text-center">
+                {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? 'Saved!' : 'Save'}
+              </span>
             </Button>
             <Button
               variant="outline"
-              size="sm"
+              onClick={() => setIsSaveAsOpen(true)}
+              className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 transition-all duration-200"
+            >
+              Save As
+            </Button>
+            <div className="min-w-[70px]">
+              {currentFile ? (
+                <Button
+                  variant="destructive"
+                  onClick={async () => {
+                    setConfirm({
+                      open: true,
+                      message: `Move to trash?\n${currentFile}`,
+                      onConfirm: async () => {
+                        setConfirm({ open: false, message: '' });
+                        const res = await apiClient.deleteContentSoft(currentFile);
+                        if (res.success) {
+                          setMarkdown('');
+                          setFrontmatter({});
+                          setCurrentFile('');
+                          setCurrentEtag('');
+                          setIsDirty(false);
+                          setBrowserNonce((n) => n + 1);
+                        }
+                      }
+                    })
+                  }}
+                  className="bg-red-600 hover:bg-red-700 border-0 shadow-lg hover:shadow-xl transition-all duration-200 w-full"
+                >
+                  Delete
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  disabled
+                  className="border-red-200 text-red-400 cursor-not-allowed opacity-50 w-full"
+                  title="No file selected"
+                >
+                  Delete
+                </Button>
+              )}
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setTrashOpen(true)}
+              className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
+            >
+              Trash
+            </Button>
+            <Button
+              variant="outline"
               onClick={() => setIsFullscreen(!isFullscreen)}
               title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
               className="border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950 transition-all duration-200"
@@ -352,39 +399,6 @@ export function CreationStudioPage() {
               ) : (
                 <Maximize className="h-4 w-4" />
               )}
-            </Button>
-            {currentFile && (
-              <Button
-                variant="destructive"
-                onClick={async () => {
-                  setConfirm({
-                    open: true,
-                    message: `Move to trash?\n${currentFile}`,
-                    onConfirm: async () => {
-                      setConfirm({ open: false, message: '' });
-                      const res = await apiClient.deleteContentSoft(currentFile);
-                      if (res.success) {
-                        setMarkdown('');
-                        setFrontmatter({});
-                        setCurrentFile('');
-                        setCurrentEtag('');
-                        setIsDirty(false);
-                        setBrowserNonce((n) => n + 1);
-                      }
-                    }
-                  })
-                }}
-                className="bg-red-600 hover:bg-red-700 border-0 shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                Delete
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              onClick={() => setTrashOpen(true)}
-              className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
-            >
-              Trash
             </Button>
           </div>
         </div>
@@ -414,14 +428,12 @@ export function CreationStudioPage() {
             {/* Editor Header */}
             <div ref={editorHeaderRef} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-t-xl shadow-lg">
               <div className="flex items-center gap-3 p-4 border-b border-slate-200 dark:border-slate-700">
-                <div className="p-2 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 dark:from-slate-700 dark:via-slate-600 dark:to-slate-800 rounded-lg shadow-md">
+                <div className="p-2 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg shadow-md">
                   <FileText className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white" style={{fontWeight: 700}}>
-                    <span className="bg-gradient-to-r from-teal-800 to-blue-800 bg-clip-text text-transparent">
-                      Content Editor
-                    </span>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white" style={{fontWeight: 700}}>
+                    Content Editor
                   </h3>
                   <div className="h-0.5 w-16 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 rounded-full mt-1"></div>
                 </div>
@@ -515,25 +527,27 @@ export function CreationStudioPage() {
             <div className="relative flex items-center justify-between p-6 border-b border-teal-200 dark:border-teal-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm">
               <div className="absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10"></div>
               <div className="relative flex items-center gap-4">
-                <div className="p-3 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 dark:from-slate-700 dark:via-slate-600 dark:to-slate-800 rounded-xl shadow-lg">
+                <div className="p-3 bg-gradient-to-br from-teal-600 to-blue-600 rounded-xl shadow-lg">
                   <FileText className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white" style={{fontWeight: 700}}>
-                    <span className="bg-gradient-to-r from-teal-800 to-blue-800 bg-clip-text text-transparent">
-                      Fullscreen Editor
-                    </span>
+                  <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white" style={{fontWeight: 700}}>
+                    Fullscreen Editor
                   </h2>
-                  {currentFile && (
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        {currentFile.split('/').pop()} {isDirty && (
-                          <span className="text-orange-600 dark:text-orange-400 font-medium">• Unsaved changes</span>
-                        )}
-                      </p>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2 mt-1 min-h-[20px]">
+                    {currentFile ? (
+                      <>
+                        <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                          {currentFile.split('/').pop()} {isDirty && (
+                            <span className="text-orange-600 dark:text-orange-400 font-medium">• Unsaved changes</span>
+                          )}
+                        </p>
+                      </>
+                    ) : (
+                      <div className="w-1.5 h-1.5 bg-slate-300 rounded-full"></div>
+                    )}
+                  </div>
                 </div>
               </div>
               <Button

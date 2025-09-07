@@ -16,9 +16,11 @@ interface R2BrowserProps {
   onFileSelect: (key: string) => void
   onFileDownload: (key: string) => void
   refreshSignal?: number
+  navigateToPrefix?: string
+  onPrefixChanged?: (prefix: string) => void
 }
 
-export function R2Browser({ onFileSelect, onFileDownload, refreshSignal }: R2BrowserProps) {
+export function R2Browser({ onFileSelect, onFileDownload, refreshSignal, navigateToPrefix, onPrefixChanged }: R2BrowserProps) {
   const [objects, setObjects] = useState<R2Object[]>([])
   const [prefixes, setPrefixes] = useState<string[]>([])
   const [currentPrefix, setCurrentPrefix] = useState<string>('')
@@ -67,6 +69,13 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal }: R2Bro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshSignal])
 
+  useEffect(() => {
+    if (navigateToPrefix && navigateToPrefix !== currentPrefix) {
+      setCurrentPrefix(navigateToPrefix)
+      onPrefixChanged?.(navigateToPrefix)
+    }
+  }, [navigateToPrefix, currentPrefix, onPrefixChanged])
+
   const filteredObjects = objects.filter((obj) =>
     obj.key.toLowerCase().includes(searchTerm.toLowerCase())
   )
@@ -83,7 +92,7 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal }: R2Bro
     return new Date(dateString).toLocaleDateString()
   }
 
-  const handleFileDoubleClick = async (key: string) => {
+  const handleFileClick = async (key: string) => {
     setLoadingFile(key)
     try {
       await onFileSelect(key)
@@ -94,19 +103,17 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal }: R2Bro
   }
 
   return (
-    <Card className="flex flex-col bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
-      <CardHeader className="flex-shrink-0 relative bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10 border-b border-teal-200 dark:border-teal-800">
+    <Card className="flex flex-col bg-white/70 dark:bg-slate-900/70 backdrop-blur border border-slate-200/60 dark:border-slate-700/60 shadow-sm">
+      <CardHeader className="flex-shrink-0 relative border-b border-slate-200/60 dark:border-slate-700/60">
         <CardTitle className="flex items-center gap-3">
-          <div className="p-2 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 dark:from-slate-700 dark:via-slate-600 dark:to-slate-800 rounded-lg shadow-md">
+          <div className="p-2 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg shadow-md">
             <FileText className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white" style={{fontWeight: 700}}>
-              <span className="bg-gradient-to-r from-teal-800 to-blue-800 bg-clip-text text-transparent">
-                Content Browser
-              </span>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white" style={{fontWeight: 700}}>
+              Content Browser
             </h3>
-            <div className="h-0.5 w-16 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 rounded-full mt-1"></div>
+            <div className="h-0.5 w-16 bg-gradient-to-r from-teal-600 to-blue-600 rounded-full mt-1"></div>
           </div>
         </CardTitle>
         <div className="flex gap-3 mt-4">
@@ -116,13 +123,13 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal }: R2Bro
               placeholder="Search files..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 border-slate-200 dark:border-slate-700 focus:border-teal-500 dark:focus:border-teal-400"
+              className="pl-9 border-slate-200/60 dark:border-slate-700/60 focus:border-teal-500 dark:focus:border-teal-400"
             />
           </div>
           <Button
             onClick={() => loadListing(true)}
             disabled={loading}
-            className="bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-200"
+            className="bg-teal-600 hover:bg-teal-700 text-white border-0 shadow-md"
           >
             {loading ? 'Loading...' : 'Refresh'}
           </Button>
@@ -158,7 +165,7 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal }: R2Bro
             return (
               <div
                 key={p}
-                className="flex items-center justify-between px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-gradient-to-r hover:from-teal-50 hover:to-blue-50 dark:hover:from-teal-900/30 dark:hover:to-blue-900/30 hover:border-teal-300 dark:hover:border-teal-600 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md"
+                className="flex items-center justify-between px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:border-teal-300 dark:hover:border-teal-600 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md"
                 onClick={() => setCurrentPrefix(p)}
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -176,10 +183,10 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal }: R2Bro
               key={obj.key}
               className={`flex items-center justify-between px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md ${
                 loadingFile === obj.key
-                  ? 'bg-gradient-to-r from-blue-50 to-teal-50 dark:from-blue-900/30 dark:to-teal-900/30 border-blue-300 dark:border-blue-600'
-                  : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-slate-100 dark:hover:from-slate-800/50 dark:hover:to-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600'
+                  ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600'
+                  : 'hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-slate-300 dark:hover:border-slate-600'
               }`}
-              onDoubleClick={() => handleFileDoubleClick(obj.key)}
+              onClick={() => handleFileClick(obj.key)}
             >
               <div className="flex-1 min-w-0">
                 <div className="font-medium text-sm truncate flex items-center gap-2 text-slate-800 dark:text-slate-200">

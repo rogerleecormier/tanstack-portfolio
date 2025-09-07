@@ -14,10 +14,15 @@ export class ApiClient {
   private baseUrl: string;
   private accessJwt?: string;
 
-  constructor(baseUrl = '/api', accessJwt?: string) {
-    // If a production API base is provided, prefer it to avoid relying on Vite proxy
-    const envBase = (import.meta as any).env?.VITE_API_PROXY_TARGET as string | undefined;
-    this.baseUrl = envBase ? `${envBase.replace(/\/$/, '')}/api` : baseUrl;
+  constructor(accessJwt?: string) {
+    // Use remote API for all operations (supports both read and write)
+    this.baseUrl = 'https://r2-content-full.rcormier.workers.dev/api';
+
+    // Set the proxy base environment variable for backward compatibility
+    if (!(import.meta as any).env?.VITE_R2_PROXY_BASE && import.meta.env.DEV) {
+      (import.meta as any).env = { ...(import.meta as any).env, VITE_R2_PROXY_BASE: 'https://r2-content-full.rcormier.workers.dev' };
+    }
+
     this.accessJwt = accessJwt;
   }
 
@@ -66,6 +71,7 @@ export class ApiClient {
     }
   }
 
+
   async listContent(prefix?: string, cursor?: string, limit?: number) {
     const params = new URLSearchParams();
     if (prefix) params.set('prefix', prefix);
@@ -112,6 +118,13 @@ export class ApiClient {
   }
 
   async writeContent(key: string, content: string, etag?: string) {
+    console.log('API writeContent called with:', {
+      key,
+      contentLength: content.length,
+      etag,
+      url: `${this.baseUrl}/content/write`
+    });
+
     return this.request<{ etag: string }>(`/content/write`, {
       method: 'POST',
       body: JSON.stringify({ key, content, etag }),

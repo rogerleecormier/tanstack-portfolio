@@ -20,24 +20,22 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
   }, [markdown])
 
   return (
-    <Card className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
-      <CardHeader className="flex-shrink-0 relative bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10 border-b border-teal-200 dark:border-teal-800">
+    <Card className="bg-white/70 dark:bg-slate-900/70 backdrop-blur border border-slate-200/60 dark:border-slate-700/60 shadow-sm">
+      <CardHeader className="flex-shrink-0 relative border-b border-slate-200/60 dark:border-slate-700/60">
         <div className="flex items-center justify-between w-full">
           <CardTitle className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 dark:from-slate-700 dark:via-slate-600 dark:to-slate-800 rounded-lg shadow-md">
+            <div className="p-2 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg shadow-md">
               <Settings className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white" style={{fontWeight: 700}}>
-                <span className="bg-gradient-to-r from-teal-800 to-blue-800 bg-clip-text text-transparent">
-                  Front Matter
-                </span>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white" style={{fontWeight: 700}}>
+                Front Matter
               </h3>
-              <div className="h-0.5 w-20 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 rounded-full mt-1"></div>
+              <div className="h-0.5 w-16 bg-gradient-to-r from-teal-600 to-blue-600 rounded-full mt-1"></div>
             </div>
           </CardTitle>
           <button
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white rounded-md transition-all duration-200 shadow-sm hover:shadow-md"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-teal-600 hover:bg-teal-700 text-white rounded-md shadow-sm"
             onClick={onEdit}
           >
             <Edit3 className="h-3 w-3" />
