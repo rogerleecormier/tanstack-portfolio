@@ -44,10 +44,10 @@ const ToolbarButton = React.memo<ToolbarButtonProps>(({ onClick, isActive, child
     variant="ghost"
     size="sm"
     onClick={onClick}
-    className={`rounded-lg border border-transparent hover:border-teal-200/50 dark:hover:border-teal-700/50 transition-all duration-200 ${
+    className={`rounded-lg border border-slate-200/30 dark:border-slate-700/30 hover:border-slate-300/60 dark:hover:border-slate-600/60 shadow-sm hover:shadow-md transition-all duration-200 bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-700/60 ${
       isActive
-        ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white border-teal-500 dark:border-teal-600'
-        : 'hover:bg-teal-100/80 hover:text-teal-700 dark:hover:bg-teal-800/50 dark:hover:text-teal-300'
+        ? 'bg-teal-600 text-white border-teal-600 dark:border-teal-500 shadow-md'
+        : 'hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300'
     } ${className}`}
   >
     {children}
@@ -191,7 +191,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
   return (
     <div className="h-full flex flex-col bg-white/50 dark:bg-slate-900/50">
       {/* Enhanced Toolbar with Brand Theme */}
-      <div className="border-b border-teal-200/30 dark:border-teal-700/30 p-4 flex flex-wrap gap-2 flex-shrink-0 bg-gradient-to-r from-teal-50/40 to-blue-50/40 dark:from-teal-900/30 dark:to-blue-900/30 backdrop-blur-sm">
+      <div className="border-b border-slate-200/60 dark:border-slate-700/60 p-4 flex flex-wrap gap-2 flex-shrink-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
           isActive={editor?.isActive('heading', { level: 1 }) || false}
@@ -227,28 +227,24 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleStrike().run()}
           isActive={editor?.isActive('strike') || false}
-          className="hover:border-red-200/50 dark:hover:border-red-700/50 hover:bg-red-100/80 hover:text-red-700 dark:hover:bg-red-900/50 dark:hover:text-red-300"
         >
           <Strikethrough className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleBulletList().run()}
           isActive={editor?.isActive('bulletList') || false}
-          className="hover:border-green-200/50 dark:hover:border-green-700/50 hover:bg-green-100/80 hover:text-green-700 dark:hover:bg-green-900/50 dark:hover:text-green-300"
         >
           <List className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleOrderedList().run()}
           isActive={editor?.isActive('orderedList') || false}
-          className="hover:border-green-200/50 dark:hover:border-green-700/50 hover:bg-green-100/80 hover:text-green-700 dark:hover:bg-green-900/50 dark:hover:text-green-300"
         >
           <ListOrdered className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           isActive={editor?.isActive('blockquote') || false}
-          className="hover:border-purple-200/50 dark:hover:border-purple-700/50 hover:bg-purple-100/80 hover:text-purple-700 dark:hover:bg-purple-900/50 dark:hover:text-purple-300"
         >
           <Quote className="h-4 w-4" />
         </ToolbarButton>
@@ -262,34 +258,30 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <ToolbarButton
           onClick={addLink}
           isActive={editor?.isActive('link') || false}
-          className="hover:border-blue-200/50 dark:hover:border-blue-700/50 hover:bg-blue-100/80 hover:text-blue-700 dark:hover:bg-blue-900/50 dark:hover:text-blue-300"
         >
           <LinkIcon className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={addImage}
           isActive={false}
-          className="hover:border-orange-200/50 dark:hover:border-orange-700/50 hover:bg-orange-100/80 hover:text-orange-700 dark:hover:bg-orange-900/50 dark:hover:text-orange-300"
         >
           <ImageIcon className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           isActive={editor?.isActive('codeBlock') || false}
-          className="hover:border-purple-200/50 dark:hover:border-purple-700/50 hover:bg-purple-100/80 hover:text-purple-700 dark:hover:bg-purple-900/50 dark:hover:text-purple-300"
         >
           <Code className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
           isActive={false}
-          className="hover:border-indigo-200/50 dark:hover:border-indigo-700/50 hover:bg-indigo-100/80 hover:text-indigo-700 dark:hover:bg-indigo-900/50 dark:hover:text-indigo-300"
         >
           <TableIcon className="h-4 w-4" />
         </ToolbarButton>
       </div>
       {/* Editor Content Area */}
-      <div className="flex-1 bg-gradient-to-br from-white/80 to-slate-50/30 dark:from-slate-800/80 dark:to-slate-900/30 overflow-hidden">
+      <div className="flex-1 bg-white/90 dark:bg-slate-900/90 overflow-hidden">
         {editor && (
           <EditorContent
             editor={editor}
