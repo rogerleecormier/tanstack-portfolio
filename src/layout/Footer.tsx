@@ -8,7 +8,7 @@ import { Logo } from '@/components/Logo'
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-t border-slate-600/30 relative min-h-[28rem] [content-visibility:auto] [contain-intrinsic-size:28rem]">
+    <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-t border-slate-600/30 relative min-h-[28rem]">
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Footer Content */}

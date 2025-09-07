@@ -7,6 +7,7 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { TrashModal } from '../components/TrashModal';
 import { R2Browser } from '../components/R2/R2Browser';
 import { Button } from '../components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { apiClient } from '../lib/api';
@@ -31,7 +32,9 @@ export function CreationStudioPage() {
     options: Array<{ label: string; action: () => void }>;
   }>({ open: false, message: '', options: [] });
   const [browserNonce, setBrowserNonce] = useState(0);
-  const [leftHeight, setLeftHeight] = useState<number>(0);
+  // Start with a reasonable height to avoid initial reflow pushing the footer
+  const [leftHeight, setLeftHeight] = useState<number>(720);
+  const [hydrating, setHydrating] = useState(true);
   const leftColRef = useRef<HTMLDivElement | null>(null);
   const editorHeaderRef = useRef<HTMLDivElement | null>(null);
   const editorWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -53,6 +56,8 @@ export function CreationStudioPage() {
 
   useEffect(() => {
     measureHeights();
+    // Allow one frame for layout, then end hydration skeleton
+    requestAnimationFrame(() => setHydrating(false));
     const onResize = () => measureHeights();
     window.addEventListener('resize', onResize);
     let ro: ResizeObserver | undefined;
@@ -393,7 +398,7 @@ export function CreationStudioPage() {
         </div>
       </div>
       {/* Main Content Area: content browser + front matter define height */}
-      <div className="flex-1 p-6 min-h-0" data-content-area>
+      <div className="flex-1 p-6 min-h-[70vh]" data-content-area>
         <div className="grid grid-cols-12 gap-6 items-start">
           {/* Left Panel - Content Browser & Frontmatter */}
           <div ref={leftColRef} className="col-span-12 lg:col-span-4 flex flex-col gap-6 min-h-0">
@@ -436,12 +441,22 @@ export function CreationStudioPage() {
                 minHeight: '200px'
               }}
             >
-              <div className="h-full overflow-auto">
-                <MarkdownHtmlEditor
-                  initialMarkdown={markdown}
-                  onChange={handleMarkdownChange}
-                />
-              </div>
+              {hydrating ? (
+                <div className="p-4 space-y-3">
+                  <Skeleton className="h-8 w-1/3" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-64 w-full" />
+                </div>
+              ) : (
+                <div className="h-full overflow-auto">
+                  <MarkdownHtmlEditor
+                    initialMarkdown={markdown}
+                    onChange={handleMarkdownChange}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

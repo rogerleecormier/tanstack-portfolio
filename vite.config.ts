@@ -16,6 +16,8 @@ export default defineConfig(({ mode }) => {
   },
   define: {
     'import.meta.env.VITE_BLOG_RECOMMENDATIONS_URL': JSON.stringify('https://blog-recommendations.rcormier.workers.dev'),
+    'import.meta.env.VITE_AI_WORKER_URL': JSON.stringify('https://tanstack-portfolio-ai-generator.rcormier.workers.dev'),
+    'import.meta.env.VITE_R2_PROXY_BASE': JSON.stringify('https://r2-content-proxy.rcormier.workers.dev'),
   },
   build: {
     minify: 'terser',

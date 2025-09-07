@@ -127,7 +127,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
       const docSize = editor.state.doc.content.size;
       const clampedFrom = Math.min(from, docSize);
       const clampedTo = Math.min(to, docSize);
-      editor.chain().setTextSelection({ from: clampedFrom, to: clampedTo }).focus().run();
+      editor?.chain().setTextSelection({ from: clampedFrom, to: clampedTo }).focus().run();
     });
   }, [editor, initialMarkdown]);
 
@@ -154,7 +154,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
     }
 
     if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      editor?.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
 
@@ -223,7 +223,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
           <Italic className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleStrike().run()}
+          onClick={() => editor?.chain().focus().toggleStrike().run()}
           isActive={editor?.isActive('strike') || false}
         >
           <Strikethrough className="h-4 w-4" />
@@ -241,13 +241,13 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
           <ListOrdered className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          onClick={() => editor?.chain().focus().toggleBlockquote().run()}
           isActive={editor?.isActive('blockquote') || false}
         >
           <Quote className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          onClick={() => editor?.chain().focus().setHorizontalRule().run()}
           isActive={false}
         >
           <Minus className="h-4 w-4" />
@@ -265,7 +265,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
           <ImageIcon className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
           isActive={editor?.isActive('codeBlock') || false}
         >
           <Code className="h-4 w-4" />

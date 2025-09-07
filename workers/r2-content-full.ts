@@ -60,6 +60,8 @@ export default {
           return await handleList(request, env)
         } else if (apiPath === 'content/exists' && method === 'GET') {
           return await handleExists(request, env)
+        } else if (apiPath === 'generate' && method === 'POST') {
+          return await handleGenerate(request, env)
         }
       }
 
@@ -537,6 +539,74 @@ async function handleLegacyList(request: Request, env: Env): Promise<Response> {
         'Access-Control-Allow-Origin': '*',
       },
     })
+  }
+}
+
+// Handle POST /api/generate
+async function handleGenerate(request: Request): Promise<Response> {
+  try {
+    const { markdown } = await request.json()
+
+    if (!markdown || typeof markdown !== 'string') {
+      return new Response(JSON.stringify({ error: 'Markdown content required' }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, CF-Access-Jwt-Assertion',
+        },
+      })
+    }
+
+    // Simple heuristic-based frontmatter generation (fallback when AI worker is not available)
+    const frontmatter = generateBasicFrontmatter(markdown)
+
+    return new Response(JSON.stringify({ frontmatter }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, CF-Access-Jwt-Assertion',
+      },
+    })
+  } catch (error) {
+    console.error('Generate error:', error)
+    return new Response(JSON.stringify({ error: 'Failed to generate frontmatter' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, CF-Access-Jwt-Assertion',
+      },
+    })
+  }
+}
+
+// Simple frontmatter generation fallback
+function generateBasicFrontmatter(markdown: string): Record<string, unknown> {
+  // Extract title from first H1
+  const titleMatch = markdown.match(/^#\s+(.+)$/m)
+  const title = titleMatch ? titleMatch[1].trim() : 'Untitled'
+
+  // Extract first paragraph as description
+  const descMatch = markdown.match(/\n\n(.+?)\n\n/)
+  const description = descMatch ? descMatch[1].trim().slice(0, 200) : 'No description available'
+
+  // Basic tags based on content
+  const tags = ['blog']
+  if (markdown.includes('code') || markdown.includes('```')) tags.push('technical')
+  if (markdown.includes('project') || markdown.includes('implementation')) tags.push('project')
+  if (markdown.includes('guide') || markdown.includes('tutorial')) tags.push('tutorial')
+
+  return {
+    title: title.slice(0, 80),
+    description: description.slice(0, 220),
+    tags,
+    draft: true,
+    date: new Date().toISOString().split('T')[0]
   }
 }
 
