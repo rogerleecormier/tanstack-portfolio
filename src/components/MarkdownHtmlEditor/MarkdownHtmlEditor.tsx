@@ -53,7 +53,7 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
   return (
     <div
       ref={editorRef}
-      className="h-full min-h-0 flex flex-col rounded-xl border border-slate-200/60 dark:border-slate-700/50 bg-white/70 dark:bg-slate-900/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm"
+      className="h-full min-h-0 flex flex-col rounded-xl border border-slate-200/60 dark:border-slate-700/60 bg-white/70 dark:bg-slate-900/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 overflow-hidden"
     >
       {/* Toolbar */}
       <div className="flex-shrink-0 border-b border-slate-200/60 dark:border-slate-700/60">
@@ -136,11 +136,11 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
       </div>
 
       {/* Editor Content Area */}
-      <div className="flex-1 min-h-0 p-4 overflow-visible">
+      <div className="flex-1 min-h-0 p-4 overflow-hidden">
         <div className={`grid gap-6 h-full min-h-0 ${showPreview ? 'md:grid-cols-2 grid-cols-1' : 'grid-cols-1'}`}>
           <div className="flex flex-col min-h-0 min-w-0">
             {/* Editor Container with Enhanced Styling */}
-            <div className="flex-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60 bg-white/70 dark:bg-slate-900/70 backdrop-blur overflow-visible shadow-sm">
+            <div className="flex-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60 bg-white/70 dark:bg-slate-900/70 backdrop-blur overflow-hidden">
               {/* Editor Mode Indicator */}
               <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200/60 dark:border-slate-700/60">
                 <div className="flex items-center gap-2">
@@ -168,7 +168,7 @@ export function MarkdownHtmlEditor({ initialMarkdown = '', onChange }: MarkdownH
           {showPreview && (
             <div className="flex flex-col min-h-0 min-w-0">
               {/* Preview Container with Enhanced Styling */}
-              <div className="flex-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60 bg-white/70 dark:bg-slate-900/70 backdrop-blur overflow-visible shadow-sm">
+              <div className="flex-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60 bg-white/70 dark:bg-slate-900/70 backdrop-blur overflow-hidden">
                 {/* Preview Header */}
                 <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200/60 dark:border-slate-700/60">
                   <div className="flex items-center gap-2">

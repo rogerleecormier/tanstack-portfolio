@@ -410,9 +410,9 @@ export function CreationStudioPage() {
           {/* Right Panel - Main Editor (dynamically scales to match left panel height) */}
           <div className="col-span-12 lg:col-span-8 flex flex-col min-h-0" style={{ height: leftHeight ? `${leftHeight}px` : 'auto' }}>
             {/* Editor Header */}
-            <div ref={editorHeaderRef} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-t-xl shadow-lg">
+            <div ref={editorHeaderRef} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-t-xl">
               <div className="flex items-center gap-3 p-4 border-b border-slate-200 dark:border-slate-700">
-                <div className="p-2 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg shadow-md">
+                <div className="p-2 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg">
                   <FileText className="h-5 w-5 text-white" />
                 </div>
                 <div>
@@ -426,7 +426,7 @@ export function CreationStudioPage() {
             {/* Editor Content (dynamically scales to fill available space) */}
             <div
               ref={editorWrapperRef}
-              className="relative flex-1 overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-x border-b border-slate-200/50 dark:border-slate-700/50 rounded-b-xl shadow-lg"
+              className="relative flex-1 overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-x border-b border-slate-200/50 dark:border-slate-700/50 rounded-b-xl"
               style={{
                 minHeight: '200px'
               }}

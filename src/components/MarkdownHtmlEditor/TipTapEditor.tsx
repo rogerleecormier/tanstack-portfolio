@@ -44,9 +44,9 @@ const ToolbarButton = React.memo<ToolbarButtonProps>(({ onClick, isActive, child
     variant="ghost"
     size="sm"
     onClick={onClick}
-    className={`rounded-lg border border-slate-200/30 dark:border-slate-700/30 hover:border-slate-300/60 dark:hover:border-slate-600/60 shadow-sm hover:shadow-md transition-all duration-200 bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-700/60 ${
+    className={`rounded-lg border border-slate-200/30 dark:border-slate-700/30 hover:border-slate-300/60 dark:hover:border-slate-600/60 transition-all duration-200 bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-700/60 ${
       isActive
-        ? 'bg-teal-600 text-white border-teal-600 dark:border-teal-500 shadow-md'
+        ? 'bg-teal-600 text-white border-teal-600 dark:border-teal-500'
         : 'hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300'
     } ${className}`}
   >
@@ -189,9 +189,9 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
   }
 
   return (
-    <div className="h-full flex flex-col bg-white/50 dark:bg-slate-900/50">
+    <div className="h-full flex flex-col bg-white/70 dark:bg-slate-900/70 backdrop-blur">
       {/* Enhanced Toolbar with Brand Theme */}
-      <div className="border-b border-slate-200/60 dark:border-slate-700/60 p-4 flex flex-wrap gap-2 flex-shrink-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
+      <div className="border-b border-slate-200/60 dark:border-slate-700/60 p-4 flex flex-wrap gap-2 flex-shrink-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur">
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
           isActive={editor?.isActive('heading', { level: 1 }) || false}
@@ -213,14 +213,12 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleBold().run()}
           isActive={editor?.isActive('bold') || false}
-          className="hover:border-slate-200/50 dark:hover:border-slate-700/50 hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300"
         >
           <Bold className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleItalic().run()}
           isActive={editor?.isActive('italic') || false}
-          className="hover:border-slate-200/50 dark:hover:border-slate-700/50 hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300"
         >
           <Italic className="h-4 w-4" />
         </ToolbarButton>
@@ -251,7 +249,6 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         <ToolbarButton
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
           isActive={false}
-          className="hover:border-slate-200/50 dark:hover:border-slate-700/50 hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300"
         >
           <Minus className="h-4 w-4" />
         </ToolbarButton>
@@ -281,7 +278,7 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
         </ToolbarButton>
       </div>
       {/* Editor Content Area */}
-      <div className="flex-1 bg-white/90 dark:bg-slate-900/90 overflow-hidden">
+      <div className="flex-1 bg-white/70 dark:bg-slate-900/70 overflow-hidden">
         {editor && (
           <EditorContent
             editor={editor}
