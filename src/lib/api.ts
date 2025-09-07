@@ -147,6 +147,24 @@ export class ApiClient {
   }
 
   async generateFrontmatter(markdown: string) {
+    // Prefer dedicated AI worker if configured
+    const aiUrl = (import.meta as any).env?.VITE_AI_WORKER_URL as string | undefined;
+    if (aiUrl) {
+      try {
+        const res = await fetch(`${aiUrl.replace(/\/$/, '')}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ markdown })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          return { success: true, data } as ApiResponse<{ frontmatter: Record<string, unknown> }>;
+        }
+      } catch {
+        // fall through to default request below
+      }
+    }
+
     const apiResp = await this.request<{ frontmatter: Record<string, unknown> }>(
       '/generate',
       {
