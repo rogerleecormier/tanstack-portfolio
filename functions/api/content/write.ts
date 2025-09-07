@@ -1,6 +1,6 @@
 interface Env {
   R2_CONTENT: R2Bucket;
-  ALLOWED_PREFIX: string;
+  ALLOWED_DIRS?: string;
   MAX_FILE_BYTES: string;
 }
 
@@ -18,9 +18,22 @@ export async function onRequest(context: { request: Request; env: Env }) {
       return Response.json({ error: 'Key and content required' }, { status: 400 });
     }
 
-    // Security: Ensure key is under allowed path
-    if (!key.startsWith(env.ALLOWED_PREFIX)) {
+    // Security: Ensure key is under allowed directories and filename is safe
+    const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const isAllowed = allowedDirs.some((d) => key === `${d}` || key.startsWith(`${d}/`));
+    if (!isAllowed) {
       return Response.json({ error: 'Invalid key' }, { status: 400 });
+    }
+
+    // Validate filename part: only allow a-zA-Z0-9-_ and .md extension
+    const fileName = key.split('/').pop() || '';
+    const safeNameRegex = /^[a-zA-Z0-9-_]{3,64}\.md$/;
+    if (!safeNameRegex.test(fileName)) {
+      return Response.json({ error: 'Invalid filename' }, { status: 400 });
     }
 
     // Size check

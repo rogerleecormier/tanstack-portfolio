@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import RedesignedSearch from "../components/RedesignedSearch";
@@ -93,6 +93,9 @@ const Header: React.FC = () => {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Login to Your Account</DialogTitle>
+            <DialogDescription>
+              Enter your credentials to access your account and manage your content.
+            </DialogDescription>
           </DialogHeader>
           <LoginPage onClose={handleCloseLogin} />
         </DialogContent>

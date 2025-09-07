@@ -58,6 +58,37 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 - **Vite**: Fast build tool and development server
 - **ESLint**: Code quality and consistency
 - **PostCSS**: CSS processing and optimization
+
+## Content Studio Dev & Deploy (R2 Proxy + Pages)
+
+The Content Creation Studio reads/lists from an R2 proxy worker and writes via Cloudflare Pages Functions.
+
+1) Deploy the R2 content proxy worker (one-time)
+- `wrangler login`
+- `wrangler deploy -c wrangler/wrangler-r2-proxy.toml --env production`
+- Verify: `https://r2-content-proxy.<your-domain>.workers.dev/_list?prefix=blog/`
+
+2) Configure the app for reads via the proxy
+- Create `.env.local` in the repo root:
+  - `VITE_R2_PROXY_BASE=https://r2-content-proxy.<your-domain>.workers.dev`
+
+3) Choose write target
+- Local Functions (dev):
+  - `npm run dev:functions` (Pages Functions on :8788; binds `R2_CONTENT`)
+  - `npm run dev:web` (Vite dev; proxies `/api` to :8788)
+- Production Functions:
+  - `npm run deploy:pages`
+  - Add in `.env.local`: `VITE_API_PROXY_TARGET=https://<your-pages-project>.pages.dev`
+
+4) Run the app
+- `npm run dev:web` or `npm run dev:full`
+- Header badges indicate backend:
+  - `Read: R2 Proxy` vs `Read: Functions`
+  - `Write: Prod API` vs `Write: Local API`
+
+5) Production bindings (Cloudflare Pages)
+- R2 binding: `R2_CONTENT` → `tanstack-portfolio-r2`
+- Env vars: `ALLOWED_DIRS=blog,portfolio,projects`, `MAX_FILE_BYTES=1048576`
 - **Autoprefixer**: CSS vendor prefixing
 
 ## 📁 Project Structure

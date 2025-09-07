@@ -8,7 +8,7 @@ import { Logo } from '@/components/Logo'
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-t border-slate-600/30 relative">
+    <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-t border-slate-600/30 relative min-h-[28rem]">
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Footer Content */}
@@ -78,7 +78,7 @@ export default function Footer() {
         </div>
 
         {/* Newsletter Section - Clean design */}
-        <div className="mb-8 p-8 bg-slate-800/50 rounded-2xl border border-slate-600/30 backdrop-blur-sm">
+        <div className="mb-8 p-8 bg-slate-800/50 rounded-2xl border border-slate-600/30 backdrop-blur-sm min-h-[12rem]">
           <div className="text-center mb-6">
             <H4 className="text-white !mt-0 text-lg font-semibold mb-2">
               Stay Updated with Strategic Insights

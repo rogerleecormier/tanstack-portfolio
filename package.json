@@ -10,7 +10,12 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit",
     "test-cloudflare": "node scripts/test-cloudflare-access.js",
-    "deploy-branch": "npm run build && echo 'Branch built successfully. Push to GitHub to deploy.'"
+    "deploy-branch": "npm run build && echo 'Branch built successfully. Push to GitHub to deploy.'",
+    "dev:web": "vite",
+    "dev:functions": "wrangler pages dev . --port 8788 --r2 R2_CONTENT=tanstack-portfolio-r2 --binding ALLOWED_DIRS=blog,portfolio,projects --binding MAX_FILE_BYTES=1048576",
+    "dev:full": "concurrently -n WEB,API -c green,blue \"npm:dev:web\" \"npm:dev:functions\"",
+    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name tanstack-portfolio",
+    "deploy:worker:proxy": "wrangler publish -c wrangler/wrangler-r2-proxy.toml --env production"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.3.4",
@@ -78,6 +83,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "@cloudflare/workers-types": "^4.20241218.0",
     "@eslint/js": "^9.30.1",
     "@tanstack/react-query-devtools": "^5.85.3",

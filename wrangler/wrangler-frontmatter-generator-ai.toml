@@ -1,0 +1,18 @@
+name = "tanstack-portfolio-ai-generator"
+# Entry file path is relative to this config file's directory
+main = "../workers/ai-generator.ts"
+compatibility_date = "2024-06-20"
+
+[ai]
+binding = "AI"
+
+[vars]
+# Comma-separated list of allowed origins for CORS.
+# Set this to your dev/prod app origins to avoid CORS issues.
+# Example: "http://localhost:5173,https://rcormier.dev"
+ALLOWED_ORIGINS = "http://localhost:5173,https://rcormier.dev,https://*.tanstack-portfolio.pages.dev"
+
+[observability]
+enabled = true
+# 0.0-1.0 sampling for traces; 1.0 = sample all
+head_sampling_rate = 1.0

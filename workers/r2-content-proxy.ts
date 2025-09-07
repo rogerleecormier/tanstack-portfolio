@@ -1,13 +1,15 @@
+/// <reference types="@cloudflare/workers-types" />
+
 /**
  * R2 Content Proxy Worker
- * 
+ *
  * This worker serves content from your R2 bucket with proper CORS headers
  * to resolve the CORS issue when fetching from files.rcormier.dev
  */
 
-export interface Env {
-  PORTFOLIO_CONTENT: R2Bucket
-  PORTFOLIO_CONTENT_PREVIEW: R2Bucket
+interface Env {
+  PORTFOLIO_CONTENT: R2Bucket;
+  PORTFOLIO_CONTENT_PREVIEW: R2Bucket;
 }
 
 export default {
@@ -29,6 +31,58 @@ export default {
     try {
       const url = new URL(request.url)
       const path = url.pathname
+
+      // Utility to send JSON with CORS
+      const json = (data: unknown, status = 200) =>
+        new Response(JSON.stringify(data), {
+          status,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Access-Control-Allow-Credentials': 'false',
+          },
+        })
+
+      // Provide a lightweight listing endpoint for clients that need folder traversal
+      // GET /_list?prefix=blog/ (returns { prefixes, objects })
+      if (request.method === 'GET' && path === '/_list') {
+        const prefix = url.searchParams.get('prefix') || ''
+        const limit = Math.min(parseInt(url.searchParams.get('limit') || '1000'), 1000)
+
+        // Validate allowed roots
+        const allowed = ['blog/', 'portfolio/', 'projects/', 'trash/', '']
+        if (!allowed.some((p) => prefix === p || prefix.startsWith(p))) {
+          return json({ error: 'Invalid prefix' }, 400)
+        }
+
+        // Root: just return top-level folders
+        if (!prefix) {
+          return json({ prefixes: ['blog/', 'portfolio/', 'projects/'], objects: [] })
+        }
+
+        const res = await env.PORTFOLIO_CONTENT.list({ prefix, limit })
+
+        // Files in current directory (no extra slash after prefix)
+        const objects = res.objects
+          .filter((o) => o.key.endsWith('.md'))
+          .filter((o) => !o.key.slice(prefix.length).includes('/'))
+          .map((o) => ({ key: o.key, size: o.size, uploaded: o.uploaded?.toISOString?.() || new Date().toISOString(), etag: o.etag }))
+
+        // Immediate subfolders
+        const set = new Set<string>()
+        for (const o of res.objects) {
+          const rest = o.key.slice(prefix.length)
+          const idx = rest.indexOf('/')
+          if (idx > -1) {
+            const seg = rest.slice(0, idx)
+            if (seg) set.add(`${prefix}${seg}/`)
+          }
+        }
+        const prefixes = Array.from(set)
+        return json({ prefixes, objects })
+      }
 
       // Only allow GET and HEAD requests
       if (request.method !== 'GET' && request.method !== 'HEAD') {
@@ -97,8 +151,8 @@ export default {
       headers.set('Cache-Control', 'public, max-age=3600, s-maxage=86400')
       headers.set('ETag', object.httpEtag)
       
-      if (object.httpMetadata?.lastModified) {
-        headers.set('Last-Modified', object.httpMetadata.lastModified)
+      if (object.uploaded) {
+        headers.set('Last-Modified', object.uploaded.toUTCString())
       }
 
       // Return the object with headers

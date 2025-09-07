@@ -1,0 +1,35 @@
+name = "r2-content-full"
+main = "../workers/r2-content-full.ts"
+compatibility_date = "2024-01-01"
+
+# Environment variables
+[vars]
+ALLOWED_DIRS = "blog,portfolio,projects"
+MAX_FILE_BYTES = "1048576"
+
+# R2 bucket bindings
+[[r2_buckets]]
+binding = "PORTFOLIO_CONTENT"
+bucket_name = "tanstack-portfolio-r2"
+preview_binding = "PORTFOLIO_CONTENT_PREVIEW"
+
+# Production environment
+[env.production]
+name = "r2-content-full"
+route = "r2-content-proxy.rcormier.workers.dev/*"
+
+# Production R2 bucket bindings
+[[env.production.r2_buckets]]
+binding = "PORTFOLIO_CONTENT"
+bucket_name = "tanstack-portfolio-r2"
+
+# Development environment
+[env.development]
+name = "r2-content-full-dev"
+route = "r2-content-proxy-dev.rcormier.workers.dev/*"
+
+# Development R2 bucket bindings
+[[env.development.r2_buckets]]
+binding = "PORTFOLIO_CONTENT"
+bucket_name = "tanstack-portfolio-r2"
+preview_binding = "PORTFOLIO_CONTENT_PREVIEW"
