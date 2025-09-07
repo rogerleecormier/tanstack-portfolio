@@ -21,8 +21,8 @@ function stripCode(md: string): string {
 
 function stripMdFormatting(md: string): string {
   return md
-    .replace(/!\[[^\]]*\]\([^\)]+\)/g, '') // images
-    .replace(/\[[^\]]*\]\([^\)]+\)/g, '$1') // links -> text
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, '') // images
+    .replace(/\[[^\]]*\]\([^)]+\)/g, '$1') // links -> text
     .replace(/[*_~>#-]/g, ' ') // markdown punctuation
     .replace(/<[^>]+>/g, ' '); // html tags
 }
@@ -42,7 +42,7 @@ function sentenceSplit(text: string): string[] {
 function tokenize(text: string): string[] {
   return text
     .toLowerCase()
-    .replace(/[^a-z0-9\s\-]/g, ' ')
+    .replace(/[^a-z0-9\s-]/g, ' ')
     .split(/\s+/)
     .map(t => t.trim())
     .filter(t => t && !STOPWORDS.has(t) && /[a-z]/.test(t) && t.length >= 3);
@@ -95,7 +95,7 @@ export function generateSmartFrontmatter(markdown: string): Record<string, unkno
 
   // Tags: top keywords by frequency
   const keywords = topN(Array.from(tf.entries()), 6);
-  const tags = keywords.map(k => k.replace(/[^a-z0-9\-]/g, '-')).filter(Boolean);
+  const tags = keywords.map(k => k.replace(/[^a-z0-9-]/g, '-')).filter(Boolean);
 
   // Title: prefer H1 if present & reasonable; else compose from top keywords or first strong sentence
   let title = h1 && h1.length >= 6 ? h1 : undefined;

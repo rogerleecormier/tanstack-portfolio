@@ -26,7 +26,7 @@ export async function onRequest(context: { request: Request; env: Env }) {
     const obj = await env.R2_CONTENT.get(key);
     const exists = !!obj;
     return Response.json({ exists, etag: obj?.etag });
-  } catch (e) {
+  } catch {
     return Response.json({ error: 'Failed to check' }, { status: 500 });
   }
 }

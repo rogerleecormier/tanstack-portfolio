@@ -71,12 +71,14 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                 <span className="text-xs uppercase font-semibold text-purple-700 dark:text-purple-300">Date</span>
               </div>
               <div className="text-sm text-slate-800 dark:text-slate-200">
-                {(frontmatter as any).date
-                  ? (frontmatter as any).date instanceof Date
-                    ? (frontmatter as any).date.toISOString().split('T')[0]
-                    : String((frontmatter as any).date)
-                  : 'Not set'
-                }
+                {(() => {
+                  const date = frontmatter.date;
+                  if (!date) return 'Not set';
+                  if (typeof date === 'object' && date !== null && 'toISOString' in date) {
+                    return (date as Date).toISOString().split('T')[0];
+                  }
+                  return String(date);
+                })()}
               </div>
             </div>
 

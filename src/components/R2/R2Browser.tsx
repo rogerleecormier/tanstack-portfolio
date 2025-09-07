@@ -39,14 +39,14 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal, navigat
         50
       )
       if (response.success && response.data) {
-        const data = response.data
+        const data = response.data as { objects?: unknown[]; prefixes?: unknown[]; cursor?: string }
         if (reset) {
-          setObjects(data.objects || [])
+          setObjects((data.objects || []) as R2Object[])
         } else {
-          setObjects((prev) => [...prev, ...(data.objects || [])])
+          setObjects((prev) => [...prev, ...((data.objects || []) as R2Object[])])
         }
-        setPrefixes(data.prefixes || [])
-        setCursor(data.cursor)
+        setPrefixes((data.prefixes || []) as string[])
+        setCursor(data.cursor || '')
         setHasMore(!!data.cursor)
       }
     } catch (error) {

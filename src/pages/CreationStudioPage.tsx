@@ -84,19 +84,7 @@ export function CreationStudioPage() {
     setIsDirty(true);
   }, []);
 
-  const handleFileSelect = async (key: string) => {
-    if (isDirty) {
-      setConfirm({
-        open: true,
-        message: 'You have unsaved changes. Continue without saving?',
-        onConfirm: async () => { setConfirm({ open: false, message: '' }); await doLoad(key); },
-      });
-      return;
-    }
-    await doLoad(key);
-  };
-
-  const doLoad = async (key: string) => {
+  const doLoad = useCallback(async (key: string) => {
     try {
       const response = await apiClient.readContent(key);
       if (response.success && response.data) {
@@ -122,7 +110,19 @@ export function CreationStudioPage() {
     } catch (error) {
       console.error('Failed to load file:', error);
     }
-  };
+  }, [measureHeights]);
+
+  const handleFileSelect = useCallback(async (key: string) => {
+    if (isDirty) {
+      setConfirm({
+        open: true,
+        message: 'You have unsaved changes. Continue without saving?',
+        onConfirm: async () => { setConfirm({ open: false, message: '' }); await doLoad(key); },
+      });
+      return;
+    }
+    await doLoad(key);
+  }, [isDirty, doLoad]);
 
   const handleFileDownload = async (key: string) => {
     try {
@@ -143,7 +143,7 @@ export function CreationStudioPage() {
     }
   };
 
-  const handleSave = async (force = false, fileKey?: string) => {
+  const handleSave = useCallback(async (force = false, fileKey?: string) => {
     const keyToUse = fileKey || currentFile;
     if (!keyToUse) {
       setIsSaveAsOpen(true);
@@ -199,7 +199,7 @@ export function CreationStudioPage() {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 2000);
     }
-  };
+  }, [currentFile, currentEtag, frontmatter, markdown, handleFileSelect]);
 
   const handleDownload = () => {
     const fullContent = assemble(frontmatter, markdown);
@@ -238,7 +238,7 @@ export function CreationStudioPage() {
       window.removeEventListener('beforeunload', beforeUnload);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [isDirty, isFullscreen]);
+  }, [isDirty, isFullscreen, handleSave]);
 
   return (
     <div className="flex flex-col min-h-0 h-full bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950">
@@ -467,7 +467,7 @@ export function CreationStudioPage() {
       <SaveAsModal
         open={isSaveAsOpen}
         onOpenChange={setIsSaveAsOpen}
-        initialDir={(currentFile.split('/')[0] as any) || 'blog'}
+        initialDir={(currentFile.split('/')[0] as 'blog' | 'portfolio' | 'projects') || 'blog'}
         initialName={(currentFile.split('/').pop() || '').replace(/\.md$/, '')}
         onConfirm={async (key) => {
           setCurrentFile(key);

@@ -53,7 +53,7 @@ export async function onRequest(context: { request: Request; env: Env }) {
     await env.R2_CONTENT.delete(trashKey);
 
     return Response.json({ ok: true, key: destKey });
-  } catch (e) {
+  } catch {
     return Response.json({ error: 'Failed to restore' }, { status: 500 });
   }
 }

@@ -24,7 +24,8 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
     setLoading(true)
     const res = await apiClient.listContent('trash/', undefined, 200)
     if (res.success && res.data) {
-      setItems(res.data.objects || [])
+      const data = res.data as { objects?: unknown[] }
+      setItems((data.objects || []) as Item[])
     }
     setLoading(false)
   }
@@ -37,7 +38,7 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
       await load()
       onRestored?.()
     } else if (r.error?.code === 'HTTP_409') {
-      const code = (r.error.details as any)?.code
+      const code = (r.error.details as { code?: string })?.code
       if (code === 'exists') {
         setConfirm({
           open: true,
@@ -53,7 +54,7 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
   }
 
   const toOriginal = (trashKey: string) => trashKey.split('/').slice(2).join('/')
-  const splitDir = (key: string) => (key.split('/')[0] || 'blog') as any
+  const splitDir = (key: string) => (key.split('/')[0] || 'blog') as 'blog' | 'portfolio' | 'projects'
   const baseName = (key: string) => (key.split('/').pop() || '').replace(/\.md$/, '')
 
   return (

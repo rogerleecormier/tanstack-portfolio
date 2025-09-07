@@ -5,7 +5,7 @@
 // CORS is controlled via env.ALLOWED_ORIGINS (comma-separated) or "*".
 
 export interface Env {
-  AI: any; // Workers AI binding
+  AI: { run: (model: string, options: unknown) => Promise<unknown> }; // Workers AI binding
   ALLOWED_ORIGINS?: string; // e.g., "http://localhost:5173,https://example.com" or "*"
   MODEL?: string; // optional default model id
 }
@@ -105,7 +105,7 @@ function cors(res: Response, req: Request, env: Env): Response {
   return new Response(res.body, { status: res.status, headers });
 }
 
-async function safeJson(req: Request): Promise<any | null> {
+async function safeJson(req: Request): Promise<unknown | null> {
   try { return await req.json(); } catch { return null; }
 }
 
@@ -115,7 +115,7 @@ function parseFrontmatterJson(raw: string): Record<string, unknown> | null {
     const obj = JSON.parse(cleaned);
     const title = String(obj.title || '').trim();
     const description = String(obj.description || '').trim();
-    let tags: string[] = Array.isArray(obj.tags) ? obj.tags.map((t: any) => String(t).toLowerCase()) : [];
+    let tags: string[] = Array.isArray(obj.tags) ? obj.tags.map((t: unknown) => String(t).toLowerCase()) : [];
     tags = normalizeTags(tags);
     if (!title || !description || tags.length === 0) return null;
     return { title, description, tags, draft: true };
@@ -140,8 +140,8 @@ function generateSmartFrontmatter(markdown: string): Record<string, unknown> {
   const noCode = noFm.replace(/```[\s\S]*?```/g, '').replace(/`[^`]+`/g, '');
   const h1 = (noCode.match(/^#\s+(.+)$/m) || [])[1];
   const plain = noCode
-    .replace(/!\[[^\]]*\]\([^\)]+\)/g, '')
-    .replace(/\[[^\]]*\]\([^\)]+\)/g, '$1')
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
+    .replace(/\[[^\]]*\]\([^)]+\)/g, '$1')
     .replace(/[*_~>#-]/g, ' ')
     .replace(/<[^>]+>/g, ' ');
 
@@ -161,7 +161,7 @@ function generateSmartFrontmatter(markdown: string): Record<string, unknown> {
 
 function tokenize(text: string): string[] {
   const STOP = new Set(['the','and','for','are','but','not','you','your','with','that','this','from','have','has','was','were','they','their','our','out','about','into','over','under','then','than','them','these','those','just','like','can','will','should','would','could','may','might','been','being','also','there','here','what','when','where','why','how','who','whom','which','as','on','in','of','to','by','at','it','its','we','i','a','an','or','if','is','be','do','did','does','done','up','down','across','within','between','because','so','such','only','more','most','less','least','very','every','each','per','via']);
-  return text.toLowerCase().replace(/[^a-z0-9\s\-]/g, ' ').split(/\s+/).map(t => t.trim()).filter(t => t && !STOP.has(t) && /[a-z]/.test(t) && t.length >= 3);
+  return text.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).map(t => t.trim()).filter(t => t && !STOP.has(t) && /[a-z]/.test(t) && t.length >= 3);
 }
 
 function pickSummary(scored: Array<{ s: string; score: number }>, limit: number): string {

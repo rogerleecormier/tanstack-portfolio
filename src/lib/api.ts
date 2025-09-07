@@ -21,8 +21,9 @@ export class ApiClient {
     this.baseUrl = 'https://r2-content-full.rcormier.workers.dev/api';
 
     // Set the proxy base environment variable for backward compatibility
-    if (!(import.meta as any).env?.VITE_R2_PROXY_BASE && import.meta.env.DEV) {
-      (import.meta as any).env = { ...(import.meta as any).env, VITE_R2_PROXY_BASE: 'https://r2-content-full.rcormier.workers.dev' };
+    if (!import.meta.env.VITE_R2_PROXY_BASE && import.meta.env.DEV) {
+      // Note: In production builds, this would typically be set via environment variables
+      console.warn('VITE_R2_PROXY_BASE not set, using default for development');
     }
 
     this.accessJwt = accessJwt;
@@ -35,7 +36,7 @@ export class ApiClient {
     const url = `${this.baseUrl}${endpoint}`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(options.headers as Record<string, string>),
+      ...((options.headers as Record<string, string>) || {}),
     };
 
     if (this.accessJwt) {
@@ -82,7 +83,7 @@ export class ApiClient {
     params.set('delimiter', '/');
 
     // If a proxy base is defined, use worker-based listing
-    const proxyBase = (import.meta as any).env?.VITE_R2_PROXY_BASE as string | undefined;
+    const proxyBase = import.meta.env.VITE_R2_PROXY_BASE;
     if (proxyBase) {
       try {
         const url = `${proxyBase}/_list?${params.toString()}`;
@@ -91,7 +92,7 @@ export class ApiClient {
           throw new Error(`HTTP ${res.status}`);
         }
         const data = await res.json();
-        return { success: true, data } as ApiResponse<any>;
+        return { success: true, data } as ApiResponse<unknown>;
       } catch (e) {
         return { success: false, error: { code: 'NETWORK_ERROR', message: (e as Error).message } };
       }
@@ -103,7 +104,7 @@ export class ApiClient {
   }
 
   async readContent(key: string) {
-    const proxyBase = (import.meta as any).env?.VITE_R2_PROXY_BASE as string | undefined;
+    const proxyBase = import.meta.env.VITE_R2_PROXY_BASE;
     if (proxyBase) {
       try {
         const url = `${proxyBase}/${key}?ts=${Date.now()}`;
@@ -148,7 +149,7 @@ export class ApiClient {
 
   async generateFrontmatter(markdown: string) {
     // Prefer dedicated AI worker if configured
-    const aiUrl = (import.meta as any).env?.VITE_AI_WORKER_URL as string | undefined;
+    const aiUrl = import.meta.env.VITE_AI_WORKER_URL;
     if (aiUrl) {
       try {
         const res = await fetch(`${aiUrl.replace(/\/$/, '')}/api/generate`, {
@@ -180,7 +181,7 @@ export class ApiClient {
       console.warn('Frontmatter generate API unavailable, using client-side fallback:', apiResp.error);
       const fm = generateSmartFrontmatter(markdown);
       return { success: true, data: { frontmatter: fm } } as ApiResponse<{ frontmatter: Record<string, unknown> }>;
-    } catch (e) {
+    } catch {
       return apiResp; // keep original error if fallback fails
     }
   }

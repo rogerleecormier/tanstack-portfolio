@@ -11,7 +11,6 @@ export async function onRequest(context: { request: Request; env: Env }) {
   const rawPrefix = url.searchParams.get('prefix') || '';
   const cursor = url.searchParams.get('cursor') || undefined;
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 1000);
-  const delimiter = url.searchParams.get('delimiter') || '/';
 
   const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
     .split(',')
@@ -39,9 +38,9 @@ export async function onRequest(context: { request: Request; env: Env }) {
 
   try {
     // Do a plain list without delimiter so we can derive both immediate files and subfolders
-    const result = await (env.R2_CONTENT as any).list({ prefix, cursor, limit });
+    const result = await env.R2_CONTENT.list({ prefix, cursor, limit });
 
-    const filesInCurrentDir = (result.objects as any[])
+    const filesInCurrentDir = result.objects
       .filter((obj) => {
         const key: string = obj.key;
         if (!key.endsWith('.md')) return false;
@@ -57,7 +56,7 @@ export async function onRequest(context: { request: Request; env: Env }) {
 
     // Derive immediate subfolders
     const folderSet = new Set<string>();
-    for (const obj of result.objects as any[]) {
+    for (const obj of result.objects) {
       const rest = (obj.key as string).slice(prefix.length);
       const idx = rest.indexOf('/');
       if (idx > -1) {

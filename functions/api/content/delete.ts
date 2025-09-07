@@ -38,7 +38,7 @@ export async function onRequest(context: { request: Request; env: Env }) {
     await env.R2_CONTENT.delete(key);
 
     return Response.json({ ok: true, trashKey });
-  } catch (e) {
+  } catch {
     return Response.json({ error: 'Failed to delete' }, { status: 500 });
   }
 }

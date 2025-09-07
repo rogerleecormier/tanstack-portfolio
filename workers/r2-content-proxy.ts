@@ -68,7 +68,7 @@ export default {
         const objects = res.objects
           .filter((o) => o.key.endsWith('.md'))
           .filter((o) => !o.key.slice(prefix.length).includes('/'))
-          .map((o) => ({ key: o.key, size: o.size, uploaded: o.uploaded?.toISOString?.() || new Date().toISOString(), etag: (o as any).etag }))
+          .map((o) => ({ key: o.key, size: o.size, uploaded: o.uploaded?.toISOString?.() || new Date().toISOString(), etag: o.etag }))
 
         // Immediate subfolders
         const set = new Set<string>()

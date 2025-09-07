@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import { Button } from '../ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { TooltipPortal } from '@radix-ui/react-tooltip'
 import { Eye, EyeOff, FileText, Trash2 } from 'lucide-react'
 import { TipTapEditor } from './TipTapEditor'
