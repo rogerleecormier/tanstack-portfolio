@@ -114,8 +114,8 @@ export async function rebuildAndStoreCache(env: { R2_CONTENT: R2Bucket; CONTENT_
     }
   }
 
-  // Store in KV
-  await env.CONTENT_CACHE.put('content-cache', JSON.stringify(cacheData), { expirationTtl: 3600 }) // Expire in 1 hour
+  // Store in KV without expiration - cache should persist
+  await env.CONTENT_CACHE.put('content-cache', JSON.stringify(cacheData))
 
   console.log(`Rebuilt and stored cache with ${allItems.length} items`)
   return allItems

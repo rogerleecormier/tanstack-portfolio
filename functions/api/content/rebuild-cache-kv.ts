@@ -7,9 +7,12 @@ export interface Env {
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context): Promise<Response> => {
+  console.log('KV rebuild request received')
+
   try {
-    // Optional: Add auth check or validation here (e.g., verify user session for content editor)
+    console.log('Starting KV cache rebuild...')
     const cache = await rebuildAndStoreCache({ R2_CONTENT: context.env.R2_CONTENT, CONTENT_CACHE: context.env.CONTENT_CACHE })
+    console.log(`Cache rebuild completed with ${cache.length} items`)
 
     // CORS headers for development and production
     const corsHeaders = {
@@ -24,6 +27,7 @@ export const onRequestPost: PagesFunction<Env> = async (context): Promise<Respon
       message: 'Cache rebuilt and stored in KV successfully',
       totalItems: cache.length
     }), {
+      status: 200,
       headers: {
         'Content-Type': 'application/json',
         ...corsHeaders
@@ -52,8 +56,10 @@ export const onRequestPost: PagesFunction<Env> = async (context): Promise<Respon
   }
 }
 
-// For GET, perhaps just trigger rebuild if needed, but POST is main
-export const onRequestGet: PagesFunction<Env> = async (): Promise<Response> => {
+// For GET, return status info
+export const onRequestGet: PagesFunction<Env> = async (context): Promise<Response> => {
+  console.log('GET request to KV rebuild endpoint')
+
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -61,8 +67,18 @@ export const onRequestGet: PagesFunction<Env> = async (): Promise<Response> => {
   }
 
   return new Response(JSON.stringify({
-    message: 'Use POST to rebuild cache'
+    message: 'KV Cache Rebuild Endpoint',
+    methods: {
+      POST: 'Rebuild and store cache from R2',
+      GET: 'Get endpoint info (this response)',
+      OPTIONS: 'CORS preflight'
+    },
+    usage: {
+      rebuild: 'POST /api/content/rebuild-cache-kv',
+      getInfo: 'GET /api/content/rebuild-cache-kv'
+    }
   }), {
+    status: 200,
     headers: {
       'Content-Type': 'application/json',
       ...corsHeaders
