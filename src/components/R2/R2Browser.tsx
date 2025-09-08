@@ -2,8 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog'
 import { apiClient } from '../../lib/api'
-import { FileText, Download, Search, Folder, ArrowLeft, Loader } from 'lucide-react'
+import { FileText, Download, Search, Folder, ArrowLeft, Loader, Trash2 } from 'lucide-react'
 
 interface R2Object {
   key: string
@@ -29,6 +30,9 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal, navigat
   const [cursor, setCursor] = useState<string>()
   const [hasMore, setHasMore] = useState(false)
   const [loadingFile, setLoadingFile] = useState<string | null>(null)
+  const [deletingFile, setDeletingFile] = useState<string | null>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [fileToDelete, setFileToDelete] = useState<string>('')
 
   const loadListing = useCallback(async (reset = false) => {
     setLoading(true)
@@ -101,6 +105,28 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal, navigat
       setTimeout(() => setLoadingFile(null), 300)
     }
   }
+
+  const handleFileDelete = useCallback(async (key: string) => {
+    setDeletingFile(key)
+    try {
+      const response = await apiClient.deleteContentSoft(key)
+      if (response.success) {
+        // Refresh the listing to remove the deleted file
+        await loadListing(true)
+      } else {
+        console.error('Delete failed:', response.error)
+      }
+    } catch (error) {
+      console.error('Delete failed:', error)
+    }
+    setDeletingFile(null)
+    setDeleteDialogOpen(false)
+  }, [loadListing])
+
+  const openDeleteDialog = useCallback((key: string) => {
+    setFileToDelete(key)
+    setDeleteDialogOpen(true)
+  }, [])
 
   return (
     <Card className="flex flex-col bg-white/70 dark:bg-slate-900/70 backdrop-blur border border-slate-200/60 dark:border-slate-700/60 shadow-sm">
@@ -213,6 +239,22 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal, navigat
                 >
                   <Download className="h-3 w-3" />
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    openDeleteDialog(obj.key)
+                  }}
+                  disabled={deletingFile === obj.key}
+                >
+                  {deletingFile === obj.key ? (
+                    <Loader className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-3 w-3" />
+                  )}
+                </Button>
               </div>
             </div>
           ))}
@@ -244,6 +286,47 @@ export function R2Browser({ onFileSelect, onFileDownload, refreshSignal, navigat
           )}
         </div>
       </CardContent>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Trash2 className="h-5 w-5 text-red-500" />
+              Delete File
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this file? This action cannot be undone.
+              <br />
+              <strong className="text-slate-700 dark:text-slate-300">
+                {fileToDelete.replace(currentPrefix, '')}
+              </strong>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletingFile !== null}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => handleFileDelete(fileToDelete)}
+              disabled={deletingFile !== null}
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+            >
+              {deletingFile !== null ? (
+                <>
+                  <Loader className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete File
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   )
 }

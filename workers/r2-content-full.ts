@@ -60,6 +60,8 @@ export default {
           return await handleList(request, env)
         } else if (apiPath === 'content/exists' && method === 'GET') {
           return await handleExists(request, env)
+        } else if (apiPath === 'content/delete' && method === 'POST') {
+          return await handleDelete(request, env)
         } else if (apiPath === 'generate' && method === 'POST') {
           return await handleGenerate(request, env)
         }
@@ -187,6 +189,95 @@ async function handleWrite(request: Request, env: Env): Promise<Response> {
   } catch (error) {
     console.error('Write error:', error)
     return new Response(JSON.stringify({ error: 'Failed to write object' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
+  }
+}
+
+// Handle POST /api/content/delete
+async function handleDelete(request: Request, env: Env): Promise<Response> {
+  if (request.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, CF-Access-Jwt-Assertion',
+      },
+    })
+  }
+
+  try {
+    const { key } = await request.json()
+    if (!key) {
+      return new Response(JSON.stringify({ error: 'Key required' }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+    }
+
+    const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+
+    // Security: Ensure key is under allowed directories
+    const isAllowed = allowedDirs.some((d) => key === `${d}` || key.startsWith(`${d}/`))
+    if (!isAllowed) {
+      return new Response(JSON.stringify({ error: 'Invalid key' }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+    }
+
+    // Get the original object
+    const obj = await env.PORTFOLIO_CONTENT.get(key)
+    if (!obj) {
+      return new Response(JSON.stringify({ error: 'Not found' }), {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+    }
+
+    const now = new Date().toISOString().replace(/[:.]/g, '-')
+    const trashKey = `trash/${now}/${key}`
+
+    // Copy to trash (retain original content type if available)
+    await env.PORTFOLIO_CONTENT.put(trashKey, obj.body, {
+      httpMetadata: {
+        contentType: obj.httpMetadata?.contentType || 'text/markdown; charset=utf-8',
+      },
+    })
+
+    // Delete original
+    await env.PORTFOLIO_CONTENT.delete(key)
+
+    return new Response(JSON.stringify({ ok: true, trashKey }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, CF-Access-Jwt-Assertion',
+      },
+    })
+  } catch (error) {
+    console.error('Delete error:', error)
+    return new Response(JSON.stringify({ error: 'Failed to delete' }), {
       status: 500,
       headers: {
         'Content-Type': 'application/json',

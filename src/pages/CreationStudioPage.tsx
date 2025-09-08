@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../com
 import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
-import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Settings, Database } from 'lucide-react';
+import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Archive, Database } from 'lucide-react';
 
 export function CreationStudioPage() {
   const [markdown, setMarkdown] = useState('');
@@ -351,183 +351,252 @@ export function CreationStudioPage() {
               )}
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                if (isDirty) {
-                  setConfirm({
-                    open: true,
-                    message: 'You have unsaved changes. Start a new document?',
-                    onConfirm: () => {
-                      setConfirm({ open: false, message: '' });
-                      setMarkdown('');
-                      setFrontmatter({});
-                      setCurrentFile('');
-                      setCurrentEtag('');
-                      setIsDirty(true);
-                    }
-                  });
-                } else {
-                  setMarkdown('');
-                  setFrontmatter({});
-                  setCurrentFile('');
-                  setCurrentEtag('');
-                  setIsDirty(true);
-                }
-              }}
-              className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              New
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleDownload}
-              className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 transition-all duration-200"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Download
-            </Button>
-            <Button
-              onClick={() => handleSave()}
-              className="bg-teal-600 hover:bg-teal-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 min-w-[80px]"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              <span className="min-w-[50px] text-center">
-                {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? 'Saved!' : 'Save'}
-              </span>
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setIsSaveAsOpen(true)}
-              className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 transition-all duration-200"
-            >
-              <SaveIcon className="h-4 w-4 mr-2" />
-              Save As
-            </Button>
-            {/* Cache Rebuild Control */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-              <Checkbox
-                id="rebuild-cache"
-                checked={shouldRebuildCache}
-                onCheckedChange={(checked: boolean | "indeterminate") => setShouldRebuildCache(checked === true)}
-                className="data-[state=checked]:bg-teal-600 data-[state=checked]:border-teal-600"
-              />
-              <label
-                htmlFor="rebuild-cache"
-                className="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer select-none"
-                title="Rebuild content cache on save to update search and navigation. Auto-triggers for new blog/portfolio content."
-              >
-                Rebuild Cache
-                {cacheRebuildStatus === 'rebuilding' && (
-                  <span className="text-xs text-orange-600 dark:text-orange-400 ml-1">(building...)</span>
-                )}
-                {cacheRebuildStatus === 'completed' && (
-                  <span className="text-xs text-green-600 dark:text-green-400 ml-1">(done)</span>
-                )}
-                {cacheRebuildStatus === 'error' && (
-                  <span className="text-xs text-red-600 dark:text-red-400 ml-1">(failed)</span>
-                )}
-              </label>
-              {cacheRebuildStatus !== 'idle' && (
-                <RefreshCw
-                  className={`h-4 w-4 ml-1 ${
-                    cacheRebuildStatus === 'rebuilding'
-                      ? 'animate-spin text-orange-500'
-                      : cacheRebuildStatus === 'completed'
-                        ? 'text-green-500'
-                        : 'text-red-500'
-                  }`}
-                />
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={async () => {
-                  setCacheRebuildStatus('rebuilding');
-                  try {
-                    const cacheResponse = await apiClient.rebuildCache();
-                    if (cacheResponse.success) {
-                      setCacheRebuildStatus('completed');
-                      console.log('✅ Manual cache rebuild successful');
-                    } else {
-                      setCacheRebuildStatus('error');
-                      console.error('❌ Manual cache rebuild failed:', cacheResponse.error);
-                    }
-                  } catch (error) {
-                    setCacheRebuildStatus('error');
-                    console.error('❌ Manual cache rebuild error:', error);
-                  }
-                  setTimeout(() => setCacheRebuildStatus('idle'), 3000);
-                }}
-                disabled={cacheRebuildStatus === 'rebuilding'}
-                className="h-6 w-6 p-0 ml-1 hover:bg-slate-200 dark:hover:bg-slate-700"
-                title="Rebuild cache manually"
-              >
-                <RefreshCw className={`h-3 w-3 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`} />
-              </Button>
-            </div>
-            <div className="min-w-[70px]">
-              {currentFile ? (
-                <Button
-                  variant="destructive"
-                  onClick={async () => {
-                    setConfirm({
-                      open: true,
-                      message: `Move to trash?\n${currentFile}`,
-                      onConfirm: async () => {
-                        setConfirm({ open: false, message: '' });
-                        const res = await apiClient.deleteContentSoft(currentFile);
-                        if (res.success) {
-                          setMarkdown('');
-                          setFrontmatter({});
-                          setCurrentFile('');
-                          setCurrentEtag('');
-                          setIsDirty(false);
-                          setBrowserNonce((n) => n + 1);
-                        }
+          <TooltipProvider>
+            <div className="flex items-center gap-1">
+              {/* File Operations Group */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (isDirty) {
+                        setConfirm({
+                          open: true,
+                          message: 'You have unsaved changes. Start a new document?',
+                          onConfirm: () => {
+                            setConfirm({ open: false, message: '' });
+                            setMarkdown('');
+                            setFrontmatter({});
+                            setCurrentFile('');
+                            setCurrentEtag('');
+                            setIsDirty(true);
+                          }
+                        });
+                      } else {
+                        setMarkdown('');
+                        setFrontmatter({});
+                        setCurrentFile('');
+                        setCurrentEtag('');
+                        setIsDirty(true);
                       }
-                    })
-                  }}
-                  className="bg-red-600 hover:bg-red-700 border-0 shadow-lg hover:shadow-xl transition-all duration-200 w-full"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
+                    }}
+                    className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>New Document</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownload}
+                    className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 transition-all duration-200"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Download File</TooltipContent>
+              </Tooltip>
+
+              <Separator orientation="vertical" className="h-6 mx-1" />
+
+              {/* Save & Cache Operations Group */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => handleSave()}
+                    size="sm"
+                    className="bg-teal-600 hover:bg-teal-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 px-3"
+                  >
+                    <Save className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved!' : 'Save Document'}
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsSaveAsOpen(true)}
+                    className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 transition-all duration-200"
+                  >
+                    <SaveIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Save As New File</TooltipContent>
+              </Tooltip>
+
+              {/* Cache Controls */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 px-2 py-1 h-9 bg-slate-50 dark:bg-slate-800 rounded-md border border-slate-200 dark:border-slate-700">
+                    <Checkbox
+                      id="rebuild-cache"
+                      checked={shouldRebuildCache}
+                      onCheckedChange={(checked: boolean | "indeterminate") => setShouldRebuildCache(checked === true)}
+                      className="data-[state=checked]:bg-teal-600 data-[state=checked]:border-teal-600 h-3 w-3"
+                    />
+                    <Database className="h-3 w-3 text-slate-600 dark:text-slate-400" />
+                    {cacheRebuildStatus !== 'idle' && (
+                      <RefreshCw
+                        className={`h-3 w-3 ${
+                          cacheRebuildStatus === 'rebuilding'
+                            ? 'animate-spin text-orange-500'
+                            : cacheRebuildStatus === 'completed'
+                              ? 'text-green-500'
+                              : 'text-red-500'
+                        }`}
+                      />
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="text-sm">
+                    <div className="font-medium">Rebuild Cache on Save</div>
+                    <div className="text-xs opacity-80 mt-1">
+                      Updates search and navigation cache
+                    </div>
+                    {cacheRebuildStatus === 'rebuilding' && (
+                      <div className="text-xs text-orange-500 mt-1">Building...</div>
+                    )}
+                    {cacheRebuildStatus === 'completed' && (
+                      <div className="text-xs text-green-500 mt-1">Complete</div>
+                    )}
+                    {cacheRebuildStatus === 'error' && (
+                      <div className="text-xs text-red-500 mt-1">Failed</div>
+                    )}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={async () => {
+                      setCacheRebuildStatus('rebuilding');
+                      try {
+                        const cacheResponse = await apiClient.rebuildCache();
+                        if (cacheResponse.success) {
+                          setCacheRebuildStatus('completed');
+                          console.log('✅ Manual cache rebuild successful');
+                        } else {
+                          setCacheRebuildStatus('error');
+                          console.error('❌ Manual cache rebuild failed:', cacheResponse.error);
+                        }
+                      } catch (error) {
+                        setCacheRebuildStatus('error');
+                        console.error('❌ Manual cache rebuild error:', error);
+                      }
+                      setTimeout(() => setCacheRebuildStatus('idle'), 3000);
+                    }}
+                    disabled={cacheRebuildStatus === 'rebuilding'}
+                    className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Rebuild Cache Manually</TooltipContent>
+              </Tooltip>
+
+              <Separator orientation="vertical" className="h-6 mx-1" />
+
+              {/* Management Operations Group */}
+              {currentFile ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={async () => {
+                        setConfirm({
+                          open: true,
+                          message: `Move to trash?\n${currentFile}`,
+                          onConfirm: async () => {
+                            setConfirm({ open: false, message: '' });
+                            const res = await apiClient.deleteContentSoft(currentFile);
+                            if (res.success) {
+                              setMarkdown('');
+                              setFrontmatter({});
+                              setCurrentFile('');
+                              setCurrentEtag('');
+                              setIsDirty(false);
+                              setBrowserNonce((n) => n + 1);
+                            }
+                          }
+                        })
+                      }}
+                      className="bg-red-600 hover:bg-red-700 border-0 shadow-lg hover:shadow-xl transition-all duration-200"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Delete File</TooltipContent>
+                </Tooltip>
               ) : (
-                <Button
-                  variant="outline"
-                  disabled
-                  className="border-red-200 text-red-400 cursor-not-allowed opacity-50 w-full"
-                  title="No file selected"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled
+                      className="border-red-200 text-red-400 cursor-not-allowed opacity-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>No file selected</TooltipContent>
+                </Tooltip>
               )}
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setTrashOpen(true)}
+                    className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
+                  >
+                    <Archive className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Open Archive/Trash</TooltipContent>
+              </Tooltip>
+
+              <Separator orientation="vertical" className="h-6 mx-1" />
+
+              {/* Layout Operations Group */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsFullscreen(!isFullscreen)}
+                    className="border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950 transition-all duration-200"
+                  >
+                    {isFullscreen ? (
+                      <Minimize className="h-4 w-4" />
+                    ) : (
+                      <Maximize className="h-4 w-4" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+                </TooltipContent>
+              </Tooltip>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setTrashOpen(true)}
-              className="border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Trash
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-              className="border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950 transition-all duration-200"
-            >
-              {isFullscreen ? (
-                <Minimize className="h-4 w-4" />
-              ) : (
-                <Maximize className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
+          </TooltipProvider>
         </div>
       </div>
       {/* Main Content Area: content browser + front matter define height */}
