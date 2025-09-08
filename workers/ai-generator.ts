@@ -98,11 +98,32 @@ function cors(res: Response, req: Request, env: Env): Response {
   headers.set('Access-Control-Max-Age', '86400');
   if (allowed === '*') {
     headers.set('Access-Control-Allow-Origin', '*');
-  } else if (origin && allowed.split(',').map(s => s.trim()).includes(origin)) {
+  } else if (origin && isOriginAllowed(origin, allowed)) {
     headers.set('Access-Control-Allow-Origin', origin);
     headers.set('Vary', 'Origin');
   }
   return new Response(res.body, { status: res.status, headers });
+}
+
+function isOriginAllowed(origin: string, allowedOrigins: string): boolean {
+  const allowedList = allowedOrigins.split(',').map(s => s.trim());
+
+  for (const allowed of allowedList) {
+    if (allowed === origin) {
+      return true; // Exact match
+    }
+
+    if (allowed.includes('*')) {
+      // Handle wildcard patterns like https://*.domain.com
+      const pattern = allowed.replace(/\*/g, '.*');
+      const regex = new RegExp(`^${pattern}$`);
+      if (regex.test(origin)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 async function safeJson(req: Request): Promise<unknown | null> {
