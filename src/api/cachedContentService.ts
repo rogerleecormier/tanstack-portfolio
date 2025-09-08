@@ -249,28 +249,6 @@ export class CachedContentService {
     }
   }
 
-  /**
-   * Fallback method to initialize content if JSON files are not available
-   */
-  private async fallbackInitialize() {
-    try {
-      logger.info('🔄 Attempting fallback content initialization...')
-      
-      // Try to fetch content from R2 as fallback
-      const response = await fetch('/api/content/fallback')
-      if (response.ok) {
-        const fallbackData = await response.json()
-        this.portfolioItems = fallbackData.portfolio || []
-        this.blogItems = fallbackData.blog || []
-        this.projectItems = fallbackData.projects || []
-        this.allItems = fallbackData.all || []
-        
-        logger.info(`✅ Fallback initialization successful with ${this.allItems.length} items`)
-      }
-    } catch (error) {
-      logger.error('❌ Fallback initialization failed:', error)
-    }
-  }
 
   /**
    * Search content using cached data

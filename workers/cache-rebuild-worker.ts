@@ -92,7 +92,7 @@ function getCategoryFromTags(tags: string[], fileName: string): string {
 }
 
 // Parse frontmatter (simple implementation for worker environment)
-function parseFrontmatter(content: string): { attributes: Record<string, any>; body: string } {
+function parseFrontmatter(content: string): { attributes: Record<string, unknown>; body: string } {
   try {
     const lines = content.split('\n')
     const frontmatterStart = lines.findIndex(line => line.trim() === '---')
@@ -111,12 +111,12 @@ function parseFrontmatter(content: string): { attributes: Record<string, any>; b
     const body = lines.slice(frontmatterEnd + 1).join('\n')
 
     // Simple YAML parsing
-    const attributes: Record<string, any> = {}
+    const attributes: Record<string, unknown> = {}
     for (const line of frontmatterLines) {
       const colonIndex = line.indexOf(':')
       if (colonIndex > 0) {
         const key = line.substring(0, colonIndex).trim()
-        let value: any = line.substring(colonIndex + 1).trim()
+        let value: unknown = line.substring(colonIndex + 1).trim()
 
         // Parse arrays
         if (typeof value === 'string' && value.startsWith('[') && value.endsWith(']')) {
@@ -246,7 +246,7 @@ function isAuthenticated(request: Request, env: Env): boolean {
 }
 
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -341,7 +341,7 @@ export default {
   },
 
   // Cron trigger for scheduled rebuilds
-  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+  async scheduled(_event: ScheduledEvent, env: Env): Promise<void> {
     console.log('🕒 Scheduled cache rebuild triggered')
     
     try {

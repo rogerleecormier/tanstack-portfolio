@@ -18,6 +18,22 @@ import { extractFrontMatter, assemble } from '../lib/markdown';
 import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Archive, Database } from 'lucide-react';
 import { triggerContentStudioRebuild, triggerManualRebuild, getCacheStatus } from '../utils/cacheRebuildService';
 
+// Helper function to format relative time
+function getRelativeTimeString(timestamp: string): string {
+  const now = new Date();
+  const past = new Date(timestamp);
+  const diffMs = now.getTime() - past.getTime();
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMins < 1) return 'just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return past.toLocaleDateString();
+}
+
 export function CreationStudioPage() {
   const [markdown, setMarkdown] = useState('');
   const [frontmatter, setFrontmatter] = useState<Record<string, unknown>>({});
@@ -43,7 +59,7 @@ export function CreationStudioPage() {
   const [shouldRebuildCache, setShouldRebuildCache] = useState(false);
   const [cacheRebuildStatus, setCacheRebuildStatus] = useState<'idle'|'rebuilding'|'completed'|'error'>('idle');
   const [lastSavedContent, setLastSavedContent] = useState('');
-  const [cacheStatus, setCacheStatus] = useState<{lastUpdated: string; totalItems: number} | null>(null);
+  const [cacheStatus, setCacheStatus] = useState<{lastUpdated: string; totalItems: number; trigger?: string} | null>(null);
   const leftColRef = useRef<HTMLDivElement | null>(null);
   const editorHeaderRef = useRef<HTMLDivElement | null>(null);
   const editorWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -80,7 +96,7 @@ export function CreationStudioPage() {
     };
   }, [measureHeights]);
 
-  // Load cache status on mount
+  // Load cache status on mount and refresh periodically
   useEffect(() => {
     const loadCacheStatus = async () => {
       try {
@@ -88,7 +104,8 @@ export function CreationStudioPage() {
         if (status?.cache) {
           setCacheStatus({
             lastUpdated: status.cache.lastUpdated,
-            totalItems: status.cache.totalItems
+            totalItems: status.cache.totalItems,
+            trigger: status.cache.trigger
           });
         }
       } catch (error) {
@@ -96,7 +113,13 @@ export function CreationStudioPage() {
       }
     };
     
+    // Load immediately
     loadCacheStatus();
+    
+    // Refresh every 30 seconds to keep relative time accurate
+    const interval = setInterval(loadCacheStatus, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   // Re-measure heights when content changes
@@ -225,7 +248,8 @@ export function CreationStudioPage() {
             if (cacheResponse.stats) {
               setCacheStatus({
                 lastUpdated: cacheResponse.timestamp,
-                totalItems: cacheResponse.stats.total
+                totalItems: cacheResponse.stats.total,
+                trigger: cacheResponse.trigger
               });
             }
             
@@ -496,6 +520,11 @@ export function CreationStudioPage() {
                     <div className="text-xs opacity-80 mt-1">
                       Updates search and navigation cache
                     </div>
+                    {cacheStatus && (
+                      <div className="text-xs text-slate-400 mt-1 border-t pt-1">
+                        Current: {cacheStatus.totalItems} items • {getRelativeTimeString(cacheStatus.lastUpdated)}
+                      </div>
+                    )}
                     {cacheRebuildStatus === 'rebuilding' && (
                       <div className="text-xs text-orange-500 mt-1">Building...</div>
                     )}
@@ -528,7 +557,8 @@ export function CreationStudioPage() {
                           if (cacheResponse.stats) {
                             setCacheStatus({
                               lastUpdated: cacheResponse.timestamp,
-                              totalItems: cacheResponse.stats.total
+                              totalItems: cacheResponse.stats.total,
+                              trigger: cacheResponse.trigger
                             });
                           }
                         } else {
@@ -555,8 +585,16 @@ export function CreationStudioPage() {
                     </div>
                     {cacheStatus && (
                       <div className="text-xs text-slate-400 mt-1 border-t pt-1">
-                        {cacheStatus.totalItems} items • Updated{' '}
-                        {new Date(cacheStatus.lastUpdated).toLocaleDateString()}
+                        <div>{cacheStatus.totalItems} items</div>
+                        <div>
+                          Updated {new Date(cacheStatus.lastUpdated).toLocaleDateString()}{' '}
+                          at {new Date(cacheStatus.lastUpdated).toLocaleTimeString()}
+                        </div>
+                        {cacheStatus.trigger && (
+                          <div className="text-slate-500 mt-1">
+                            Trigger: {cacheStatus.trigger}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

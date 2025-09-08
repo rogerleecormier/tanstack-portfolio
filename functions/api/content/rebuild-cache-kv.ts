@@ -57,7 +57,7 @@ export const onRequestPost: PagesFunction<Env> = async (context): Promise<Respon
 }
 
 // For GET, return status info
-export const onRequestGet: PagesFunction<Env> = async (context): Promise<Response> => {
+export const onRequestGet: PagesFunction<Env> = async (): Promise<Response> => {
   console.log('GET request to KV rebuild endpoint')
 
   const corsHeaders = {
