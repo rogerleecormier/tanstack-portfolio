@@ -10,7 +10,7 @@ binding = "AI"
 # Comma-separated list of allowed origins for CORS.
 # Set this to your dev/prod app origins to avoid CORS issues.
 # Example: "http://localhost:5173,https://rcormier.dev"
-ALLOWED_ORIGINS = "http://localhost:5173,https://rcormier.dev,https://*.tanstack-portfolio.pages.dev"
+ALLOWED_ORIGINS = "http://localhost:5173,https://*.rcormier.dev,https://*.tanstack-portfolio.pages.dev"
 
 [observability]
 enabled = true

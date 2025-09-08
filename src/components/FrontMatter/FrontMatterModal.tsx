@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -30,8 +30,35 @@ export function FrontMatterModal({ open, onOpenChange, value, onCancel, onSave, 
     setFm((prev) => ({ ...prev, [key]: v }))
   }
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+  const scrollbarWidthRef = useRef(0);
+
+  useEffect(() => {
+    if (open) {
+      // Calculate scrollbar width
+      const outer = document.createElement('div');
+      outer.style.visibility = 'hidden';
+      outer.style.overflow = 'scroll';
+      outer.style.width = '100px';
+      outer.style.height = '100px';
+      document.body.appendChild(outer);
+      const inner = document.createElement('div');
+      inner.style.width = '100%';
+      inner.style.height = '100%';
+      outer.appendChild(inner);
+      scrollbarWidthRef.current = outer.offsetWidth - inner.offsetWidth;
+      outer.parentNode?.removeChild(outer);
+
+      // Apply to html element
+      document.documentElement.style.paddingRight = `${scrollbarWidthRef.current}px`;
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.documentElement.style.paddingRight = '';
+      document.documentElement.style.overflow = '';
+    }
+  }, [open]);
+
+   return (
+     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950">
         {/* Enhanced Header with Brand Theme */}
         <div className="relative border-b border-teal-200 dark:border-teal-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-t-lg">
