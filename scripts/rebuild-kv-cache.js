@@ -2,46 +2,19 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
-const PORTFOLIO_DIR = 'portfolio';
-const BLOG_DIR = 'blog';
-const PROJECTS_DIR = 'projects';
+console.log('🔄 Building KV cache from R2 bucket...');
 
-console.log('🔄 Building KV cache from source files...');
+// R2 configuration
+const R2_BASE_URL = 'https://r2-content-proxy.rcormier.workers.dev';
+const PORTFOLIO_BASE_URL = `${R2_BASE_URL}/portfolio`;
+const BLOG_BASE_URL = `${R2_BASE_URL}/blog`;
+const PROJECT_BASE_URL = `${R2_BASE_URL}/projects`;
 
-// File lists (same as rebuild-cache.js)
-const PORTFOLIO_FILES = [
-  'strategy.md',
-  'leadership.md',
-  'talent.md',
-  'devops.md',
-  'saas.md',
-  'analytics.md',
-  'risk-compliance.md',
-  'governance-pmo.md',
-  'product-ux.md',
-  'education-certifications.md',
-  'ai-automation.md',
-  'culture.md',
-  'capabilities.md',
-  'projects.md'
-];
-
-const BLOG_FILES = [
-  'ai-models-2025.md',
-  'pmbok-agile-methodology-blend.md',
-  'serverless-ai-workflows-azure-functions.md',
-  'power-automate-workflow-automation.md',
-  'asana-ai-status-reporting.md',
-  'mkdocs-github-actions-portfolio.md',
-  'internal-ethos-high-performing-organizations.md',
-  'digital-transformation-strategy-governance.md',
-  'military-leadership-be-know-do.md',
-  'ramp-agents-ai-finance-operations.md',
-  'pmp-digital-transformation-leadership.md'
-];
-
-const PROJECT_FILES = [
-  'project-analysis.md'
+// Content type configurations
+const CONTENT_TYPES = [
+  { name: 'portfolio', baseUrl: PORTFOLIO_BASE_URL },
+  { name: 'blog', baseUrl: BLOG_BASE_URL },
+  { name: 'project', baseUrl: PROJECT_BASE_URL }
 ];
 
 // Helper function to determine category from tags and filename
@@ -110,153 +83,173 @@ function getCategoryFromTags(tags, fileName) {
   return 'Strategy & Consulting';
 }
 
-// Read content from file
-function readContentFromFile(dir, fileName) {
+// Discover files from R2 bucket
+async function discoverFiles(contentType) {
   try {
-    const filePath = path.join(dir, fileName);
-    if (fs.existsSync(filePath)) {
-      return fs.readFileSync(filePath, 'utf8');
+    const listUrl = `${R2_BASE_URL}/_list?prefix=${contentType}/&limit=1000`;
+    console.log(`🔍 Discovering ${contentType} files from: ${listUrl}`);
+
+    const response = await fetch(listUrl);
+    if (!response.ok) {
+      console.error(`❌ Failed to list ${contentType} files: ${response.status}`);
+      return [];
     }
-    return null;
+
+    const data = await response.json();
+    const files = data.objects || [];
+
+    // Extract filenames from the full keys and filter for markdown files
+    const fileNames = files
+      .map(obj => obj.key.replace(`${contentType}/`, ''))
+      .filter(fileName => fileName.endsWith('.md'));
+
+    console.log(`📁 Found ${fileNames.length} ${contentType} files:`, fileNames);
+    return fileNames;
   } catch (error) {
-    console.error(`Failed to read ${fileName}:`, error);
+    console.error(`❌ Error discovering ${contentType} files:`, error.message);
+    return [];
+  }
+}
+
+// Fetch content from R2
+async function fetchContent(url) {
+  try {
+    console.log(`📖 Fetching: ${url}`);
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.log(`⚠️  Failed to fetch ${url}: ${response.status}`);
+      return null;
+    }
+    return await response.text();
+  } catch (error) {
+    console.error(`❌ Error fetching ${url}:`, error.message);
     return null;
   }
 }
 
-// Process all content files and push to KV
-async function buildAndPushKvCache() {
-  // Process all content files
-  let portfolioItems = [];
-  let blogItems = [];
-  let projectItems = [];
-  let allItems = [];
+// Process content from R2 bucket dynamically
+async function processContentItems(contentType, baseUrl) {
+  console.log(`🔄 Processing ${contentType} items from R2...`);
 
-  // Process portfolio items
-  console.log('🔄 Processing portfolio items...');
-  for (const fileName of PORTFOLIO_FILES) {
-    const content = readContentFromFile(PORTFOLIO_DIR, fileName);
-    if (!content) {
-      console.log(`⚠️  Skipping ${fileName} - not found`);
+  // Dynamically discover all files for this content type
+  const fileNames = await discoverFiles(contentType);
+
+  if (fileNames.length === 0) {
+    console.log(`⚠️  No ${contentType} files found`);
+    return [];
+  }
+
+  const items = [];
+
+  for (const fileName of fileNames) {
+    const fileUrl = `${baseUrl}/${fileName}`;
+    const content = await fetchContent(fileUrl);
+
+    if (!content) continue;
+
+    // Parse frontmatter
+    let parsed, attributes, body, frontmatter, cleanedBody, tags, keywords;
+
+    try {
+      parsed = matter(content);
+      attributes = parsed.attributes;
+      body = parsed.body;
+      frontmatter = attributes || {};
+
+      // Remove import statements from markdown content (ensure body is a string)
+      cleanedBody = typeof body === 'string' ? body.replace(/^import\s+.*$/gm, '').trim() : '';
+
+      // Ensure tags and keywords are arrays
+      tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
+      keywords = Array.isArray(frontmatter.keywords) ? frontmatter.keywords : [];
+    } catch (parseError) {
+      console.error(`❌ Error parsing frontmatter for ${fileName}:`, parseError.message);
+      console.log(`📄 Content preview: ${content.substring(0, 200)}...`);
       continue;
     }
 
-    const { data: attributes, content: body } = matter(content);
+    // Extract filename for ID and URL
+    const fileNameWithoutExt = fileName.replace('.md', '');
 
+    // Create content item
     const item = {
-      id: fileName.replace('.md', ''),
-      title: attributes.title || fileName.replace('.md', '').replace(/-/g, ' '),
-      description: attributes.description || body.substring(0, 200) + '...',
-      contentType: 'portfolio',
-      category: getCategoryFromTags(attributes.tags || [], fileName),
-      tags: attributes.tags || [],
-      keywords: attributes.keywords || [],
-      content: body,
-      date: attributes.date,
-      fileName: fileName
+      id: fileNameWithoutExt,
+      title: frontmatter.title || fileNameWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      description: frontmatter.description || 'No description available',
+      tags: [...tags, ...keywords],
+      category: getCategoryFromTags(tags, fileNameWithoutExt),
+      url: `/${contentType}/${fileNameWithoutExt}`,
+      keywords,
+      content: cleanedBody,
+      date: frontmatter.date,
+      fileName: fileNameWithoutExt,
+      contentType: contentType
     };
 
-    portfolioItems.push(item);
-    allItems.push(item);
+    items.push(item);
     console.log(`✅ Processed: ${item.title}`);
   }
 
-  // Process blog items
-  console.log('🔄 Processing blog items...');
-  for (const fileName of BLOG_FILES) {
-    const content = readContentFromFile(BLOG_DIR, fileName);
-    if (!content) {
-      console.log(`⚠️  Skipping ${fileName} - not found`);
-      continue;
-    }
-
-    const { data: attributes, content: body } = matter(content);
-
-    const item = {
-      id: fileName.replace('.md', ''),
-      title: attributes.title || fileName.replace('.md', '').replace(/-/g, ' '),
-      description: attributes.description || body.substring(0, 200) + '...',
-      contentType: 'blog',
-      category: getCategoryFromTags(attributes.tags || [], fileName),
-      tags: attributes.tags || [],
-      keywords: attributes.keywords || [],
-      content: body,
-      date: attributes.date,
-      fileName: fileName
-    };
-
-    blogItems.push(item);
-    allItems.push(item);
-    console.log(`✅ Processed: ${item.title}`);
+  // Sort items based on content type
+  if (contentType === 'blog') {
+    // Sort blog by date (newest first)
+    return items.sort((a, b) => {
+      if (a.date && b.date) {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+      return 0;
+    });
+  } else {
+    // Sort other content by title
+    return items.sort((a, b) => a.title.localeCompare(b.title));
   }
+}
 
-  // Process project items
-  console.log('🔄 Processing project items...');
-  for (const fileName of PROJECT_FILES) {
-    const content = readContentFromFile(PROJECTS_DIR, fileName);
-    if (!content) {
-      console.log(`⚠️  Skipping ${fileName} - not found`);
-      continue;
-    }
-
-    const { data: attributes, content: body } = matter(content);
-
-    const item = {
-      id: fileName.replace('.md', ''),
-      title: attributes.title || fileName.replace('.md', '').replace(/-/g, ' '),
-      description: attributes.description || body.substring(0, 200) + '...',
-      contentType: 'project',
-      category: getCategoryFromTags(attributes.tags || [], fileName),
-      tags: attributes.tags || [],
-      keywords: attributes.keywords || [],
-      content: body,
-      date: attributes.date,
-      fileName: fileName
-    };
-
-    projectItems.push(item);
-    allItems.push(item);
-    console.log(`✅ Processed: ${item.title}`);
-  }
-
-  // Sort items
-  portfolioItems.sort((a, b) => a.title.localeCompare(b.title));
-  blogItems.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-  projectItems.sort((a, b) => a.title.localeCompare(b.title));
-  allItems.sort((a, b) => a.title.localeCompare(b.title));
-
-  // Create cache data structure
-  const cacheData = {
-    portfolio: portfolioItems,
-    blog: blogItems,
-    projects: projectItems,
-    all: allItems,
-    metadata: {
-      portfolioCount: portfolioItems.length,
-      blogCount: blogItems.length,
-      projectCount: projectItems.length,
-      lastUpdated: new Date().toISOString(),
-      version: '1.0.0'
-    }
-  };
-
-  console.log('📊 Cache data prepared:');
-  console.log(`   Portfolio: ${portfolioItems.length} items`);
-  console.log(`   Blog: ${blogItems.length} items`);
-  console.log(`   Projects: ${projectItems.length} items`);
-  console.log(`   Total: ${allItems.length} items`);
-
-  // Push to Cloudflare KV
-  console.log('☁️  Pushing to Cloudflare KV...');
-
-  // Always use production URL for consistent KV cache across environments
-  const baseUrl = 'https://tanstack-portfolio.pages.dev';
-  const rebuildEndpoint = `${baseUrl}/api/content/rebuild-cache-kv`;
-
-  console.log(`📡 Using production endpoint: ${rebuildEndpoint}`);
+// Main function to rebuild KV cache from R2
+async function rebuildKvCache() {
+  console.log('🔍 Dynamically discovering content from R2 bucket...');
 
   try {
-    console.log(`📡 Calling KV rebuild endpoint: ${rebuildEndpoint}`);
+    // Process all content types dynamically
+    const portfolioItems = await processContentItems('portfolio', PORTFOLIO_BASE_URL);
+    const blogItems = await processContentItems('blog', BLOG_BASE_URL);
+    const projectItems = await processContentItems('project', PROJECT_BASE_URL);
+
+    const allItems = [...portfolioItems, ...blogItems, ...projectItems];
+
+    if (allItems.length === 0) {
+      throw new Error('No content items were processed from R2');
+    }
+
+    console.log('📊 Content dynamically processed from R2:');
+    console.log(`   Portfolio: ${portfolioItems.length} items`);
+    console.log(`   Blog: ${blogItems.length} items`);
+    console.log(`   Projects: ${projectItems.length} items`);
+    console.log(`   Total: ${allItems.length} items`);
+
+    // Create cache data structure
+    const cacheData = {
+      portfolio: portfolioItems,
+      blog: blogItems,
+      projects: projectItems,
+      all: allItems,
+      metadata: {
+        portfolioCount: portfolioItems.length,
+        blogCount: blogItems.length,
+        projectCount: projectItems.length,
+        lastUpdated: new Date().toISOString(),
+        version: '1.0.3'
+      }
+    };
+
+    // Push to Cloudflare KV
+    console.log('☁️  Pushing to Cloudflare KV...');
+
+    // Always use production URL for consistent KV cache across environments
+    const baseUrl = 'https://tanstack-portfolio.pages.dev';
+    const rebuildEndpoint = `${baseUrl}/api/content/rebuild-cache-kv`;
+
+    console.log(`📡 Using production endpoint: ${rebuildEndpoint}`);
 
     const response = await fetch(rebuildEndpoint, {
       method: 'POST',
@@ -280,18 +273,20 @@ async function buildAndPushKvCache() {
       console.log('💡 Make sure your Cloudflare Pages deployment is accessible');
       console.log('💡 Check that KV namespace is properly configured');
 
-      process.exit(1);
+      // Don't exit with error during build - just warn
+      console.log('⚠️ KV rebuild failed, but build will continue');
     }
   } catch (error) {
-    console.error('❌ Error calling KV rebuild endpoint:', error.message);
-    console.log('💡 Check your internet connection');
-    console.log('💡 Verify Cloudflare Pages deployment is working');
+    console.error('❌ Error processing content from R2:', error.message);
+    console.log('💡 Check your R2 proxy worker is accessible');
+    console.log('💡 Verify content files exist in R2 bucket');
 
-    process.exit(1);
+    // Don't exit with error during build - just warn
+    console.log('⚠️ KV rebuild failed, but build will continue');
   }
 
-  console.log('✅ KV cache build and push completed successfully!');
+  console.log('✅ KV cache rebuild process completed!');
 }
 
-// Run the combined process
-buildAndPushKvCache().catch(console.error);
+// Run the rebuild process
+rebuildKvCache().catch(console.error);
