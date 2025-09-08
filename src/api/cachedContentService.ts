@@ -99,10 +99,10 @@ export class CachedContentService {
     try {
       logger.info('🔄 Loading content from production KV cache...')
 
-      // Fetch from production KV cache via Pages Function
+      // Try Pages Function first (when deployed)
       try {
         const response = await fetch('/api/content/cache-get')
-        if (response.ok) {
+        if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
           const cacheData = await response.json()
           this.allItems = cacheData.all || []
 
@@ -113,16 +113,39 @@ export class CachedContentService {
             this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
             this.projectItems = this.allItems.filter(item => item.contentType === 'project')
 
-            logger.info(`✅ Loaded content from production KV cache with ${this.allItems.length} items`)
+            logger.info(`✅ Loaded content from production KV cache via Pages Function with ${this.allItems.length} items`)
             return
-          } else {
-            logger.warn('⚠️ Production KV cache is empty, will attempt to populate')
           }
         } else {
-          logger.warn(`⚠️ Failed to fetch from production KV cache: ${response.status} ${response.statusText}`)
+          logger.warn('⚠️ Pages Function not available or returning HTML instead of JSON')
         }
       } catch (error) {
-        logger.error('❌ Production KV cache-get endpoint failed:', error)
+        logger.warn('⚠️ Pages Function failed, will try direct worker access:', error)
+      }
+
+      // Fallback: Use dedicated KV cache get worker for direct KV access
+      try {
+        logger.info('🔄 Trying direct access to production KV via dedicated cache get worker...')
+        const workerResponse = await fetch('https://kv-cache-get.rcormier.workers.dev')
+        if (workerResponse.ok) {
+          const cacheData = await workerResponse.json()
+          this.allItems = cacheData.all || []
+
+          // If we got data, process it
+          if (this.allItems.length > 0) {
+            // Separate by type
+            this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
+            this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
+            this.projectItems = this.allItems.filter(item => item.contentType === 'project')
+
+            logger.info(`✅ Loaded content from production KV cache via dedicated worker with ${this.allItems.length} items`)
+            return
+          }
+        } else {
+          logger.warn(`⚠️ KV cache get worker failed: ${workerResponse.status} ${workerResponse.statusText}`)
+        }
+      } catch (error) {
+        logger.error('❌ Direct KV worker access failed:', error)
       }
 
       logger.warn('⚠️ KV cache not available, attempting to populate via worker...')

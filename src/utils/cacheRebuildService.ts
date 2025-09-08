@@ -30,12 +30,14 @@ interface CacheStatus {
 
 // Determine worker URL based on environment
 function getWorkerBaseUrl(): string {
-  // Use production worker for both production and preview environments
-  // since preview environments may not have their own worker deployed
+  // Always use production worker for consistency across all environments
   return 'https://cache-rebuild-worker.rcormier.workers.dev'
 }
 
 const WORKER_BASE_URL = getWorkerBaseUrl()
+
+// KV Cache Get Worker URL for direct cache access
+const KV_WORKER_URL = 'https://kv-cache-get.rcormier.workers.dev'
 
 /**
  * Trigger cache rebuild from content creation studio
@@ -145,6 +147,72 @@ export async function isCacheRebuildAvailable(): Promise<boolean> {
     return status?.status === 'healthy'
   } catch {
     return false
+  }
+}
+
+/**
+ * Get current cache data from KV worker
+ */
+export async function getCurrentCacheData(): Promise<any> {
+  try {
+    const response = await fetch(KV_WORKER_URL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error getting current cache data:', error)
+    return null
+  }
+}
+
+/**
+ * Get cache status with current data from KV worker
+ */
+export async function getEnhancedCacheStatus(): Promise<CacheStatus | null> {
+  try {
+    // First try to get status from cache rebuild worker
+    const statusResponse = await getCacheStatus()
+    
+    // Also get current data from KV worker
+    const currentData = await getCurrentCacheData()
+    
+    if (statusResponse && currentData) {
+      // Combine data from both sources
+      return {
+        ...statusResponse,
+        cache: {
+          lastUpdated: currentData.metadata?.lastUpdated || statusResponse.cache?.lastUpdated || new Date().toISOString(),
+          totalItems: currentData.all?.length || statusResponse.cache?.totalItems || 0,
+          version: currentData.metadata?.version || statusResponse.cache?.version || '1.0.0',
+          trigger: statusResponse.cache?.trigger || 'unknown'
+        }
+      }
+    } else if (currentData) {
+      // Fallback to KV data only
+      return {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        cache: {
+          lastUpdated: currentData.metadata?.lastUpdated || new Date().toISOString(),
+          totalItems: currentData.all?.length || 0,
+          version: currentData.metadata?.version || '1.0.0',
+          trigger: 'kv-direct'
+        }
+      }
+    }
+    
+    return statusResponse
+  } catch (error) {
+    console.error('Error getting enhanced cache status:', error)
+    return null
   }
 }
 

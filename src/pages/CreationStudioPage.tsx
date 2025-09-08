@@ -16,7 +16,7 @@ import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
 import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Archive, Database } from 'lucide-react';
-import { triggerContentStudioRebuild, triggerManualRebuild, getCacheStatus, forcePopulatePreviewCache } from '../utils/cacheRebuildService';
+import { triggerContentStudioRebuild, triggerManualRebuild, getCacheStatus, getEnhancedCacheStatus, forcePopulatePreviewCache } from '../utils/cacheRebuildService';
 
 // Helper function to format relative time
 function getRelativeTimeString(timestamp: string): string {
@@ -105,7 +105,7 @@ export function CreationStudioPage() {
   useEffect(() => {
     const loadCacheStatus = async () => {
       try {
-        const status = await getCacheStatus();
+        const status = await getEnhancedCacheStatus();
         if (status?.cache) {
           setCacheStatus({
             lastUpdated: status.cache.lastUpdated,
@@ -249,8 +249,15 @@ export function CreationStudioPage() {
             console.log(`✅ Cache rebuilt successfully${isAutoRebuild ? ' (auto-triggered)' : ''}`);
             console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
             
-            // Update cache status
-            if (cacheResponse.stats) {
+            // Update cache status with enhanced data
+            const enhancedStatus = await getEnhancedCacheStatus();
+            if (enhancedStatus?.cache) {
+              setCacheStatus({
+                lastUpdated: enhancedStatus.cache.lastUpdated,
+                totalItems: enhancedStatus.cache.totalItems,
+                trigger: enhancedStatus.cache.trigger
+              });
+            } else if (cacheResponse.stats) {
               setCacheStatus({
                 lastUpdated: cacheResponse.timestamp,
                 totalItems: cacheResponse.stats.total,
@@ -558,8 +565,15 @@ export function CreationStudioPage() {
                           console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
                           console.log(`🕒 Timestamp: ${cacheResponse.timestamp}`);
 
-                          // Update cache status
-                          if (cacheResponse.stats) {
+                          // Update cache status with enhanced data
+                          const enhancedStatus = await getEnhancedCacheStatus();
+                          if (enhancedStatus?.cache) {
+                            setCacheStatus({
+                              lastUpdated: enhancedStatus.cache.lastUpdated,
+                              totalItems: enhancedStatus.cache.totalItems,
+                              trigger: enhancedStatus.cache.trigger
+                            });
+                          } else if (cacheResponse.stats) {
                             setCacheStatus({
                               lastUpdated: cacheResponse.timestamp,
                               totalItems: cacheResponse.stats.total,

@@ -25,7 +25,9 @@
     "deploy:pages": "npm run build && wrangler pages deploy dist --project-name tanstack-portfolio",
     "deploy:worker:proxy": "wrangler publish -c wrangler/wrangler-r2-proxy.toml --env production",
     "deploy:worker:cache-rebuild": "wrangler deploy -c wrangler/wrangler-cache-rebuild.toml --env production",
-    "deploy:worker:cache-rebuild-dev": "wrangler deploy -c wrangler/wrangler-cache-rebuild.toml --env development"
+    "deploy:worker:cache-rebuild-dev": "wrangler deploy -c wrangler/wrangler-cache-rebuild.toml --env development",
+    "deploy:worker:kv-get": "wrangler deploy -c wrangler/wrangler-kv-cache-get.toml --env production",
+    "deploy:worker:kv-get-dev": "wrangler deploy -c wrangler/wrangler-kv-cache-get.toml --env development"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.3.4",
