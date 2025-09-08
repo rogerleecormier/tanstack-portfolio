@@ -55,7 +55,6 @@ export const createStyledXLSX = (tableData: { headers: string[]; rows: string[][
 };
 
 export const createStyledPDF = async (tableData: { headers: string[]; rows: string[][] }, projectName: string, filename: string, captureElementId?: string) => {
-  // @ts-expect-error jsPDF autoTable extension
   const doc = new jsPDF();
 
   doc.setFontSize(16);

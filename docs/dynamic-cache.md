@@ -38,8 +38,7 @@ interface CachedContentItem {
 During `npm run build`:
 1. TypeScript compilation (`tsc`).
 2. Vite build (`vite build`).
-3. Cache rebuild (`node scripts/rebuild-cache.js`): Scans hardcoded file lists in portfolio/, blog/, projects/; parses frontmatter with gray-matter; derives category; writes `content-cache.json`.
-4. Content index build (`node scripts/build-content-index.js`): Generates search-index.json for Fuse.js.
+3. KV cache rebuild (`node scripts/rebuild-kv-cache.js`): Processes markdown files from portfolio/, blog/, projects/; parses frontmatter; creates cache data structure; pushes to Cloudflare KV.
 
 For Cloudflare Pages deployment, the build script runs on CI, ensuring fresh cache on each deploy.
 
@@ -48,9 +47,11 @@ For Cloudflare Pages deployment, the build script runs on CI, ensuring fresh cac
 Run `npm run dev:full` to start:
 - Vite dev server.
 - Wrangler for functions.
-- Cache watcher (`scripts/watch-dev.js` using chokidar): Monitors **/*.md in watched dirs; debounces changes (1s); runs `node scripts/rebuild-cache.js`.
 
-Manual rebuild: `node scripts/rebuild-cache.js`.
+**KV Cache Management:**
+- Content updates are pushed to production KV cache
+- Local development reads from the same production KV
+- Run `npm run rebuild-kv` to manually update the KV cache during development
 
 ## Integration in Code
 

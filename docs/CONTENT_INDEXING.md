@@ -14,7 +14,7 @@ The content indexing system solves the issue of related content hanging on skele
 
 ## Files
 
-- `scripts/build-content-index.js` - Build script that indexes content from R2
+- `scripts/rebuild-kv-cache.js` - Build script that processes content from local files and pushes to KV cache
 - `src/api/cachedContentService.ts` - Service that uses cached content
 - `src/data/` - Directory containing cached content JSON files
 - `src/components/UnifiedRelatedContent.tsx` - Updated component using cached service
@@ -28,14 +28,17 @@ For development builds without content indexing:
 npm run build:dev
 ```
 
-### Production Build
+### KV Cache Management
 
-For production builds with content indexing:
+The KV cache is always populated using the production Cloudflare Pages endpoint:
+
 ```bash
-npm run build
-# or
-npm run build:prod
+npm run build          # Automatically processes content and pushes to production KV
+npm run rebuild-kv     # Manually rebuild production KV cache
+npm run deploy:pages   # Deploy with fresh KV cache
 ```
+
+**Note**: KV cache updates always use the production endpoint (`https://tanstack-portfolio.pages.dev`) to ensure consistency across all environments.
 
 ### Manual Content Indexing
 

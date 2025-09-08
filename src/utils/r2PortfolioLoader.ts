@@ -3,6 +3,20 @@ import { logger } from './logger'
 // Import cached content data
 import contentCache from '@/data/content-cache.json'
 
+// Type for cached items from JSON
+interface CachedItem {
+  id: string
+  title: string
+  description: string
+  tags?: string[]
+  category: string
+  url: string
+  keywords?: string[]
+  content: string
+  date?: string
+  fileName: string
+}
+
 export interface PortfolioItem {
   id: string
   title: string
@@ -59,7 +73,7 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
     const items: PortfolioItem[] = []
 
     // Convert cached items to PortfolioItem format
-    for (const cachedItem of cachedPortfolioItems) {
+    for (const cachedItem of cachedPortfolioItems as CachedItem[]) {
       try {
         // Create portfolio item from cached data
         const item: PortfolioItem = {
@@ -107,7 +121,7 @@ export async function loadBlogItems(): Promise<BlogItem[]> {
     const items: BlogItem[] = []
 
     // Convert cached items to BlogItem format
-    for (const cachedItem of cachedBlogItems) {
+    for (const cachedItem of cachedBlogItems as CachedItem[]) {
       try {
         // Create blog item from cached data
         const item: BlogItem = {
@@ -152,7 +166,7 @@ export async function loadProjectItems(): Promise<ProjectItem[]> {
     const items: ProjectItem[] = []
 
     // Convert cached items to ProjectItem format
-    for (const cachedItem of cachedProjectItems) {
+    for (const cachedItem of cachedProjectItems as CachedItem[]) {
       try {
         // Create project item from cached data
         const item: ProjectItem = {

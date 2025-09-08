@@ -133,6 +133,7 @@ const RACIBuilderPage: React.FC = () => {
     const doc = new jsPDF();
 
     doc.text('RACI Matrix', 14, 20);
+    // @ts-expect-error jsPDF autoTable extension
     doc.autoTable({
       head: [tableData?.headers || []],
       body: tableData?.rows || [],

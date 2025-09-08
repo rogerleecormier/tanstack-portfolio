@@ -1,12 +1,6 @@
 import { logger } from '@/utils/logger'
 import Fuse, { IFuseOptions } from 'fuse.js'
 
-// Import cached content data for local/dev
-import contentCache from '@/data/content-cache.json'
-import portfolioItems from '@/data/portfolio-items.json'
-import blogItems from '@/data/blog-items.json'
-import projectItems from '@/data/project-items.json'
-
 export interface CachedContentItem {
   id: string
   title: string
@@ -20,6 +14,7 @@ export interface CachedContentItem {
   relevanceScore?: number
   date?: string
   fileName: string
+  readTime?: number
 }
 
 export interface CachedSearchRequest {
@@ -74,7 +69,6 @@ export class CachedContentService {
   private allItems: CachedContentItem[] = []
   private fuse: Fuse<CachedContentItem> | null = null
   private isFuseInitialized = false
-  private isProduction = import.meta.env.MODE === 'production'
 
   constructor() {
     this.initializeContent()
@@ -98,11 +92,13 @@ export class CachedContentService {
   }
 
   /**
-   * Initialize content - always try KV cache first, fallback to local files
+   * Initialize content - KV cache only, no local fallback
    */
   private async initializeContent() {
     try {
-      // Always try KV cache first, even in development
+      logger.info('🔄 Loading content from KV cache...')
+
+      // Try KV cache first
       const response = await fetch('/api/content/cache-get')
       if (response.ok) {
         const cacheData = await response.json()
@@ -114,7 +110,7 @@ export class CachedContentService {
 
         logger.info(`✅ Loaded content from KV cache with ${this.allItems.length} items`)
       } else {
-        logger.warn('⚠️ KV cache not available, attempting to populate and retry...')
+        logger.warn('⚠️ KV cache not available, attempting to populate...')
 
         // Try to populate KV cache if it's empty
         await this.populateKvCacheIfNeeded()
@@ -130,28 +126,18 @@ export class CachedContentService {
 
           logger.info(`✅ Successfully loaded content from KV cache after population: ${this.allItems.length} items`)
         } else {
-          throw new Error('KV cache still unavailable after population attempt')
+          throw new Error('KV cache unavailable - no content will be loaded')
         }
       }
     } catch (error) {
-      logger.warn('⚠️ Failed to load from KV cache, using local files as fallback:', error)
+      logger.error('❌ Failed to load from KV cache:', error)
+      // No fallback - empty arrays only
+      this.portfolioItems = []
+      this.blogItems = []
+      this.projectItems = []
+      this.allItems = []
 
-      // Fallback to local files if KV is not available
-      try {
-        this.portfolioItems = portfolioItems as CachedContentItem[]
-        this.blogItems = blogItems as CachedContentItem[]
-        this.projectItems = projectItems as CachedContentItem[]
-        this.allItems = contentCache.all as CachedContentItem[]
-
-        logger.info(`✅ Fallback: Loaded local content with ${this.allItems.length} items`)
-      } catch (fallbackError) {
-        logger.error('❌ Fallback to local files also failed:', fallbackError)
-        // Empty arrays as final fallback
-        this.portfolioItems = []
-        this.blogItems = []
-        this.projectItems = []
-        this.allItems = []
-      }
+      logger.warn('⚠️ No content available - KV cache is required')
     }
 
     logger.info(`📁 Portfolio: ${this.portfolioItems.length}`)
@@ -532,7 +518,13 @@ export class CachedContentService {
    * Get content metadata
    */
   getContentMetadata() {
-    return contentCache.metadata
+    return {
+      portfolioCount: this.portfolioItems.length,
+      blogCount: this.blogItems.length,
+      projectCount: this.projectItems.length,
+      lastUpdated: new Date().toISOString(),
+      version: '1.0.0'
+    }
   }
 
   /**
