@@ -95,7 +95,7 @@ export const environment = {
 
   // API configuration with security
   api: {
-    baseUrl: isDevelopmentMode() ? 'http://localhost:3001/api' : '/api',
+    baseUrl: isDevelopmentMode() ? 'https://r2-content-full.rcormier.workers.dev/api' : '/api',
     timeout: 10000, // 10 seconds - back to original fast timeout
     retryAttempts: 3,
     // Secure endpoints that require authentication

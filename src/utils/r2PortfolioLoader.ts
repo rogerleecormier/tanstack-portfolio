@@ -1,6 +1,7 @@
-import fm from 'front-matter'
 import { logger } from './logger'
-import { getPortfolioUrl, getBlogUrl, getProjectUrl } from '@/config/r2Config'
+
+// Import cached content data
+import contentCache from '@/data/content-cache.json'
 
 export interface PortfolioItem {
   id: string
@@ -44,512 +45,251 @@ export interface ProjectItem {
   frontmatter: Record<string, unknown>
 }
 
-// Portfolio files available in R2
-const PORTFOLIO_FILES = [
-  'strategy.md',
-  'leadership.md',
-  'talent.md',
-  'devops.md',
-  'saas.md',
-  'analytics.md',
-  'risk-compliance.md',
-  'governance-pmo.md',
-  'product-ux.md',
-  'education-certifications.md',
-  'ai-automation.md',
-  'culture.md',
-  'capabilities.md',
-  'projects.md'
-]
+// Files are now dynamically discovered from cache - no more hardcoded lists!
 
-// Blog files available in R2
-const BLOG_FILES = [
-  'pmbok-agile-methodology-blend.md',
-  'serverless-ai-workflows-azure-functions.md',
-  'power-automate-workflow-automation.md',
-  'asana-ai-status-reporting.md',
-  'mkdocs-github-actions-portfolio.md',
-  'internal-ethos-high-performing-organizations.md',
-  'digital-transformation-strategy-governance.md',
-  'military-leadership-be-know-do.md',
-  'ramp-agents-ai-finance-operations.md',
-  'pmp-digital-transformation-leadership.md'
-]
 
-// Project files available in R2
-const PROJECT_FILES = [
-  'project-analysis.md'
-]
-
-// Helper function to determine category from tags and filename
-function getCategoryFromTags(tags: string[], fileName: string): string {
-  const tagString = tags.join(' ').toLowerCase()
-  const fileNameLower = fileName.toLowerCase()
-  
-  // Strategy & Consulting
-  if (tagString.includes('strategy') || tagString.includes('consulting') || 
-      fileNameLower.includes('strategy') || fileNameLower.includes('governance')) {
-    return 'Strategy & Consulting'
-  }
-  
-  // Leadership & Culture
-  if (tagString.includes('leadership') || tagString.includes('culture') || 
-      tagString.includes('talent') || tagString.includes('team') ||
-      fileNameLower.includes('leadership') || fileNameLower.includes('culture') ||
-      fileNameLower.includes('talent')) {
-    return 'Leadership & Culture'
-  }
-  
-  // Technology & Operations
-  if (tagString.includes('devops') || tagString.includes('technology') || 
-      tagString.includes('saas') || tagString.includes('automation') ||
-      fileNameLower.includes('devops') || fileNameLower.includes('saas') ||
-      fileNameLower.includes('ai-automation')) {
-    return 'Technology & Operations'
-  }
-  
-  // Data & Analytics
-  if (tagString.includes('analytics') || tagString.includes('data') || 
-      tagString.includes('insights') || fileNameLower.includes('analytics')) {
-    return 'Data & Analytics'
-  }
-  
-  // Risk & Compliance
-  if (tagString.includes('risk') || tagString.includes('compliance') || 
-      tagString.includes('governance') || fileNameLower.includes('risk-compliance')) {
-    return 'Risk & Compliance'
-  }
-  
-  // Product & UX
-  if (tagString.includes('product') || tagString.includes('ux') || 
-      tagString.includes('design') || fileNameLower.includes('product-ux')) {
-    return 'Product & UX'
-  }
-  
-  // Education & Certifications
-  if (tagString.includes('education') || tagString.includes('certification') ||
-      fileNameLower.includes('education-certifications')) {
-    return 'Education & Certifications'
-  }
-  
-  // AI & Automation
-  if (tagString.includes('ai') || tagString.includes('artificial intelligence') ||
-      fileNameLower.includes('ai-automation')) {
-    return 'AI & Automation'
-  }
-  
-  // Project Portfolio
-  if (fileNameLower.includes('projects') || fileNameLower.includes('project-analysis')) {
-    return 'Project Portfolio'
-  }
-  
-  // Default category
-  return 'Strategy & Consulting'
-}
-
-// Load portfolio items directly from R2
+// Load portfolio items from cache (dynamically discovered)
 export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
   try {
-    logger.info('🔄 Loading portfolio items from Cloudflare R2...')
-    
+    logger.info('🔄 Loading portfolio items from cache...')
+
+    const cachedPortfolioItems = contentCache.portfolio || []
+    logger.info(`📚 Found ${cachedPortfolioItems.length} portfolio items in cache`)
+
     const items: PortfolioItem[] = []
-    
-    // Load each portfolio file from R2
-    for (const fileName of PORTFOLIO_FILES) {
+
+    // Convert cached items to PortfolioItem format
+    for (const cachedItem of cachedPortfolioItems) {
       try {
-        const fileUrl = getPortfolioUrl(fileName)
-        logger.info(`📖 Fetching: ${fileUrl}`)
-        
-        const response = await fetch(fileUrl)
-        
-        if (!response.ok) {
-          logger.warn(`⚠️ Failed to fetch ${fileName}: ${response.status}`)
-          continue
-        }
-        
-        const content = await response.text()
-        
-        if (!content || content.trim().length === 0) {
-          logger.warn(`⚠️ Empty content for ${fileName}`)
-          continue
-        }
-        
-        // Parse frontmatter
-        const { attributes, body } = fm(content)
-        const frontmatter = attributes as Record<string, unknown>
-        
-        // Remove import statements from markdown content
-        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-        
-        const tags = (frontmatter.tags as string[]) || []
-        const keywords = (frontmatter.keywords as string[]) || []
-        
-        // Extract filename for ID and URL
-        const fileNameWithoutExt = fileName.replace('.md', '')
-        
-        // Create portfolio item
+        // Create portfolio item from cached data
         const item: PortfolioItem = {
-          id: fileNameWithoutExt,
-          title: (frontmatter.title as string) || fileNameWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-          description: (frontmatter.description as string) || 'No description available',
-          tags: [...tags, ...keywords],
-          category: getCategoryFromTags(tags, fileNameWithoutExt),
-          url: `portfolio/${fileNameWithoutExt}`,
-          keywords,
-          content: cleanedBody,
-          date: frontmatter.date as string,
-          fileName: fileNameWithoutExt,
-          frontmatter
+          id: cachedItem.id,
+          title: cachedItem.title,
+          description: cachedItem.description,
+          tags: cachedItem.tags || [],
+          category: cachedItem.category,
+          url: cachedItem.url,
+          keywords: cachedItem.keywords || [],
+          content: cachedItem.content,
+          date: cachedItem.date,
+          fileName: cachedItem.fileName,
+          frontmatter: {} // Frontmatter not stored in cache
         }
-        
+
         items.push(item)
-        logger.info(`✅ Loaded portfolio item: ${item.title}`)
-        
+        logger.info(`✅ Loaded cached portfolio item: ${item.title}`)
+
       } catch (error) {
-        logger.error(`❌ Error loading portfolio file ${fileName}:`, error)
+        logger.error(`❌ Error processing cached portfolio item ${cachedItem.id}:`, error)
       }
     }
-    
+
     // Sort by title
     const sortedItems = items.sort((a, b) => a.title.localeCompare(b.title))
-    
-    logger.info(`🎉 Successfully loaded ${sortedItems.length} portfolio items from R2`)
+
+    logger.info(`🎉 Successfully loaded ${sortedItems.length} portfolio items from cache`)
     return sortedItems
-    
+
   } catch (error) {
-    logger.error('❌ Error loading portfolio items from R2:', error)
+    logger.error('❌ Error loading portfolio items from cache:', error)
     return []
   }
 }
 
-// Load blog items directly from R2
+// Load blog items from cache (dynamically discovered)
 export async function loadBlogItems(): Promise<BlogItem[]> {
   try {
-    logger.info('🔄 Loading blog items from Cloudflare R2...')
-    
+    logger.info('🔄 Loading blog items from cache...')
+
+    const cachedBlogItems = contentCache.blog || []
+    logger.info(`📚 Found ${cachedBlogItems.length} blog items in cache`)
+
     const items: BlogItem[] = []
-    
-    // Load each blog file from R2
-    for (const fileName of BLOG_FILES) {
+
+    // Convert cached items to BlogItem format
+    for (const cachedItem of cachedBlogItems) {
       try {
-        const fileUrl = getBlogUrl(fileName)
-        logger.info(`📖 Fetching: ${fileUrl}`)
-        
-        const response = await fetch(fileUrl)
-        
-        if (!response.ok) {
-          logger.warn(`⚠️ Failed to fetch ${fileName}: ${response.status}`)
-          continue
-        }
-        
-        const content = await response.text()
-        
-        if (!content || content.trim().length === 0) {
-          logger.warn(`⚠️ Empty content for ${fileName}`)
-          continue
-        }
-        
-        // Parse frontmatter
-        const { attributes, body } = fm(content)
-        const frontmatter = attributes as Record<string, unknown>
-        
-        // Remove import statements from markdown content
-        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-        
-        const tags = (frontmatter.tags as string[]) || []
-        const keywords = (frontmatter.keywords as string[]) || []
-        
-        // Extract filename for ID and URL
-        const fileNameWithoutExt = fileName.replace('.md', '')
-        
-        // Create blog item
+        // Create blog item from cached data
         const item: BlogItem = {
-          id: fileNameWithoutExt,
-          title: (frontmatter.title as string) || fileNameWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-          description: (frontmatter.description as string) || 'No description available',
-          tags: [...tags, ...keywords],
-          category: getCategoryFromTags(tags, fileNameWithoutExt),
-          url: `blog/${fileNameWithoutExt}`,
-          keywords,
-          content: cleanedBody,
-          date: frontmatter.date as string,
-          fileName: fileNameWithoutExt,
-          frontmatter
+          id: cachedItem.id,
+          title: cachedItem.title,
+          description: cachedItem.description,
+          tags: cachedItem.tags || [],
+          category: cachedItem.category,
+          url: cachedItem.url,
+          keywords: cachedItem.keywords || [],
+          content: cachedItem.content,
+          date: cachedItem.date,
+          fileName: cachedItem.fileName,
+          frontmatter: {} // Frontmatter not stored in cache, but we can parse it if needed
         }
-        
-        logger.info(`📅 R2 Loader - Blog item date: ${item.date}`)
+
         items.push(item)
-        logger.info(`✅ Loaded blog item: ${item.title}`)
-        
+        logger.info(`✅ Loaded cached blog item: ${item.title}`)
+
       } catch (error) {
-        logger.error(`❌ Error loading blog file ${fileName}:`, error)
+        logger.error(`❌ Error processing cached blog item ${cachedItem.id}:`, error)
       }
     }
-    
-    // Sort by date (newest first)
-    const sortedItems = items.sort((a, b) => {
-      try {
-        if (a.date && b.date) {
-          // Parse dates using UTC to avoid timezone shifts
-          const [yearA, monthA, dayA] = a.date.split('-').map(Number)
-          const [yearB, monthB, dayB] = b.date.split('-').map(Number)
-          
-          const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA))
-          const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB))
-          
-          // Handle invalid dates by putting them at the end
-          if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0
-          if (isNaN(dateA.getTime())) return 1
-          if (isNaN(dateB.getTime())) return -1
-          
-          return dateB.getTime() - dateA.getTime()
-        }
-        return 0
-      } catch (error) {
-        logger.error('❌ Error sorting blog items by date:', error)
-        return 0
-      }
-    })
-    
-    logger.info(`🎉 Successfully loaded ${sortedItems.length} blog items from R2`)
-    return sortedItems
-    
+
+    logger.info(`🎉 Successfully loaded ${items.length} blog items from cache`)
+    return items
+
   } catch (error) {
-    logger.error('❌ Error loading blog items from R2:', error)
+    logger.error('❌ Error loading blog items from cache:', error)
     return []
   }
 }
 
-// Load project items directly from R2
+// Load project items from cache (dynamically discovered)
 export async function loadProjectItems(): Promise<ProjectItem[]> {
   try {
-    logger.info('🔄 Loading project items from Cloudflare R2...')
-    
+    logger.info('🔄 Loading project items from cache...')
+
+    const cachedProjectItems = contentCache.projects || []
+    logger.info(`📚 Found ${cachedProjectItems.length} project items in cache`)
+
     const items: ProjectItem[] = []
-    
-    // Load each project file from R2
-    for (const fileName of PROJECT_FILES) {
+
+    // Convert cached items to ProjectItem format
+    for (const cachedItem of cachedProjectItems) {
       try {
-        const fileUrl = getProjectUrl(fileName)
-        logger.info(`📖 Fetching: ${fileUrl}`)
-        
-        const response = await fetch(fileUrl)
-        
-        if (!response.ok) {
-          logger.warn(`⚠️ Failed to fetch ${fileName}: ${response.status}`)
-          continue
-        }
-        
-        const content = await response.text()
-        
-        if (!content || content.trim().length === 0) {
-          logger.warn(`⚠️ Empty content for ${fileName}`)
-          continue
-        }
-        
-        // Parse frontmatter
-        const { attributes, body } = fm(content)
-        const frontmatter = attributes as Record<string, unknown>
-        
-        // Remove import statements from markdown content
-        const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-        
-        const tags = (frontmatter.tags as string[]) || []
-        const keywords = (frontmatter.keywords as string[]) || []
-        
-        // Extract filename for ID and URL
-        const fileNameWithoutExt = fileName.replace('.md', '')
-        
-        // Create project item
+        // Create project item from cached data
         const item: ProjectItem = {
-          id: fileNameWithoutExt,
-          title: (frontmatter.title as string) || fileNameWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-          description: (frontmatter.description as string) || 'No description available',
-          tags: [...tags, ...keywords],
-          category: getCategoryFromTags(tags, fileNameWithoutExt),
-          url: `projects/${fileNameWithoutExt}`,
-          keywords,
-          content: cleanedBody,
-          date: frontmatter.date as string,
-          fileName: fileNameWithoutExt,
-          frontmatter
+          id: cachedItem.id,
+          title: cachedItem.title,
+          description: cachedItem.description,
+          tags: cachedItem.tags || [],
+          category: cachedItem.category,
+          url: cachedItem.url,
+          keywords: cachedItem.keywords || [],
+          content: cachedItem.content,
+          date: cachedItem.date,
+          fileName: cachedItem.fileName,
+          frontmatter: {} // Frontmatter not stored in cache
         }
-        
+
         items.push(item)
-        logger.info(`✅ Loaded project item: ${item.title}`)
-        
+        logger.info(`✅ Loaded cached project item: ${item.title}`)
+
       } catch (error) {
-        logger.error(`❌ Error loading project file ${fileName}:`, error)
+        logger.error(`❌ Error processing cached project item ${cachedItem.id}:`, error)
       }
     }
-    
-    logger.info(`🎉 Successfully loaded ${items.length} project items from R2`)
+
+    logger.info(`🎉 Successfully loaded ${items.length} project items from cache`)
     return items
-    
+
   } catch (error) {
-    logger.error('❌ Error loading project items from R2:', error)
+    logger.error('❌ Error loading project items from cache:', error)
     return []
   }
 }
 
-// Get a specific portfolio item by filename
+// Get a specific portfolio item by filename from cache
 export async function getPortfolioItem(fileName: string): Promise<PortfolioItem | null> {
   try {
-    const fileUrl = getPortfolioUrl(`${fileName}.md`)
-    logger.info(`📖 Fetching portfolio item: ${fileUrl}`)
-    
-    const response = await fetch(fileUrl)
-    
-    if (!response.ok) {
-      logger.warn(`⚠️ Failed to fetch portfolio item ${fileName}: ${response.status}`)
+    logger.info(`🔍 Looking for portfolio item: ${fileName} in cache`)
+
+    const cachedPortfolioItems = contentCache.portfolio || []
+    const cachedItem = cachedPortfolioItems.find(item => item.fileName === fileName)
+
+    if (!cachedItem) {
+      logger.warn(`⚠️ Portfolio item ${fileName} not found in cache`)
       return null
     }
-    
-    const content = await response.text()
-    
-    if (!content || content.trim().length === 0) {
-      logger.warn(`⚠️ Empty content for portfolio item ${fileName}`)
-      return null
-    }
-    
-    // Parse frontmatter
-    const { attributes, body } = fm(content)
-    const frontmatter = attributes as Record<string, unknown>
-    
-    // Remove import statements from markdown content
-    const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-    
-    const tags = (frontmatter.tags as string[]) || []
-    const keywords = (frontmatter.keywords as string[]) || []
-    
-    // Create portfolio item
+
+    // Create portfolio item from cached data
     const item: PortfolioItem = {
-      id: fileName,
-      title: (frontmatter.title as string) || fileName.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-      description: (frontmatter.description as string) || 'No description available',
-      tags: [...tags, ...keywords],
-      category: getCategoryFromTags(tags, fileName),
-      url: `portfolio/${fileName}`,
-      keywords,
-      content: cleanedBody,
-      date: frontmatter.date as string,
-      fileName,
-      frontmatter
+      id: cachedItem.id,
+      title: cachedItem.title,
+      description: cachedItem.description,
+      tags: cachedItem.tags || [],
+      category: cachedItem.category,
+      url: cachedItem.url,
+      keywords: cachedItem.keywords || [],
+      content: cachedItem.content,
+      fileName: cachedItem.fileName,
+      frontmatter: {} // Frontmatter not stored in cache
     }
-    
-    logger.info(`✅ Loaded portfolio item: ${item.title}`)
+
+    logger.info(`✅ Found portfolio item in cache: ${item.title}`)
     return item
-    
+
   } catch (error) {
-    logger.error(`❌ Error loading portfolio item ${fileName}:`, error)
+    logger.error(`❌ Error loading portfolio item ${fileName} from cache:`, error)
     return null
   }
 }
 
-// Get a specific blog item by filename
+// Get a specific blog item by filename from cache
 export async function getBlogItem(fileName: string): Promise<BlogItem | null> {
   try {
-    const fileUrl = getBlogUrl(`${fileName}.md`)
-    logger.info(`📖 Fetching blog item: ${fileUrl}`)
-    
-    const response = await fetch(fileUrl)
-    
-    if (!response.ok) {
-      logger.warn(`⚠️ Failed to fetch blog item ${fileName}: ${response.status}`)
+    logger.info(`🔍 Looking for blog item: ${fileName} in cache`)
+
+    const cachedBlogItems = contentCache.blog || []
+    const cachedItem = cachedBlogItems.find(item => item.fileName === fileName)
+
+    if (!cachedItem) {
+      logger.warn(`⚠️ Blog item ${fileName} not found in cache`)
       return null
     }
-    
-    const content = await response.text()
-    
-    if (!content || content.trim().length === 0) {
-      logger.warn(`⚠️ Empty content for blog item ${fileName}`)
-      return null
-    }
-    
-    // Parse frontmatter
-    const { attributes, body } = fm(content)
-    const frontmatter = attributes as Record<string, unknown>
-    
-    // Remove import statements from markdown content
-    const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-    
-    const tags = (frontmatter.tags as string[]) || []
-    const keywords = (frontmatter.keywords as string[]) || []
-    
-    // Create blog item
+
+    // Create blog item from cached data
     const item: BlogItem = {
-      id: fileName,
-      title: (frontmatter.title as string) || fileName.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-      description: (frontmatter.description as string) || 'No description available',
-      tags: [...tags, ...keywords],
-      category: getCategoryFromTags(tags, fileName),
-      url: `blog/${fileName}`,
-      keywords,
-      content: cleanedBody,
-      date: frontmatter.date as string,
-      fileName,
-      frontmatter
+      id: cachedItem.id,
+      title: cachedItem.title,
+      description: cachedItem.description,
+      tags: cachedItem.tags || [],
+      category: cachedItem.category,
+      url: cachedItem.url,
+      keywords: cachedItem.keywords || [],
+      content: cachedItem.content,
+      fileName: cachedItem.fileName,
+      frontmatter: {} // Frontmatter not stored in cache
     }
-    
-    logger.info(`✅ Loaded blog item: ${item.title}`)
+
+    logger.info(`✅ Found blog item in cache: ${item.title}`)
     return item
-    
+
   } catch (error) {
-    logger.error(`❌ Error loading blog item ${fileName}:`, error)
+    logger.error(`❌ Error loading blog item ${fileName} from cache:`, error)
     return null
   }
 }
 
-// Get a specific project item by filename
+// Get a specific project item by filename from cache
 export async function getProjectItem(fileName: string): Promise<ProjectItem | null> {
   try {
-    const fileUrl = getProjectUrl(`${fileName}.md`)
-    logger.info(`📖 Fetching project item: ${fileUrl}`)
-    
-    const response = await fetch(fileUrl)
-    
-    if (!response.ok) {
-      logger.warn(`⚠️ Failed to fetch project item ${fileName}: ${response.status}`)
+    logger.info(`🔍 Looking for project item: ${fileName} in cache`)
+
+    const cachedProjectItems = contentCache.projects || []
+    const cachedItem = cachedProjectItems.find(item => item.fileName === fileName)
+
+    if (!cachedItem) {
+      logger.warn(`⚠️ Project item ${fileName} not found in cache`)
       return null
     }
-    
-    const content = await response.text()
-    
-    if (!content || content.trim().length === 0) {
-      logger.warn(`⚠️ Empty content for project item ${fileName}`)
-      return null
-    }
-    
-    // Parse frontmatter
-    const { attributes, body } = fm(content)
-    const frontmatter = attributes as Record<string, unknown>
-    
-    // Remove import statements from markdown content
-    const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-    
-    const tags = (frontmatter.tags as string[]) || []
-    const keywords = (frontmatter.keywords as string[]) || []
-    
-    // Create project item
+
+    // Create project item from cached data
     const item: ProjectItem = {
-      id: fileName,
-      title: (frontmatter.title as string) || fileName.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-      description: (frontmatter.description as string) || 'No description available',
-      tags: [...tags, ...keywords],
-      category: getCategoryFromTags(tags, fileName),
-      url: `projects/${fileName}`,
-      keywords,
-      content: cleanedBody,
-      date: frontmatter.date as string,
-      fileName,
-      frontmatter
+      id: cachedItem.id,
+      title: cachedItem.title,
+      description: cachedItem.description,
+      tags: cachedItem.tags || [],
+      category: cachedItem.category,
+      url: cachedItem.url,
+      keywords: cachedItem.keywords || [],
+      content: cachedItem.content,
+      fileName: cachedItem.fileName,
+      frontmatter: {} // Frontmatter not stored in cache
     }
-    
-    logger.info(`✅ Loaded project item: ${item.title}`)
+
+    logger.info(`✅ Found project item in cache: ${item.title}`)
     return item
-    
+
   } catch (error) {
-    logger.error(`❌ Error loading project item ${fileName}:`, error)
+    logger.error(`❌ Error loading project item ${fileName} from cache:`, error)
     return null
   }
 }

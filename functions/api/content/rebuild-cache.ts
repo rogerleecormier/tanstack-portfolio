@@ -1,3 +1,5 @@
+import type { CachedContentItem } from './utils/cache-utils'
+
 interface Env {
   PORTFOLIO_CONTENT: R2Bucket;
 }
@@ -21,6 +23,7 @@ const PORTFOLIO_FILES = [
 ];
 
 const BLOG_FILES = [
+  'ai-models-2025.md',
   'pmbok-agile-methodology-blend.md',
   'serverless-ai-workflows-azure-functions.md',
   'power-automate-workflow-automation.md',
@@ -166,10 +169,10 @@ export async function onRequest(context: { request: Request; env: Env }) {
   try {
     console.log('🔄 Starting cache rebuild from API call...');
 
-    const portfolioItems: any[] = [];
-    const blogItems: any[] = [];
-    const projectItems: any[] = [];
-    const allItems: any[] = [];
+    const portfolioItems: CachedContentItem[] = [];
+    const blogItems: CachedContentItem[] = [];
+    const projectItems: CachedContentItem[] = [];
+    const allItems: CachedContentItem[] = [];
 
     // Process portfolio items
     console.log('🔄 Processing portfolio items...');
@@ -286,20 +289,7 @@ export async function onRequest(context: { request: Request; env: Env }) {
     projectItems.sort((a, b) => a.title.localeCompare(b.title));
     allItems.sort((a, b) => a.title.localeCompare(b.title));
 
-    // Create cache data
-    const contentCache = {
-      portfolio: portfolioItems,
-      blog: blogItems,
-      projects: projectItems,
-      all: allItems,
-      metadata: {
-        portfolioCount: portfolioItems.length,
-        blogCount: blogItems.length,
-        projectCount: projectItems.length,
-        lastUpdated: new Date().toISOString(),
-        version: '1.0.0'
-      }
-    };
+    // Cache data created but not stored in this function
 
     console.log('🎉 Content indexing completed successfully!');
     console.log(`📊 Total items indexed: ${allItems.length}`);

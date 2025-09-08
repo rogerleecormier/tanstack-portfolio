@@ -23,6 +23,11 @@ import BlogListPage from "./pages/BlogListPage";
 import NotFound from "./pages/NotFound";
 
 // Dynamic imports for heavier components - loaded on demand
+const ToolsListPage = lazy(() => import("./pages/ToolsListPage"));
+const RACIBuilderPage = lazy(() => import("./pages/RACIBuilderPage"));
+const PriorityMatrixPage = lazy(() => import("./pages/PriorityMatrixPage"));
+const GanttChartBuilderPage = lazy(() => import("./pages/GanttChartBuilderPage"));
+const RiskAssessmentPage = lazy(() => import("./pages/RiskAssessmentPage"));
 const HealthBridgeEnhanced = lazy(() => import("./pages/HealthBridgeEnhanced"));
 const Settings = lazy(() => import("./pages/Settings"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
@@ -33,6 +38,7 @@ const SiteAdminPage = lazy(() => import("./pages/SiteAdminPage").then(m => ({ de
 const CloudflareStatusChecker = lazy(() => import("./components/CloudflareStatusChecker").then(m => ({ default: m.CloudflareStatusChecker })));
 const CreationStudioPage = lazy(() => import("./pages/CreationStudioPage").then(m => ({ default: m.CreationStudioPage })));
 const MarkdownOnlyPage = lazy(() => import("./pages/MarkdownOnlyPage").then(m => ({ default: m.MarkdownOnlyPage })));
+const PrivateToolsPage = lazy(() => import("./pages/PrivateToolsPage"));
 
 import {
   PortfolioPageWrapper,
@@ -179,11 +185,53 @@ const contentStudioRoute = createRoute({
   component: CreationStudioPage,
 });
 
-// Markdown Editor route (under projects)
+// Private Tools route - PROTECTED
+const privateToolsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "protected/private-tools",
+  component: PrivateToolsPage,
+});
+
+// Markdown Editor route (under tools)
 const markdownOnlyRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "projects/markdown",
+  path: "tools/markdown",
   component: MarkdownOnlyPage,
+});
+
+// Tools list route
+const toolsListRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "tools",
+  component: ToolsListPage,
+});
+
+// RACI Builder route under tools
+const raciBuilderRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "tools/raci-builder",
+  component: RACIBuilderPage,
+});
+
+// Priority Matrix route under tools
+const priorityMatrixRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "tools/priority-matrix",
+  component: PriorityMatrixPage,
+});
+
+// Gantt Chart Builder route under tools
+const ganttChartBuilderRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "tools/gantt-chart",
+  component: GanttChartBuilderPage,
+});
+
+// Risk Assessment route under tools
+const riskAssessmentRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "tools/risk-assessment",
+  component: RiskAssessmentPage,
 });
 
 // Create route tree
@@ -205,7 +253,13 @@ const routeTree = rootRoute.addChildren([
   cloudflareStatusRoute,
   newsletterPreferencesRoute,
   contentStudioRoute,
+  privateToolsRoute,
   markdownOnlyRoute,
+  toolsListRoute,
+  raciBuilderRoute,
+  priorityMatrixRoute,
+  ganttChartBuilderRoute,
+  riskAssessmentRoute,
 ]);
 
 // Create router instance

@@ -1,14 +1,23 @@
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, BarChart3, TrendingUp, Calendar, User, Briefcase, Edit, FileText } from 'lucide-react'
-import { useNavigate } from '@tanstack/react-router'
+import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ArrowRight, BarChart3, TrendingUp, Calendar, User, Briefcase, Filter, Search, X, Tag } from 'lucide-react'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { ScrollToTop } from '@/components/ScrollToTop'
-import { useEffect } from 'react'
+import { cachedContentService, type CachedContentItem } from '@/api/cachedContentService'
+import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 
 export default function ProjectsListPage() {
   const navigate = useNavigate()
+  const [projects, setProjects] = useState<CachedContentItem[]>([])
+  const [filteredProjects, setFilteredProjects] = useState<CachedContentItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -23,8 +32,118 @@ export default function ProjectsListPage() {
     type: "website"
   })
 
-  const handleProjectClick = (url: string) => {
-    navigate({ to: url })
+  // Load projects from cache
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        setIsLoading(true)
+        const loadedProjects = await cachedContentService.getContentByType('project')
+        setProjects(loadedProjects)
+        setFilteredProjects(loadedProjects)
+      } catch (error) {
+        console.error('Error loading projects:', error)
+        // Fallback to empty array or handle error state
+        setProjects([])
+        setFilteredProjects([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadProjects()
+  }, [])
+
+  // Filter projects based on search and tags
+  useEffect(() => {
+    let filtered = projects
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const searchTerm = searchQuery.toLowerCase()
+      filtered = filtered.filter(project =>
+        project.title.toLowerCase().includes(searchTerm) ||
+        project.description.toLowerCase().includes(searchTerm) ||
+        project.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      )
+    }
+
+    // Filter by selected tags
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(project =>
+        selectedTags.some(tag => project.tags.includes(tag))
+      )
+    }
+
+    setFilteredProjects(filtered)
+  }, [projects, searchQuery, selectedTags])
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tag)
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    )
+  }
+
+  const clearFilters = () => {
+    setSearchQuery('')
+    setSelectedTags([])
+  }
+
+
+  const handleProjectClick = (projectId: string) => {
+    navigate({ to: `/projects/${projectId}` })
+  }
+
+  // Category icons mapping
+  const categoryIcons: Record<string, React.ReactNode> = {
+    'Analytics': <BarChart3 className="w-3 h-3 mr-1" />,
+    'Health Analytics': <TrendingUp className="w-3 h-3 mr-1" />,
+    // Add more as needed based on cache categories
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950">
+        <div className="container mx-auto px-4 py-8">
+          {/* Hero Skeleton */}
+          <div className="text-center mb-12">
+            <Skeleton className="h-16 w-96 mx-auto mb-4" />
+            <Skeleton className="h-6 w-2/3 mx-auto" />
+          </div>
+          
+          {/* Search Skeleton */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Skeleton className="h-12 flex-1" />
+              <Skeleton className="h-12 w-48" />
+            </div>
+          </div>
+          
+          {/* Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <Card key={i} className="h-80 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border-0 shadow-xl">
+                <CardHeader className="pb-3">
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/2" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/2 mb-4" />
+                  <div className="flex gap-2 mb-4">
+                    <Skeleton className="h-6 w-16" />
+                    <Skeleton className="h-6 w-20" />
+                  </div>
+                  <Skeleton className="h-4 w-24" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -103,189 +222,162 @@ export default function ProjectsListPage() {
         </div>
       </div>
 
-      {/* Projects Grid - More Compact */}
+      {/* Main Content Area */}
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
+          {/* Search and Filters */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Input
+                    placeholder="Search projects..."
+                    value={searchQuery}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                    className="pl-12 h-11 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500/20"
+                  />
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {}} // Could open tag filter dialog if needed
+                  className="flex items-center gap-2 h-11 px-6 border-gray-200 dark:border-gray-700 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/20"
+                >
+                  <Filter className="w-4 h-4" />
+                  Tags
+                </Button>
+                {(searchQuery || selectedTags.length > 0) && (
+                  <Button 
+                    variant="outline" 
+                    onClick={clearFilters} 
+                    className="flex items-center gap-2 h-11 px-6 border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <X className="w-4 h-4" />
+                    Clear
+                  </Button>
+                )}
+              </div>
+
+              {/* Selected Tags Display */}
+              {selectedTags.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Active filters:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedTags.map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant="default"
+                        className="cursor-pointer bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0"
+                        onClick={() => toggleTag(tag)}
+                      >
+                        <Tag className="h-3 w-3 mr-1" />
+                        {tag}
+                        <X className="h-3 w-3 ml-1" />
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="text-center mb-12">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
               Featured Projects
             </h2>
             <p className="text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Each project represents real-world challenges, analytical insights, and practical solutions 
-              that drive business value and operational excellence.
+              that drive business value and operational excellence. Showing {filteredProjects.length} of {projects.length} projects.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* Project Method Analysis - More Compact */}
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
-              <CardHeader className="pb-3 flex-shrink-0">
-                <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline" className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 text-xs">
-                    <BarChart3 className="w-3 h-3 mr-1" />
-                    Analytics
-                  </Badge>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">2025</span>
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                  Project Method Analysis
-                </CardTitle>
-                <CardDescription className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Comprehensive analysis of 4,000+ project records comparing Agile vs. Non-Agile methodologies 
-                  across budget tiers and complexity metrics.
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="flex flex-col h-full pt-0">
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
-                    Budget Analysis
-                  </Badge>
-                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
-                    Risk Analysis
-                  </Badge>
-                  <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
-                    ANOVA Testing
-                  </Badge>
-                </div>
-                
-                <div className="mt-auto">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        <span>4,000+ Records</span>
-                      </div>
-                      <div className="flex items-center">
-                        <User className="w-3 h-3 mr-1" />
-                        <span>Roger Cormier</span>
-                      </div>
-                    </div>
+          {filteredProjects.length === 0 ? (
+            <div className="text-center py-16">
+              <Card className="inline-block max-w-md">
+                <CardContent className="pt-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Briefcase className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <Button 
-                    onClick={() => handleProjectClick('/projects/project-analysis')}
-                    className="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 text-sm py-2"
-                  >
-                    View Project
-                    <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    No projects found
+                  </h3>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    {searchQuery || selectedTags.length > 0 
+                      ? 'Try adjusting your search or filters'
+                      : 'No projects available yet'
+                    }
+                  </p>
+                  <Button onClick={clearFilters} className="mt-4">
+                    Clear Filters
                   </Button>
-                </div>
-              </CardContent>
-                        </Card>
-
-            {/* HealthBridge Enhanced - NEW */}
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
-              <CardHeader className="pb-3 flex-shrink-0">
-                <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline" className="border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300 text-xs">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    Health Analytics
-                  </Badge>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">2025</span>
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  HealthBridge Enhanced
-                </CardTitle>
-                <CardDescription className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Advanced weight loss journey analysis with medication tracking, predictive modeling, 
-                  and personalized insights for optimal health outcomes.
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="flex flex-col h-full pt-0">
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
-                    Predictive Analytics
-                  </Badge>
-                  <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
-                    Medication Tracking
-                  </Badge>
-                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
-                    Weight Projections
-                  </Badge>
-                </div>
-                
-                <div className="mt-auto">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        <span>Personal Journey</span>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {filteredProjects.map((project) => {
+                const categoryIcon = categoryIcons[project.category] || <Briefcase className="w-3 h-3 mr-1" />
+                return (
+                  <Card key={project.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
+                    <CardHeader className="pb-3 flex-shrink-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="outline" className="border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300 text-xs">
+                          {categoryIcon}
+                          {project.category}
+                        </Badge>
+                        {project.date && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">{new Date(project.date).getFullYear()}</span>
+                        )}
                       </div>
-                      <div className="flex items-center">
-                        <User className="w-3 h-3 mr-1" />
-                        <span>Roger Cormier</span>
+                      <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                        {project.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {project.description}
+                      </CardDescription>
+                    </CardHeader>
+                    
+                    <CardContent className="flex flex-col h-full pt-0">
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {project.tags.slice(0, 3).map((tag, index) => (
+                          <Badge key={index} variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
+                            {tag}
+                          </Badge>
+                        ))}
+                        {project.tags.length > 3 && (
+                          <Badge variant="secondary" className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs px-2 py-0.5">
+                            +{project.tags.length - 3} more
+                          </Badge>
+                        )}
                       </div>
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={() => handleProjectClick('/projects/healthbridge-enhanced')}
-                    className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 text-sm py-2"
-                  >
-                    View Project
-                    <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Markdown Editor - NEW */}
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 flex flex-col h-full">
-              <CardHeader className="pb-3 flex-shrink-0">
-                <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline" className="border-purple-200 text-purple-700 dark:border-purple-700 dark:text-purple-300 text-xs">
-                    <Edit className="w-3 h-3 mr-1" />
-                    Content Creation
-                  </Badge>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">2025</span>
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                  Markdown Editor
-                </CardTitle>
-                <CardDescription className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Advanced markdown editing platform with live preview, comprehensive formatting support,
-                  and integrated content management for seamless writing and publishing workflows.
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="flex flex-col h-full pt-0">
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  <Badge variant="secondary" className="bg-purple-50 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 text-xs px-2 py-0.5">
-                    Live Preview
-                  </Badge>
-                  <Badge variant="secondary" className="bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs px-2 py-0.5">
-                    WYSIWYG Editor
-                  </Badge>
-                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-xs px-2 py-0.5">
-                    CodeMirror
-                  </Badge>
-                </div>
-
-                <div className="mt-auto">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <FileText className="w-3 h-3 mr-1" />
-                        <span>Markdown Tools</span>
+                      
+                      <div className="mt-auto">
+                        <div className="flex items-center justify-between mb-2 text-xs text-gray-500 dark:text-gray-400">
+                          <div className="flex items-center">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            <span>{project.date ? new Date(project.date).getFullYear() : 'Ongoing'}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <User className="w-3 h-3 mr-1" />
+                            <span>Roger Cormier</span>
+                          </div>
+                        </div>
+                        <Button 
+                          onClick={() => handleProjectClick(project.id)}
+                          className="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 text-sm py-2"
+                        >
+                          View Project
+                          <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                        </Button>
                       </div>
-                      <div className="flex items-center">
-                        <User className="w-3 h-3 mr-1" />
-                        <span>Roger Cormier</span>
-                      </div>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => handleProjectClick('/projects/markdown')}
-                    className="w-full bg-gradient-to-r from-purple-600 to-teal-600 hover:from-purple-700 hover:to-teal-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 text-sm py-2"
-                  >
-                    Open Markdown Editor
-                    <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-          </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          )}
 
           {/* Methodology Section - More Compact */}
           <div className="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950/50 dark:to-blue-950/50 rounded-xl p-6 mb-12">
@@ -361,6 +453,17 @@ export default function ProjectsListPage() {
                 </Button>
               </div>
             </div>
+          </div>
+
+          {/* Related Content */}
+          <div className="mt-16 max-w-4xl mx-auto">
+            <UnifiedRelatedContent
+              title="Projects and Case Studies"
+              tags={['projects', 'analytics', 'case studies']}
+              currentUrl="/projects"
+              maxResults={3}
+              variant="inline"
+            />
           </div>
         </div>
       </div>

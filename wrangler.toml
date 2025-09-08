@@ -6,8 +6,20 @@ pages_build_output_dir = "dist"
 # Enable Node.js compatibility for Pages Functions that use Node.js built-ins
 compatibility_flags = ["nodejs_compat"]
 
+[[kv_namespaces]]
+binding = "CONTENT_CACHE"
+id = ""  # Create with: wrangler kv:namespace create "CONTENT_CACHE" --preview; update with real ID for production
+
+# Development KV namespace (create with: wrangler kv:namespace create "CONTENT_CACHE_DEV" --preview)
+[env.development.kv_namespaces]
+binding = "CONTENT_CACHE"
+id = ""
+
 [env.production]
 name = "tanstack-portfolio"
 pages_build_output_dir = "dist"
 
+[[env.production.kv_namespaces]]
+binding = "CONTENT_CACHE"
+id = ""  # Update with production KV ID
 

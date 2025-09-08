@@ -26,6 +26,7 @@ import { sendEmail } from '@/api/emailService'
 import { format } from 'date-fns'
 import { ContactAnalysis } from '@/components/ContactAnalysis'
 import { AIMeetingScheduler } from '@/components/AIMeetingScheduler'
+import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 import { analyzeContactForm, type AIAnalysisResult, AIAnalysisError } from '@/api/contactAnalyzer'
 
 // Dynamic Action Button Component
@@ -982,10 +983,22 @@ This meeting request was generated based on AI analysis of their contact form su
         {/* AI Disclosure */}
         <div className="mt-12 text-center">
           <p className="text-xs text-gray-400">
-            This site uses AI to analyze messages and provide personalized recommendations. 
-            Message content is processed securely and not stored. 
+            This site uses AI to analyze messages and provide personalized recommendations.
+            Message content is processed securely and not stored.
             <a href="/privacy" className="text-teal-600 hover:text-teal-700 ml-1">Privacy Policy</a>
           </p>
+        </div>
+    
+        {/* Related Content */}
+        <div className="mt-16">
+          <UnifiedRelatedContent
+            title="Contact and Consultation"
+            tags={['contact', 'consultation', 'strategy', 'leadership']}
+            currentUrl="/contact"
+            maxResults={3}
+            variant="inline"
+            className="max-w-4xl mx-auto"
+          />
         </div>
       </div>
       

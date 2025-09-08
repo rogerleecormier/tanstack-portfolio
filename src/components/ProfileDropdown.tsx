@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Settings, Shield, PenTool, LogOut, ChevronDown } from 'lucide-react';
+import { Settings, Shield, PenTool, Wrench, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth, CloudflareUser } from '@/hooks/useAuth';
 
 interface ProfileDropdownProps {
@@ -124,6 +124,14 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
             >
               <PenTool className="mr-3 h-4 w-4 text-gray-500" />
               <span>Content Studio</span>
+            </button>
+
+            <button
+              onClick={() => handleNavigation('/protected/private-tools')}
+              className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+            >
+              <Wrench className="mr-3 h-4 w-4 text-gray-500" />
+              <span>Private Tools</span>
             </button>
 
           </div>

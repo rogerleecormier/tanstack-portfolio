@@ -1,7 +1,7 @@
 import { logger } from '@/utils/logger'
 import Fuse, { IFuseOptions } from 'fuse.js'
 
-// Import cached content data
+// Import cached content data for local/dev
 import contentCache from '@/data/content-cache.json'
 import portfolioItems from '@/data/portfolio-items.json'
 import blogItems from '@/data/blog-items.json'
@@ -65,6 +65,7 @@ export interface CachedRecommendationsResponse {
 /**
  * Service for content search and recommendations using pre-built cache
  * This replaces the R2-based service for better performance
+ * In production, fetches from KV via API endpoint; in dev/local uses local files
  */
 export class CachedContentService {
   private portfolioItems: CachedContentItem[] = []
@@ -73,6 +74,7 @@ export class CachedContentService {
   private allItems: CachedContentItem[] = []
   private fuse: Fuse<CachedContentItem> | null = null
   private isFuseInitialized = false
+  private isProduction = import.meta.env.MODE === 'production'
 
   constructor() {
     this.initializeContent()
@@ -93,6 +95,99 @@ export class CachedContentService {
         logger.info(`✅ Cached content service fully initialized with ${this.allItems.length} items`)
       }
     }, 100)
+  }
+
+  /**
+   * Initialize content - always try KV cache first, fallback to local files
+   */
+  private async initializeContent() {
+    try {
+      // Always try KV cache first, even in development
+      const response = await fetch('/api/content/cache-get')
+      if (response.ok) {
+        const cacheData = await response.json()
+        this.allItems = cacheData.all || []
+        // Separate by type
+        this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
+        this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
+        this.projectItems = this.allItems.filter(item => item.contentType === 'project')
+
+        logger.info(`✅ Loaded content from KV cache with ${this.allItems.length} items`)
+      } else {
+        logger.warn('⚠️ KV cache not available, attempting to populate and retry...')
+
+        // Try to populate KV cache if it's empty
+        await this.populateKvCacheIfNeeded()
+
+        // Retry fetching after potential population
+        const retryResponse = await fetch('/api/content/cache-get')
+        if (retryResponse.ok) {
+          const cacheData = await retryResponse.json()
+          this.allItems = cacheData.all || []
+          this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
+          this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
+          this.projectItems = this.allItems.filter(item => item.contentType === 'project')
+
+          logger.info(`✅ Successfully loaded content from KV cache after population: ${this.allItems.length} items`)
+        } else {
+          throw new Error('KV cache still unavailable after population attempt')
+        }
+      }
+    } catch (error) {
+      logger.warn('⚠️ Failed to load from KV cache, using local files as fallback:', error)
+
+      // Fallback to local files if KV is not available
+      try {
+        this.portfolioItems = portfolioItems as CachedContentItem[]
+        this.blogItems = blogItems as CachedContentItem[]
+        this.projectItems = projectItems as CachedContentItem[]
+        this.allItems = contentCache.all as CachedContentItem[]
+
+        logger.info(`✅ Fallback: Loaded local content with ${this.allItems.length} items`)
+      } catch (fallbackError) {
+        logger.error('❌ Fallback to local files also failed:', fallbackError)
+        // Empty arrays as final fallback
+        this.portfolioItems = []
+        this.blogItems = []
+        this.projectItems = []
+        this.allItems = []
+      }
+    }
+
+    logger.info(`📁 Portfolio: ${this.portfolioItems.length}`)
+    logger.info(`📝 Blog: ${this.blogItems.length}`)
+    logger.info(`🚀 Projects: ${this.projectItems.length}`)
+
+    // Initialize Fuse.js after content is loaded
+    if (this.allItems.length > 0) {
+      this.initializeFuse()
+    }
+  }
+
+  /**
+   * Attempt to populate KV cache if it's empty (for development)
+   */
+  private async populateKvCacheIfNeeded() {
+    try {
+      logger.info('🔄 Attempting to populate KV cache from local data...')
+
+      // Try to trigger cache rebuild via API
+      const rebuildResponse = await fetch('/api/content/rebuild-cache-kv', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (rebuildResponse.ok) {
+        const result = await rebuildResponse.json()
+        logger.info(`✅ KV cache populated successfully: ${result.totalItems} items`)
+      } else {
+        logger.warn('⚠️ Failed to populate KV cache via API')
+      }
+    } catch (error) {
+      logger.error('❌ Error attempting to populate KV cache:', error)
+    }
   }
 
   /**
@@ -130,36 +225,6 @@ export class CachedContentService {
       logger.info(`✅ Fuse.js semantic search initialized with ${this.allItems.length} items`)
     } catch (error) {
       logger.error('❌ Failed to initialize Fuse.js:', error)
-    }
-  }
-
-  /**
-   * Initialize content from cached JSON files
-   */
-  private initializeContent() {
-    try {
-      // Load content from cached JSON files
-      this.portfolioItems = portfolioItems as CachedContentItem[]
-      this.blogItems = blogItems as CachedContentItem[]
-      this.projectItems = projectItems as CachedContentItem[]
-      this.allItems = contentCache.all as CachedContentItem[]
-
-      logger.info(`✅ Cached content service initialized with ${this.allItems.length} items`)
-      logger.info(`📁 Portfolio: ${this.portfolioItems.length}`)
-      logger.info(`📝 Blog: ${this.blogItems.length}`)
-      logger.info(`🚀 Projects: ${this.projectItems.length}`)
-
-      // Initialize Fuse.js after content is loaded
-      if (this.allItems.length > 0) {
-        this.initializeFuse()
-      }
-    } catch (error) {
-      logger.error('❌ Failed to initialize cached content service:', error)
-      // Fallback to empty arrays
-      this.portfolioItems = []
-      this.blogItems = []
-      this.projectItems = []
-      this.allItems = []
     }
   }
 
@@ -293,50 +358,50 @@ export class CachedContentService {
     const scoredItems = items.map(item => {
       let score = 0
       
-          // Title match (highest weight)
-    if (item.title.toLowerCase().includes(queryLower)) {
-      score += 25
-    }
-    
-    // Description match
-    if (item.description.toLowerCase().includes(queryLower)) {
-      score += 15
-    }
-    
-    // Content match
-    if (item.content.toLowerCase().includes(queryLower)) {
-      score += 10
-    }
-    
-    // Tags match (exact matches get higher weight)
-    const itemTags = item.tags.map(tag => tag.toLowerCase())
-    const matchingTags = tagsLower.filter(tag => itemTags.includes(tag))
-    score += matchingTags.length * 12
-    
-    // Keywords match
-    const itemKeywords = item.keywords.map(keyword => keyword.toLowerCase())
-    const matchingKeywords = tagsLower.filter(keyword => itemKeywords.includes(keyword))
-    score += matchingKeywords.length * 8
-    
-    // Category match
-    if (item.category.toLowerCase().includes(queryLower)) {
-      score += 10
-    }
-    
-    // Partial word matches for better semantic understanding
-    const queryWords = queryLower.split(/\s+/)
-    queryWords.forEach(word => {
-      if (word.length > 2) {
-        if (item.title.toLowerCase().includes(word)) score += 5
-        if (item.description.toLowerCase().includes(word)) score += 3
-        if (item.content.toLowerCase().includes(word)) score += 2
+      // Title match (highest weight)
+      if (item.title.toLowerCase().includes(queryLower)) {
+        score += 25
       }
-    })
-    
-    // Content quality bonus
-    if (item.content.length > 200) score += 5
-    if (item.tags.length > 2) score += 3
-    if (item.keywords.length > 2) score += 2
+      
+      // Description match
+      if (item.description.toLowerCase().includes(queryLower)) {
+        score += 15
+      }
+      
+      // Content match
+      if (item.content.toLowerCase().includes(queryLower)) {
+        score += 10
+      }
+      
+      // Tags match (exact matches get higher weight)
+      const itemTags = item.tags.map(tag => tag.toLowerCase())
+      const matchingTags = tagsLower.filter(tag => itemTags.includes(tag))
+      score += matchingTags.length * 12
+      
+      // Keywords match
+      const itemKeywords = item.keywords.map(keyword => keyword.toLowerCase())
+      const matchingKeywords = tagsLower.filter(keyword => itemKeywords.includes(keyword))
+      score += matchingKeywords.length * 8
+      
+      // Category match
+      if (item.category.toLowerCase().includes(queryLower)) {
+        score += 10
+      }
+      
+      // Partial word matches for better semantic understanding
+      const queryWords = queryLower.split(/\s+/)
+      queryWords.forEach(word => {
+        if (word.length > 2) {
+          if (item.title.toLowerCase().includes(word)) score += 5
+          if (item.description.toLowerCase().includes(word)) score += 3
+          if (item.content.toLowerCase().includes(word)) score += 2
+        }
+      })
+      
+      // Content quality bonus
+      if (item.content.length > 200) score += 5
+      if (item.tags.length > 2) score += 3
+      if (item.keywords.length > 2) score += 2
 
       return { item, score }
     })
@@ -403,8 +468,7 @@ export class CachedContentService {
     if (item.tags.length > 2) score += 3
     if (item.keywords.length > 2) score += 2
     
-    // Normalize score to 0-100 range with realistic distribution
-    // Remove the artificial normalization that was causing 80% and 100% scores
+    // Normalize score to 0-100 range
     const normalizedScore = Math.min(100, Math.max(0, Math.round(score)))
     
     // Deduplicate tags to prevent duplication in the UI
@@ -440,6 +504,28 @@ export class CachedContentService {
       default:
         return []
     }
+  }
+
+  /**
+   * Get blog posts in BlogPost format for backward compatibility
+   */
+  async getBlogPosts(): Promise<CachedContentItem[]> {
+    const blogItems = await this.getContentByType('blog')
+
+    // Convert CachedContentItem to include calculated fields
+    return blogItems.map(item => ({
+      ...item,
+      readTime: this.calculateReadTime(item.content)
+    }))
+  }
+
+  /**
+   * Calculate reading time from content
+   */
+  private calculateReadTime(content: string): number {
+    const wordsPerMinute = 200
+    const wordCount = content.split(/\s+/).length
+    return Math.ceil(wordCount / wordsPerMinute)
   }
 
   /**

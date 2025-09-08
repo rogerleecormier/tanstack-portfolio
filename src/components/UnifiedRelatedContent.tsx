@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { ContentItem } from '../types/content'
 import { parseContentForSearch } from '../utils/characterParser'
-import { cachedContentService } from '@/api/cachedContentService'
+import { cachedContentService, CachedContentItem } from '@/api/cachedContentService'
 import { useDynamicHeight } from '@/hooks/useDynamicHeight'
 
 interface UnifiedRelatedContentProps {
@@ -112,15 +112,25 @@ export function UnifiedRelatedContent({
 
       if (response.success && response.results) {
         console.log(`✅ Found ${response.results.length} recommendations`)
-        console.log('🔍 Raw recommendations:', response.results.map(r => ({ url: r.url, title: r.title })))
+        console.log('🔍 Raw recommendations:', response.results.map(r => ({ id: r.id, title: r.title })))
         console.log('🔍 Current URL:', currentUrl)
         console.log('🔍 Effective max results:', effectiveMaxResults)
         
+        // Derive url and score for each item
+        const extendedResults: ExtendedContentItem[] = response.results.map((item: CachedContentItem) => ({
+          ...item,
+          url: `/${item.contentType}/${item.id}`,
+          relevanceScore: 85 // Default score if not provided
+        }))
+
         // Filter out the current page and limit results
-        const filteredResults = response.results
-          .filter((item: ContentItem) => item.url !== currentUrl)
+        const filteredResults = extendedResults
+          .filter((item: ExtendedContentItem) => {
+            const currentId = currentUrl.split('/').pop()
+            return item.id !== currentId
+          })
           .slice(0, effectiveMaxResults)
-        
+
         console.log(`📋 Filtered to ${filteredResults.length} relevant results`)
         console.log('🔍 Final recommendations:', filteredResults.map(r => ({ url: r.url, title: r.title })))
         setRecommendations(filteredResults)

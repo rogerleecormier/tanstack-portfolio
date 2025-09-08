@@ -569,13 +569,13 @@ export default function PortfolioListPage() {
             
             <div className="flex-1 overflow-y-auto p-6">
               <div className="flex flex-wrap gap-3">
-                {portfolioSearch?.getTags().map((tag) => (
+                {portfolioItems.flatMap(item => item.tags).filter((tag, index, self) => self.indexOf(tag) === index).sort().map((tag) => (
                   <Badge
                     key={tag}
                     variant={selectedTags.includes(tag) ? 'secondary' : 'outline'}
                     className={`cursor-pointer transition-all duration-200 text-sm px-3 py-2 ${
-                      selectedTags.includes(tag) 
-                        ? 'bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg' 
+                      selectedTags.includes(tag)
+                        ? 'bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg'
                         : 'bg-white/50 dark:bg-slate-800/50 hover:bg-teal-50 dark:hover:bg-teal-950/20 border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-700'
                     }`}
                     onClick={() => toggleTag(tag)}
