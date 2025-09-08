@@ -27,17 +27,6 @@ id = "0acc4d15643a427aa6a88967083be65d"  # Same KV namespace for preview
 binding = "R2_CONTENT"
 bucket_name = "tanstack-portfolio-r2"
 
-# Local development environment
-[env.local]
-name = "tanstack-portfolio-local"
-
-# KV Namespace for cache storage in local development
-[[env.local.kv_namespaces]]
-binding = "CONTENT_CACHE"
-id = "0acc4d15643a427aa6a88967083be65d"
-
-# R2 Bucket for content source in local development
-[[env.local.r2_buckets]]
-binding = "R2_CONTENT"
-bucket_name = "tanstack-portfolio-r2"
+# Note: Local development uses dedicated workers for KV and R2 access
+# No local environment needed in Pages - localhost uses production workers
 
