@@ -1,46 +1,13 @@
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import fm from 'front-matter'
 
 // Get current directory for ESM
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Content file lists (same as in r2PortfolioLoader.ts)
-const PORTFOLIO_FILES = [
-  'strategy.md',
-  'leadership.md',
-  'talent.md',
-  'devops.md',
-  'saas.md',
-  'analytics.md',
-  'risk-compliance.md',
-  'governance-pmo.md',
-  'product-ux.md',
-  'education-certifications.md',
-  'ai-automation.md',
-  'culture.md',
-  'capabilities.md',
-  'projects.md'
-]
-
-const BLOG_FILES = [
-  'pmbok-agile-methodology-blend.md',
-  'serverless-ai-workflows-azure-functions.md',
-  'power-automate-workflow-automation.md',
-  'asana-ai-status-reporting.md',
-  'mkdocs-github-actions-portfolio.md',
-  'internal-ethos-high-performing-organizations.md',
-  'digital-transformation-strategy-governance.md',
-  'military-leadership-be-know-do.md',
-  'ramp-agents-ai-finance-operations.md',
-  'pmp-digital-transformation-leadership.md'
-]
-
-const PROJECT_FILES = [
-  'project-analysis.md'
-]
+// Dynamic file discovery - no more hardcoded lists!
 
 // R2 URLs (same as in r2Config.ts)
 const R2_BASE_URL = 'https://r2-content-proxy.rcormier.workers.dev'
@@ -139,12 +106,38 @@ async function checkR2Accessibility() {
   }
 }
 
+// Dynamically discover files from R2 bucket
+async function discoverFiles(category) {
+  try {
+    const listUrl = `${R2_BASE_URL}/_list?prefix=${category}/&limit=1000`
+    const response = await fetch(listUrl)
+
+    if (!response.ok) {
+      console.error(`Failed to list ${category} files:`, response.statusText)
+      return []
+    }
+
+    const data = await response.json()
+    const files = data.objects || []
+
+    // Extract filenames from the full keys
+    return files.map(obj => obj.key.replace(`${category}/`, ''))
+  } catch (error) {
+    console.error(`Error discovering ${category} files:`, error.message)
+    return []
+  }
+}
+
 // Process portfolio items
 async function processPortfolioItems() {
   console.log('🔄 Processing portfolio items...')
   const items = []
-  
-  for (const fileName of PORTFOLIO_FILES) {
+
+  // Dynamically discover all portfolio files
+  const portfolioFiles = await discoverFiles('portfolio')
+  console.log(`📁 Found ${portfolioFiles.length} portfolio files:`, portfolioFiles)
+
+  for (const fileName of portfolioFiles) {
     try {
       const fileUrl = `${PORTFOLIO_BASE_URL}/${fileName}`
       console.log(`📖 Fetching: ${fileUrl}`)
@@ -195,8 +188,12 @@ async function processPortfolioItems() {
 async function processBlogItems() {
   console.log('🔄 Processing blog items...')
   const items = []
-  
-  for (const fileName of BLOG_FILES) {
+
+  // Dynamically discover all blog files
+  const blogFiles = await discoverFiles('blog')
+  console.log(`📁 Found ${blogFiles.length} blog files:`, blogFiles)
+
+  for (const fileName of blogFiles) {
     try {
       const fileUrl = `${BLOG_BASE_URL}/${fileName}`
       console.log(`📖 Fetching: ${fileUrl}`)
@@ -253,8 +250,12 @@ async function processBlogItems() {
 async function processProjectItems() {
   console.log('🔄 Processing project items...')
   const items = []
-  
-  for (const fileName of PROJECT_FILES) {
+
+  // Dynamically discover all project files
+  const projectFiles = await discoverFiles('projects')
+  console.log(`📁 Found ${projectFiles.length} project files:`, projectFiles)
+
+  for (const fileName of projectFiles) {
     try {
       const fileUrl = `${PROJECT_BASE_URL}/${fileName}`
       console.log(`📖 Fetching: ${fileUrl}`)
