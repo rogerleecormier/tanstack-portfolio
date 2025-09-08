@@ -16,7 +16,7 @@ import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
 import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Archive, Database } from 'lucide-react';
-import { triggerContentStudioRebuild, triggerManualRebuild, getCacheStatus } from '../utils/cacheRebuildService';
+import { triggerContentStudioRebuild, triggerManualRebuild, getCacheStatus, forcePopulatePreviewCache } from '../utils/cacheRebuildService';
 
 // Helper function to format relative time
 function getRelativeTimeString(timestamp: string): string {
@@ -33,6 +33,11 @@ function getRelativeTimeString(timestamp: string): string {
   if (diffDays < 7) return `${diffDays}d ago`;
   return past.toLocaleDateString();
 }
+
+// Check if we're in a preview environment
+const isPreviewEnvironment = typeof window !== 'undefined' &&
+                           window.location.hostname.includes('pages.dev') &&
+                           !window.location.hostname.startsWith('tanstack-portfolio.pages.dev');
 
 export function CreationStudioPage() {
   const [markdown, setMarkdown] = useState('');
@@ -552,7 +557,7 @@ export function CreationStudioPage() {
                           console.log('✅ Manual cache rebuild successful');
                           console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
                           console.log(`🕒 Timestamp: ${cacheResponse.timestamp}`);
-                          
+
                           // Update cache status
                           if (cacheResponse.stats) {
                             setCacheStatus({
@@ -600,6 +605,63 @@ export function CreationStudioPage() {
                   </div>
                 </TooltipContent>
               </Tooltip>
+
+              {/* Preview Environment Force Populate Button */}
+              {isPreviewEnvironment && (
+                <>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={async () => {
+                          setCacheRebuildStatus('rebuilding');
+                          try {
+                            const cacheResponse = await forcePopulatePreviewCache();
+                            if (cacheResponse.success) {
+                              setCacheRebuildStatus('completed');
+                              console.log('✅ Preview cache force population successful');
+                              console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
+                              console.log(`🕒 Timestamp: ${cacheResponse.timestamp}`);
+
+                              // Update cache status
+                              if (cacheResponse.stats) {
+                                setCacheStatus({
+                                  lastUpdated: cacheResponse.timestamp,
+                                  totalItems: cacheResponse.stats.total,
+                                  trigger: cacheResponse.trigger
+                                });
+                              }
+                            } else {
+                              setCacheRebuildStatus('error');
+                              console.error('❌ Preview cache force population failed:', cacheResponse.error || cacheResponse.message);
+                            }
+                          } catch (error) {
+                            setCacheRebuildStatus('error');
+                            console.error('❌ Preview cache force population error:', error);
+                          }
+                          setTimeout(() => setCacheRebuildStatus('idle'), 3000);
+                        }}
+                        disabled={cacheRebuildStatus === 'rebuilding'}
+                        className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
+                      >
+                        <Archive className={`h-4 w-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <div className="text-center">
+                        <div className="font-medium">Force Populate Preview Cache</div>
+                        <div className="text-xs text-slate-500 mt-1">
+                          Force rebuild cache for preview environments
+                        </div>
+                        <div className="text-xs text-orange-500 mt-1">
+                          Preview Environment Only
+                        </div>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </>
+              )}
 
               <Separator orientation="vertical" className="h-6 mx-1" />
 

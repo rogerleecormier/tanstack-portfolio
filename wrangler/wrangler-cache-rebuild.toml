@@ -34,6 +34,25 @@ crons = ["0 */4 * * *"]  # Every 4 hours
 # Optional: API key for security (set via wrangler secret)
 # wrangler secret put REBUILD_API_KEY --env production
 
+# Preview environment (branch deployments)
+[env.preview]
+name = "cache-rebuild-worker-preview"
+
+[[env.preview.kv_namespaces]]
+binding = "CONTENT_CACHE"
+id = "0acc4d15643a427aa6a88967083be65d"  # Same KV namespace as production
+
+[[env.preview.r2_buckets]]
+binding = "R2_CONTENT"
+bucket_name = "tanstack-portfolio-r2"
+
+[env.preview.vars]
+ENVIRONMENT = "preview"
+
+# Cron triggers for preview (optional - less frequent)
+[[env.preview.triggers]]
+cron = "0 12 * * *"  # Daily at noon UTC for preview
+
 # Development environment
 [env.development]
 name = "cache-rebuild-worker-dev"

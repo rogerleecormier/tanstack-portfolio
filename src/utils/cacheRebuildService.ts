@@ -28,7 +28,14 @@ interface CacheStatus {
   } | null
 }
 
-const WORKER_BASE_URL = 'https://cache-rebuild-worker.rcormier.workers.dev'
+// Determine worker URL based on environment
+function getWorkerBaseUrl(): string {
+  // Use production worker for both production and preview environments
+  // since preview environments may not have their own worker deployed
+  return 'https://cache-rebuild-worker.rcormier.workers.dev'
+}
+
+const WORKER_BASE_URL = getWorkerBaseUrl()
 
 /**
  * Trigger cache rebuild from content creation studio
@@ -138,5 +145,44 @@ export async function isCacheRebuildAvailable(): Promise<boolean> {
     return status?.status === 'healthy'
   } catch {
     return false
+  }
+}
+
+/**
+ * Force populate cache for preview environments
+ */
+export async function forcePopulatePreviewCache(): Promise<CacheRebuildResponse> {
+  try {
+    console.log('🔄 Force populating cache for preview environment...')
+
+    const response = await fetch(`${WORKER_BASE_URL}/rebuild`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        trigger: 'preview-force',
+        timestamp: new Date().toISOString(),
+        force: true
+      })
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`HTTP ${response.status}: ${errorText}`)
+    }
+
+    const result = await response.json()
+    console.log('✅ Preview cache force population completed:', result)
+    return result
+  } catch (error) {
+    console.error('❌ Preview cache force population failed:', error)
+    return {
+      success: false,
+      message: 'Failed to force populate preview cache',
+      trigger: 'preview-force',
+      timestamp: new Date().toISOString(),
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
   }
 }

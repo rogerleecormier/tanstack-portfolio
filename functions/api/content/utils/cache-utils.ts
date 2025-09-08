@@ -1,4 +1,5 @@
-import matter from 'gray-matter'
+// Note: Using basic frontmatter parsing for Pages Functions environment
+// import matter from 'gray-matter'
 import type { R2Bucket, KVNamespace } from '@cloudflare/workers-types'
 // Use console for logging in Worker environment
 
@@ -49,26 +50,74 @@ function getCategoryFromTags(tags: string[], fileName: string): string {
   return 'Strategy & Consulting'
 }
 
+// Parse frontmatter (simple implementation for Pages Functions environment)
+function parseFrontmatter(content: string): { attributes: Record<string, unknown>; body: string } {
+  try {
+    const lines = content.split('\n')
+    const frontmatterStart = lines.findIndex(line => line.trim() === '---')
+
+    if (frontmatterStart !== 0) {
+      return { attributes: {}, body: content }
+    }
+
+    const frontmatterEnd = lines.findIndex((line, index) => index > 0 && line.trim() === '---')
+
+    if (frontmatterEnd === -1) {
+      return { attributes: {}, body: content }
+    }
+
+    const frontmatterLines = lines.slice(1, frontmatterEnd)
+    const body = lines.slice(frontmatterEnd + 1).join('\n')
+
+    // Simple YAML parsing
+    const attributes: Record<string, unknown> = {}
+    for (const line of frontmatterLines) {
+      const colonIndex = line.indexOf(':')
+      if (colonIndex > 0) {
+        const key = line.substring(0, colonIndex).trim()
+        let value: unknown = line.substring(colonIndex + 1).trim()
+
+        // Parse arrays
+        if (typeof value === 'string' && value.startsWith('[') && value.endsWith(']')) {
+          value = value.slice(1, -1).split(',').map(item => item.trim().replace(/^["']|["']$/g, ''))
+        }
+
+        // Remove quotes from strings
+        if (typeof value === 'string' && ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))) {
+          value = value.slice(1, -1)
+        }
+
+        attributes[key] = value
+      }
+    }
+
+    return { attributes, body }
+  } catch (error) {
+    console.error('Error parsing frontmatter:', error)
+    return { attributes: {}, body: content }
+  }
+}
+
 async function processContentFile(bucket: R2Bucket, key: string): Promise<CachedContentItem | null> {
   try {
     const object = await bucket.get(key)
     if (!object) return null
     const content = await object.text()
-    const { data: attributes, content: body } = matter(content)
+    const { attributes, body } = parseFrontmatter(content)
 
     const contentType = key.startsWith('portfolio/') ? 'portfolio' : key.startsWith('blog/') ? 'blog' : 'project'
     const id = key.split('/').pop()?.replace('.md', '') || ''
     const fileName = key.split('/').pop() || ''
-    const category = getCategoryFromTags(attributes.tags || [], fileName)
+    const category = getCategoryFromTags(attributes.tags as string[] || [], fileName)
 
     return {
       id,
-      title: attributes.title || id.replace(/-/g, ' '),
-      description: attributes.description || body.substring(0, 200) + '...',
-      tags: attributes.tags || [],
-      keywords: attributes.keywords || [],
+      title: (attributes.title as string) || id.replace(/-/g, ' '),
+      description: (attributes.description as string) || body.substring(0, 200) + '...',
+      tags: (attributes.tags as string[]) || [],
+      keywords: (attributes.keywords as string[]) || [],
       content: body,
-      date: attributes.date,
+      date: attributes.date as string,
       contentType,
       category,
       fileName

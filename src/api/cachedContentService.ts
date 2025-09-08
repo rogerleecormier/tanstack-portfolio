@@ -105,7 +105,7 @@ export class CachedContentService {
         if (response.ok) {
           const cacheData = await response.json()
           this.allItems = cacheData.all || []
-          
+
           // If we got data, process it
           if (this.allItems.length > 0) {
             // Separate by type
@@ -117,6 +117,26 @@ export class CachedContentService {
             return
           } else {
             logger.warn('⚠️ KV cache is empty, will attempt to populate')
+          }
+        } else {
+          // Check if it's a preview environment error
+          const isPreview = typeof window !== 'undefined' &&
+                           window.location.hostname.includes('pages.dev') &&
+                           !window.location.hostname.startsWith('tanstack-portfolio.pages.dev')
+
+          if (isPreview && response.status === 500) {
+            logger.warn('⚠️ Preview environment cache-get failed, trying direct worker access...')
+            // Try to get cache status from worker directly
+            try {
+              const workerStatus = await getCacheStatus()
+              if (workerStatus?.cache && workerStatus.cache.totalItems > 0) {
+                logger.info(`✅ Worker reports ${workerStatus.cache.totalItems} items available - attempting direct access`)
+                // For preview, we'll proceed with empty cache but show a helpful message
+                // The cache will be populated when the user clicks the force populate button
+              }
+            } catch (workerError) {
+              logger.warn('⚠️ Worker status check also failed:', workerError)
+            }
           }
         }
       } catch (error) {
@@ -162,13 +182,56 @@ export class CachedContentService {
       } catch (error) {
         logger.error('❌ Failed to get worker status:', error)
       }
-      
-      // Set empty arrays but don't throw error
+
+      // For preview environments, provide some sample/placeholder content
+      const isPreview = typeof window !== 'undefined' &&
+                       window.location.hostname.includes('pages.dev') &&
+                       !window.location.hostname.startsWith('tanstack-portfolio.pages.dev')
+
+      if (isPreview) {
+        logger.info('🔄 Preview environment detected - providing placeholder content for better UX')
+
+        // Add some placeholder content for preview
+        this.allItems = [
+          {
+            id: 'preview-sample-1',
+            title: 'Preview Environment - Sample Content',
+            description: 'This is sample content shown in preview deployments. The full content cache will be available once populated.',
+            contentType: 'blog' as const,
+            category: 'Preview',
+            tags: ['preview', 'sample'],
+            keywords: ['preview', 'sample'],
+            content: 'This is placeholder content for the preview environment. The actual content will be loaded once the cache is populated.',
+            fileName: 'preview-sample-1.md'
+          },
+          {
+            id: 'preview-sample-2',
+            title: 'How to Populate Preview Cache',
+            description: 'Instructions for populating the preview cache using the Content Studio.',
+            contentType: 'portfolio' as const,
+            category: 'Preview',
+            tags: ['preview', 'instructions'],
+            keywords: ['preview', 'cache'],
+            content: 'To populate the cache in preview environments: 1. Open Content Studio, 2. Click the Archive button (📦) to force populate, 3. Wait for completion.',
+            fileName: 'preview-sample-2.md'
+          }
+        ]
+
+        // Separate by type
+        this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
+        this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
+        this.projectItems = this.allItems.filter(item => item.contentType === 'project')
+
+        logger.info(`✅ Preview environment initialized with ${this.allItems.length} placeholder items`)
+        return
+      }
+
+      // Set empty arrays for production when nothing works
       this.allItems = []
       this.portfolioItems = []
       this.blogItems = []
       this.projectItems = []
-      
+
       logger.warn('⚠️ Content service initialized with empty cache - some features may be limited until cache is populated')
     } catch (error) {
       logger.error('❌ Failed to load from KV cache:', error)
@@ -199,15 +262,54 @@ export class CachedContentService {
       logger.info('🔄 Attempting to populate KV cache via worker...')
 
       // Use the new cache rebuild worker instead of the failing Pages Function
-      const result = await triggerContentStudioRebuild()
-      
+      let result;
+      try {
+        result = await triggerContentStudioRebuild()
+      } catch (workerError) {
+        logger.warn('⚠️ Primary cache rebuild worker failed, trying production worker...')
+        // If we're in preview environment, try the production worker as fallback
+        const isPreview = window.location.hostname.includes('pages.dev') &&
+                         !window.location.hostname.startsWith('tanstack-portfolio.pages.dev')
+        if (isPreview) {
+          logger.info('🔄 Trying production cache rebuild worker...')
+          const prodWorkerUrl = 'https://cache-rebuild-worker.rcormier.workers.dev/rebuild'
+          const prodResponse = await fetch(prodWorkerUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              trigger: 'preview-fallback',
+              timestamp: new Date().toISOString()
+            })
+          })
+
+          if (prodResponse.ok) {
+            result = await prodResponse.json()
+            logger.info('✅ Production worker fallback successful')
+          } else {
+            throw new Error('Production worker also failed')
+          }
+        } else {
+          throw workerError
+        }
+      }
+
       if (result.success) {
         logger.info(`✅ KV cache populated successfully: ${result.stats?.total || 'unknown'} items`)
       } else {
-        logger.warn(`⚠️ Failed to populate KV cache via worker: ${result.error || result.message}`)
+        logger.warn(`⚠️ Failed to populate KV cache: ${result.error || result.message}`)
       }
     } catch (error) {
       logger.error('❌ Error attempting to populate KV cache:', error)
+
+      // In preview environments, provide helpful guidance
+      const isPreview = window.location.hostname.includes('pages.dev') &&
+                       !window.location.hostname.startsWith('tanstack-portfolio.pages.dev')
+      if (isPreview) {
+        logger.info('💡 For preview deployments, cache may need to be populated manually')
+        logger.info('💡 Try using the Content Studio cache rebuild button')
+      }
     }
   }
 

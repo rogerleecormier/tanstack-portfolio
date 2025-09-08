@@ -12,5 +12,18 @@ pages_build_output_dir = "dist"
 
 [[env.production.kv_namespaces]]
 binding = "CONTENT_CACHE"
-id = "0acc4d15643a427aa6a88967083be65d"  # Replace with the ID from: wrangler kv:namespace create "CONTENT_CACHE" --env production
+id = "0acc4d15643a427aa6a88967083be65d"
+
+# Preview environment (branch deployments)
+[env.preview]
+name = "tanstack-portfolio-preview"
+
+[[env.preview.kv_namespaces]]
+binding = "CONTENT_CACHE"
+id = "0acc4d15643a427aa6a88967083be65d"  # Same KV namespace for preview
+
+# Add R2 binding for preview as well
+[[env.preview.r2_buckets]]
+binding = "R2_CONTENT"
+bucket_name = "tanstack-portfolio-r2"
 
