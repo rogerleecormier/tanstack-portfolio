@@ -15,6 +15,3 @@ pages_build_output_dir = "dist"
 name = "tanstack-portfolio-cloudflare-test"
 pages_build_output_dir = "dist"
 
-# Branch deployment configuration
-[env.cloudflare-access-test.pages]
-branch = "cloudflare-access-test"
