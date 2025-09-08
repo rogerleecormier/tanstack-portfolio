@@ -39,7 +39,7 @@ export function AppSidebar() {
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
-                      className="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 transition-all duration-200 hover:bg-teal-100/90 hover:text-teal-900 dark:hover:bg-teal-800/40 dark:hover:text-teal-100 data-[active]:bg-gradient-to-r data-[active]:from-teal-50 data-[active]:to-blue-50 data-[active]:text-slate-900 data-[active]:font-semibold data-[active]:border-l-3 data-[active]:border-teal-600 dark:data-[active]:from-teal-900/30 dark:data-[active]:to-blue-900/30 dark:data-[active]:text-slate-100 rounded-lg"
+                      className="group flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 transition-all duration-200 hover:bg-teal-100/90 hover:text-teal-900 hover:border-l-2 hover:border-teal-400 hover:shadow-sm hover:shadow-teal-100/30 dark:hover:bg-teal-800/40 dark:hover:text-teal-100 dark:hover:border-teal-500 dark:hover:shadow-teal-900/20 data-[active]:bg-gradient-to-r data-[active]:from-teal-50 data-[active]:to-blue-50 data-[active]:text-slate-900 data-[active]:font-semibold data-[active]:border-l-3 data-[active]:border-teal-600 dark:data-[active]:from-teal-900/30 dark:data-[active]:to-blue-900/30 dark:data-[active]:text-slate-100 rounded-lg"
                     >
                       {item.icon && (
                         <item.icon className="h-4 w-4 flex-shrink-0 text-slate-600 dark:text-slate-400 group-hover:text-teal-700 dark:group-hover:text-teal-300 data-[active]:text-teal-600 dark:data-[active]:text-teal-400 transition-colors duration-200" />
