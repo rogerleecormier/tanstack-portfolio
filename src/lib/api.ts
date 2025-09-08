@@ -1,4 +1,5 @@
 import { generateSmartFrontmatter } from './frontmatterGen';
+import { environment } from '../config/environment';
 
 export interface ApiError {
   code: string;
@@ -17,8 +18,8 @@ export class ApiClient {
   private accessJwt?: string;
 
   constructor(accessJwt?: string) {
-    // Use remote API for all operations (supports both read and write)
-    this.baseUrl = 'https://r2-content-full.rcormier.workers.dev/api';
+    // Use environment-configured base URL for all API operations
+    this.baseUrl = environment.api.baseUrl;
 
     // Set the proxy base environment variable for backward compatibility
     if (!import.meta.env.VITE_R2_PROXY_BASE && import.meta.env.DEV) {
@@ -120,7 +121,7 @@ export class ApiClient {
         return { success: false, error: { code: 'NETWORK_ERROR', message: (e as Error).message } };
       }
     }
-    return this.request<{ body: string; etag: string }>(`/api/content/read?key=${encodeURIComponent(key)}`);
+    return this.request<{ body: string; etag: string }>(`/content/read?key=${encodeURIComponent(key)}`);
   }
 
   async writeContent(key: string, content: string, etag?: string) {
@@ -128,10 +129,10 @@ export class ApiClient {
       key,
       contentLength: content.length,
       etag,
-      url: `${this.baseUrl}/api/content/write`
+      url: `${this.baseUrl}/content/write`
     });
 
-    return this.request<{ etag: string }>(`/api/content/write`, {
+    return this.request<{ etag: string }>(`/content/write`, {
       method: 'POST',
       body: JSON.stringify({ key, content, etag }),
     });
@@ -139,7 +140,7 @@ export class ApiClient {
 
   async validateFrontmatter(yaml: string) {
     return this.request<{ ok: boolean; normalized?: Record<string, unknown>; errors?: string[] }>(
-      `/api/validate/frontmatter`,
+      `/validate/frontmatter`,
       {
         method: 'POST',
         body: JSON.stringify({ yaml }),
@@ -167,7 +168,7 @@ export class ApiClient {
     }
 
     const apiResp = await this.request<{ frontmatter: Record<string, unknown> }>(
-      '/api/generate',
+      '/generate',
       {
         method: 'POST',
         body: JSON.stringify({ markdown }),
@@ -187,31 +188,31 @@ export class ApiClient {
   }
 
   async existsContent(key: string) {
-    return this.request<{ exists: boolean; etag?: string }>(`/api/content/exists?key=${encodeURIComponent(key)}`);
+    return this.request<{ exists: boolean; etag?: string }>(`/content/exists?key=${encodeURIComponent(key)}`);
   }
 
   async deleteContentSoft(key: string) {
-    return this.request<{ ok: boolean; trashKey: string }>(`/api/content/delete`, {
+    return this.request<{ ok: boolean; trashKey: string }>(`/content/delete`, {
       method: 'POST',
       body: JSON.stringify({ key }),
     });
   }
 
   async rebuildCache() {
-    return this.request<{ success: boolean; message: string; output?: string }>(`/api/content/rebuild-cache`, {
+    return this.request<{ success: boolean; message: string; output?: string }>(`/content/rebuild-cache`, {
       method: 'POST',
     });
   }
 
   async restoreContent(trashKey: string, overwrite?: boolean, targetKey?: string) {
-    return this.request<{ ok: boolean; key: string }>(`/api/content/restore`, {
+    return this.request<{ ok: boolean; key: string }>(`/content/restore`, {
       method: 'POST',
       body: JSON.stringify({ trashKey, overwrite, targetKey }),
     });
   }
 
   async health() {
-    return this.request<{ ok: boolean }>('/api/health');
+    return this.request<{ ok: boolean }>('/health');
   }
 }
 
