@@ -1,5 +1,4 @@
 import { getContentCache } from './utils/cache-utils'
-import { Response } from '@cloudflare/workers-types'
 import type { PagesFunction, KVNamespace, R2Bucket } from '@cloudflare/workers-types'
 
 export interface Env {
