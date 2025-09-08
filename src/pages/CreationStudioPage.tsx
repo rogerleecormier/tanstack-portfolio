@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../components/ui/tooltip';
 import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
@@ -414,7 +414,6 @@ export function CreationStudioPage() {
               )}
             </div>
           </div>
-          <TooltipProvider>
             <div className="flex items-center gap-1">
               {/* File Operations Group */}
               <Tooltip>
@@ -705,7 +704,6 @@ export function CreationStudioPage() {
                 </TooltipContent>
               </Tooltip>
             </div>
-          </TooltipProvider>
         </div>
       </div>
       {/* Main Content Area: content browser + front matter define height */}

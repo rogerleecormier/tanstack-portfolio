@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Briefcase, Tag, Search, X, Filter, ChevronDown, Sparkles, TrendingUp, Users, Zap, Shield } from 'lucide-react'
 import { cachedContentService, type CachedContentItem } from '@/api/cachedContentService'
-import type { PortfolioItem } from '@/utils/r2PortfolioLoader'
+// PortfolioItem type is now CachedContentItem from cachedContentService
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
