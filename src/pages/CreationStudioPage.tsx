@@ -398,7 +398,7 @@ export function CreationStudioPage() {
         </div>
       </div>
       {/* Main Content Area: content browser + front matter define height */}
-      <div className="flex-1 p-6 min-h-[70vh]" data-content-area>
+      <div className="flex-1 py-6 px-0 min-h-[70vh]" data-content-area>
         <div className="grid grid-cols-12 gap-6 items-start">
           {/* Left Panel - Content Browser & Frontmatter */}
           <div ref={leftColRef} className="col-span-12 lg:col-span-4 flex flex-col gap-6 min-h-0">
