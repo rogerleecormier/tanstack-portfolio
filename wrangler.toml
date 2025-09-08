@@ -11,7 +11,4 @@ compatibility_flags = ["nodejs_compat"]
 name = "tanstack-portfolio"
 pages_build_output_dir = "dist"
 
-[env.cloudflare-access-test]
-name = "tanstack-portfolio-cloudflare-test"
-pages_build_output_dir = "dist"
 
