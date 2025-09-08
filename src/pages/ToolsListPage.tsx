@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Wrench, ArrowRight, FileText } from 'lucide-react'
+import { Wrench, ArrowRight, FileText, Scale } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { H1, H2, P } from '@/components/ui/typography'
 
@@ -18,6 +18,16 @@ interface Tool {
 }
 
 const tools: Tool[] = [
+  {
+    id: 'healthbridge-enhanced',
+    title: 'HealthBridge Enhanced',
+    description: 'Advanced weight loss tracking dashboard with projections and comprehensive health analytics. Features weight loss projections, trend analysis, and data visualization in pounds.',
+    category: 'Health & Wellness',
+    icon: Scale,
+    url: '/tools/healthbridge-enhanced',
+    features: ['AI Projections', 'Medication Analysis', 'Trend Analytics', 'Data Visualization'],
+    status: 'active' as const,
+  },
   {
     id: 'markdown-editor',
     title: 'Markdown Editor',
@@ -93,6 +103,8 @@ const ToolsListPage: React.FC = () => {
     switch (category) {
       case 'Content Creation':
         return <FileText className="h-5 w-5" />
+      case 'Health & Wellness':
+        return <Scale className="h-5 w-5" />
       default:
         return <Wrench className="h-5 w-5" />
     }

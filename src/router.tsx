@@ -114,7 +114,7 @@ const projectsRoute = createRoute({
 // Enhanced HealthBridge route - PUBLIC
 const healthBridgeEnhancedRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "projects/healthbridge-enhanced",
+  path: "tools/healthbridge-enhanced",
   component: HealthBridgeEnhanced,
 });
 
