@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import matter from 'gray-matter';
+import fm from 'front-matter';
 
 console.log('🔄 Building KV cache from R2 bucket...');
 
@@ -147,11 +147,11 @@ async function processContentItems(contentType, baseUrl) {
 
     if (!content) continue;
 
-    // Parse frontmatter
+    // Parse frontmatter using front-matter (consistent with project preference)
     let parsed, attributes, body, frontmatter, cleanedBody, tags, keywords;
 
     try {
-      parsed = matter(content);
+      parsed = fm(content);
       attributes = parsed.attributes;
       body = parsed.body;
       frontmatter = attributes || {};
@@ -245,16 +245,16 @@ async function rebuildKvCache() {
     // Push to Cloudflare KV
     console.log('☁️  Pushing to Cloudflare KV...');
 
-    // Always use production URL for consistent KV cache across environments
-    const baseUrl = 'https://tanstack-portfolio.pages.dev';
-    const rebuildEndpoint = `${baseUrl}/api/content/rebuild-cache-kv`;
+    // Use dedicated cache rebuild worker for consistent KV cache across environments
+    const rebuildEndpoint = 'https://cache-rebuild-worker.rcormier.workers.dev/rebuild/build';
 
-    console.log(`📡 Using production endpoint: ${rebuildEndpoint}`);
+    console.log(`📡 Using dedicated cache rebuild worker: ${rebuildEndpoint}`);
 
     const response = await fetch(rebuildEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-API-Key': process.env.REBUILD_API_KEY || '', // Optional API key
       },
       body: JSON.stringify(cacheData)
     });

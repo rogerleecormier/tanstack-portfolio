@@ -8,6 +8,7 @@
     "build": "tsc && vite build && (node scripts/rebuild-kv-cache.js || echo 'KV rebuild failed, continuing...') && node scripts/copy-functions.js",
     "build:r2-only": "node scripts/rebuild-kv-cache.js",
     "rebuild-kv": "node scripts/rebuild-kv-cache.js",
+    "rebuild-kv-dev": "node scripts/rebuild-cache-dev.js",
     "rebuild-kv-local": "node scripts/rebuild-kv-local.js",
     "setup-kv": "echo 'Run: wrangler kv:namespace create CONTENT_CACHE --env production' && echo 'Then update wrangler.toml with the returned ID'",
     "test-kv": "node scripts/test-kv-setup.js",
@@ -22,7 +23,9 @@
     "populate-cache": "node scripts/rebuild-kv-cache.js",
     "dev:full": "concurrently -n WEB,API -c green,blue \"npm:dev:web\" \"npm:dev:functions\"",
     "deploy:pages": "npm run build && wrangler pages deploy dist --project-name tanstack-portfolio",
-    "deploy:worker:proxy": "wrangler publish -c wrangler/wrangler-r2-proxy.toml --env production"
+    "deploy:worker:proxy": "wrangler publish -c wrangler/wrangler-r2-proxy.toml --env production",
+    "deploy:worker:cache-rebuild": "wrangler deploy -c wrangler/wrangler-cache-rebuild.toml --env production",
+    "deploy:worker:cache-rebuild-dev": "wrangler deploy -c wrangler/wrangler-cache-rebuild.toml --env development"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.3.4",

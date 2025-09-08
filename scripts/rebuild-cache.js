@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import matter from 'gray-matter';
+import fm from 'front-matter';
 
 const PORTFOLIO_DIR = './portfolio';
 const BLOG_DIR = './blog';
@@ -137,7 +137,7 @@ for (const fileName of PORTFOLIO_FILES) {
     continue;
   }
 
-  const { data: attributes, content: body } = matter(content);
+  const { attributes, body } = fm(content);
 
   const item = {
     id: fileName.replace('.md', ''),
@@ -167,7 +167,7 @@ for (const fileName of BLOG_FILES) {
     continue;
   }
 
-  const { data: attributes, content: body } = matter(content);
+  const { attributes, body } = fm(content);
 
   const item = {
     id: fileName.replace('.md', ''),
@@ -197,7 +197,7 @@ for (const fileName of PROJECT_FILES) {
     continue;
   }
 
-  const { data: attributes, content: body } = matter(content);
+  const { attributes, body } = fm(content);
 
   const item = {
     id: fileName.replace('.md', ''),

@@ -125,7 +125,7 @@ function readContentFromFile(dir, fileName) {
 }
 
 // Import matter for frontmatter parsing
-import matter from 'gray-matter';
+import fm from 'front-matter';
 
 // Process all content files
 async function processAllContent() {

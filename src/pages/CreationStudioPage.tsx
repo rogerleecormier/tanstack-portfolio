@@ -16,6 +16,7 @@ import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
 import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Archive, Database } from 'lucide-react';
+import { triggerContentStudioRebuild, triggerManualRebuild, getCacheStatus } from '../utils/cacheRebuildService';
 
 export function CreationStudioPage() {
   const [markdown, setMarkdown] = useState('');
@@ -42,6 +43,7 @@ export function CreationStudioPage() {
   const [shouldRebuildCache, setShouldRebuildCache] = useState(false);
   const [cacheRebuildStatus, setCacheRebuildStatus] = useState<'idle'|'rebuilding'|'completed'|'error'>('idle');
   const [lastSavedContent, setLastSavedContent] = useState('');
+  const [cacheStatus, setCacheStatus] = useState<{lastUpdated: string; totalItems: number} | null>(null);
   const leftColRef = useRef<HTMLDivElement | null>(null);
   const editorHeaderRef = useRef<HTMLDivElement | null>(null);
   const editorWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -77,6 +79,25 @@ export function CreationStudioPage() {
       ro?.disconnect();
     };
   }, [measureHeights]);
+
+  // Load cache status on mount
+  useEffect(() => {
+    const loadCacheStatus = async () => {
+      try {
+        const status = await getCacheStatus();
+        if (status?.cache) {
+          setCacheStatus({
+            lastUpdated: status.cache.lastUpdated,
+            totalItems: status.cache.totalItems
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load cache status:', error);
+      }
+    };
+    
+    loadCacheStatus();
+  }, []);
 
   // Re-measure heights when content changes
   useEffect(() => {
@@ -194,17 +215,27 @@ export function CreationStudioPage() {
       if (shouldRebuildCache || isAutoRebuild) {
         setCacheRebuildStatus('rebuilding');
         try {
-          const cacheResponse = await apiClient.rebuildCache();
+          const cacheResponse = await triggerContentStudioRebuild();
           if (cacheResponse.success) {
             setCacheRebuildStatus('completed');
             console.log(`✅ Cache rebuilt successfully${isAutoRebuild ? ' (auto-triggered)' : ''}`);
+            console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
+            
+            // Update cache status
+            if (cacheResponse.stats) {
+              setCacheStatus({
+                lastUpdated: cacheResponse.timestamp,
+                totalItems: cacheResponse.stats.total
+              });
+            }
+            
             // Auto-uncheck the rebuild cache option after successful rebuild (only for manual rebuilds)
             if (!isAutoRebuild) {
               setShouldRebuildCache(false);
             }
           } else {
             setCacheRebuildStatus('error');
-            console.error('❌ Cache rebuild failed:', cacheResponse.error);
+            console.error('❌ Cache rebuild failed:', cacheResponse.error || cacheResponse.message);
           }
         } catch (error) {
           setCacheRebuildStatus('error');
@@ -486,13 +517,23 @@ export function CreationStudioPage() {
                     onClick={async () => {
                       setCacheRebuildStatus('rebuilding');
                       try {
-                        const cacheResponse = await apiClient.rebuildCache();
+                        const cacheResponse = await triggerManualRebuild();
                         if (cacheResponse.success) {
                           setCacheRebuildStatus('completed');
                           console.log('✅ Manual cache rebuild successful');
+                          console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
+                          console.log(`🕒 Timestamp: ${cacheResponse.timestamp}`);
+                          
+                          // Update cache status
+                          if (cacheResponse.stats) {
+                            setCacheStatus({
+                              lastUpdated: cacheResponse.timestamp,
+                              totalItems: cacheResponse.stats.total
+                            });
+                          }
                         } else {
                           setCacheRebuildStatus('error');
-                          console.error('❌ Manual cache rebuild failed:', cacheResponse.error);
+                          console.error('❌ Manual cache rebuild failed:', cacheResponse.error || cacheResponse.message);
                         }
                       } catch (error) {
                         setCacheRebuildStatus('error');
@@ -506,7 +547,20 @@ export function CreationStudioPage() {
                     <RefreshCw className={`h-4 w-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`} />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Rebuild Cache Manually</TooltipContent>
+                <TooltipContent>
+                  <div className="text-center">
+                    <div className="font-medium">Rebuild Cache Manually</div>
+                    <div className="text-xs text-slate-500 mt-1">
+                      Force refresh of search and navigation cache
+                    </div>
+                    {cacheStatus && (
+                      <div className="text-xs text-slate-400 mt-1 border-t pt-1">
+                        {cacheStatus.totalItems} items • Updated{' '}
+                        {new Date(cacheStatus.lastUpdated).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+                </TooltipContent>
               </Tooltip>
 
               <Separator orientation="vertical" className="h-6 mx-1" />

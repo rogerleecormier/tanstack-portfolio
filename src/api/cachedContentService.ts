@@ -1,5 +1,6 @@
 import { logger } from '@/utils/logger'
 import Fuse, { IFuseOptions } from 'fuse.js'
+import { triggerContentStudioRebuild, getCacheStatus } from '@/utils/cacheRebuildService'
 
 export interface CachedContentItem {
   id: string
@@ -74,11 +75,11 @@ export class CachedContentService {
     this.initializeContent()
     this.initializeFuse()
     
-    // If initialization failed, try fallback after a short delay
+    // If initialization failed, log the issue but don't try fallback endpoints that are failing
     if (!this.isReady()) {
       setTimeout(() => {
         if (!this.isReady()) {
-          this.fallbackInitialize()
+          logger.warn('⚠️ Content service still not ready after initialization - some features may be limited')
         }
       }, 1000)
     }
@@ -98,37 +99,77 @@ export class CachedContentService {
     try {
       logger.info('🔄 Loading content from KV cache...')
 
-      // Try KV cache first
-      const response = await fetch('/api/content/cache-get')
-      if (response.ok) {
-        const cacheData = await response.json()
-        this.allItems = cacheData.all || []
-        // Separate by type
-        this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
-        this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
-        this.projectItems = this.allItems.filter(item => item.contentType === 'project')
+      // Try KV cache first via Pages Function
+      try {
+        const response = await fetch('/api/content/cache-get')
+        if (response.ok) {
+          const cacheData = await response.json()
+          this.allItems = cacheData.all || []
+          
+          // If we got data, process it
+          if (this.allItems.length > 0) {
+            // Separate by type
+            this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
+            this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
+            this.projectItems = this.allItems.filter(item => item.contentType === 'project')
 
-        logger.info(`✅ Loaded content from KV cache with ${this.allItems.length} items`)
-      } else {
-        logger.warn('⚠️ KV cache not available, attempting to populate...')
+            logger.info(`✅ Loaded content from KV cache with ${this.allItems.length} items`)
+            return
+          } else {
+            logger.warn('⚠️ KV cache is empty, will attempt to populate')
+          }
+        }
+      } catch (error) {
+        logger.warn('⚠️ KV cache-get endpoint failed:', error)
+      }
 
-        // Try to populate KV cache if it's empty
-        await this.populateKvCacheIfNeeded()
+      logger.warn('⚠️ KV cache not available, attempting to populate via worker...')
 
-        // Retry fetching after potential population
+      // Try to populate KV cache using the new worker
+      await this.populateKvCacheIfNeeded()
+
+      // Retry fetching after potential population
+      try {
         const retryResponse = await fetch('/api/content/cache-get')
         if (retryResponse.ok) {
           const cacheData = await retryResponse.json()
           this.allItems = cacheData.all || []
-          this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
-          this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
-          this.projectItems = this.allItems.filter(item => item.contentType === 'project')
+          
+          if (this.allItems.length > 0) {
+            this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
+            this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
+            this.projectItems = this.allItems.filter(item => item.contentType === 'project')
 
-          logger.info(`✅ Successfully loaded content from KV cache after population: ${this.allItems.length} items`)
-        } else {
-          throw new Error('KV cache unavailable - no content will be loaded')
+            logger.info(`✅ Successfully loaded content from KV cache after population: ${this.allItems.length} items`)
+            return
+          } else {
+            logger.warn('⚠️ KV cache still empty after population attempt')
+          }
         }
+      } catch (error) {
+        logger.error('❌ Failed to retry cache-get after population:', error)
       }
+      
+      // Final fallback: try to get data directly from the worker's cache status
+      try {
+        logger.info('🔄 Attempting to get cache status from worker as final fallback...')
+        const workerStatus = await getCacheStatus()
+        if (workerStatus?.cache && workerStatus.cache.totalItems > 0) {
+          logger.info(`✅ Worker reports ${workerStatus.cache.totalItems} items available - cache will be populated on next rebuild`)
+        } else {
+          logger.warn('⚠️ Worker also reports empty cache - content may need to be uploaded to R2')
+        }
+      } catch (error) {
+        logger.error('❌ Failed to get worker status:', error)
+      }
+      
+      // Set empty arrays but don't throw error
+      this.allItems = []
+      this.portfolioItems = []
+      this.blogItems = []
+      this.projectItems = []
+      
+      logger.warn('⚠️ Content service initialized with empty cache - some features may be limited until cache is populated')
     } catch (error) {
       logger.error('❌ Failed to load from KV cache:', error)
       // No fallback - empty arrays only
@@ -151,25 +192,19 @@ export class CachedContentService {
   }
 
   /**
-   * Attempt to populate KV cache if it's empty (for development)
+   * Attempt to populate KV cache if it's empty using the new cache rebuild worker
    */
   private async populateKvCacheIfNeeded() {
     try {
-      logger.info('🔄 Attempting to populate KV cache from local data...')
+      logger.info('🔄 Attempting to populate KV cache via worker...')
 
-      // Try to trigger cache rebuild via API
-      const rebuildResponse = await fetch('/api/content/rebuild-cache-kv', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (rebuildResponse.ok) {
-        const result = await rebuildResponse.json()
-        logger.info(`✅ KV cache populated successfully: ${result.totalItems} items`)
+      // Use the new cache rebuild worker instead of the failing Pages Function
+      const result = await triggerContentStudioRebuild()
+      
+      if (result.success) {
+        logger.info(`✅ KV cache populated successfully: ${result.stats?.total || 'unknown'} items`)
       } else {
-        logger.warn('⚠️ Failed to populate KV cache via API')
+        logger.warn(`⚠️ Failed to populate KV cache via worker: ${result.error || result.message}`)
       }
     } catch (error) {
       logger.error('❌ Error attempting to populate KV cache:', error)
