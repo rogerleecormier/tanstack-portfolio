@@ -197,6 +197,12 @@ export class ApiClient {
     });
   }
 
+  async rebuildCache() {
+    return this.request<{ success: boolean; message: string; output?: string }>(`/content/rebuild-cache`, {
+      method: 'POST',
+    });
+  }
+
   async restoreContent(trashKey: string, overwrite?: boolean, targetKey?: string) {
     return this.request<{ ok: boolean; key: string }>(`/content/restore`, {
       method: 'POST',

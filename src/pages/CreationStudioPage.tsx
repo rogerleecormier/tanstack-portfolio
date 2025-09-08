@@ -10,9 +10,12 @@ import { Button } from '../components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Alert, AlertDescription } from '../components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
+import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
-import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2 } from 'lucide-react';
+import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Settings, Database } from 'lucide-react';
 
 export function CreationStudioPage() {
   const [markdown, setMarkdown] = useState('');
@@ -36,6 +39,9 @@ export function CreationStudioPage() {
   const [leftHeight, setLeftHeight] = useState<number>(720);
   const [hydrating, setHydrating] = useState(true);
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
+  const [shouldRebuildCache, setShouldRebuildCache] = useState(false);
+  const [cacheRebuildStatus, setCacheRebuildStatus] = useState<'idle'|'rebuilding'|'completed'|'error'>('idle');
+  const [lastSavedContent, setLastSavedContent] = useState('');
   const leftColRef = useRef<HTMLDivElement | null>(null);
   const editorHeaderRef = useRef<HTMLDivElement | null>(null);
   const editorWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -157,6 +163,10 @@ export function CreationStudioPage() {
     }
     const fullContent = assemble(frontmatter, markdown);
     setSaveStatus('saving');
+
+    // Track the content we're about to save
+    const contentChanged = fullContent !== lastSavedContent;
+    const isNewFile = !currentFile && fileKey;
     const response = await apiClient.writeContent(
       keyToUse,
       fullContent,
@@ -172,6 +182,37 @@ export function CreationStudioPage() {
         setCurrentFile(fileKey);
       }
       setTimeout(() => setSaveStatus('idle'), 1500);
+
+      // Update last saved content for change detection
+      setLastSavedContent(fullContent);
+
+      // Smart cache rebuild suggestions
+      const shouldSuggestRebuild = isNewFile || (contentChanged && keyToUse.includes('blog/') || keyToUse.includes('portfolio/'));
+
+      // Trigger cache rebuild if requested or auto-suggested for new/important content
+      const isAutoRebuild = !shouldRebuildCache && shouldSuggestRebuild;
+      if (shouldRebuildCache || isAutoRebuild) {
+        setCacheRebuildStatus('rebuilding');
+        try {
+          const cacheResponse = await apiClient.rebuildCache();
+          if (cacheResponse.success) {
+            setCacheRebuildStatus('completed');
+            console.log(`✅ Cache rebuilt successfully${isAutoRebuild ? ' (auto-triggered)' : ''}`);
+            // Auto-uncheck the rebuild cache option after successful rebuild (only for manual rebuilds)
+            if (!isAutoRebuild) {
+              setShouldRebuildCache(false);
+            }
+          } else {
+            setCacheRebuildStatus('error');
+            console.error('❌ Cache rebuild failed:', cacheResponse.error);
+          }
+        } catch (error) {
+          setCacheRebuildStatus('error');
+          console.error('❌ Cache rebuild error:', error);
+        }
+        // Reset cache rebuild status after 3 seconds
+        setTimeout(() => setCacheRebuildStatus('idle'), 3000);
+      }
     } else if (response.error?.code === 'etag_conflict' || response.error?.code === 'HTTP_409') {
       setConflictModal({
         open: true,
@@ -205,7 +246,7 @@ export function CreationStudioPage() {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 2000);
     }
-  }, [currentFile, currentEtag, frontmatter, markdown, handleFileSelect]);
+  }, [currentFile, currentEtag, frontmatter, markdown, handleFileSelect, shouldRebuildCache]);
 
   const handleDownload = () => {
     const fullContent = assemble(frontmatter, markdown);
@@ -365,6 +406,68 @@ export function CreationStudioPage() {
               <SaveIcon className="h-4 w-4 mr-2" />
               Save As
             </Button>
+            {/* Cache Rebuild Control */}
+            <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+              <Checkbox
+                id="rebuild-cache"
+                checked={shouldRebuildCache}
+                onCheckedChange={(checked: boolean | "indeterminate") => setShouldRebuildCache(checked === true)}
+                className="data-[state=checked]:bg-teal-600 data-[state=checked]:border-teal-600"
+              />
+              <label
+                htmlFor="rebuild-cache"
+                className="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer select-none"
+                title="Rebuild content cache on save to update search and navigation. Auto-triggers for new blog/portfolio content."
+              >
+                Rebuild Cache
+                {cacheRebuildStatus === 'rebuilding' && (
+                  <span className="text-xs text-orange-600 dark:text-orange-400 ml-1">(building...)</span>
+                )}
+                {cacheRebuildStatus === 'completed' && (
+                  <span className="text-xs text-green-600 dark:text-green-400 ml-1">(done)</span>
+                )}
+                {cacheRebuildStatus === 'error' && (
+                  <span className="text-xs text-red-600 dark:text-red-400 ml-1">(failed)</span>
+                )}
+              </label>
+              {cacheRebuildStatus !== 'idle' && (
+                <RefreshCw
+                  className={`h-4 w-4 ml-1 ${
+                    cacheRebuildStatus === 'rebuilding'
+                      ? 'animate-spin text-orange-500'
+                      : cacheRebuildStatus === 'completed'
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                  }`}
+                />
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={async () => {
+                  setCacheRebuildStatus('rebuilding');
+                  try {
+                    const cacheResponse = await apiClient.rebuildCache();
+                    if (cacheResponse.success) {
+                      setCacheRebuildStatus('completed');
+                      console.log('✅ Manual cache rebuild successful');
+                    } else {
+                      setCacheRebuildStatus('error');
+                      console.error('❌ Manual cache rebuild failed:', cacheResponse.error);
+                    }
+                  } catch (error) {
+                    setCacheRebuildStatus('error');
+                    console.error('❌ Manual cache rebuild error:', error);
+                  }
+                  setTimeout(() => setCacheRebuildStatus('idle'), 3000);
+                }}
+                disabled={cacheRebuildStatus === 'rebuilding'}
+                className="h-6 w-6 p-0 ml-1 hover:bg-slate-200 dark:hover:bg-slate-700"
+                title="Rebuild cache manually"
+              >
+                <RefreshCw className={`h-3 w-3 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
             <div className="min-w-[70px]">
               {currentFile ? (
                 <Button
