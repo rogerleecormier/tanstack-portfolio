@@ -56,13 +56,17 @@ export default function BlogListPage() {
   // Load blog posts
   useEffect(() => {
     const loadBlogPosts = async () => {
-      setIsLoading(true)
       try {
+        setIsLoading(true)
+
         const posts = await loadAllBlogPosts()
+
         setBlogPosts(posts)
         setFilteredPosts(posts)
       } catch (error) {
         console.error('Error loading blog posts:', error)
+        setBlogPosts([])
+        setFilteredPosts([])
       } finally {
         setIsLoading(false)
       }
@@ -371,9 +375,10 @@ export default function BlogListPage() {
           <>
             {/* All Articles Grid */}
             <div className="mb-8">
-              <H2 className="mb-6 text-gray-800 dark:text-gray-200">
+              <H2 className="mb-3 text-gray-800 dark:text-gray-200">
                 Articles
               </H2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayedPosts.map((post) => (
                   <BlogPostCard key={post.slug} post={post} />

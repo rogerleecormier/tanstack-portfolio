@@ -187,7 +187,9 @@ export default function PortfolioListPage() {
       try {
         setIsLoading(true)
         logger.debug('🚀 Starting to load portfolio items from KV cache...')
+
         const cachedItems = await cachedContentService.getContentByType('portfolio')
+
         const items: PortfolioItem[] = cachedItems.map((cached: CachedContentItem): PortfolioItem => ({
           id: cached.id,
           title: cached.title,
@@ -210,6 +212,7 @@ export default function PortfolioListPage() {
         setPortfolioSearch(search)
         setFilteredItems(items)
       } catch (error) {
+        console.error('Error loading portfolio items:', error)
         logger.error('❌ Error loading portfolio items from KV cache:', error)
       } finally {
         setIsLoading(false)
@@ -511,9 +514,10 @@ export default function PortfolioListPage() {
         ) : (
           <>
             <div className="max-w-7xl mx-auto mb-8">
-              <H2 className="mb-6 text-gray-800 dark:text-gray-200">
+              <H2 className="mb-3 text-gray-800 dark:text-gray-200">
                 Portfolio Items
               </H2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayedItems.map((item) => {
                   const categoryInfo = categoryConfig[item.category as keyof typeof categoryConfig] || {

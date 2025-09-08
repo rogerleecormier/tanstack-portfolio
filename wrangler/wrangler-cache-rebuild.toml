@@ -6,6 +6,20 @@ compatibility_flags = ["nodejs_compat"]
 # Worker configuration
 workers_dev = true
 
+# Default KV Namespace for cache storage (production)
+[[kv_namespaces]]
+binding = "CONTENT_CACHE"
+id = "0acc4d15643a427aa6a88967083be65d"
+
+# Default R2 Bucket for content source (production)
+[[r2_buckets]]
+binding = "R2_CONTENT"
+bucket_name = "tanstack-portfolio-r2"
+
+# Default environment variables
+[vars]
+ENVIRONMENT = "production"
+
 # Environment configuration
 [env.production]
 name = "cache-rebuild-worker"

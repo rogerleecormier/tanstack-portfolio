@@ -17,6 +17,32 @@ interface CacheRebuildResponse {
   error?: string
 }
 
+interface CachedContentItem {
+  id: string
+  title: string
+  description: string
+  category: string
+  tags: string[]
+  date: string
+  contentType: string
+  url: string
+}
+
+interface CacheData {
+  portfolio: CachedContentItem[]
+  blog: CachedContentItem[]
+  projects: CachedContentItem[]
+  all: CachedContentItem[]
+  metadata: {
+    portfolioCount: number
+    blogCount: number
+    projectCount: number
+    lastUpdated: string
+    version: string
+    trigger: string
+  }
+}
+
 interface CacheStatus {
   status: string
   timestamp: string
@@ -49,8 +75,8 @@ export async function triggerContentStudioRebuild(): Promise<CacheRebuildRespons
       headers: {
         'Content-Type': 'application/json',
         // Add API key if available in environment
-        ...(process.env.VITE_REBUILD_API_KEY && {
-          'X-API-Key': process.env.VITE_REBUILD_API_KEY
+        ...(import.meta.env.VITE_REBUILD_API_KEY && {
+          'X-API-Key': import.meta.env.VITE_REBUILD_API_KEY
         })
       },
       body: JSON.stringify({
@@ -82,12 +108,16 @@ export async function triggerContentStudioRebuild(): Promise<CacheRebuildRespons
  */
 export async function triggerManualRebuild(): Promise<CacheRebuildResponse> {
   try {
+    console.log('🔄 Triggering manual cache rebuild...')
+    console.log('Worker URL:', WORKER_BASE_URL)
+    console.log('API Key available:', !!import.meta.env.VITE_REBUILD_API_KEY)
+    
     const response = await fetch(`${WORKER_BASE_URL}/rebuild`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(process.env.VITE_REBUILD_API_KEY && {
-          'X-API-Key': process.env.VITE_REBUILD_API_KEY
+        ...(import.meta.env.VITE_REBUILD_API_KEY && {
+          'X-API-Key': import.meta.env.VITE_REBUILD_API_KEY
         })
       },
       body: JSON.stringify({
@@ -95,6 +125,9 @@ export async function triggerManualRebuild(): Promise<CacheRebuildResponse> {
         timestamp: new Date().toISOString()
       })
     })
+    
+    console.log('Response status:', response.status)
+    console.log('Response ok:', response.ok)
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -104,12 +137,14 @@ export async function triggerManualRebuild(): Promise<CacheRebuildResponse> {
     return await response.json()
   } catch (error) {
     console.error('Manual cache rebuild failed:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Error details:', errorMessage)
     return {
       success: false,
       message: 'Failed to rebuild cache',
       trigger: 'manual',
       timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: errorMessage
     }
   }
 }
@@ -153,7 +188,7 @@ export async function isCacheRebuildAvailable(): Promise<boolean> {
 /**
  * Get current cache data from KV worker
  */
-export async function getCurrentCacheData(): Promise<any> {
+export async function getCurrentCacheData(): Promise<CacheData | null> {
   try {
     const response = await fetch(KV_WORKER_URL, {
       method: 'GET',

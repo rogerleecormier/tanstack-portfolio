@@ -72,9 +72,10 @@ export class CachedContentService {
   private isFuseInitialized = false
 
   constructor() {
+    console.log('🚀 CachedContentService constructor called - starting initialization')
     this.initializeContent()
     this.initializeFuse()
-    
+
     // If initialization failed, log the issue but don't try fallback endpoints that are failing
     if (!this.isReady()) {
       setTimeout(() => {
@@ -83,7 +84,7 @@ export class CachedContentService {
         }
       }, 1000)
     }
-    
+
     // Add a small delay to ensure initialization is complete
     setTimeout(() => {
       if (this.isReady()) {
@@ -99,29 +100,8 @@ export class CachedContentService {
     try {
       logger.info('🔄 Loading content from production KV cache...')
 
-      // Try Pages Function first (when deployed)
-      try {
-        const response = await fetch('/api/content/cache-get')
-        if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
-          const cacheData = await response.json()
-          this.allItems = cacheData.all || []
-
-          // If we got data, process it
-          if (this.allItems.length > 0) {
-            // Separate by type
-            this.portfolioItems = this.allItems.filter(item => item.contentType === 'portfolio')
-            this.blogItems = this.allItems.filter(item => item.contentType === 'blog')
-            this.projectItems = this.allItems.filter(item => item.contentType === 'project')
-
-            logger.info(`✅ Loaded content from production KV cache via Pages Function with ${this.allItems.length} items`)
-            return
-          }
-        } else {
-          logger.warn('⚠️ Pages Function not available or returning HTML instead of JSON')
-        }
-      } catch (error) {
-        logger.warn('⚠️ Pages Function failed, will try direct worker access:', error)
-      }
+      // TEMPORARY: Skip Pages Function and go directly to KV worker for testing
+      logger.info('🔄 Skipping Pages Function, going directly to KV worker for testing...')
 
       // Fallback: Use dedicated KV cache get worker for direct KV access
       try {
@@ -518,14 +498,28 @@ export class CachedContentService {
    * Get content by type
    */
   async getContentByType(contentType: 'blog' | 'portfolio' | 'project'): Promise<CachedContentItem[]> {
+    console.log(`🔍 getContentByType called for: ${contentType}`)
+    console.log(`📊 Current cache status - Portfolio: ${this.portfolioItems.length}, Blog: ${this.blogItems.length}, Projects: ${this.projectItems.length}`)
+
+    // If no items are loaded yet, wait a bit and try again
+    if (this.allItems.length === 0) {
+      console.log('⏳ Cache is empty, waiting for initialization...')
+      await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+      console.log(`📊 After wait - Portfolio: ${this.portfolioItems.length}, Blog: ${this.blogItems.length}, Projects: ${this.projectItems.length}`)
+    }
+
     switch (contentType) {
       case 'portfolio':
+        console.log(`📁 Returning ${this.portfolioItems.length} portfolio items`)
         return this.portfolioItems
       case 'blog':
+        console.log(`📝 Returning ${this.blogItems.length} blog items`)
         return this.blogItems
       case 'project':
+        console.log(`🚀 Returning ${this.projectItems.length} project items`)
         return this.projectItems
       default:
+        console.log(`❓ Unknown content type: ${contentType}`)
         return []
     }
   }

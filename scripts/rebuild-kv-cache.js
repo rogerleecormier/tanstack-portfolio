@@ -12,9 +12,9 @@ const PROJECT_BASE_URL = `${R2_BASE_URL}/projects`;
 
 // Content type configurations
 const CONTENT_TYPES = [
-  { name: 'portfolio', baseUrl: PORTFOLIO_BASE_URL },
-  { name: 'blog', baseUrl: BLOG_BASE_URL },
-  { name: 'project', baseUrl: PROJECT_BASE_URL }
+  { name: 'portfolio', baseUrl: PORTFOLIO_BASE_URL, prefix: 'portfolio/' },
+  { name: 'blog', baseUrl: BLOG_BASE_URL, prefix: 'blog/' },
+  { name: 'project', baseUrl: PROJECT_BASE_URL, prefix: 'projects/' }
 ];
 
 // Helper function to determine category from tags and filename
@@ -84,14 +84,14 @@ function getCategoryFromTags(tags, fileName) {
 }
 
 // Discover files from R2 bucket
-async function discoverFiles(contentType) {
+async function discoverFiles(contentTypeConfig) {
   try {
-    const listUrl = `${R2_BASE_URL}/_list?prefix=${contentType}/&limit=1000`;
-    console.log(`🔍 Discovering ${contentType} files from: ${listUrl}`);
+    const listUrl = `${R2_BASE_URL}/_list?prefix=${contentTypeConfig.prefix}&limit=1000`;
+    console.log(`🔍 Discovering ${contentTypeConfig.name} files from: ${listUrl}`);
 
     const response = await fetch(listUrl);
     if (!response.ok) {
-      console.error(`❌ Failed to list ${contentType} files: ${response.status}`);
+      console.error(`❌ Failed to list ${contentTypeConfig.name} files: ${response.status}`);
       return [];
     }
 
@@ -100,13 +100,13 @@ async function discoverFiles(contentType) {
 
     // Extract filenames from the full keys and filter for markdown files
     const fileNames = files
-      .map(obj => obj.key.replace(`${contentType}/`, ''))
+      .map(obj => obj.key.replace(contentTypeConfig.prefix, ''))
       .filter(fileName => fileName.endsWith('.md'));
 
-    console.log(`📁 Found ${fileNames.length} ${contentType} files:`, fileNames);
+    console.log(`📁 Found ${fileNames.length} ${contentTypeConfig.name} files:`, fileNames);
     return fileNames;
   } catch (error) {
-    console.error(`❌ Error discovering ${contentType} files:`, error.message);
+    console.error(`❌ Error discovering ${contentTypeConfig.name} files:`, error.message);
     return [];
   }
 }
@@ -128,21 +128,21 @@ async function fetchContent(url) {
 }
 
 // Process content from R2 bucket dynamically
-async function processContentItems(contentType, baseUrl) {
-  console.log(`🔄 Processing ${contentType} items from R2...`);
+async function processContentItems(contentTypeConfig) {
+  console.log(`🔄 Processing ${contentTypeConfig.name} items from R2...`);
 
   // Dynamically discover all files for this content type
-  const fileNames = await discoverFiles(contentType);
+  const fileNames = await discoverFiles(contentTypeConfig);
 
   if (fileNames.length === 0) {
-    console.log(`⚠️  No ${contentType} files found`);
+    console.log(`⚠️  No ${contentTypeConfig.name} files found`);
     return [];
   }
 
   const items = [];
 
   for (const fileName of fileNames) {
-    const fileUrl = `${baseUrl}/${fileName}`;
+    const fileUrl = `${contentTypeConfig.baseUrl}/${fileName}`;
     const content = await fetchContent(fileUrl);
 
     if (!content) continue;
@@ -178,12 +178,12 @@ async function processContentItems(contentType, baseUrl) {
       description: frontmatter.description || 'No description available',
       tags: [...tags, ...keywords],
       category: getCategoryFromTags(tags, fileNameWithoutExt),
-      url: `/${contentType}/${fileNameWithoutExt}`,
+      url: `/${contentTypeConfig.name}/${fileNameWithoutExt}`,
       keywords,
       content: cleanedBody,
       date: frontmatter.date,
       fileName: fileNameWithoutExt,
-      contentType: contentType
+      contentType: contentTypeConfig.name
     };
 
     items.push(item);
@@ -191,7 +191,7 @@ async function processContentItems(contentType, baseUrl) {
   }
 
   // Sort items based on content type
-  if (contentType === 'blog') {
+  if (contentTypeConfig.name === 'blog') {
     // Sort blog by date (newest first)
     return items.sort((a, b) => {
       if (a.date && b.date) {
@@ -210,10 +210,10 @@ async function rebuildKvCache() {
   console.log('🔍 Dynamically discovering content from R2 bucket...');
 
   try {
-    // Process all content types dynamically
-    const portfolioItems = await processContentItems('portfolio', PORTFOLIO_BASE_URL);
-    const blogItems = await processContentItems('blog', BLOG_BASE_URL);
-    const projectItems = await processContentItems('project', PROJECT_BASE_URL);
+    // Process all content types dynamically using configuration
+    const portfolioItems = await processContentItems(CONTENT_TYPES[0]);
+    const blogItems = await processContentItems(CONTENT_TYPES[1]);
+    const projectItems = await processContentItems(CONTENT_TYPES[2]);
 
     const allItems = [...portfolioItems, ...blogItems, ...projectItems];
 

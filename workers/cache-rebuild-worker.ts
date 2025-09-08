@@ -179,7 +179,7 @@ async function rebuildCache(env: Env, trigger: string = 'manual'): Promise<Cache
   const blogItems: CachedContentItem[] = []
   const projectItems: CachedContentItem[] = []
   
-  const dirs = ['portfolio/', 'blog/', 'projects/']
+  const dirs = ['portfolio/', 'blog/', 'projects/'] // Note: projects/ directory contains project content
 
   console.log(`🔄 Starting cache rebuild (trigger: ${trigger})...`)
 

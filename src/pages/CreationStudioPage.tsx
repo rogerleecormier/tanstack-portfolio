@@ -16,7 +16,7 @@ import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
 import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Archive, Database } from 'lucide-react';
-import { triggerContentStudioRebuild, triggerManualRebuild, getCacheStatus, getEnhancedCacheStatus, forcePopulatePreviewCache } from '../utils/cacheRebuildService';
+import { triggerContentStudioRebuild, triggerManualRebuild, getEnhancedCacheStatus } from '../utils/cacheRebuildService';
 
 // Helper function to format relative time
 function getRelativeTimeString(timestamp: string): string {
@@ -34,10 +34,6 @@ function getRelativeTimeString(timestamp: string): string {
   return past.toLocaleDateString();
 }
 
-// Check if we're in a preview environment
-const isPreviewEnvironment = typeof window !== 'undefined' &&
-                           window.location.hostname.includes('pages.dev') &&
-                           !window.location.hostname.startsWith('tanstack-portfolio.pages.dev');
 
 export function CreationStudioPage() {
   const [markdown, setMarkdown] = useState('');
@@ -530,7 +526,10 @@ export function CreationStudioPage() {
                   <div className="text-sm">
                     <div className="font-medium">Rebuild Cache on Save</div>
                     <div className="text-xs opacity-80 mt-1">
-                      Updates search and navigation cache
+                      Updates search and navigation cache using production KV
+                    </div>
+                    <div className="text-xs text-blue-500 mt-1">
+                      Works in: Localhost, Preview & Production
                     </div>
                     {cacheStatus && (
                       <div className="text-xs text-slate-400 mt-1 border-t pt-1">
@@ -561,9 +560,6 @@ export function CreationStudioPage() {
                         const cacheResponse = await triggerManualRebuild();
                         if (cacheResponse.success) {
                           setCacheRebuildStatus('completed');
-                          console.log('✅ Manual cache rebuild successful');
-                          console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
-                          console.log(`🕒 Timestamp: ${cacheResponse.timestamp}`);
 
                           // Update cache status with enhanced data
                           const enhancedStatus = await getEnhancedCacheStatus();
@@ -582,11 +578,9 @@ export function CreationStudioPage() {
                           }
                         } else {
                           setCacheRebuildStatus('error');
-                          console.error('❌ Manual cache rebuild failed:', cacheResponse.error || cacheResponse.message);
                         }
-                      } catch (error) {
+                      } catch {
                         setCacheRebuildStatus('error');
-                        console.error('❌ Manual cache rebuild error:', error);
                       }
                       setTimeout(() => setCacheRebuildStatus('idle'), 3000);
                     }}
@@ -600,7 +594,10 @@ export function CreationStudioPage() {
                   <div className="text-center">
                     <div className="font-medium">Rebuild Cache Manually</div>
                     <div className="text-xs text-slate-500 mt-1">
-                      Force refresh of search and navigation cache
+                      Force refresh of search and navigation cache using production KV
+                    </div>
+                    <div className="text-xs text-blue-500 mt-1">
+                      Works in: Localhost, Preview & Production
                     </div>
                     {cacheStatus && (
                       <div className="text-xs text-slate-400 mt-1 border-t pt-1">
@@ -620,62 +617,6 @@ export function CreationStudioPage() {
                 </TooltipContent>
               </Tooltip>
 
-              {/* Preview Environment Force Populate Button */}
-              {isPreviewEnvironment && (
-                <>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={async () => {
-                          setCacheRebuildStatus('rebuilding');
-                          try {
-                            const cacheResponse = await forcePopulatePreviewCache();
-                            if (cacheResponse.success) {
-                              setCacheRebuildStatus('completed');
-                              console.log('✅ Preview cache force population successful');
-                              console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
-                              console.log(`🕒 Timestamp: ${cacheResponse.timestamp}`);
-
-                              // Update cache status
-                              if (cacheResponse.stats) {
-                                setCacheStatus({
-                                  lastUpdated: cacheResponse.timestamp,
-                                  totalItems: cacheResponse.stats.total,
-                                  trigger: cacheResponse.trigger
-                                });
-                              }
-                            } else {
-                              setCacheRebuildStatus('error');
-                              console.error('❌ Preview cache force population failed:', cacheResponse.error || cacheResponse.message);
-                            }
-                          } catch (error) {
-                            setCacheRebuildStatus('error');
-                            console.error('❌ Preview cache force population error:', error);
-                          }
-                          setTimeout(() => setCacheRebuildStatus('idle'), 3000);
-                        }}
-                        disabled={cacheRebuildStatus === 'rebuilding'}
-                        className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
-                      >
-                        <Archive className={`h-4 w-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`} />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <div className="text-center">
-                        <div className="font-medium">Force Populate Preview Cache</div>
-                        <div className="text-xs text-slate-500 mt-1">
-                          Force rebuild cache for preview environments
-                        </div>
-                        <div className="text-xs text-orange-500 mt-1">
-                          Preview Environment Only
-                        </div>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                </>
-              )}
 
               <Separator orientation="vertical" className="h-6 mx-1" />
 
