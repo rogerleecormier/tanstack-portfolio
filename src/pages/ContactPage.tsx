@@ -26,7 +26,6 @@ import { sendEmail } from '@/api/emailService'
 import { format } from 'date-fns'
 import { ContactAnalysis } from '@/components/ContactAnalysis'
 import { AIMeetingScheduler } from '@/components/AIMeetingScheduler'
-import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent'
 import { analyzeContactForm, type AIAnalysisResult, AIAnalysisError } from '@/api/contactAnalyzer'
 
 // Dynamic Action Button Component
@@ -989,17 +988,6 @@ This meeting request was generated based on AI analysis of their contact form su
           </p>
         </div>
     
-        {/* Related Content */}
-        <div className="mt-16">
-          <UnifiedRelatedContent
-            title="Contact and Consultation"
-            tags={['contact', 'consultation', 'strategy', 'leadership']}
-            currentUrl="/contact"
-            maxResults={3}
-            variant="inline"
-            className="max-w-4xl mx-auto"
-          />
-        </div>
       </div>
       
       {/* Scroll to Top Button */}

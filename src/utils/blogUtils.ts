@@ -1,6 +1,5 @@
-import fm from 'front-matter'
 import { logger } from './logger'
-import { loadBlogItems, getBlogItem } from '@/utils/r2PortfolioLoader'
+// Removed r2PortfolioLoader imports - now using cachedContentService exclusively
 import { cachedContentService, type CachedContentItem } from '@/api/cachedContentService'
 
 export interface BlogPost {
@@ -128,90 +127,9 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
     logger.info(`✅ Successfully loaded ${sortedPosts.length} blog posts from KV cache`)
     return sortedPosts
   } catch (error) {
-    logger.error('❌ Failed to load blog posts from KV cache, falling back to R2:', error)
-
-    // Fallback to R2 loader if KV cache fails
-    try {
-      logger.info('🔄 Falling back to R2 storage...')
-
-      // Use R2 loader instead of GitHub worker
-      const blogItems = await loadBlogItems()
-      logger.info(`📚 Found ${blogItems.length} blog items from R2`)
-
-      const posts: BlogPost[] = []
-
-      // Convert R2 blog items to BlogPost format
-      for (const item of blogItems) {
-        try {
-          logger.info(`🔄 Processing blog item: ${item.title}`)
-
-          // Parse frontmatter from the content
-          const { attributes, body } = fm(item.content)
-          const frontmatter = attributes as BlogFrontmatter
-
-          // Remove import statements from markdown content
-          const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-
-          // Calculate reading time
-          const calculatedReadingTime = calculateReadingTime(cleanedBody)
-
-          // Extract slug from filename
-          const slug = item.fileName.replace('.md', '')
-
-          // Create blog post
-          const post: BlogPost = {
-            slug,
-            title: (frontmatter.title as string) || item.title,
-            description: (frontmatter.description as string) || item.description,
-            date: item.date || frontmatter.date as string, // Use date from R2 loader first
-            author: (frontmatter.author as string) || 'Roger Lee Cormier',
-            tags: (frontmatter.tags as string[]) || (frontmatter.keywords as string[]) || item.tags,
-            readTime: (frontmatter.readTime as number) || calculatedReadingTime,
-            content: cleanedBody,
-            image: frontmatter.image as string,
-            keywords: (frontmatter.keywords as string[]) || item.keywords
-          }
-
-          posts.push(post)
-          logger.info(`✅ Successfully loaded blog post: ${post.title}`)
-        } catch (error) {
-          logger.error(`❌ Exception processing blog item ${item.title}:`, error)
-        }
-      }
-
-      // Sort by date (most recent first)
-      const sortedPosts = posts.sort((a, b) => {
-        try {
-          // Handle posts without dates by putting them at the end
-          if (!a.date && !b.date) return 0
-          if (!a.date) return 1
-          if (!b.date) return -1
-
-          // Parse dates using UTC to avoid timezone shifts
-          const [yearA, monthA, dayA] = a.date!.split('-').map(Number)
-          const [yearB, monthB, dayB] = b.date!.split('-').map(Number)
-
-          const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA))
-          const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB))
-
-          // Handle invalid dates by putting them at the end
-          if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0
-          if (isNaN(dateA.getTime())) return 1
-          if (isNaN(dateB.getTime())) return -1
-
-          return dateB.getTime() - dateA.getTime()
-        } catch (error) {
-          logger.error('❌ Error sorting blog posts by date:', error)
-          return 0
-        }
-      })
-
-      logger.info(`✅ Successfully loaded ${sortedPosts.length} blog posts from R2 fallback`)
-      return sortedPosts
-    } catch (fallbackError) {
-      logger.error('❌ R2 fallback also failed:', fallbackError)
-      throw fallbackError
-    }
+    logger.error('❌ Failed to load blog posts from KV cache:', error)
+    logger.error('💡 Check that the KV cache service is accessible and the cache worker is running')
+    throw error
   }
 }
 
@@ -230,39 +148,8 @@ export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
       return blogPost
     }
 
-    // Fallback to R2 loader if not found in cache
-    logger.warn(`⚠️ Blog post not found in KV cache, trying R2: ${slug}`)
-    const item = await getBlogItem(slug)
-
-    if (item) {
-      // Parse frontmatter from the content
-      const { attributes, body } = fm(item.content)
-      const frontmatter = attributes as BlogFrontmatter
-
-      // Remove import statements from markdown content
-      const cleanedBody = body.replace(/^import\s+.*$/gm, '').trim()
-
-      // Calculate reading time
-      const calculatedReadingTime = calculateReadingTime(cleanedBody)
-
-      const blogPost: BlogPost = {
-        slug,
-        title: frontmatter.title || item.title,
-        description: frontmatter.description || item.description,
-        date: item.date || frontmatter.date || 'Date not available',
-        author: frontmatter.author || 'Roger Lee Cormier',
-        tags: frontmatter.tags || item.tags,
-        readTime: frontmatter.readTime || calculatedReadingTime,
-        content: cleanedBody,
-        image: frontmatter.image,
-        keywords: frontmatter.keywords || item.keywords
-      }
-
-      logger.info(`✅ Successfully loaded blog post from R2 fallback: ${blogPost.title}`)
-      return blogPost
-    }
-
-    logger.warn(`⚠️ Blog post not found: ${slug}`)
+    // Blog post not found in KV cache
+    logger.warn(`⚠️ Blog post not found in KV cache: ${slug}`)
     return null
   } catch (error) {
     logger.error(`❌ Error loading blog post ${slug}:`, error)
