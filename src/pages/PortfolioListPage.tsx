@@ -77,13 +77,13 @@ function parseTagsSafely(tags: unknown): string[] {
 
 // Portfolio search functionality
 class PortfolioSearch {
-  private items: PortfolioItem[]
+  private items: CachedContentItem[]
 
-  constructor(items: PortfolioItem[]) {
+  constructor(items: CachedContentItem[]) {
     this.items = items
   }
 
-  search(query: string, category: string, tags: string[]): PortfolioItem[] {
+  search(query: string, category: string, tags: string[]): CachedContentItem[] {
     let results = this.items
 
     // Filter by category
@@ -163,15 +163,15 @@ const categoryConfig = {
 }
 
 export default function PortfolioListPage() {
-  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
-  const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([])
+  const [portfolioItems, setPortfolioItems] = useState<CachedContentItem[]>([])
+  const [filteredItems, setFilteredItems] = useState<CachedContentItem[]>([])
   const [portfolioSearch, setPortfolioSearch] = useState<PortfolioSearch | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isTagFilterOpen, setIsTagFilterOpen] = useState(false)
-  const [displayedItems, setDisplayedItems] = useState<PortfolioItem[]>([])
+  const [displayedItems, setDisplayedItems] = useState<CachedContentItem[]>([])
   const [postsPerPage] = useState(6)
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
@@ -190,19 +190,7 @@ export default function PortfolioListPage() {
 
         const cachedItems = await cachedContentService.getContentByType('portfolio')
 
-        const items: PortfolioItem[] = cachedItems.map((cached: CachedContentItem): PortfolioItem => ({
-          id: cached.id,
-          title: cached.title,
-          description: cached.description,
-          tags: cached.tags || [],
-          category: cached.category,
-          url: cached.url,
-          keywords: cached.keywords || [],
-          content: cached.content,
-          date: cached.date,
-          fileName: cached.fileName,
-          frontmatter: {}
-        }))
+        const items: CachedContentItem[] = cachedItems
         logger.debug('✨ Portfolio items loaded from KV:', items)
         logger.debug(`📊 Discovered ${items.length} portfolio items:`, items.map(item => item.id))
         setPortfolioItems(items)
