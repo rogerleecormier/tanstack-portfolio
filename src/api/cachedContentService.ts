@@ -202,7 +202,8 @@ export class CachedContentService {
             tags: ['preview', 'sample'],
             keywords: ['preview', 'sample'],
             content: 'This is placeholder content for the preview environment. The actual content will be loaded once the cache is populated.',
-            fileName: 'preview-sample-1.md'
+            fileName: 'preview-sample-1.md',
+            url: '/blog/preview-sample-1'
           },
           {
             id: 'preview-sample-2',
@@ -213,7 +214,8 @@ export class CachedContentService {
             tags: ['preview', 'instructions'],
             keywords: ['preview', 'cache'],
             content: 'To populate the cache in preview environments: 1. Open Content Studio, 2. Click the Archive button (📦) to force populate, 3. Wait for completion.',
-            fileName: 'preview-sample-2.md'
+            fileName: 'preview-sample-2.md',
+            url: '/portfolio/preview-sample-2'
           }
         ]
 
