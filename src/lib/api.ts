@@ -120,7 +120,7 @@ export class ApiClient {
         return { success: false, error: { code: 'NETWORK_ERROR', message: (e as Error).message } };
       }
     }
-    return this.request<{ body: string; etag: string }>(`/content/read?key=${encodeURIComponent(key)}`);
+    return this.request<{ body: string; etag: string }>(`/api/content/read?key=${encodeURIComponent(key)}`);
   }
 
   async writeContent(key: string, content: string, etag?: string) {
@@ -128,10 +128,10 @@ export class ApiClient {
       key,
       contentLength: content.length,
       etag,
-      url: `${this.baseUrl}/content/write`
+      url: `${this.baseUrl}/api/content/write`
     });
 
-    return this.request<{ etag: string }>(`/content/write`, {
+    return this.request<{ etag: string }>(`/api/content/write`, {
       method: 'POST',
       body: JSON.stringify({ key, content, etag }),
     });
@@ -139,7 +139,7 @@ export class ApiClient {
 
   async validateFrontmatter(yaml: string) {
     return this.request<{ ok: boolean; normalized?: Record<string, unknown>; errors?: string[] }>(
-      `/validate/frontmatter`,
+      `/api/validate/frontmatter`,
       {
         method: 'POST',
         body: JSON.stringify({ yaml }),
@@ -167,7 +167,7 @@ export class ApiClient {
     }
 
     const apiResp = await this.request<{ frontmatter: Record<string, unknown> }>(
-      '/generate',
+      '/api/generate',
       {
         method: 'POST',
         body: JSON.stringify({ markdown }),
@@ -187,31 +187,31 @@ export class ApiClient {
   }
 
   async existsContent(key: string) {
-    return this.request<{ exists: boolean; etag?: string }>(`/content/exists?key=${encodeURIComponent(key)}`);
+    return this.request<{ exists: boolean; etag?: string }>(`/api/content/exists?key=${encodeURIComponent(key)}`);
   }
 
   async deleteContentSoft(key: string) {
-    return this.request<{ ok: boolean; trashKey: string }>(`/content/delete`, {
+    return this.request<{ ok: boolean; trashKey: string }>(`/api/content/delete`, {
       method: 'POST',
       body: JSON.stringify({ key }),
     });
   }
 
   async rebuildCache() {
-    return this.request<{ success: boolean; message: string; output?: string }>(`/content/rebuild-cache`, {
+    return this.request<{ success: boolean; message: string; output?: string }>(`/api/content/rebuild-cache`, {
       method: 'POST',
     });
   }
 
   async restoreContent(trashKey: string, overwrite?: boolean, targetKey?: string) {
-    return this.request<{ ok: boolean; key: string }>(`/content/restore`, {
+    return this.request<{ ok: boolean; key: string }>(`/api/content/restore`, {
       method: 'POST',
       body: JSON.stringify({ trashKey, overwrite, targetKey }),
     });
   }
 
   async health() {
-    return this.request<{ ok: boolean }>('/health');
+    return this.request<{ ok: boolean }>('/api/health');
   }
 }
 
