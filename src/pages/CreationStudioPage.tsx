@@ -35,6 +35,7 @@ export function CreationStudioPage() {
   // Start with a reasonable height to avoid initial reflow pushing the footer
   const [leftHeight, setLeftHeight] = useState<number>(720);
   const [hydrating, setHydrating] = useState(true);
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
   const leftColRef = useRef<HTMLDivElement | null>(null);
   const editorHeaderRef = useRef<HTMLDivElement | null>(null);
   const editorWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -244,6 +245,35 @@ export function CreationStudioPage() {
       window.removeEventListener('keydown', onKeyDown);
     };
   }, [isDirty, isFullscreen, handleSave]);
+
+  // Calculate scrollbar width once on mount
+  useEffect(() => {
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll';
+    outer.style.width = '100px';
+    outer.style.height = '100px';
+    document.body.appendChild(outer);
+    const inner = document.createElement('div');
+    inner.style.width = '100%';
+    inner.style.height = '100%';
+    outer.appendChild(inner);
+    const width = outer.offsetWidth - inner.offsetWidth;
+    outer.parentNode?.removeChild(outer);
+    setScrollbarWidth(width);
+  }, []);
+
+  // Apply scrollbar compensation for any modal open
+  const anyModalOpen = isFrontmatterModalOpen || isSaveAsOpen || confirm.open || trashOpen || conflictModal.open || isFullscreen;
+  useEffect(() => {
+    if (anyModalOpen && scrollbarWidth > 0) {
+      document.documentElement.style.paddingRight = `${scrollbarWidth}px`;
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.documentElement.style.paddingRight = '';
+      document.documentElement.style.overflow = '';
+    }
+  }, [anyModalOpen, scrollbarWidth]);
 
   return (
     <div className="flex flex-col min-h-0 h-full bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950">
