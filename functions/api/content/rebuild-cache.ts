@@ -7,7 +7,7 @@ interface Env {
 }
 
 export async function onRequest(context: { request: Request; env: Env }) {
-  const { request, env } = context;
+  const { request } = context;
 
   // Only allow POST requests
   if (request.method !== 'POST') {

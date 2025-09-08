@@ -246,7 +246,7 @@ export function CreationStudioPage() {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 2000);
     }
-  }, [currentFile, currentEtag, frontmatter, markdown, handleFileSelect, shouldRebuildCache]);
+  }, [currentFile, currentEtag, frontmatter, markdown, handleFileSelect, shouldRebuildCache, lastSavedContent]);
 
   const handleDownload = () => {
     const fullContent = assemble(frontmatter, markdown);
