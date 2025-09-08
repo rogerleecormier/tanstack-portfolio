@@ -1,13 +1,14 @@
 import path from 'path'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import { copyFileSync, mkdirSync, readdirSync, statSync } from 'fs'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const apiTarget = env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:8788'
+  // Always use production Pages Functions for KV cache access in development
+  const apiTarget = env.VITE_API_PROXY_TARGET || 'https://tanstack-portfolio.pages.dev'
   return {
-  plugins: [react()],
   base: '/',
   resolve: {
     alias: {
@@ -31,6 +32,43 @@ export default defineConfig(({ mode }) => {
     },
     chunkSizeWarningLimit: 1000,
   },
+  plugins: [
+    react(),
+    {
+      name: 'copy-functions',
+      buildEnd() {
+        console.log('🔄 Copying Pages Functions to dist...')
+
+        const srcDir = path.resolve('functions')
+        const destDir = path.resolve('dist', 'functions')
+
+        function copyDirRecursive(src: string, dest: string) {
+          try {
+            mkdirSync(dest, { recursive: true })
+
+            const entries = readdirSync(src, { withFileTypes: true })
+
+            for (const entry of entries) {
+              const srcPath = path.join(src, entry.name)
+              const destPath = path.join(dest, entry.name)
+
+              if (entry.isDirectory()) {
+                copyDirRecursive(srcPath, destPath)
+              } else if (entry.isFile() && entry.name.endsWith('.ts')) {
+                copyFileSync(srcPath, destPath)
+                console.log(`📄 Copied: ${entry.name}`)
+              }
+            }
+          } catch (error) {
+            console.error('❌ Error copying functions:', error)
+          }
+        }
+
+        copyDirRecursive(srcDir, destDir)
+        console.log('✅ Pages Functions copied successfully!')
+      }
+    }
+  ],
   optimizeDeps: {
     include: ['react', 'react-dom'],
   },

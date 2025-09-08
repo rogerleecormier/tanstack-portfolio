@@ -94,8 +94,9 @@ export const environment = {
   },
 
   // API configuration with security
+  // Always use local /api proxy which points to production KV in development
   api: {
-    baseUrl: isDevelopmentMode() ? 'https://r2-content-full.rcormier.workers.dev/api' : '/api',
+    baseUrl: '/api',
     timeout: 10000, // 10 seconds - back to original fast timeout
     retryAttempts: 3,
     // Secure endpoints that require authentication

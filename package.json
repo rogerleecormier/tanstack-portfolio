@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && (node scripts/rebuild-kv-cache.js || echo 'KV rebuild failed, continuing...') && node scripts/copy-functions.js",
+    "build": "tsc && vite build && (node scripts/rebuild-kv-cache.js || echo 'KV rebuild failed, continuing...')",
     "build:r2-only": "node scripts/rebuild-kv-cache.js",
     "rebuild-kv": "node scripts/rebuild-kv-cache.js",
     "rebuild-kv-dev": "node scripts/rebuild-cache-dev.js",

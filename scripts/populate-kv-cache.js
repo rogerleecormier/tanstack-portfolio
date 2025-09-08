@@ -10,8 +10,25 @@ console.log('🔄 Populating KV cache for development...');
 let cacheData;
 try {
   const cacheContent = fs.readFileSync(contentCachePath, 'utf8');
-  cacheData = JSON.parse(cacheContent);
-  console.log(`📚 Found ${cacheData.all?.length || 0} items in local cache`);
+  const parsedData = JSON.parse(cacheContent);
+
+  // Transform the data to match the expected format
+  const allItems = [
+    ...(parsedData.portfolio || []),
+    ...(parsedData.blog || []),
+    ...(parsedData.project || [])
+  ];
+
+  cacheData = {
+    all: allItems,
+    metadata: {
+      totalCount: allItems.length,
+      lastUpdated: new Date().toISOString(),
+      version: '1.0.0'
+    }
+  };
+
+  console.log(`📚 Found ${allItems.length} items in local cache (portfolio: ${parsedData.portfolio?.length || 0}, blog: ${parsedData.blog?.length || 0}, project: ${parsedData.project?.length || 0})`);
 } catch (error) {
   console.error('❌ Failed to read local cache file:', error.message);
   process.exit(1);
@@ -20,29 +37,27 @@ try {
 // Function to populate KV cache
 async function populateKvCache() {
   try {
-    console.log('🚀 Sending cache data to KV...');
+    // Write transformed data to temp file
+    const tempFilePath = path.join(process.cwd(), 'temp-cache.json');
+    fs.writeFileSync(tempFilePath, JSON.stringify(cacheData, null, 2));
+    console.log('📝 Created temp cache file');
 
-    const response = await fetch('http://localhost:8788/api/content/rebuild-cache-kv', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(cacheData)
-    });
+    // Upload to KV using wrangler
+    console.log('🚀 Uploading to KV...');
+    const { execSync } = await import('child_process');
 
-    if (response.ok) {
-      const result = await response.json();
-      console.log('✅ KV cache populated successfully!');
-      console.log(`📊 Total items: ${result.totalItems}`);
-    } else {
-      const error = await response.text();
-      console.error('❌ Failed to populate KV cache:', error);
-      console.log('💡 Make sure your development server is running: npm run dev:functions');
-      process.exit(1);
-    }
+    // Use the correct wrangler command format
+    const command = `npx wrangler kv key put content-cache --namespace-id 0acc4d15643a427aa6a88967083be65d ${tempFilePath}`;
+
+    execSync(command, { stdio: 'inherit' });
+    console.log('✅ KV cache populated successfully!');
+    console.log(`📊 Total items: ${cacheData.all.length}`);
+
+    // Clean up temp file
+    fs.unlinkSync(tempFilePath);
+    console.log('🧹 Cleaned up temp file');
   } catch (error) {
-    console.error('❌ Error connecting to development server:', error.message);
-    console.log('💡 Make sure your development server is running: npm run dev:functions');
+    console.error('❌ Error populating KV cache:', error.message);
     process.exit(1);
   }
 }
