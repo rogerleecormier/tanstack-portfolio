@@ -27,13 +27,13 @@ import {
   ArrowRight
 } from 'lucide-react'
 import NewsletterSignup from '@/components/NewsletterSignup'
-import { 
-  loadAllBlogPosts, 
-  searchBlogPosts, 
-  filterBlogPostsByTags, 
-  getAllTags, 
+import {
+  loadAllBlogPosts,
+  searchBlogPosts,
+  filterBlogPostsByTags,
+  getAllTags,
   formatDate,
-  type BlogPost 
+  type BlogPost
 } from '@/utils/blogUtils'
 
 export default function BlogListPage() {
@@ -56,13 +56,17 @@ export default function BlogListPage() {
   // Load blog posts
   useEffect(() => {
     const loadBlogPosts = async () => {
-      setIsLoading(true)
       try {
+        setIsLoading(true)
+
         const posts = await loadAllBlogPosts()
+
         setBlogPosts(posts)
         setFilteredPosts(posts)
       } catch (error) {
         console.error('Error loading blog posts:', error)
+        setBlogPosts([])
+        setFilteredPosts([])
       } finally {
         setIsLoading(false)
       }
@@ -371,9 +375,10 @@ export default function BlogListPage() {
           <>
             {/* All Articles Grid */}
             <div className="mb-8">
-              <H2 className="mb-6 text-gray-800 dark:text-gray-200">
+              <H2 className="mb-3 text-gray-800 dark:text-gray-200">
                 Articles
               </H2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayedPosts.map((post) => (
                   <BlogPostCard key={post.slug} post={post} />
@@ -445,8 +450,8 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
         {/* Tags with Blue Accent */}
         {post.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-5">
-            {post.tags.slice(0, 3).map((tag, index) => (
-              <Badge 
+            {post.tags.slice(0, 3).map((tag: string, index: number) => (
+              <Badge
                 key={index}
                 variant="secondary"
                 className="text-xs px-2 py-1 h-auto bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
@@ -489,7 +494,7 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
 
         {/* Action Button with Blue-to-teal Gradient */}
         <div className="mt-auto">
-          <Button 
+          <Button
             className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white border-0 transition-all duration-200 group-hover:scale-[1.01] font-medium"
             asChild
           >

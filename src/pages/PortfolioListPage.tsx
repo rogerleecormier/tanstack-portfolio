@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Briefcase, Tag, Search, X, Filter, ChevronDown, Sparkles, TrendingUp, Users, Zap, Shield } from 'lucide-react'
-import { loadPortfolioItems, type PortfolioItem } from '@/utils/r2PortfolioLoader'
+import { cachedContentService, type CachedContentItem } from '@/api/cachedContentService'
+// PortfolioItem type is now CachedContentItem from cachedContentService
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -9,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
 import { ScrollToTop } from '@/components/ScrollToTop'
-import { H1, H3, P } from '@/components/ui/typography'
+import { H1, H2, H3, P } from '@/components/ui/typography'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -76,13 +77,13 @@ function parseTagsSafely(tags: unknown): string[] {
 
 // Portfolio search functionality
 class PortfolioSearch {
-  private items: PortfolioItem[]
+  private items: CachedContentItem[]
 
-  constructor(items: PortfolioItem[]) {
+  constructor(items: CachedContentItem[]) {
     this.items = items
   }
 
-  search(query: string, category: string, tags: string[]): PortfolioItem[] {
+  search(query: string, category: string, tags: string[]): CachedContentItem[] {
     let results = this.items
 
     // Filter by category
@@ -162,14 +163,18 @@ const categoryConfig = {
 }
 
 export default function PortfolioListPage() {
-  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
-  const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([])
+  const [portfolioItems, setPortfolioItems] = useState<CachedContentItem[]>([])
+  const [filteredItems, setFilteredItems] = useState<CachedContentItem[]>([])
   const [portfolioSearch, setPortfolioSearch] = useState<PortfolioSearch | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isTagFilterOpen, setIsTagFilterOpen] = useState(false)
+  const [displayedItems, setDisplayedItems] = useState<CachedContentItem[]>([])
+  const [postsPerPage] = useState(6)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -181,9 +186,12 @@ export default function PortfolioListPage() {
     const loadItems = async () => {
       try {
         setIsLoading(true)
-        logger.debug('🚀 Starting to load portfolio items...')
-        const items = await loadPortfolioItems()
-        logger.debug('✨ Portfolio items loaded:', items)
+        logger.debug('🚀 Starting to load portfolio items from KV cache...')
+
+        const cachedItems = await cachedContentService.getContentByType('portfolio')
+
+        const items: CachedContentItem[] = cachedItems
+        logger.debug('✨ Portfolio items loaded from KV:', items)
         logger.debug(`📊 Discovered ${items.length} portfolio items:`, items.map(item => item.id))
         setPortfolioItems(items)
         
@@ -192,7 +200,8 @@ export default function PortfolioListPage() {
         setPortfolioSearch(search)
         setFilteredItems(items)
       } catch (error) {
-        logger.error('❌ Error loading portfolio items:', error)
+        console.error('Error loading portfolio items:', error)
+        logger.error('❌ Error loading portfolio items from KV cache:', error)
       } finally {
         setIsLoading(false)
       }
@@ -205,8 +214,15 @@ export default function PortfolioListPage() {
     if (portfolioSearch) {
       const results = portfolioSearch.search(searchQuery, selectedCategory, selectedTags)
       setFilteredItems(results)
+      setCurrentPage(1) // Reset to first page when filters change
     }
   }, [searchQuery, selectedCategory, selectedTags, portfolioSearch])
+
+  // Update displayed items when filtered items or current page changes
+  useEffect(() => {
+    const endIndex = currentPage * postsPerPage
+    setDisplayedItems(filteredItems.slice(0, endIndex))
+  }, [filteredItems, currentPage, postsPerPage])
 
   const clearFilters = () => {
     setSearchQuery('')
@@ -219,12 +235,37 @@ export default function PortfolioListPage() {
   }
 
   const toggleTag = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
+    setSelectedTags(prev =>
+      prev.includes(tag)
         ? prev.filter(t => t !== tag)
         : [...prev, tag]
     )
   }
+
+  // Intersection Observer for infinite scroll
+  const loadingRef = useCallback((node: HTMLDivElement | null) => {
+    if (node !== null) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const [entry] = entries
+          if (entry.isIntersecting && !isLoading && !isLoadingMore && displayedItems.length < filteredItems.length) {
+            setIsLoadingMore(true)
+            // Small delay to show loading state
+            setTimeout(() => {
+              setCurrentPage(prev => prev + 1)
+              setIsLoadingMore(false)
+            }, 300)
+          }
+        },
+        {
+          rootMargin: '100px', // Trigger 100px before the element comes into view
+          threshold: 0.1
+        }
+      )
+      observer.observe(node)
+      return () => observer.disconnect()
+    }
+  }, [isLoading, isLoadingMore, displayedItems.length, filteredItems.length])
 
   if (isLoading) {
     return (
@@ -430,7 +471,7 @@ export default function PortfolioListPage() {
          <div className="max-w-4xl mx-auto mb-8">
            <div className="flex items-center justify-between">
              <p className="text-slate-600 dark:text-slate-300 font-medium">
-               Showing {filteredItems.length} of {portfolioItems.length} items
+               Showing {displayedItems.length} of {filteredItems.length} items
              </p>
            </div>
          </div>
@@ -449,7 +490,7 @@ export default function PortfolioListPage() {
                 <P className="text-slate-500 dark:text-slate-400 mb-6">
                   Try adjusting your search criteria or filters to find what you're looking for
                 </P>
-                <Button 
+                <Button
                   onClick={clearFilters}
                   className="bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg"
                 >
@@ -459,95 +500,123 @@ export default function PortfolioListPage() {
             </Card>
           </div>
         ) : (
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredItems.map((item) => {
-                const categoryInfo = categoryConfig[item.category as keyof typeof categoryConfig] || {
-                  icon: Briefcase,
-                  color: 'from-slate-500 to-slate-600',
-                  bgColor: 'bg-slate-50 dark:bg-slate-950/20',
-                  borderColor: 'border-slate-200 dark:border-slate-800'
-                }
-                const CategoryIcon = categoryInfo.icon
-                
-                return (
-                  <Card key={item.id} className="group h-full bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-                    <CardHeader className="pb-4">
-                      {/* Category Badge */}
-                      <div className="flex items-center justify-between mb-3">
-                        <Badge 
-                          variant="secondary"
-                          className={`${categoryInfo.bgColor} ${categoryInfo.borderColor} text-slate-700 dark:text-slate-300 border shadow-sm`}
-                        >
-                          <CategoryIcon className="h-3 w-3 mr-1" />
-                          {item.category}
-                        </Badge>
-                        <div className="w-8 h-8 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <ChevronDown className="h-4 w-4 text-slate-500" />
-                        </div>
-                      </div>
-                      
-                      {/* Title */}
-                      <CardTitle className="text-xl mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                        <Link 
-                          to={`/${item.url}`}
-                          className="hover:underline decoration-2 underline-offset-4"
-                        >
-                          {item.title}
-                        </Link>
-                      </CardTitle>
-                      
-                      {/* Description */}
-                      <CardDescription className="text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
-                        {item.description}
-                      </CardDescription>
-                    </CardHeader>
-                    
-                    <CardContent className="pt-0">
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-1 mb-4">
-                        {(() => {
-                          const cleanTags = parseTagsSafely(item.tags).filter(tag => tag && tag.trim().length > 0);
-                          return (
-                            <>
-                              {cleanTags.slice(0, 3).map((tag: string) => (
-                                <Badge 
-                                  key={tag}
-                                  variant="secondary"
-                                  className="text-xs px-2 py-1 h-auto bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-0"
-                                >
-                                  <Tag className="h-3 w-3 mr-1" />
-                                  <span className="whitespace-nowrap">{tag}</span>
-                                </Badge>
-                              ))}
-                              {cleanTags.length > 3 && (
-                                <Badge variant="secondary" className="text-xs px-2 py-1 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-0">
-                                  +{cleanTags.length - 3}
-                                </Badge>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </div>
+          <>
+            <div className="max-w-7xl mx-auto mb-8">
+              <H2 className="mb-3 text-gray-800 dark:text-gray-200">
+                Portfolio Items
+              </H2>
 
-                      {/* View Details Link */}
-                      <div className="flex items-center justify-between">
-                        <Link 
-                          to={`/${item.url}`}
-                          className="text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
-                        >
-                          View Details
-                        </Link>
-                        <div className="w-6 h-6 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <ChevronDown className="h-3 w-3 text-white rotate-[-90deg]" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayedItems.map((item) => {
+                  const categoryInfo = categoryConfig[item.category as keyof typeof categoryConfig] || {
+                    icon: Briefcase,
+                    color: 'from-slate-500 to-slate-600',
+                    bgColor: 'bg-slate-50 dark:bg-slate-950/20',
+                    borderColor: 'border-slate-200 dark:border-slate-800'
+                  }
+                  const CategoryIcon = categoryInfo.icon
+                  
+                  return (
+                    <Card key={item.id} className="group h-full bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                      <CardHeader className="pb-4">
+                        {/* Category Badge */}
+                        <div className="flex items-center justify-between mb-3">
+                          <Badge
+                            variant="secondary"
+                            className={`${categoryInfo.bgColor} ${categoryInfo.borderColor} text-slate-700 dark:text-slate-300 border shadow-sm`}
+                          >
+                            <CategoryIcon className="h-3 w-3 mr-1" />
+                            {item.category}
+                          </Badge>
+                          <div className="w-8 h-8 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <ChevronDown className="h-4 w-4 text-slate-500" />
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+                       
+                        {/* Title */}
+                        <CardTitle className="text-xl mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                          <Link
+                            to={`/${item.url}`}
+                            className="hover:underline decoration-2 underline-offset-4"
+                          >
+                            {item.title}
+                          </Link>
+                        </CardTitle>
+                       
+                        {/* Description */}
+                        <CardDescription className="text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
+                          {item.description}
+                        </CardDescription>
+                      </CardHeader>
+                      
+                      <CardContent className="pt-0">
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-1 mb-4">
+                          {(() => {
+                            const cleanTags = parseTagsSafely(item.tags).filter(tag => tag && tag.trim().length > 0);
+                            return (
+                              <>
+                                {cleanTags.slice(0, 3).map((tag: string) => (
+                                  <Badge
+                                    key={tag}
+                                    variant="secondary"
+                                    className="text-xs px-2 py-1 h-auto bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-0"
+                                  >
+                                    <Tag className="h-3 w-3 mr-1" />
+                                    <span className="whitespace-nowrap">{tag}</span>
+                                  </Badge>
+                                ))}
+                                {cleanTags.length > 3 && (
+                                  <Badge variant="secondary" className="text-xs px-2 py-1 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-0">
+                                    +{cleanTags.length - 3}
+                                  </Badge>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
+      
+                        {/* View Details Link */}
+                        <div className="flex items-center justify-between">
+                          <Link
+                            to={`/${item.url}`}
+                            className="text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+                          >
+                            View Details
+                          </Link>
+                          <div className="w-6 h-6 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <ChevronDown className="h-3 w-3 text-white rotate-[-90deg]" />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
             </div>
-          </div>
+      
+            {/* Loading indicator for infinite scroll */}
+            {displayedItems.length < filteredItems.length && (
+              <div ref={loadingRef} className="text-center py-12">
+                <div className="inline-flex items-center gap-3 text-slate-500 dark:text-slate-400">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600"></div>
+                  <span className="font-medium">Loading more items...</span>
+                </div>
+              </div>
+            )}
+      
+            {/* End of items indicator */}
+            {displayedItems.length === filteredItems.length && filteredItems.length > 0 && (
+              <div className="text-center py-12">
+                <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-blue-100 dark:from-teal-900/50 dark:to-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Briefcase className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                </div>
+                <p className="text-slate-500 dark:text-slate-400 font-medium">
+                  You've reached the end of all portfolio items
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         {/* Tag Filter Dialog */}
@@ -569,13 +638,13 @@ export default function PortfolioListPage() {
             
             <div className="flex-1 overflow-y-auto p-6">
               <div className="flex flex-wrap gap-3">
-                {portfolioSearch?.getTags().map((tag) => (
+                {portfolioItems.flatMap(item => item.tags).filter((tag, index, self) => self.indexOf(tag) === index).sort().map((tag) => (
                   <Badge
                     key={tag}
                     variant={selectedTags.includes(tag) ? 'secondary' : 'outline'}
                     className={`cursor-pointer transition-all duration-200 text-sm px-3 py-2 ${
-                      selectedTags.includes(tag) 
-                        ? 'bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg' 
+                      selectedTags.includes(tag)
+                        ? 'bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg'
                         : 'bg-white/50 dark:bg-slate-800/50 hover:bg-teal-50 dark:hover:bg-teal-950/20 border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-700'
                     }`}
                     onClick={() => toggleTag(tag)}

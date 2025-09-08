@@ -11,11 +11,29 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../components/ui/tooltip';
 import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
 import { extractFrontMatter, assemble } from '../lib/markdown';
 import { Download, Save, AlertTriangle, Maximize, Minimize, FileText, Plus, SaveIcon, Trash2, RefreshCw, Archive, Database } from 'lucide-react';
+import { triggerContentStudioRebuild, triggerManualRebuild, getEnhancedCacheStatus } from '../utils/cacheRebuildService';
+
+// Helper function to format relative time
+function getRelativeTimeString(timestamp: string): string {
+  const now = new Date();
+  const past = new Date(timestamp);
+  const diffMs = now.getTime() - past.getTime();
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMins < 1) return 'just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return past.toLocaleDateString();
+}
+
 
 export function CreationStudioPage() {
   const [markdown, setMarkdown] = useState('');
@@ -42,6 +60,7 @@ export function CreationStudioPage() {
   const [shouldRebuildCache, setShouldRebuildCache] = useState(false);
   const [cacheRebuildStatus, setCacheRebuildStatus] = useState<'idle'|'rebuilding'|'completed'|'error'>('idle');
   const [lastSavedContent, setLastSavedContent] = useState('');
+  const [cacheStatus, setCacheStatus] = useState<{lastUpdated: string; totalItems: number; trigger?: string} | null>(null);
   const leftColRef = useRef<HTMLDivElement | null>(null);
   const editorHeaderRef = useRef<HTMLDivElement | null>(null);
   const editorWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -77,6 +96,32 @@ export function CreationStudioPage() {
       ro?.disconnect();
     };
   }, [measureHeights]);
+
+  // Load cache status on mount and refresh periodically
+  useEffect(() => {
+    const loadCacheStatus = async () => {
+      try {
+        const status = await getEnhancedCacheStatus();
+        if (status?.cache) {
+          setCacheStatus({
+            lastUpdated: status.cache.lastUpdated,
+            totalItems: status.cache.totalItems,
+            trigger: status.cache.trigger
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load cache status:', error);
+      }
+    };
+    
+    // Load immediately
+    loadCacheStatus();
+    
+    // Refresh every 30 seconds to keep relative time accurate
+    const interval = setInterval(loadCacheStatus, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   // Re-measure heights when content changes
   useEffect(() => {
@@ -194,17 +239,35 @@ export function CreationStudioPage() {
       if (shouldRebuildCache || isAutoRebuild) {
         setCacheRebuildStatus('rebuilding');
         try {
-          const cacheResponse = await apiClient.rebuildCache();
+          const cacheResponse = await triggerContentStudioRebuild();
           if (cacheResponse.success) {
             setCacheRebuildStatus('completed');
             console.log(`✅ Cache rebuilt successfully${isAutoRebuild ? ' (auto-triggered)' : ''}`);
+            console.log(`📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`);
+            
+            // Update cache status with enhanced data
+            const enhancedStatus = await getEnhancedCacheStatus();
+            if (enhancedStatus?.cache) {
+              setCacheStatus({
+                lastUpdated: enhancedStatus.cache.lastUpdated,
+                totalItems: enhancedStatus.cache.totalItems,
+                trigger: enhancedStatus.cache.trigger
+              });
+            } else if (cacheResponse.stats) {
+              setCacheStatus({
+                lastUpdated: cacheResponse.timestamp,
+                totalItems: cacheResponse.stats.total,
+                trigger: cacheResponse.trigger
+              });
+            }
+            
             // Auto-uncheck the rebuild cache option after successful rebuild (only for manual rebuilds)
             if (!isAutoRebuild) {
               setShouldRebuildCache(false);
             }
           } else {
             setCacheRebuildStatus('error');
-            console.error('❌ Cache rebuild failed:', cacheResponse.error);
+            console.error('❌ Cache rebuild failed:', cacheResponse.error || cacheResponse.message);
           }
         } catch (error) {
           setCacheRebuildStatus('error');
@@ -351,7 +414,6 @@ export function CreationStudioPage() {
               )}
             </div>
           </div>
-          <TooltipProvider>
             <div className="flex items-center gap-1">
               {/* File Operations Group */}
               <Tooltip>
@@ -463,8 +525,16 @@ export function CreationStudioPage() {
                   <div className="text-sm">
                     <div className="font-medium">Rebuild Cache on Save</div>
                     <div className="text-xs opacity-80 mt-1">
-                      Updates search and navigation cache
+                      Updates search and navigation cache using production KV
                     </div>
+                    <div className="text-xs text-blue-500 mt-1">
+                      Works in: Localhost, Preview & Production
+                    </div>
+                    {cacheStatus && (
+                      <div className="text-xs text-slate-400 mt-1 border-t pt-1">
+                        Current: {cacheStatus.totalItems} items • {getRelativeTimeString(cacheStatus.lastUpdated)}
+                      </div>
+                    )}
                     {cacheRebuildStatus === 'rebuilding' && (
                       <div className="text-xs text-orange-500 mt-1">Building...</div>
                     )}
@@ -486,17 +556,30 @@ export function CreationStudioPage() {
                     onClick={async () => {
                       setCacheRebuildStatus('rebuilding');
                       try {
-                        const cacheResponse = await apiClient.rebuildCache();
+                        const cacheResponse = await triggerManualRebuild();
                         if (cacheResponse.success) {
                           setCacheRebuildStatus('completed');
-                          console.log('✅ Manual cache rebuild successful');
+
+                          // Update cache status with enhanced data
+                          const enhancedStatus = await getEnhancedCacheStatus();
+                          if (enhancedStatus?.cache) {
+                            setCacheStatus({
+                              lastUpdated: enhancedStatus.cache.lastUpdated,
+                              totalItems: enhancedStatus.cache.totalItems,
+                              trigger: enhancedStatus.cache.trigger
+                            });
+                          } else if (cacheResponse.stats) {
+                            setCacheStatus({
+                              lastUpdated: cacheResponse.timestamp,
+                              totalItems: cacheResponse.stats.total,
+                              trigger: cacheResponse.trigger
+                            });
+                          }
                         } else {
                           setCacheRebuildStatus('error');
-                          console.error('❌ Manual cache rebuild failed:', cacheResponse.error);
                         }
-                      } catch (error) {
+                      } catch {
                         setCacheRebuildStatus('error');
-                        console.error('❌ Manual cache rebuild error:', error);
                       }
                       setTimeout(() => setCacheRebuildStatus('idle'), 3000);
                     }}
@@ -506,8 +589,33 @@ export function CreationStudioPage() {
                     <RefreshCw className={`h-4 w-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`} />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Rebuild Cache Manually</TooltipContent>
+                <TooltipContent>
+                  <div className="text-center">
+                    <div className="font-medium">Rebuild Cache Manually</div>
+                    <div className="text-xs text-slate-500 mt-1">
+                      Force refresh of search and navigation cache using production KV
+                    </div>
+                    <div className="text-xs text-blue-500 mt-1">
+                      Works in: Localhost, Preview & Production
+                    </div>
+                    {cacheStatus && (
+                      <div className="text-xs text-slate-400 mt-1 border-t pt-1">
+                        <div>{cacheStatus.totalItems} items</div>
+                        <div>
+                          Updated {new Date(cacheStatus.lastUpdated).toLocaleDateString()}{' '}
+                          at {new Date(cacheStatus.lastUpdated).toLocaleTimeString()}
+                        </div>
+                        {cacheStatus.trigger && (
+                          <div className="text-slate-500 mt-1">
+                            Trigger: {cacheStatus.trigger}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </TooltipContent>
               </Tooltip>
+
 
               <Separator orientation="vertical" className="h-6 mx-1" />
 
@@ -596,7 +704,6 @@ export function CreationStudioPage() {
                 </TooltipContent>
               </Tooltip>
             </div>
-          </TooltipProvider>
         </div>
       </div>
       {/* Main Content Area: content browser + front matter define height */}

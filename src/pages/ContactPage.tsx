@@ -982,11 +982,12 @@ This meeting request was generated based on AI analysis of their contact form su
         {/* AI Disclosure */}
         <div className="mt-12 text-center">
           <p className="text-xs text-gray-400">
-            This site uses AI to analyze messages and provide personalized recommendations. 
-            Message content is processed securely and not stored. 
+            This site uses AI to analyze messages and provide personalized recommendations.
+            Message content is processed securely and not stored.
             <a href="/privacy" className="text-teal-600 hover:text-teal-700 ml-1">Privacy Policy</a>
           </p>
         </div>
+    
       </div>
       
       {/* Scroll to Top Button */}

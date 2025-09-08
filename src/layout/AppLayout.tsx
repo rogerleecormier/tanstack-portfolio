@@ -5,9 +5,23 @@ import Footer from './Footer'
 import { AppSidebar } from '@/components/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import SiteAssistant from '@/components/AIPortfolioAssistant'
-import { loadPortfolioItems } from '@/utils/r2PortfolioLoader'
+import { cachedContentService, type CachedContentItem } from '@/api/cachedContentService'
 import { useEffect, useState, useCallback, Suspense, Component, ReactNode } from 'react'
-import { PortfolioItem } from '@/utils/r2PortfolioLoader'
+
+// PortfolioItem interface for SiteAssistant compatibility
+interface PortfolioItem {
+  id: string
+  title: string
+  description: string
+  tags: string[]
+  category: string
+  url: string
+  keywords: string[]
+  content: string
+  date?: string
+  fileName: string
+  frontmatter: Record<string, unknown>
+}
 
 // Error boundary component for the main content
 class MainContentErrorBoundary extends Component<
@@ -72,12 +86,28 @@ export default function AppLayout() {
   const [isLoadingPortfolio, setIsLoadingPortfolio] = useState(true)
   const [portfolioError, setPortfolioError] = useState<string | null>(null)
 
+  // Convert CachedContentItem to PortfolioItem format for SiteAssistant
+  const convertToPortfolioItem = (item: CachedContentItem): PortfolioItem => ({
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    tags: item.tags,
+    category: item.category,
+    url: item.url,
+    keywords: item.keywords,
+    content: item.content,
+    date: item.date,
+    fileName: item.fileName,
+    frontmatter: {} // Will be populated if needed
+  })
+
   // Memoized portfolio loading function
   const loadItems = useCallback(async () => {
     try {
       setIsLoadingPortfolio(true)
       setPortfolioError(null)
-      const items = await loadPortfolioItems()
+      const cachedItems = await cachedContentService.getContentByType('portfolio')
+      const items = cachedItems.map(convertToPortfolioItem)
       setPortfolioItems(items)
     } catch (error) {
       console.error('Error loading portfolio items for AI assistant:', error)
