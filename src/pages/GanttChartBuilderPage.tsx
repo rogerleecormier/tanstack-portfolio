@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Trash2, Download } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
 import { format, differenceInDays } from 'date-fns';
 
 // Schema for form validation
@@ -65,19 +65,33 @@ const GanttChartBuilderPage: React.FC = () => {
     setGanttData(processedTasks);
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (ganttData.length === 0) return;
 
-    const ws = XLSX.utils.json_to_sheet(ganttData.map(task => ({
-      Task: task.name,
-      Start: task.start,
-      Duration: task.duration,
-      End: task.end,
-    })));
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Gantt Chart');
 
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Gantt Chart');
-    XLSX.writeFile(wb, 'gantt-chart.xlsx');
+    // Add header row
+    const headerRow = worksheet.addRow(['Task', 'Start', 'Duration', 'End']);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true };
+    });
+
+    // Add data rows
+    ganttData.forEach(task => {
+      worksheet.addRow([task.name, task.start, task.duration, task.end]);
+    });
+
+    // Set column widths
+    worksheet.columns = [
+      { key: 'task', width: 20 },
+      { key: 'start', width: 15 },
+      { key: 'duration', width: 15 },
+      { key: 'end', width: 15 },
+    ];
+
+    // Save the file
+    await workbook.xlsx.writeFile('gantt-chart.xlsx');
   };
 
   // Placeholder for AI augmentation

@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Trash2, Download } from 'lucide-react';
 import { SortableTable } from '@/components/SortableTable';
-import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
 
 // Schema for form validation
 const riskSchema = z.object({
@@ -70,13 +70,28 @@ const RiskAssessmentPage: React.FC = () => {
     return 'Low';
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (!matrixData) return;
 
-    const ws = XLSX.utils.aoa_to_sheet([matrixData.headers, ...matrixData.rows]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Risk Assessment');
-    XLSX.writeFile(wb, 'risk-assessment.xlsx');
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Risk Assessment');
+
+    // Add header row
+    const headerRow = worksheet.addRow(matrixData.headers);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true };
+    });
+
+    // Add data rows
+    matrixData.rows.forEach(row => {
+      worksheet.addRow(row);
+    });
+
+    // Set column widths
+    worksheet.columns = matrixData.headers.map(() => ({ width: 20 }));
+
+    // Save the file
+    await workbook.xlsx.writeFile('risk-assessment.xlsx');
   };
 
   // Placeholder for AI augmentation

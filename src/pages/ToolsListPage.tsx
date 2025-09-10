@@ -46,7 +46,7 @@ const tools: Tool[] = [
     icon: Wrench,
     url: '/tools/raci-builder',
     features: ['Role Assignment', 'Matrix Generation', 'Mermaid Diagrams', 'Export Options'],
-    status: 'coming-soon' as const,
+    status: 'active' as const,
   },
   {
     id: 'priority-matrix',
