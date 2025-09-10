@@ -674,7 +674,7 @@ const RACIBuilderPage: React.FC = () => {
       const otherCategories = ['R', 'A', 'C', 'I'].filter(c => c !== category);
       otherCategories.forEach(otherCat => {
         const otherPath = `tasks.${taskIndex}.raci.${roleName}.${otherCat}`;
-        setValue(otherPath as any, false, {
+        setValue(otherPath as any, false, { // eslint-disable-line @typescript-eslint/no-explicit-any
           shouldValidate: false,
           shouldDirty: true
         });
@@ -683,14 +683,14 @@ const RACIBuilderPage: React.FC = () => {
     }
 
     const path = `tasks.${taskIndex}.raci.${roleName}.${category}`;
-    setValue(path as any, checked, {
+    setValue(path as any, checked, { // eslint-disable-line @typescript-eslint/no-explicit-any
       shouldValidate: false,
       shouldDirty: true
     });
 
     // Verify the value was set correctly
     setTimeout(() => {
-      const currentValue = getValues(path as any);
+      const currentValue = getValues(path as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       addDebugLog(`✅ ${roleName}.${category} set to: ${currentValue} (expected: ${checked})`);
     }, 0);
   };

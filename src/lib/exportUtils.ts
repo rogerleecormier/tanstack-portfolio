@@ -1,57 +1,53 @@
 // Export utilities for PM tools
-import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
 
-export const createStyledXLSX = (tableData: { headers: string[]; rows: string[][] }, projectName: string, filename: string) => {
-  const titleRow = [`Project: ${projectName}`];
-  const headerRow = tableData.headers;
-  const dataRows = tableData.rows;
-  const ws = XLSX.utils.aoa_to_sheet([titleRow, headerRow, ...dataRows]);
+export const createStyledXLSX = async (tableData: { headers: string[]; rows: string[][] }, projectName: string, filename: string) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Matrix');
 
-  // Title styling
-  const titleCell = XLSX.utils.encode_cell({ c: 0, r: 0 });
-  ws[titleCell].s = {
-    font: { bold: true, sz: 14, color: { rgb: "000000" } },
-    alignment: { horizontal: "center", vertical: "center" }
-  };
+  // Title row
+  const titleRow = worksheet.addRow([`Project: ${projectName}`]);
+  titleRow.getCell(1).font = { bold: true, size: 14, color: { argb: 'FF000000' } };
+  titleRow.getCell(1).alignment = { horizontal: 'center', vertical: 'middle' };
 
-  // Header styling
-  const headerRange = XLSX.utils.decode_range(ws['!ref']!);
-  for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
-    const cellAddress = { c: C, r: 1 };
-    const cellRef = XLSX.utils.encode_cell(cellAddress);
-    if (!ws[cellRef]) ws[cellRef] = {};
-    ws[cellRef].s = {
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-      fill: { fgColor: { rgb: "4F46E5" } },
-      alignment: { horizontal: "center", vertical: "center" },
-      border: { top: { style: "thin", color: { rgb: "000000" } }, bottom: { style: "thin", color: { rgb: "000000" } }, left: { style: "thin", color: { rgb: "000000" } }, right: { style: "thin", color: { rgb: "000000" } } }
+  // Header row
+  const headerRow = worksheet.addRow(tableData.headers);
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = {
+      top: { style: 'thin', color: { argb: 'FF000000' } },
+      bottom: { style: 'thin', color: { argb: 'FF000000' } },
+      left: { style: 'thin', color: { argb: 'FF000000' } },
+      right: { style: 'thin', color: { argb: 'FF000000' } }
     };
-  }
+  });
 
-  // Data rows styling with borders and alternating colors
-  const colors = ['#F9FAFB', '#FFFFFF'];
-  for (let R = 2; R <= dataRows.length + 1; ++R) {
-    for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
-      const cellAddress = { c: C, r: R };
-      const cellRef = XLSX.utils.encode_cell(cellAddress);
-      if (!ws[cellRef]) ws[cellRef] = {};
-      ws[cellRef].s = {
-        fill: { fgColor: { rgb: colors[(R - 2) % 2] } },
-        alignment: { horizontal: "center", vertical: "center" },
-        border: { top: { style: "thin", color: { rgb: "000000" } }, bottom: { style: "thin", color: { rgb: "000000" } }, left: { style: "thin", color: { rgb: "000000" } }, right: { style: "thin", color: { rgb: "000000" } } }
+  // Data rows
+  const colors = ['FFF9FAFB', 'FFFFFFFF'];
+  tableData.rows.forEach((rowData, index) => {
+    const row = worksheet.addRow(rowData);
+    row.eachCell((cell) => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: colors[index % 2] } };
+      cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      cell.border = {
+        top: { style: 'thin', color: { argb: 'FF000000' } },
+        bottom: { style: 'thin', color: { argb: 'FF000000' } },
+        left: { style: 'thin', color: { argb: 'FF000000' } },
+        right: { style: 'thin', color: { argb: 'FF000000' } }
       };
-    }
-  }
+    });
+  });
 
   // Column widths
-  ws['!cols'] = tableData.headers.map(() => ({ wch: 15 }));
+  worksheet.columns = tableData.headers.map(() => ({ width: 15 }));
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Matrix');
-  XLSX.writeFile(wb, filename);
+  // Save the file
+  await workbook.xlsx.writeFile(filename);
 };
 
 export const createStyledPDF = async (tableData: { headers: string[]; rows: string[][] }, projectName: string, filename: string, captureElementId?: string) => {
