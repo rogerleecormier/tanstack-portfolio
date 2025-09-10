@@ -696,41 +696,41 @@ const RACIBuilderPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <Card>
+        <Card className="border-teal-200 bg-white shadow-sm">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <CardTitle className="text-2xl font-bold">RACI Chart Builder</CardTitle>
+              <CardTitle className="text-2xl font-semibold text-primary">RACI Chart Builder</CardTitle>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="p-1 h-6 w-6">
-                      <Info className="h-4 w-4 text-blue-600" />
+                    <Button variant="ghost" size="sm" className="p-1 h-6 w-6 focus:ring-teal-500">
+                      <Info className="h-4 w-4 text-teal-600" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-sm">
+                  <TooltipContent className="max-w-sm bg-white border-teal-200 text-gray-600">
                     <div className="space-y-2">
                       <div>
-                        <p className="font-semibold">RACI Categories:</p>
-                        <ul className="list-disc list-inside ml-2 space-y-1 text-sm">
-                          <li><strong>R (Responsible):</strong> Person who does the work</li>
-                          <li><strong>A (Accountable):</strong> Person ultimately answerable (one per task)</li>
-                          <li><strong>C (Consulted):</strong> People whose opinions are sought</li>
-                          <li><strong>I (Informed):</strong> People who need to be kept in the loop</li>
+                        <p className="font-semibold text-primary">RACI Categories:</p>
+                        <ul className="list-disc list-inside ml-2 space-y-1 text-sm text-gray-600">
+                          <li><strong className="text-primary">R (Responsible):</strong> Person who does the work</li>
+                          <li><strong className="text-primary">A (Accountable):</strong> Person ultimately answerable (one per task)</li>
+                          <li><strong className="text-primary">C (Consulted):</strong> People whose opinions are sought</li>
+                          <li><strong className="text-primary">I (Informed):</strong> People who need to be kept in the loop</li>
                         </ul>
                       </div>
                       <div>
-                        <p className="font-semibold">Validation Rules:</p>
-                        <ul className="list-disc list-inside ml-2 space-y-1 text-sm">
-                          <li>Every task must have <strong>exactly one</strong> Accountable person</li>
-                          <li><strong>Each role can only be assigned one RACI category per task</strong></li>
+                        <p className="font-semibold text-primary">Validation Rules:</p>
+                        <ul className="list-disc list-inside ml-2 space-y-1 text-sm text-gray-600">
+                          <li>Every task must have <strong className="text-primary">exactly one</strong> Accountable person</li>
+                          <li><strong className="text-primary">Each role can only be assigned one RACI category per task</strong></li>
                           <li>All role names must be unique</li>
                           <li>All task names must be unique</li>
                         </ul>
                       </div>
-                      <div className="bg-yellow-50 p-2 rounded text-xs">
-                        <strong>Example:</strong> For a task, you might assign:<br/>
+                      <div className="bg-teal-50 p-2 rounded border border-teal-200 text-xs text-gray-600">
+                        <strong className="text-primary">Example:</strong> For a task, you might assign:<br/>
                         Developer: R (Responsible)<br/>
                         Project Manager: A (Accountable)<br/>
                         Product Owner: C (Consulted)<br/>
@@ -741,9 +741,9 @@ const RACIBuilderPage: React.FC = () => {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <p className="text-gray-600">Define roles and tasks to generate a RACI matrix for your projects.</p>
+            <p className="text-primary">Define roles and tasks to generate a RACI matrix for your projects.</p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             {/* Validation Errors Summary */}
             {Object.keys(errors).length > 0 && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -784,19 +784,19 @@ const RACIBuilderPage: React.FC = () => {
 
             <form onSubmit={handleFormSubmit} className="space-y-6">
               <div>
-                <Label htmlFor="projectName">Project Name</Label>
-                <Input id="projectName" {...register('projectName')} />
+                <Label htmlFor="projectName" className="text-primary">Project Name</Label>
+                <Input id="projectName" {...register('projectName')} className="focus:ring-teal-500 focus:border-teal-500" />
                 {errors.projectName && <p className="text-red-500 text-sm">{errors.projectName.message}</p>}
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Roles</h3>
+                <h3 className="text-lg font-semibold text-primary mb-2">Roles</h3>
                 {roleFields.map((field, index) => (
-                  <div key={field.id} className="border p-4 mb-4 rounded flex gap-2 items-center">
+                  <div key={field.id} className="border border-teal-200 p-4 mb-4 rounded-lg flex gap-2 items-center bg-teal-50">
                     <Input
                       placeholder="e.g. Developer, Project Manager, Product Owner"
                       {...register(`roles.${index}.name` as const)}
-                      className="flex-1 text-gray-500 placeholder:text-gray-400 focus:placeholder:text-transparent"
+                      className="flex-1 text-gray-600 placeholder:text-teal-500 focus:placeholder:text-transparent focus:ring-teal-500 focus:border-teal-500"
                       onFocus={(e) => {
                         if (e.target.placeholder && !e.target.value) {
                           e.target.placeholder = '';
@@ -809,8 +809,8 @@ const RACIBuilderPage: React.FC = () => {
                         handleRoleNameBlur(index, e);
                       }}
                     />
-                    <Button type="button" variant="outline" onClick={() => customRoleRemove(index)} size="sm">
-                      <Trash2 className="h-4 w-4" />
+                    <Button type="button" variant="outline" onClick={() => customRoleRemove(index)} size="sm" className="focus:ring-teal-500">
+                      <Trash2 className="h-4 w-4 text-teal-600" />
                     </Button>
                   </div>
                 ))}
@@ -818,30 +818,30 @@ const RACIBuilderPage: React.FC = () => {
                 <Button type="button" onClick={() => {
                   addDebugLog('🔘 Add Role button clicked');
                   customRoleAppend({ name: '' });
-                }} className="mb-4">
-                  <Plus className="h-4 w-4 mr-2" /> Add Role
+                }} className="mb-4 focus:ring-teal-500">
+                  <Plus className="h-4 w-4 mr-2 text-teal-600" /> Add Role
                 </Button>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Tasks</h3>
+                <h3 className="text-lg font-semibold text-primary mb-2">Tasks</h3>
                 {taskFields.map((field, index) => (
-                  <div key={field.id} className="border p-4 mb-4 rounded">
+                  <div key={field.id} className="border border-teal-200 p-4 mb-4 rounded-lg bg-white">
                     <div className="flex gap-2 items-center mb-2">
                       <Input
                         placeholder="Task Name"
                         {...register(`tasks.${index}.name` as const)}
-                        className="flex-1"
+                        className="flex-1 focus:ring-teal-500 focus:border-teal-500"
                       />
-                      <Button type="button" variant="outline" onClick={() => taskRemove(index)} size="sm">
-                        <Trash2 className="h-4 w-4" />
+                      <Button type="button" variant="outline" onClick={() => taskRemove(index)} size="sm" className="focus:ring-teal-500">
+                        <Trash2 className="h-4 w-4 text-teal-600" />
                       </Button>
                     </div>
                     {errors.tasks?.[index]?.name && <p className="text-red-500 text-sm">{errors.tasks?.[index]?.name?.message}</p>}
                     {errors.tasks?.[index] && <p className="text-red-500 text-sm">{errors.tasks[index]?.message}</p>}
                     <div className="space-y-2">
-                      <div className="text-xs text-gray-600 mb-2 bg-blue-50 p-2 rounded">
-                        💡 <strong>RACI Rule:</strong> Select only ONE category per role (R/A/C/I)
+                      <div className="text-xs text-gray-600 mb-2 bg-teal-50 p-2 rounded border border-teal-200">
+                        💡 <strong className="text-primary">RACI Rule:</strong> Select only ONE category per role (R/A/C/I)
                       </div>
                       {roleFields.map((roleField, roleIndex) => {
                         const role = watchedRolesRaw[roleIndex]; // Use raw data for rendering all roles
@@ -855,10 +855,10 @@ const RACIBuilderPage: React.FC = () => {
                         if (isFilteredOut) {
                           return (
                             <div key={roleField.id} className="flex gap-2 items-center opacity-50">
-                              <Label className="w-24 font-medium text-gray-400">
+                              <Label className="w-24 font-medium text-gray-600">
                                 {roleName || `Role ${roleIndex + 1}`} (incomplete)
                               </Label>
-                              <div className="flex gap-2 text-xs text-gray-400">
+                              <div className="flex gap-2 text-xs text-gray-600">
                                 Complete role name to enable checkboxes
                               </div>
                             </div>
@@ -871,39 +871,43 @@ const RACIBuilderPage: React.FC = () => {
 
                         return (
                           <div key={roleField.id} className="flex gap-2 items-center">
-                            <Label className="w-24 font-medium">{roleName}</Label>
+                            <Label className="w-24 font-medium text-primary">{roleName}</Label>
                             <div className="flex gap-2">
                               <div className="flex items-center gap-1">
                                 <Checkbox
                                   {...register(`tasks.${index}.raci.${roleName}.R` as const)}
                                   disabled={hasCategorySelected && !currentAssignments?.R}
                                   onCheckedChange={(checked) => handleCheckboxChange(index, roleName, 'R', checked as boolean)}
+                                  className="focus:ring-teal-500"
                                 />
-                                <Label className={`text-sm ${hasCategorySelected && !currentAssignments?.R ? 'text-gray-400' : ''}`}>Responsible</Label>
+                                <Label className={`text-sm ${hasCategorySelected && !currentAssignments?.R ? 'text-gray-500' : 'text-primary'}`}>Responsible</Label>
                               </div>
                               <div className="flex items-center gap-1">
                                 <Checkbox
                                   {...register(`tasks.${index}.raci.${roleName}.A` as const)}
                                   disabled={hasCategorySelected && !currentAssignments?.A}
                                   onCheckedChange={(checked) => handleCheckboxChange(index, roleName, 'A', checked as boolean)}
+                                  className="focus:ring-teal-500"
                                 />
-                                <Label className={`text-sm ${hasCategorySelected && !currentAssignments?.A ? 'text-gray-400' : ''}`}>Accountable</Label>
+                                <Label className={`text-sm ${hasCategorySelected && !currentAssignments?.A ? 'text-gray-500' : 'text-primary'}`}>Accountable</Label>
                               </div>
                               <div className="flex items-center gap-1">
                                 <Checkbox
                                   {...register(`tasks.${index}.raci.${roleName}.C` as const)}
                                   disabled={hasCategorySelected && !currentAssignments?.C}
                                   onCheckedChange={(checked) => handleCheckboxChange(index, roleName, 'C', checked as boolean)}
+                                  className="focus:ring-teal-500"
                                 />
-                                <Label className={`text-sm ${hasCategorySelected && !currentAssignments?.C ? 'text-gray-400' : ''}`}>Consulted</Label>
+                                <Label className={`text-sm ${hasCategorySelected && !currentAssignments?.C ? 'text-gray-500' : 'text-primary'}`}>Consulted</Label>
                               </div>
                               <div className="flex items-center gap-1">
                                 <Checkbox
                                   {...register(`tasks.${index}.raci.${roleName}.I` as const)}
                                   disabled={hasCategorySelected && !currentAssignments?.I}
                                   onCheckedChange={(checked) => handleCheckboxChange(index, roleName, 'I', checked as boolean)}
+                                  className="focus:ring-teal-500"
                                 />
-                                <Label className={`text-sm ${hasCategorySelected && !currentAssignments?.I ? 'text-gray-400' : ''}`}>Informed</Label>
+                                <Label className={`text-sm ${hasCategorySelected && !currentAssignments?.I ? 'text-gray-500' : 'text-primary'}`}>Informed</Label>
                               </div>
                             </div>
                           </div>
@@ -919,13 +923,13 @@ const RACIBuilderPage: React.FC = () => {
                   );
                   taskAppend({ name: '', raci: newRaci });
                   // Sync after add task if needed, but since new task has fresh raci, no need
-                }}>
-                  <Plus className="h-4 w-4 mr-2" /> Add Task
+                }} className="focus:ring-teal-500">
+                  <Plus className="h-4 w-4 mr-2 text-teal-600" /> Add Task
                 </Button>
               </div>
 
               <div className="flex gap-2">
-                <Button type="submit">Generate RACI Chart</Button>
+                <Button type="submit" className="focus:ring-teal-500">Generate RACI Chart</Button>
               </div>
             </form>
 
@@ -933,34 +937,34 @@ const RACIBuilderPage: React.FC = () => {
               <div className="mt-8">
                 {matrixData && (
                   <>
-                    <h3 className="text-lg font-semibold mb-2">RACI Matrix</h3>
+                    <h3 className="text-lg font-semibold text-primary mb-2">RACI Matrix</h3>
                     <MatrixTable data={matrixData} />
                   </>
                 )}
                 {mermaidSvg && (
                   <>
-                    <h3 className="text-lg font-semibold mb-2">Mermaid Diagram</h3>
-                    <div ref={mermaidRef} dangerouslySetInnerHTML={{ __html: mermaidSvg }} className="mermaid" />
-                    <pre className="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto">{mermaidCode}</pre>
+                    <h3 className="text-lg font-semibold text-primary mb-2">Mermaid Diagram</h3>
+                    <div ref={mermaidRef} dangerouslySetInnerHTML={{ __html: mermaidSvg }} className="mermaid bg-white rounded border border-teal-200 p-4" />
+                    <pre className="mt-4 p-4 bg-teal-50 rounded border border-teal-200 text-sm overflow-auto text-gray-600">{mermaidCode}</pre>
                   </>
                 )}
                 <div className="flex gap-2 mt-4">
                   {matrixData && (
                     <>
-                      <Button onClick={handleRawXLSXExport}>
-                        <Download className="h-4 w-4 mr-2" /> Raw XLSX
+                      <Button onClick={handleRawXLSXExport} className="focus:ring-teal-500">
+                        <Download className="h-4 w-4 mr-2 text-teal-600" /> Raw XLSX
                       </Button>
-                      <Button onClick={handleXLSXExport}>
-                        <Download className="h-4 w-4 mr-2" /> Formatted XLSX
+                      <Button onClick={handleXLSXExport} className="focus:ring-teal-500">
+                        <Download className="h-4 w-4 mr-2 text-teal-600" /> Formatted XLSX
                       </Button>
-                      <Button onClick={handlePDFExport}>
-                        <Download className="h-4 w-4 mr-2" /> Formatted PDF
+                      <Button onClick={handlePDFExport} className="focus:ring-teal-500">
+                        <Download className="h-4 w-4 mr-2 text-teal-600" /> Formatted PDF
                       </Button>
                     </>
                   )}
                   {mermaidSvg && (
-                    <Button onClick={handleSVGDownload}>
-                      <Download className="h-4 w-4 mr-2" /> Download SVG
+                    <Button onClick={handleSVGDownload} className="focus:ring-teal-500">
+                      <Download className="h-4 w-4 mr-2 text-teal-600" /> Download SVG
                     </Button>
                   )}
                 </div>
