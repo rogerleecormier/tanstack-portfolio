@@ -226,13 +226,13 @@ const PriorityMatrixPage: React.FC = () => {
         // Style headers
         const headerStyle = {
           font: { bold: true, color: { argb: 'FFFFFFFF' } },
-          fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FF374151' } },
+          fill: { type: 'pattern' as const, pattern: 'solid' as const, fgColor: { argb: 'FF374151' } },
           alignment: { horizontal: 'center' as const },
           border: {
-            top: { style: 'thin' as any, color: { argb: 'FF000000' } },
-            left: { style: 'thin' as any, color: { argb: 'FF000000' } },
-            bottom: { style: 'thin' as any, color: { argb: 'FF000000' } },
-            right: { style: 'thin' as any, color: { argb: 'FF000000' } }
+            top: { style: 'thin' as const, color: { argb: 'FF000000' } },
+            left: { style: 'thin' as const, color: { argb: 'FF000000' } },
+            bottom: { style: 'thin' as const, color: { argb: 'FF000000' } },
+            right: { style: 'thin' as const, color: { argb: 'FF000000' } }
           }
         };
 
@@ -260,10 +260,10 @@ const PriorityMatrixPage: React.FC = () => {
             row.getCell(i).style = {
               alignment: { horizontal: 'center' as const },
               border: {
-                top: { style: 'thin' as any, color: { argb: 'FFE5E7EB' } },
-                left: { style: 'thin' as any, color: { argb: 'FFE5E7EB' } },
-                bottom: { style: 'thin' as any, color: { argb: 'FFE5E7EB' } },
-                right: { style: 'thin' as any, color: { argb: 'FFE5E7EB' } }
+                top: { style: 'thin' as const, color: { argb: 'FFE5E7EB' } },
+                left: { style: 'thin' as const, color: { argb: 'FFE5E7EB' } },
+                bottom: { style: 'thin' as const, color: { argb: 'FFE5E7EB' } },
+                right: { style: 'thin' as const, color: { argb: 'FFE5E7EB' } }
               }
             };
           }
@@ -297,13 +297,13 @@ const PriorityMatrixPage: React.FC = () => {
 
         const headerStyle = {
           font: { bold: true, color: { argb: 'FFFFFFFF' } },
-          fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FF374151' } },
+          fill: { type: 'pattern' as const, pattern: 'solid' as const, fgColor: { argb: 'FF374151' } },
           alignment: { horizontal: 'center' as const },
           border: {
-            top: { style: 'thin' as any, color: { argb: 'FF000000' } },
-            left: { style: 'thin' as any, color: { argb: 'FF000000' } },
-            bottom: { style: 'thin' as any, color: { argb: 'FF000000' } },
-            right: { style: 'thin' as any, color: { argb: 'FF000000' } }
+            top: { style: 'thin' as const, color: { argb: 'FF000000' } },
+            left: { style: 'thin' as const, color: { argb: 'FF000000' } },
+            bottom: { style: 'thin' as const, color: { argb: 'FF000000' } },
+            right: { style: 'thin' as const, color: { argb: 'FF000000' } }
           }
         };
 
@@ -323,10 +323,10 @@ const PriorityMatrixPage: React.FC = () => {
             cell.style = {
               alignment: { horizontal: 'center' as const },
               border: {
-                top: { style: 'thin' as any, color: { argb: 'FFE5E7EB' } },
-                left: { style: 'thin' as any, color: { argb: 'FFE5E7EB' } },
-                bottom: { style: 'thin' as any, color: { argb: 'FFE5E7EB' } },
-                right: { style: 'thin' as any, color: { argb: 'FFE5E7EB' } }
+                top: { style: 'thin' as const, color: { argb: 'FFE5E7EB' } },
+                left: { style: 'thin' as const, color: { argb: 'FFE5E7EB' } },
+                bottom: { style: 'thin' as const, color: { argb: 'FFE5E7EB' } },
+                right: { style: 'thin' as const, color: { argb: 'FFE5E7EB' } }
               }
             };
           });
