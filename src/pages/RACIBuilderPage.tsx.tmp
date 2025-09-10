@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,11 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Plus, Trash2, Download, Info } from 'lucide-react';
+import { Plus, Trash2, Download, Info, Copy } from 'lucide-react';
 import { MatrixTable } from '@/components/MatrixTable';
 import mermaid from 'mermaid';
 import * as ExcelJS from 'exceljs';
-import { Document, Page, StyleSheet, Text, View, pdf } from '@react-pdf/renderer';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface MatrixCell {
   value: string;
@@ -75,30 +78,13 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-interface RoleField {
-  id: string;
-  name: string;
-}
-
-const isValidRoleName = (name?: string): boolean => {
-  if (!name) return false;
-  const trimmed = name.trim();
-  if (trimmed === '') return false;
-  const isIncomplete =
-    ['R', 'A', 'C', 'I'].includes(trimmed) ||
-    trimmed.length < 4 ||
-    trimmed.endsWith(' ') ||
-    /^\w+\s\w{1,3}$/.test(trimmed) ||
-    /^\w{1,3}$/.test(trimmed) ||
-    trimmed.includes('New Role');
-  return !isIncomplete;
-};
-
 const RACIBuilderPage: React.FC = () => {
   const [matrixData, setMatrixData] = useState<MatrixData | null>(null);
   const [projectName, setProjectName] = useState<string>('');
   const [mermaidCode, setMermaidCode] = useState<string>('');
   const [mermaidSvg, setMermaidSvg] = useState<string>('');
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
+  const [showDebug, setShowDebug] = useState<boolean>(false);
   const mermaidRef = useRef<HTMLDivElement>(null);
 
   const { register, control, formState: { errors }, getValues, setValue } = useForm<FormData>({
@@ -116,108 +102,146 @@ const RACIBuilderPage: React.FC = () => {
   });
 
   const addDebugLog = (message: string) => {
-    console.log(message);
+    const timestamp = new Date().toLocaleTimeString();
+    const logEntry = `[${timestamp}] ${message}`;
+    setDebugLogs(prev => [...prev.slice(-19), logEntry]); // Keep last 20 logs
+    console.log(message); // Keep console logging too
   };
 
+  // Add debug function to check current form values
+  const debugFormValues = () => {
+    const values = getValues();
+    addDebugLog('🔍 Current form values: ' + safeStringify(values));
+  };
 
+  // Copy debug logs to clipboard
+  const copyDebugLogs = async () => {
+    try {
+      const logText = debugLogs.join('\n');
+      await navigator.clipboard.writeText(logText);
+      addDebugLog('✅ Debug logs copied to clipboard!');
+    } catch (error) {
+      addDebugLog('❌ Failed to copy logs to clipboard: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  };
 
   const { fields: roleFields, append: roleAppend, remove: roleRemove } = useFieldArray({
     control,
     name: 'roles',
   });
 
-  // Override role functions to add logging and sync RACI
+  // Override role functions to add logging and update RACI structure
   const customRoleAppend = (value: any) => {
     addDebugLog(`➕ Adding new role: ${JSON.stringify(value)}`);
     roleAppend(value);
-    // Sync RACI after append
-    setTimeout(() => updateRaciForRoles(), 0);
+
+    // Update RACI structure after role is added
+    setTimeout(() => {
+      // Get all current roles including the newly added one (use raw data to include incomplete roles for cleanup)
+      const allRoles = [...watchedRolesRaw.map(r => r.name?.trim()).filter(Boolean), value.name?.trim()].filter(Boolean);
+      addDebugLog(`🔄 Updating RACI structure for all roles: [${allRoles.join(', ')}]`);
+      updateRaciStructure(allRoles);
+    }, 0);
   };
 
   const customRoleRemove = (index: number) => {
     const roleToRemove = watchedRolesRaw[index]; // Use raw data to get the actual role being removed
     addDebugLog(`🗑️ Removing role: ${JSON.stringify(roleToRemove)}`);
     roleRemove(index);
-    // Sync RACI after remove
-    setTimeout(() => updateRaciForRoles(), 0);
+
+    // Update RACI structure after role is removed
+    setTimeout(() => {
+      const remainingRoles = watchedRolesRaw
+        .filter((_, idx) => idx !== index)
+        .map(r => r.name?.trim())
+        .filter(Boolean);
+      addDebugLog(`🔄 Updating RACI structure after removal. Remaining roles: [${remainingRoles.join(', ')}]`);
+      updateRaciStructure(remainingRoles);
+    }, 0);
   };
 
-  const watchedRolesRaw = useWatch({ control, name: 'roles' }) as unknown as RoleField[];
-  const watchedTasks = useWatch({ control, name: 'tasks' });
-
-  const lastValidRolesRef = useRef<string[]>([]);
-
-  // Function to update RACI structure based on current valid roles
-  const updateRaciForRoles = () => {
-    const currentValidRoles = getValues('roles')
-      .filter(r => isValidRoleName(r.name))
-      .map(r => r.name.trim())
-      .sort();
-    const lastValidRoles = lastValidRolesRef.current.sort();
-    if (JSON.stringify(currentValidRoles) === JSON.stringify(lastValidRoles)) {
-      addDebugLog('📝 No change in valid roles, skipping update');
-      return;
-    }
-    addDebugLog(`🔄 Updating RACI for valid roles: [${currentValidRoles.join(', ')}]`);
-    const tasks = getValues('tasks');
-    const updatedTasks = tasks.map(task => {
-      const newRaci = { ...task.raci };
-      // Add missing valid roles
-      currentValidRoles.forEach(roleName => {
-        if (!newRaci[roleName]) {
-          newRaci[roleName] = { R: false, A: false, C: false, I: false };
-          addDebugLog(`➕ Added role "${roleName}" to RACI`);
-        }
-      });
-      // Remove invalid or old roles
-      Object.keys(newRaci).forEach(key => {
-        if (!currentValidRoles.includes(key)) {
-          delete newRaci[key];
-          addDebugLog(`🗑️ Removed role "${key}" from RACI`);
-        }
-      });
-      return { ...task, raci: newRaci };
-    });
-    const currentTasks = getValues('tasks');
-    if (JSON.stringify(updatedTasks) !== JSON.stringify(currentTasks)) {
-      setValue('tasks', updatedTasks, { shouldDirty: false });
-      addDebugLog('✅ RACI structure updated');
-    } else {
-      addDebugLog('📝 No task changes needed');
-    }
-    lastValidRolesRef.current = currentValidRoles;
-  };
-
-  // Handle role name change on blur for rename/validity
-  const handleRoleNameBlur = (index: number, e: React.FocusEvent<HTMLInputElement>) => {
-    const newName = e.target.value.trim();
-    const currentRoles = getValues('roles');
-    const oldName = currentRoles[index].name;
-    if (oldName !== newName) {
-      // If rename between valid names, migrate data
-      if (isValidRoleName(oldName) && isValidRoleName(newName) && oldName !== newName) {
-        const tasks = getValues('tasks');
-        const updatedTasks = tasks.map(task => {
-          if (task.raci[oldName]) {
-            const newRaci = { ...task.raci };
-            newRaci[newName] = newRaci[oldName];
-            delete newRaci[oldName];
-            return { ...task, raci: newRaci };
-          }
-          return task;
-        });
-        setValue('tasks', updatedTasks, { shouldDirty: false });
-        addDebugLog(`🔄 Renamed role "${oldName}" to "${newName}" in RACI`);
-      }
-      // Always sync after change, deferred to avoid loop
-      setTimeout(() => updateRaciForRoles(), 0);
-    }
-  };
+  const watchedRolesRaw = useWatch({ control, name: 'roles' });
 
   // Filter out incomplete role names to prevent spurious RACI entries
-  const watchedRoles = watchedRolesRaw.filter(role => isValidRoleName(role?.name));
+  const watchedRoles = watchedRolesRaw.filter(role => {
+    const roleName = role?.name?.trim() || '';
+    const isIncomplete = !roleName ||
+      ['R', 'A', 'C', 'I'].includes(roleName) ||
+      roleName.length < 4 ||
+      roleName.endsWith(' ') ||
+      /^\w+\s\w{1,3}$/.test(roleName) ||
+      /^\w{1,3}$/.test(roleName) ||
+      roleName.includes('New Role');
+    return !isIncomplete;
+  });
 
+  // Smart useEffect to clean up spurious entries without creating infinite loops
+  const previousRolesRef = useRef(watchedRolesRaw);
+  useEffect(() => {
+    const currentRawNames = watchedRolesRaw.map(r => r.name?.trim()).filter(Boolean).sort();
+    const previousRawNames = previousRolesRef.current.map(r => r.name?.trim()).filter(Boolean).sort();
 
+    // Only trigger cleanup if the number of roles changed (add/remove), not on every keystroke
+    if (currentRawNames.length !== previousRawNames.length) {
+      addDebugLog(`🔄 Role count changed (${previousRawNames.length} → ${currentRawNames.length}), cleaning up RACI structure`);
+      updateRaciStructure(currentRawNames);
+    }
+
+    previousRolesRef.current = watchedRolesRaw;
+  }, [watchedRolesRaw]);
+
+  // Function to update RACI structure when roles change
+  const updateRaciStructure = (newRoles: string[]) => {
+    addDebugLog(`🔧 updateRaciStructure called with roles: [${newRoles.join(', ')}]`);
+    const currentTasks = getValues('tasks');
+    addDebugLog(`📋 Current tasks count: ${currentTasks.length}`);
+
+    const updatedTasks = currentTasks.map(task => {
+      const newRaci = { ...task.raci };
+
+      // Add new roles that don't exist yet, but preserve existing values
+      newRoles.forEach(name => {
+        if (name && name.trim() && !newRaci[name]) {
+          // Check if this role exists in any task with values already
+          const existingRoleData = currentTasks.find(t => t.raci[name])?.raci[name];
+          if (existingRoleData) {
+            newRaci[name] = { ...existingRoleData };
+            addDebugLog(`➕ Preserved existing role "${name}" with current values`);
+          } else {
+            newRaci[name] = { R: false, A: false, C: false, I: false };
+            addDebugLog(`➕ Added new role "${name}" to RACI structure`);
+          }
+        }
+      });
+
+      // Remove old roles that are no longer in current roles OR are spurious/incomplete
+      Object.keys(newRaci).forEach(key => {
+        // Check if this is a spurious/incomplete role name
+        const isSpurious = !key ||
+          ['R', 'A', 'C', 'I'].includes(key) ||
+          key.length < 4 ||
+          key.endsWith(' ') ||
+          /^\w+\s\w{1,3}$/.test(key) ||
+          /^\w{1,3}$/.test(key) ||
+          key.includes('New Role') ||
+          /^\w{1,3}$/.test(key) ||
+          /^.{1,3}$/.test(key);
+
+        const shouldRemove = !newRoles.includes(key) || isSpurious;
+
+        if (shouldRemove) {
+          delete newRaci[key];
+          addDebugLog(`🗑️ Removed spurious/incomplete role "${key}" from RACI structure`);
+        }
+      });
+
+      return { ...task, raci: newRaci };
+    });
+
+    setValue('tasks', updatedTasks, { shouldDirty: false });
+    previousRolesRef.current = watchedRoles;
+    addDebugLog('✅ RACI structure update completed');
+  };
 
 
   const onSubmit = (cleanData: FormData) => {
@@ -321,7 +345,17 @@ const RACIBuilderPage: React.FC = () => {
         ...task,
         raci: Object.fromEntries(
           Object.entries(task.raci).filter(([roleName]) => {
-            return isValidRoleName(roleName) && watchedRolesRaw.some(r => r.name?.trim() === roleName);
+            const currentRoleNames = watchedRolesRaw.map(r => r.name?.trim()).filter(Boolean);
+            const isValidRole = currentRoleNames.includes(roleName);
+            const isNotSpurious = roleName &&
+              !['R', 'A', 'C', 'I'].includes(roleName) &&
+              roleName.length >= 4 &&
+              !roleName.endsWith(' ') &&
+              !/^\w+\s\w{1,3}$/.test(roleName) &&
+              !/^\w{1,3}$/.test(roleName) &&
+              !roleName.includes('New Role');
+
+            return isValidRole && isNotSpurious;
           })
         )
       }))
@@ -354,8 +388,8 @@ const RACIBuilderPage: React.FC = () => {
           addDebugLog('🎨 Starting Mermaid diagram rendering...');
           await mermaid.initialize({ startOnLoad: false, theme: 'default' });
           addDebugLog('📊 Mermaid initialized, rendering diagram...');
-          const result = await mermaid.render('mermaid-diag', mermaidCode) as unknown as { svg: string };
-          setMermaidSvg(result.svg);
+          const { svg } = await mermaid.render('mermaid-diag', mermaidCode);
+          setMermaidSvg(svg);
           addDebugLog('✅ Mermaid diagram rendered successfully');
         } catch (error) {
           addDebugLog('❌ Mermaid rendering error: ' + (error instanceof Error ? error.message : String(error)));
@@ -380,6 +414,7 @@ const RACIBuilderPage: React.FC = () => {
     // Add header row (subtle indigo for title)
     const headerRow = worksheet.addRow([headerText]);
     headerRow.font = { bold: true, color: { argb: 'FF1E40AF' }, size: 14 };
+    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E7FF' } }; // light indigo
     headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
     headerRow.eachCell((cell) => {
       cell.border = {
@@ -399,7 +434,7 @@ const RACIBuilderPage: React.FC = () => {
     headerCellsRow.alignment = { horizontal: 'center', vertical: 'middle' };
     headerCellsRow.eachCell((cell, colNumber) => {
       if (colNumber > 1) { // Role columns (skip Task column)
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD6E4FF' } }; // light blue
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF9FAFB' } }; // light gray
       } // Task column remains default white
       cell.border = {
         top: { style: 'thin', color: { argb: 'FF000000' } },
@@ -492,158 +527,92 @@ const RACIBuilderPage: React.FC = () => {
     
     const handlePDFExport = async () => {
       if (!matrixData || !projectName) return;
-    
+
+      const doc = new jsPDF();
+  
       const date = new Date().toLocaleDateString();
       const title = `Project: ${projectName} | Date: ${date}`;
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text(title, 14, 20);
+  
       const fullHeaders = matrixData.headers;
-      const fullRows = matrixData.rows;
-    
-      const numRoles = fullHeaders.length - 1; // Exclude 'Task'
-      const taskWidth = 150; // Fixed width for task column in points (A4 width ~595)
-      const roleWidth = (595 - 40 - taskWidth) / numRoles; // Margins 20 each side, approx
-    
-      const baseTableCell = {
-        borderStyle: 'solid' as const,
-        borderWidth: 1,
-        borderColor: '#000',
-        padding: 5,
-        fontSize: 8,
-      };
-    
-      const styles: any = StyleSheet.create({
-        page: {
-          flexDirection: 'column',
-          backgroundColor: '#FFFFFF',
-          padding: 20,
-        },
-        section: {
-          margin: 10,
-          padding: 10,
-        },
-        title: {
-          fontSize: 16,
-          fontWeight: 'bold',
-          marginBottom: 20,
-          textAlign: 'center',
-        },
-        tableContainer: {
-          marginTop: 20,
-          borderStyle: 'solid',
-          borderWidth: 1,
-          borderColor: '#000',
-        },
-        tableRow: {
-          flexDirection: 'row',
-        },
-        headerCell: {
-          ...baseTableCell,
-          backgroundColor: '#F9FAFB', // light gray
-          fontWeight: 'bold',
-          textAlign: 'center',
-        },
-        taskCell: {
-          width: taskWidth,
-          ...baseTableCell,
-          backgroundColor: '#FFFFFF',
-          textAlign: 'left',
-        },
-        roleCell: {
-          width: roleWidth,
-          ...baseTableCell,
-          backgroundColor: '#FFFFFF',
-          textAlign: 'center',
-        },
-        boldCell: { fontWeight: 'bold' },
-        mermaidTitle: {
-          fontSize: 12,
-          fontWeight: 'bold',
-          marginTop: 20,
-          marginBottom: 5,
-        },
-        code: {
-          fontSize: 8,
-          fontFamily: 'Courier', // Monospace if available, else default
-          backgroundColor: '#F3F4F6',
-          padding: 5,
-          borderWidth: 1,
-          borderColor: '#000',
-        },
+      const fullRows = matrixData.rows.map(row => [row.taskName, ...row.cells.map(cell => cell.value || '')]);
+  
+      // Compute max content lengths for column widths
+      const maxLengths = fullHeaders.map((_, colIndex) => {
+        let maxLen = fullHeaders[colIndex].length;
+        fullRows.forEach(rowData => {
+          const cellValue = rowData[colIndex];
+          maxLen = Math.max(maxLen, (cellValue || '').length);
+        });
+        return Math.max(30, maxLen * 5 || 10);
       });
-    
-      const getCellColor = (color?: 'R' | 'A' | 'C' | 'I') => {
-        switch (color) {
-          case 'R': return '#D1FAE5'; // light green
-          case 'A': return '#FEF3C7'; // light amber
-          case 'C': return '#D6E4FF'; // light blue
-          case 'I': return '#F3F4F6'; // light gray
-          default: return '#FFFFFF';
-        }
-      };
-    
-      const TableHeaderRow = () => (
-        <View style={styles.tableRow}>
-          {fullHeaders.map((header) => (
-            <View
-              key={header}
-              style={[
-                styles.headerCell,
-                header === 'Task' ? { width: taskWidth } : { width: roleWidth }
-              ]}
-            >
-              <Text>{header}</Text>
-            </View>
-          ))}
-        </View>
-      );
-    
-      const TableBodyRows = () => (
-        <>
-          {fullRows.map((row, rowIndex) => (
-            <View key={rowIndex} style={styles.tableRow}>
-              <View style={styles.taskCell}>
-                <Text>{row.taskName}</Text>
-              </View>
-              {row.cells.map((cell, cellIndex) => (
-                <View
-                  key={cellIndex}
-                  style={[
-                    styles.roleCell,
-                    { backgroundColor: getCellColor(cell.color) },
-                    cell.value ? styles.boldCell : {}
-                  ]}
-                >
-                  <Text>{cell.value || ''}</Text>
-                </View>
-              ))}
-            </View>
-          ))}
-        </>
-      );
-    
-      const MyDocument = () => (
-        <Document>
-          <Page size="A4" style={styles.page}>
-            <View style={styles.section}>
-              <Text style={styles.title}>{title}</Text>
-              <View style={styles.tableContainer}>
-                <TableHeaderRow />
-                <TableBodyRows />
-              </View>
-            </View>
-          </Page>
-        </Document>
-      );
-    
-      const doc = <MyDocument />;
-      const blob = await pdf(doc).toBlob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'raci-formatted.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+  
+      autoTable(doc, {
+        head: [fullHeaders],
+        body: fullRows,
+        theme: 'grid',
+        startY: 30,
+        headStyles: {
+          fillColor: [249, 250, 251], // light gray
+          textColor: [55, 65, 81], // dark gray
+          fontStyle: 'bold',
+          fontSize: 12,
+          halign: 'center',
+          valign: 'middle',
+          lineWidth: 0.5,
+          lineColor: [0, 0, 0]
+        },
+        bodyStyles: {
+          fontSize: 10,
+          halign: 'center',
+          valign: 'middle',
+          lineWidth: 0.5,
+          lineColor: [0, 0, 0]
+        },
+        columnStyles: fullHeaders.reduce((styles, _, index) => {
+          styles[index] = { cellWidth: maxLengths[index] };
+          return styles;
+        }, {} as { [key: string]: Partial<any> }),
+        didDrawCell: function (data: any) {
+          const row = data.row.index;
+          const col = data.column.index;
+          if (row === 0) { // head row: white for Task, light gray for roles
+            if (col === 0) {
+              data.cell.styles.fillColor = [255, 255, 255]; // white for Task
+            } else {
+              data.cell.styles.fillColor = [249, 250, 251]; // light gray for roles
+            }
+            data.cell.styles.fontStyle = 'bold';
+            return;
+          }
+  
+          const cellValue = fullRows[row - 1][col];
+          let fillColor = [255, 255, 255]; // white
+          if (cellValue === 'R') fillColor = [209, 250, 229]; // light green
+          else if (cellValue === 'A') fillColor = [254, 243, 199]; // light amber
+          else if (cellValue === 'C') fillColor = [214, 228, 255]; // light blue
+          else if (cellValue === 'I') fillColor = [243, 244, 246]; // light gray
+  
+          data.cell.styles.fillColor = fillColor;
+          data.cell.styles.fontStyle = cellValue !== '' ? 'bold' : 'normal';
+        },
+        margin: { top: 25, left: 14, right: 14 }
+      });
+
+      // Add Mermaid diagram as image
+      if (mermaidRef.current) {
+        const canvas = await html2canvas(mermaidRef.current, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const imgProps = doc.getImageProperties(imgData);
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        doc.addPage();
+        doc.addImage(imgData, 'PNG', 14, 30, pdfWidth - 28, pdfHeight);
+      }
+
+      doc.save('raci-formatted.pdf');
     };
 
   const handleSVGDownload = () => {
@@ -806,7 +775,6 @@ const RACIBuilderPage: React.FC = () => {
                         if (!e.target.value) {
                           e.target.placeholder = 'e.g. Developer, Project Manager, Product Owner';
                         }
-                        handleRoleNameBlur(index, e);
                       }}
                     />
                     <Button type="button" variant="outline" onClick={() => customRoleRemove(index)} size="sm">
@@ -866,7 +834,7 @@ const RACIBuilderPage: React.FC = () => {
                         }
 
                         // Check if this role already has a category selected for this task
-                        const currentAssignments = watchedTasks[index]?.raci?.[roleName];
+                        const currentAssignments = getValues(`tasks.${index}.raci.${roleName}`);
                         const hasCategorySelected = currentAssignments?.R || currentAssignments?.A || currentAssignments?.C || currentAssignments?.I;
 
                         return (
@@ -913,18 +881,20 @@ const RACIBuilderPage: React.FC = () => {
                   </div>
                 ))}
                 <Button type="button" onClick={() => {
-                  const currentRoles = getValues('roles').filter(r => isValidRoleName(r.name)).map(r => r.name!.trim());
+                  const currentRoles = getValues('roles').map(r => r.name.trim()).filter(Boolean);
                   const newRaci = Object.fromEntries(
                     currentRoles.map(roleName => [roleName, { R: false, A: false, C: false, I: false }])
                   );
                   taskAppend({ name: '', raci: newRaci });
-                  // Sync after add task if needed, but since new task has fresh raci, no need
                 }}>
                   <Plus className="h-4 w-4 mr-2" /> Add Task
                 </Button>
               </div>
 
               <div className="flex gap-2">
+                <Button type="button" variant="outline" onClick={debugFormValues}>
+                  🔍 Debug Form Values
+                </Button>
                 <Button type="submit">Generate RACI Chart</Button>
               </div>
             </form>
@@ -942,36 +912,4 @@ const RACIBuilderPage: React.FC = () => {
                     <h3 className="text-lg font-semibold mb-2">Mermaid Diagram</h3>
                     <div ref={mermaidRef} dangerouslySetInnerHTML={{ __html: mermaidSvg }} className="mermaid" />
                     <pre className="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto">{mermaidCode}</pre>
-                  </>
-                )}
-                <div className="flex gap-2 mt-4">
-                  {matrixData && (
-                    <>
-                      <Button onClick={handleRawXLSXExport}>
-                        <Download className="h-4 w-4 mr-2" /> Raw XLSX
-                      </Button>
-                      <Button onClick={handleXLSXExport}>
-                        <Download className="h-4 w-4 mr-2" /> Formatted XLSX
-                      </Button>
-                      <Button onClick={handlePDFExport}>
-                        <Download className="h-4 w-4 mr-2" /> Formatted PDF
-                      </Button>
-                    </>
-                  )}
-                  {mermaidSvg && (
-                    <Button onClick={handleSVGDownload}>
-                      <Download className="h-4 w-4 mr-2" /> Download SVG
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )}
-
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-};
-
-export default RACIBuilderPage;
+                 
