@@ -127,7 +127,7 @@ const RACIBuilderPage: React.FC = () => {
   });
 
   // Override role functions to add logging and sync RACI
-  const customRoleAppend = (value: any) => {
+  const customRoleAppend = (value: RoleField) => {
     addDebugLog(`➕ Adding new role: ${JSON.stringify(value)}`);
     roleAppend(value);
     // Sync RACI after append
@@ -229,7 +229,7 @@ const RACIBuilderPage: React.FC = () => {
     cleanData.tasks.forEach((task) => {
       addDebugLog(`📋 Task "${task.name}" RACI assignments:`);
       Object.entries(task.raci).forEach(([roleName, raciValues]) => {
-        const assignments = Object.entries(raciValues).filter(([_, value]) => value === true);
+        const assignments = Object.entries(raciValues).filter(([, value]) => value === true);
         addDebugLog(`  ${roleName}: ${assignments.map(([key]) => key).join(', ') || 'none'}`);
       });
     });
@@ -291,7 +291,7 @@ const RACIBuilderPage: React.FC = () => {
   };
 
   // Safe JSON stringify that handles circular references
-  const safeStringify = (obj: any) => {
+  const safeStringify = (obj: unknown) => {
     try {
       return JSON.stringify(obj, (key, value) => {
         // Skip properties that might cause circular references
@@ -510,7 +510,7 @@ const RACIBuilderPage: React.FC = () => {
         fontSize: 8,
       };
     
-      const styles: any = StyleSheet.create({
+      const styles = StyleSheet.create({
         page: {
           flexDirection: 'column',
           backgroundColor: '#FFFFFF',
@@ -674,7 +674,7 @@ const RACIBuilderPage: React.FC = () => {
       const otherCategories = ['R', 'A', 'C', 'I'].filter(c => c !== category);
       otherCategories.forEach(otherCat => {
         const otherPath = `tasks.${taskIndex}.raci.${roleName}.${otherCat}`;
-        setValue(otherPath as any, false, {
+        setValue(otherPath, false, {
           shouldValidate: false,
           shouldDirty: true
         });
@@ -683,14 +683,14 @@ const RACIBuilderPage: React.FC = () => {
     }
 
     const path = `tasks.${taskIndex}.raci.${roleName}.${category}`;
-    setValue(path as any, checked, {
+    setValue(path, checked, {
       shouldValidate: false,
       shouldDirty: true
     });
 
     // Verify the value was set correctly
     setTimeout(() => {
-      const currentValue = getValues(path as any);
+      const currentValue = getValues(path);
       addDebugLog(`✅ ${roleName}.${category} set to: ${currentValue} (expected: ${checked})`);
     }, 0);
   };
