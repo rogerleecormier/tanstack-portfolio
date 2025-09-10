@@ -56,7 +56,7 @@ const tools: Tool[] = [
     icon: Wrench,
     url: '/tools/priority-matrix',
     features: ['Eisenhower Matrix', 'Quadrant Visualization', 'Score-based Prioritization', 'XLSX Export'],
-    status: 'coming-soon' as const,
+    status: 'active' as const,
   },
   {
     id: 'gantt-builder',

@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Plus, Trash2, Download, Info } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Plus, Trash2, Download, Target, Users } from 'lucide-react';
 import { MatrixTable } from '@/components/MatrixTable';
 import mermaid from 'mermaid';
 import * as ExcelJS from 'exceljs';
 import { Document, Page, StyleSheet, Text, View, pdf } from '@react-pdf/renderer';
+import { H1, H3, P } from '@/components/ui/typography';
 
 interface MatrixCell {
   value: string;
@@ -696,54 +696,67 @@ const RACIBuilderPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <Card className="border-teal-200 bg-white shadow-sm">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <CardTitle className="text-2xl font-semibold text-primary">RACI Chart Builder</CardTitle>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="p-1 h-6 w-6 focus:ring-teal-500">
-                      <Info className="h-4 w-4 text-teal-600" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-sm bg-white border-teal-200 text-gray-600">
-                    <div className="space-y-2">
-                      <div>
-                        <p className="font-semibold text-primary">RACI Categories:</p>
-                        <ul className="list-disc list-inside ml-2 space-y-1 text-sm text-gray-600">
-                          <li><strong className="text-primary">R (Responsible):</strong> Person who does the work</li>
-                          <li><strong className="text-primary">A (Accountable):</strong> Person ultimately answerable (one per task)</li>
-                          <li><strong className="text-primary">C (Consulted):</strong> People whose opinions are sought</li>
-                          <li><strong className="text-primary">I (Informed):</strong> People who need to be kept in the loop</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-primary">Validation Rules:</p>
-                        <ul className="list-disc list-inside ml-2 space-y-1 text-sm text-gray-600">
-                          <li>Every task must have <strong className="text-primary">exactly one</strong> Accountable person</li>
-                          <li><strong className="text-primary">Each role can only be assigned one RACI category per task</strong></li>
-                          <li>All role names must be unique</li>
-                          <li>All task names must be unique</li>
-                        </ul>
-                      </div>
-                      <div className="bg-teal-50 p-2 rounded border border-teal-200 text-xs text-gray-600">
-                        <strong className="text-primary">Example:</strong> For a task, you might assign:<br/>
-                        Developer: R (Responsible)<br/>
-                        Project Manager: A (Accountable)<br/>
-                        Product Owner: C (Consulted)<br/>
-                        Team Lead: I (Informed)
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950">
+      {/* Targeting Theme Header */}
+      <div className="relative overflow-hidden border-b border-teal-200 dark:border-teal-800">
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10"></div>
+
+        <div className="relative px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            {/* Icon and Title with Targeting Theme */}
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Users className="h-7 w-7 text-white" />
+                </div>
+                {/* Targeting indicator dots */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+              </div>
+              <div>
+                <H1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl" style={{fontWeight: 700}}>
+                  <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                    RACI Chart Builder
+                  </span>
+                </H1>
+                <div className="h-1 w-20 bg-gradient-to-r from-teal-500 to-blue-500 mx-auto mt-2 rounded-full"></div>
+              </div>
             </div>
-            <p className="text-primary">Define roles and tasks to generate a RACI matrix for your projects.</p>
-          </CardHeader>
-          <CardContent className="space-y-6">
+
+            {/* Description with Targeting Language */}
+            <P className="text-lg leading-7 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Strategic team alignment using RACI methodology.
+              <span className="font-medium text-teal-700 dark:text-teal-300"> Target responsibilities </span>
+              with precision role assignments for project success.
+            </P>
+
+            {/* Quick Stats with Targeting Theme */}
+            <div className="flex justify-center gap-6 mt-6">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                <span>Role Clarity</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span>Accountability</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <span>Team Alignment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-teal-200/50 dark:border-teal-800/50 shadow-xl">
+          <CardContent className="p-8 space-y-8">
             {/* Validation Errors Summary */}
             {Object.keys(errors).length > 0 && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -782,66 +795,108 @@ const RACIBuilderPage: React.FC = () => {
               </div>
             )}
 
-            <form onSubmit={handleFormSubmit} className="space-y-6">
-              <div>
-                <Label htmlFor="projectName" className="text-primary">Project Name</Label>
-                <Input id="projectName" {...register('projectName')} className="focus:ring-teal-500 focus:border-teal-500" />
-                {errors.projectName && <p className="text-red-500 text-sm">{errors.projectName.message}</p>}
+            <form onSubmit={handleFormSubmit} className="space-y-8">
+              {/* Project Name Section */}
+              <div className="space-y-3">
+                <H3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <div className="w-2 h-2 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full"></div>
+                  Project Details
+                </H3>
+                <div className="space-y-2">
+                  <Label htmlFor="projectName" className="text-sm font-medium text-teal-700 dark:text-teal-300">
+                    Project Name
+                  </Label>
+                  <Input
+                    id="projectName"
+                    {...register('projectName')}
+                    className="border-teal-200 dark:border-teal-700 focus:border-teal-500 focus:ring-teal-500/20"
+                    placeholder="Enter your project name"
+                  />
+                  {errors.projectName && <p className="text-red-500 text-sm mt-1">{errors.projectName.message}</p>}
+                </div>
               </div>
 
-              <div>
-                <h3 className="text-lg font-semibold text-primary mb-2">Roles</h3>
-                {roleFields.map((field, index) => (
-                  <div key={field.id} className="border border-teal-200 p-4 mb-4 rounded-lg flex gap-2 items-center bg-teal-50">
-                    <Input
-                      placeholder="e.g. Developer, Project Manager, Product Owner"
-                      {...register(`roles.${index}.name` as const)}
-                      className="flex-1 text-gray-600 placeholder:text-teal-500 focus:placeholder:text-transparent focus:ring-teal-500 focus:border-teal-500"
-                      onFocus={(e) => {
-                        if (e.target.placeholder && !e.target.value) {
-                          e.target.placeholder = '';
-                        }
-                      }}
-                      onBlur={(e) => {
-                        if (!e.target.value) {
-                          e.target.placeholder = 'e.g. Developer, Project Manager, Product Owner';
-                        }
-                        handleRoleNameBlur(index, e);
-                      }}
-                    />
-                    <Button type="button" variant="outline" onClick={() => customRoleRemove(index)} size="sm" className="focus:ring-teal-500">
-                      <Trash2 className="h-4 w-4 text-teal-600" />
-                    </Button>
-                  </div>
-                ))}
+              {/* Roles Section */}
+              <div className="space-y-3">
+                <H3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                  Team Roles
+                </H3>
+                <div className="space-y-4">
+                  {roleFields.map((field, index) => (
+                    <div key={field.id} className="bg-gradient-to-r from-slate-50 to-teal-50 dark:from-slate-800 dark:to-teal-900/30 border border-teal-200/50 dark:border-teal-700/50 p-6 rounded-xl shadow-sm">
+                      <div className="flex gap-2 items-center">
+                        <Input
+                          placeholder="e.g. Developer, Project Manager, Product Owner"
+                          {...register(`roles.${index}.name` as const)}
+                          className="flex-1 border-teal-200 dark:border-teal-700 focus:border-teal-500 focus:ring-teal-500/20 text-gray-600 dark:text-gray-300 placeholder:text-teal-500 focus:placeholder:text-transparent"
+                          onFocus={(e) => {
+                            if (e.target.placeholder && !e.target.value) {
+                              e.target.placeholder = '';
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (!e.target.value) {
+                              e.target.placeholder = 'e.g. Developer, Project Manager, Product Owner';
+                            }
+                            handleRoleNameBlur(index, e);
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => customRoleRemove(index)}
+                          size="sm"
+                          className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
                 {errors.roles && <p className="text-red-500 text-sm">{errors.roles.message}</p>}
-                <Button type="button" onClick={() => {
-                  addDebugLog('🔘 Add Role button clicked');
-                  customRoleAppend({ name: '' });
-                }} className="mb-4 focus:ring-teal-500">
-                  <Plus className="h-4 w-4 mr-2 text-teal-600" /> Add Role
+                <Button
+                  type="button"
+                  onClick={() => {
+                    addDebugLog('🔘 Add Role button clicked');
+                    customRoleAppend({ name: '' });
+                  }}
+                  className="w-full bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  <Plus className="h-4 w-4 mr-2" /> Add Team Role
                 </Button>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-primary mb-2">Tasks</h3>
-                {taskFields.map((field, index) => (
-                  <div key={field.id} className="border border-teal-200 p-4 mb-4 rounded-lg bg-white">
-                    <div className="flex gap-2 items-center mb-2">
-                      <Input
-                        placeholder="Task Name"
-                        {...register(`tasks.${index}.name` as const)}
-                        className="flex-1 focus:ring-teal-500 focus:border-teal-500"
-                      />
-                      <Button type="button" variant="outline" onClick={() => taskRemove(index)} size="sm" className="focus:ring-teal-500">
-                        <Trash2 className="h-4 w-4 text-teal-600" />
-                      </Button>
-                    </div>
-                    {errors.tasks?.[index]?.name && <p className="text-red-500 text-sm">{errors.tasks?.[index]?.name?.message}</p>}
-                    {errors.tasks?.[index] && <p className="text-red-500 text-sm">{errors.tasks[index]?.message}</p>}
-                    <div className="space-y-2">
-                      <div className="text-xs text-gray-600 mb-2 bg-teal-50 p-2 rounded border border-teal-200">
-                        💡 <strong className="text-primary">RACI Rule:</strong> Select only ONE category per role (R/A/C/I)
+                <H3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                  Project Tasks
+                </H3>
+                <div className="space-y-4">
+                  {taskFields.map((field, index) => (
+                    <div key={field.id} className="bg-gradient-to-r from-white to-slate-50 dark:from-slate-800 dark:to-slate-700/50 border border-teal-200/50 dark:border-teal-700/50 p-6 rounded-xl shadow-sm">
+                      <div className="flex gap-2 items-center mb-4">
+                        <Input
+                          placeholder="Task Name"
+                          {...register(`tasks.${index}.name` as const)}
+                          className="flex-1 border-teal-200 dark:border-teal-700 focus:border-teal-500 focus:ring-teal-500/20"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => taskRemove(index)}
+                          size="sm"
+                          className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {errors.tasks?.[index]?.name && <p className="text-red-500 text-sm">{errors.tasks?.[index]?.name?.message}</p>}
+                      {errors.tasks?.[index] && <p className="text-red-500 text-sm">{errors.tasks[index]?.message}</p>}
+                      <div className="space-y-2">
+                        <div className="text-xs text-gray-600 mb-2 bg-teal-50 dark:bg-teal-900/20 p-2 rounded border border-teal-200 dark:border-teal-700">
+                          💡 <strong className="text-primary">RACI Rule:</strong> Select only ONE category per role (R/A/C/I)
                       </div>
                       {roleFields.map((roleField, roleIndex) => {
                         const role = watchedRolesRaw[roleIndex]; // Use raw data for rendering all roles
@@ -913,58 +968,92 @@ const RACIBuilderPage: React.FC = () => {
                           </div>
                         );
                       })}
+                      </div>
                     </div>
-                  </div>
-                ))}
-                <Button type="button" onClick={() => {
-                  const currentRoles = getValues('roles').filter(r => isValidRoleName(r.name)).map(r => r.name!.trim());
-                  const newRaci = Object.fromEntries(
-                    currentRoles.map(roleName => [roleName, { R: false, A: false, C: false, I: false }])
-                  );
-                  taskAppend({ name: '', raci: newRaci });
-                  // Sync after add task if needed, but since new task has fresh raci, no need
-                }} className="focus:ring-teal-500">
-                  <Plus className="h-4 w-4 mr-2 text-teal-600" /> Add Task
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    const currentRoles = getValues('roles').filter(r => isValidRoleName(r.name)).map(r => r.name!.trim());
+                    const newRaci = Object.fromEntries(
+                      currentRoles.map(roleName => [roleName, { R: false, A: false, C: false, I: false }])
+                    );
+                    taskAppend({ name: '', raci: newRaci });
+                    // Sync after add task if needed, but since new task has fresh raci, no need
+                  }}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  <Plus className="h-4 w-4 mr-2" /> Add Project Task
                 </Button>
               </div>
 
-              <div className="flex gap-2">
-                <Button type="submit" className="focus:ring-teal-500">Generate RACI Chart</Button>
+              <div className="flex justify-center pt-4">
+                <Button
+                  type="submit"
+                  className="bg-gradient-to-r from-teal-600 to-blue-700 hover:from-teal-700 hover:to-blue-800 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                >
+                  <Target className="h-5 w-5 mr-2" />
+                  Generate RACI Chart
+                </Button>
               </div>
             </form>
 
             {(matrixData || mermaidSvg) && (
-              <div className="mt-8">
+              <div className="mt-12 pt-8 border-t border-teal-200/50 dark:border-teal-700/50">
+                <div className="text-center mb-8">
+                  <H3 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center justify-center gap-2 mb-2">
+                    <div className="w-3 h-3 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full"></div>
+                    Strategic RACI Matrix
+                  </H3>
+                  <P className="text-sm text-gray-600 dark:text-gray-400">
+                    RACI methodology visualization with targeted responsibility assignments
+                  </P>
+                </div>
                 {matrixData && (
-                  <>
-                    <h3 className="text-lg font-semibold text-primary mb-2">RACI Matrix</h3>
+                  <div className="mb-8">
                     <MatrixTable data={matrixData} />
-                  </>
+                  </div>
                 )}
                 {mermaidSvg && (
-                  <>
-                    <h3 className="text-lg font-semibold text-primary mb-2">Mermaid Diagram</h3>
-                    <div ref={mermaidRef} dangerouslySetInnerHTML={{ __html: mermaidSvg }} className="mermaid bg-white rounded border border-teal-200 p-4" />
-                    <pre className="mt-4 p-4 bg-teal-50 rounded border border-teal-200 text-sm overflow-auto text-gray-600">{mermaidCode}</pre>
-                  </>
+                  <div className="mb-8">
+                    <H3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Relationship Flowchart</H3>
+                    <div ref={mermaidRef} dangerouslySetInnerHTML={{ __html: mermaidSvg }} className="mermaid bg-white dark:bg-slate-800 rounded border border-teal-200 dark:border-teal-700 p-4" />
+                    <pre className="mt-4 p-4 bg-teal-50 dark:bg-slate-800/50 rounded border border-teal-200 dark:border-teal-700 text-sm overflow-auto text-gray-600 dark:text-gray-300">{mermaidCode}</pre>
+                  </div>
                 )}
-                <div className="flex gap-2 mt-4">
+                <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
                   {matrixData && (
                     <>
-                      <Button onClick={handleRawXLSXExport} className="focus:ring-teal-500">
-                        <Download className="h-4 w-4 mr-2 text-teal-600" /> Raw XLSX
+                      <Button
+                        onClick={handleRawXLSXExport}
+                        variant="outline"
+                        className="border-teal-200 text-teal-700 hover:bg-teal-50 hover:border-teal-300 dark:border-teal-700 dark:text-teal-300 dark:hover:bg-teal-900/20"
+                      >
+                        <Download className="h-4 w-4 mr-2" /> Export Raw XLSX
                       </Button>
-                      <Button onClick={handleXLSXExport} className="focus:ring-teal-500">
-                        <Download className="h-4 w-4 mr-2 text-teal-600" /> Formatted XLSX
+                      <Button
+                        onClick={handleXLSXExport}
+                        className="bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200"
+                      >
+                        <Download className="h-4 w-4 mr-2" /> Export Matrix XLSX
                       </Button>
-                      <Button onClick={handlePDFExport} className="focus:ring-teal-500">
-                        <Download className="h-4 w-4 mr-2 text-teal-600" /> Formatted PDF
+                      <Button
+                        onClick={handlePDFExport}
+                        variant="outline"
+                        className="border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/20"
+                      >
+                        <Download className="h-4 w-4 mr-2" /> Export Matrix PDF
                       </Button>
                     </>
                   )}
                   {mermaidSvg && (
-                    <Button onClick={handleSVGDownload} className="focus:ring-teal-500">
-                      <Download className="h-4 w-4 mr-2 text-teal-600" /> Download SVG
+                    <Button
+                      onClick={handleSVGDownload}
+                      variant="outline"
+                      className="border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20"
+                    >
+                      <Download className="h-4 w-4 mr-2" /> Download Flowchart SVG
                     </Button>
                   )}
                 </div>
