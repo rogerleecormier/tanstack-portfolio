@@ -127,7 +127,7 @@ const RACIBuilderPage: React.FC = () => {
   });
 
   // Override role functions to add logging and sync RACI
-  const customRoleAppend = (value: RoleField) => {
+  const customRoleAppend = (value: { name: string }) => {
     addDebugLog(`➕ Adding new role: ${JSON.stringify(value)}`);
     roleAppend(value);
     // Sync RACI after append
@@ -674,7 +674,7 @@ const RACIBuilderPage: React.FC = () => {
       const otherCategories = ['R', 'A', 'C', 'I'].filter(c => c !== category);
       otherCategories.forEach(otherCat => {
         const otherPath = `tasks.${taskIndex}.raci.${roleName}.${otherCat}`;
-        setValue(otherPath, false, {
+        setValue(otherPath as any, false, {
           shouldValidate: false,
           shouldDirty: true
         });
@@ -683,14 +683,14 @@ const RACIBuilderPage: React.FC = () => {
     }
 
     const path = `tasks.${taskIndex}.raci.${roleName}.${category}`;
-    setValue(path, checked, {
+    setValue(path as any, checked, {
       shouldValidate: false,
       shouldDirty: true
     });
 
     // Verify the value was set correctly
     setTimeout(() => {
-      const currentValue = getValues(path);
+      const currentValue = getValues(path as any);
       addDebugLog(`✅ ${roleName}.${category} set to: ${currentValue} (expected: ${checked})`);
     }, 0);
   };
