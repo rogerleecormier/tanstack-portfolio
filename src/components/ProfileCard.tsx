@@ -1,6 +1,6 @@
-import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import React from 'react';
 
 interface ProfileCardProps {
   name: string;
@@ -23,21 +23,21 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
   badges,
 }) => {
   return (
-    <Card className='overflow-hidden max-w-4xl mx-auto'>
+    <Card className='mx-auto max-w-4xl overflow-hidden'>
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-6'>
-          <div className='flex-shrink-0'>
+          <div className='shrink-0'>
             <img
               src={imageUrl}
               alt={imageAlt}
-              className='w-24 h-24 rounded-full object-cover border-3 border-teal-200 shadow-lg'
+              className='size-24 rounded-full border-[3px] border-teal-200 object-cover shadow-lg'
             />
           </div>
-          <div className='flex-1 min-w-0'>
-            <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 break-words'>
+          <div className='min-w-0 flex-1'>
+            <h2 className='mb-2 break-words text-2xl font-bold text-gray-900 dark:text-gray-100'>
               {name}
             </h2>
-            <p className='text-lg text-teal-600 dark:text-teal-400 font-medium mb-3 break-words'>
+            <p className='mb-3 break-words text-lg font-medium text-teal-600 dark:text-teal-400'>
               {title}
             </p>
             <div className='flex flex-wrap gap-2'>
@@ -55,7 +55,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <p className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words overflow-wrap-break-word whitespace-normal'>
+        <p className='overflow-wrap-break-word whitespace-normal break-words text-base leading-relaxed text-gray-600 dark:text-gray-300'>
           {description}
         </p>
       </CardContent>

@@ -399,29 +399,29 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
     return (
       <Button
         onClick={() => setShowAssistant(true)}
-        className='fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 shadow-lg bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700'
+        className='fixed bottom-6 right-6 z-50 size-14 rounded-full bg-gradient-to-r from-teal-500 to-blue-600 shadow-lg hover:from-teal-600 hover:to-blue-700'
       >
-        <Brain className='w-6 h-6 text-white' />
+        <Brain className='size-6 text-white' />
       </Button>
     );
   }
 
   return (
-    <div className='fixed bottom-6 right-6 z-50 w-96 max-h-[600px] overflow-hidden'>
-      <Card className='shadow-2xl border border-gray-200 bg-white/95 backdrop-blur-sm'>
+    <div className='fixed bottom-6 right-6 z-50 max-h-[600px] w-96 overflow-hidden'>
+      <Card className='border border-gray-200 bg-white/95 shadow-2xl backdrop-blur-sm'>
         <CardHeader className='pb-3'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
-              <Brain className='w-5 h-5 text-teal-600' />
+              <Brain className='size-5 text-teal-600' />
               <CardTitle className='text-lg'>Site Assistant</CardTitle>
             </div>
             <Button
               variant='ghost'
               size='sm'
               onClick={() => setShowAssistant(false)}
-              className='h-8 w-8 p-0'
+              className='size-8 p-0'
             >
-              <X className='w-4 h-4' />
+              <X className='size-4' />
             </Button>
           </div>
           <CardDescription>
@@ -430,7 +430,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className='space-y-4 max-h-[400px] overflow-y-auto'>
+        <CardContent className='max-h-[400px] space-y-4 overflow-y-auto'>
           {/* Query Input */}
           <div className='space-y-2'>
             <Textarea
@@ -442,16 +442,16 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
             <Button
               onClick={handleQuerySubmit}
               disabled={isAnalyzing || !userQuery.trim()}
-              className='w-full brand-button-primary'
+              className='brand-button-primary w-full'
             >
               {isAnalyzing ? (
                 <>
-                  <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+                  <div className='mr-2 size-4 animate-spin rounded-full border-b-2 border-white'></div>
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <Sparkles className='w-4 h-4 mr-2' />
+                  <Sparkles className='mr-2 size-4' />
                   Get Insights
                 </>
               )}
@@ -461,7 +461,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
           {/* Recommendations */}
           {recommendations.length > 0 && (
             <div className='space-y-3'>
-              <h4 className='font-medium text-sm text-gray-700 dark:text-gray-300'>
+              <h4 className='text-sm font-medium text-gray-700 dark:text-gray-300'>
                 Recommendations
               </h4>
               {recommendations.map((rec, index) => {
@@ -469,13 +469,13 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 return (
                   <div
                     key={index}
-                    className='p-3 border rounded-lg brand-bg-primary dark:bg-teal-50/20'
+                    className='brand-bg-primary rounded-lg border p-3 dark:bg-teal-50/20'
                   >
                     <div className='flex items-start gap-3'>
-                      <IconComponent className='w-5 h-5 text-teal-600 mt-0.5' />
+                      <IconComponent className='mt-0.5 size-5 text-teal-600' />
                       <div className='flex-1'>
-                        <div className='flex items-center gap-2 mb-2'>
-                          <h5 className='font-medium text-sm'>{rec.title}</h5>
+                        <div className='mb-2 flex items-center gap-2'>
+                          <h5 className='text-sm font-medium'>{rec.title}</h5>
                           <Badge
                             variant='secondary'
                             className={`text-xs ${getConfidenceColor(rec.confidence)}`}
@@ -489,7 +489,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                             {rec.type}
                           </Badge>
                         </div>
-                        <p className='text-xs text-gray-600 dark:text-gray-400 mb-3'>
+                        <p className='mb-3 text-xs text-gray-600 dark:text-gray-400'>
                           {rec.description}
                         </p>
                         <div className='flex flex-wrap gap-1'>
@@ -498,7 +498,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                               variant='outline'
                               size='sm'
                               onClick={() => handleItemSelect('', rec)}
-                              className='text-xs h-6 px-2'
+                              className='h-6 px-2 text-xs'
                             >
                               {rec.contentType === 'blog'
                                 ? 'Read Article'
@@ -507,7 +507,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                                   : rec.contentType === 'project'
                                     ? 'View Project'
                                     : 'View Content'}
-                              <ArrowRight className='w-3 h-3 ml-1' />
+                              <ArrowRight className='ml-1 size-3' />
                             </Button>
                           ) : (
                             rec.relatedItems.map(itemSlug => (
@@ -516,7 +516,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                                 variant='outline'
                                 size='sm'
                                 onClick={() => handleItemSelect(itemSlug)}
-                                className='text-xs h-6 px-2'
+                                className='h-6 px-2 text-xs'
                               >
                                 {itemSlug === 'blog'
                                   ? 'Read Blog'
@@ -529,7 +529,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                                           .replace(/\b\w/g, l =>
                                             l.toUpperCase()
                                           )}
-                                <ArrowRight className='w-3 h-3 ml-1' />
+                                <ArrowRight className='ml-1 size-3' />
                               </Button>
                             ))
                           )}
@@ -543,8 +543,8 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
           )}
 
           {/* Quick Actions */}
-          <div className='pt-2 border-t'>
-            <h4 className='font-medium text-sm text-gray-700 dark:text-gray-300 mb-2'>
+          <div className='border-t pt-2'>
+            <h4 className='mb-2 text-sm font-medium text-gray-700 dark:text-gray-300'>
               Quick Actions
             </h4>
             <div className='grid grid-cols-2 gap-2'>
@@ -554,7 +554,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 onClick={() =>
                   setUserQuery('I need help with DevOps and automation')
                 }
-                className='text-xs h-8'
+                className='h-8 text-xs'
               >
                 DevOps Help
               </Button>
@@ -564,7 +564,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 onClick={() =>
                   setUserQuery('Show me your blog posts about automation')
                 }
-                className='text-xs h-8'
+                className='h-8 text-xs'
               >
                 Read Blog
               </Button>
@@ -574,7 +574,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 onClick={() =>
                   setUserQuery('Tell me about your leadership experience')
                 }
-                className='text-xs h-8'
+                className='h-8 text-xs'
               >
                 Leadership
               </Button>
@@ -582,7 +582,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 variant='outline'
                 size='sm'
                 onClick={() => setUserQuery('How can I contact you?')}
-                className='text-xs h-8'
+                className='h-8 text-xs'
               >
                 Contact
               </Button>

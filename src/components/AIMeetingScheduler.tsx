@@ -81,12 +81,12 @@ export function AIMeetingScheduler({
     return (
       <Card className={`border-l-4 border-l-teal-500 ${className}`}>
         <CardContent className='pt-6'>
-          <div className='text-center py-6'>
-            <AlertCircle className='h-16 w-16 text-teal-500 mx-auto mb-4' />
-            <h3 className='text-xl font-semibold text-teal-900 mb-2'>
+          <div className='py-6 text-center'>
+            <AlertCircle className='mx-auto mb-4 size-16 text-teal-500' />
+            <h3 className='mb-2 text-xl font-semibold text-teal-900'>
               Scheduler Error
             </h3>
-            <p className='text-teal-600 mb-4'>{error}</p>
+            <p className='mb-4 text-teal-600'>{error}</p>
             <Button
               onClick={() => window.location.reload()}
               variant='outline'
@@ -104,7 +104,7 @@ export function AIMeetingScheduler({
     <Card className={`border-l-4 border-l-teal-500 ${className}`}>
       <CardHeader className='pb-3'>
         <CardTitle className='flex items-center gap-2 text-lg'>
-          <div className='w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center'>
+          <div className='flex size-8 items-center justify-center rounded-full bg-teal-100'>
             📅
           </div>
           Recommended Meeting
@@ -116,7 +116,7 @@ export function AIMeetingScheduler({
 
       <CardContent className='space-y-4'>
         {/* Meeting Recommendation */}
-        <div className='p-3 bg-teal-50 rounded-lg border border-teal-200'>
+        <div className='rounded-lg border border-teal-200 bg-teal-50 p-3'>
           <p className='text-sm text-teal-800'>
             <strong>Recommendation:</strong> Based on your inquiry, I recommend
             scheduling a <strong>{analysis.meetingDuration}</strong>{' '}
@@ -126,9 +126,9 @@ export function AIMeetingScheduler({
         </div>
 
         {/* Meeting Details */}
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>
+            <label className='mb-2 block text-sm font-medium text-gray-700'>
               Date
             </label>
             <input
@@ -141,18 +141,18 @@ export function AIMeetingScheduler({
                 setSelectedDate(date);
               }}
               min={format(new Date(), 'yyyy-MM-dd')}
-              className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500'
+              className='w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500'
             />
           </div>
 
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>
+            <label className='mb-2 block text-sm font-medium text-gray-700'>
               Time
             </label>
             <select
               value={selectedTime}
               onChange={e => setSelectedTime(e.target.value)}
-              className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500'
+              className='w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500'
             >
               {generateTimeSlots().map(slot => (
                 <option key={slot} value={slot}>
@@ -164,7 +164,7 @@ export function AIMeetingScheduler({
         </div>
 
         {/* Meeting Summary */}
-        <div className='p-3 bg-gray-50 rounded-lg'>
+        <div className='rounded-lg bg-gray-50 p-3'>
           <div className='grid grid-cols-2 gap-4 text-sm'>
             <div>
               <span className='text-gray-600'>Duration:</span>
@@ -209,13 +209,13 @@ export function AIMeetingScheduler({
 
         {/* Timezone Info */}
         <div className='flex items-center gap-2 text-sm text-gray-600'>
-          <MapPin className='w-4 h-4' />
+          <MapPin className='size-4' />
           <span>Your timezone: {userTimezone}</span>
         </div>
 
         {/* Instructions */}
-        <div className='text-center p-3 bg-teal-50 rounded-lg border border-teal-200'>
-          <p className='text-sm text-teal-800 mb-2'>
+        <div className='rounded-lg border border-teal-200 bg-teal-50 p-3 text-center'>
+          <p className='mb-2 text-sm text-teal-800'>
             <strong>Use the meeting scheduler above</strong> to select your
             preferred date and time, then use the button below to schedule your
             meeting.

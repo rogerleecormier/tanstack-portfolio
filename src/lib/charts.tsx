@@ -80,7 +80,7 @@ export function ChartRenderer({ data }: ChartRendererProps) {
   };
 
   return (
-    <div className='w-full h-64'>
+    <div className='h-64 w-full'>
       <ResponsiveContainer width='100%' height='100%'>
         {renderChart()}
       </ResponsiveContainer>

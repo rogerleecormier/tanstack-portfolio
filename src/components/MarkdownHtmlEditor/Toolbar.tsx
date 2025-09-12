@@ -29,27 +29,27 @@ export function Toolbar({
   onOrderedList,
 }: ToolbarProps) {
   return (
-    <div className='flex items-center gap-1 p-2 border-b'>
+    <div className='flex items-center gap-1 border-b p-2'>
       <Button variant='ghost' size='sm' onClick={onBold}>
-        <Bold className='h-4 w-4' />
+        <Bold className='size-4' />
       </Button>
       <Button variant='ghost' size='sm' onClick={onItalic}>
-        <Italic className='h-4 w-4' />
+        <Italic className='size-4' />
       </Button>
       <Button variant='ghost' size='sm' onClick={onStrike}>
-        <Strikethrough className='h-4 w-4' />
+        <Strikethrough className='size-4' />
       </Button>
       <Button variant='ghost' size='sm' onClick={onCode}>
-        <Code className='h-4 w-4' />
+        <Code className='size-4' />
       </Button>
       <Button variant='ghost' size='sm' onClick={onLink}>
-        <Link className='h-4 w-4' />
+        <Link className='size-4' />
       </Button>
       <Button variant='ghost' size='sm' onClick={onList}>
-        <List className='h-4 w-4' />
+        <List className='size-4' />
       </Button>
       <Button variant='ghost' size='sm' onClick={onOrderedList}>
-        <ListOrdered className='h-4 w-4' />
+        <ListOrdered className='size-4' />
       </Button>
     </div>
   );

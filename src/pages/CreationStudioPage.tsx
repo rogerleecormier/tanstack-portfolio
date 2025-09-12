@@ -466,16 +466,16 @@ export function CreationStudioPage() {
   }, [anyModalOpen, scrollbarWidth]);
 
   return (
-    <div className='flex flex-col min-h-0 h-full bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
+    <div className='flex h-full min-h-0 flex-col bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
       {/* Enhanced Header with Brand Theme */}
-      <div className='relative border-b border-teal-200 dark:border-teal-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm'>
+      <div className='relative border-b border-teal-200 bg-white/80 backdrop-blur-sm dark:border-teal-800 dark:bg-slate-900/80'>
         <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
-        <div className='relative p-4 flex items-center justify-between'>
+        <div className='relative flex items-center justify-between p-4'>
           <div className='flex flex-col gap-2'>
             {/* Enhanced Title with Targeting Theme */}
             <div className='flex items-center gap-4'>
-              <div className='p-3 bg-gradient-to-br from-teal-600 to-blue-600 rounded-xl shadow-lg'>
-                <FileText className='h-6 w-6 text-white' />
+              <div className='rounded-xl bg-gradient-to-br from-teal-600 to-blue-600 p-3 shadow-lg'>
+                <FileText className='size-6 text-white' />
               </div>
               <div>
                 <h1
@@ -484,26 +484,26 @@ export function CreationStudioPage() {
                 >
                   Content Creation Studio
                 </h1>
-                <div className='h-1 w-32 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 rounded-full mt-1'></div>
+                <div className='mt-1 h-1 w-32 rounded-full bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600'></div>
               </div>
             </div>
             {/* Enhanced File Status - Always present to prevent layout shifts */}
-            <div className='flex items-center gap-2 min-h-[20px]'>
+            <div className='flex min-h-[20px] items-center gap-2'>
               {currentFile ? (
                 <>
-                  <div className='w-1.5 h-1.5 bg-orange-500 rounded-full'></div>
+                  <div className='size-1.5 rounded-full bg-orange-500'></div>
                   <p className='text-sm text-slate-600 dark:text-slate-400'>
                     <span className='font-medium'>Currently Editing:</span>{' '}
                     {currentFile}{' '}
                     {isDirty && (
-                      <span className='text-orange-600 dark:text-orange-400 font-medium'>
+                      <span className='font-medium text-orange-600 dark:text-orange-400'>
                         • Unsaved changes
                       </span>
                     )}
                   </p>
                 </>
               ) : (
-                <div className='w-1.5 h-1.5 bg-slate-300 rounded-full'></div>
+                <div className='size-1.5 rounded-full bg-slate-300'></div>
               )}
             </div>
           </div>
@@ -537,9 +537,9 @@ export function CreationStudioPage() {
                       setIsDirty(true);
                     }
                   }}
-                  className='border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200'
+                  className='border-slate-600 text-slate-600 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800'
                 >
-                  <Plus className='h-4 w-4' />
+                  <Plus className='size-4' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>New Document</TooltipContent>
@@ -551,15 +551,15 @@ export function CreationStudioPage() {
                   variant='outline'
                   size='sm'
                   onClick={handleDownload}
-                  className='border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 transition-all duration-200'
+                  className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 dark:hover:bg-teal-950'
                 >
-                  <Download className='h-4 w-4' />
+                  <Download className='size-4' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Download File</TooltipContent>
             </Tooltip>
 
-            <Separator orientation='vertical' className='h-6 mx-1' />
+            <Separator orientation='vertical' className='mx-1 h-6' />
 
             {/* Save & Cache Operations Group */}
             <Tooltip>
@@ -567,9 +567,9 @@ export function CreationStudioPage() {
                 <Button
                   onClick={() => handleSave()}
                   size='sm'
-                  className='bg-teal-600 hover:bg-teal-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 px-3'
+                  className='border-0 bg-teal-600 px-3 text-white shadow-lg transition-all duration-200 hover:bg-teal-700 hover:shadow-xl'
                 >
-                  <Save className='h-4 w-4' />
+                  <Save className='size-4' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -587,9 +587,9 @@ export function CreationStudioPage() {
                   variant='outline'
                   size='sm'
                   onClick={() => setIsSaveAsOpen(true)}
-                  className='border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 transition-all duration-200'
+                  className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 dark:hover:bg-teal-950'
                 >
-                  <SaveIcon className='h-4 w-4' />
+                  <SaveIcon className='size-4' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Save As New File</TooltipContent>
@@ -598,19 +598,19 @@ export function CreationStudioPage() {
             {/* Cache Controls */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className='flex items-center gap-1 px-2 py-1 h-9 bg-slate-50 dark:bg-slate-800 rounded-md border border-slate-200 dark:border-slate-700'>
+                <div className='flex h-9 items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 dark:border-slate-700 dark:bg-slate-800'>
                   <Checkbox
                     id='rebuild-cache'
                     checked={shouldRebuildCache}
                     onCheckedChange={(checked: boolean | 'indeterminate') =>
                       setShouldRebuildCache(checked === true)
                     }
-                    className='data-[state=checked]:bg-teal-600 data-[state=checked]:border-teal-600 h-3 w-3'
+                    className='size-3 data-[state=checked]:border-teal-600 data-[state=checked]:bg-teal-600'
                   />
-                  <Database className='h-3 w-3 text-slate-600 dark:text-slate-400' />
+                  <Database className='size-3 text-slate-600 dark:text-slate-400' />
                   {cacheRebuildStatus !== 'idle' && (
                     <RefreshCw
-                      className={`h-3 w-3 ${
+                      className={`size-3 ${
                         cacheRebuildStatus === 'rebuilding'
                           ? 'animate-spin text-orange-500'
                           : cacheRebuildStatus === 'completed'
@@ -624,28 +624,28 @@ export function CreationStudioPage() {
               <TooltipContent>
                 <div className='text-sm'>
                   <div className='font-medium'>Rebuild Cache on Save</div>
-                  <div className='text-xs opacity-80 mt-1'>
+                  <div className='mt-1 text-xs opacity-80'>
                     Updates search and navigation cache using production KV
                   </div>
-                  <div className='text-xs text-blue-500 mt-1'>
+                  <div className='mt-1 text-xs text-blue-500'>
                     Works in: Localhost, Preview & Production
                   </div>
                   {cacheStatus && (
-                    <div className='text-xs text-slate-400 mt-1 border-t pt-1'>
+                    <div className='mt-1 border-t pt-1 text-xs text-slate-400'>
                       Current: {cacheStatus.totalItems} items •{' '}
                       {getRelativeTimeString(cacheStatus.lastUpdated)}
                     </div>
                   )}
                   {cacheRebuildStatus === 'rebuilding' && (
-                    <div className='text-xs text-orange-500 mt-1'>
+                    <div className='mt-1 text-xs text-orange-500'>
                       Building...
                     </div>
                   )}
                   {cacheRebuildStatus === 'completed' && (
-                    <div className='text-xs text-green-500 mt-1'>Complete</div>
+                    <div className='mt-1 text-xs text-green-500'>Complete</div>
                   )}
                   {cacheRebuildStatus === 'error' && (
-                    <div className='text-xs text-red-500 mt-1'>Failed</div>
+                    <div className='mt-1 text-xs text-red-500'>Failed</div>
                   )}
                 </div>
               </TooltipContent>
@@ -687,25 +687,25 @@ export function CreationStudioPage() {
                     setTimeout(() => setCacheRebuildStatus('idle'), 3000);
                   }}
                   disabled={cacheRebuildStatus === 'rebuilding'}
-                  className='h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  className='size-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700'
                 >
                   <RefreshCw
-                    className={`h-4 w-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`}
+                    className={`size-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`}
                   />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
                 <div className='text-center'>
                   <div className='font-medium'>Rebuild Cache Manually</div>
-                  <div className='text-xs text-slate-500 mt-1'>
+                  <div className='mt-1 text-xs text-slate-500'>
                     Force refresh of search and navigation cache using
                     production KV
                   </div>
-                  <div className='text-xs text-blue-500 mt-1'>
+                  <div className='mt-1 text-xs text-blue-500'>
                     Works in: Localhost, Preview & Production
                   </div>
                   {cacheStatus && (
-                    <div className='text-xs text-slate-400 mt-1 border-t pt-1'>
+                    <div className='mt-1 border-t pt-1 text-xs text-slate-400'>
                       <div>{cacheStatus.totalItems} items</div>
                       <div>
                         Updated{' '}
@@ -714,7 +714,7 @@ export function CreationStudioPage() {
                         {new Date(cacheStatus.lastUpdated).toLocaleTimeString()}
                       </div>
                       {cacheStatus.trigger && (
-                        <div className='text-slate-500 mt-1'>
+                        <div className='mt-1 text-slate-500'>
                           Trigger: {cacheStatus.trigger}
                         </div>
                       )}
@@ -724,7 +724,7 @@ export function CreationStudioPage() {
               </TooltipContent>
             </Tooltip>
 
-            <Separator orientation='vertical' className='h-6 mx-1' />
+            <Separator orientation='vertical' className='mx-1 h-6' />
 
             {/* Management Operations Group */}
             {currentFile ? (
@@ -752,9 +752,9 @@ export function CreationStudioPage() {
                         },
                       });
                     }}
-                    className='bg-red-600 hover:bg-red-700 border-0 shadow-lg hover:shadow-xl transition-all duration-200'
+                    className='border-0 bg-red-600 shadow-lg transition-all duration-200 hover:bg-red-700 hover:shadow-xl'
                   >
-                    <Trash2 className='h-4 w-4' />
+                    <Trash2 className='size-4' />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Delete File</TooltipContent>
@@ -766,9 +766,9 @@ export function CreationStudioPage() {
                     variant='outline'
                     size='sm'
                     disabled
-                    className='border-red-200 text-red-400 cursor-not-allowed opacity-50'
+                    className='cursor-not-allowed border-red-200 text-red-400 opacity-50'
                   >
-                    <Trash2 className='h-4 w-4' />
+                    <Trash2 className='size-4' />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>No file selected</TooltipContent>
@@ -781,15 +781,15 @@ export function CreationStudioPage() {
                   variant='outline'
                   size='sm'
                   onClick={() => setTrashOpen(true)}
-                  className='border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200'
+                  className='border-slate-600 text-slate-600 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800'
                 >
-                  <Archive className='h-4 w-4' />
+                  <Archive className='size-4' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Open Archive/Trash</TooltipContent>
             </Tooltip>
 
-            <Separator orientation='vertical' className='h-6 mx-1' />
+            <Separator orientation='vertical' className='mx-1 h-6' />
 
             {/* Layout Operations Group */}
             <Tooltip>
@@ -798,12 +798,12 @@ export function CreationStudioPage() {
                   variant='outline'
                   size='sm'
                   onClick={() => setIsFullscreen(!isFullscreen)}
-                  className='border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950 transition-all duration-200'
+                  className='border-orange-600 text-orange-600 transition-all duration-200 hover:bg-orange-50 dark:hover:bg-orange-950'
                 >
                   {isFullscreen ? (
-                    <Minimize className='h-4 w-4' />
+                    <Minimize className='size-4' />
                   ) : (
-                    <Maximize className='h-4 w-4' />
+                    <Maximize className='size-4' />
                   )}
                 </Button>
               </TooltipTrigger>
@@ -815,12 +815,12 @@ export function CreationStudioPage() {
         </div>
       </div>
       {/* Main Content Area: content browser + front matter define height */}
-      <div className='flex-1 py-6 px-0 min-h-[70vh]' data-content-area>
-        <div className='grid grid-cols-12 gap-6 items-start'>
+      <div className='min-h-[70vh] flex-1 px-0 py-6' data-content-area>
+        <div className='grid grid-cols-12 items-start gap-6'>
           {/* Left Panel - Content Browser & Frontmatter */}
           <div
             ref={leftColRef}
-            className='col-span-12 lg:col-span-4 flex flex-col gap-6 min-h-0'
+            className='col-span-12 flex min-h-0 flex-col gap-6 lg:col-span-4'
           >
             <div className='overflow-hidden'>
               <R2Browser
@@ -839,17 +839,17 @@ export function CreationStudioPage() {
           </div>
           {/* Right Panel - Main Editor (dynamically scales to match left panel height) */}
           <div
-            className='col-span-12 lg:col-span-8 flex flex-col min-h-0'
+            className='col-span-12 flex min-h-0 flex-col lg:col-span-8'
             style={{ height: leftHeight ? `${leftHeight}px` : 'auto' }}
           >
             {/* Editor Header */}
             <div
               ref={editorHeaderRef}
-              className='bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-t-xl'
+              className='rounded-t-xl border border-slate-200/50 bg-white/90 backdrop-blur-sm dark:border-slate-700/50 dark:bg-slate-900/90'
             >
-              <div className='flex items-center gap-3 p-4 border-b border-slate-200 dark:border-slate-700'>
-                <div className='p-2 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg'>
-                  <FileText className='h-5 w-5 text-white' />
+              <div className='flex items-center gap-3 border-b border-slate-200 p-4 dark:border-slate-700'>
+                <div className='rounded-lg bg-gradient-to-br from-teal-600 to-blue-600 p-2'>
+                  <FileText className='size-5 text-white' />
                 </div>
                 <div>
                   <h3
@@ -858,20 +858,20 @@ export function CreationStudioPage() {
                   >
                     Content Editor
                   </h3>
-                  <div className='h-0.5 w-16 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 rounded-full mt-1'></div>
+                  <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600'></div>
                 </div>
               </div>
             </div>
             {/* Editor Content (dynamically scales to fill available space) */}
             <div
               ref={editorWrapperRef}
-              className='relative flex-1 overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-x border-b border-slate-200/50 dark:border-slate-700/50 rounded-b-xl'
+              className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-slate-200/50 bg-white/90 backdrop-blur-sm dark:border-slate-700/50 dark:bg-slate-900/90'
               style={{
                 minHeight: '200px',
               }}
             >
               {hydrating ? (
-                <div className='p-4 space-y-3'>
+                <div className='space-y-3 p-4'>
                   <Skeleton className='h-8 w-1/3' />
                   <Skeleton className='h-4 w-full' />
                   <Skeleton className='h-4 w-5/6' />
@@ -940,14 +940,14 @@ export function CreationStudioPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className='flex items-center gap-2'>
-              <AlertTriangle className='h-5 w-5' />
+              <AlertTriangle className='size-5' />
               Conflict Detected
             </DialogTitle>
           </DialogHeader>
           <Alert>
             <AlertDescription>{conflictModal.message}</AlertDescription>
           </Alert>
-          <div className='flex gap-2 justify-end'>
+          <div className='flex justify-end gap-2'>
             {conflictModal.options.map((option, index) => (
               <Button key={index} onClick={option.action}>
                 {option.label}
@@ -958,14 +958,14 @@ export function CreationStudioPage() {
       </Dialog>
       {/* Fullscreen Editor Modal with Brand Theme */}
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-        <DialogContent className='max-w-[95vw] max-h-[95vh] w-full h-full p-0 bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
-          <div className='flex flex-col h-full'>
+        <DialogContent className='size-full max-h-[95vh] max-w-[95vw] bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 p-0 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
+          <div className='flex h-full flex-col'>
             {/* Enhanced Header with Brand Theme */}
-            <div className='relative flex items-center justify-between p-6 border-b border-teal-200 dark:border-teal-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm'>
+            <div className='relative flex items-center justify-between border-b border-teal-200 bg-white/90 p-6 backdrop-blur-sm dark:border-teal-800 dark:bg-slate-900/90'>
               <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
               <div className='relative flex items-center gap-4'>
-                <div className='p-3 bg-gradient-to-br from-teal-600 to-blue-600 rounded-xl shadow-lg'>
-                  <FileText className='h-6 w-6 text-white' />
+                <div className='rounded-xl bg-gradient-to-br from-teal-600 to-blue-600 p-3 shadow-lg'>
+                  <FileText className='size-6 text-white' />
                 </div>
                 <div>
                   <h2
@@ -974,21 +974,21 @@ export function CreationStudioPage() {
                   >
                     Fullscreen Editor
                   </h2>
-                  <div className='flex items-center gap-2 mt-1 min-h-[20px]'>
+                  <div className='mt-1 flex min-h-[20px] items-center gap-2'>
                     {currentFile ? (
                       <>
-                        <div className='w-1.5 h-1.5 bg-orange-500 rounded-full'></div>
+                        <div className='size-1.5 rounded-full bg-orange-500'></div>
                         <p className='text-sm text-slate-600 dark:text-slate-400'>
                           {currentFile}{' '}
                           {isDirty && (
-                            <span className='text-orange-600 dark:text-orange-400 font-medium'>
+                            <span className='font-medium text-orange-600 dark:text-orange-400'>
                               • Unsaved changes
                             </span>
                           )}
                         </p>
                       </>
                     ) : (
-                      <div className='w-1.5 h-1.5 bg-slate-300 rounded-full'></div>
+                      <div className='size-1.5 rounded-full bg-slate-300'></div>
                     )}
                   </div>
                 </div>
@@ -997,15 +997,15 @@ export function CreationStudioPage() {
                 variant='outline'
                 size='sm'
                 onClick={() => setIsFullscreen(false)}
-                className='relative z-10 gap-2 border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950 shadow-md hover:shadow-lg transition-all duration-200'
+                className='relative z-10 gap-2 border-orange-600 text-orange-600 shadow-md transition-all duration-200 hover:bg-orange-50 hover:shadow-lg dark:hover:bg-orange-950'
               >
-                <Minimize className='h-4 w-4' />
+                <Minimize className='size-4' />
                 Return to Studio
               </Button>
             </div>
             {/* Enhanced Editor Content */}
             <div className='flex-1 overflow-hidden p-2'>
-              <div className='h-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-xl shadow-lg'>
+              <div className='h-full rounded-xl border border-slate-200/50 bg-white/90 shadow-lg backdrop-blur-sm dark:border-slate-700/50 dark:bg-slate-900/90'>
                 <MarkdownHtmlEditor
                   initialMarkdown={markdown}
                   onChange={handleMarkdownChange}

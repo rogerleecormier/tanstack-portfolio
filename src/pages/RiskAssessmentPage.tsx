@@ -124,7 +124,7 @@ const RiskAssessmentPage: React.FC = () => {
 
   return (
     <div className='min-h-screen bg-gray-50 py-8'>
-      <div className='max-w-4xl mx-auto px-4'>
+      <div className='mx-auto max-w-4xl px-4'>
         <Card>
           <CardHeader>
             <CardTitle className='text-2xl font-bold'>
@@ -141,23 +141,23 @@ const RiskAssessmentPage: React.FC = () => {
                 <Label htmlFor='projectName'>Project Name</Label>
                 <Input id='projectName' {...register('projectName')} />
                 {errors.projectName && (
-                  <p className='text-red-500 text-sm'>
+                  <p className='text-sm text-red-500'>
                     {errors.projectName.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <h3 className='text-lg font-semibold mb-2'>Risks</h3>
+                <h3 className='mb-2 text-lg font-semibold'>Risks</h3>
                 {fields.map((field, index) => (
-                  <div key={field.id} className='border p-4 mb-4 rounded'>
+                  <div key={field.id} className='mb-4 rounded border p-4'>
                     <Input
                       placeholder='Risk Description'
                       {...register(`risks.${index}.description` as const)}
                       className='mb-2'
                     />
                     {errors.risks?.[index]?.description && (
-                      <p className='text-red-500 text-sm'>
+                      <p className='text-sm text-red-500'>
                         {errors.risks[index]?.description?.message}
                       </p>
                     )}
@@ -205,7 +205,7 @@ const RiskAssessmentPage: React.FC = () => {
                       onClick={() => remove(index)}
                       className='mt-2'
                     >
-                      <Trash2 className='h-4 w-4 mr-2' /> Remove Risk
+                      <Trash2 className='mr-2 size-4' /> Remove Risk
                     </Button>
                   </div>
                 ))}
@@ -215,7 +215,7 @@ const RiskAssessmentPage: React.FC = () => {
                     append({ description: '', likelihood: '3', impact: '3' })
                   }
                 >
-                  <Plus className='h-4 w-4 mr-2' /> Add Risk
+                  <Plus className='mr-2 size-4' /> Add Risk
                 </Button>
               </div>
 
@@ -233,12 +233,12 @@ const RiskAssessmentPage: React.FC = () => {
 
             {matrixData && (
               <div className='mt-8'>
-                <h3 className='text-lg font-semibold mb-2'>
+                <h3 className='mb-2 text-lg font-semibold'>
                   Risk Matrix Table
                 </h3>
                 <SortableTable data={matrixData} />
                 <Button onClick={handleExport} className='mt-4'>
-                  <Download className='h-4 w-4 mr-2' /> Export to XLSX
+                  <Download className='mr-2 size-4' /> Export to XLSX
                 </Button>
               </div>
             )}

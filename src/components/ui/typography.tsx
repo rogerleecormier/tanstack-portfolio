@@ -6,7 +6,7 @@ export function H1(props: React.HTMLAttributes<HTMLHeadingElement>) {
     <h1
       {...props}
       className={[
-        'scroll-m-20 text-4xl font-extrabold tracking-tight text-balance',
+        'scroll-m-20 text-balance text-4xl font-extrabold tracking-tight',
         props.className,
       ].join(' ')}
     />

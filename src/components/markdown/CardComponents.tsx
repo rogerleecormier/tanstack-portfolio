@@ -1,4 +1,5 @@
-import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,35 +8,34 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
 import {
-  ExternalLink,
-  Github,
-  Mail,
-  Phone,
+  AlertCircle,
   Award,
   Briefcase,
-  GraduationCap,
-  Star,
-  TrendingUp,
-  Shield,
-  Zap,
-  Target,
-  Rocket,
   CheckCircle,
-  AlertCircle,
-  Info,
+  Cloud,
   Code,
   Database,
-  Cloud,
+  ExternalLink,
+  Github,
+  GraduationCap,
+  Info,
   Lock,
+  Mail,
+  Phone,
+  Rocket,
+  Shield,
+  Star,
+  Target,
+  TrendingUp,
+  Zap,
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import remarkGfm from 'remark-gfm';
 
 // Base card props interface
 interface BaseCardProps {
@@ -59,7 +59,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           // Override default styling to match card design
           p: ({ children, ...props }) => (
             <p
-              className='mb-3 last:mb-0 break-words font-sans text-base'
+              className='mb-3 break-words font-sans text-base last:mb-0'
               {...props}
             >
               {children}
@@ -67,7 +67,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           ul: ({ children, ...props }) => (
             <ul
-              className='list-disc list-inside mb-3 last:mb-0 space-y-1 break-words'
+              className='mb-3 list-inside list-disc space-y-1 break-words last:mb-0'
               {...props}
             >
               {children}
@@ -75,7 +75,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           ol: ({ children, ...props }) => (
             <ol
-              className='list-decimal list-inside mb-3 last:mb-0 space-y-1 break-words'
+              className='mb-3 list-inside list-decimal space-y-1 break-words last:mb-0'
               {...props}
             >
               {children}
@@ -83,7 +83,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           li: ({ children, ...props }) => (
             <li
-              className='text-gray-600 dark:text-gray-300 break-words'
+              className='break-words text-gray-600 dark:text-gray-300'
               {...props}
             >
               {children}
@@ -91,7 +91,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           strong: ({ children, ...props }) => (
             <strong
-              className='font-semibold text-gray-700 dark:text-gray-200 break-words'
+              className='break-words font-semibold text-gray-700 dark:text-gray-200'
               {...props}
             >
               {children}
@@ -99,7 +99,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           em: ({ children, ...props }) => (
             <em
-              className='italic text-gray-600 dark:text-gray-300 break-words'
+              className='break-words italic text-gray-600 dark:text-gray-300'
               {...props}
             >
               {children}
@@ -107,7 +107,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           code: ({ children, ...props }) => (
             <code
-              className='px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded text-sm font-mono break-words'
+              className='break-words rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm text-gray-800 dark:bg-gray-800 dark:text-gray-200'
               {...props}
             >
               {children}
@@ -115,7 +115,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           blockquote: ({ children, ...props }) => (
             <blockquote
-              className='border-l-4 border-teal-200 dark:border-teal-700 pl-4 italic text-gray-600 dark:text-gray-400 mb-3 break-words'
+              className='mb-3 break-words border-l-4 border-teal-200 pl-4 italic text-gray-600 dark:border-teal-700 dark:text-gray-400'
               {...props}
             >
               {children}
@@ -123,7 +123,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           h1: ({ children, ...props }) => (
             <h1
-              className='text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 break-words'
+              className='mb-3 break-words text-xl font-bold text-gray-900 dark:text-gray-100'
               {...props}
             >
               {children}
@@ -131,7 +131,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           h2: ({ children, ...props }) => (
             <h2
-              className='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 break-words'
+              className='mb-2 break-words text-lg font-semibold text-gray-900 dark:text-gray-100'
               {...props}
             >
               {children}
@@ -139,7 +139,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           h3: ({ children, ...props }) => (
             <h3
-              className='text-base font-semibold text-gray-900 dark:text-gray-100 mb-2 break-words'
+              className='mb-2 break-words text-base font-semibold text-gray-900 dark:text-gray-100'
               {...props}
             >
               {children}
@@ -148,7 +148,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           a: ({ children, href, ...props }) => (
             <a
               href={href}
-              className='text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 underline break-words'
+              className='break-words text-teal-600 underline hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300'
               target='_blank'
               rel='noopener noreferrer'
               {...props}
@@ -164,7 +164,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
   }
 
   // If not a string, render as-is (for React elements)
-  return <div className='break-words markdown-card-content'>{content}</div>;
+  return <div className='markdown-card-content break-words'>{content}</div>;
 };
 
 // Info Card Component
@@ -188,7 +188,7 @@ export const InfoCard: React.FC<BaseCardProps> = ({
   return (
     <Card
       className={cn(
-        'overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 font-sans info-card',
+        'info-card flex h-full flex-col overflow-hidden border-gray-200 bg-white font-sans dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -197,21 +197,21 @@ export const InfoCard: React.FC<BaseCardProps> = ({
 
       {title && (
         <CardHeader className='pb-4'>
-          <CardTitle className='text-2xl font-bold text-gray-900 dark:text-gray-100 break-words overflow-wrap-break-word whitespace-normal'>
+          <CardTitle className='overflow-wrap-break-word whitespace-normal break-words text-2xl font-bold text-gray-900 dark:text-gray-100'>
             {title}
           </CardTitle>
           {description && (
-            <CardDescription className='text-lg text-teal-600 dark:text-teal-400 font-medium font-sans break-words overflow-wrap-break-word whitespace-normal'>
+            <CardDescription className='overflow-wrap-break-word whitespace-normal break-words font-sans text-lg font-medium text-teal-600 dark:text-teal-400'>
               {description}
             </CardDescription>
           )}
           {badgeArray.length > 0 && (
-            <div className='flex flex-wrap gap-2 mt-3'>
+            <div className='mt-3 flex flex-wrap gap-2'>
               {badgeArray.map((badge, index) => (
                 <Badge
                   key={index}
                   variant='outline'
-                  className='text-xs border-teal-200 text-teal-700 dark:text-teal-300'
+                  className='border-teal-200 text-xs text-teal-700 dark:text-teal-300'
                 >
                   {badge}
                 </Badge>
@@ -220,8 +220,8 @@ export const InfoCard: React.FC<BaseCardProps> = ({
           )}
         </CardHeader>
       )}
-      <CardContent className={cn('flex-1 min-w-0', !title && 'pt-6')}>
-        <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words overflow-wrap-break-word whitespace-normal font-sans min-w-0 card-content'>
+      <CardContent className={cn('min-w-0 flex-1', !title && 'pt-6')}>
+        <div className='overflow-wrap-break-word card-content min-w-0 whitespace-normal break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
           <CardMarkdownContent content={children} />
         </div>
       </CardContent>
@@ -249,15 +249,15 @@ export const FeatureCard: React.FC<
 }) => {
   const getIcon = (iconName?: string) => {
     const icons: Record<string, React.ReactNode> = {
-      award: <Award className='w-6 h-6' />,
-      briefcase: <Briefcase className='w-6 h-6' />,
-      graduation: <GraduationCap className='w-6 h-6' />,
-      star: <Star className='w-6 h-6' />,
-      trending: <TrendingUp className='w-6 h-6' />,
-      shield: <Shield className='w-6 h-6' />,
-      zap: <Zap className='w-6 h-6' />,
+      award: <Award className='size-6' />,
+      briefcase: <Briefcase className='size-6' />,
+      graduation: <GraduationCap className='size-6' />,
+      star: <Star className='size-6' />,
+      trending: <TrendingUp className='size-6' />,
+      shield: <Shield className='size-6' />,
+      zap: <Zap className='size-6' />,
     };
-    return icons[iconName || 'star'] || <Star className='w-6 h-6' />;
+    return icons[iconName || 'star'] || <Star className='size-6' />;
   };
 
   // Handle badges as either string or array
@@ -273,7 +273,7 @@ export const FeatureCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 feature-card',
+        'feature-card flex h-full flex-col overflow-hidden border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -282,17 +282,17 @@ export const FeatureCard: React.FC<
 
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-4'>
-          <div className='flex-shrink-0 p-3 rounded-xl bg-gradient-to-br from-slate-100 to-teal-100 dark:from-slate-800/50 dark:to-teal-800/50 text-teal-800 dark:text-teal-300 shadow-sm'>
+          <div className='shrink-0 rounded-xl bg-gradient-to-br from-slate-100 to-teal-100 p-3 text-teal-800 shadow-sm dark:from-slate-800/50 dark:to-teal-800/50 dark:text-teal-300'>
             {getIcon(icon)}
           </div>
-          <div className='flex-1 min-w-0'>
+          <div className='min-w-0 flex-1'>
             {title && (
-              <CardTitle className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 font-sans break-words overflow-wrap-break-word whitespace-normal'>
+              <CardTitle className='overflow-wrap-break-word mb-2 whitespace-normal break-words font-sans text-2xl font-bold text-gray-900 dark:text-gray-100'>
                 {title}
               </CardTitle>
             )}
             {description && (
-              <CardDescription className='text-lg text-teal-600 dark:text-teal-400 font-medium mb-3 font-sans break-words overflow-wrap-break-word whitespace-normal'>
+              <CardDescription className='overflow-wrap-break-word mb-3 whitespace-normal break-words font-sans text-lg font-medium text-teal-600 dark:text-teal-400'>
                 {description}
               </CardDescription>
             )}
@@ -302,7 +302,7 @@ export const FeatureCard: React.FC<
                   <Badge
                     key={index}
                     variant='outline'
-                    className='text-xs border-teal-200 text-teal-700 dark:text-teal-300'
+                    className='border-teal-200 text-xs text-teal-700 dark:text-teal-300'
                   >
                     {badge}
                   </Badge>
@@ -312,8 +312,8 @@ export const FeatureCard: React.FC<
           </div>
         </div>
       </CardHeader>
-      <CardContent className='flex-1 min-w-0'>
-        <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words overflow-wrap-break-word whitespace-normal font-sans min-w-0 card-content'>
+      <CardContent className='min-w-0 flex-1'>
+        <div className='overflow-wrap-break-word card-content min-w-0 whitespace-normal break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
           <CardMarkdownContent content={children} />
         </div>
       </CardContent>
@@ -327,7 +327,7 @@ export const FeatureCard: React.FC<
               className='flex items-center gap-2'
             >
               {linkText}
-              <ExternalLink className='w-4 h-4' />
+              <ExternalLink className='size-4' />
             </a>
           </Button>
         </CardFooter>
@@ -371,7 +371,7 @@ export const ProfileCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900',
+        'flex h-full flex-col overflow-hidden border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -381,19 +381,19 @@ export const ProfileCard: React.FC<
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-6'>
           {image && (
-            <div className='flex-shrink-0'>
+            <div className='shrink-0'>
               <img
                 src={image}
                 alt={imageAlt || name || title || 'Profile image'}
-                className='w-20 h-20 rounded-full object-cover border-2 border-teal-200 shadow-md'
+                className='size-20 rounded-full border-2 border-teal-200 object-cover shadow-md'
               />
             </div>
           )}
-          <div className='flex-1 min-w-0'>
-            <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2'>
+          <div className='min-w-0 flex-1'>
+            <h2 className='mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100'>
               {name || title}
             </h2>
-            <p className='text-lg text-teal-600 dark:text-teal-400 font-medium mb-3 font-sans break-words'>
+            <p className='mb-3 break-words font-sans text-lg font-medium text-teal-600 dark:text-teal-400'>
               {role || description}
             </p>
             {badgeArray.length > 0 && (
@@ -402,7 +402,7 @@ export const ProfileCard: React.FC<
                   <Badge
                     key={index}
                     variant='outline'
-                    className='text-xs border-teal-200 text-teal-700 dark:text-teal-300'
+                    className='border-teal-200 text-xs text-teal-700 dark:text-teal-300'
                   >
                     {badge}
                   </Badge>
@@ -413,8 +413,8 @@ export const ProfileCard: React.FC<
         </div>
       </CardHeader>
       {children && (
-        <CardContent className='flex-1 min-w-0'>
-          <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content'>
+        <CardContent className='min-w-0 flex-1'>
+          <div className='card-content min-w-0 break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
             <CardMarkdownContent content={children} />
           </div>
         </CardContent>
@@ -427,7 +427,7 @@ export const ProfileCard: React.FC<
                 href={`mailto:${contact.email}`}
                 className='flex items-center gap-1 hover:text-teal-600'
               >
-                <Mail className='w-4 h-4' />
+                <Mail className='size-4' />
                 {contact.email}
               </a>
             )}
@@ -436,7 +436,7 @@ export const ProfileCard: React.FC<
                 href={`tel:${contact.phone}`}
                 className='flex items-center gap-1 hover:text-teal-600'
               >
-                <Phone className='w-4 h-4' />
+                <Phone className='size-4' />
                 {contact.phone}
               </a>
             )}
@@ -447,7 +447,7 @@ export const ProfileCard: React.FC<
                 rel='noopener noreferrer'
                 className='flex items-center gap-1 hover:text-teal-600'
               >
-                <Github className='w-4 h-4' />
+                <Github className='size-4' />
                 GitHub
               </a>
             )}
@@ -458,7 +458,7 @@ export const ProfileCard: React.FC<
                 rel='noopener noreferrer'
                 className='flex items-center gap-1 hover:text-teal-600'
               >
-                <ExternalLink className='w-4 h-4' />
+                <ExternalLink className='size-4' />
                 Website
               </a>
             )}
@@ -488,7 +488,7 @@ export const StatsCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900',
+        'flex h-full flex-col overflow-hidden border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -503,17 +503,17 @@ export const StatsCard: React.FC<
             </CardTitle>
           )}
           {description && (
-            <CardDescription className='text-lg text-teal-600 dark:text-teal-400 font-medium font-sans break-words'>
+            <CardDescription className='break-words font-sans text-lg font-medium text-teal-600 dark:text-teal-400'>
               {description}
             </CardDescription>
           )}
         </CardHeader>
       )}
       <CardContent
-        className={cn('flex-1 min-w-0', !title && !description && 'pt-6')}
+        className={cn('min-w-0 flex-1', !title && !description && 'pt-6')}
       >
         {statsArray.length > 0 && (
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6'>
+          <div className='mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2'>
             {statsArray.map((stat: string, index: number) => {
               const [label, value] = stat
                 .split(':')
@@ -521,12 +521,12 @@ export const StatsCard: React.FC<
               return (
                 <div
                   key={index}
-                  className='text-center p-4 bg-gradient-to-br from-slate-50 to-teal-50 dark:from-slate-800/20 dark:to-teal-800/20 rounded-lg border border-slate-200 dark:border-slate-600'
+                  className='rounded-lg border border-slate-200 bg-gradient-to-br from-slate-50 to-teal-50 p-4 text-center dark:border-slate-600 dark:from-slate-800/20 dark:to-teal-800/20'
                 >
                   <div className='text-2xl font-bold text-teal-600 dark:text-teal-400'>
                     {value}
                   </div>
-                  <div className='text-sm text-gray-600 dark:text-gray-300 mt-1'>
+                  <div className='mt-1 text-sm text-gray-600 dark:text-gray-300'>
                     {label}
                   </div>
                 </div>
@@ -535,7 +535,7 @@ export const StatsCard: React.FC<
           </div>
         )}
         {children && (
-          <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content'>
+          <div className='card-content min-w-0 break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
             <CardMarkdownContent content={children} />
           </div>
         )}
@@ -558,7 +558,7 @@ export const TimelineCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900',
+        'flex h-full flex-col overflow-hidden border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -573,29 +573,29 @@ export const TimelineCard: React.FC<
             </CardTitle>
           )}
           {description && (
-            <CardDescription className='text-lg text-teal-600 dark:text-teal-400 font-medium font-sans break-words'>
+            <CardDescription className='break-words font-sans text-lg font-medium text-teal-600 dark:text-teal-400'>
               {description}
             </CardDescription>
           )}
         </CardHeader>
       )}
       <CardContent
-        className={cn('flex-1 min-w-0', !title && !description && 'pt-6')}
+        className={cn('min-w-0 flex-1', !title && !description && 'pt-6')}
       >
         {items.length > 0 && (
-          <div className='space-y-4 mb-6'>
+          <div className='mb-6 space-y-4'>
             {items.map((item, index) => (
               <div key={index} className='flex gap-4'>
-                <div className='flex-shrink-0 w-2 h-2 rounded-full bg-teal-500 mt-2'></div>
-                <div className='flex-1 min-w-0'>
-                  <div className='flex items-center gap-2 mb-1'>
+                <div className='mt-2 size-2 shrink-0 rounded-full bg-teal-500'></div>
+                <div className='min-w-0 flex-1'>
+                  <div className='mb-1 flex items-center gap-2'>
                     <span className='text-sm font-medium text-teal-600 dark:text-teal-400'>
                       {item.date}
                     </span>
                     {item.badge && (
                       <Badge
                         variant='outline'
-                        className='text-xs border-teal-200 text-teal-700 dark:text-teal-300'
+                        className='border-teal-200 text-xs text-teal-700 dark:text-teal-300'
                       >
                         {item.badge}
                       </Badge>
@@ -605,7 +605,7 @@ export const TimelineCard: React.FC<
                     {item.title}
                   </h4>
                   {item.description && (
-                    <p className='text-sm text-gray-600 dark:text-gray-300 mt-1 break-words'>
+                    <p className='mt-1 break-words text-sm text-gray-600 dark:text-gray-300'>
                       {item.description}
                     </p>
                   )}
@@ -615,7 +615,7 @@ export const TimelineCard: React.FC<
           </div>
         )}
         {children && (
-          <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content'>
+          <div className='card-content min-w-0 break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
             <CardMarkdownContent content={children} />
           </div>
         )}
@@ -667,7 +667,7 @@ export const HeroCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden shadow-lg h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900',
+        'flex h-full flex-col overflow-hidden border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -677,19 +677,19 @@ export const HeroCard: React.FC<
       <CardHeader className={cn('pb-4', sizes[size])}>
         <div className='flex items-start gap-6'>
           {image && (
-            <div className='flex-shrink-0'>
+            <div className='shrink-0'>
               <img
                 src={image}
                 alt={imageAlt || title || 'Hero image'}
-                className='w-16 h-16 rounded-lg object-cover border-2 border-teal-200 shadow-md'
+                className='size-16 rounded-lg border-2 border-teal-200 object-cover shadow-md'
               />
             </div>
           )}
-          <div className='flex-1 min-w-0'>
+          <div className='min-w-0 flex-1'>
             {title && (
               <CardTitle
                 className={cn(
-                  'text-gray-900 dark:text-gray-100 mb-2',
+                  'mb-2 text-gray-900 dark:text-gray-100',
                   size === 'lg'
                     ? 'text-3xl'
                     : size === 'md'
@@ -703,7 +703,7 @@ export const HeroCard: React.FC<
             {description && (
               <CardDescription
                 className={cn(
-                  'text-teal-600 dark:text-teal-400 mb-4 font-medium font-sans break-words',
+                  'mb-4 break-words font-sans font-medium text-teal-600 dark:text-teal-400',
                   size === 'lg' ? 'text-lg' : 'text-base'
                 )}
               >
@@ -711,7 +711,7 @@ export const HeroCard: React.FC<
               </CardDescription>
             )}
             {badgeArray.length > 0 && (
-              <div className='flex flex-wrap gap-2 mb-4'>
+              <div className='mb-4 flex flex-wrap gap-2'>
                 {badgeArray.map((badge: string, index: number) => (
                   <Badge
                     key={index}
@@ -732,7 +732,7 @@ export const HeroCard: React.FC<
               >
                 <a href={cta.link} target='_blank' rel='noopener noreferrer'>
                   {cta.text}
-                  <ExternalLink className='w-4 h-4 ml-2' />
+                  <ExternalLink className='ml-2 size-4' />
                 </a>
               </Button>
             )}
@@ -740,8 +740,8 @@ export const HeroCard: React.FC<
         </div>
       </CardHeader>
       {children && (
-        <CardContent className='flex-1 min-w-0'>
-          <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content'>
+        <CardContent className='min-w-0 flex-1'>
+          <div className='card-content min-w-0 break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
             <CardMarkdownContent content={children} />
           </div>
         </CardContent>
@@ -765,12 +765,12 @@ export const SuccessCard: React.FC<
 }) => {
   const getIcon = (iconName?: string) => {
     const icons: Record<string, React.ReactNode> = {
-      check: <CheckCircle className='w-6 h-6' />,
-      award: <Award className='w-6 h-6' />,
-      star: <Star className='w-6 h-6' />,
-      target: <Target className='w-6 h-6' />,
+      check: <CheckCircle className='size-6' />,
+      award: <Award className='size-6' />,
+      star: <Star className='size-6' />,
+      target: <Target className='size-6' />,
     };
-    return icons[iconName || 'check'] || <CheckCircle className='w-6 h-6' />;
+    return icons[iconName || 'check'] || <CheckCircle className='size-6' />;
   };
 
   // Handle badges as either string or array
@@ -786,7 +786,7 @@ export const SuccessCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900',
+        'flex h-full flex-col overflow-hidden border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -795,27 +795,27 @@ export const SuccessCard: React.FC<
 
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-4'>
-          <div className='flex-shrink-0 p-3 rounded-xl bg-gradient-to-br from-green-100 to-teal-100 dark:from-green-900/50 dark:to-teal-900/50 text-green-600 dark:text-green-400 shadow-sm'>
+          <div className='shrink-0 rounded-xl bg-gradient-to-br from-green-100 to-teal-100 p-3 text-green-600 shadow-sm dark:from-green-900/50 dark:to-teal-900/50 dark:text-green-400'>
             {getIcon(icon)}
           </div>
-          <div className='flex-1 min-w-0'>
+          <div className='min-w-0 flex-1'>
             {title && (
-              <CardTitle className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2'>
+              <CardTitle className='mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100'>
                 {title}
               </CardTitle>
             )}
             {description && (
-              <CardDescription className='text-lg text-green-600 dark:text-green-400 font-medium font-sans break-words'>
+              <CardDescription className='break-words font-sans text-lg font-medium text-green-600 dark:text-green-400'>
                 {description}
               </CardDescription>
             )}
             {badgeArray.length > 0 && (
-              <div className='flex flex-wrap gap-2 mt-3'>
+              <div className='mt-3 flex flex-wrap gap-2'>
                 {badgeArray.map((badge, index) => (
                   <Badge
                     key={index}
                     variant='outline'
-                    className='text-xs border-green-200 text-green-700 dark:text-green-300'
+                    className='border-green-200 text-xs text-green-700 dark:text-green-300'
                   >
                     {badge}
                   </Badge>
@@ -826,8 +826,8 @@ export const SuccessCard: React.FC<
         </div>
       </CardHeader>
       {children && (
-        <CardContent className='flex-1 min-w-0'>
-          <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content'>
+        <CardContent className='min-w-0 flex-1'>
+          <div className='card-content min-w-0 break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
             <CardMarkdownContent content={children} />
           </div>
         </CardContent>
@@ -851,12 +851,12 @@ export const WarningCard: React.FC<
 }) => {
   const getIcon = (iconName?: string) => {
     const icons: Record<string, React.ReactNode> = {
-      alert: <AlertCircle className='w-6 h-6' />,
-      info: <Info className='w-6 h-6' />,
-      shield: <Shield className='w-6 h-6' />,
-      lock: <Lock className='w-6 h-6' />,
+      alert: <AlertCircle className='size-6' />,
+      info: <Info className='size-6' />,
+      shield: <Shield className='size-6' />,
+      lock: <Lock className='size-6' />,
     };
-    return icons[iconName || 'alert'] || <AlertCircle className='w-6 h-6' />;
+    return icons[iconName || 'alert'] || <AlertCircle className='size-6' />;
   };
 
   // Handle badges as either string or array
@@ -872,7 +872,7 @@ export const WarningCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900',
+        'flex h-full flex-col overflow-hidden border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -881,27 +881,27 @@ export const WarningCard: React.FC<
 
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-4'>
-          <div className='flex-shrink-0 p-3 rounded-xl bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/50 dark:to-red-900/50 text-orange-600 dark:text-orange-400 shadow-sm'>
+          <div className='shrink-0 rounded-xl bg-gradient-to-br from-orange-100 to-red-100 p-3 text-orange-600 shadow-sm dark:from-orange-900/50 dark:to-red-900/50 dark:text-orange-400'>
             {getIcon(icon)}
           </div>
-          <div className='flex-1 min-w-0'>
+          <div className='min-w-0 flex-1'>
             {title && (
-              <CardTitle className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2'>
+              <CardTitle className='mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100'>
                 {title}
               </CardTitle>
             )}
             {description && (
-              <CardDescription className='text-lg text-orange-600 dark:text-orange-400 font-medium font-sans break-words'>
+              <CardDescription className='break-words font-sans text-lg font-medium text-orange-600 dark:text-orange-400'>
                 {description}
               </CardDescription>
             )}
             {badgeArray.length > 0 && (
-              <div className='flex flex-wrap gap-2 mt-3'>
+              <div className='mt-3 flex flex-wrap gap-2'>
                 {badgeArray.map((badge, index) => (
                   <Badge
                     key={index}
                     variant='outline'
-                    className='text-xs border-orange-200 text-orange-700 dark:text-orange-300'
+                    className='border-orange-200 text-xs text-orange-700 dark:text-orange-300'
                   >
                     {badge}
                   </Badge>
@@ -912,8 +912,8 @@ export const WarningCard: React.FC<
         </div>
       </CardHeader>
       {children && (
-        <CardContent className='flex-1 min-w-0'>
-          <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans min-w-0 card-content'>
+        <CardContent className='min-w-0 flex-1'>
+          <div className='card-content min-w-0 break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
             <CardMarkdownContent content={children} />
           </div>
         </CardContent>
@@ -937,13 +937,13 @@ export const TechCard: React.FC<
 }) => {
   const getIcon = (iconName?: string) => {
     const icons: Record<string, React.ReactNode> = {
-      code: <Code className='w-6 h-6' />,
-      database: <Database className='w-6 h-6' />,
-      cloud: <Cloud className='w-6 h-6' />,
-      rocket: <Rocket className='w-6 h-6' />,
-      zap: <Zap className='w-6 h-6' />,
+      code: <Code className='size-6' />,
+      database: <Database className='size-6' />,
+      cloud: <Cloud className='size-6' />,
+      rocket: <Rocket className='size-6' />,
+      zap: <Zap className='size-6' />,
     };
-    return icons[iconName || 'code'] || <Code className='w-6 h-6' />;
+    return icons[iconName || 'code'] || <Code className='size-6' />;
   };
 
   // Handle badges as either string or array
@@ -959,7 +959,7 @@ export const TechCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden h-full flex flex-col border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 tech-card',
+        'tech-card flex h-full flex-col overflow-hidden border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900',
         className
       )}
     >
@@ -968,17 +968,17 @@ export const TechCard: React.FC<
 
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-4'>
-          <div className='flex-shrink-0 p-3 rounded-xl bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50 text-blue-600 dark:text-blue-400 shadow-sm'>
+          <div className='shrink-0 rounded-xl bg-gradient-to-br from-blue-100 to-teal-100 p-3 text-blue-600 shadow-sm dark:from-blue-900/50 dark:to-teal-900/50 dark:text-blue-400'>
             {getIcon(icon)}
           </div>
-          <div className='flex-1 min-w-0'>
+          <div className='min-w-0 flex-1'>
             {title && (
-              <CardTitle className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 break-words overflow-wrap-break-word whitespace-normal'>
+              <CardTitle className='overflow-wrap-break-word mb-2 whitespace-normal break-words text-2xl font-bold text-gray-900 dark:text-gray-100'>
                 {title}
               </CardTitle>
             )}
             {description && (
-              <CardDescription className='text-lg text-blue-600 dark:text-blue-400 font-medium mb-3 font-sans break-words overflow-wrap-break-word whitespace-normal'>
+              <CardDescription className='overflow-wrap-break-word mb-3 whitespace-normal break-words font-sans text-lg font-medium text-blue-600 dark:text-blue-400'>
                 {description}
               </CardDescription>
             )}
@@ -988,7 +988,7 @@ export const TechCard: React.FC<
                   <Badge
                     key={index}
                     variant='outline'
-                    className='text-xs border-blue-200 text-blue-700 dark:text-blue-300'
+                    className='border-blue-200 text-xs text-blue-700 dark:text-blue-300'
                   >
                     {badge}
                   </Badge>
@@ -999,8 +999,8 @@ export const TechCard: React.FC<
         </div>
       </CardHeader>
       {children && (
-        <CardContent className='flex-1 min-w-0'>
-          <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words overflow-wrap-break-word whitespace-normal font-sans min-w-0 card-content'>
+        <CardContent className='min-w-0 flex-1'>
+          <div className='overflow-wrap-break-word card-content min-w-0 whitespace-normal break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
             <CardMarkdownContent content={children} />
           </div>
         </CardContent>
@@ -1050,7 +1050,7 @@ export const HeroProfileCard: React.FC<
   return (
     <Card
       className={cn(
-        'overflow-hidden border-gray-200 dark:border-gray-700 bg-white dark:bg-white hero-profile-card',
+        'hero-profile-card overflow-hidden border-gray-200 bg-white dark:border-gray-700 dark:bg-white',
         className
       )}
     >
@@ -1060,19 +1060,19 @@ export const HeroProfileCard: React.FC<
       <CardHeader className='pb-4 pt-1'>
         <div className='flex items-start gap-6'>
           {image && (
-            <div className='flex-shrink-0'>
+            <div className='shrink-0'>
               <img
                 src={image}
                 alt={imageAlt || name || title || 'Profile image'}
-                className='w-24 h-24 rounded-full object-cover border-3 border-teal-200 shadow-lg'
+                className='size-24 rounded-full border-[3px] border-teal-200 object-cover shadow-lg'
               />
             </div>
           )}
-          <div className='flex-1 min-w-0'>
-            <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2'>
+          <div className='min-w-0 flex-1'>
+            <h2 className='mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100'>
               {name || title}
             </h2>
-            <p className='text-lg text-teal-600 dark:text-teal-400 font-medium mb-3 break-words overflow-wrap-break-word whitespace-normal hero-profile-content markdown-card-content'>
+            <p className='overflow-wrap-break-word hero-profile-content markdown-card-content mb-3 whitespace-normal break-words text-lg font-medium text-teal-600 dark:text-teal-400'>
               {description}
             </p>
             {badgeArray.length > 0 && (
@@ -1093,7 +1093,7 @@ export const HeroProfileCard: React.FC<
       </CardHeader>
       {children && (
         <CardContent>
-          <div className='text-gray-600 dark:text-gray-300 leading-relaxed text-base break-words font-sans max-w-none hero-profile-content markdown-card-content space-y-6'>
+          <div className='hero-profile-content markdown-card-content max-w-none space-y-6 break-words font-sans text-base leading-relaxed text-gray-600 dark:text-gray-300'>
             <CardMarkdownContent content={children} />
           </div>
         </CardContent>
@@ -1188,10 +1188,10 @@ export const MultiColumnCards: React.FC<{
         return (
           <div
             key={index}
-            className='p-4 border border-red-200 bg-red-50 rounded-lg'
+            className='rounded-lg border border-red-200 bg-red-50 p-4'
           >
             <p className='text-red-600'>Unknown card type: {type}</p>
-            <pre className='text-xs mt-2'>{String(content)}</pre>
+            <pre className='mt-2 text-xs'>{String(content)}</pre>
           </div>
         );
     }

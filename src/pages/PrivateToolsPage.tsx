@@ -103,7 +103,7 @@ const PrivateToolsPage: React.FC = () => {
         return (
           <Badge
             variant='secondary'
-            className='brand-bg-secondary text-blue-800 hover:bg-blue-200 brand-border-secondary'
+            className='brand-bg-secondary brand-border-secondary text-blue-800 hover:bg-blue-200'
           >
             Beta Testing
           </Badge>
@@ -125,9 +125,9 @@ const PrivateToolsPage: React.FC = () => {
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'Content Creation':
-        return <Wrench className='h-5 w-5' />;
+        return <Wrench className='size-5' />;
       default:
-        return <Wrench className='h-5 w-5' />;
+        return <Wrench className='size-5' />;
     }
   };
 
@@ -140,17 +140,17 @@ const PrivateToolsPage: React.FC = () => {
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Private Theme */}
-            <div className='flex items-center justify-center gap-4 mb-4'>
+            <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='w-14 h-14 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg'>
-                  <Lock className='h-7 w-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
+                  <Lock className='size-7 text-white' />
                 </div>
                 {/* Private indicator dots */}
-                <div className='absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-red-500 to-purple-600 rounded-full flex items-center justify-center'>
-                  <div className='w-2 h-2 bg-white rounded-full'></div>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-purple-600'>
+                  <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center'>
-                  <div className='w-1.5 h-1.5 bg-white rounded-full'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
+                  <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
@@ -162,12 +162,12 @@ const PrivateToolsPage: React.FC = () => {
                     Private Tools
                   </span>
                 </H1>
-                <div className='h-1 w-20 bg-gradient-to-r from-teal-500 to-blue-500 mx-auto mt-2 rounded-full'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
               </div>
             </div>
 
             {/* Description with Private Language */}
-            <P className='text-lg leading-7 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto'>
+            <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-gray-300'>
               Access your private toolkit with tools currently in development
               and beta testing.
               <span className='font-medium text-teal-700 dark:text-teal-300'>
@@ -178,17 +178,17 @@ const PrivateToolsPage: React.FC = () => {
             </P>
 
             {/* Quick Stats with Private Theme */}
-            <div className='flex justify-center gap-6 mt-6'>
+            <div className='mt-6 flex justify-center gap-6'>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-red-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-red-500'></div>
                 <span>Private Access</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-orange-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-orange-500'></div>
                 <span>Early Access</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-purple-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-purple-500'></div>
                 <span>Development Tools</span>
               </div>
             </div>
@@ -197,25 +197,25 @@ const PrivateToolsPage: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
+      <div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
         {/* Tools Grid */}
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12'>
+        <div className='mb-12 grid grid-cols-1 gap-6 lg:grid-cols-2'>
           {privateTools.map(tool => (
             <Card
               key={tool.id}
-              className='group hover:shadow-lg transition-all duration-200 border border-gray-200 hover:border-gray-300'
+              className='group border border-gray-200 transition-all duration-200 hover:border-gray-300 hover:shadow-lg'
             >
               <CardHeader className='pb-3'>
                 <div className='flex items-start justify-between'>
                   <div className='flex items-center gap-3'>
-                    <div className='p-2 bg-teal-100 rounded-lg group-hover:bg-teal-200 transition-colors'>
-                      <tool.icon className='h-6 w-6 text-teal-700' />
+                    <div className='rounded-lg bg-teal-100 p-2 transition-colors group-hover:bg-teal-200'>
+                      <tool.icon className='size-6 text-teal-700' />
                     </div>
                     <div>
-                      <CardTitle className='text-xl group-hover:text-gray-900 transition-colors'>
+                      <CardTitle className='text-xl transition-colors group-hover:text-gray-900'>
                         {tool.title}
                       </CardTitle>
-                      <div className='flex items-center gap-2 mt-1'>
+                      <div className='mt-1 flex items-center gap-2'>
                         <div className='flex items-center gap-1 text-sm text-gray-500'>
                           {getCategoryIcon(tool.category)}
                           <span>{tool.category}</span>
@@ -223,9 +223,9 @@ const PrivateToolsPage: React.FC = () => {
                         {getStatusBadge(tool.status)}
                         <Badge
                           variant='outline'
-                          className='border-red-300 text-red-600 text-xs'
+                          className='border-red-300 text-xs text-red-600'
                         >
-                          <Lock className='h-3 w-3 mr-1' />
+                          <Lock className='mr-1 size-3' />
                           Private
                         </Badge>
                       </div>
@@ -235,12 +235,12 @@ const PrivateToolsPage: React.FC = () => {
               </CardHeader>
 
               <CardContent className='pt-0'>
-                <P className='text-gray-600 mb-4 leading-relaxed'>
+                <P className='mb-4 leading-relaxed text-gray-600'>
                   {tool.description}
                 </P>
 
                 <div className='mb-4'>
-                  <H2 className='text-sm font-semibold text-gray-700 mb-2'>
+                  <H2 className='mb-2 text-sm font-semibold text-gray-700'>
                     Key Features:
                   </H2>
                   <div className='flex flex-wrap gap-1'>
@@ -248,7 +248,7 @@ const PrivateToolsPage: React.FC = () => {
                       <Badge
                         key={index}
                         variant='secondary'
-                        className='text-xs bg-gray-50 text-gray-600 border-gray-200'
+                        className='border-gray-200 bg-gray-50 text-xs text-gray-600'
                       >
                         {feature}
                       </Badge>
@@ -267,11 +267,11 @@ const PrivateToolsPage: React.FC = () => {
                     <Button
                       asChild
                       size='sm'
-                      className='bg-teal-600 hover:bg-teal-700 text-white group-hover:bg-teal-800 transition-colors'
+                      className='bg-teal-600 text-white transition-colors hover:bg-teal-700 group-hover:bg-teal-800'
                     >
                       <Link to={tool.url}>
                         Try Beta
-                        <ArrowRight className='ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform' />
+                        <ArrowRight className='ml-2 size-4 transition-transform group-hover:translate-x-1' />
                       </Link>
                     </Button>
                   ) : (
@@ -279,12 +279,12 @@ const PrivateToolsPage: React.FC = () => {
                       asChild
                       size='sm'
                       variant='outline'
-                      className='text-orange-600 border-orange-300 hover:bg-orange-50 group-hover:border-orange-400 transition-colors'
+                      className='border-orange-300 text-orange-600 transition-colors hover:bg-orange-50 group-hover:border-orange-400'
                     >
                       <Link to={tool.url}>
-                        <TestTube className='mr-2 h-4 w-4' />
+                        <TestTube className='mr-2 size-4' />
                         Test Development
-                        <ArrowRight className='ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform' />
+                        <ArrowRight className='ml-2 size-4 transition-transform group-hover:translate-x-1' />
                       </Link>
                     </Button>
                   )}
@@ -296,22 +296,22 @@ const PrivateToolsPage: React.FC = () => {
 
         {/* Coming Soon Section */}
         <div className='text-center'>
-          <Card className='bg-gradient-to-r from-teal-50 to-blue-50 border-teal-200'>
+          <Card className='border-teal-200 bg-gradient-to-r from-teal-50 to-blue-50'>
             <CardContent className='p-8'>
-              <div className='flex items-center justify-center mb-4'>
-                <div className='w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center'>
-                  <Wrench className='h-6 w-6 text-teal-600' />
+              <div className='mb-4 flex items-center justify-center'>
+                <div className='flex size-12 items-center justify-center rounded-xl bg-teal-100'>
+                  <Wrench className='size-6 text-teal-600' />
                 </div>
               </div>
-              <H2 className='text-2xl font-bold text-gray-900 mb-2'>
+              <H2 className='mb-2 text-2xl font-bold text-gray-900'>
                 More Private Tools Coming Soon
               </H2>
-              <P className='text-gray-600 mb-4 max-w-2xl mx-auto'>
+              <P className='mx-auto mb-4 max-w-2xl text-gray-600'>
                 We're constantly developing new private tools and utilities.
                 These exclusive tools are available only to authenticated users
                 during their development phase.
               </P>
-              <div className='flex flex-col sm:flex-row gap-3 justify-center'>
+              <div className='flex flex-col justify-center gap-3 sm:flex-row'>
                 <Button
                   asChild
                   variant='outline'
@@ -319,7 +319,7 @@ const PrivateToolsPage: React.FC = () => {
                 >
                   <Link to='/tools'>
                     View Public Tools
-                    <ArrowRight className='ml-2 h-4 w-4' />
+                    <ArrowRight className='ml-2 size-4' />
                   </Link>
                 </Button>
                 <Button
@@ -329,7 +329,7 @@ const PrivateToolsPage: React.FC = () => {
                 >
                   <Link to='/protected/content-studio'>
                     Content Studio
-                    <ArrowRight className='ml-2 h-4 w-4' />
+                    <ArrowRight className='ml-2 size-4' />
                   </Link>
                 </Button>
               </div>

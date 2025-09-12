@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -19,18 +14,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, Trash2, Download, Target, TrendingUp } from 'lucide-react';
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ReferenceLine,
-} from 'recharts';
+import { H1, H3, P } from '@/components/ui/typography';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { zodResolver } from '@hookform/resolvers/zod';
 import ExcelJS from 'exceljs';
 import html2canvas from 'html2canvas';
-import { H1, H3, P } from '@/components/ui/typography';
+import { Download, Plus, Target, Trash2, TrendingUp } from 'lucide-react';
+import React, { useState } from 'react';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import {
+  CartesianGrid,
+  ReferenceLine,
+  Scatter,
+  ScatterChart,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import * as z from 'zod';
 
 // Schema for form validation
 const taskSchema = z.object({
@@ -936,17 +936,17 @@ const PriorityMatrixPage: React.FC = () => {
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Targeting Theme */}
-            <div className='flex items-center justify-center gap-4 mb-4'>
+            <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='w-14 h-14 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg'>
-                  <Target className='h-7 w-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
+                  <Target className='size-7 text-white' />
                 </div>
                 {/* Targeting indicator dots */}
-                <div className='absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center'>
-                  <div className='w-2 h-2 bg-white rounded-full'></div>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
+                  <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center'>
-                  <div className='w-1.5 h-1.5 bg-white rounded-full'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
+                  <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
@@ -958,12 +958,12 @@ const PriorityMatrixPage: React.FC = () => {
                     Priority Matrix Generator
                   </span>
                 </H1>
-                <div className='h-1 w-20 bg-gradient-to-r from-teal-500 to-blue-500 mx-auto mt-2 rounded-full'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
               </div>
             </div>
 
             {/* Description with Targeting Language */}
-            <P className='text-lg leading-7 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto'>
+            <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-gray-300'>
               Strategic task prioritization using the Eisenhower Matrix
               methodology.
               <span className='font-medium text-teal-700 dark:text-teal-300'>
@@ -974,17 +974,17 @@ const PriorityMatrixPage: React.FC = () => {
             </P>
 
             {/* Quick Stats with Targeting Theme */}
-            <div className='flex justify-center gap-6 mt-6'>
+            <div className='mt-6 flex justify-center gap-6'>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-teal-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-teal-500'></div>
                 <span>Strategic Focus</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-blue-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-blue-500'></div>
                 <span>Priority Analysis</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-purple-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-purple-500'></div>
                 <span>Action Targeting</span>
               </div>
             </div>
@@ -993,14 +993,14 @@ const PriorityMatrixPage: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className='max-w-4xl mx-auto px-4 py-8'>
-        <Card className='bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-teal-200/50 dark:border-teal-800/50 shadow-xl'>
+      <div className='mx-auto max-w-4xl px-4 py-8'>
+        <Card className='border border-teal-200/50 bg-white/80 shadow-xl backdrop-blur-sm dark:border-teal-800/50 dark:bg-slate-900/80'>
           <CardContent className='p-8'>
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-8'>
               {/* Project Name Section */}
               <div className='space-y-3'>
-                <H3 className='text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
-                  <div className='w-2 h-2 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full'></div>
+                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
+                  <div className='size-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
                   Project Details
                 </H3>
                 <div className='space-y-2'>
@@ -1013,11 +1013,11 @@ const PriorityMatrixPage: React.FC = () => {
                   <Input
                     id='projectName'
                     {...register('projectName')}
-                    className='border-teal-200 dark:border-teal-700 focus:border-teal-500 focus:ring-teal-500/20'
+                    className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'
                     placeholder='Enter your project name'
                   />
                   {errors.projectName && (
-                    <p className='text-red-500 text-sm mt-1'>
+                    <p className='mt-1 text-sm text-red-500'>
                       {errors.projectName.message}
                     </p>
                   )}
@@ -1026,8 +1026,8 @@ const PriorityMatrixPage: React.FC = () => {
 
               {/* Tasks Section */}
               <div className='space-y-3'>
-                <H3 className='text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
-                  <div className='w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full'></div>
+                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
+                  <div className='size-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500'></div>
                   Priority Tasks
                 </H3>
                 <P className='text-sm text-gray-600 dark:text-gray-400'>
@@ -1039,7 +1039,7 @@ const PriorityMatrixPage: React.FC = () => {
                   {fields.map((field, index) => (
                     <div
                       key={field.id}
-                      className='bg-gradient-to-r from-slate-50 to-teal-50 dark:from-slate-800 dark:to-teal-900/30 border border-teal-200/50 dark:border-teal-700/50 p-6 rounded-xl shadow-sm'
+                      className='rounded-xl border border-teal-200/50 bg-gradient-to-r from-slate-50 to-teal-50 p-6 shadow-sm dark:border-teal-700/50 dark:from-slate-800 dark:to-teal-900/30'
                     >
                       <div className='space-y-4'>
                         <div className='space-y-2'>
@@ -1049,19 +1049,19 @@ const PriorityMatrixPage: React.FC = () => {
                           <Input
                             placeholder='Enter task description'
                             {...register(`tasks.${index}.name` as const)}
-                            className='border-teal-200 dark:border-teal-700 focus:border-teal-500 focus:ring-teal-500/20'
+                            className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'
                           />
                           {errors.tasks?.[index]?.name && (
-                            <p className='text-red-500 text-sm'>
+                            <p className='text-sm text-red-500'>
                               {errors.tasks[index]?.name?.message}
                             </p>
                           )}
                         </div>
 
-                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
                           <div className='space-y-2'>
-                            <Label className='text-sm font-medium text-blue-700 dark:text-blue-300 flex items-center gap-1'>
-                              <TrendingUp className='h-3 w-3' />
+                            <Label className='flex items-center gap-1 text-sm font-medium text-blue-700 dark:text-blue-300'>
+                              <TrendingUp className='size-3' />
                               Importance (1-5)
                             </Label>
                             <Controller
@@ -1072,7 +1072,7 @@ const PriorityMatrixPage: React.FC = () => {
                                   onValueChange={field.onChange}
                                   value={field.value}
                                 >
-                                  <SelectTrigger className='border-teal-200 dark:border-teal-700 focus:border-teal-500 focus:ring-teal-500/20'>
+                                  <SelectTrigger className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'>
                                     <SelectValue placeholder='Select importance' />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -1086,7 +1086,7 @@ const PriorityMatrixPage: React.FC = () => {
                                       >
                                         <div className='flex items-center gap-2'>
                                           <div
-                                            className={`w-2 h-2 rounded-full ${num >= 4 ? 'bg-red-500' : num >= 3 ? 'bg-yellow-500' : 'bg-green-500'}`}
+                                            className={`size-2 rounded-full ${num >= 4 ? 'bg-red-500' : num >= 3 ? 'bg-yellow-500' : 'bg-green-500'}`}
                                           ></div>
                                           {num} -{' '}
                                           {num >= 4
@@ -1106,8 +1106,8 @@ const PriorityMatrixPage: React.FC = () => {
                           </div>
 
                           <div className='space-y-2'>
-                            <Label className='text-sm font-medium text-purple-700 dark:text-purple-300 flex items-center gap-1'>
-                              <Target className='h-3 w-3' />
+                            <Label className='flex items-center gap-1 text-sm font-medium text-purple-700 dark:text-purple-300'>
+                              <Target className='size-3' />
                               Urgency (1-5)
                             </Label>
                             <Controller
@@ -1118,7 +1118,7 @@ const PriorityMatrixPage: React.FC = () => {
                                   onValueChange={field.onChange}
                                   value={field.value}
                                 >
-                                  <SelectTrigger className='border-teal-200 dark:border-teal-700 focus:border-teal-500 focus:ring-teal-500/20'>
+                                  <SelectTrigger className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'>
                                     <SelectValue placeholder='Select urgency' />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -1132,7 +1132,7 @@ const PriorityMatrixPage: React.FC = () => {
                                       >
                                         <div className='flex items-center gap-2'>
                                           <div
-                                            className={`w-2 h-2 rounded-full ${num >= 4 ? 'bg-red-500' : num >= 3 ? 'bg-orange-500' : 'bg-blue-500'}`}
+                                            className={`size-2 rounded-full ${num >= 4 ? 'bg-red-500' : num >= 3 ? 'bg-orange-500' : 'bg-blue-500'}`}
                                           ></div>
                                           {num} -{' '}
                                           {num >= 4
@@ -1156,9 +1156,9 @@ const PriorityMatrixPage: React.FC = () => {
                           type='button'
                           variant='outline'
                           onClick={() => remove(index)}
-                          className='w-full sm:w-auto border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20'
+                          className='w-full border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 sm:w-auto'
                         >
-                          <Trash2 className='h-4 w-4 mr-2' /> Remove Task
+                          <Trash2 className='mr-2 size-4' /> Remove Task
                         </Button>
                       </div>
                     </div>
@@ -1168,9 +1168,9 @@ const PriorityMatrixPage: React.FC = () => {
                     onClick={() =>
                       append({ name: '', importance: '3', urgency: '3' })
                     }
-                    className='w-full bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200'
+                    className='w-full border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg transition-all duration-200 hover:from-teal-600 hover:to-blue-700 hover:shadow-xl'
                   >
-                    <Plus className='h-4 w-4 mr-2' /> Add Priority Task
+                    <Plus className='mr-2 size-4' /> Add Priority Task
                   </Button>
                 </div>
               </div>
@@ -1178,19 +1178,19 @@ const PriorityMatrixPage: React.FC = () => {
               <div className='flex justify-center pt-4'>
                 <Button
                   type='submit'
-                  className='bg-gradient-to-r from-teal-600 to-blue-700 hover:from-teal-700 hover:to-blue-800 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105'
+                  className='bg-gradient-to-r from-teal-600 to-blue-700 px-8 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-teal-700 hover:to-blue-800 hover:shadow-xl'
                 >
-                  <Target className='h-5 w-5 mr-2' />
+                  <Target className='mr-2 size-5' />
                   Generate Priority Matrix
                 </Button>
               </div>
             </form>
 
             {matrixData.length > 0 && (
-              <div className='mt-12 pt-8 border-t border-teal-200/50 dark:border-teal-700/50'>
-                <div className='text-center mb-8'>
-                  <H3 className='text-xl font-semibold text-gray-900 dark:text-white flex items-center justify-center gap-2 mb-2'>
-                    <div className='w-3 h-3 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full'></div>
+              <div className='mt-12 border-t border-teal-200/50 pt-8 dark:border-teal-700/50'>
+                <div className='mb-8 text-center'>
+                  <H3 className='mb-2 flex items-center justify-center gap-2 text-xl font-semibold text-gray-900 dark:text-white'>
+                    <div className='size-3 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
                     Strategic Priority Matrix
                   </H3>
                   <P className='text-sm text-gray-600 dark:text-gray-400'>
@@ -1216,15 +1216,15 @@ const PriorityMatrixPage: React.FC = () => {
                     return (
                       <div className='relative mt-8'>
                         {/* X-Axis Labels above chart */}
-                        <div className='absolute top-[-35px] left-0 translate-x-[230px] text-sm italic text-gray-700 z-20'>
+                        <div className='absolute left-0 top-[-35px] z-20 translate-x-[230px] text-sm italic text-gray-700'>
                           Urgent
                         </div>
-                        <div className='absolute top-[-35px] right-0 translate-x-[-150px] text-sm italic text-gray-700 z-20'>
+                        <div className='absolute right-0 top-[-35px] z-20 translate-x-[-150px] text-sm italic text-gray-700'>
                           Not Urgent
                         </div>
                         <ChartContainer
                           config={chartConfig}
-                          className='h-[400px] w-full relative z-10 priority-matrix-chart'
+                          className='relative z-10 h-[400px] w-full'
                         >
                           <ScatterChart width={800} height={400}>
                             <CartesianGrid />
@@ -1244,7 +1244,7 @@ const PriorityMatrixPage: React.FC = () => {
                             />
                             <ChartTooltip
                               content={
-                                <ChartTooltipContent className='bg-white border border-gray-200 shadow-lg rounded-md p-2' />
+                                <ChartTooltipContent className='rounded-md border border-gray-200 bg-white p-2 shadow-lg' />
                               }
                             />
                             <ReferenceLine
@@ -1283,7 +1283,7 @@ const PriorityMatrixPage: React.FC = () => {
                         </ChartContainer>
                         {/* Quadrant Overlay Wrapper to align with plot area */}
                         <div
-                          className={`absolute ${isMobile ? 'w-[95%] h-[97%]' : 'w-[91.5%] h-[90.5%]'} pointer-events-none z-0`}
+                          className={`absolute ${isMobile ? 'h-[97%] w-[95%]' : 'h-[90.5%] w-[91.5%]'} pointer-events-none z-0`}
                           style={{
                             left: 'calc(5% + 25px)',
                             top: 'calc(8% - 28px)',
@@ -1292,62 +1292,62 @@ const PriorityMatrixPage: React.FC = () => {
                           {/* Quadrant Shading */}
                           <div className='absolute inset-0'>
                             {/* Delegate: high urgency low importance - bottom left */}
-                            <div className='absolute bottom-0 left-0 w-1/2 h-1/2 bg-blue-200 opacity-20'></div>
+                            <div className='absolute bottom-0 left-0 size-1/2 bg-blue-200 opacity-20'></div>
                             {/* Delete: low urgency low importance - bottom right */}
-                            <div className='absolute bottom-0 right-0 w-1/2 h-1/2 bg-red-200 opacity-20'></div>
+                            <div className='absolute bottom-0 right-0 size-1/2 bg-red-200 opacity-20'></div>
                             {/* Do: high urgency high importance - top left */}
-                            <div className='absolute top-0 left-0 w-1/2 h-1/2 bg-green-200 opacity-20'></div>
+                            <div className='absolute left-0 top-0 size-1/2 bg-green-200 opacity-20'></div>
                             {/* Decide: low urgency high importance - top right */}
-                            <div className='absolute top-0 right-0 w-1/2 h-1/2 bg-yellow-200 opacity-20'></div>
+                            <div className='absolute right-0 top-0 size-1/2 bg-yellow-200 opacity-20'></div>
                           </div>
                           {/* Quadrant Labels */}
                           <div className='absolute inset-0'>
-                            <div className='absolute top-0 left-0 ml-1 mt-1 text-xs font-bold text-black bg-white px-2 py-1 rounded shadow-sm'>
+                            <div className='absolute left-0 top-0 ml-1 mt-1 rounded bg-white px-2 py-1 text-xs font-bold text-black shadow-sm'>
                               Do
                             </div>
-                            <div className='absolute top-0 right-0 mr-1 mt-1 text-xs font-bold text-black bg-white px-2 py-1 rounded shadow-sm'>
+                            <div className='absolute right-0 top-0 mr-1 mt-1 rounded bg-white px-2 py-1 text-xs font-bold text-black shadow-sm'>
                               Decide
                             </div>
-                            <div className='absolute bottom-0 left-0 ml-1 mb-1 text-xs font-bold text-black bg-white px-2 py-1 rounded shadow-sm'>
+                            <div className='absolute bottom-0 left-0 mb-1 ml-1 rounded bg-white px-2 py-1 text-xs font-bold text-black shadow-sm'>
                               Delegate
                             </div>
-                            <div className='absolute bottom-0 right-0 mr-1 mb-1 text-xs font-bold text-black bg-white px-2 py-1 rounded shadow-sm'>
+                            <div className='absolute bottom-0 right-0 mb-1 mr-1 rounded bg-white px-2 py-1 text-xs font-bold text-black shadow-sm'>
                               Delete
                             </div>
                           </div>
                         </div>
                         {/* Axis Labels outside chart */}
                         {/* Y-Axis Labels positioned outside left */}
-                        <div className='absolute left-0 top-[10%] -translate-x-3 translate-y-[30px] text-sm italic text-gray-700 writing-mode-vertical-rl transform -rotate-90 z-20 whitespace-nowrap'>
+                        <div className='absolute left-0 top-[10%] z-20 -translate-x-3 translate-y-[30px] -rotate-90 whitespace-nowrap text-sm italic text-gray-700 [writing-mode:vertical-rl]'>
                           Important
                         </div>
-                        <div className='absolute left-0 bottom-[10%] -translate-x-[27px] -translate-y-[120px] text-sm italic text-gray-700 writing-mode-vertical-rl transform -rotate-90 z-20 whitespace-nowrap'>
+                        <div className='absolute bottom-[10%] left-0 z-20 translate-x-[-27px] translate-y-[-120px] -rotate-90 whitespace-nowrap text-sm italic text-gray-700 [writing-mode:vertical-rl]'>
                           Not Important
                         </div>
                       </div>
                     );
                   })()}
                 </>
-                <div className='flex flex-col sm:flex-row gap-4 mt-8 justify-center'>
+                <div className='mt-8 flex flex-col justify-center gap-4 sm:flex-row'>
                   <Button
                     onClick={() => handleExport('raw')}
                     variant='outline'
-                    className='border-teal-200 text-teal-700 hover:bg-teal-50 hover:border-teal-300 dark:border-teal-700 dark:text-teal-300 dark:hover:bg-teal-900/20'
+                    className='border-teal-200 text-teal-700 hover:border-teal-300 hover:bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:hover:bg-teal-900/20'
                   >
-                    <Download className='h-4 w-4 mr-2' /> Export Raw XLSX
+                    <Download className='mr-2 size-4' /> Export Raw XLSX
                   </Button>
                   <Button
                     onClick={() => handleExport('formatted-xlsx')}
-                    className='bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200'
+                    className='border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg transition-all duration-200 hover:from-teal-600 hover:to-blue-700 hover:shadow-xl'
                   >
-                    <Download className='h-4 w-4 mr-2' /> Export Matrix XLSX
+                    <Download className='mr-2 size-4' /> Export Matrix XLSX
                   </Button>
                   <Button
                     onClick={() => handleExport('formatted-pdf')}
                     variant='outline'
-                    className='border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/20'
+                    className='border-purple-200 text-purple-700 hover:border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/20'
                   >
-                    <Download className='h-4 w-4 mr-2' /> Export Matrix PDF
+                    <Download className='mr-2 size-4' /> Export Matrix PDF
                   </Button>
                 </div>
               </div>

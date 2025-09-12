@@ -37,7 +37,7 @@ export const Logo: React.FC<LogoProps> = ({
         <img
           src='/header-logo.svg'
           alt='RCormier Logo'
-          className='w-full h-full'
+          className='size-full'
           onError={e => {
             console.error('Failed to load logo:', e);
             e.currentTarget.style.display = 'none';
@@ -46,9 +46,9 @@ export const Logo: React.FC<LogoProps> = ({
           }}
         />
         <div
-          className={`${sizeClass} bg-gradient-to-br from-teal-800 to-blue-800 rounded-2xl items-center justify-center shadow-lg hidden border border-teal-600/50`}
+          className={`${sizeClass} hidden items-center justify-center rounded-2xl border border-teal-600/50 bg-gradient-to-br from-teal-800 to-blue-800 shadow-lg`}
         >
-          <Target className='w-1/2 h-1/2 text-white' />
+          <Target className='size-1/2 text-white' />
         </div>
       </div>
     );
@@ -60,7 +60,7 @@ export const Logo: React.FC<LogoProps> = ({
         <img
           src='/header-logo.svg'
           alt='RCormier Logo'
-          className='w-full h-full'
+          className='size-full'
           onError={e => {
             console.error('Failed to load logo:', e);
             e.currentTarget.style.display = 'none';
@@ -69,9 +69,9 @@ export const Logo: React.FC<LogoProps> = ({
           }}
         />
         <div
-          className={`${sizeClass} bg-gradient-to-br from-teal-800 to-blue-800 rounded-2xl items-center justify-center shadow-lg hidden border border-teal-600/50`}
+          className={`${sizeClass} hidden items-center justify-center rounded-2xl border border-teal-600/50 bg-gradient-to-br from-teal-800 to-blue-800 shadow-lg`}
         >
-          <Target className='w-1/2 h-1/2 text-white' />
+          <Target className='size-1/2 text-white' />
         </div>
       </div>
     );
@@ -92,23 +92,23 @@ export const Logo: React.FC<LogoProps> = ({
       />
       {/* Fallback Target icon (hidden by default) */}
       <div
-        className={`${sizeClass} bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl items-center justify-center shadow-lg hidden`}
+        className={`${sizeClass} hidden items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg`}
       >
-        <Target className='w-1/2 h-1/2 text-white' />
+        <Target className='size-1/2 text-white' />
       </div>
 
       {/* Targeting indicator dots */}
       {showTargetingDots && (
         <>
           <div
-            className={`absolute -top-1 -right-1 ${dotSize.outer} bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center shadow-md border border-orange-300/50`}
+            className={`absolute -right-1 -top-1 ${dotSize.outer} flex items-center justify-center rounded-full border border-orange-300/50 bg-gradient-to-br from-orange-500 to-red-600 shadow-md`}
           >
-            <div className={`${dotSize.inner} bg-white rounded-full`}></div>
+            <div className={`${dotSize.inner} rounded-full bg-white`}></div>
           </div>
           <div
-            className={`absolute -bottom-1 -left-1 ${dotSize.outer} bg-gradient-to-br from-teal-600 to-blue-600 rounded-full flex items-center justify-center shadow-md border border-teal-300/50`}
+            className={`absolute -bottom-1 -left-1 ${dotSize.outer} flex items-center justify-center rounded-full border border-teal-300/50 bg-gradient-to-br from-teal-600 to-blue-600 shadow-md`}
           >
-            <div className={`${dotSize.inner} bg-white rounded-full`}></div>
+            <div className={`${dotSize.inner} rounded-full bg-white`}></div>
           </div>
         </>
       )}

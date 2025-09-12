@@ -114,7 +114,7 @@ const UnifiedTable = React.forwardRef<
     <table
       ref={ref}
       className={cn(
-        'w-full caption-bottom text-sm border-collapse my-4 bg-white border border-teal-200 rounded-xl overflow-hidden shadow-sm',
+        'my-4 w-full caption-bottom border-collapse overflow-hidden rounded-xl border border-teal-200 bg-white text-sm shadow-sm',
         className
       )}
       {...props}
@@ -146,7 +146,7 @@ const UnifiedTableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      'border-b border-teal-100 last:border-b-0 hover:bg-teal-50 hover:shadow-sm transition-all duration-200 ease-in-out',
+      'border-b border-teal-100 transition-all duration-200 ease-in-out last:border-b-0 hover:bg-teal-50 hover:shadow-sm',
       className
     )}
     {...props}
@@ -161,7 +161,7 @@ const UnifiedTableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      'h-14 px-5 text-left align-middle font-semibold text-teal-900 border-r border-teal-200 last:border-r-0 bg-teal-50 text-sm tracking-wide',
+      'h-14 border-r border-teal-200 bg-teal-50 px-5 text-left align-middle text-sm font-semibold tracking-wide text-teal-900 last:border-r-0',
       className
     )}
     {...props}
@@ -176,7 +176,7 @@ const UnifiedTableCell = React.forwardRef<
   <td
     ref={ref}
     className={cn(
-      'px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 last:border-r-0 text-teal-700 text-sm leading-relaxed',
+      'min-w-[120px] border-r border-teal-100 px-5 py-4 align-middle text-sm leading-relaxed text-teal-700 last:border-r-0',
       className
     )}
     {...props}

@@ -164,22 +164,22 @@ const Breadcrumbs: React.FC = () => {
   };
 
   return (
-    <nav className='flex items-center space-x-1 text-sm text-white/80 h-8 min-w-0'>
+    <nav className='flex h-8 min-w-0 items-center space-x-1 text-sm text-white/80'>
       {breadcrumbs.map((breadcrumb, index) => (
-        <div key={breadcrumb.path} className='flex items-center flex-shrink-0'>
-          {index > 0 && <ChevronRight className='h-4 w-4 mx-1 flex-shrink-0' />}
+        <div key={breadcrumb.path} className='flex shrink-0 items-center'>
+          {index > 0 && <ChevronRight className='mx-1 size-4 shrink-0' />}
           {breadcrumb.current ? (
-            <span className='flex items-center gap-1 text-white font-medium flex-shrink-0 px-2 py-1'>
-              <breadcrumb.icon className='h-4 w-4 flex-shrink-0' />
-              <span className='truncate min-w-0'>{breadcrumb.name}</span>
+            <span className='flex shrink-0 items-center gap-1 px-2 py-1 font-medium text-white'>
+              <breadcrumb.icon className='size-4 shrink-0' />
+              <span className='min-w-0 truncate'>{breadcrumb.name}</span>
             </span>
           ) : (
             <button
               onClick={() => handleNavigation(breadcrumb.path)}
-              className='flex items-center gap-1 hover:text-white transition-colors text-white/70 hover:bg-white/10 px-2 py-1 rounded flex-shrink-0'
+              className='flex shrink-0 items-center gap-1 rounded px-2 py-1 text-white/70 transition-colors hover:bg-white/10 hover:text-white'
             >
-              <breadcrumb.icon className='h-4 w-4 flex-shrink-0' />
-              <span className='truncate min-w-0'>{breadcrumb.name}</span>
+              <breadcrumb.icon className='size-4 shrink-0' />
+              <span className='min-w-0 truncate'>{breadcrumb.name}</span>
             </button>
           )}
         </div>

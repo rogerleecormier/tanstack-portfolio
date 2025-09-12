@@ -73,9 +73,9 @@ export default function NewsletterSignup({
   const getStatusIcon = () => {
     switch (status) {
       case 'success':
-        return <CheckCircle className='h-4 w-4 text-green-600' />;
+        return <CheckCircle className='size-4 text-green-600' />;
       case 'error':
-        return <AlertCircle className='h-4 w-4 text-red-600' />;
+        return <AlertCircle className='size-4 text-red-600' />;
       default:
         return null;
     }
@@ -94,18 +94,18 @@ export default function NewsletterSignup({
 
   if (variant === 'compact') {
     return (
-      <div className={cn('mt-8 pt-6 border-t border-gray-200', className)}>
-        <div className='text-center mb-6'>
-          <h3 className='text-xl font-semibold text-gray-900 dark:text-white mb-2'>
+      <div className={cn('mt-8 border-t border-gray-200 pt-6', className)}>
+        <div className='mb-6 text-center'>
+          <h3 className='mb-2 text-xl font-semibold text-gray-900 dark:text-white'>
             {title}
           </h3>
-          <p className='text-gray-600 dark:text-gray-400 text-sm'>
+          <p className='text-sm text-gray-600 dark:text-gray-400'>
             {description}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className='max-w-md mx-auto'>
-          <div className='flex flex-col sm:flex-row gap-3 mb-3'>
+        <form onSubmit={handleSubmit} className='mx-auto max-w-md'>
+          <div className='mb-3 flex flex-col gap-3 sm:flex-row'>
             <Input
               type='text'
               placeholder='Your name (optional)'
@@ -127,11 +127,11 @@ export default function NewsletterSignup({
           <Button
             type='submit'
             disabled={isSubmitting}
-            className='w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white'
+            className='w-full bg-teal-600 text-white hover:bg-teal-700 sm:w-auto'
           >
             {isSubmitting ? (
               <>
-                <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                <Loader2 className='mr-2 size-4 animate-spin' />
                 Subscribing...
               </>
             ) : (
@@ -143,7 +143,7 @@ export default function NewsletterSignup({
         {message && (
           <div
             className={cn(
-              'flex items-center justify-center gap-2 text-sm mt-3',
+              'mt-3 flex items-center justify-center gap-2 text-sm',
               getStatusColor()
             )}
           >
@@ -152,7 +152,7 @@ export default function NewsletterSignup({
           </div>
         )}
 
-        <p className='text-xs text-gray-500 mt-3 text-center'>
+        <p className='mt-3 text-center text-xs text-gray-500'>
           By subscribing, you agree to receive email updates. You can
           unsubscribe at any time.
         </p>
@@ -164,7 +164,7 @@ export default function NewsletterSignup({
     return (
       <form
         onSubmit={handleSubmit}
-        className={cn('flex flex-col sm:flex-row gap-3', className)}
+        className={cn('flex flex-col gap-3 sm:flex-row', className)}
       >
         <Input
           type='email'
@@ -177,11 +177,11 @@ export default function NewsletterSignup({
         <Button
           type='submit'
           disabled={isSubmitting}
-          className='whitespace-nowrap bg-teal-600 hover:bg-teal-700 text-white'
+          className='whitespace-nowrap bg-teal-600 text-white hover:bg-teal-700'
         >
           {isSubmitting ? (
             <>
-              <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+              <Loader2 className='mr-2 size-4 animate-spin' />
               Subscribing...
             </>
           ) : (
@@ -193,19 +193,19 @@ export default function NewsletterSignup({
   }
 
   return (
-    <div className={cn('mt-16 pt-8 border-t border-gray-200', className)}>
+    <div className={cn('mt-16 border-t border-gray-200 pt-8', className)}>
       <Card className='text-center'>
         <CardContent className='py-8'>
-          <BookOpen className='w-12 h-12 text-teal-600 mx-auto mb-4' />
-          <h3 className='text-2xl font-semibold text-gray-900 dark:text-white mb-2'>
+          <BookOpen className='mx-auto mb-4 size-12 text-teal-600' />
+          <h3 className='mb-2 text-2xl font-semibold text-gray-900 dark:text-white'>
             {title}
           </h3>
-          <p className='text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto'>
+          <p className='mx-auto mb-6 max-w-md text-gray-600 dark:text-gray-400'>
             {description}
           </p>
 
-          <form onSubmit={handleSubmit} className='max-w-md mx-auto'>
-            <div className='flex flex-col sm:flex-row gap-4 mb-4'>
+          <form onSubmit={handleSubmit} className='mx-auto max-w-md'>
+            <div className='mb-4 flex flex-col gap-4 sm:flex-row'>
               <Input
                 type='text'
                 placeholder='Your name (optional)'
@@ -227,11 +227,11 @@ export default function NewsletterSignup({
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white'
+              className='w-full bg-teal-600 text-white hover:bg-teal-700 sm:w-auto'
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                  <Loader2 className='mr-2 size-4 animate-spin' />
                   Subscribing...
                 </>
               ) : (
@@ -243,7 +243,7 @@ export default function NewsletterSignup({
           {message && (
             <div
               className={cn(
-                'flex items-center justify-center gap-2 text-sm mt-4',
+                'mt-4 flex items-center justify-center gap-2 text-sm',
                 getStatusColor()
               )}
             >
@@ -252,7 +252,7 @@ export default function NewsletterSignup({
             </div>
           )}
 
-          <p className='text-xs text-gray-500 mt-4'>
+          <p className='mt-4 text-xs text-gray-500'>
             By subscribing, you agree to receive email updates. You can
             unsubscribe at any time.
           </p>

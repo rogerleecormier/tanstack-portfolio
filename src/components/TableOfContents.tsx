@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { useSidebar } from '@/components/ui/sidebar';
+import { useEffect, useState } from 'react';
 
 type TOCEntry = {
   title: string;
@@ -130,9 +130,9 @@ export function TableOfContents() {
   }
 
   return (
-    <div className='border-t border-slate-200/50 dark:border-slate-700/50 mt-2 pt-3'>
-      <div className='px-3 mb-2'>
-        <h3 className='text-slate-600 dark:text-slate-400 font-semibold text-xs uppercase tracking-wider'>
+    <div className='mt-2 border-t border-slate-200/50 pt-3 dark:border-slate-700/50'>
+      <div className='mb-2 px-3'>
+        <h3 className='text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400'>
           Table of Contents
         </h3>
       </div>
@@ -142,10 +142,10 @@ export function TableOfContents() {
             <li key={entry.slug}>
               <a
                 href={`#${entry.slug}`}
-                className={`block py-2 px-3 text-sm transition-all duration-200 rounded-lg ${
+                className={`block rounded-lg px-3 py-2 text-sm transition-all duration-200 ${
                   activeId === entry.slug
-                    ? 'bg-gradient-to-r from-teal-50 to-blue-50 text-slate-900 font-semibold border-l-3 border-teal-600 dark:from-teal-900/30 dark:to-blue-900/30 dark:text-slate-100'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-200 hover:bg-teal-100/80 dark:hover:bg-teal-800/30'
+                    ? 'border-l-[3px] border-teal-600 bg-gradient-to-r from-teal-50 to-blue-50 font-semibold text-slate-900 dark:from-teal-900/30 dark:to-blue-900/30 dark:text-slate-100'
+                    : 'text-slate-600 hover:bg-teal-100/80 hover:text-teal-800 dark:text-slate-400 dark:hover:bg-teal-800/30 dark:hover:text-teal-200'
                 }`}
                 onClick={e => {
                   e.preventDefault();

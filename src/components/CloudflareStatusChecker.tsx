@@ -213,13 +213,13 @@ export const CloudflareStatusChecker: React.FC = () => {
   const getStatusIcon = () => {
     switch (status) {
       case 'connected':
-        return <CheckCircle className='h-6 w-6 text-green-600' />;
+        return <CheckCircle className='size-6 text-green-600' />;
       case 'disconnected':
-        return <XCircle className='h-6 w-6 text-red-600' />;
+        return <XCircle className='size-6 text-red-600' />;
       case 'error':
-        return <AlertTriangle className='h-6 w-6 text-yellow-600' />;
+        return <AlertTriangle className='size-6 text-yellow-600' />;
       default:
-        return <RefreshCw className='h-6 w-6 text-blue-600 animate-spin' />;
+        return <RefreshCw className='size-6 animate-spin text-blue-600' />;
     }
   };
 
@@ -254,10 +254,10 @@ export const CloudflareStatusChecker: React.FC = () => {
   }
 
   return (
-    <Card className='w-full max-w-4xl mx-auto border-teal-200 shadow-lg'>
+    <Card className='mx-auto w-full max-w-4xl border-teal-200 shadow-lg'>
       <CardHeader className='text-center'>
         <div className='flex items-center justify-center space-x-2'>
-          <Shield className='h-6 w-6 text-teal-600' />
+          <Shield className='size-6 text-teal-600' />
           <CardTitle className='text-xl font-bold text-teal-900'>
             Cloudflare Access Status
           </CardTitle>
@@ -268,9 +268,9 @@ export const CloudflareStatusChecker: React.FC = () => {
       </CardHeader>
       <CardContent className='space-y-4'>
         {/* Status Display */}
-        <div className='flex items-center justify-center space-x-3 p-4 bg-teal-50 rounded-lg border border-teal-200'>
+        <div className='flex items-center justify-center space-x-3 rounded-lg border border-teal-200 bg-teal-50 p-4'>
           {getStatusIcon()}
-          <span className={`font-semibold text-lg ${getStatusColor()}`}>
+          <span className={`text-lg font-semibold ${getStatusColor()}`}>
             {getStatusText()}
           </span>
         </div>
@@ -280,10 +280,10 @@ export const CloudflareStatusChecker: React.FC = () => {
           <Button
             onClick={checkStatus}
             disabled={status === 'checking'}
-            className='bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2'
+            className='bg-teal-600 hover:bg-teal-700 focus:ring-2 focus:ring-teal-500 focus:ring-offset-2'
           >
             <RefreshCw
-              className={`h-4 w-4 mr-2 ${status === 'checking' ? 'animate-spin' : ''}`}
+              className={`mr-2 size-4 ${status === 'checking' ? 'animate-spin' : ''}`}
             />
             Refresh Status
           </Button>
@@ -292,14 +292,14 @@ export const CloudflareStatusChecker: React.FC = () => {
             variant='outline'
             className='border-teal-300 text-teal-700 hover:bg-teal-50'
           >
-            <Info className='h-4 w-4 mr-2' />
+            <Info className='mr-2 size-4' />
             {isExpanded ? 'Hide Details' : 'Show Details'}
           </Button>
         </div>
 
         {/* Detailed Information */}
         {isExpanded && details && (
-          <div className='bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4'>
+          <div className='space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4'>
             <H3 className='font-semibold text-gray-800'>
               Detailed Status Information
             </H3>
@@ -312,7 +312,7 @@ export const CloudflareStatusChecker: React.FC = () => {
               <div className='grid grid-cols-2 gap-2 text-sm'>
                 <div className='flex items-center space-x-2'>
                   <span
-                    className={`w-3 h-3 rounded-full ${details.cookies?.cfAuth ? 'bg-green-500' : 'bg-red-500'}`}
+                    className={`size-3 rounded-full ${details.cookies?.cfAuth ? 'bg-green-500' : 'bg-red-500'}`}
                   ></span>
                   <span>
                     CF_Authorization: {details.cookies?.cfAuth ? '✅' : '❌'}
@@ -320,7 +320,7 @@ export const CloudflareStatusChecker: React.FC = () => {
                 </div>
                 <div className='flex items-center space-x-2'>
                   <span
-                    className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessUserEmail ? 'bg-green-500' : 'bg-red-500'}`}
+                    className={`size-3 rounded-full ${details.cookies?.cfAccessUserEmail ? 'bg-green-500' : 'bg-red-500'}`}
                   ></span>
                   <span>
                     CF_Access_User_Email:{' '}
@@ -329,7 +329,7 @@ export const CloudflareStatusChecker: React.FC = () => {
                 </div>
                 <div className='flex items-center space-x-2'>
                   <span
-                    className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessIdentity ? 'bg-green-500' : 'bg-red-500'}`}
+                    className={`size-3 rounded-full ${details.cookies?.cfAccessIdentity ? 'bg-green-500' : 'bg-red-500'}`}
                   ></span>
                   <span>
                     CF_Access_Identity:{' '}
@@ -338,7 +338,7 @@ export const CloudflareStatusChecker: React.FC = () => {
                 </div>
                 <div className='flex items-center space-x-2'>
                   <span
-                    className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessUser ? 'bg-green-500' : 'bg-red-500'}`}
+                    className={`size-3 rounded-full ${details.cookies?.cfAccessUser ? 'bg-green-500' : 'bg-red-500'}`}
                   ></span>
                   <span>
                     CF_Access_User:{' '}
@@ -351,7 +351,7 @@ export const CloudflareStatusChecker: React.FC = () => {
             {/* Local Storage Section */}
             <div className='space-y-2'>
               <P className='font-semibold text-gray-700'>Local Storage:</P>
-              <div className='text-sm space-y-1'>
+              <div className='space-y-1 text-sm'>
                 <div>
                   Stored User: {details.localStorage?.storedUser ? '✅' : '❌'}
                 </div>
@@ -365,7 +365,7 @@ export const CloudflareStatusChecker: React.FC = () => {
             {/* URL Parameters Section */}
             <div className='space-y-2'>
               <P className='font-semibold text-gray-700'>URL Parameters:</P>
-              <div className='text-sm space-y-1'>
+              <div className='space-y-1 text-sm'>
                 <div>
                   CF Access Message:{' '}
                   {details.urlParams?.cfAccessMessage ? '✅' : '❌'}
@@ -404,13 +404,13 @@ export const CloudflareStatusChecker: React.FC = () => {
             {/* Raw Cookie Data */}
             <div className='space-y-2'>
               <P className='font-semibold text-gray-700'>All Cookies:</P>
-              <div className='bg-white border border-gray-300 rounded p-2 text-xs font-mono overflow-x-auto'>
+              <div className='overflow-x-auto rounded border border-gray-300 bg-white p-2 font-mono text-xs'>
                 {details.cookies?.all || 'No cookies found'}
               </div>
             </div>
 
             {/* Timestamp */}
-            <div className='text-xs text-gray-500 text-center'>
+            <div className='text-center text-xs text-gray-500'>
               Last checked: {details.timestamp}
             </div>
           </div>

@@ -34,11 +34,11 @@ export function ScrollToTop() {
   return (
     <Button
       onClick={scrollToTop}
-      className='fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white shadow-lg hover:shadow-xl transition-all duration-200 border-0'
+      className='fixed bottom-6 right-6 z-50 size-12 rounded-full border-0 bg-gradient-to-r from-teal-800 to-blue-800 text-white shadow-lg transition-all duration-200 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
       size='icon'
       aria-label='Scroll to top'
     >
-      <ArrowUp className='h-5 w-5' />
+      <ArrowUp className='size-5' />
     </Button>
   );
 }

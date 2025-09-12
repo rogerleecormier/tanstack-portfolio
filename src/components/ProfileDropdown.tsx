@@ -76,34 +76,34 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
       <Button
         variant='ghost'
         onClick={() => setIsOpen(!isOpen)}
-        className='relative h-10 w-auto min-w-[100px] max-w-[180px] px-2 py-1 bg-white/5 hover:bg-white/15 text-white border-0 rounded-full transition-all duration-200 flex-shrink-0 group'
+        className='group relative h-10 w-auto min-w-[100px] max-w-[180px] shrink-0 rounded-full border-0 bg-white/5 px-2 py-1 text-white transition-all duration-200 hover:bg-white/15'
       >
         <div className='flex items-center gap-2'>
           {/* Minimalist Avatar */}
-          <Avatar className='h-7 w-7 rounded-full ring-2 ring-white/30 group-hover:ring-white/50 transition-all duration-200'>
+          <Avatar className='size-7 rounded-full ring-2 ring-white/30 transition-all duration-200 group-hover:ring-white/50'>
             <AvatarImage src={user.picture} alt={getUserDisplayName(user)} />
-            <AvatarFallback className='text-xs font-medium bg-teal-600 text-white'>
+            <AvatarFallback className='bg-teal-600 text-xs font-medium text-white'>
               {getUserInitials(user)}
             </AvatarFallback>
           </Avatar>
 
-          <div className='hidden sm:block text-left'>
-            <div className='text-sm font-medium truncate max-w-28 text-white'>
+          <div className='hidden text-left sm:block'>
+            <div className='max-w-28 truncate text-sm font-medium text-white'>
               {getUserDisplayName(user)}
             </div>
           </div>
 
           {/* Simple chevron */}
           <ChevronDown
-            className={`h-3 w-3 text-white/70 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            className={`size-3 text-white/70 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           />
         </div>
       </Button>
 
       {isOpen && (
-        <div className='absolute right-0 top-full mt-1 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50'>
+        <div className='absolute right-0 top-full z-50 mt-1 w-52 rounded-lg border border-gray-200 bg-white shadow-lg'>
           {/* Simple header */}
-          <div className='px-3 py-2 border-b border-gray-100'>
+          <div className='border-b border-gray-100 px-3 py-2'>
             <div className='text-sm font-medium text-gray-900'>
               {getUserDisplayName(user)}
             </div>
@@ -114,33 +114,33 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
           <div className='py-1'>
             <button
               onClick={() => handleNavigation('/protected/settings')}
-              className='w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer'
+              className='flex w-full cursor-pointer items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50'
             >
-              <Settings className='mr-3 h-4 w-4 text-gray-500' />
+              <Settings className='mr-3 size-4 text-gray-500' />
               <span>Settings</span>
             </button>
 
             <button
               onClick={() => handleNavigation('/protected/site-admin')}
-              className='w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer'
+              className='flex w-full cursor-pointer items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50'
             >
-              <Shield className='mr-3 h-4 w-4 text-gray-500' />
+              <Shield className='mr-3 size-4 text-gray-500' />
               <span>Site Admin</span>
             </button>
 
             <button
               onClick={() => handleNavigation('/protected/content-studio')}
-              className='w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer'
+              className='flex w-full cursor-pointer items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50'
             >
-              <PenTool className='mr-3 h-4 w-4 text-gray-500' />
+              <PenTool className='mr-3 size-4 text-gray-500' />
               <span>Content Studio</span>
             </button>
 
             <button
               onClick={() => handleNavigation('/protected/private-tools')}
-              className='w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer'
+              className='flex w-full cursor-pointer items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50'
             >
-              <Wrench className='mr-3 h-4 w-4 text-gray-500' />
+              <Wrench className='mr-3 size-4 text-gray-500' />
               <span>Private Tools</span>
             </button>
           </div>
@@ -149,9 +149,9 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
           <div className='border-t border-gray-100'>
             <button
               onClick={handleLogout}
-              className='w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer'
+              className='flex w-full cursor-pointer items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50'
             >
-              <LogOut className='mr-3 h-4 w-4 text-red-500' />
+              <LogOut className='mr-3 size-4 text-red-500' />
               <span>Logout</span>
             </button>
           </div>

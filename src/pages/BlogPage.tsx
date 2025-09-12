@@ -157,9 +157,9 @@ export default function BlogPage({ slug }: { slug: string }) {
       <div className='w-full'>
         {/* Header skeleton */}
         <header className='mb-8'>
-          <Skeleton className='h-12 w-3/4 mb-4' />
-          <Skeleton className='h-6 w-full mb-2' />
-          <Skeleton className='h-6 w-2/3 mb-4' />
+          <Skeleton className='mb-4 h-12 w-3/4' />
+          <Skeleton className='mb-2 h-6 w-full' />
+          <Skeleton className='mb-4 h-6 w-2/3' />
           <div className='flex gap-2'>
             <Skeleton className='h-6 w-16' />
             <Skeleton className='h-6 w-20' />
@@ -168,14 +168,14 @@ export default function BlogPage({ slug }: { slug: string }) {
         </header>
 
         {/* Content skeleton */}
-        <div className='space-y-6 min-h-[1000px]'>
+        <div className='min-h-[1000px] space-y-6'>
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className='space-y-4'>
               <Skeleton className='h-8 w-1/2' />
               <Skeleton className='h-6 w-full' />
               <Skeleton className='h-6 w-full' />
               <Skeleton className='h-6 w-3/4' />
-              {i % 2 === 0 && <Skeleton className='h-32 w-full mt-4' />}
+              {i % 2 === 0 && <Skeleton className='mt-4 h-32 w-full' />}
             </div>
           ))}
         </div>
@@ -187,15 +187,15 @@ export default function BlogPage({ slug }: { slug: string }) {
   if (!frontmatter.title) {
     // Changed from blogPost to frontmatter.title
     return (
-      <div className='container mx-auto px-4 py-8 max-w-4xl'>
+      <div className='container mx-auto max-w-4xl px-4 py-8'>
         <div className='text-center'>
           <H1>Blog Post Not Found</H1>
           <P className='mt-4'>The requested blog post could not be found.</P>
           <Link
             to='/blog'
-            className='inline-flex items-center mt-4 text-blue-600 hover:text-blue-800'
+            className='mt-4 inline-flex items-center text-blue-600 hover:text-blue-800'
           >
-            <ArrowRight className='w-4 h-4 mr-2' />
+            <ArrowRight className='mr-2 size-4' />
             Back to Blog
           </Link>
         </div>
@@ -206,7 +206,7 @@ export default function BlogPage({ slug }: { slug: string }) {
   return (
     <div className='w-full'>
       {/* Main Content with Sidebar Layout */}
-      <div className='grid grid-cols-1 lg:grid-cols-4 gap-8'>
+      <div className='grid grid-cols-1 gap-8 lg:grid-cols-4'>
         {/* Main Content Area */}
         <div className='lg:col-span-3'>
           {/* Blog Header */}
@@ -218,7 +218,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                   <img
                     src={frontmatter.image}
                     alt={frontmatter.title}
-                    className='w-full h-64 object-cover rounded-lg shadow-lg'
+                    className='h-64 w-full rounded-lg object-cover shadow-lg'
                   />
                 </div>
               )}
@@ -227,27 +227,27 @@ export default function BlogPage({ slug }: { slug: string }) {
                 {frontmatter.title}
               </H1>
               {frontmatter.description && (
-                <P className='text-xl text-muted-foreground leading-7 mb-6'>
+                <P className='mb-6 text-xl leading-7 text-muted-foreground'>
                   {frontmatter.description}
                 </P>
               )}
 
               {/* Blog Meta Information */}
-              <div className='flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6'>
+              <div className='mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground'>
                 {frontmatter.author && (
                   <div className='flex items-center gap-2'>
-                    <User className='h-4 w-4' />
+                    <User className='size-4' />
                     <span>{frontmatter.author}</span>
                   </div>
                 )}
                 {frontmatter.date && (
                   <div className='flex items-center gap-2'>
-                    <Calendar className='h-4 w-4' />
+                    <Calendar className='size-4' />
                     <span>{formatDate(frontmatter.date)}</span>
                   </div>
                 )}
                 <div className='flex items-center gap-2'>
-                  <Clock className='h-4 w-4' />
+                  <Clock className='size-4' />
                   <span>{readingTime} min read</span>
                 </div>
               </div>
@@ -343,10 +343,10 @@ export default function BlogPage({ slug }: { slug: string }) {
                       <Badge
                         key={`${frontmatter.title}-${tag}-${index}`}
                         variant='secondary'
-                        className='text-xs px-1.5 py-0.5 h-auto'
+                        className='h-auto px-1.5 py-0.5 text-xs'
                         title={formatTag(tag)}
                       >
-                        <Tag className='h-3 w-3 mr-1' />
+                        <Tag className='mr-1 size-3' />
                         <span className='whitespace-nowrap'>
                           {formatTag(tag)}
                         </span>
@@ -359,7 +359,7 @@ export default function BlogPage({ slug }: { slug: string }) {
           )}
 
           {/* Blog Content */}
-          <article className='max-w-none w-full space-y-6'>
+          <article className='w-full max-w-none space-y-6'>
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}
@@ -475,7 +475,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                 },
                 pre: ({ children, ...props }) => (
                   <pre
-                    className='overflow-x-auto rounded-lg border bg-muted p-4 w-full'
+                    className='w-full overflow-x-auto rounded-lg border bg-muted p-4'
                     {...props}
                   >
                     {children}
@@ -511,29 +511,29 @@ export default function BlogPage({ slug }: { slug: string }) {
             </ReactMarkdown>
 
             {/* Blog Footer */}
-            <div className='mt-16 pt-8 border-t border-gray-200'>
+            <div className='mt-16 border-t border-gray-200 pt-8'>
               <div className='text-center'>
-                <H2 className='text-2xl font-semibold text-gray-900 dark:text-white mb-4'>
+                <H2 className='mb-4 text-2xl font-semibold text-gray-900 dark:text-white'>
                   Enjoyed this article?
                 </H2>
-                <P className='text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto'>
+                <P className='mx-auto mb-6 max-w-2xl text-gray-600 dark:text-gray-400'>
                   If you found this helpful, consider sharing it with your
                   network or reaching out to discuss how we can apply these
                   concepts to your projects.
                 </P>
-                <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+                <div className='flex flex-col justify-center gap-4 sm:flex-row'>
                   <a
                     href='/contact'
-                    className='inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors'
+                    className='inline-flex items-center gap-2 rounded-lg bg-teal-600 px-6 py-3 font-medium text-white transition-colors hover:bg-teal-700'
                   >
-                    <MessageSquare className='h-4 w-4 text-white' />
+                    <MessageSquare className='size-4 text-white' />
                     <span className='text-white'>Get in Touch</span>
                   </a>
                   <Link
                     to='/blog'
-                    className='inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-teal-700 border border-teal-300 px-6 py-3 rounded-lg font-medium transition-colors dark:bg-teal-50 dark:hover:bg-teal-100 dark:text-teal-800 dark:border-teal-300'
+                    className='inline-flex items-center gap-2 rounded-lg border border-teal-300 bg-white px-6 py-3 font-medium text-teal-700 transition-colors hover:bg-gray-50 dark:border-teal-300 dark:bg-teal-50 dark:text-teal-800 dark:hover:bg-teal-100'
                   >
-                    <Calendar className='h-4 w-4 text-teal-700 dark:text-teal-800' />
+                    <Calendar className='size-4 text-teal-700 dark:text-teal-800' />
                     <span className='text-teal-700 dark:text-teal-800'>
                       Read More Articles
                     </span>
@@ -554,7 +554,7 @@ export default function BlogPage({ slug }: { slug: string }) {
         <div className='lg:col-span-1'>
           <div className='sticky top-36 space-y-6'>
             {/* Smart Related Content Sidebar */}
-            <div className='bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-900 dark:to-gray-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm backdrop-blur-sm'>
+            <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-gray-50 p-6 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:from-slate-900 dark:to-gray-900'>
               <UnifiedRelatedContent
                 content={content}
                 title={frontmatter.title || ''}
@@ -567,19 +567,19 @@ export default function BlogPage({ slug }: { slug: string }) {
             </div>
 
             {/* Additional Sidebar Content */}
-            <div className='bg-muted/50 rounded-xl p-6 border border-border'>
-              <h3 className='text-lg font-semibold mb-4'>About the Author</h3>
-              <p className='text-sm text-muted-foreground mb-4'>
+            <div className='rounded-xl border border-border bg-muted/50 p-6'>
+              <h3 className='mb-4 text-lg font-semibold'>About the Author</h3>
+              <p className='mb-4 text-sm text-muted-foreground'>
                 Roger Lee Cormier is a technology leader and consultant with
                 expertise in DevOps, AI automation, and organizational
                 transformation.
               </p>
               <Link
                 to='/about'
-                className='inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 text-sm font-medium transition-colors'
+                className='inline-flex items-center gap-2 text-sm font-medium text-teal-600 transition-colors hover:text-teal-700'
               >
                 Learn more about Roger
-                <ArrowRight className='h-3 w-3' />
+                <ArrowRight className='size-3' />
               </Link>
             </div>
           </div>

@@ -153,11 +153,11 @@ export const EnhancedMarkdownWithCards: React.FC<
                   } catch (error) {
                     logger.error('Error parsing scatter chart data:', error);
                     return (
-                      <div className='p-4 border border-red-200 bg-red-50 rounded-lg'>
+                      <div className='rounded-lg border border-red-200 bg-red-50 p-4'>
                         <p className='text-red-600'>
                           Error rendering scatter chart: {String(error)}
                         </p>
-                        <pre className='text-xs mt-2'>{String(children)}</pre>
+                        <pre className='mt-2 text-xs'>{String(children)}</pre>
                       </div>
                     );
                   }
@@ -192,11 +192,11 @@ export const EnhancedMarkdownWithCards: React.FC<
                   } catch (error) {
                     logger.error('Error parsing line chart data:', error);
                     return (
-                      <div className='p-4 border border-red-200 bg-red-50 rounded-lg'>
+                      <div className='rounded-lg border border-red-200 bg-red-50 p-4'>
                         <p className='text-red-600'>
                           Error rendering line chart: {String(error)}
                         </p>
-                        <pre className='text-xs mt-2'>{String(children)}</pre>
+                        <pre className='mt-2 text-xs'>{String(children)}</pre>
                       </div>
                     );
                   }
@@ -229,11 +229,11 @@ export const EnhancedMarkdownWithCards: React.FC<
                   } catch (error) {
                     logger.error('Error parsing chart data:', error);
                     return (
-                      <div className='p-4 border border-red-200 bg-red-50 rounded-lg'>
+                      <div className='rounded-lg border border-red-200 bg-red-50 p-4'>
                         <p className='text-red-600'>
                           Error rendering chart: {String(error)}
                         </p>
-                        <pre className='text-xs mt-2'>{String(children)}</pre>
+                        <pre className='mt-2 text-xs'>{String(children)}</pre>
                       </div>
                     );
                   }

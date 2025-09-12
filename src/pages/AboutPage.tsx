@@ -205,9 +205,9 @@ export default function AboutPage() {
       <div className='w-full'>
         {/* Header skeleton */}
         <header className='mb-8'>
-          <Skeleton className='h-12 w-3/4 mb-4' />
-          <Skeleton className='h-6 w-full mb-2' />
-          <Skeleton className='h-6 w-2/3 mb-4' />
+          <Skeleton className='mb-4 h-12 w-3/4' />
+          <Skeleton className='mb-2 h-6 w-full' />
+          <Skeleton className='mb-4 h-6 w-2/3' />
           <div className='flex gap-2'>
             <Skeleton className='h-6 w-16' />
             <Skeleton className='h-6 w-20' />
@@ -221,7 +221,7 @@ export default function AboutPage() {
         </div>
 
         {/* Content skeleton - Preserve space to prevent layout shift */}
-        <div className='space-y-6 min-h-[1000px]'>
+        <div className='min-h-[1000px] space-y-6'>
           {/* Simulate multiple sections */}
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className='space-y-4'>
@@ -229,7 +229,7 @@ export default function AboutPage() {
               <Skeleton className='h-4 w-full' />
               <Skeleton className='h-4 w-full' />
               <Skeleton className='h-4 w-3/4' />
-              {i % 2 === 0 && <Skeleton className='h-32 w-full mt-4' />}
+              {i % 2 === 0 && <Skeleton className='mt-4 h-32 w-full' />}
             </div>
           ))}
         </div>
@@ -244,18 +244,18 @@ export default function AboutPage() {
         <header className='mb-8'>
           <H1 className='mb-4'>{frontmatter.title}</H1>
           {frontmatter.description && (
-            <P className='text-xl text-muted-foreground leading-7'>
+            <P className='text-xl leading-7 text-muted-foreground'>
               {frontmatter.description}
             </P>
           )}
           {frontmatter.tags && (
-            <div className='flex flex-wrap gap-2 mt-4'>
+            <div className='mt-4 flex flex-wrap gap-2'>
               {[...new Set(frontmatter.tags)].map(
                 (tag: string, index: number) => (
                   <Badge
                     key={`${tag}-${index}`}
                     variant='secondary'
-                    className='border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
+                    className='border border-gray-300 bg-gray-50 text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                   >
                     {tag}
                   </Badge>
@@ -269,7 +269,7 @@ export default function AboutPage() {
       {/* Main content area */}
       <div>
         {/* Markdown Content */}
-        <article className='max-w-none w-full space-y-6'>
+        <article className='w-full max-w-none space-y-6'>
           <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
@@ -334,7 +334,7 @@ export default function AboutPage() {
                       return <div className='my-6'>{cardComponent}</div>;
                     } else {
                       return (
-                        <div className='p-4 border border-yellow-200 bg-yellow-50 rounded-lg'>
+                        <div className='rounded-lg border border-yellow-200 bg-yellow-50 p-4'>
                           <p className='text-yellow-600'>
                             Card component not rendered for type:{' '}
                             {cardData.type}
@@ -351,11 +351,11 @@ export default function AboutPage() {
                   } catch (error) {
                     console.warn('Error parsing card data:', error);
                     return (
-                      <div className='p-4 border border-red-200 bg-red-50 rounded-lg'>
+                      <div className='rounded-lg border border-red-200 bg-red-50 p-4'>
                         <p className='text-red-600'>
                           Error rendering card: {String(error)}
                         </p>
-                        <pre className='text-xs mt-2'>{String(children)}</pre>
+                        <pre className='mt-2 text-xs'>{String(children)}</pre>
                       </div>
                     );
                   }
@@ -454,7 +454,7 @@ export default function AboutPage() {
                   }
 
                   return (
-                    <div className='w-full my-6' style={{ minHeight: 320 }}>
+                    <div className='my-6 w-full' style={{ minHeight: 320 }}>
                       <ResponsiveContainer width='100%' height={320}>
                         <ScatterChart
                           margin={{ left: 32, right: 32, bottom: 20 }}
@@ -574,7 +574,7 @@ export default function AboutPage() {
                     Number((max + padding).toFixed(3)),
                   ];
                   return (
-                    <div className='w-full my-6' style={{ minHeight: 320 }}>
+                    <div className='my-6 w-full' style={{ minHeight: 320 }}>
                       <ResponsiveContainer width='100%' height={320}>
                         <BarChart
                           data={chartData}
@@ -646,7 +646,7 @@ export default function AboutPage() {
                   ];
 
                   return (
-                    <div className='w-full my-6' style={{ minHeight: 320 }}>
+                    <div className='my-6 w-full' style={{ minHeight: 320 }}>
                       <ResponsiveContainer width='100%' height={320}>
                         <BarChart
                           data={chartData}
@@ -741,7 +741,7 @@ export default function AboutPage() {
                   ];
 
                   return (
-                    <div className='w-full my-6' style={{ minHeight: 320 }}>
+                    <div className='my-6 w-full' style={{ minHeight: 320 }}>
                       <ResponsiveContainer width='100%' height={320}>
                         <LineChart
                           data={chartData}
@@ -827,7 +827,7 @@ export default function AboutPage() {
               },
               pre: ({ children, ...props }) => (
                 <pre
-                  className='overflow-x-auto rounded-lg border bg-muted p-4 w-full'
+                  className='w-full overflow-x-auto rounded-lg border bg-muted p-4'
                   {...props}
                 >
                   {children}
@@ -860,21 +860,21 @@ export default function AboutPage() {
           </ReactMarkdown>
 
           {/* Contact Section at bottom of every page */}
-          <div className='mt-16 pt-8 border-t border-gray-200'>
+          <div className='mt-16 border-t border-gray-200 pt-8'>
             <div className='text-center'>
-              <H2 className='text-2xl font-semibold text-gray-900 mb-4'>
+              <H2 className='mb-4 text-2xl font-semibold text-gray-900'>
                 Ready to discuss your next project?
               </H2>
-              <P className='text-gray-600 mb-6 max-w-2xl mx-auto'>
+              <P className='mx-auto mb-6 max-w-2xl text-gray-600'>
                 Whether you need enterprise integration expertise, DevOps
                 transformation, or strategic technology leadership, I'm here to
                 help bring your vision to life.
               </P>
               <a
                 href='/contact'
-                className='inline-flex items-center gap-2 bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl'
+                className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-teal-800 to-blue-800 px-6 py-3 font-medium text-white shadow-lg transition-all duration-200 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
               >
-                <MessageSquare className='h-4 w-4' />
+                <MessageSquare className='size-4' />
                 Target Your Next Project
               </a>
             </div>

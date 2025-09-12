@@ -159,7 +159,7 @@ export function MarkdownEditor({
   return (
     <div
       ref={editorRef}
-      className='h-full w-full overflow-hidden'
+      className='size-full overflow-hidden'
       style={{
         display: 'flex',
         flexDirection: 'column',

@@ -86,7 +86,7 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
           <DialogHeader>
             <DialogTitle>Trash</DialogTitle>
           </DialogHeader>
-          <div className='space-y-2 max-h-[60vh] overflow-y-auto'>
+          <div className='max-h-[60vh] space-y-2 overflow-y-auto'>
             {loading && (
               <div className='text-sm text-muted-foreground'>Loading…</div>
             )}
@@ -98,7 +98,7 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
             {items.map(it => (
               <div
                 key={it.key}
-                className='flex items-center justify-between p-2 border rounded'
+                className='flex items-center justify-between rounded border p-2'
               >
                 <div className='text-sm'>
                   <div className='font-mono'>{it.key}</div>

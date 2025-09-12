@@ -58,18 +58,18 @@ class MainContentErrorBoundary extends Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className='flex-1 min-w-0 p-4 sm:p-6 lg:p-8'>
-          <div className='w-full max-w-7xl mx-auto'>
-            <div className='text-center py-12'>
-              <h2 className='text-xl font-semibold text-gray-900 mb-2'>
+        <div className='min-w-0 flex-1 p-4 sm:p-6 lg:p-8'>
+          <div className='mx-auto w-full max-w-7xl'>
+            <div className='py-12 text-center'>
+              <h2 className='mb-2 text-xl font-semibold text-gray-900'>
                 Something went wrong
               </h2>
-              <p className='text-gray-600 mb-4'>
+              <p className='mb-4 text-gray-600'>
                 We're sorry, but there was an error loading this content.
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors'
+                className='rounded bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700'
               >
                 Reload Page
               </button>
@@ -86,13 +86,13 @@ class MainContentErrorBoundary extends Component<
 // Loading component for the main content
 function MainContentLoading() {
   return (
-    <div className='flex-1 min-w-0 p-4 sm:p-6 lg:p-8'>
-      <div className='w-full max-w-7xl mx-auto'>
+    <div className='min-w-0 flex-1 p-4 sm:p-6 lg:p-8'>
+      <div className='mx-auto w-full max-w-7xl'>
         <div className='animate-pulse'>
-          <div className='h-8 bg-gray-200 rounded w-1/4 mb-4'></div>
-          <div className='h-4 bg-gray-200 rounded w-3/4 mb-2'></div>
-          <div className='h-4 bg-gray-200 rounded w-1/2 mb-2'></div>
-          <div className='h-4 bg-gray-200 rounded w-2/3'></div>
+          <div className='mb-4 h-8 w-1/4 rounded bg-gray-200'></div>
+          <div className='mb-2 h-4 w-3/4 rounded bg-gray-200'></div>
+          <div className='mb-2 h-4 w-1/2 rounded bg-gray-200'></div>
+          <div className='h-4 w-2/3 rounded bg-gray-200'></div>
         </div>
       </div>
     </div>
@@ -149,16 +149,16 @@ export default function AppLayout() {
   return (
     <SidebarProvider defaultOpen={true}>
       <Header />
-      <div className='min-h-screen flex bg-gray-50 pt-48 md:pt-44'>
+      <div className='flex min-h-screen bg-gray-50 pt-48 md:pt-44'>
         <AppSidebar />
         {/* Main content area - Header is now fixed at top */}
-        <div className='flex-1 min-w-0'>
-          <div className='flex flex-col min-h-screen'>
+        <div className='min-w-0 flex-1'>
+          <div className='flex min-h-screen flex-col'>
             <MainContentErrorBoundary>
               <Suspense fallback={<MainContentLoading />}>
-                <main className='flex-1 min-w-0 p-4 sm:p-6 lg:p-8'>
+                <main className='min-w-0 flex-1 p-4 sm:p-6 lg:p-8'>
                   {/* Consistent page width container for all pages */}
-                  <div className='w-full max-w-7xl mx-auto'>
+                  <div className='mx-auto w-full max-w-7xl'>
                     <Outlet />
                   </div>
                 </main>

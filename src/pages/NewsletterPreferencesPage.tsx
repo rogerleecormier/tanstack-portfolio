@@ -196,16 +196,16 @@ const NewsletterPreferencesPage = () => {
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50 to-slate-100'>
       <div className='container mx-auto px-4 py-8'>
-        <div className='max-w-4xl mx-auto'>
+        <div className='mx-auto max-w-4xl'>
           {/* Page Header */}
-          <div className='text-center mb-8'>
-            <div className='inline-flex items-center justify-center w-20 h-20 bg-teal-100 rounded-full mb-4'>
-              <Mail className='w-10 h-10 text-teal-600' />
+          <div className='mb-8 text-center'>
+            <div className='mb-4 inline-flex size-20 items-center justify-center rounded-full bg-teal-100'>
+              <Mail className='size-10 text-teal-600' />
             </div>
-            <h1 className='text-4xl font-bold text-slate-900 mb-2'>
+            <h1 className='mb-2 text-4xl font-bold text-slate-900'>
               Newsletter Preferences
             </h1>
-            <p className='text-lg text-slate-600 max-w-2xl mx-auto'>
+            <p className='mx-auto max-w-2xl text-lg text-slate-600'>
               Manage your newsletter subscription, update preferences, or
               unsubscribe from our updates about technology leadership, DevOps,
               and strategic thinking.
@@ -218,7 +218,7 @@ const NewsletterPreferencesPage = () => {
             <Card className='h-full'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2 text-teal-700'>
-                  <Settings className='w-5 h-5' />
+                  <Settings className='size-5' />
                   Manage Subscription
                 </CardTitle>
                 <CardDescription>
@@ -230,7 +230,7 @@ const NewsletterPreferencesPage = () => {
                 <div>
                   <label
                     htmlFor='email'
-                    className='block text-sm font-medium text-slate-700 mb-2'
+                    className='mb-2 block text-sm font-medium text-slate-700'
                   >
                     Email Address
                   </label>
@@ -240,7 +240,7 @@ const NewsletterPreferencesPage = () => {
                     placeholder='Enter your email address'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className='w-full focus:ring-teal-500 focus:border-teal-500'
+                    className='w-full focus:border-teal-500 focus:ring-teal-500'
                   />
                 </div>
 
@@ -251,7 +251,7 @@ const NewsletterPreferencesPage = () => {
                       Newsletter Preferences:
                     </h4>
                     <div className='space-y-2'>
-                      <label className='flex items-center space-x-2 cursor-pointer'>
+                      <label className='flex cursor-pointer items-center space-x-2'>
                         <input
                           type='checkbox'
                           checked={preferences.weeklyDigest}
@@ -267,7 +267,7 @@ const NewsletterPreferencesPage = () => {
                           Weekly Digest
                         </span>
                       </label>
-                      <label className='flex items-center space-x-2 cursor-pointer'>
+                      <label className='flex cursor-pointer items-center space-x-2'>
                         <input
                           type='checkbox'
                           checked={preferences.newPosts}
@@ -283,7 +283,7 @@ const NewsletterPreferencesPage = () => {
                           New Blog Posts
                         </span>
                       </label>
-                      <label className='flex items-center space-x-2 cursor-pointer'>
+                      <label className='flex cursor-pointer items-center space-x-2'>
                         <input
                           type='checkbox'
                           checked={preferences.specialOffers}
@@ -308,9 +308,9 @@ const NewsletterPreferencesPage = () => {
                     onClick={handleCheckStatus}
                     disabled={loading || !email}
                     variant='outline'
-                    className='flex-1 min-w-[120px] border-teal-200 text-teal-700 hover:bg-teal-50 hover:border-teal-300'
+                    className='min-w-[120px] flex-1 border-teal-200 text-teal-700 hover:border-teal-300 hover:bg-teal-50'
                   >
-                    <UserCheck className='w-4 h-4 mr-2' />
+                    <UserCheck className='mr-2 size-4' />
                     Check Status
                   </Button>
                   {subscriptionStatus?.isActive && (
@@ -318,9 +318,9 @@ const NewsletterPreferencesPage = () => {
                       onClick={handleUpdatePreferences}
                       disabled={loading || !email}
                       variant='outline'
-                      className='flex-1 min-w-[120px] border-teal-200 text-teal-700 hover:bg-teal-50 hover:border-teal-300'
+                      className='min-w-[120px] flex-1 border-teal-200 text-teal-700 hover:border-teal-300 hover:bg-teal-50'
                     >
-                      <Settings className='w-4 h-4 mr-2' />
+                      <Settings className='mr-2 size-4' />
                       Update Preferences
                     </Button>
                   )}
@@ -337,7 +337,7 @@ const NewsletterPreferencesPage = () => {
                       variant='destructive'
                       className='w-full'
                     >
-                      <XCircle className='w-4 h-4 mr-2' />
+                      <XCircle className='mr-2 size-4' />
                       Unsubscribe
                     </Button>
                   )}
@@ -350,7 +350,7 @@ const NewsletterPreferencesPage = () => {
                       variant='default'
                       className='w-full bg-teal-600 hover:bg-teal-700'
                     >
-                      <CheckCircle className='w-4 h-4 mr-2' />
+                      <CheckCircle className='mr-2 size-4' />
                       Resubscribe
                     </Button>
                   )}
@@ -362,7 +362,7 @@ const NewsletterPreferencesPage = () => {
             <Card className='h-full'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2 text-teal-700'>
-                  <Mail className='w-5 h-5' />
+                  <Mail className='size-5' />
                   About Our Newsletter
                 </CardTitle>
               </CardHeader>
@@ -371,21 +371,21 @@ const NewsletterPreferencesPage = () => {
                   <h4 className='font-medium text-slate-900'>
                     What You'll Receive:
                   </h4>
-                  <ul className='text-sm text-slate-600 space-y-2'>
+                  <ul className='space-y-2 text-sm text-slate-600'>
                     <li className='flex items-start gap-2'>
-                      <div className='w-1.5 h-1.5 bg-teal-500 rounded-full mt-2 flex-shrink-0'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-teal-500'></div>
                       <span>Weekly insights on technology leadership</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='w-1.5 h-1.5 bg-teal-500 rounded-full mt-2 flex-shrink-0'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-teal-500'></div>
                       <span>Notifications for new blog posts</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='w-1.5 h-1.5 bg-teal-500 rounded-full mt-2 flex-shrink-0'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-teal-500'></div>
                       <span>Practical DevOps and strategy tips</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='w-1.5 h-1.5 bg-teal-500 rounded-full mt-2 flex-shrink-0'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-teal-500'></div>
                       <span>Industry trends and analysis</span>
                     </li>
                   </ul>
@@ -393,7 +393,7 @@ const NewsletterPreferencesPage = () => {
 
                 <Separator className='bg-teal-200' />
 
-                <div className='text-sm text-slate-600 bg-teal-50 p-3 rounded-lg'>
+                <div className='rounded-lg bg-teal-50 p-3 text-sm text-slate-600'>
                   <p>
                     You can manage your preferences anytime or unsubscribe at
                     any time. We respect your inbox and only send valuable,
@@ -410,13 +410,13 @@ const NewsletterPreferencesPage = () => {
               <Card className='border-teal-200'>
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2 text-teal-700'>
-                    <UserCheck className='w-5 h-5' />
+                    <UserCheck className='size-5' />
                     Current Status
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-                    <div className='flex items-center justify-between p-3 bg-teal-50 rounded-lg'>
+                    <div className='flex items-center justify-between rounded-lg bg-teal-50 p-3'>
                       <span className='text-sm font-medium text-slate-700'>
                         Status:
                       </span>
@@ -428,8 +428,8 @@ const NewsletterPreferencesPage = () => {
                         }
                         className={
                           subscriptionStatus.isActive
-                            ? 'bg-green-100 text-green-800 border-green-200'
-                            : 'bg-red-100 text-red-800 border-red-200'
+                            ? 'border-green-200 bg-green-100 text-green-800'
+                            : 'border-red-200 bg-red-100 text-red-800'
                         }
                       >
                         {subscriptionStatus.isActive ? 'Active' : 'Inactive'}
@@ -437,7 +437,7 @@ const NewsletterPreferencesPage = () => {
                     </div>
 
                     {subscriptionStatus.subscribedAt && (
-                      <div className='flex items-center justify-between p-3 bg-teal-50 rounded-lg'>
+                      <div className='flex items-center justify-between rounded-lg bg-teal-50 p-3'>
                         <span className='text-sm font-medium text-slate-700'>
                           Subscribed:
                         </span>
@@ -450,8 +450,8 @@ const NewsletterPreferencesPage = () => {
                     )}
 
                     {subscriptionStatus.preferences && (
-                      <div className='md:col-span-2 lg:col-span-1 p-3 bg-teal-50 rounded-lg'>
-                        <span className='text-sm font-medium text-slate-700 block mb-3'>
+                      <div className='rounded-lg bg-teal-50 p-3 md:col-span-2 lg:col-span-1'>
+                        <span className='mb-3 block text-sm font-medium text-slate-700'>
                           Preferences:
                         </span>
                         <div className='space-y-2'>
@@ -467,8 +467,8 @@ const NewsletterPreferencesPage = () => {
                               }
                               className={
                                 subscriptionStatus.preferences.weeklyDigest
-                                  ? 'bg-green-100 text-green-800 border-green-200'
-                                  : 'bg-red-100 text-red-800 border-red-200'
+                                  ? 'border-green-200 bg-green-100 text-green-800'
+                                  : 'border-red-200 bg-red-100 text-red-800'
                               }
                             >
                               {subscriptionStatus.preferences.weeklyDigest
@@ -488,8 +488,8 @@ const NewsletterPreferencesPage = () => {
                               }
                               className={
                                 subscriptionStatus.preferences.newPosts
-                                  ? 'bg-green-100 text-green-800 border-green-200'
-                                  : 'bg-red-100 text-red-800 border-red-200'
+                                  ? 'border-green-200 bg-green-100 text-green-800'
+                                  : 'border-red-200 bg-red-100 text-red-800'
                               }
                             >
                               {subscriptionStatus.preferences.newPosts
@@ -509,8 +509,8 @@ const NewsletterPreferencesPage = () => {
                               }
                               className={
                                 subscriptionStatus.preferences.specialOffers
-                                  ? 'bg-green-100 text-green-800 border-green-200'
-                                  : 'bg-red-100 text-red-800 border-red-200'
+                                  ? 'border-green-200 bg-green-100 text-green-800'
+                                  : 'border-red-200 bg-red-100 text-red-800'
                               }
                             >
                               {subscriptionStatus.preferences.specialOffers
@@ -532,9 +532,9 @@ const NewsletterPreferencesPage = () => {
             <div className='mt-6'>
               <Alert variant={result.success ? 'default' : 'destructive'}>
                 {result.success ? (
-                  <CheckCircle className='h-4 w-4' />
+                  <CheckCircle className='size-4' />
                 ) : (
-                  <AlertTriangle className='h-4 w-4' />
+                  <AlertTriangle className='size-4' />
                 )}
                 <AlertDescription>{result.message}</AlertDescription>
               </Alert>
@@ -545,7 +545,7 @@ const NewsletterPreferencesPage = () => {
           {loading && (
             <div className='mt-6 text-center'>
               <div className='inline-flex items-center gap-2 text-slate-600'>
-                <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-teal-600'></div>
+                <div className='size-4 animate-spin rounded-full border-b-2 border-teal-600'></div>
                 Processing...
               </div>
             </div>

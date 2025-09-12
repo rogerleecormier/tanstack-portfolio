@@ -223,15 +223,15 @@ export function ContactAnalysis({
       <Card className={className}>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
-            <MessageSquare className='w-5 h-5 text-blue-600' />
+            <MessageSquare className='size-5 text-blue-600' />
             Analyzing Your Message...
           </CardTitle>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='animate-pulse space-y-3'>
-            <div className='h-4 bg-gray-200 rounded w-3/4'></div>
-            <div className='h-4 bg-gray-200 rounded w-1/2'></div>
-            <div className='h-4 bg-gray-200 rounded w-2/3'></div>
+            <div className='h-4 w-3/4 rounded bg-gray-200'></div>
+            <div className='h-4 w-1/2 rounded bg-gray-200'></div>
+            <div className='h-4 w-2/3 rounded bg-gray-200'></div>
           </div>
         </CardContent>
       </Card>
@@ -246,7 +246,7 @@ export function ContactAnalysis({
     <Card className={className}>
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
-          <MessageSquare className='w-5 h-5 text-blue-600' />
+          <MessageSquare className='size-5 text-blue-600' />
           Message Analysis
           <Badge
             variant='outline'
@@ -260,7 +260,7 @@ export function ContactAnalysis({
       </CardHeader>
       <CardContent className='space-y-4'>
         {/* Analysis Summary */}
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           <div className='space-y-3'>
             <div className='flex items-center gap-2'>
               {getMessageTypeIndicator(analysis.messageType)}
@@ -272,7 +272,7 @@ export function ContactAnalysis({
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <Building className='w-4 h-4 text-gray-600' />
+              <Building className='size-4 text-gray-600' />
               <span className='text-sm font-medium'>
                 Industry:{' '}
                 {analysis.industry.charAt(0).toUpperCase() +
@@ -280,7 +280,7 @@ export function ContactAnalysis({
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <Target className='w-4 h-4 text-gray-600' />
+              <Target className='size-4 text-gray-600' />
               <span className='text-sm font-medium'>
                 Scope:{' '}
                 {analysis.projectScope.charAt(0).toUpperCase() +
@@ -298,14 +298,14 @@ export function ContactAnalysis({
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <Clock className='w-4 h-4 text-gray-600' />
+              <Clock className='size-4 text-gray-600' />
               <span className='text-sm font-medium'>
                 Duration: {analysis.meetingDuration}
               </span>
             </div>
             {analysis.userTimezone && (
               <div className='flex items-center gap-2'>
-                <MapPin className='w-4 h-4 text-gray-600' />
+                <MapPin className='size-4 text-gray-600' />
                 <span className='text-sm font-medium'>
                   Timezone: {analysis.userTimezone}
                 </span>
@@ -316,12 +316,12 @@ export function ContactAnalysis({
 
         {/* Meeting Recommendation */}
         {analysis.shouldScheduleMeeting && (
-          <div className='p-3 bg-blue-50 border border-blue-200 rounded-lg'>
+          <div className='rounded-lg border border-blue-200 bg-blue-50 p-3'>
             <div className='flex items-center gap-2 text-blue-800'>
-              <CheckCircle className='w-4 h-4' />
+              <CheckCircle className='size-4' />
               <span className='text-sm font-medium'>Meeting Recommended</span>
             </div>
-            <div className='text-xs text-blue-700 mt-1'>
+            <div className='mt-1 text-xs text-blue-700'>
               Suggested duration: {analysis.meetingDuration} • Type:{' '}
               {(analysis.meetingType || 'general-discussion').replace('-', ' ')}
             </div>
@@ -332,12 +332,12 @@ export function ContactAnalysis({
         {analysis.followUpQuestions &&
           analysis.followUpQuestions.length > 0 && (
             <div>
-              <h4 className='font-medium text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2'>
-                <HelpCircle className='h-4 w-4' />
+              <h4 className='mb-3 flex items-center gap-2 font-medium text-gray-900 dark:text-gray-100'>
+                <HelpCircle className='size-4' />
                 Follow-up Questions
               </h4>
-              <div className='bg-blue-50 dark:bg-blue-50/20 p-4 rounded-lg'>
-                <p className='text-sm text-blue-800 dark:text-blue-200 mb-3'>
+              <div className='rounded-lg bg-blue-50 p-4 dark:bg-blue-50/20'>
+                <p className='mb-3 text-sm text-blue-800 dark:text-blue-200'>
                   To better understand your needs, consider these questions:
                 </p>
                 <ul className='space-y-2'>
@@ -346,7 +346,7 @@ export function ContactAnalysis({
                       key={index}
                       className='flex items-start gap-2 text-sm text-blue-700 dark:text-blue-300'
                     >
-                      <span className='text-blue-600 dark:text-blue-400 font-medium'>
+                      <span className='font-medium text-blue-600 dark:text-blue-400'>
                         •
                       </span>
                       {question}
@@ -363,34 +363,34 @@ export function ContactAnalysis({
             <Separator />
             <div className='space-y-3'>
               <div className='flex items-center gap-2 text-sm font-medium text-gray-700'>
-                <CheckCircle className='w-4 h-4' />
+                <CheckCircle className='size-4' />
                 Recommended Content
               </div>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+              <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
                 {relevantContent.map((content, index) => (
                   <Card
                     key={index}
-                    className='border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors'
+                    className='border border-gray-200 transition-colors hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                   >
                     <CardHeader className='pb-3'>
                       <div className='flex items-start justify-between gap-2'>
-                        <div className='flex-1 min-w-0'>
-                          <CardTitle className='text-base font-medium leading-tight text-gray-900 dark:text-gray-100 line-clamp-2'>
+                        <div className='min-w-0 flex-1'>
+                          <CardTitle className='line-clamp-2 text-base font-medium leading-tight text-gray-900 dark:text-gray-100'>
                             {content.title}
                           </CardTitle>
                         </div>
                         <a
                           href={content.path}
-                          className='text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors flex-shrink-0 mt-1'
+                          className='mt-1 shrink-0 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300'
                           aria-label={`Read ${content.title}`}
                         >
-                          <ExternalLink className='h-4 w-4' />
+                          <ExternalLink className='size-4' />
                         </a>
                       </div>
                     </CardHeader>
 
                     <CardContent className='pt-0'>
-                      <p className='text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-3'>
+                      <p className='mb-3 line-clamp-3 text-sm text-gray-600 dark:text-gray-400'>
                         {content.description || 'No description available'}
                       </p>
 
@@ -417,16 +417,16 @@ export function ContactAnalysis({
                                 <Badge
                                   key={tagIndex}
                                   variant='secondary'
-                                  className='text-xs px-1.5 py-0.5 h-auto'
+                                  className='h-auto px-1.5 py-0.5 text-xs'
                                 >
-                                  <Tag className='h-3 w-3 mr-1' />
+                                  <Tag className='mr-1 size-3' />
                                   <span className='whitespace-nowrap'>
                                     {tag}
                                   </span>
                                 </Badge>
                               ))}
                               {cleanTags.length > 4 && (
-                                <span className='text-xs text-gray-400 dark:text-gray-500 px-2 py-1'>
+                                <span className='px-2 py-1 text-xs text-gray-400 dark:text-gray-500'>
                                   +{cleanTags.length - 4}
                                 </span>
                               )}
@@ -436,11 +436,11 @@ export function ContactAnalysis({
                       })()}
 
                       {/* Bottom row with content type and confidence */}
-                      <div className='flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700'>
+                      <div className='flex items-center justify-between border-t border-gray-100 pt-2 dark:border-gray-700'>
                         <div className='flex items-center gap-2'>
                           <Badge
                             variant='secondary'
-                            className={`text-xs px-2 py-1 ${getContentTypeColor(content.contentType)}`}
+                            className={`px-2 py-1 text-xs ${getContentTypeColor(content.contentType)}`}
                           >
                             {content.contentType.charAt(0).toUpperCase() +
                               content.contentType.slice(1)}
@@ -451,7 +451,7 @@ export function ContactAnalysis({
                           <span>Relevance:</span>
                           <Badge
                             variant='outline'
-                            className='text-xs px-2 py-1'
+                            className='px-2 py-1 text-xs'
                           >
                             {Math.round(content.relevance * 100)}%
                           </Badge>
@@ -467,14 +467,14 @@ export function ContactAnalysis({
 
         {/* Red Flags Warning */}
         {analysis.redFlags && analysis.redFlags.length > 0 && (
-          <div className='p-3 bg-red-50 border border-red-200 rounded-lg'>
+          <div className='rounded-lg border border-red-200 bg-red-50 p-3'>
             <div className='flex items-center gap-2 text-red-800'>
-              <AlertCircle className='w-4 h-4' />
+              <AlertCircle className='size-4' />
               <span className='text-sm font-medium'>
                 Security Review Required
               </span>
             </div>
-            <div className='text-xs text-red-700 mt-1 space-y-1'>
+            <div className='mt-1 space-y-1 text-xs text-red-700'>
               {formatRedFlags(analysis.redFlags).map((flag, index) => (
                 <div key={index}>• {flag}</div>
               ))}
@@ -483,7 +483,7 @@ export function ContactAnalysis({
         )}
 
         {/* Analysis Confidence - Muted at bottom */}
-        <div className='pt-2 border-t border-gray-100'>
+        <div className='border-t border-gray-100 pt-2'>
           <div className='text-xs text-gray-500'>
             Analysis confidence: {getConfidenceText(analysis.confidence)}
           </div>

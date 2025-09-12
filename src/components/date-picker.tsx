@@ -48,14 +48,14 @@ export function DatePicker({
       <PopoverTrigger asChild>
         <Button
           variant='outline'
-          className={`w-full justify-start text-left font-normal border rounded ${
+          className={`w-full justify-start rounded border text-left font-normal ${
             !dateObj ? 'text-muted-foreground' : ''
           }`}
           disabled={disabled}
           onClick={() => setOpen(true)}
         >
           {dateObj ? format(dateObj, 'PPP') : <span>Pick a date</span>}
-          <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+          <CalendarIcon className='ml-auto size-4 opacity-50' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-auto p-0' align='start'>

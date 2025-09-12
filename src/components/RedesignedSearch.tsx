@@ -244,7 +244,7 @@ const RedesignedSearch: React.FC = () => {
       {/* Search Trigger Button */}
       <div className='relative w-full max-w-2xl'>
         <div className='relative'>
-          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none' />
+          <Search className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400' />
           <Input
             ref={inputRef}
             type='text'
@@ -252,10 +252,10 @@ const RedesignedSearch: React.FC = () => {
             value={query}
             onChange={handleInputChange}
             onFocus={() => setOpen(true)}
-            className='pl-10 pr-20 h-10 bg-white/95 backdrop-blur-sm border-teal-200 text-gray-700 placeholder:text-teal-500 focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer'
+            className='h-10 cursor-pointer border-teal-200 bg-white/95 pl-10 pr-20 text-gray-700 shadow-sm backdrop-blur-sm transition-all duration-200 placeholder:text-teal-500 hover:shadow-md focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-200'
             readOnly
           />
-          <div className='absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1'>
+          <div className='absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1'>
             <kbd className='pointer-events-none inline-flex h-6 select-none items-center gap-1 rounded border bg-gray-100 px-2 font-mono text-xs font-medium text-gray-600'>
               <span className='text-xs'>⌘</span>K
             </kbd>
@@ -265,43 +265,43 @@ const RedesignedSearch: React.FC = () => {
 
       {/* Search Dialog */}
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='max-w-4xl max-h-[85vh] p-0 border-0 shadow-2xl flex flex-col'>
-          <DialogHeader className='px-6 py-4 border-b border-teal-200 bg-gradient-to-r from-teal-50 to-blue-50 flex-shrink-0'>
+        <DialogContent className='flex max-h-[85vh] max-w-4xl flex-col border-0 p-0 shadow-2xl'>
+          <DialogHeader className='shrink-0 border-b border-teal-200 bg-gradient-to-r from-teal-50 to-blue-50 px-6 py-4'>
             <DialogTitle className='flex items-center gap-3'>
               <div className='flex items-center gap-3'>
                 <div className='relative'>
-                  <div className='w-8 h-8 bg-gradient-to-br from-teal-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm'>
-                    <Target className='h-4 w-4 text-white' />
+                  <div className='flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-blue-600 shadow-sm'>
+                    <Target className='size-4 text-white' />
                   </div>
                   {/* Targeting indicator dots */}
-                  <div className='absolute -top-0.5 -right-0.5 w-2 h-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center'>
-                    <div className='w-1 h-1 bg-white rounded-full'></div>
+                  <div className='absolute -right-0.5 -top-0.5 flex size-2 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
+                    <div className='size-1 rounded-full bg-white'></div>
                   </div>
                 </div>
                 <div>
-                  <span className='text-lg font-semibold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-lg font-semibold text-transparent'>
                     Targeted Search
                   </span>
-                  <p className='text-xs text-teal-600 font-medium'>
+                  <p className='text-xs font-medium text-teal-600'>
                     Roger Lee Cormier Portfolio
                   </p>
                 </div>
               </div>
               <Badge
                 variant='secondary'
-                className='ml-2 bg-gradient-to-r from-teal-100 to-blue-100 text-teal-700 border-teal-300'
+                className='ml-2 border-teal-300 bg-gradient-to-r from-teal-100 to-blue-100 text-teal-700'
               >
-                <Sparkles className='h-3 w-3 mr-1' />
+                <Sparkles className='mr-1 size-3' />
                 Semantic Search
               </Badge>
             </DialogTitle>
           </DialogHeader>
 
-          <div className='flex flex-col flex-1 min-h-0'>
+          <div className='flex min-h-0 flex-1 flex-col'>
             {/* Search Input */}
-            <div className='px-6 py-4 border-b border-teal-200 flex-shrink-0'>
+            <div className='shrink-0 border-b border-teal-200 px-6 py-4'>
               <div className='relative'>
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-teal-500' />
+                <Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-teal-500' />
                 <Input
                   ref={searchInputRef}
                   type='text'
@@ -309,28 +309,28 @@ const RedesignedSearch: React.FC = () => {
                   value={query}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  className='pl-10 pr-20 h-10 bg-white border-teal-200 text-gray-700 placeholder:text-teal-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 text-base'
+                  className='h-10 border-teal-200 bg-white pl-10 pr-20 text-base text-gray-700 placeholder:text-teal-500 focus:border-teal-500 focus:ring-2 focus:ring-teal-200'
                 />
                 {query && (
                   <button
                     onClick={clearSearch}
-                    className='absolute right-16 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 rounded-md transition-colors'
+                    className='absolute right-16 top-1/2 -translate-y-1/2 rounded-md p-1 transition-colors hover:bg-gray-100'
                   >
-                    <X className='h-4 w-4 text-gray-400 hover:text-gray-600' />
+                    <X className='size-4 text-gray-400 hover:text-gray-600' />
                   </button>
                 )}
-                <kbd className='absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none inline-flex h-6 select-none items-center gap-1 rounded border bg-gray-100 px-2 font-mono text-xs font-medium text-gray-600'>
+                <kbd className='pointer-events-none absolute right-3 top-1/2 inline-flex h-6 -translate-y-1/2 select-none items-center gap-1 rounded border bg-gray-100 px-2 font-mono text-xs font-medium text-gray-600'>
                   <span className='text-xs'>⌘</span>K
                 </kbd>
               </div>
             </div>
 
             {/* Search Results - Scrollable Container */}
-            <div className='flex-1 overflow-y-auto min-h-0 search-results-container'>
+            <div className='search-results-container min-h-0 flex-1 overflow-y-auto'>
               {!query && recentSearches.length > 0 && (
-                <div className='p-6 border-b border-gray-100'>
-                  <h3 className='text-sm font-medium text-gray-700 mb-4 flex items-center gap-2'>
-                    <Clock className='h-4 w-4 text-gray-400' />
+                <div className='border-b border-gray-100 p-6'>
+                  <h3 className='mb-4 flex items-center gap-2 text-sm font-medium text-gray-700'>
+                    <Clock className='size-4 text-gray-400' />
                     Recent Searches
                   </h3>
                   <div className='flex flex-wrap gap-2'>
@@ -341,7 +341,7 @@ const RedesignedSearch: React.FC = () => {
                           setQuery(searchTerm);
                           performSearch(searchTerm);
                         }}
-                        className='px-4 py-2 text-sm bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors border border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                        className='rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:shadow-sm'
                       >
                         {searchTerm}
                       </button>
@@ -352,14 +352,14 @@ const RedesignedSearch: React.FC = () => {
 
               {query && (
                 <div className='p-6'>
-                  <div className='flex items-center justify-between mb-6'>
-                    <h3 className='text-sm font-medium text-gray-700 flex items-center gap-2'>
-                      <Search className='h-4 w-4 text-gray-400' />
+                  <div className='mb-6 flex items-center justify-between'>
+                    <h3 className='flex items-center gap-2 text-sm font-medium text-gray-700'>
+                      <Search className='size-4 text-gray-400' />
                       Search Results
                       {results.length > 0 && (
                         <Badge
                           variant='secondary'
-                          className='ml-2 bg-blue-50 text-blue-700 border-blue-200'
+                          className='ml-2 border-blue-200 bg-blue-50 text-blue-700'
                         >
                           {results.length} found
                         </Badge>
@@ -367,7 +367,7 @@ const RedesignedSearch: React.FC = () => {
                     </h3>
                     {isSearching && (
                       <div className='flex items-center gap-2 text-sm text-gray-500'>
-                        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-teal-600'></div>
+                        <div className='size-4 animate-spin rounded-full border-b-2 border-teal-600'></div>
                         Searching...
                       </div>
                     )}
@@ -389,7 +389,7 @@ const RedesignedSearch: React.FC = () => {
                           <div
                             key={index}
                             className={cn(
-                              'group p-5 rounded-xl border cursor-pointer transition-all duration-200',
+                              'group cursor-pointer rounded-xl border p-5 transition-all duration-200',
                               isSelected
                                 ? 'border-teal-400 bg-gradient-to-r from-teal-50 to-blue-50 shadow-lg ring-2 ring-teal-300'
                                 : 'border-teal-200 hover:border-teal-300 hover:bg-gradient-to-r hover:from-teal-50/50 hover:to-blue-50/50 hover:shadow-md'
@@ -397,59 +397,59 @@ const RedesignedSearch: React.FC = () => {
                             onClick={() => handleResultSelect(result)}
                           >
                             <div className='flex items-start gap-4'>
-                              <div className='flex-shrink-0 mt-1'>
+                              <div className='mt-1 shrink-0'>
                                 <div
                                   className={cn(
-                                    'p-2 rounded-lg',
+                                    'rounded-lg p-2',
                                     contentTypeInfo.color
                                   )}
                                 >
-                                  <IconComponent className='h-5 w-5 text-current' />
+                                  <IconComponent className='size-5 text-current' />
                                 </div>
                               </div>
 
-                              <div className='flex-1 min-w-0'>
-                                <div className='flex items-center gap-3 mb-3'>
-                                  <h4 className='font-semibold text-gray-900 line-clamp-1 group-hover:bg-gradient-to-r group-hover:from-teal-600 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-200 text-lg'>
+                              <div className='min-w-0 flex-1'>
+                                <div className='mb-3 flex items-center gap-3'>
+                                  <h4 className='line-clamp-1 text-lg font-semibold text-gray-900 transition-all duration-200 group-hover:bg-gradient-to-r group-hover:from-teal-600 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent'>
                                     {result.item.title}
                                   </h4>
                                   <Badge
                                     variant='secondary'
-                                    className={`text-xs px-3 py-1 ${contentTypeInfo.color}`}
+                                    className={`px-3 py-1 text-xs ${contentTypeInfo.color}`}
                                   >
                                     {result.item.contentType}
                                   </Badge>
                                   <Badge
                                     variant='outline'
-                                    className={`text-xs px-3 py-1 ${relevanceInfo.color}`}
+                                    className={`px-3 py-1 text-xs ${relevanceInfo.color}`}
                                   >
                                     {relevanceInfo.text}
                                   </Badge>
                                 </div>
 
-                                <p className='text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed'>
+                                <p className='mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600'>
                                   {result.item.description}
                                 </p>
 
                                 {result.item.tags &&
                                   result.item.tags.length > 0 && (
-                                    <div className='flex flex-wrap gap-1.5 mt-2'>
+                                    <div className='mt-2 flex flex-wrap gap-1.5'>
                                       {[...new Set(result.item.tags)]
                                         .slice(0, 4)
                                         .map((tag, tagIndex) => (
                                           <Badge
                                             key={tagIndex}
                                             variant='secondary'
-                                            className='text-xs px-1.5 py-0.5 h-auto'
+                                            className='h-auto px-1.5 py-0.5 text-xs'
                                           >
-                                            <Tag className='h-3 w-3 mr-1' />
+                                            <Tag className='mr-1 size-3' />
                                             <span className='whitespace-nowrap'>
                                               {tag}
                                             </span>
                                           </Badge>
                                         ))}
                                       {result.item.tags.length > 4 && (
-                                        <span className='text-xs text-gray-400 dark:text-gray-500 px-2 py-1'>
+                                        <span className='px-2 py-1 text-xs text-gray-400 dark:text-gray-500'>
                                           +{result.item.tags.length - 4}
                                         </span>
                                       )}
@@ -464,13 +464,13 @@ const RedesignedSearch: React.FC = () => {
                                     {result.item.category && (
                                       <>
                                         <span>•</span>
-                                        <span className='bg-gray-100 px-2 py-1 rounded text-gray-600'>
+                                        <span className='rounded bg-gray-100 px-2 py-1 text-gray-600'>
                                           {result.item.category}
                                         </span>
                                       </>
                                     )}
                                   </div>
-                                  <ExternalLink className='h-4 w-4 text-gray-400 group-hover:text-teal-600 transition-colors' />
+                                  <ExternalLink className='size-4 text-gray-400 transition-colors group-hover:text-teal-600' />
                                 </div>
                               </div>
                             </div>
@@ -479,12 +479,12 @@ const RedesignedSearch: React.FC = () => {
                       })}
                     </div>
                   ) : query && !isSearching ? (
-                    <div className='text-center py-12'>
-                      <Search className='h-16 w-16 text-gray-300 mx-auto mb-4' />
-                      <h3 className='text-xl font-medium text-gray-700 mb-3'>
+                    <div className='py-12 text-center'>
+                      <Search className='mx-auto mb-4 size-16 text-gray-300' />
+                      <h3 className='mb-3 text-xl font-medium text-gray-700'>
                         No results found for "{query}"
                       </h3>
-                      <p className='text-sm text-gray-500 max-w-md mx-auto'>
+                      <p className='mx-auto max-w-md text-sm text-gray-500'>
                         Try different keywords, check your spelling, or browse
                         recent searches below
                       </p>
@@ -495,10 +495,10 @@ const RedesignedSearch: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className='p-4 border-t border-gray-100 bg-gray-50 flex-shrink-0'>
+            <div className='shrink-0 border-t border-gray-100 bg-gray-50 p-4'>
               <div className='flex items-center justify-between text-xs text-gray-500'>
                 <span className='flex items-center gap-2'>
-                  <Command className='h-3 w-3' />
+                  <Command className='size-3' />
                   Powered by Fuse.js fuzzy search
                 </span>
                 <div className='flex items-center gap-4'>

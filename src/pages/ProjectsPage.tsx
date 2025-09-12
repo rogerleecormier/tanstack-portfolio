@@ -218,9 +218,9 @@ export default function ProjectsPage({ file }: { file: string }) {
       <div className='w-full'>
         {/* Header skeleton */}
         <header className='mb-8'>
-          <Skeleton className='h-12 w-3/4 mb-4' />
-          <Skeleton className='h-6 w-full mb-2' />
-          <Skeleton className='h-6 w-2/3 mb-4' />
+          <Skeleton className='mb-4 h-12 w-3/4' />
+          <Skeleton className='mb-2 h-6 w-full' />
+          <Skeleton className='mb-4 h-6 w-2/3' />
           <div className='flex gap-2'>
             <Skeleton className='h-6 w-16' />
             <Skeleton className='h-6 w-20' />
@@ -236,7 +236,7 @@ export default function ProjectsPage({ file }: { file: string }) {
         )}
 
         {/* Content skeleton - Preserve space to prevent layout shift */}
-        <div className='space-y-6 min-h-[1000px]'>
+        <div className='min-h-[1000px] space-y-6'>
           {/* Simulate multiple sections */}
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className='space-y-4'>
@@ -244,7 +244,7 @@ export default function ProjectsPage({ file }: { file: string }) {
               <Skeleton className='h-4 w-full' />
               <Skeleton className='h-4 w-full' />
               <Skeleton className='h-4 w-3/4' />
-              {i % 2 === 0 && <Skeleton className='h-32 w-full mt-4' />}
+              {i % 2 === 0 && <Skeleton className='mt-4 h-32 w-full' />}
             </div>
           ))}
         </div>
@@ -257,7 +257,7 @@ export default function ProjectsPage({ file }: { file: string }) {
       {/* Check if this is a portfolio or project page to determine layout */}
       {file.startsWith('portfolio/') || file.startsWith('projects/') ? (
         // Two-column layout for portfolio/project pages
-        <div className='grid grid-cols-1 lg:grid-cols-4 gap-8'>
+        <div className='grid grid-cols-1 gap-8 lg:grid-cols-4'>
           {/* Main content area */}
           <div className='lg:col-span-3'>
             {/* Header with h1 title */}
@@ -265,12 +265,12 @@ export default function ProjectsPage({ file }: { file: string }) {
               <header className='mb-8'>
                 <H1 className='mb-4'>{frontmatter.title}</H1>
                 {frontmatter.description && (
-                  <P className='text-xl text-muted-foreground leading-7'>
+                  <P className='text-xl leading-7 text-muted-foreground'>
                     {frontmatter.description}
                   </P>
                 )}
                 {frontmatter.tags && (
-                  <div className='flex flex-wrap gap-1.5 mt-4'>
+                  <div className='mt-4 flex flex-wrap gap-1.5'>
                     {(() => {
                       // Deduplicate tags by converting to lowercase for comparison
                       const uniqueTags = [
@@ -362,10 +362,10 @@ export default function ProjectsPage({ file }: { file: string }) {
                         <Badge
                           key={`${tag}-${index}`}
                           variant='secondary'
-                          className='text-xs px-1.5 py-0.5 h-auto'
+                          className='h-auto px-1.5 py-0.5 text-xs'
                           title={formatTag(tag)}
                         >
-                          <Tag className='h-3 w-3 mr-1' />
+                          <Tag className='mr-1 size-3' />
                           <span className='whitespace-nowrap'>
                             {formatTag(tag)}
                           </span>
@@ -378,7 +378,7 @@ export default function ProjectsPage({ file }: { file: string }) {
             )}
 
             {/* Markdown Content */}
-            <article className='max-w-none w-full space-y-6'>
+            <article className='w-full max-w-none space-y-6'>
               <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}
@@ -506,7 +506,7 @@ export default function ProjectsPage({ file }: { file: string }) {
                   },
                   pre: ({ children, ...props }) => (
                     <pre
-                      className='overflow-x-auto rounded-lg border bg-muted p-4 w-full'
+                      className='w-full overflow-x-auto rounded-lg border bg-muted p-4'
                       {...props}
                     >
                       {children}
@@ -547,21 +547,21 @@ export default function ProjectsPage({ file }: { file: string }) {
               </ReactMarkdown>
 
               {/* Contact Section at bottom of every page */}
-              <div className='mt-16 pt-8 border-t border-gray-200'>
+              <div className='mt-16 border-t border-gray-200 pt-8'>
                 <div className='text-center'>
-                  <H2 className='text-2xl font-semibold text-gray-900 mb-4'>
+                  <H2 className='mb-4 text-2xl font-semibold text-gray-900'>
                     Ready to discuss your next project?
                   </H2>
-                  <P className='text-gray-600 mb-6 max-w-2xl mx-auto'>
+                  <P className='mx-auto mb-6 max-w-2xl text-gray-600'>
                     Whether you need enterprise integration expertise, DevOps
                     transformation, or strategic technology leadership, I'm here
                     to help bring your vision to life.
                   </P>
                   <a
                     href='/contact'
-                    className='inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition-colors'
+                    className='inline-flex items-center gap-2 rounded-lg bg-teal-600 px-6 py-3 font-medium text-white transition-colors hover:bg-teal-700'
                   >
-                    <MessageSquare className='h-4 w-4' />
+                    <MessageSquare className='size-4' />
                     Get in Touch
                   </a>
                 </div>
@@ -573,7 +573,7 @@ export default function ProjectsPage({ file }: { file: string }) {
           <div className='lg:col-span-1'>
             <div className='sticky top-36 space-y-6'>
               {/* Smart Related Content Sidebar */}
-              <div className='bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-900 dark:to-gray-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm backdrop-blur-sm'>
+              <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-gray-50 p-6 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:from-slate-900 dark:to-gray-900'>
                 <UnifiedRelatedContent
                   content={content}
                   title={frontmatter.title || ''}
@@ -590,7 +590,7 @@ export default function ProjectsPage({ file }: { file: string }) {
       ) : (
         // Single-column layout for other pages
         <div>
-          <article className='max-w-none w-full space-y-6'>
+          <article className='w-full max-w-none space-y-6'>
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}

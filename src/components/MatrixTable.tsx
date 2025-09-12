@@ -41,16 +41,16 @@ export const MatrixTable: React.FC<MatrixTableProps> = ({ data }) => {
 
   return (
     <div className='overflow-x-auto'>
-      <table className='min-w-full border-collapse divide-y divide-gray-200 bg-white rounded-lg shadow-sm'>
+      <table className='min-w-full border-collapse divide-y divide-gray-200 rounded-lg bg-white shadow-sm'>
         <thead>
           <tr>
-            <th className='px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider border-r border-gray-100 bg-gray-50'>
+            <th className='border-r border-gray-100 bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-900'>
               Task
             </th>
             {data.headers.slice(1).map((header, index) => (
               <th
                 key={index}
-                className='px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider border-r border-gray-100 bg-slate-50'
+                className='border-r border-gray-100 bg-slate-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-900'
               >
                 {header}
               </th>
@@ -60,13 +60,13 @@ export const MatrixTable: React.FC<MatrixTableProps> = ({ data }) => {
         <tbody className='divide-y divide-gray-200'>
           {data.rows.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50 border-r border-gray-100'>
+              <td className='whitespace-nowrap border-r border-gray-100 bg-gray-50 px-6 py-4 text-sm font-medium text-gray-900'>
                 {row.taskName}
               </td>
               {row.cells.map((cell, cellIndex) => (
                 <td
                   key={cellIndex}
-                  className={`px-6 py-4 whitespace-nowrap text-sm text-center font-medium ${getCellClass(cell.color)} border-r border-gray-100`}
+                  className={`whitespace-nowrap px-6 py-4 text-center text-sm font-medium ${getCellClass(cell.color)} border-r border-gray-100`}
                 >
                   {cell.value || ''}
                 </td>

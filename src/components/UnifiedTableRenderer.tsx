@@ -502,19 +502,19 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
 
   const getSortIcon = (key: number) => {
     if (!sortConfig || sortConfig.key !== key) {
-      return <ArrowUpDown className='h-4 w-4' />;
+      return <ArrowUpDown className='size-4' />;
     }
 
     if (sortConfig.direction === 'asc') {
-      return <ArrowUp className='h-4 w-4' />;
+      return <ArrowUp className='size-4' />;
     } else {
-      return <ArrowDown className='h-4 w-4' />;
+      return <ArrowDown className='size-4' />;
     }
   };
 
   if (!tableData || !tableData.headers || tableData.headers.length === 0) {
     return (
-      <div className='p-4 text-center text-teal-600 border border-teal-200 rounded-lg bg-teal-50'>
+      <div className='rounded-lg border border-teal-200 bg-teal-50 p-4 text-center text-teal-600'>
         Invalid table data
       </div>
     );
@@ -525,7 +525,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
   return (
     <div className={`my-6 ${className}`}>
       {tableTitle && (
-        <div className='text-lg font-semibold text-center text-teal-800 mb-4'>
+        <div className='mb-4 text-center text-lg font-semibold text-teal-800'>
           {tableTitle}
         </div>
       )}
@@ -536,7 +536,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
             {dataToRender.headers.map((header, index) => (
               <UnifiedTableHead
                 key={index}
-                className='h-14 px-5 text-left align-middle font-semibold text-teal-900 border-r border-teal-200 last:border-r-0 bg-teal-50 text-sm tracking-wide'
+                className='h-14 border-r border-teal-200 bg-teal-50 px-5 text-left align-middle text-sm font-semibold tracking-wide text-teal-900 last:border-r-0'
               >
                 <div className='flex items-center justify-between'>
                   <span>{header}</span>
@@ -545,7 +545,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
                       variant='ghost'
                       size='sm'
                       onClick={() => requestSort(index)}
-                      className='h-6 w-6 p-0 ml-2 hover:bg-teal-200'
+                      className='ml-2 size-6 p-0 hover:bg-teal-200'
                     >
                       {getSortIcon(index)}
                     </Button>
@@ -559,14 +559,14 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
           {dataToRender.rows.map((row, rowIndex) => (
             <UnifiedTableRow
               key={rowIndex}
-              className={`border-b border-teal-100 last:border-b-0 hover:bg-teal-50 hover:shadow-sm transition-all duration-200 ease-in-out ${
+              className={`border-b border-teal-100 transition-all duration-200 ease-in-out last:border-b-0 hover:bg-teal-50 hover:shadow-sm ${
                 rowIndex % 2 === 0 ? 'bg-white' : 'bg-teal-50'
               }`}
             >
               {dataToRender.headers.map((_, colIndex) => (
                 <UnifiedTableCell
                   key={colIndex}
-                  className='px-5 py-4 align-middle min-w-[120px] border-r border-teal-100 last:border-r-0 text-teal-700 text-sm leading-relaxed'
+                  className='min-w-[120px] border-r border-teal-100 px-5 py-4 align-middle text-sm leading-relaxed text-teal-700 last:border-r-0'
                 >
                   {row[colIndex] || ''}
                 </UnifiedTableCell>

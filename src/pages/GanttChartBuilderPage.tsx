@@ -118,7 +118,7 @@ const GanttChartBuilderPage: React.FC = () => {
 
   return (
     <div className='min-h-screen bg-gray-50 py-8'>
-      <div className='max-w-6xl mx-auto px-4'>
+      <div className='mx-auto max-w-6xl px-4'>
         <Card>
           <CardHeader>
             <CardTitle className='text-2xl font-bold'>
@@ -136,27 +136,27 @@ const GanttChartBuilderPage: React.FC = () => {
                 <Label htmlFor='projectName'>Project Name</Label>
                 <Input id='projectName' {...register('projectName')} />
                 {errors.projectName && (
-                  <p className='text-red-500 text-sm'>
+                  <p className='text-sm text-red-500'>
                     {errors.projectName.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <h3 className='text-lg font-semibold mb-2'>Tasks</h3>
+                <h3 className='mb-2 text-lg font-semibold'>Tasks</h3>
                 {fields.map((field, index) => (
-                  <div key={field.id} className='border p-4 mb-4 rounded'>
+                  <div key={field.id} className='mb-4 rounded border p-4'>
                     <Input
                       placeholder='Task Name'
                       {...register(`tasks.${index}.name` as const)}
                       className='mb-2'
                     />
                     {errors.tasks?.[index]?.name && (
-                      <p className='text-red-500 text-sm'>
+                      <p className='text-sm text-red-500'>
                         {errors.tasks[index]?.name?.message}
                       </p>
                     )}
-                    <div className='grid grid-cols-2 gap-2 mb-2'>
+                    <div className='mb-2 grid grid-cols-2 gap-2'>
                       <div>
                         <Label>Start Date</Label>
                         <Input
@@ -164,7 +164,7 @@ const GanttChartBuilderPage: React.FC = () => {
                           {...register(`tasks.${index}.startDate` as const)}
                         />
                         {errors.tasks?.[index]?.startDate && (
-                          <p className='text-red-500 text-sm'>
+                          <p className='text-sm text-red-500'>
                             {errors.tasks[index]?.startDate?.message}
                           </p>
                         )}
@@ -176,7 +176,7 @@ const GanttChartBuilderPage: React.FC = () => {
                           {...register(`tasks.${index}.endDate` as const)}
                         />
                         {errors.tasks?.[index]?.endDate && (
-                          <p className='text-red-500 text-sm'>
+                          <p className='text-sm text-red-500'>
                             {errors.tasks[index]?.endDate?.message}
                           </p>
                         )}
@@ -188,7 +188,7 @@ const GanttChartBuilderPage: React.FC = () => {
                       onClick={() => remove(index)}
                       className='mt-2'
                     >
-                      <Trash2 className='h-4 w-4 mr-2' /> Remove Task
+                      <Trash2 className='mr-2 size-4' /> Remove Task
                     </Button>
                   </div>
                 ))}
@@ -198,7 +198,7 @@ const GanttChartBuilderPage: React.FC = () => {
                     append({ name: '', startDate: '', endDate: '' })
                   }
                 >
-                  <Plus className='h-4 w-4 mr-2' /> Add Task
+                  <Plus className='mr-2 size-4' /> Add Task
                 </Button>
               </div>
 
@@ -216,7 +216,7 @@ const GanttChartBuilderPage: React.FC = () => {
 
             {ganttData.length > 0 && (
               <div className='mt-8'>
-                <h3 className='text-lg font-semibold mb-2'>
+                <h3 className='mb-2 text-lg font-semibold'>
                   Gantt Chart Visualization
                 </h3>
                 <ResponsiveContainer width='100%' height={400}>
@@ -237,7 +237,7 @@ const GanttChartBuilderPage: React.FC = () => {
                   </BarChart>
                 </ResponsiveContainer>
                 <Button onClick={handleExport} className='mt-4'>
-                  <Download className='h-4 w-4 mr-2' /> Export to XLSX
+                  <Download className='mr-2 size-4' /> Export to XLSX
                 </Button>
               </div>
             )}

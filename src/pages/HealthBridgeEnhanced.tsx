@@ -269,7 +269,7 @@ function EnhancedWeightEntry() {
     <Card className='w-full'>
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
-          <Activity className='h-5 w-5' />
+          <Activity className='size-5' />
           Add Weight Measurement
         </CardTitle>
         <CardDescription>
@@ -279,7 +279,7 @@ function EnhancedWeightEntry() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className='space-y-4'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
             <div className='space-y-2'>
               <Label htmlFor='weight'>Weight</Label>
               <div className='flex gap-2'>
@@ -315,7 +315,7 @@ function EnhancedWeightEntry() {
                     variant='outline'
                     className='w-full justify-start text-left font-normal'
                   >
-                    <CalendarIcon className='mr-2 h-4 w-4' />
+                    <CalendarIcon className='mr-2 size-4' />
                     {date ? format(date, 'PPP') : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
@@ -331,10 +331,10 @@ function EnhancedWeightEntry() {
             </div>
           </div>
 
-          {error && <div className='text-red-500 text-sm'>{error}</div>}
+          {error && <div className='text-sm text-red-500'>{error}</div>}
 
           {success && (
-            <div className='text-green-500 text-sm'>
+            <div className='text-sm text-green-500'>
               Weight measurement added successfully!
             </div>
           )}
@@ -871,7 +871,7 @@ function WeightProjections() {
       <Card className='w-full'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
-            <Scale className='h-5 w-5' />
+            <Scale className='size-5' />
             Current Status & Goals
           </CardTitle>
           <CardDescription>
@@ -879,35 +879,35 @@ function WeightProjections() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
-            <div className='text-center p-4 bg-blue-50 rounded-lg'>
-              <div className='text-sm text-blue-600 font-medium mb-2'>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-4'>
+            <div className='rounded-lg bg-blue-50 p-4 text-center'>
+              <div className='mb-2 text-sm font-medium text-blue-600'>
                 Current Weight
               </div>
               <div className='text-3xl font-bold text-blue-700'>
                 {currentWeight?.toFixed(1) || 'N/A'} lbs
               </div>
               {weightData && weightData.length > 0 && (
-                <div className='text-xs text-blue-500 mt-1'>
+                <div className='mt-1 text-xs text-blue-500'>
                   {new Date(weightData[0].timestamp || '').toLocaleDateString()}
                 </div>
               )}
             </div>
 
-            <div className='text-center p-4 bg-green-50 rounded-lg'>
-              <div className='text-sm text-green-600 font-medium mb-2'>
+            <div className='rounded-lg bg-green-50 p-4 text-center'>
+              <div className='mb-2 text-sm font-medium text-green-600'>
                 Target Weight
               </div>
               <div className='text-3xl font-bold text-green-700'>
                 {targetWeight?.toFixed(1) || 'N/A'} lbs
               </div>
               {weightGoal && (
-                <div className='text-xs text-green-500 mt-1'>From settings</div>
+                <div className='mt-1 text-xs text-green-500'>From settings</div>
               )}
             </div>
 
-            <div className='text-center p-4 bg-purple-50 rounded-lg'>
-              <div className='text-sm text-purple-600 font-medium mb-2'>
+            <div className='rounded-lg bg-purple-50 p-4 text-center'>
+              <div className='mb-2 text-sm font-medium text-purple-600'>
                 Target Date
               </div>
               <div className='text-3xl font-bold text-purple-700'>
@@ -918,7 +918,7 @@ function WeightProjections() {
                   : 'Not set'}
               </div>
               {targetDate && (
-                <div className='text-xs text-purple-500 mt-1'>
+                <div className='mt-1 text-xs text-purple-500'>
                   {Math.ceil(
                     (targetDate.getTime() - new Date().getTime()) /
                       (1000 * 60 * 60 * 24)
@@ -928,14 +928,14 @@ function WeightProjections() {
               )}
             </div>
 
-            <div className='text-center p-4 bg-orange-50 rounded-lg'>
-              <div className='text-sm text-orange-600 font-medium mb-2'>
+            <div className='rounded-lg bg-orange-50 p-4 text-center'>
+              <div className='mb-2 text-sm font-medium text-orange-600'>
                 Active Medications
               </div>
               <div className='text-lg font-bold text-orange-700'>
                 {userMedications?.filter(med => med.is_active).length || 0}
               </div>
-              <div className='text-xs text-orange-500 mt-1'>
+              <div className='mt-1 text-xs text-orange-500'>
                 {medicationMultiplier > 0
                   ? `+${(medicationMultiplier * 100).toFixed(0)}% boost`
                   : 'None'}
@@ -951,7 +951,7 @@ function WeightProjections() {
           <Card className='w-full'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
-                <Pill className='h-5 w-5' />
+                <Pill className='size-5' />
                 Current Medications
               </CardTitle>
               <CardDescription>
@@ -965,11 +965,11 @@ function WeightProjections() {
                   .map(medication => (
                     <div
                       key={medication.id}
-                      className='p-4 bg-muted rounded-lg'
+                      className='rounded-lg bg-muted p-4'
                     >
-                      <div className='flex justify-between items-start'>
+                      <div className='flex items-start justify-between'>
                         <div>
-                          <h4 className='font-semibold text-lg'>
+                          <h4 className='text-lg font-semibold'>
                             {medication.medication_name ||
                               medication.medication_type?.name ||
                               'Unknown Medication'}
@@ -979,7 +979,7 @@ function WeightProjections() {
                               medication.medication_type?.generic_name ||
                               'Generic name not available'}
                           </p>
-                          <div className='flex gap-4 mt-2 text-sm'>
+                          <div className='mt-2 flex gap-4 text-sm'>
                             {medication.dosage_mg && (
                               <span className='text-blue-600'>
                                 <strong>Dosage:</strong> {medication.dosage_mg}
@@ -1190,7 +1190,7 @@ function WeightProjections() {
       <Card className='w-full'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
-            <TrendingUp className='h-5 w-5' />
+            <TrendingUp className='size-5' />
             Projection Settings
           </CardTitle>
           <CardDescription>
@@ -1198,7 +1198,7 @@ function WeightProjections() {
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
             <div className='space-y-2'>
               <Label htmlFor='projectionDays'>Projection Period</Label>
               <Select
@@ -1346,7 +1346,7 @@ function WeightProjections() {
               {projectionDays} days
             </span>
             <br />
-            <span className='text-sm text-amber-600 font-medium'>
+            <span className='text-sm font-medium text-amber-600'>
               Orange line shows your current profile projection (unchangeable).
               Teal line shows scenario projection based on your selected
               settings above.
@@ -1355,15 +1355,15 @@ function WeightProjections() {
         </CardHeader>
         <CardContent>
           {/* Chart Legend */}
-          <div className='mb-4 flex flex-wrap gap-4 justify-center'>
+          <div className='mb-4 flex flex-wrap justify-center gap-4'>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 bg-blue-600 rounded-full'></div>
+              <div className='size-4 rounded-full bg-blue-600'></div>
               <span className='text-sm text-muted-foreground'>
                 Current Weight
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 bg-orange-500 rounded-full'></div>
+              <div className='size-4 rounded-full bg-orange-500'></div>
               <span className='text-sm text-muted-foreground'>
                 Current Profile (
                 {currentProfileProjection?.activityLevel?.replace('_', ' ') ||
@@ -1375,7 +1375,7 @@ function WeightProjections() {
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 bg-teal-500 rounded-full'></div>
+              <div className='size-4 rounded-full bg-teal-500'></div>
               <span className='text-sm text-muted-foreground'>
                 Scenario (
                 {medicationMode === 'with'
@@ -1385,7 +1385,7 @@ function WeightProjections() {
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 bg-purple-500 rounded-full'></div>
+              <div className='size-4 rounded-full bg-purple-500'></div>
               <span className='text-sm text-muted-foreground'>
                 Target Weight
               </span>
@@ -1412,7 +1412,7 @@ function WeightProjections() {
                   color: '#8b5cf6',
                 },
               }}
-              className='h-full w-full'
+              className='size-full'
             >
               <LineChart data={projectionData} width={800} height={320}>
                 <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
@@ -1501,8 +1501,8 @@ function WeightProjections() {
 
           {/* Medical Disclaimer Tooltip */}
           <div className='mt-4 flex justify-center'>
-            <div className='group relative inline-flex items-center gap-2 px-3 py-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg cursor-help'>
-              <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
+            <div className='group relative inline-flex cursor-help items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700'>
+              <svg className='size-4' fill='currentColor' viewBox='0 0 20 20'>
                 <path
                   fillRule='evenodd'
                   d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
@@ -1512,9 +1512,9 @@ function WeightProjections() {
               <span>Medical Disclaimer</span>
 
               {/* Tooltip */}
-              <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-96 p-4 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50'>
+              <div className='invisible absolute bottom-full left-1/2 z-50 mb-2 w-96 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-4 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100'>
                 <div className='text-sm text-gray-800'>
-                  <h4 className='font-semibold mb-2 text-amber-700'>
+                  <h4 className='mb-2 font-semibold text-amber-700'>
                     Important Medical Disclaimer
                   </h4>
                   <div className='space-y-2'>
@@ -1552,7 +1552,7 @@ function WeightProjections() {
                   </div>
                 </div>
                 {/* Arrow */}
-                <div className='absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white'></div>
+                <div className='absolute left-1/2 top-full size-0 -translate-x-1/2 border-x-4 border-t-4 border-transparent border-t-white'></div>
               </div>
             </div>
           </div>
@@ -2026,7 +2026,7 @@ function AnalyticsDashboard() {
       <Card className='w-full'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
-            <BarChart3 className='h-5 w-5' />
+            <BarChart3 className='size-5' />
             Analytics Dashboard
           </CardTitle>
           <CardDescription>
@@ -2034,7 +2034,7 @@ function AnalyticsDashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-6'>
-          <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
+          <div className='grid grid-cols-2 gap-4 md:grid-cols-5'>
             {trendData.map(item => (
               <div key={item.metric} className='text-center'>
                 <div className='text-2xl font-bold text-blue-600'>
@@ -2052,7 +2052,7 @@ function AnalyticsDashboard() {
           <div className='space-y-4'>
             <div>
               <Label>Overall Trend</Label>
-              <div className='flex items-center gap-2 mt-1'>
+              <div className='mt-1 flex items-center gap-2'>
                 <Badge
                   variant={
                     analytics.trends.overall_trend === 'losing'
@@ -2070,7 +2070,7 @@ function AnalyticsDashboard() {
 
             <div>
               <Label>Consistency Score</Label>
-              <div className='flex items-center gap-2 mt-1'>
+              <div className='mt-1 flex items-center gap-2'>
                 <Progress
                   value={analytics.trends.consistency_score}
                   className='flex-1'
@@ -2084,7 +2084,7 @@ function AnalyticsDashboard() {
             {analytics.projections?.activity_level && (
               <div>
                 <Label>Activity Level Impact</Label>
-                <div className='flex items-center gap-2 mt-1'>
+                <div className='mt-1 flex items-center gap-2'>
                   <Badge variant='outline' className='capitalize'>
                     {analytics.projections.activity_level.replace('_', ' ')}
                   </Badge>
@@ -2099,9 +2099,9 @@ function AnalyticsDashboard() {
           </div>
 
           {/* Chart Legend */}
-          <div className='mb-4 flex flex-wrap gap-4 justify-center'>
+          <div className='mb-4 flex flex-wrap justify-center gap-4'>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 bg-blue-600 rounded-full'></div>
+              <div className='size-4 rounded-full bg-blue-600'></div>
               <span className='text-sm text-muted-foreground'>
                 Weight Metrics
               </span>
@@ -2116,7 +2116,7 @@ function AnalyticsDashboard() {
                   color: '#3b82f6',
                 },
               }}
-              className='h-full w-full'
+              className='size-full'
             >
               <BarChart data={trendData} width={400} height={200}>
                 <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
@@ -2154,13 +2154,13 @@ function AnalyticsDashboard() {
             const direction =
               delta === 0 ? 'no net change' : delta < 0 ? 'loss' : 'gain';
             return (
-              <div className='text-sm text-muted-foreground mt-2 text-center'>
+              <div className='mt-2 text-center text-sm text-muted-foreground'>
                 {`Since start: ${Math.abs(delta).toFixed(1)} lbs ${direction}. Range: ${min.toFixed(1)}–${max.toFixed(1)} lbs.`}
               </div>
             );
           })()}
 
-          <div className='text-sm text-muted-foreground text-center'>
+          <div className='text-center text-sm text-muted-foreground'>
             Generated: {format(new Date(analytics.generated_at), "PPP 'at' p")}
           </div>
         </CardContent>
@@ -2216,7 +2216,7 @@ function AnalyticsDashboard() {
                         actual: { label: 'Actual (lbs)', color: '#2563eb' },
                         ma7: { label: '7-day MA (lbs)', color: '#10b981' },
                       }}
-                      className='h-full w-full'
+                      className='size-full'
                     >
                       <LineChart data={chartData} width={800} height={256}>
                         <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
@@ -2337,7 +2337,7 @@ function AnalyticsDashboard() {
                           color: '#3b82f6',
                         },
                       }}
-                      className='h-full w-full'
+                      className='size-full'
                     >
                       <BarChart data={medData} width={800} height={224}>
                         <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
@@ -2431,7 +2431,7 @@ function AnalyticsDashboard() {
                           color: '#10b981',
                         },
                       }}
-                      className='h-full w-full'
+                      className='size-full'
                     >
                       <BarChart data={actData} width={800} height={224}>
                         <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
@@ -2550,7 +2550,7 @@ function AnalyticsDashboard() {
                           color: '#f59e0b',
                         },
                       }}
-                      className='h-full w-full'
+                      className='size-full'
                     >
                       <BarChart data={wc} width={800} height={224}>
                         <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
@@ -2622,19 +2622,19 @@ function AnalyticsDashboard() {
         </CardHeader>
         <CardContent className='space-y-6'>
           {/* Key Metrics */}
-          <div className='grid grid-cols-1 md:grid-cols-4 gap-4 text-center'>
-            <div className='p-4 bg-muted rounded-lg'>
+          <div className='grid grid-cols-1 gap-4 text-center md:grid-cols-4'>
+            <div className='rounded-lg bg-muted p-4'>
               <div className='text-2xl font-bold text-blue-600'>
                 {hasWeights ? totalLostLbs.toFixed(1) : '0.0'} lbs
               </div>
               <div className='text-sm text-muted-foreground'>Total Lost</div>
               {hasWeights ? (
-                <div className='text-xs text-blue-500 mt-1'>
+                <div className='mt-1 text-xs text-blue-500'>
                   {totalLostPct.toFixed(1)}% of starting weight
                 </div>
               ) : null}
             </div>
-            <div className='p-4 bg-muted rounded-lg'>
+            <div className='rounded-lg bg-muted p-4'>
               <div className='text-2xl font-bold text-red-600'>
                 {weeksToTargetNoMed} weeks
               </div>
@@ -2642,7 +2642,7 @@ function AnalyticsDashboard() {
                 To Target (Natural)
               </div>
             </div>
-            <div className='p-4 bg-muted rounded-lg'>
+            <div className='rounded-lg bg-muted p-4'>
               <div className='text-2xl font-bold text-green-600'>
                 {weeksToTargetWithMed} weeks
               </div>
@@ -2650,7 +2650,7 @@ function AnalyticsDashboard() {
                 To Target (Medication)
               </div>
             </div>
-            <div className='p-4 bg-muted rounded-lg'>
+            <div className='rounded-lg bg-muted p-4'>
               <div className='text-2xl font-bold text-purple-600'>
                 {medicationBenefit} weeks
               </div>
@@ -2663,10 +2663,10 @@ function AnalyticsDashboard() {
           {/* Detailed Analysis */}
           <div className='space-y-6'>
             <div>
-              <h4 className='font-semibold text-lg mb-3'>
+              <h4 className='mb-3 text-lg font-semibold'>
                 Weight Loss Journey Analysis
               </h4>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                 <div className='space-y-2 text-sm text-muted-foreground'>
                   <p>
                     <strong>Starting Weight:</strong>{' '}
@@ -2707,7 +2707,7 @@ function AnalyticsDashboard() {
             </div>
 
             <div>
-              <h4 className='font-semibold text-lg mb-3'>
+              <h4 className='mb-3 text-lg font-semibold'>
                 Medication Impact Analysis
               </h4>
               <div className='space-y-3 text-sm text-muted-foreground'>
@@ -2741,7 +2741,7 @@ function AnalyticsDashboard() {
             </div>
 
             <div>
-              <h4 className='font-semibold text-lg mb-3'>
+              <h4 className='mb-3 text-lg font-semibold'>
                 Activity Level Impact
               </h4>
               <div className='space-y-3 text-sm text-muted-foreground'>
@@ -2762,11 +2762,11 @@ function AnalyticsDashboard() {
             </div>
 
             <div>
-              <h4 className='font-semibold text-lg mb-3'>
+              <h4 className='mb-3 text-lg font-semibold'>
                 Statistical Insights
               </h4>
-              <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-center'>
-                <div className='p-3 bg-muted rounded'>
+              <div className='grid grid-cols-2 gap-4 text-center md:grid-cols-4'>
+                <div className='rounded bg-muted p-3'>
                   <div className='text-lg font-semibold'>
                     {stdDev != null ? stdDev.toFixed(2) : 'N/A'}
                   </div>
@@ -2774,7 +2774,7 @@ function AnalyticsDashboard() {
                     Std Dev (lbs)
                   </div>
                 </div>
-                <div className='p-3 bg-muted rounded'>
+                <div className='rounded bg-muted p-3'>
                   <div className='text-lg font-semibold'>
                     {cv != null ? cv.toFixed(1) : 'N/A'}%
                   </div>
@@ -2782,7 +2782,7 @@ function AnalyticsDashboard() {
                     Variability
                   </div>
                 </div>
-                <div className='p-3 bg-muted rounded'>
+                <div className='rounded bg-muted p-3'>
                   <div className='text-lg font-semibold'>
                     {consistencyPct != null
                       ? String(Math.round(consistencyPct))
@@ -2793,7 +2793,7 @@ function AnalyticsDashboard() {
                     Consistency
                   </div>
                 </div>
-                <div className='p-3 bg-muted rounded'>
+                <div className='rounded bg-muted p-3'>
                   <div className='text-lg font-semibold'>{dataPointsCount}</div>
                   <div className='text-xs text-muted-foreground'>
                     Data Points
@@ -2803,7 +2803,7 @@ function AnalyticsDashboard() {
             </div>
 
             <div>
-              <h4 className='font-semibold text-lg mb-3'>Recommendations</h4>
+              <h4 className='mb-3 text-lg font-semibold'>Recommendations</h4>
               <div className='space-y-2 text-sm text-muted-foreground'>
                 {medicationBenefit > 0 ? (
                   <p>
@@ -3008,10 +3008,10 @@ function WeightDataTable() {
       {/* Weight Loss Chart */}
       <Card className='w-full'>
         <CardHeader>
-          <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
             <div>
               <CardTitle className='flex items-center gap-2'>
-                <TrendingDown className='h-5 w-5' />
+                <TrendingDown className='size-5' />
                 Weight Loss Progress Chart
               </CardTitle>
               <CardDescription className='mt-2'>
@@ -3061,7 +3061,7 @@ function WeightDataTable() {
                   size='sm'
                   onClick={() => setShowTrendline(!showTrendline)}
                 >
-                  <TrendingUp className='h-4 w-4 mr-1' />
+                  <TrendingUp className='mr-1 size-4' />
                   Trend
                 </Button>
                 <Button
@@ -3069,7 +3069,7 @@ function WeightDataTable() {
                   size='sm'
                   onClick={() => setShowMovingAverage(!showMovingAverage)}
                 >
-                  <BarChart3 className='h-4 w-4 mr-1' />
+                  <BarChart3 className='mr-1 size-4' />
                   Avg
                 </Button>
                 {showMovingAverage && (
@@ -3096,17 +3096,17 @@ function WeightDataTable() {
         </CardHeader>
         <CardContent>
           {/* Chart Legend */}
-          <div className='mb-4 flex flex-wrap gap-4 justify-center'>
+          <div className='mb-4 flex flex-wrap justify-center gap-4'>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 bg-cyan-600 rounded-full'></div>
+              <div className='size-4 rounded-full bg-cyan-600'></div>
               <span className='text-sm text-muted-foreground'>Weight Data</span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 bg-red-500 rounded-full'></div>
+              <div className='size-4 rounded-full bg-red-500'></div>
               <span className='text-sm text-muted-foreground'>Trend Line</span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-4 bg-green-500 rounded-full'></div>
+              <div className='size-4 rounded-full bg-green-500'></div>
               <span className='text-sm text-muted-foreground'>
                 {showMovingAverage
                   ? `${movingAveragePeriod}-day Moving Average`
@@ -3117,7 +3117,7 @@ function WeightDataTable() {
 
           <div className='h-80 w-full overflow-hidden'>
             {simpleChartData.length > 0 ? (
-              <div className='w-full h-full flex items-center justify-center'>
+              <div className='flex size-full items-center justify-center'>
                 <ChartContainer
                   config={{
                     weight: {
@@ -3133,7 +3133,7 @@ function WeightDataTable() {
                       color: '#10b981',
                     },
                   }}
-                  className='h-full w-full'
+                  className='size-full'
                 >
                   <LineChart data={combinedChartData} width={800} height={320}>
                     <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
@@ -3194,22 +3194,22 @@ function WeightDataTable() {
                 </ChartContainer>
               </div>
             ) : (
-              <div className='h-full w-full flex items-center justify-center text-muted-foreground'>
+              <div className='flex size-full items-center justify-center text-muted-foreground'>
                 No data available for the selected period
               </div>
             )}
           </div>
 
           {/* Chart Summary */}
-          <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm'>
-            <div className='text-center p-3 bg-muted rounded-lg'>
-              <div className='font-semibold text-lg'>
+          <div className='mt-6 grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4'>
+            <div className='rounded-lg bg-muted p-3 text-center'>
+              <div className='text-lg font-semibold'>
                 {displayData.length > 0 ? displayData[0].weight : 0} lbs
               </div>
               <div className='text-muted-foreground'>Current Weight</div>
             </div>
-            <div className='text-center p-3 bg-muted rounded-lg'>
-              <div className='font-semibold text-lg'>
+            <div className='rounded-lg bg-muted p-3 text-center'>
+              <div className='text-lg font-semibold'>
                 {displayData.length > 1
                   ? (
                       displayData[0].weight -
@@ -3220,8 +3220,8 @@ function WeightDataTable() {
               </div>
               <div className='text-muted-foreground'>Weight Change</div>
             </div>
-            <div className='text-center p-3 bg-muted rounded-lg'>
-              <div className='font-semibold text-lg'>
+            <div className='rounded-lg bg-muted p-3 text-center'>
+              <div className='text-lg font-semibold'>
                 {displayData.length > 1
                   ? (
                       (displayData[0].weight -
@@ -3233,8 +3233,8 @@ function WeightDataTable() {
               </div>
               <div className='text-muted-foreground'>Average Rate</div>
             </div>
-            <div className='text-center p-3 bg-muted rounded-lg'>
-              <div className='font-semibold text-lg'>
+            <div className='rounded-lg bg-muted p-3 text-center'>
+              <div className='text-lg font-semibold'>
                 {simpleChartData.length > 0
                   ? (
                       simpleChartData.reduce(
@@ -3255,7 +3255,7 @@ function WeightDataTable() {
       <Card className='w-full'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
-            <TableIcon className='h-5 w-5' />
+            <TableIcon className='size-5' />
             Weight Measurements Data
           </CardTitle>
           <CardDescription>
@@ -3291,7 +3291,7 @@ function WeightDataTable() {
             </Table>
           </div>
 
-          <div className='mt-4 text-sm text-muted-foreground text-center'>
+          <div className='mt-4 text-center text-sm text-muted-foreground'>
             Showing {displayData.length} measurements • Last updated:{' '}
             {displayData.length > 0
               ? format(new Date(displayData[0].timestamp), "PPP 'at' p")
@@ -3352,17 +3352,17 @@ export default function HealthBridgeEnhancedPage() {
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Targeting Theme */}
-            <div className='flex items-center justify-center gap-4 mb-4'>
+            <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='w-14 h-14 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg'>
-                  <Zap className='h-7 w-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
+                  <Zap className='size-7 text-white' />
                 </div>
                 {/* Targeting indicator dots */}
-                <div className='absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center'>
-                  <div className='w-2 h-2 bg-white rounded-full'></div>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
+                  <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-teal-400 to-blue-500 rounded-full flex items-center justify-center'>
-                  <div className='w-1.5 h-1.5 bg-white rounded-full'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
+                  <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
@@ -3374,12 +3374,12 @@ export default function HealthBridgeEnhancedPage() {
                     HealthBridge Enhanced
                   </span>
                 </H1>
-                <div className='h-1 w-20 bg-gradient-to-r from-teal-500 to-blue-500 mx-auto mt-2 rounded-full'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
               </div>
             </div>
 
             {/* Description with Targeting Language */}
-            <p className='text-lg leading-7 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-gray-300'>
               Advanced weight loss tracking with AI-powered projections and
               comprehensive analytics.
               <span className='font-medium text-teal-700 dark:text-teal-300'>
@@ -3390,23 +3390,23 @@ export default function HealthBridgeEnhancedPage() {
             </p>
 
             {/* Quick Stats with Targeting Theme */}
-            <div className='flex justify-center gap-6 mt-6'>
+            <div className='mt-6 flex justify-center gap-6'>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-teal-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-teal-500'></div>
                 <span>Precision Analytics</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-blue-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-blue-500'></div>
                 <span>AI Projections</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2 h-2 bg-purple-500 rounded-full'></div>
+                <div className='size-2 rounded-full bg-purple-500'></div>
                 <span>Goal Targeting</span>
               </div>
             </div>
 
             {isAuthenticated && (
-              <p className='text-sm text-muted-foreground mt-4'>
+              <p className='mt-4 text-sm text-muted-foreground'>
                 💡 Weight goals are managed in your{' '}
                 <a
                   href='/protected/settings'
@@ -3421,35 +3421,35 @@ export default function HealthBridgeEnhancedPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
+      <div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
         {!isAuthenticated && (
-          <div className='mb-8 p-6 bg-gradient-to-r from-blue-50 to-teal-50 border border-blue-200 rounded-xl'>
-            <h2 className='text-xl font-semibold text-blue-900 mb-3'>
+          <div className='mb-8 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-teal-50 p-6'>
+            <h2 className='mb-3 text-xl font-semibold text-blue-900'>
               Welcome to HealthBridge Enhanced - Demo Mode
             </h2>
-            <p className='text-blue-800 mb-4'>
+            <p className='mb-4 text-blue-800'>
               This advanced weight loss tracking dashboard provides personalized
               insights, predictive modeling, and comprehensive analytics. You're
               currently viewing in demo mode with sample data. Sign in to access
               your personal data and start tracking your health journey.
             </p>
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-4 text-sm'>
-              <div className='text-center p-3 bg-white/60 rounded-lg'>
-                <TrendingUp className='w-6 h-6 text-blue-600 mx-auto mb-2' />
+            <div className='grid grid-cols-1 gap-4 text-sm md:grid-cols-3'>
+              <div className='rounded-lg bg-white/60 p-3 text-center'>
+                <TrendingUp className='mx-auto mb-2 size-6 text-blue-600' />
                 <strong>Weight Projections</strong>
                 <p className='text-blue-700'>
                   AI-powered predictions with medication analysis
                 </p>
               </div>
-              <div className='text-center p-3 bg-white/60 rounded-lg'>
-                <BarChart3 className='w-6 h-6 text-teal-600 mx-auto mb-2' />
+              <div className='rounded-lg bg-white/60 p-3 text-center'>
+                <BarChart3 className='mx-auto mb-2 size-6 text-teal-600' />
                 <strong>Advanced Analytics</strong>
                 <p className='text-teal-700'>
                   Comprehensive health metrics and trends
                 </p>
               </div>
-              <div className='text-center p-3 bg-white/60 rounded-lg'>
-                <Pill className='w-6 h-6 text-blue-600 mx-auto mb-2' />
+              <div className='rounded-lg bg-white/60 p-3 text-center'>
+                <Pill className='mx-auto mb-2 size-6 text-blue-600' />
                 <strong>Medication Tracking</strong>
                 <p className='text-blue-700'>
                   Monitor medication effects on weight loss
@@ -3461,43 +3461,43 @@ export default function HealthBridgeEnhancedPage() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
           <TabsList
-            className={`grid w-full ${isAuthenticated ? 'grid-cols-4' : 'grid-cols-3'} bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-teal-200 dark:border-teal-800`}
+            className={`grid w-full ${isAuthenticated ? 'grid-cols-4' : 'grid-cols-3'} border border-teal-200 bg-white/80 backdrop-blur-sm dark:border-teal-800 dark:bg-gray-900/80`}
           >
             {isAuthenticated && (
               <TabsTrigger
                 value='overview'
-                className='data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-0'
+                className='data-[state=active]:border-0 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white'
               >
-                <Scale className='w-4 h-4 mr-2' />
+                <Scale className='mr-2 size-4' />
                 Enter Weight
               </TabsTrigger>
             )}
             <TabsTrigger
               value='data'
-              className='data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-0'
+              className='data-[state=active]:border-0 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white'
             >
-              <TableIcon className='w-4 h-4 mr-2' />
+              <TableIcon className='mr-2 size-4' />
               Current Progress
             </TabsTrigger>
             <TabsTrigger
               value='projections'
-              className='data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-0'
+              className='data-[state=active]:border-0 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white'
             >
-              <TrendingUp className='w-4 h-4 mr-2' />
+              <TrendingUp className='mr-2 size-4' />
               Projections
             </TabsTrigger>
             <TabsTrigger
               value='analytics'
-              className='data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-0'
+              className='data-[state=active]:border-0 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-blue-600 data-[state=active]:text-white'
             >
-              <BarChart3 className='w-4 h-4 mr-2' />
+              <BarChart3 className='mr-2 size-4' />
               Analytics
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value='overview' className='space-y-6'>
             {!isAuthenticated ? (
-              <Card className='max-w-md mx-auto border-teal-200 dark:border-teal-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm'>
+              <Card className='mx-auto max-w-md border-teal-200 bg-white/80 backdrop-blur-sm dark:border-teal-800 dark:bg-gray-900/80'>
                 <CardHeader>
                   <CardTitle className='text-teal-900 dark:text-teal-100'>
                     Authentication Required
@@ -3512,7 +3512,7 @@ export default function HealthBridgeEnhancedPage() {
                     onClick={() =>
                       (window.location.href = '/projects/healthbridge-enhanced')
                     }
-                    className='w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0'
+                    className='w-full border-0 bg-gradient-to-r from-teal-600 to-blue-600 text-white hover:from-teal-700 hover:to-blue-700'
                   >
                     Sign In
                   </Button>
@@ -3525,7 +3525,7 @@ export default function HealthBridgeEnhancedPage() {
 
           <TabsContent value='data' className='space-y-6'>
             {!isAuthenticated && (
-              <div className='mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg dark:bg-teal-950/50 dark:border-teal-800'>
+              <div className='mb-4 rounded-lg border border-teal-200 bg-teal-50 p-3 dark:border-teal-800 dark:bg-teal-950/50'>
                 <p className='text-sm text-teal-700 dark:text-teal-300'>
                   💡 <strong>Demo Mode:</strong> Showing sample data to
                   demonstrate the dashboard features
@@ -3537,7 +3537,7 @@ export default function HealthBridgeEnhancedPage() {
 
           <TabsContent value='projections' className='space-y-6'>
             {!isAuthenticated && (
-              <div className='mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg dark:bg-teal-950/50 dark:border-teal-800'>
+              <div className='mb-4 rounded-lg border border-teal-200 bg-teal-50 p-3 dark:border-teal-800 dark:bg-teal-950/50'>
                 <p className='text-sm text-teal-700 dark:text-teal-300'>
                   💡 <strong>Demo Mode:</strong> Showing sample projections to
                   demonstrate the dashboard features
@@ -3549,7 +3549,7 @@ export default function HealthBridgeEnhancedPage() {
 
           <TabsContent value='analytics' className='space-y-6'>
             {!isAuthenticated && (
-              <div className='mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg dark:bg-teal-950/50 dark:border-teal-800'>
+              <div className='mb-4 rounded-lg border border-teal-200 bg-teal-50 p-3 dark:border-teal-800 dark:bg-teal-950/50'>
                 <p className='text-sm text-teal-700 dark:text-teal-300'>
                   💡 <strong>Demo Mode:</strong> Showing sample analytics to
                   demonstrate the dashboard features

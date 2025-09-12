@@ -218,8 +218,8 @@ export default function IndexPage() {
         <div className='relative px-4 py-12 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Logo and Title with Enhanced Targeting Theme */}
-            <div className='flex items-center justify-center gap-6 mb-6'>
-              <div className='p-4 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 dark:from-slate-700 dark:via-slate-600 dark:to-slate-800 rounded-2xl shadow-xl backdrop-blur-sm border border-slate-600/50 dark:border-slate-500/50'>
+            <div className='mb-6 flex items-center justify-center gap-6'>
+              <div className='rounded-2xl border border-slate-600/50 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 p-4 shadow-xl backdrop-blur-sm dark:border-slate-500/50 dark:from-slate-700 dark:via-slate-600 dark:to-slate-800'>
                 <Logo size='xl' showTargetingDots={true} />
               </div>
               <div>
@@ -231,12 +231,12 @@ export default function IndexPage() {
                     Roger Lee Cormier
                   </span>
                 </h1>
-                <div className='h-1.5 w-32 bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600 mx-auto mt-3 rounded-full'></div>
+                <div className='mx-auto mt-3 h-1.5 w-32 rounded-full bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600'></div>
               </div>
             </div>
 
             {/* Description with Enhanced Targeting Language */}
-            <p className='text-xl leading-8 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8'>
+            <p className='mx-auto mb-8 max-w-3xl text-xl leading-8 text-gray-600 dark:text-gray-300'>
               Technical Project Manager specializing in
               <span className='font-medium text-orange-600 dark:text-orange-400'>
                 {' '}
@@ -253,37 +253,37 @@ export default function IndexPage() {
             </p>
 
             {/* Quick Stats with Enhanced Targeting Theme */}
-            <div className='flex justify-center gap-8 mb-8'>
+            <div className='mb-8 flex justify-center gap-8'>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2.5 h-2.5 bg-teal-600 rounded-full shadow-sm'></div>
+                <div className='size-2.5 rounded-full bg-teal-600 shadow-sm'></div>
                 <span>ERP Integration</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2.5 h-2.5 bg-blue-600 rounded-full shadow-sm'></div>
+                <div className='size-2.5 rounded-full bg-blue-600 shadow-sm'></div>
                 <span>AI Automation</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='w-2.5 h-2.5 bg-orange-500 rounded-full shadow-sm'></div>
+                <div className='size-2.5 rounded-full bg-orange-500 shadow-sm'></div>
                 <span>Precision Targeting</span>
               </div>
             </div>
 
             {/* CTA Buttons with Enhanced Targeting Theme */}
-            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+            <div className='flex flex-col justify-center gap-4 sm:flex-row'>
               <Button
                 onClick={() => handleNavigation('/portfolio')}
-                className='bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white border-0 px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300'
+                className='border-0 bg-gradient-to-r from-teal-800 to-blue-800 px-8 py-3 text-lg text-white shadow-lg transition-all duration-300 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
               >
                 View Portfolio
-                <ArrowRight className='w-5 h-5 ml-2' />
+                <ArrowRight className='ml-2 size-5' />
               </Button>
               <Button
                 onClick={() => handleNavigation('/contact')}
                 variant='outline'
-                className='border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950 px-8 py-3 text-lg shadow-md hover:shadow-lg transition-all duration-300'
+                className='border-orange-600 px-8 py-3 text-lg text-orange-600 shadow-md transition-all duration-300 hover:bg-orange-50 hover:shadow-lg dark:hover:bg-orange-950'
               >
                 Get in Touch
-                <MessageSquare className='w-5 h-5 ml-2' />
+                <MessageSquare className='ml-2 size-5' />
               </Button>
             </div>
           </div>
@@ -293,27 +293,27 @@ export default function IndexPage() {
       {/* Core Expertise Section */}
       <div className='px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-7xl'>
-          <div className='text-center mb-16'>
+          <div className='mb-16 text-center'>
             <h2
-              className='text-3xl font-bold text-gray-900 dark:text-white mb-4'
+              className='mb-4 text-3xl font-bold text-gray-900 dark:text-white'
               style={{ fontWeight: 700 }}
             >
               Core Expertise
             </h2>
-            <p className='text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto'>
+            <p className='mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300'>
               Specialized capabilities that drive digital transformation and
               operational excellence
             </p>
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'>
             {/* ERP & SaaS Integration */}
-            <Card className='group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900'>
+            <Card className='group border-0 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/80 dark:hover:bg-gray-900'>
               <CardHeader className='pb-4'>
-                <div className='w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center mb-4'>
-                  <Database className='w-6 h-6 text-white' />
+                <div className='mb-4 flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-600'>
+                  <Database className='size-6 text-white' />
                 </div>
-                <CardTitle className='text-xl font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors'>
+                <CardTitle className='text-xl font-bold text-gray-900 transition-colors group-hover:text-teal-600 dark:text-white dark:group-hover:text-teal-400'>
                   ERP & SaaS Integration
                 </CardTitle>
                 <CardDescription className='text-gray-600 dark:text-gray-300'>
@@ -322,7 +322,7 @@ export default function IndexPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className='flex flex-wrap gap-2 mb-4'>
+                <div className='mb-4 flex flex-wrap gap-2'>
                   <Badge
                     variant='secondary'
                     className='bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300'
@@ -348,18 +348,18 @@ export default function IndexPage() {
                   className='w-full border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950'
                 >
                   Learn More
-                  <ArrowRight className='w-4 h-4 ml-2' />
+                  <ArrowRight className='ml-2 size-4' />
                 </Button>
               </CardContent>
             </Card>
 
             {/* AI & Automation */}
-            <Card className='group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900'>
+            <Card className='group border-0 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/80 dark:hover:bg-gray-900'>
               <CardHeader className='pb-4'>
-                <div className='w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4'>
-                  <Brain className='w-6 h-6 text-white' />
+                <div className='mb-4 flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600'>
+                  <Brain className='size-6 text-white' />
                 </div>
-                <CardTitle className='text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
+                <CardTitle className='text-xl font-bold text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400'>
                   AI & Automation
                 </CardTitle>
                 <CardDescription className='text-gray-600 dark:text-gray-300'>
@@ -368,7 +368,7 @@ export default function IndexPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className='flex flex-wrap gap-2 mb-4'>
+                <div className='mb-4 flex flex-wrap gap-2'>
                   <Badge
                     variant='secondary'
                     className='bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
@@ -394,18 +394,18 @@ export default function IndexPage() {
                   className='w-full border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950'
                 >
                   Learn More
-                  <ArrowRight className='w-4 h-4 ml-2' />
+                  <ArrowRight className='ml-2 size-4' />
                 </Button>
               </CardContent>
             </Card>
 
             {/* Digital Transformation */}
-            <Card className='group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900'>
+            <Card className='group border-0 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/80 dark:hover:bg-gray-900'>
               <CardHeader className='pb-4'>
-                <div className='w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4'>
-                  <Globe className='w-6 h-6 text-white' />
+                <div className='mb-4 flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600'>
+                  <Globe className='size-6 text-white' />
                 </div>
-                <CardTitle className='text-xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors'>
+                <CardTitle className='text-xl font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400'>
                   Digital Transformation
                 </CardTitle>
                 <CardDescription className='text-gray-600 dark:text-gray-300'>
@@ -414,7 +414,7 @@ export default function IndexPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className='flex flex-wrap gap-2 mb-4'>
+                <div className='mb-4 flex flex-wrap gap-2'>
                   <Badge
                     variant='secondary'
                     className='bg-purple-50 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300'
@@ -440,7 +440,7 @@ export default function IndexPage() {
                   className='w-full border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950'
                 >
                   Learn More
-                  <ArrowRight className='w-4 h-4 ml-2' />
+                  <ArrowRight className='ml-2 size-4' />
                 </Button>
               </CardContent>
             </Card>
@@ -449,16 +449,16 @@ export default function IndexPage() {
       </div>
 
       {/* Featured Projects & Tools Carousel */}
-      <div className='px-4 py-16 sm:px-6 lg:px-8 bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950/50 dark:to-blue-950/50'>
+      <div className='bg-gradient-to-r from-teal-50 to-blue-50 px-4 py-16 dark:from-teal-950/50 dark:to-blue-950/50 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-7xl'>
-          <div className='text-center mb-12'>
+          <div className='mb-12 text-center'>
             <h2
-              className='text-3xl font-bold text-gray-900 dark:text-white mb-4'
+              className='mb-4 text-3xl font-bold text-gray-900 dark:text-white'
               style={{ fontWeight: 700 }}
             >
               Featured Projects & Tools
             </h2>
-            <p className='text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto'>
+            <p className='mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300'>
               Technical solutions, automation tools, and strategic projects
               including HealthBridge Enhanced and other digital transformation
               initiatives
@@ -466,16 +466,16 @@ export default function IndexPage() {
           </div>
 
           {featuredWork.length > 0 ? (
-            <Carousel className='w-full max-w-6xl mx-auto'>
+            <Carousel className='mx-auto w-full max-w-6xl'>
               <CarouselContent>
                 {featuredWork.map(item => (
                   <CarouselItem
                     key={item.id}
                     className='md:basis-1/2 lg:basis-1/3'
                   >
-                    <Card className='group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 h-full flex flex-col'>
-                      <CardHeader className='pb-4 flex-shrink-0'>
-                        <div className='flex items-center justify-between mb-3'>
+                    <Card className='group flex h-full flex-col border-0 bg-white/90 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/90 dark:hover:bg-gray-900'>
+                      <CardHeader className='shrink-0 pb-4'>
+                        <div className='mb-3 flex items-center justify-between'>
                           <Badge
                             variant='outline'
                             className='border-teal-200 text-teal-700 dark:border-teal-700 dark:text-teal-300'
@@ -483,20 +483,20 @@ export default function IndexPage() {
                             {item.category}
                           </Badge>
                         </div>
-                        <CardTitle className='text-lg font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors'>
+                        <CardTitle className='text-lg font-bold text-gray-900 transition-colors group-hover:text-teal-600 dark:text-white dark:group-hover:text-teal-400'>
                           {item.title}
                         </CardTitle>
                         <CardDescription className='text-sm text-gray-600 dark:text-gray-300'>
                           {item.description}
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className='pt-0 flex flex-col flex-grow'>
-                        <div className='flex flex-wrap gap-1.5 mb-4'>
+                      <CardContent className='flex grow flex-col pt-0'>
+                        <div className='mb-4 flex flex-wrap gap-1.5'>
                           {item.tags.slice(0, 3).map((tag, index) => (
                             <Badge
                               key={index}
                               variant='secondary'
-                              className='bg-teal-50 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300 text-xs'
+                              className='bg-teal-50 text-xs text-teal-700 dark:bg-teal-900/50 dark:text-teal-300'
                             >
                               {tag}
                             </Badge>
@@ -504,10 +504,10 @@ export default function IndexPage() {
                         </div>
                         <Button
                           onClick={() => handleNavigation(item.url)}
-                          className='w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white border-0 mt-auto'
+                          className='mt-auto w-full border-0 bg-gradient-to-r from-teal-600 to-blue-600 text-white hover:from-teal-700 hover:to-blue-700'
                         >
                           View Details
-                          <ArrowRight className='w-4 h-4 ml-2' />
+                          <ArrowRight className='ml-2 size-4' />
                         </Button>
                       </CardContent>
                     </Card>
@@ -518,7 +518,7 @@ export default function IndexPage() {
               <CarouselNext />
             </Carousel>
           ) : (
-            <div className='text-center py-12'>
+            <div className='py-12 text-center'>
               <p className='text-gray-500 dark:text-gray-400'>
                 Loading featured work...
               </p>
@@ -530,27 +530,27 @@ export default function IndexPage() {
       {/* Recent Blog Posts */}
       <div className='px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-7xl'>
-          <div className='text-center mb-12'>
+          <div className='mb-12 text-center'>
             <h2
-              className='text-3xl font-bold text-gray-900 dark:text-white mb-4'
+              className='mb-4 text-3xl font-bold text-gray-900 dark:text-white'
               style={{ fontWeight: 700 }}
             >
               Recent Insights
             </h2>
-            <p className='text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto'>
+            <p className='mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300'>
               Latest thoughts on digital transformation, technical leadership,
               and operational excellence
             </p>
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'>
             {recentBlogs.map(blog => (
               <Card
                 key={blog.id}
-                className='group hover:shadow-xl transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/80 backdrop-blur-sm hover:bg-slate-100/80 dark:hover:bg-slate-700/80 h-full flex flex-col'
+                className='group flex h-full flex-col border border-slate-200/50 bg-slate-50/80 backdrop-blur-sm transition-all duration-300 hover:bg-slate-100/80 hover:shadow-xl dark:border-slate-700/50 dark:bg-slate-800/80 dark:hover:bg-slate-700/80'
               >
-                <CardHeader className='pb-4 flex-shrink-0'>
-                  <div className='flex items-center justify-between mb-3'>
+                <CardHeader className='shrink-0 pb-4'>
+                  <div className='mb-3 flex items-center justify-between'>
                     <Badge
                       variant='outline'
                       className='border border-slate-400 bg-slate-100 text-slate-800 dark:border-slate-500 dark:bg-slate-700 dark:text-slate-200'
@@ -565,20 +565,20 @@ export default function IndexPage() {
                       })}
                     </span>
                   </div>
-                  <CardTitle className='text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors'>
+                  <CardTitle className='text-lg font-bold text-slate-900 transition-colors group-hover:text-slate-700 dark:text-slate-100 dark:group-hover:text-slate-200'>
                     {blog.title}
                   </CardTitle>
                   <CardDescription className='text-sm text-slate-600 dark:text-slate-300'>
                     {blog.description}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className='pt-0 flex flex-col flex-grow'>
-                  <div className='flex flex-wrap gap-1.5 mb-4'>
+                <CardContent className='flex grow flex-col pt-0'>
+                  <div className='mb-4 flex flex-wrap gap-1.5'>
                     {blog.tags.slice(0, 3).map((tag, index) => (
                       <Badge
                         key={index}
                         variant='secondary'
-                        className='bg-slate-200 text-slate-800 dark:bg-slate-600 dark:text-slate-200 text-xs border border-slate-300 dark:border-slate-500'
+                        className='border border-slate-300 bg-slate-200 text-xs text-slate-800 dark:border-slate-500 dark:bg-slate-600 dark:text-slate-200'
                       >
                         {tag}
                       </Badge>
@@ -587,49 +587,49 @@ export default function IndexPage() {
                   <Button
                     onClick={() => handleNavigation(blog.url)}
                     variant='outline'
-                    className='w-full border-slate-600 text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 mt-auto'
+                    className='mt-auto w-full border-slate-600 text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700'
                   >
                     Read Article
-                    <ArrowRight className='w-4 h-4 ml-2' />
+                    <ArrowRight className='ml-2 size-4' />
                   </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className='text-center mt-12'>
+          <div className='mt-12 text-center'>
             <Button
               onClick={() => handleNavigation('/blog')}
               variant='outline'
-              className='border-slate-600 text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 px-8 py-3 text-lg'
+              className='border-slate-600 px-8 py-3 text-lg text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700'
             >
               View All Articles
-              <BookOpen className='w-5 h-5 ml-2' />
+              <BookOpen className='ml-2 size-5' />
             </Button>
           </div>
         </div>
       </div>
 
       {/* Quick Navigation Section */}
-      <div className='px-4 py-16 sm:px-6 lg:px-8 bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950/50 dark:to-blue-950/50'>
+      <div className='bg-gradient-to-r from-teal-50 to-blue-50 px-4 py-16 dark:from-teal-950/50 dark:to-blue-950/50 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-7xl'>
-          <div className='text-center mb-12'>
+          <div className='mb-12 text-center'>
             <h2
-              className='text-3xl font-bold text-gray-900 dark:text-white mb-4'
+              className='mb-4 text-3xl font-bold text-gray-900 dark:text-white'
               style={{ fontWeight: 700 }}
             >
               Explore My Work
             </h2>
-            <p className='text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto'>
+            <p className='mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300'>
               Navigate to different areas of expertise and experience
             </p>
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
-            <Card className='group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 text-center'>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
+            <Card className='group border-0 bg-white/90 text-center backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/90 dark:hover:bg-gray-900'>
               <CardHeader>
-                <div className='w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4'>
-                  <Briefcase className='w-8 h-8 text-white' />
+                <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-teal-600'>
+                  <Briefcase className='size-8 text-white' />
                 </div>
                 <CardTitle className='text-lg font-bold text-gray-900 dark:text-white'>
                   Portfolio
@@ -641,18 +641,18 @@ export default function IndexPage() {
               <CardContent>
                 <Button
                   onClick={() => handleNavigation('/portfolio')}
-                  className='w-full bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200'
+                  className='w-full border-0 bg-gradient-to-r from-teal-800 to-blue-800 text-white shadow-lg transition-all duration-200 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
                 >
                   Explore
-                  <ArrowRight className='w-4 h-4 ml-2' />
+                  <ArrowRight className='ml-2 size-4' />
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className='group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 text-center'>
+            <Card className='group border-0 bg-white/90 text-center backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/90 dark:hover:bg-gray-900'>
               <CardHeader>
-                <div className='w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4'>
-                  <BarChart3 className='w-8 h-8 text-white' />
+                <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600'>
+                  <BarChart3 className='size-8 text-white' />
                 </div>
                 <CardTitle className='text-lg font-bold text-gray-900 dark:text-white'>
                   Projects
@@ -664,18 +664,18 @@ export default function IndexPage() {
               <CardContent>
                 <Button
                   onClick={() => handleNavigation('/projects')}
-                  className='w-full bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200'
+                  className='w-full border-0 bg-gradient-to-r from-teal-800 to-blue-800 text-white shadow-lg transition-all duration-200 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
                 >
                   Explore
-                  <ArrowRight className='w-4 h-4 ml-2' />
+                  <ArrowRight className='ml-2 size-4' />
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className='group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 text-center'>
+            <Card className='group border-0 bg-white/90 text-center backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/90 dark:hover:bg-gray-900'>
               <CardHeader>
-                <div className='w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4'>
-                  <Wrench className='w-8 h-8 text-white' />
+                <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600'>
+                  <Wrench className='size-8 text-white' />
                 </div>
                 <CardTitle className='text-lg font-bold text-gray-900 dark:text-white'>
                   Tools
@@ -687,18 +687,18 @@ export default function IndexPage() {
               <CardContent>
                 <Button
                   onClick={() => handleNavigation('/tools')}
-                  className='w-full bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200'
+                  className='w-full border-0 bg-gradient-to-r from-teal-800 to-blue-800 text-white shadow-lg transition-all duration-200 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
                 >
                   Explore
-                  <ArrowRight className='w-4 h-4 ml-2' />
+                  <ArrowRight className='ml-2 size-4' />
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className='group hover:shadow-xl transition-all duration-300 border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900 text-center'>
+            <Card className='group border-0 bg-white/90 text-center backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/90 dark:hover:bg-gray-900'>
               <CardHeader>
-                <div className='w-16 h-16 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4'>
-                  <MessageSquare className='w-8 h-8 text-white' />
+                <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600'>
+                  <MessageSquare className='size-8 text-white' />
                 </div>
                 <CardTitle className='text-lg font-bold text-gray-900 dark:text-white'>
                   Contact
@@ -710,10 +710,10 @@ export default function IndexPage() {
               <CardContent>
                 <Button
                   onClick={() => handleNavigation('/contact')}
-                  className='w-full bg-gradient-to-r from-teal-800 to-blue-800 hover:from-teal-900 hover:to-blue-900 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200'
+                  className='w-full border-0 bg-gradient-to-r from-teal-800 to-blue-800 text-white shadow-lg transition-all duration-200 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
                 >
                   Connect
-                  <ArrowRight className='w-4 h-4 ml-2' />
+                  <ArrowRight className='ml-2 size-4' />
                 </Button>
               </CardContent>
             </Card>
@@ -724,33 +724,33 @@ export default function IndexPage() {
       {/* Final CTA Section */}
       <div className='px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-4xl text-center'>
-          <div className='bg-gradient-to-r from-teal-600 to-blue-600 rounded-2xl p-8 text-white'>
-            <h2 className='text-2xl font-bold mb-4' style={{ fontWeight: 700 }}>
+          <div className='rounded-2xl bg-gradient-to-r from-teal-600 to-blue-600 p-8 text-white'>
+            <h2 className='mb-4 text-2xl font-bold' style={{ fontWeight: 700 }}>
               Ready to Transform Your Organization?
             </h2>
-            <p className='text-lg text-teal-100 mb-6 max-w-2xl mx-auto'>
+            <p className='mx-auto mb-6 max-w-2xl text-lg text-teal-100'>
               Let's discuss how strategic technology implementation, AI
               automation, and digital transformation can drive success in your
               organization.
             </p>
-            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+            <div className='flex flex-col justify-center gap-4 sm:flex-row'>
               <Button
                 onClick={() => handleNavigation('/contact')}
                 variant='secondary'
                 size='lg'
-                className='bg-white text-teal-600 hover:bg-gray-100 border-0 px-8 py-3'
+                className='border-0 bg-white px-8 py-3 text-teal-600 hover:bg-gray-100'
               >
                 Start a Conversation
-                <MessageSquare className='w-5 h-5 ml-2' />
+                <MessageSquare className='ml-2 size-5' />
               </Button>
               <Button
                 onClick={() => handleNavigation('/about')}
                 variant='outline'
                 size='lg'
-                className='bg-white/20 text-white hover:bg-white hover:text-teal-600 border border-white/30 hover:border-white px-8 py-3'
+                className='border border-white/30 bg-white/20 px-8 py-3 text-white hover:border-white hover:bg-white hover:text-teal-600'
               >
                 Learn More About Me
-                <User className='w-5 h-5 ml-2' />
+                <User className='ml-2 size-5' />
               </Button>
             </div>
           </div>

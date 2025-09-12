@@ -205,9 +205,9 @@ export default function SettingsPage() {
   if (authLoading) {
     return (
       <div className='container mx-auto px-4 py-8'>
-        <div className='flex items-center justify-center h-64'>
+        <div className='flex h-64 items-center justify-center'>
           <div className='text-center'>
-            <Settings className='h-8 w-8 text-teal-600 mx-auto mb-4 animate-spin' />
+            <Settings className='mx-auto mb-4 size-8 animate-spin text-teal-600' />
             <p className='text-gray-600'>Loading authentication...</p>
           </div>
         </div>
@@ -219,7 +219,7 @@ export default function SettingsPage() {
     return (
       <div className='container mx-auto px-4 py-8'>
         <div className='text-center'>
-          <Card className='max-w-md mx-auto'>
+          <Card className='mx-auto max-w-md'>
             <CardHeader>
               <CardTitle>Authentication Required</CardTitle>
               <CardDescription>
@@ -240,9 +240,9 @@ export default function SettingsPage() {
   ) {
     return (
       <div className='container mx-auto px-4 py-8'>
-        <div className='flex items-center justify-center h-64'>
+        <div className='flex h-64 items-center justify-center'>
           <div className='text-center'>
-            <Settings className='h-8 w-8 text-teal-600 mx-auto mb-4 animate-spin' />
+            <Settings className='mx-auto mb-4 size-8 animate-spin text-teal-600' />
             <p className='text-gray-600'>Loading settings...</p>
           </div>
         </div>
@@ -255,15 +255,15 @@ export default function SettingsPage() {
     return (
       <div className='container mx-auto px-4 py-8'>
         <div className='text-center'>
-          <Card className='max-w-md mx-auto'>
+          <Card className='mx-auto max-w-md'>
             <CardHeader>
               <CardTitle>Data Loading Issue</CardTitle>
               <CardDescription>
                 Unable to load your profile data. This might be because:
               </CardDescription>
             </CardHeader>
-            <CardContent className='text-left space-y-2'>
-              <ul className='list-disc list-inside text-sm text-gray-600 space-y-1'>
+            <CardContent className='space-y-2 text-left'>
+              <ul className='list-inside list-disc space-y-1 text-sm text-gray-600'>
                 <li>The backend API is not yet deployed</li>
                 <li>You need to create your initial profile</li>
                 <li>There was a temporary connection issue</li>
@@ -285,25 +285,25 @@ export default function SettingsPage() {
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100'>
-      <div className='container mx-auto px-4 py-8 max-w-5xl'>
+      <div className='container mx-auto max-w-5xl px-4 py-8'>
         {/* Modern Header */}
         <div className='mb-12 text-center'>
-          <div className='inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-teal-500 to-blue-600 rounded-2xl mb-4'>
-            <Settings className='h-8 w-8 text-white' />
+          <div className='mb-4 inline-flex size-16 items-center justify-center rounded-2xl bg-gradient-to-r from-teal-500 to-blue-600'>
+            <Settings className='size-8 text-white' />
           </div>
-          <h1 className='text-4xl font-bold text-gray-900 mb-3'>Settings</h1>
-          <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
+          <h1 className='mb-3 text-4xl font-bold text-gray-900'>Settings</h1>
+          <p className='mx-auto max-w-2xl text-lg text-gray-600'>
             Manage your profile, goals, and preferences in one place
           </p>
         </div>
 
         {/* User Profile Section */}
-        <Card className='mb-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm'>
+        <Card className='mb-8 border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='p-3 bg-gradient-to-r from-teal-100 to-blue-100 rounded-xl'>
-                  <User className='h-6 w-6 text-teal-600' />
+                <div className='rounded-xl bg-gradient-to-r from-teal-100 to-blue-100 p-3'>
+                  <User className='size-6 text-teal-600' />
                 </div>
                 <div>
                   <CardTitle className='text-xl font-semibold text-gray-900'>
@@ -317,7 +317,7 @@ export default function SettingsPage() {
               {!isEditing && (
                 <Button
                   onClick={() => setIsEditing(true)}
-                  className='bg-teal-600 hover:bg-teal-700 text-white border-0 rounded-lg px-6'
+                  className='rounded-lg border-0 bg-teal-600 px-6 text-white hover:bg-teal-700'
                 >
                   Edit Profile
                 </Button>
@@ -327,7 +327,7 @@ export default function SettingsPage() {
           <CardContent>
             {isEditing ? (
               <div className='space-y-4'>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                   <div>
                     <Label htmlFor='name'>Full Name</Label>
                     <Input
@@ -479,33 +479,33 @@ export default function SettingsPage() {
                   <Button
                     onClick={handleProfileSave}
                     disabled={profileMutation.isPending}
-                    className='bg-teal-600 hover:bg-teal-700 text-white border-0 rounded-lg px-8'
+                    className='rounded-lg border-0 bg-teal-600 px-8 text-white hover:bg-teal-700'
                   >
                     {profileMutation.isPending ? 'Saving...' : 'Save Profile'}
                   </Button>
                   <Button
                     onClick={handleProfileCancel}
                     variant='outline'
-                    className='border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg px-8'
+                    className='rounded-lg border-gray-300 px-8 text-gray-700 hover:bg-gray-50'
                   >
                     Cancel
                   </Button>
                 </div>
 
                 {profileMutation.isSuccess && (
-                  <div className='mt-2 p-2 bg-green-50 border border-green-200 rounded text-green-800 text-sm'>
+                  <div className='mt-2 rounded border border-green-200 bg-green-50 p-2 text-sm text-green-800'>
                     ✅ Profile updated successfully!
                   </div>
                 )}
 
                 {profileMutation.isError && (
-                  <div className='mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-800 text-sm'>
+                  <div className='mt-2 rounded border border-red-200 bg-red-50 p-2 text-sm text-red-800'>
                     ❌ Error updating profile: {profileMutation.error?.message}
                   </div>
                 )}
               </div>
             ) : (
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                 <div>
                   <Label className='text-sm font-medium text-gray-500'>
                     Name
@@ -592,12 +592,12 @@ export default function SettingsPage() {
         </Card>
 
         {/* Weight Goals Section */}
-        <Card className='mb-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm'>
+        <Card className='mb-8 border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='p-3 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl'>
-                  <TrendingUp className='h-6 w-6 text-blue-600' />
+                <div className='rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-3'>
+                  <TrendingUp className='size-6 text-blue-600' />
                 </div>
                 <div>
                   <CardTitle className='text-xl font-semibold text-gray-900'>
@@ -611,7 +611,7 @@ export default function SettingsPage() {
               {!isEditingGoal && (
                 <Button
                   onClick={() => setIsEditingGoal(true)}
-                  className='bg-blue-600 hover:bg-blue-700 text-white border-0 rounded-lg px-6'
+                  className='rounded-lg border-0 bg-blue-600 px-6 text-white hover:bg-blue-700'
                 >
                   Edit Goals
                 </Button>
@@ -621,7 +621,7 @@ export default function SettingsPage() {
           <CardContent>
             {isEditingGoal ? (
               <div className='space-y-4'>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                   <div>
                     <Label htmlFor='startWeight'>Starting Weight (lbs)</Label>
                     <Input
@@ -713,33 +713,33 @@ export default function SettingsPage() {
                   <Button
                     onClick={handleGoalSave}
                     disabled={goalMutation.isPending}
-                    className='bg-blue-600 hover:bg-blue-700 text-white border-0 rounded-lg px-8'
+                    className='rounded-lg border-0 bg-blue-600 px-8 text-white hover:bg-blue-700'
                   >
                     {goalMutation.isPending ? 'Saving...' : 'Save Goals'}
                   </Button>
                   <Button
                     onClick={handleGoalCancel}
                     variant='outline'
-                    className='border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg px-8'
+                    className='rounded-lg border-gray-300 px-8 text-gray-700 hover:bg-gray-50'
                   >
                     Cancel
                   </Button>
                 </div>
 
                 {goalMutation.isSuccess && (
-                  <div className='mt-2 p-2 bg-green-50 border border-green-200 rounded text-green-800 text-sm'>
+                  <div className='mt-2 rounded border border-green-200 bg-green-50 p-2 text-sm text-green-800'>
                     ✅ Weight goals updated successfully!
                   </div>
                 )}
 
                 {goalMutation.isError && (
-                  <div className='mt-2 p-2 bg-red-50 border border-green-200 rounded text-red-800 text-sm'>
+                  <div className='mt-2 rounded border border-green-200 bg-red-50 p-2 text-sm text-red-800'>
                     ❌ Error updating goals: {goalMutation.error?.message}
                   </div>
                 )}
               </div>
             ) : (
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                 <div>
                   <Label className='text-sm font-medium text-gray-500'>
                     Starting Weight
@@ -838,12 +838,12 @@ export default function SettingsPage() {
         </Card>
 
         {/* Medication Tracking Section */}
-        <Card className='mb-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm'>
+        <Card className='mb-8 border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='p-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl'>
-                  <Activity className='h-6 w-6 text-purple-600' />
+                <div className='rounded-xl bg-gradient-to-r from-purple-100 to-pink-100 p-3'>
+                  <Activity className='size-6 text-purple-600' />
                 </div>
                 <div>
                   <CardTitle className='text-xl font-semibold text-gray-900'>
@@ -857,17 +857,17 @@ export default function SettingsPage() {
               {!isEditingMedication && (
                 <Button
                   onClick={handleAddMedication}
-                  className='bg-purple-600 hover:bg-purple-700 text-white border-0 rounded-lg px-6'
+                  className='rounded-lg border-0 bg-purple-600 px-6 text-white hover:bg-purple-700'
                   disabled={medicationsLoading || medicationTypesLoading}
                 >
                   {medicationTypesLoading ? (
                     <div className='flex items-center gap-2'>
-                      <div className='animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full'></div>
+                      <div className='size-4 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
                       Loading...
                     </div>
                   ) : (
                     <>
-                      <Plus className='h-4 w-4 mr-2' />
+                      <Plus className='mr-2 size-4' />
                       Add Medication
                     </>
                   )}
@@ -879,28 +879,28 @@ export default function SettingsPage() {
             {medicationsLoading ? (
               <div className='space-y-4'>
                 {[...Array(2)].map((_, i) => (
-                  <Card key={i} className='border-0 shadow-sm animate-pulse'>
+                  <Card key={i} className='animate-pulse border-0 shadow-sm'>
                     <CardHeader className='pb-3'>
                       <div className='flex items-center justify-between'>
                         <div className='space-y-3'>
-                          <div className='h-4 bg-gray-200 rounded w-32'></div>
-                          <div className='h-3 bg-gray-200 rounded w-24'></div>
+                          <div className='h-4 w-32 rounded bg-gray-200'></div>
+                          <div className='h-3 w-24 rounded bg-gray-200'></div>
                         </div>
-                        <div className='h-6 bg-gray-200 rounded w-16'></div>
+                        <div className='h-6 w-16 rounded bg-gray-200'></div>
                       </div>
                     </CardHeader>
                     <CardContent className='pt-0'>
                       <div className='space-y-3'>
                         {[...Array(4)].map((_, j) => (
                           <div key={j} className='flex justify-between'>
-                            <div className='h-3 bg-gray-200 rounded w-20'></div>
-                            <div className='h-3 bg-gray-200 rounded w-24'></div>
+                            <div className='h-3 w-20 rounded bg-gray-200'></div>
+                            <div className='h-3 w-24 rounded bg-gray-200'></div>
                           </div>
                         ))}
                       </div>
-                      <div className='flex gap-2 mt-4 pt-4 border-t'>
-                        <div className='h-8 bg-gray-200 rounded flex-1'></div>
-                        <div className='h-8 bg-gray-200 rounded flex-1'></div>
+                      <div className='mt-4 flex gap-2 border-t pt-4'>
+                        <div className='h-8 flex-1 rounded bg-gray-200'></div>
+                        <div className='h-8 flex-1 rounded bg-gray-200'></div>
                       </div>
                     </CardContent>
                   </Card>
@@ -910,22 +910,22 @@ export default function SettingsPage() {
               <div className='space-y-4'>
                 {medicationTypesLoading ? (
                   <div className='space-y-4'>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                    <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                       {[...Array(4)].map((_, i) => (
                         <div key={i} className='space-y-2'>
-                          <div className='h-4 bg-gray-200 rounded w-20 animate-pulse'></div>
-                          <div className='h-10 bg-gray-200 rounded animate-pulse'></div>
+                          <div className='h-4 w-20 animate-pulse rounded bg-gray-200'></div>
+                          <div className='h-10 animate-pulse rounded bg-gray-200'></div>
                         </div>
                       ))}
                     </div>
                     <div className='flex gap-2 pt-4'>
-                      <div className='h-10 bg-gray-200 rounded flex-1 animate-pulse'></div>
-                      <div className='h-10 bg-gray-200 rounded flex-1 animate-pulse'></div>
+                      <div className='h-10 flex-1 animate-pulse rounded bg-gray-200'></div>
+                      <div className='h-10 flex-1 animate-pulse rounded bg-gray-200'></div>
                     </div>
                   </div>
                 ) : (
                   <div className='space-y-8'>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+                    <div className='grid grid-cols-1 gap-8 md:grid-cols-2'>
                       <div className='space-y-3'>
                         <Label htmlFor='medicationType'>Medication</Label>
                         <Select
@@ -974,7 +974,7 @@ export default function SettingsPage() {
                             {medicationTypesLoading ? (
                               <div className='p-2 text-center text-sm text-gray-500'>
                                 <div className='flex items-center justify-center gap-2'>
-                                  <div className='animate-spin h-4 w-4 border-2 border-teal-600 border-t-transparent rounded-full'></div>
+                                  <div className='size-4 animate-spin rounded-full border-2 border-teal-600 border-t-transparent'></div>
                                   Loading medications...
                                 </div>
                               </div>
@@ -992,7 +992,7 @@ export default function SettingsPage() {
                                 >
                                   <div className='flex flex-col space-y-1 py-2'>
                                     <div className='flex items-center gap-2'>
-                                      <span className='font-medium text-sm'>
+                                      <span className='text-sm font-medium'>
                                         {type.name}
                                       </span>
                                       <Badge
@@ -1006,7 +1006,7 @@ export default function SettingsPage() {
                                     <span className='text-xs text-gray-500'>
                                       {type.generic_name}
                                     </span>
-                                    <span className='text-xs text-gray-400 leading-tight line-clamp-2'>
+                                    <span className='line-clamp-2 text-xs leading-tight text-gray-400'>
                                       {type.description}
                                     </span>
                                   </div>
@@ -1114,7 +1114,7 @@ export default function SettingsPage() {
                         </Select>
                       </div>
 
-                      <div className='md:col-span-2 space-y-2'>
+                      <div className='space-y-2 md:col-span-2'>
                         <Label htmlFor='medicationNotes'>Notes</Label>
                         <Input
                           id='medicationNotes'
@@ -1137,11 +1137,11 @@ export default function SettingsPage() {
                           medicationMutation.isPending ||
                           deleteMedicationMutation.isPending
                         }
-                        className='flex-1 bg-purple-600 hover:bg-purple-700 text-white border-0 rounded-lg'
+                        className='flex-1 rounded-lg border-0 bg-purple-600 text-white hover:bg-purple-700'
                       >
                         {medicationMutation.isPending ? (
                           <div className='flex items-center gap-2'>
-                            <div className='animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full'></div>
+                            <div className='size-4 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
                             Saving...
                           </div>
                         ) : (
@@ -1151,7 +1151,7 @@ export default function SettingsPage() {
                       <Button
                         onClick={handleMedicationCancel}
                         variant='outline'
-                        className='flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg'
+                        className='flex-1 rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50'
                         disabled={
                           medicationMutation.isPending ||
                           deleteMedicationMutation.isPending
@@ -1162,7 +1162,7 @@ export default function SettingsPage() {
                     </div>
 
                     {medicationMutation.isSuccess && (
-                      <div className='mt-4 p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm'>
+                      <div className='mt-4 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-800'>
                         ✅ Medication{' '}
                         {editingMedication?.id?.startsWith('temp_')
                           ? 'added'
@@ -1172,7 +1172,7 @@ export default function SettingsPage() {
                     )}
 
                     {medicationMutation.isError && (
-                      <div className='mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm'>
+                      <div className='mt-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800'>
                         ❌ Error{' '}
                         {editingMedication?.id?.startsWith('temp_')
                           ? 'adding'
@@ -1182,13 +1182,13 @@ export default function SettingsPage() {
                     )}
 
                     {deleteMedicationMutation.isSuccess && (
-                      <div className='mt-4 p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm'>
+                      <div className='mt-4 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-800'>
                         ✅ Medication deleted successfully!
                       </div>
                     )}
 
                     {deleteMedicationMutation.isError && (
-                      <div className='mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm'>
+                      <div className='mt-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800'>
                         ❌ Error deleting medication:{' '}
                         {deleteMedicationMutation.error?.message}
                       </div>
@@ -1199,7 +1199,7 @@ export default function SettingsPage() {
             ) : (
               <div className='space-y-6'>
                 {medications && medications.length > 0 ? (
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                  <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                     {medications.map(medication => {
                       const medicationType = getMedicationTypeById(
                         medicationTypes,
@@ -1208,7 +1208,7 @@ export default function SettingsPage() {
                       return (
                         <Card
                           key={medication.id}
-                          className='border-0 shadow-sm hover:shadow-md transition-shadow'
+                          className='border-0 shadow-sm transition-shadow hover:shadow-md'
                         >
                           <CardHeader className='pb-3'>
                             <div className='flex items-center justify-between'>
@@ -1273,7 +1273,7 @@ export default function SettingsPage() {
                                 </div>
                               )}
                             </div>
-                            <div className='flex gap-2 mt-4 pt-4 border-t'>
+                            <div className='mt-4 flex gap-2 border-t pt-4'>
                               <Button
                                 onClick={() => {
                                   setEditingMedication(medication);
@@ -1287,7 +1287,7 @@ export default function SettingsPage() {
                                   deleteMedicationMutation.isPending
                                 }
                               >
-                                <Edit3 className='h-4 w-4 mr-2' />
+                                <Edit3 className='mr-2 size-4' />
                                 Edit
                               </Button>
                               <Button
@@ -1301,12 +1301,12 @@ export default function SettingsPage() {
                               >
                                 {deleteMedicationMutation.isPending ? (
                                   <div className='flex items-center gap-2'>
-                                    <div className='animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full'></div>
+                                    <div className='size-4 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
                                     Deleting...
                                   </div>
                                 ) : (
                                   <>
-                                    <Trash2 className='h-4 w-4 mr-2' />
+                                    <Trash2 className='mr-2 size-4' />
                                     Delete
                                   </>
                                 )}
@@ -1318,8 +1318,8 @@ export default function SettingsPage() {
                     })}
                   </div>
                 ) : (
-                  <div className='text-center py-8 text-gray-500'>
-                    <Activity className='h-12 w-12 mx-auto mb-4 text-gray-300' />
+                  <div className='py-8 text-center text-gray-500'>
+                    <Activity className='mx-auto mb-4 size-12 text-gray-300' />
                     <p>No medications added yet</p>
                     <p className='text-sm'>
                       Add a medication to see its impact on your weight loss

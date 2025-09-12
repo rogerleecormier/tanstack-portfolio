@@ -192,10 +192,10 @@ export function UnifiedRelatedContent({
     return (
       <div className={className}>
         <div className='mb-6'>
-          <h3 className='text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3'>
+          <h3 className='mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100'>
             Related Content
           </h3>
-          <div className='w-16 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full'></div>
+          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
         </div>
         <div className='space-y-4'>
           {Array.from({ length: effectiveMaxResults }, (_, i) => (
@@ -203,9 +203,9 @@ export function UnifiedRelatedContent({
               <CardHeader className='pb-3'>
                 <Skeleton className='h-5 w-4/5' />
               </CardHeader>
-              <CardContent className='pt-0 pb-4'>
-                <Skeleton className='h-4 w-full mb-3' />
-                <Skeleton className='h-4 w-3/4 mb-3' />
+              <CardContent className='pb-4 pt-0'>
+                <Skeleton className='mb-3 h-4 w-full' />
+                <Skeleton className='mb-3 h-4 w-3/4' />
                 <Skeleton className='h-4 w-2/3' />
               </CardContent>
             </Card>
@@ -223,7 +223,7 @@ export function UnifiedRelatedContent({
       <div className={className}>
         <Card className='border-destructive/20 bg-destructive/5'>
           <CardContent className='pt-6'>
-            <div className='text-center py-4'>
+            <div className='py-4 text-center'>
               <p className='text-base text-muted-foreground'>
                 Unable to load recommendations
               </p>
@@ -239,10 +239,10 @@ export function UnifiedRelatedContent({
     return (
       <div className={className}>
         <div className='mb-6'>
-          <h3 className='text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3'>
+          <h3 className='mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100'>
             Related Content
           </h3>
-          <div className='w-16 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full'></div>
+          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
         </div>
         <div className='space-y-4'>
           {Array.from({ length: effectiveMaxResults }, (_, i) => (
@@ -250,9 +250,9 @@ export function UnifiedRelatedContent({
               <CardHeader className='pb-3'>
                 <Skeleton className='h-5 w-4/5' />
               </CardHeader>
-              <CardContent className='pt-0 pb-4'>
-                <Skeleton className='h-4 w-full mb-3' />
-                <Skeleton className='h-4 w-3/4 mb-3' />
+              <CardContent className='pb-4 pt-0'>
+                <Skeleton className='mb-3 h-4 w-full' />
+                <Skeleton className='mb-3 h-4 w-3/4' />
                 <Skeleton className='h-4 w-2/3' />
               </CardContent>
             </Card>
@@ -265,13 +265,13 @@ export function UnifiedRelatedContent({
   const getContentTypeIcon = (type: string) => {
     switch (type) {
       case 'blog':
-        return <BookOpen className='h-4 w-4' />;
+        return <BookOpen className='size-4' />;
       case 'portfolio':
-        return <TrendingUp className='h-4 w-4' />;
+        return <TrendingUp className='size-4' />;
       case 'project':
-        return <ExternalLink className='h-4 w-4' />;
+        return <ExternalLink className='size-4' />;
       default:
-        return <BookOpen className='h-4 w-4' />;
+        return <BookOpen className='size-4' />;
     }
   };
 
@@ -297,43 +297,43 @@ export function UnifiedRelatedContent({
     return (
       <div ref={sidebarRef} className={className}>
         <div className='mb-6'>
-          <h3 className='text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3'>
+          <h3 className='mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100'>
             Related Content
           </h3>
-          <div className='w-16 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full'></div>
+          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
         </div>
 
         <div className='space-y-4'>
           {recommendations.map(item => (
             <Card
               key={item.id}
-              className='group hover:shadow-lg transition-all duration-200 hover:border-teal-300 dark:hover:border-teal-600 overflow-hidden'
+              className='group overflow-hidden transition-all duration-200 hover:border-teal-300 hover:shadow-lg dark:hover:border-teal-600'
             >
               <CardHeader className='pb-3'>
                 <div className='flex items-start gap-3'>
-                  <div className='flex-1 min-w-0'>
-                    <CardTitle className='text-base font-semibold leading-tight text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors'>
+                  <div className='min-w-0 flex-1'>
+                    <CardTitle className='line-clamp-2 text-base font-semibold leading-tight text-gray-900 transition-colors group-hover:text-teal-700 dark:text-gray-100 dark:group-hover:text-teal-300'>
                       {parseContentForSearch(item.title)}
                     </CardTitle>
                     {item.category && (
-                      <CardDescription className='text-sm text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2'>
-                        <User className='h-4 w-4' />
+                      <CardDescription className='mt-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'>
+                        <User className='size-4' />
                         {parseContentForSearch(item.category)}
                       </CardDescription>
                     )}
                   </div>
                   <a
                     href={item.url}
-                    className='text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex-shrink-0 p-2 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950'
+                    className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-teal-50 hover:text-teal-600 dark:hover:bg-teal-950 dark:hover:text-teal-400'
                     aria-label={`Read ${parseContentForSearch(item.title)}`}
                   >
-                    <ArrowRight className='h-4 w-4' />
+                    <ArrowRight className='size-4' />
                   </a>
                 </div>
               </CardHeader>
 
-              <CardContent className='pt-0 pb-4'>
-                <p className='text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-4 leading-relaxed'>
+              <CardContent className='pb-4 pt-0'>
+                <p className='mb-4 line-clamp-4 text-sm leading-relaxed text-gray-600 dark:text-gray-400'>
                   {parseContentForSearch(
                     item.description || 'No description available'
                   )}
@@ -361,17 +361,17 @@ export function UnifiedRelatedContent({
                                 <Badge
                                   key={index}
                                   variant='secondary'
-                                  className='text-xs px-1.5 py-0.5 h-auto'
+                                  className='h-auto px-1.5 py-0.5 text-xs'
                                   title={parseContentForSearch(tag)}
                                 >
-                                  <Tag className='h-3 w-3 mr-1' />
+                                  <Tag className='mr-1 size-3' />
                                   <span className='whitespace-nowrap'>
                                     {parseContentForSearch(tag)}
                                   </span>
                                 </Badge>
                               ))}
                             {cleanTags.length > 3 && (
-                              <span className='text-xs text-gray-400 dark:text-gray-500 px-2 py-1'>
+                              <span className='px-2 py-1 text-xs text-gray-400 dark:text-gray-500'>
                                 +{cleanTags.length - 3}
                               </span>
                             )}
@@ -383,12 +383,12 @@ export function UnifiedRelatedContent({
                 )}
               </CardContent>
 
-              <CardFooter className='pt-0 pb-4'>
-                <div className='flex items-center justify-between w-full'>
+              <CardFooter className='pb-4 pt-0'>
+                <div className='flex w-full items-center justify-between'>
                   <div className='flex items-center gap-3'>
                     <Badge
                       variant='outline'
-                      className={`text-xs px-2 py-1 border ${getContentTypeColor(item.contentType)}`}
+                      className={`border px-2 py-1 text-xs ${getContentTypeColor(item.contentType)}`}
                     >
                       {getContentTypeIcon(item.contentType)}
                       <span className='ml-1 capitalize'>
@@ -397,7 +397,7 @@ export function UnifiedRelatedContent({
                     </Badge>
 
                     <div className='flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400'>
-                      <Clock className='h-3 w-3' />
+                      <Clock className='size-3' />
                       <span>Relevance:</span>
                       <span className='font-medium text-green-600 dark:text-green-400'>
                         {item.relevanceScore
@@ -420,39 +420,39 @@ export function UnifiedRelatedContent({
     <div className={className}>
       <div className='mb-8'>
         <div className='mb-4'>
-          <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3'>
+          <h2 className='mb-3 text-2xl font-bold text-gray-900 dark:text-gray-100'>
             Related Content
           </h2>
-          <div className='w-20 h-1.5 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full'></div>
+          <div className='h-1.5 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
         </div>
         <p className='text-lg text-muted-foreground'>
           Discover more insights and projects
         </p>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         {recommendations.map(item => (
           <Card
             key={item.id}
-            className='group hover:shadow-xl transition-all duration-200 hover:border-teal-300 dark:hover:border-teal-600 h-full overflow-hidden'
+            className='group h-full overflow-hidden transition-all duration-200 hover:border-teal-300 hover:shadow-xl dark:hover:border-teal-600'
           >
             <CardHeader className='pb-4'>
               <div className='flex items-start gap-3'>
-                <CardTitle className='text-lg font-semibold leading-tight text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors flex-1'>
+                <CardTitle className='line-clamp-2 flex-1 text-lg font-semibold leading-tight text-gray-900 transition-colors group-hover:text-teal-700 dark:text-gray-100 dark:group-hover:text-teal-300'>
                   {parseContentForSearch(item.title)}
                 </CardTitle>
                 <a
                   href={item.url}
-                  className='text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex-shrink-0 p-2 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950'
+                  className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-teal-50 hover:text-teal-600 dark:hover:bg-teal-950 dark:hover:text-teal-400'
                   aria-label={`Read ${parseContentForSearch(item.title)}`}
                 >
-                  <ArrowRight className='h-5 w-5' />
+                  <ArrowRight className='size-5' />
                 </a>
               </div>
             </CardHeader>
 
-            <CardContent className='pt-0 pb-4'>
-              <p className='text-base text-gray-600 dark:text-gray-400 mb-4 line-clamp-4 leading-relaxed'>
+            <CardContent className='pb-4 pt-0'>
+              <p className='mb-4 line-clamp-4 text-base leading-relaxed text-gray-600 dark:text-gray-400'>
                 {parseContentForSearch(item.description)}
               </p>
 
@@ -460,16 +460,16 @@ export function UnifiedRelatedContent({
                 <div className='flex items-center gap-3'>
                   <Badge
                     variant='outline'
-                    className={`text-sm px-3 py-1.5 border ${getContentTypeColor(item.contentType)}`}
+                    className={`border px-3 py-1.5 text-sm ${getContentTypeColor(item.contentType)}`}
                   >
                     {getContentTypeIcon(item.contentType)}
-                    <span className='ml-2 capitalize font-medium'>
+                    <span className='ml-2 font-medium capitalize'>
                       {parseContentForSearch(item.contentType)}
                     </span>
                   </Badge>
 
                   <div className='flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'>
-                    <Clock className='h-4 w-4' />
+                    <Clock className='size-4' />
                     <span>Relevance:</span>
                     <span className='font-medium text-green-600 dark:text-green-400'>
                       {item.relevanceScore ? `${item.relevanceScore}%` : 'N/A'}
@@ -496,17 +496,17 @@ export function UnifiedRelatedContent({
                               <Badge
                                 key={index}
                                 variant='secondary'
-                                className='text-xs px-1.5 py-0.5 h-auto'
+                                className='h-auto px-1.5 py-0.5 text-xs'
                                 title={parseContentForSearch(tag)}
                               >
-                                <Tag className='h-3 w-3 mr-1' />
+                                <Tag className='mr-1 size-3' />
                                 <span className='whitespace-nowrap'>
                                   {parseContentForSearch(tag)}
                                 </span>
                               </Badge>
                             ))}
                           {cleanTags.length > 3 && (
-                            <span className='text-xs text-gray-400 dark:text-gray-500 px-2 py-1'>
+                            <span className='px-2 py-1 text-xs text-gray-400 dark:text-gray-500'>
                               +{cleanTags.length - 3}
                             </span>
                           )}

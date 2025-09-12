@@ -71,7 +71,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
 
   if (!chartData || chartData.length === 0) {
     return (
-      <div className='p-4 text-center text-gray-500 border border-gray-200 rounded-lg'>
+      <div className='rounded-lg border border-gray-200 p-4 text-center text-gray-500'>
         Invalid chart data
       </div>
     );
@@ -184,15 +184,15 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
       case 'barchart':
         return (
           <div
-            className='my-6 p-4 rounded-lg w-full border border-gray-200 bg-white'
+            className='my-6 w-full rounded-lg border border-gray-200 bg-white p-4'
             style={{ height }}
           >
             {chartTitle && (
-              <div className='text-lg font-semibold text-center text-gray-800 mb-4'>
+              <div className='mb-4 text-center text-lg font-semibold text-gray-800'>
                 {chartTitle}
               </div>
             )}
-            <ChartContainer config={chartConfig} className='w-full h-full'>
+            <ChartContainer config={chartConfig} className='size-full'>
               <ResponsiveContainer width='100%' height='100%'>
                 <BarChart
                   data={chartData}
@@ -223,7 +223,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                           <ChartTooltipContent
                             active={active}
                             payload={payload}
-                            className='bg-white border border-gray-200 shadow-lg'
+                            className='border border-gray-200 bg-white shadow-lg'
                           />
                         );
                       }
@@ -255,15 +255,15 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
       case 'linechart':
         return (
           <div
-            className='my-6 p-4 rounded-lg w-full border border-gray-200 bg-white'
+            className='my-6 w-full rounded-lg border border-gray-200 bg-white p-4'
             style={{ height }}
           >
             {chartTitle && (
-              <div className='text-lg font-semibold text-center text-gray-800 mb-4'>
+              <div className='mb-4 text-center text-lg font-semibold text-gray-800'>
                 {chartTitle}
               </div>
             )}
-            <ChartContainer config={chartConfig} className='w-full h-full'>
+            <ChartContainer config={chartConfig} className='size-full'>
               <ResponsiveContainer width='100%' height='100%'>
                 <LineChart
                   data={chartData}
@@ -294,7 +294,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                           <ChartTooltipContent
                             active={active}
                             payload={payload}
-                            className='bg-white border border-gray-200 shadow-lg'
+                            className='border border-gray-200 bg-white shadow-lg'
                           />
                         );
                       }
@@ -329,15 +329,15 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
       case 'scatterplot':
         return (
           <div
-            className='my-6 p-4 rounded-lg w-full border border-gray-200 bg-white'
+            className='my-6 w-full rounded-lg border border-gray-200 bg-white p-4'
             style={{ height }}
           >
             {chartTitle && (
-              <div className='text-lg font-semibold text-center text-gray-800 mb-4'>
+              <div className='mb-4 text-center text-lg font-semibold text-gray-800'>
                 {chartTitle}
               </div>
             )}
-            <ChartContainer config={chartConfig} className='w-full h-full'>
+            <ChartContainer config={chartConfig} className='size-full'>
               <ResponsiveContainer width='100%' height='100%'>
                 <ScatterChart
                   data={chartData}
@@ -368,7 +368,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                           <ChartTooltipContent
                             active={active}
                             payload={payload}
-                            className='bg-white border border-gray-200 shadow-lg'
+                            className='border border-gray-200 bg-white shadow-lg'
                           />
                         );
                       }
@@ -400,15 +400,15 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
       case 'histogram':
         return (
           <div
-            className='my-6 p-4 rounded-lg w-full border border-gray-200 bg-white'
+            className='my-6 w-full rounded-lg border border-gray-200 bg-white p-4'
             style={{ height }}
           >
             {chartTitle && (
-              <div className='text-lg font-semibold text-center text-gray-800 mb-4'>
+              <div className='mb-4 text-center text-lg font-semibold text-gray-800'>
                 {chartTitle}
               </div>
             )}
-            <ChartContainer config={chartConfig} className='w-full h-full'>
+            <ChartContainer config={chartConfig} className='size-full'>
               <ResponsiveContainer width='100%' height='100%'>
                 <BarChart
                   data={chartData}
@@ -439,7 +439,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                           <ChartTooltipContent
                             active={active}
                             payload={payload}
-                            className='bg-white border border-gray-200 shadow-lg'
+                            className='border border-gray-200 bg-white shadow-lg'
                           />
                         );
                       }
@@ -470,7 +470,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
 
       default:
         return (
-          <div className='p-4 text-center text-gray-500 border border-gray-200 rounded-lg'>
+          <div className='rounded-lg border border-gray-200 p-4 text-center text-gray-500'>
             Unsupported chart type: {chartType}
           </div>
         );

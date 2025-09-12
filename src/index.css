@@ -175,15 +175,15 @@
 
   /* HTML content styling for search results */
   .content-code-block {
-    @apply bg-gray-100 dark:bg-gray-800 rounded p-2 my-2 font-mono text-sm;
+    @apply my-2 rounded bg-gray-100 p-2 font-mono text-sm dark:bg-gray-800;
   }
 
   .inline-code {
-    @apply bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 font-mono text-sm;
+    @apply rounded bg-gray-100 px-1 py-0.5 font-mono text-sm dark:bg-gray-800;
   }
 
   .content-link {
-    @apply text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300;
+    @apply text-blue-600 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
   }
 
   .content-list {
@@ -195,11 +195,11 @@
   }
 
   .content-blockquote {
-    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 my-2 italic text-gray-700 dark:text-gray-300;
+    @apply my-2 border-l-4 border-gray-300 pl-4 italic text-gray-700 dark:border-gray-600 dark:text-gray-300;
   }
 
   .content-table {
-    @apply w-full border-collapse border border-gray-300 dark:border-gray-600 my-2;
+    @apply my-2 w-full border-collapse border border-gray-300 dark:border-gray-600;
   }
 
   .content-table-row {
@@ -207,15 +207,15 @@
   }
 
   .content-table-cell {
-    @apply border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm;
+    @apply border border-gray-300 px-2 py-1 text-sm dark:border-gray-600;
   }
 
   .content-heading {
-    @apply font-semibold text-gray-900 dark:text-gray-100 my-2;
+    @apply my-2 font-semibold text-gray-900 dark:text-gray-100;
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background font-sans text-foreground;
   }
 }
 
@@ -252,19 +252,19 @@
   }
 
   .brand-card {
-    @apply bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 border border-teal-200 dark:border-teal-800 shadow-sm;
+    @apply border border-teal-200 bg-gradient-to-br from-teal-50 to-blue-50 shadow-sm dark:border-teal-800 dark:from-teal-950 dark:to-blue-950;
   }
 
   .brand-button-primary {
-    @apply bg-teal-800 hover:bg-teal-900 text-white focus:ring-teal-700 focus:ring-2 focus:ring-offset-2 transition-all duration-200;
+    @apply bg-teal-800 text-white transition-all duration-200 hover:bg-teal-900 focus:ring-2 focus:ring-teal-700 focus:ring-offset-2;
   }
 
   .brand-button-secondary {
-    @apply bg-blue-800 hover:bg-blue-900 text-white focus:ring-blue-700 focus:ring-2 focus:ring-offset-2 transition-all duration-200;
+    @apply bg-blue-800 text-white transition-all duration-200 hover:bg-blue-900 focus:ring-2 focus:ring-blue-700 focus:ring-offset-2;
   }
 
   .brand-button-target {
-    @apply bg-orange-600 hover:bg-orange-700 text-white focus:ring-orange-500 focus:ring-2 focus:ring-offset-2 transition-all duration-200;
+    @apply bg-orange-600 text-white transition-all duration-200 hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2;
   }
 
   .brand-text-primary {
@@ -318,12 +318,12 @@
 
   /* Header name styling */
   .header-name {
-    @apply font-black tracking-tighter font-sans;
+    @apply font-sans font-black tracking-tighter;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .header-tagline {
-    @apply font-medium tracking-wide font-sans;
+    @apply font-sans font-medium tracking-wide;
   }
 
   /* Mobile sidebar overlay styling */
@@ -470,7 +470,7 @@
   }
 
   .search-results-container::-webkit-scrollbar-thumb {
-    @apply bg-muted rounded;
+    @apply rounded bg-muted;
   }
 
   .search-results-container::-webkit-scrollbar-thumb:hover {
@@ -505,7 +505,7 @@
 
   /* Minimal sidebar group labels */
   [data-sidebar='sidebar'] [data-sidebar='group-label'] {
-    @apply text-xs font-medium py-0.5 px-2;
+    @apply px-2 py-0.5 text-xs font-medium;
   }
 
   /* Ultra-compact sidebar menu items */
@@ -554,7 +554,7 @@
 
   /* Ensure text wrapping in cards */
   .card-content {
-    @apply break-words hyphens-auto max-w-full;
+    @apply max-w-full hyphens-auto break-words;
   }
 
   .card-content p,
@@ -563,31 +563,31 @@
   .card-content strong,
   .card-content em,
   .card-content li {
-    @apply break-words hyphens-auto max-w-full whitespace-normal;
+    @apply max-w-full hyphens-auto whitespace-normal break-words;
   }
 
   /* Fix markdown card content styling */
   .markdown-card-content {
-    @apply break-words whitespace-normal text-base leading-relaxed font-sans;
+    @apply whitespace-normal break-words font-sans text-base leading-relaxed;
   }
 
   .markdown-card-content * {
-    @apply break-words whitespace-normal;
+    @apply whitespace-normal break-words;
   }
 
   /* Override any pre/code styling that might be applied */
   .markdown-card-content pre,
   .markdown-card-content code {
-    @apply font-sans whitespace-normal break-words;
+    @apply whitespace-normal break-words font-sans;
   }
 
   /* Ensure hero-profile card content is properly styled */
   .hero-profile-content {
-    @apply break-words whitespace-normal text-base leading-relaxed font-sans;
+    @apply whitespace-normal break-words font-sans text-base leading-relaxed;
   }
 
   .hero-profile-content * {
-    @apply break-words whitespace-normal;
+    @apply whitespace-normal break-words;
   }
 
   /* Add missing overflow-wrap-break-word class */
@@ -602,7 +602,7 @@
   .card-header,
   .card-content,
   .card-footer {
-    @apply break-words whitespace-normal;
+    @apply whitespace-normal break-words;
   }
 
   /* Specific text wrapping for card titles and descriptions */
@@ -613,20 +613,20 @@
   .card .card-description,
   .card p,
   .card div {
-    @apply break-words whitespace-normal overflow-wrap-break-word;
+    @apply overflow-wrap-break-word whitespace-normal break-words;
   }
 
   /* Ensure feature cards have proper text wrapping */
   .feature-card .card-content,
   .tech-card .card-content,
   .info-card .card-content {
-    @apply break-words whitespace-normal overflow-wrap-break-word;
+    @apply overflow-wrap-break-word whitespace-normal break-words;
   }
 
   /* Target all card content areas */
   [class*='card'] .card-content,
   [class*='Card'] .card-content {
-    @apply break-words whitespace-normal overflow-wrap-break-word;
+    @apply overflow-wrap-break-word whitespace-normal break-words;
   }
 
   /* Reduce top margin from h2 in hero-profile cards */
@@ -636,7 +636,7 @@
 
   /* Control pre tag styling in hero-profile cards */
   .hero-profile-card pre {
-    @apply mt-0 mb-0 p-0 bg-transparent border-none rounded-none shadow-none m-0;
+    @apply m-0 mb-0 mt-0 rounded-none border-none bg-transparent p-0 shadow-none;
     background-image: none !important;
   }
 
@@ -644,13 +644,13 @@
   .hero-profile-content p,
   .hero-profile-content h2,
   .hero-profile-content h3 {
-    @apply break-words whitespace-normal max-w-full;
+    @apply max-w-full whitespace-normal break-words;
   }
 
   /* Target the specific tagline paragraph in CardHeader */
   .hero-profile-content .text-lg.text-teal-600,
   .hero-profile-content .text-lg.text-teal-400 {
-    @apply break-words whitespace-normal max-w-full leading-tight;
+    @apply max-w-full whitespace-normal break-words leading-tight;
   }
 
   /* Remove all backgrounds from hero-profile cards and their containers */
@@ -664,7 +664,7 @@
 
   /* Remove any box-shadow or border-radius that might create the card appearance */
   .hero-profile-card .card {
-    @apply shadow-none rounded-none;
+    @apply rounded-none shadow-none;
   }
 
   /* Target parent containers that might have backgrounds */
@@ -961,7 +961,7 @@
 
   /* Prevent any layout shifts from dropdown menus */
   [data-radix-dropdown-menu-portal] {
-    @apply fixed inset-0 pointer-events-none;
+    @apply pointer-events-none fixed inset-0;
   }
 
   [data-radix-dropdown-menu-content] {
@@ -1050,7 +1050,7 @@
 
 /* Blockquote Styles */
 .ProseMirror blockquote {
-  @apply border-l-2 pl-6 italic text-muted-foreground my-6;
+  @apply my-6 border-l-2 pl-6 italic text-muted-foreground;
 }
 
 /* Code Block Styles */
