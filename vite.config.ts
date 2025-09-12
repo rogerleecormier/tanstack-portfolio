@@ -38,9 +38,7 @@ export default defineConfig(({ mode }) => {
       },
       chunkSizeWarningLimit: 1000,
     },
-    plugins: [
-      react(),
-    ],
+    plugins: [react()],
     optimizeDeps: {
       include: ['react', 'react-dom'],
     },
