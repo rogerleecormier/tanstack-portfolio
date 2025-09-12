@@ -40,8 +40,22 @@ jobs:
             npm ci --no-audit --no-fund
           fi
 
-      - name: Run pre-push checks
-        run: npm run pre-push
+      - name: TypeScript type check
+        run: npm run type-check
+
+      - name: ESLint check and fix
+        run: npm run lint:fix
+
+      - name: Prettier format check and fix
+        run: |
+          npx prettier --write .
+          npx prettier --check .
+
+      - name: Security audit
+        run: npm run audit
+
+      - name: Build project
+        run: npm run build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
