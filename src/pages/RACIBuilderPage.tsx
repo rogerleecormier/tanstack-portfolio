@@ -1,16 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useForm, useFieldArray, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { MatrixTable } from '@/components/MatrixTable';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Trash2, Download, Target, Users } from 'lucide-react';
-import { MatrixTable } from '@/components/MatrixTable';
-import mermaid from 'mermaid';
-import * as ExcelJS from 'exceljs';
+import { H1, H3, P } from '@/components/ui/typography';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Document,
   Page,
@@ -19,7 +14,12 @@ import {
   View,
   pdf,
 } from '@react-pdf/renderer';
-import { H1, H3, P } from '@/components/ui/typography';
+import * as ExcelJS from 'exceljs';
+import { Download, Plus, Target, Trash2, Users } from 'lucide-react';
+import mermaid from 'mermaid';
+import React, { useEffect, useRef, useState } from 'react';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import * as z from 'zod';
 
 interface MatrixCell {
   value: string;
@@ -801,30 +801,50 @@ const RACIBuilderPage: React.FC = () => {
   ) => {
     addDebugLog(`📋 Checkbox clicked: ${roleName}.${category} = ${checked}`);
 
+    // Get current form values
+    const currentValues = getValues();
+    const currentTask = currentValues.tasks[taskIndex];
+
+    if (!currentTask || !currentTask.raci[roleName]) {
+      addDebugLog(
+        `❌ Task or role not found: taskIndex=${taskIndex}, roleName=${roleName}`
+      );
+      return;
+    }
+
+    // Create updated RACI object
+    const updatedRaci = { ...currentTask.raci };
+    const updatedRoleRaci = { ...updatedRaci[roleName] };
+
     if (checked) {
       // Uncheck other categories for this role
-      const otherCategories = ['R', 'A', 'C', 'I'].filter(c => c !== category);
-      otherCategories.forEach(otherCat => {
-        const otherPath = `tasks.${taskIndex}.raci.${roleName}.${otherCat}`;
-        setValue(otherPath as any, false, {
-          // eslint-disable-line @typescript-eslint/no-explicit-any
-          shouldValidate: false,
-          shouldDirty: true,
-        });
+      (['R', 'A', 'C', 'I'] as const).forEach(cat => {
+        if (cat !== category) {
+          updatedRoleRaci[cat] = false;
+        }
       });
       addDebugLog(`🔄 Unchecked other categories for ${roleName} (RACI rule)`);
     }
 
-    const path = `tasks.${taskIndex}.raci.${roleName}.${category}`;
-    setValue(path as any, checked, {
-      // eslint-disable-line @typescript-eslint/no-explicit-any
+    // Set the current category
+    updatedRoleRaci[category] = checked;
+    updatedRaci[roleName] = updatedRoleRaci;
+
+    // Update the entire task
+    const updatedTask = { ...currentTask, raci: updatedRaci };
+    const updatedTasks = [...currentValues.tasks];
+    updatedTasks[taskIndex] = updatedTask;
+
+    setValue('tasks', updatedTasks, {
       shouldValidate: false,
       shouldDirty: true,
     });
 
     // Verify the value was set correctly
     setTimeout(() => {
-      const currentValue = getValues(path as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+      const newValues = getValues();
+      const newTask = newValues.tasks[taskIndex];
+      const currentValue = newTask?.raci?.[roleName]?.[category];
       addDebugLog(
         `✅ ${roleName}.${category} set to: ${currentValue} (expected: ${checked})`
       );
@@ -1262,7 +1282,7 @@ const RACIBuilderPage: React.FC = () => {
                   onClick={() => {
                     const currentRoles = getValues('roles')
                       .filter(r => isValidRoleName(r.name))
-                      .map(r => r.name!.trim());
+                      .map(r => r.name?.trim() ?? '');
                     const newRaci = Object.fromEntries(
                       currentRoles.map(roleName => [
                         roleName,

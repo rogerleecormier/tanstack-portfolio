@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from '@tanstack/react-router';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import { TooltipProvider } from './components/ui/tooltip';
-import { router } from './router';
 import './index.css';
+import { router } from './router';
 
 // Performance optimizations for React Refresh
 if (import.meta.env.DEV) {
@@ -30,7 +30,11 @@ const queryClient = new QueryClient({
   },
 });
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('Root element not found');
+}
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <TooltipProvider>
       <QueryClientProvider client={queryClient}>

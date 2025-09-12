@@ -1,3 +1,5 @@
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -5,8 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
@@ -15,24 +15,24 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 
+import { cachedContentService } from '@/api/cachedContentService';
+import { Logo } from '@/components/Logo';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { useNavigate } from '@tanstack/react-router';
 import {
   ArrowRight,
   BarChart3,
-  User,
-  Briefcase,
   BookOpen,
-  Wrench,
-  MessageSquare,
-  Globe,
-  Database,
   Brain,
+  Briefcase,
+  Database,
+  Globe,
+  MessageSquare,
+  User,
+  Wrench,
 } from 'lucide-react';
-import { Logo } from '@/components/Logo';
-import { ScrollToTop } from '@/components/ScrollToTop';
-import { useNavigate } from '@tanstack/react-router';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
-import { cachedContentService } from '@/api/cachedContentService';
 
 // Types for blog, projects, and tools data
 interface BlogPost {
@@ -117,15 +117,17 @@ export default function IndexPage() {
         const blogs = allContent.filter(item => item.contentType === 'blog');
         const sortedBlogs = blogs
           .filter(blog => blog.date) // Only include blogs with dates
-          .sort(
-            (a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime()
-          )
+          .sort((a, b) => {
+            const dateA = a.date ? new Date(a.date).getTime() : 0;
+            const dateB = b.date ? new Date(b.date).getTime() : 0;
+            return dateB - dateA;
+          })
           .slice(0, 6) // Get 6 most recent
           .map(blog => ({
             id: blog.id,
             title: blog.title,
             description: blog.description,
-            date: blog.date!,
+            date: blog.date || new Date().toISOString().split('T')[0],
             tags: blog.tags,
             category: blog.category,
             url: blog.url,

@@ -15,7 +15,7 @@
     "format:staged": "prettier --write --ignore-unknown",
     "pre-push": "npm run type-check && npm run lint && npm run format:check && npm run build",
     "setup-hooks": "powershell -ExecutionPolicy Bypass -File scripts/setup-git-hooks.ps1",
-    "deploy-branch": "npm run build && echo 'Branch built and KV cache updated. Push to GitHub to deploy.'",
+    "deploy-branch": "npm run build && echo 'Branch built and KV cache updated. Push to GitHub to deploy.'"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.3.4",

@@ -109,8 +109,9 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
         if (!b.date) return -1;
 
         // Parse dates using UTC to avoid timezone shifts
-        const [yearA, monthA, dayA] = a.date!.split('-').map(Number);
-        const [yearB, monthB, dayB] = b.date!.split('-').map(Number);
+        if (!a.date || !b.date) return 0;
+        const [yearA, monthA, dayA] = a.date.split('-').map(Number);
+        const [yearB, monthB, dayB] = b.date.split('-').map(Number);
 
         const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA));
         const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB));
