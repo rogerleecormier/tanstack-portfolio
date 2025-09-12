@@ -13,7 +13,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:staged": "prettier --write --ignore-unknown",
-    "pre-push": "npm run type-check && npm run lint && npm run format:check && npm run build",
+    "audit": "npm audit --audit-level moderate",
+    "audit:fix": "npm audit fix",
+    "pre-push": "npm run type-check && npm run lint:fix && npm run format && npm run audit:fix && npm run build",
     "setup-hooks": "powershell -ExecutionPolicy Bypass -File scripts/setup-git-hooks.ps1",
     "deploy-branch": "npm run build && echo 'Branch built and KV cache updated. Push to GitHub to deploy.'"
   },

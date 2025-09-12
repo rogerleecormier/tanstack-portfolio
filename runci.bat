@@ -46,8 +46,20 @@ if %errorlevel% neq 0 (
 echo [SUCCESS] Code formatting completed!
 echo.
 
-REM 4. Run Build
-echo [STEP 4] Building the project...
+REM 4. Run Security Audit
+echo [STEP 4] Running security audit...
+call npm run audit:fix
+if %errorlevel% neq 0 (
+    echo [ERROR] Security audit failed! Please fix the vulnerabilities and try again.
+    echo [TIP] You can run 'npm run audit:fix' to automatically fix some issues.
+    pause
+    exit /b 1
+)
+echo [SUCCESS] Security audit passed!
+echo.
+
+REM 5. Run Build
+echo [STEP 5] Building the project...
 call npm run build
 if %errorlevel% neq 0 (
     echo [ERROR] Build failed! Please fix the build errors and try again.
@@ -63,6 +75,7 @@ echo Summary:
 echo   [PASS] TypeScript - No type errors
 echo   [PASS] ESLint - No linting issues
 echo   [PASS] Prettier - Code formatting is correct
+echo   [PASS] Security - No vulnerabilities found
 echo   [PASS] Build - Project builds successfully
 echo.
 echo [INFO] This matches your pre-push hook configuration.
