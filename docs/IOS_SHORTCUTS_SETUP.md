@@ -32,6 +32,7 @@ Before setting up shortcuts, ensure the following permissions are granted:
 ## Shortcut 1: WeightWise Data Collection
 
 ### Purpose
+
 Automatically collects weight and body composition data from Apple Health and sends it to the HealthBridge API.
 
 ### Setup Steps
@@ -63,7 +64,7 @@ Automatically collects weight and body composition data from Apple Health and se
    - Configure as follows:
      - **URL:** `https://healthbridge-enhanced.rcormier.workers.dev/api/v2/weight/measurement`
      - **Method:** POST
-     - **Headers:** 
+     - **Headers:**
        - `Content-Type: application/json`
        - `Authorization: Bearer YOUR_API_KEY`
      - **Request Body:** JSON with the following structure:
@@ -110,6 +111,7 @@ Automatically collects weight and body composition data from Apple Health and se
 ## Shortcut 2: WeightWise Weekly Report
 
 ### Purpose
+
 Generates a weekly progress report by fetching data from the HealthBridge API and displaying key metrics.
 
 ### Setup Steps
@@ -122,7 +124,6 @@ Generates a weekly progress report by fetching data from the HealthBridge API an
      - URL: `https://healthbridge-enhanced.rcormier.workers.dev/api/v2/analytics/dashboard?period=7`
      - Method: GET
      - Headers: Include your API key
-   
    - **Get Goal Progress:**
      - URL: `https://healthbridge-enhanced.rcormier.workers.dev/api/v2/goals/progress`
      - Method: GET
@@ -148,6 +149,7 @@ Generates a weekly progress report by fetching data from the HealthBridge API an
 ## Shortcut 3: WeightWise Goal Setting
 
 ### Purpose
+
 Allows quick goal setting and updates through a simple interface.
 
 ### Setup Steps
@@ -173,6 +175,7 @@ Allows quick goal setting and updates through a simple interface.
 ## Shortcut 4: WeightWise Quick Check
 
 ### Purpose
+
 Provides a quick overview of current progress and recent measurements.
 
 ### Setup Steps

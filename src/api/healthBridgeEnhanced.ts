@@ -4,7 +4,7 @@
  * @author Roger Lee Cormier
  * @version 3.0.0
  * @lastUpdated 2024
- * 
+ *
  * @features
  * - Weight loss projections with confidence intervals (pounds only)
  * - Advanced health metrics tracking
@@ -71,7 +71,12 @@ export interface WeightTrends {
     '30_day': number[] | null;
   };
   plateaus: Plateau[];
-  overall_trend: 'gaining' | 'losing' | 'stable' | 'insufficient_data' | 'no_change';
+  overall_trend:
+    | 'gaining'
+    | 'losing'
+    | 'stable'
+    | 'insufficient_data'
+    | 'no_change';
   data_points: number;
   analysis_date: string;
 }
@@ -134,29 +139,36 @@ export class HealthBridgeEnhancedAPI {
   /**
    * Create a new weight measurement with enhanced data
    */
-  static async createWeightMeasurement(data: CreateWeightMeasurementRequest): Promise<{ success: boolean; id: number; message: string }> {
+  static async createWeightMeasurement(
+    data: CreateWeightMeasurementRequest
+  ): Promise<{ success: boolean; id: number; message: string }> {
     try {
       // TODO: Replace with actual API call once enhanced worker is deployed
       // For now, return mock success for development
-      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      if (
+        typeof window !== 'undefined' &&
+        window.location.hostname === 'localhost'
+      ) {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 300));
-        
+
         // Return mock success response
         return {
           success: true,
           id: Math.floor(Math.random() * 10000) + 1,
-          message: 'Weight measurement created successfully (mock)'
+          message: 'Weight measurement created successfully (mock)',
         };
       }
-      
+
       const response = await this.makeRequest('/api/v2/weight/measurement', {
         method: 'POST',
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to create weight measurement: ${response.statusText}`);
+        throw new Error(
+          `Failed to create weight measurement: ${response.statusText}`
+        );
       }
 
       return response.json();
@@ -169,13 +181,15 @@ export class HealthBridgeEnhancedAPI {
   /**
    * Get weight measurements with enhanced filtering
    */
-  static async getWeightMeasurements(options: {
-    limit?: number;
-    days?: number;
-    startDate?: string;
-    endDate?: string;
-    userId?: string;
-  } = {}): Promise<WeightMeasurement[]> {
+  static async getWeightMeasurements(
+    options: {
+      limit?: number;
+      days?: number;
+      startDate?: string;
+      endDate?: string;
+      userId?: string;
+    } = {}
+  ): Promise<WeightMeasurement[]> {
     const params = new URLSearchParams();
     if (options.limit) params.append('limit', options.limit.toString());
     if (options.days) params.append('days', options.days.toString());
@@ -183,10 +197,14 @@ export class HealthBridgeEnhancedAPI {
     if (options.endDate) params.append('end_date', options.endDate);
     if (options.userId) params.append('userId', options.userId);
 
-    const response = await this.makeRequest(`/api/v2/weight/measurement?${params.toString()}`);
-    
+    const response = await this.makeRequest(
+      `/api/v2/weight/measurement?${params.toString()}`
+    );
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch weight measurements: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch weight measurements: ${response.statusText}`
+      );
     }
 
     return response.json();
@@ -195,30 +213,38 @@ export class HealthBridgeEnhancedAPI {
   /**
    * Get weight loss projections with confidence intervals (pounds only)
    */
-  static async getWeightProjections(days: number = 30, userId?: string): Promise<WeightProjectionsResponse> {
+  static async getWeightProjections(
+    days: number = 30,
+    userId?: string
+  ): Promise<WeightProjectionsResponse> {
     try {
       // TODO: Replace with actual API call once enhanced worker is deployed
       // For now, return mock data for development
-      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      if (
+        typeof window !== 'undefined' &&
+        window.location.hostname === 'localhost'
+      ) {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 400));
-        
+
         // Return mock projections data in pounds
         const mockProjections = [];
         const currentWeight = 168.7; // 168.7 lbs
         const dailyRate = -0.26; // -0.26 lbs per day
-        
+
         for (let i = 1; i <= days; i++) {
-          const projectedWeight = currentWeight + (dailyRate * i);
+          const projectedWeight = currentWeight + dailyRate * i;
           mockProjections.push({
-            date: new Date(Date.now() + i * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            date: new Date(Date.now() + i * 24 * 60 * 60 * 1000)
+              .toISOString()
+              .split('T')[0],
             projected_weight: Math.max(projectedWeight, 154.0), // Don't go below 154 lbs
-            confidence: Math.max(0.95 - (i * 0.01), 0.7), // Confidence decreases over time
+            confidence: Math.max(0.95 - i * 0.01, 0.7), // Confidence decreases over time
             daily_rate: dailyRate,
-            days_from_now: i
+            days_from_now: i,
           });
         }
-        
+
         return {
           current_weight: currentWeight,
           daily_rate: dailyRate,
@@ -230,29 +256,33 @@ export class HealthBridgeEnhancedAPI {
           medication_scenarios: {
             no_medication: {
               daily_rate: dailyRate,
-              projections: mockProjections
+              projections: mockProjections,
             },
             with_medication: {
               daily_rate: dailyRate * 1.4, // Assume 40% improvement with medication
               multiplier: 0.4,
               projections: mockProjections.map(p => ({
                 ...p,
-                weight: Math.max(p.projected_weight * 0.9, 154.0) // 10% better with medication
-              }))
-            }
+                weight: Math.max(p.projected_weight * 0.9, 154.0), // 10% better with medication
+              })),
+            },
           },
-          user_medications: []
+          user_medications: [],
         };
       }
-      
+
       const params = new URLSearchParams();
       params.append('days', days.toString());
       if (userId) params.append('userId', userId);
-      
-      const response = await this.makeRequest(`/api/v2/weight/projections?${params.toString()}`);
-      
+
+      const response = await this.makeRequest(
+        `/api/v2/weight/projections?${params.toString()}`
+      );
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch weight projections: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch weight projections: ${response.statusText}`
+        );
       }
 
       return response.json();
@@ -273,8 +303,10 @@ export class HealthBridgeEnhancedAPI {
    * Get weight trends and analysis
    */
   static async getWeightTrends(period: number = 30): Promise<WeightTrends> {
-    const response = await this.makeRequest(`/api/v2/weight/trends?period=${period}`);
-    
+    const response = await this.makeRequest(
+      `/api/v2/weight/trends?period=${period}`
+    );
+
     if (!response.ok) {
       throw new Error(`Failed to fetch weight trends: ${response.statusText}`);
     }
@@ -285,14 +317,20 @@ export class HealthBridgeEnhancedAPI {
   /**
    * Get analytics dashboard data (pounds only)
    */
-  static async getAnalyticsDashboard(period: number = 30, userId?: string): Promise<AnalyticsDashboard> {
+  static async getAnalyticsDashboard(
+    period: number = 30,
+    userId?: string
+  ): Promise<AnalyticsDashboard> {
     try {
       // TODO: Replace with actual API call once enhanced worker is deployed
       // For now, return mock data for development
-      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      if (
+        typeof window !== 'undefined' &&
+        window.location.hostname === 'localhost'
+      ) {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 600));
-        
+
         // Return mock analytics data in pounds
         return {
           generated_at: new Date().toISOString(),
@@ -304,12 +342,12 @@ export class HealthBridgeEnhancedAPI {
             total_change: -18.7, // -18.7 lbs
             average_weight: 176.8, // 176.8 lbs
             min_weight: 167.6, // 167.6 lbs
-            max_weight: 187.4 // 187.4 lbs
+            max_weight: 187.4, // 187.4 lbs
           },
           trends: {
             overall_trend: 'losing',
             weekly_average: [1.8, 1.7, 1.9, 1.6], // Weekly averages in lbs
-            consistency_score: 78.5
+            consistency_score: 78.5,
           },
           projections: {
             current_weight: 168.7,
@@ -322,27 +360,31 @@ export class HealthBridgeEnhancedAPI {
             medication_scenarios: {
               no_medication: {
                 daily_rate: -0.26,
-                projections: []
+                projections: [],
               },
               with_medication: {
                 daily_rate: -0.36,
                 multiplier: 0.4,
-                projections: []
-              }
+                projections: [],
+              },
             },
-            user_medications: []
-          }
+            user_medications: [],
+          },
         };
       }
-      
+
       const params = new URLSearchParams();
       params.append('period', period.toString());
       if (userId) params.append('userId', userId);
-      
-      const response = await this.makeRequest(`/api/v2/analytics/dashboard?${params.toString()}`);
-      
+
+      const response = await this.makeRequest(
+        `/api/v2/analytics/dashboard?${params.toString()}`
+      );
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch analytics dashboard: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch analytics dashboard: ${response.statusText}`
+        );
       }
 
       return response.json();
@@ -355,11 +397,18 @@ export class HealthBridgeEnhancedAPI {
   /**
    * Get comparative analytics between different periods
    */
-  static async getComparativeAnalytics(period1: number = 30, period2: number = 60): Promise<ComparativeAnalytics> {
-    const response = await this.makeRequest(`/api/v2/analytics/comparative?period1=${period1}&period2=${period2}`);
-    
+  static async getComparativeAnalytics(
+    period1: number = 30,
+    period2: number = 60
+  ): Promise<ComparativeAnalytics> {
+    const response = await this.makeRequest(
+      `/api/v2/analytics/comparative?period1=${period1}&period2=${period2}`
+    );
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch comparative analytics: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch comparative analytics: ${response.statusText}`
+      );
     }
 
     return response.json();
@@ -369,15 +418,15 @@ export class HealthBridgeEnhancedAPI {
    * Make HTTP request with timeout and retry logic
    */
   private static async makeRequest(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit = {}
   ): Promise<Response> {
     const url = `${API_BASE_URL}${endpoint}`;
-    
+
     // Set default headers
     const headers = {
       'Content-Type': 'application/json',
-      ...options.headers
+      ...options.headers,
     };
 
     // Create AbortController for timeout
@@ -388,18 +437,18 @@ export class HealthBridgeEnhancedAPI {
       const response = await fetch(url, {
         ...options,
         headers,
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
       return response;
     } catch (error) {
       clearTimeout(timeoutId);
-      
+
       if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Request timed out');
       }
-      
+
       throw error;
     }
   }
@@ -408,7 +457,7 @@ export class HealthBridgeEnhancedAPI {
    * Make request with retry logic
    */
   static async makeRequestWithRetry(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit = {},
     retries: number = this.MAX_RETRIES
   ): Promise<Response> {
@@ -419,13 +468,13 @@ export class HealthBridgeEnhancedAPI {
         if (attempt === retries) {
           throw error;
         }
-        
+
         // Wait before retry (exponential backoff)
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
-    
+
     throw new Error('All retry attempts failed');
   }
 }
@@ -445,7 +494,12 @@ export class HealthDataUtils {
   /**
    * Calculate BMR using Mifflin-St Jeor Equation
    */
-  static calculateBMR(weightLbs: number, heightInches: number, age: number, gender: 'male' | 'female'): number {
+  static calculateBMR(
+    weightLbs: number,
+    heightInches: number,
+    age: number,
+    gender: 'male' | 'female'
+  ): number {
     const weightKg = weightLbs / 2.20462;
     const heightCm = heightInches * 2.54;
     const baseBMR = 10 * weightKg + 6.25 * heightCm - 5 * age;
@@ -455,22 +509,29 @@ export class HealthDataUtils {
   /**
    * Calculate TDEE based on activity level
    */
-  static calculateTDEE(bmr: number, activityLevel: 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active'): number {
+  static calculateTDEE(
+    bmr: number,
+    activityLevel: 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active'
+  ): number {
     const multipliers = {
-      sedentary: 1.2,      // Little or no exercise
-      light: 1.375,         // Light exercise 1-3 days/week
-      moderate: 1.55,       // Moderate exercise 3-5 days/week
-      active: 1.725,        // Heavy exercise 6-7 days/week
-      very_active: 1.9      // Very heavy exercise, physical job
+      sedentary: 1.2, // Little or no exercise
+      light: 1.375, // Light exercise 1-3 days/week
+      moderate: 1.55, // Moderate exercise 3-5 days/week
+      active: 1.725, // Heavy exercise 6-7 days/week
+      very_active: 1.9, // Very heavy exercise, physical job
     };
-    
+
     return bmr * multipliers[activityLevel];
   }
 
   /**
    * Calculate weight loss rate in lbs/week
    */
-  static calculateWeightLossRate(startWeightLbs: number, currentWeightLbs: number, daysElapsed: number): number {
+  static calculateWeightLossRate(
+    startWeightLbs: number,
+    currentWeightLbs: number,
+    daysElapsed: number
+  ): number {
     const weightLost = startWeightLbs - currentWeightLbs;
     const weeksElapsed = daysElapsed / 7;
     return weightLost / weeksElapsed;
@@ -479,14 +540,18 @@ export class HealthDataUtils {
   /**
    * Calculate projected weight loss date
    */
-  static calculateProjectedDate(currentWeightLbs: number, targetWeightLbs: number, weeklyRateLbs: number): Date {
+  static calculateProjectedDate(
+    currentWeightLbs: number,
+    targetWeightLbs: number,
+    weeklyRateLbs: number
+  ): Date {
     const weightToLose = currentWeightLbs - targetWeightLbs;
     const weeksToGoal = weightToLose / weeklyRateLbs;
     const daysToGoal = weeksToGoal * 7;
-    
+
     const projectedDate = new Date();
     projectedDate.setDate(projectedDate.getDate() + daysToGoal);
-    
+
     return projectedDate;
   }
 
@@ -511,7 +576,9 @@ export class HealthDataUtils {
   /**
    * Get trend direction from percentage change
    */
-  static getTrendDirection(percentageChange: number): 'increasing' | 'decreasing' | 'stable' {
+  static getTrendDirection(
+    percentageChange: number
+  ): 'increasing' | 'decreasing' | 'stable' {
     if (percentageChange > 1) return 'increasing';
     if (percentageChange < -1) return 'decreasing';
     return 'stable';

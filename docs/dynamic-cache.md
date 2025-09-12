@@ -5,6 +5,7 @@
 This document describes the dynamic content caching system implemented for the TanStack portfolio site. The system transitions from static JSON files and hardcoded data to a dynamic cache generated from Markdown frontmatter, enabling easier content management without rebuilding the entire site or hardcoding values.
 
 ### Key Benefits
+
 - **Content Management**: Edit Markdown files (portfolio/, blog/, projects/) with frontmatter for metadata (title, description, tags, date, etc.).
 - **Build-Time Generation**: Cache is automatically rebuilt during `npm run build` using `scripts/rebuild-cache.js`.
 - **Local Development**: File watcher (`npm run watch-cache` or included in `npm run dev:full`) regenerates cache on MD file saves.
@@ -12,7 +13,9 @@ This document describes the dynamic content caching system implemented for the T
 - **Type Safety**: All data uses `CachedContentItem` interface for consistency.
 
 ### Data Structure
+
 The cache (`src/data/content-cache.json`) contains:
+
 - `portfolio: CachedContentItem[]`
 - `blog: CachedContentItem[]`
 - `projects: CachedContentItem[]`
@@ -20,6 +23,7 @@ The cache (`src/data/content-cache.json`) contains:
 - `metadata: { portfolioCount, blogCount, projectCount, lastUpdated, version }`
 
 Where `CachedContentItem` is:
+
 ```typescript
 interface CachedContentItem {
   id: string;
@@ -36,6 +40,7 @@ interface CachedContentItem {
 ## Build Process
 
 During `npm run build`:
+
 1. TypeScript compilation (`tsc`).
 2. Vite build (`vite build`).
 3. KV cache rebuild (`node scripts/rebuild-kv-cache.js`): Processes markdown files from portfolio/, blog/, projects/; parses frontmatter; creates cache data structure; pushes to Cloudflare KV.
@@ -45,10 +50,12 @@ For Cloudflare Pages deployment, the build script runs on CI, ensuring fresh cac
 ## Local Development
 
 Run `npm run dev:full` to start:
+
 - Vite dev server.
 - Wrangler for functions.
 
 **KV Cache Management:**
+
 - Content updates are pushed to production KV cache
 - Local development reads from the same production KV
 - Run `npm run rebuild-kv` to manually update the KV cache during development
@@ -56,18 +63,22 @@ Run `npm run dev:full` to start:
 ## Integration in Code
 
 ### cachedContentService
+
 - `getContentByType(type: 'blog' | 'portfolio' | 'project')`: Returns CachedContentItem[] from cache.
 - `getRecommendations(options)`: Fuse.js-based search across cache, excluding current page.
 
 ### Pages Refactored
+
 - **BlogListPage.tsx**: useEffect loads `getContentByType('blog')`; filters manually; maps to BlogPostCard with hardcoded author/readTime.
 - **PortfolioListPage.tsx**: Loads `getContentByType('portfolio')`; derives category from tags[0]; manual filtering; maps to cards with derived urls.
 - **ProjectsListPage.tsx**: Loads `getContentByType('project')`; similar filtering.
 
 ### Components
+
 - **UnifiedRelatedContent.tsx**: Uses `getRecommendations` for related items; derives urls; extends CachedContentItem with relevanceScore/url.
 
 ### Contact Form
+
 - Uses cached service indirectly via UnifiedRelatedContent for related content suggestions.
 - No direct static dependencies; AI analysis in contactAnalyzer.ts is independent.
 
@@ -111,6 +122,7 @@ graph TD
 - **Watcher Not Triggering**: Ensure dirs exist (create empty if needed); check chokidar patterns.
 
 ## Future Improvements
+
 - Auto-detect MD files instead of hardcoded lists.
 - Integrate with R2 for prod cache updates via API.
 - Add cache versioning/invalidation.

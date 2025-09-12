@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 
 /**
  * Custom hook to scroll to top when component mounts
@@ -6,9 +6,9 @@ import { useEffect } from 'react'
  */
 export const useScrollToTopOnMount = (behavior: ScrollBehavior = 'auto') => {
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior })
-  }, [behavior])
-}
+    window.scrollTo({ top: 0, behavior });
+  }, [behavior]);
+};
 
 /**
  * Custom hook to scroll to top after successful form submissions
@@ -21,10 +21,10 @@ export const useScrollToTopOnSuccess = (
 ) => {
   useEffect(() => {
     if (success) {
-      window.scrollTo({ top: 0, behavior })
+      window.scrollTo({ top: 0, behavior });
     }
-  }, [success, behavior])
-}
+  }, [success, behavior]);
+};
 
 /**
  * Custom hook to scroll to top with custom dependencies
@@ -36,7 +36,7 @@ export const useScrollToTop = (
   dependencies: unknown[] = []
 ) => {
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior })
+    window.scrollTo({ top: 0, behavior });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [behavior, ...dependencies])
-}
+  }, [behavior, ...dependencies]);
+};

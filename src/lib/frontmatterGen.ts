@@ -4,7 +4,100 @@
 // - Generates tags from top keywords (filters stopwords, short tokens, numbers)
 
 const STOPWORDS = new Set<string>([
-  'the','and','for','are','but','not','you','your','with','that','this','from','have','has','was','were','they','their','our','out','about','into','over','under','then','than','them','these','those','just','like','can','cant','cannot','will','wont','should','would','could','may','might','must','been','being','also','there','here','what','when','where','why','how','who','whom','which','as','on','in','of','to','by','at','it','its','we','i','a','an','or','if','is','be','do','did','does','done','up','down','across','within','between','because','so','such','only','more','most','less','least','very','every','each','per','via'
+  'the',
+  'and',
+  'for',
+  'are',
+  'but',
+  'not',
+  'you',
+  'your',
+  'with',
+  'that',
+  'this',
+  'from',
+  'have',
+  'has',
+  'was',
+  'were',
+  'they',
+  'their',
+  'our',
+  'out',
+  'about',
+  'into',
+  'over',
+  'under',
+  'then',
+  'than',
+  'them',
+  'these',
+  'those',
+  'just',
+  'like',
+  'can',
+  'cant',
+  'cannot',
+  'will',
+  'wont',
+  'should',
+  'would',
+  'could',
+  'may',
+  'might',
+  'must',
+  'been',
+  'being',
+  'also',
+  'there',
+  'here',
+  'what',
+  'when',
+  'where',
+  'why',
+  'how',
+  'who',
+  'whom',
+  'which',
+  'as',
+  'on',
+  'in',
+  'of',
+  'to',
+  'by',
+  'at',
+  'it',
+  'its',
+  'we',
+  'i',
+  'a',
+  'an',
+  'or',
+  'if',
+  'is',
+  'be',
+  'do',
+  'did',
+  'does',
+  'done',
+  'up',
+  'down',
+  'across',
+  'within',
+  'between',
+  'because',
+  'so',
+  'such',
+  'only',
+  'more',
+  'most',
+  'less',
+  'least',
+  'very',
+  'every',
+  'each',
+  'per',
+  'via',
 ]);
 
 function stripFrontmatter(md: string): string {
@@ -12,11 +105,13 @@ function stripFrontmatter(md: string): string {
 }
 
 function stripCode(md: string): string {
-  return md
-    // fenced code
-    .replace(/```[\s\S]*?```/g, '')
-    // inline code
-    .replace(/`[^`]+`/g, '');
+  return (
+    md
+      // fenced code
+      .replace(/```[\s\S]*?```/g, '')
+      // inline code
+      .replace(/`[^`]+`/g, '')
+  );
 }
 
 function stripMdFormatting(md: string): string {
@@ -49,18 +144,23 @@ function tokenize(text: string): string[] {
 }
 
 function titleCase(s: string): string {
-  return s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1));
+  return s.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1));
 }
 
 function topN<T>(entries: Array<[T, number]>, n: number): T[] {
-  return entries.sort((a,b) => b[1] - a[1]).slice(0, n).map(e => e[0]);
+  return entries
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n)
+    .map(e => e[0]);
 }
 
 function truncate(s: string, n: number): string {
   return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s;
 }
 
-export function generateSmartFrontmatter(markdown: string): Record<string, unknown> {
+export function generateSmartFrontmatter(
+  markdown: string
+): Record<string, unknown> {
   const today = new Date().toISOString().split('T')[0];
   const noFm = stripFrontmatter(markdown || '');
   const noCode = stripCode(noFm);
@@ -77,16 +177,16 @@ export function generateSmartFrontmatter(markdown: string): Record<string, unkno
   // Score sentences by sum of token frequencies
   const scored: Array<{ s: string; score: number }> = sentences.map(s => ({
     s,
-    score: tokenize(s).reduce((acc, t) => acc + (tf.get(t) || 0), 0)
+    score: tokenize(s).reduce((acc, t) => acc + (tf.get(t) || 0), 0),
   }));
 
   // Summary: pick top sentences until ~220 chars
   const summaryParts: string[] = [];
   let remaining = 220;
-  for (const { s } of scored.sort((a,b) => b.score - a.score)) {
+  for (const { s } of scored.sort((a, b) => b.score - a.score)) {
     const chunk = s.trim();
     if (!chunk) continue;
-    if (summaryParts.length && (chunk.length + 2) > remaining) continue;
+    if (summaryParts.length && chunk.length + 2 > remaining) continue;
     summaryParts.push(chunk);
     remaining -= chunk.length + 2;
     if (remaining <= 0 || summaryParts.length >= 3) break;
@@ -117,4 +217,3 @@ export function generateSmartFrontmatter(markdown: string): Record<string, unkno
     draft: true,
   };
 }
-

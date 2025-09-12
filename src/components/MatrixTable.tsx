@@ -36,28 +36,31 @@ const getCellClass = (color: string | undefined): string => {
 
 export const MatrixTable: React.FC<MatrixTableProps> = ({ data }) => {
   if (!data || data.rows.length === 0) {
-    return <div className="text-gray-500">No data available</div>;
+    return <div className='text-gray-500'>No data available</div>;
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border-collapse divide-y divide-gray-200 bg-white rounded-lg shadow-sm">
+    <div className='overflow-x-auto'>
+      <table className='min-w-full border-collapse divide-y divide-gray-200 bg-white rounded-lg shadow-sm'>
         <thead>
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider border-r border-gray-100 bg-gray-50">
+            <th className='px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider border-r border-gray-100 bg-gray-50'>
               Task
             </th>
             {data.headers.slice(1).map((header, index) => (
-              <th key={index} className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider border-r border-gray-100 bg-slate-50">
+              <th
+                key={index}
+                className='px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider border-r border-gray-100 bg-slate-50'
+              >
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className='divide-y divide-gray-200'>
           {data.rows.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50 border-r border-gray-100">
+              <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50 border-r border-gray-100'>
                 {row.taskName}
               </td>
               {row.cells.map((cell, cellIndex) => (

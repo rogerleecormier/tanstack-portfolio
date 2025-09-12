@@ -23,11 +23,13 @@ Authorization: Bearer YOUR_API_KEY
 ### 1. Weight Measurements
 
 #### Create Weight Measurement
+
 **POST** `/api/v2/weight/measurement`
 
 Creates a new weight measurement with optional body composition data.
 
 **Request Body:**
+
 ```json
 {
   "weight": 75.5,
@@ -41,6 +43,7 @@ Creates a new weight measurement with optional body composition data.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -50,17 +53,20 @@ Creates a new weight measurement with optional body composition data.
 ```
 
 #### Get Weight Measurements
+
 **GET** `/api/v2/weight/measurement`
 
 Retrieves weight measurements with optional filtering.
 
 **Query Parameters:**
+
 - `limit` (optional): Maximum number of records to return (default: 100)
 - `days` (optional): Filter by last N days
 - `start_date` (optional): Start date for range filter (YYYY-MM-DD)
 - `end_date` (optional): End date for range filter (YYYY-MM-DD)
 
 **Response:**
+
 ```json
 [
   {
@@ -79,14 +85,17 @@ Retrieves weight measurements with optional filtering.
 ### 2. Weight Loss Projections
 
 #### Get Weight Projections
+
 **GET** `/api/v2/weight/projections`
 
 Retrieves AI-powered weight loss projections with confidence intervals.
 
 **Query Parameters:**
+
 - `days` (optional): Number of days to project (default: 30)
 
 **Response:**
+
 ```json
 {
   "current_weight": 75.5,
@@ -108,14 +117,17 @@ Retrieves AI-powered weight loss projections with confidence intervals.
 ### 3. Weight Trends Analysis
 
 #### Get Weight Trends
+
 **GET** `/api/v2/weight/trends`
 
 Analyzes weight trends and detects patterns including plateaus.
 
 **Query Parameters:**
+
 - `period` (optional): Analysis period in days (default: 30)
 
 **Response:**
+
 ```json
 {
   "period_days": 30,
@@ -141,11 +153,13 @@ Analyzes weight trends and detects patterns including plateaus.
 ### 4. Goal Management
 
 #### Set Weight Loss Goal
+
 **POST** `/api/v2/goals/set`
 
 Creates or updates a weight loss goal.
 
 **Request Body:**
+
 ```json
 {
   "target_weight": 70.0,
@@ -157,6 +171,7 @@ Creates or updates a weight loss goal.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -166,11 +181,13 @@ Creates or updates a weight loss goal.
 ```
 
 #### Get Goal Progress
+
 **GET** `/api/v2/goals/progress`
 
 Retrieves current goal progress and achievements.
 
 **Response:**
+
 ```json
 {
   "goal_id": 456,
@@ -188,11 +205,13 @@ Retrieves current goal progress and achievements.
 ```
 
 #### Get All Goals
+
 **GET** `/api/v2/goals/set`
 
 Retrieves all goals (active and inactive).
 
 **Response:**
+
 ```json
 [
   {
@@ -213,14 +232,17 @@ Retrieves all goals (active and inactive).
 ### 5. Analytics Dashboard
 
 #### Get Analytics Dashboard
+
 **GET** `/api/v2/analytics/dashboard`
 
 Retrieves comprehensive analytics data for the dashboard.
 
 **Query Parameters:**
+
 - `period` (optional): Analysis period in days (default: 30)
 
 **Response:**
+
 ```json
 {
   "metrics": {
@@ -250,15 +272,18 @@ Retrieves comprehensive analytics data for the dashboard.
 ```
 
 #### Get Comparative Analytics
+
 **GET** `/api/v2/analytics/comparative`
 
 Compares analytics between two different time periods.
 
 **Query Parameters:**
+
 - `period1` (optional): First period in days (default: 30)
 - `period2` (optional): Second period in days (default: 60)
 
 **Response:**
+
 ```json
 {
   "period1": {
@@ -282,6 +307,7 @@ Compares analytics between two different time periods.
 ## Data Models
 
 ### WeightMeasurement
+
 ```typescript
 interface WeightMeasurement {
   id: number;
@@ -296,6 +322,7 @@ interface WeightMeasurement {
 ```
 
 ### WeightProjection
+
 ```typescript
 interface WeightProjection {
   date: string;
@@ -307,6 +334,7 @@ interface WeightProjection {
 ```
 
 ### WeightGoal
+
 ```typescript
 interface WeightGoal {
   id: number;
@@ -323,6 +351,7 @@ interface WeightGoal {
 ```
 
 ### GoalProgress
+
 ```typescript
 interface GoalProgress {
   goal_id: number;
@@ -351,6 +380,7 @@ All API endpoints return appropriate HTTP status codes and error messages:
 - `500` - Internal Server Error
 
 **Error Response Format:**
+
 ```json
 {
   "error": "Error description",
@@ -361,12 +391,14 @@ All API endpoints return appropriate HTTP status codes and error messages:
 ## Rate Limiting
 
 The API implements rate limiting to prevent abuse:
+
 - Maximum 100 requests per minute per API key
 - Rate limit headers are included in responses
 
 ## CORS Support
 
 The API supports Cross-Origin Resource Sharing (CORS) for web applications:
+
 - All origins are allowed (`Access-Control-Allow-Origin: *`)
 - Supported methods: GET, POST, PUT, DELETE, OPTIONS
 - Preflight requests are handled automatically
@@ -408,6 +440,7 @@ The API maintains backward compatibility with v1 endpoints:
 ## Support and Documentation
 
 For additional support or questions:
+
 - Check the HealthBridge documentation
 - Review the issue tracker for known issues
 - Contact the development team

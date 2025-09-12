@@ -1,22 +1,22 @@
-import React from 'react'
-import UnifiedChartRenderer from './UnifiedChartRenderer'
+import React from 'react';
+import UnifiedChartRenderer from './UnifiedChartRenderer';
 
 interface ChartRendererProps {
   node: {
     attrs: {
-      chartType: string
-      data: string
-      chartTitle?: string
-      xAxisLabel?: string
-      yAxisLabel?: string
-      width?: string
-      height?: string
-    }
-  }
+      chartType: string;
+      data: string;
+      chartTitle?: string;
+      xAxisLabel?: string;
+      yAxisLabel?: string;
+      width?: string;
+      height?: string;
+    };
+  };
 }
 
 const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
-  const { attrs } = node
+  const { attrs } = node;
 
   return (
     <UnifiedChartRenderer
@@ -28,7 +28,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
       width={attrs.width}
       height={attrs.height}
     />
-  )
-}
+  );
+};
 
-export default ChartRenderer
+export default ChartRenderer;

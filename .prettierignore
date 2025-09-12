@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.vite/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Config files that should maintain their formatting
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Wrangler configs
+wrangler.toml
+wrangler/*.toml
+
+# Database migrations
+migrations/*.sql
+
+# Workers (JavaScript files)
+workers/*.js
+
+# Generated content cache
+content-cache.json
+public/content-cache.json
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db

@@ -27,24 +27,24 @@ export function MarkdownOnlyPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="border-b p-4 flex items-center justify-between">
+    <div className='h-screen flex flex-col'>
+      <div className='border-b p-4 flex items-center justify-between'>
         <div>
-          <h1 className="text-2xl font-bold">Markdown Editor</h1>
+          <h1 className='text-2xl font-bold'>Markdown Editor</h1>
           {isDirty && (
-            <p className="text-sm text-muted-foreground">Unsaved changes</p>
+            <p className='text-sm text-muted-foreground'>Unsaved changes</p>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Button onClick={handleDownload}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className='h-4 w-4 mr-2' />
             Download
           </Button>
         </div>
       </div>
 
-      <div className="flex-1 p-4 overflow-hidden">
-        <div className="h-full max-h-[calc(100vh-200px)]">
+      <div className='flex-1 p-4 overflow-hidden'>
+        <div className='h-full max-h-[calc(100vh-200px)]'>
           <MarkdownHtmlEditor
             initialMarkdown={markdown}
             onChange={handleMarkdownChange}

@@ -24,6 +24,7 @@ This document provides comprehensive documentation of the search functionality a
 The primary search interface accessible from the header across all pages.
 
 #### Features
+
 - **Global Access**: Available on every page via header
 - **Keyboard Shortcuts**: `Ctrl/Cmd + K` to open search
 - **Smart Search**: Semantic content matching using Fuse.js
@@ -32,20 +33,22 @@ The primary search interface accessible from the header across all pages.
 - **Relevance Scoring**: Intelligent ranking of search results
 
 #### Search Interface
+
 ```tsx
 // Keyboard shortcut handling
 useEffect(() => {
   const handleKeyDown = (event: KeyboardEvent) => {
     if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-      event.preventDefault()
-      setOpen(true)
-      setTimeout(() => searchInputRef.current?.focus(), 100)
+      event.preventDefault();
+      setOpen(true);
+      setTimeout(() => searchInputRef.current?.focus(), 100);
     }
-  }
-}, [])
+  };
+}, []);
 ```
 
 #### Search Results Display
+
 - **Content Type Icons**: Visual indicators for portfolio, blog, and project content
 - **Relevance Badges**: Color-coded relevance scores (Excellent, Very Good, Good, Fair, Basic)
 - **Tag Display**: Shows up to 4 tags with "+X more" indicator
@@ -53,6 +56,7 @@ useEffect(() => {
 - **External Link Icons**: Visual cues for navigation
 
 ### Search Dialog Layout
+
 - **Responsive Design**: Max width 4xl, max height 85vh
 - **Fixed Header**: Search title and semantic search badge
 - **Fixed Search Input**: Always visible search field with clear button
@@ -66,33 +70,36 @@ useEffect(() => {
 Dedicated search functionality for blog content with advanced filtering.
 
 #### Search Features
+
 - **Real-time Search**: Instant filtering as you type
 - **Tag-based Filtering**: Multi-select tag filtering system
 - **Content Search**: Searches title, description, and tag content
 - **Debounced Input**: Optimized performance with 300ms debounce
 
 #### Filtering System
+
 ```tsx
 // Combined search and tag filtering
 useEffect(() => {
-  let filtered = blogPosts
+  let filtered = blogPosts;
 
   // Filter by search query
   if (searchQuery.trim()) {
-    filtered = searchBlogPosts(filtered, searchQuery)
+    filtered = searchBlogPosts(filtered, searchQuery);
   }
 
   // Filter by selected tags
   if (selectedTags.length > 0) {
-    filtered = filterBlogPostsByTags(filtered, selectedTags)
+    filtered = filterBlogPostsByTags(filtered, selectedTags);
   }
 
-  setFilteredPosts(filtered)
-  setCurrentPage(1) // Reset pagination
-}, [blogPosts, searchQuery, selectedTags])
+  setFilteredPosts(filtered);
+  setCurrentPage(1); // Reset pagination
+}, [blogPosts, searchQuery, selectedTags]);
 ```
 
 #### Tag Management
+
 - **Dynamic Tag Loading**: Automatically extracts tags from blog posts
 - **Tag Selection UI**: Interactive tag selection with visual feedback
 - **Tag Combination**: AND logic for multiple tag selection
@@ -101,27 +108,31 @@ useEffect(() => {
 ### Blog Search Functions
 
 #### searchBlogPosts()
+
 ```tsx
 export function searchBlogPosts(posts: BlogPost[], query: string): BlogPost[] {
-  if (!query.trim()) return posts
+  if (!query.trim()) return posts;
 
-  const searchTerm = query.toLowerCase()
-  return posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm) ||
-    post.description.toLowerCase().includes(searchTerm) ||
-    post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-  )
+  const searchTerm = query.toLowerCase();
+  return posts.filter(
+    post =>
+      post.title.toLowerCase().includes(searchTerm) ||
+      post.description.toLowerCase().includes(searchTerm) ||
+      post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+  );
 }
 ```
 
 #### filterBlogPostsByTags()
-```tsx
-export function filterBlogPostsByTags(posts: BlogPost[], tags: string[]): BlogPost[] {
-  if (tags.length === 0) return posts
 
-  return posts.filter(post =>
-    tags.some(tag => post.tags.includes(tag))
-  )
+```tsx
+export function filterBlogPostsByTags(
+  posts: BlogPost[],
+  tags: string[]
+): BlogPost[] {
+  if (tags.length === 0) return posts;
+
+  return posts.filter(post => tags.some(tag => post.tags.includes(tag)));
 }
 ```
 
@@ -132,34 +143,44 @@ export function filterBlogPostsByTags(posts: BlogPost[], tags: string[]): BlogPo
 Intelligent content recommendations based on user inquiries and context.
 
 #### Contact Analysis Integration
+
 - **Inquiry Analysis**: AI analysis of contact form submissions
 - **Context Awareness**: Industry, project scope, and inquiry type detection
 - **Smart Matching**: Semantic content matching for relevant recommendations
 - **Cross-Content Discovery**: Recommendations across portfolio, blog, and project content
 
 #### Recommendation Engine
+
 ```tsx
-const getContentRecommendations = useCallback(async (analysis: AIAnalysisResult) => {
-  const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`
-  const tags = [analysis.inquiryType, analysis.industry, analysis.projectScope].filter(Boolean)
-  
-  const response = await cachedContentService.getRecommendations({
-    query: title,
-    contentType: 'all',
-    maxResults: 4,
-    tags: tags,
-    context: {
-      inquiryType: analysis.inquiryType,
-      industry: analysis.industry,
-      projectScope: analysis.projectScope,
-      messageType: analysis.messageType,
-      priorityLevel: analysis.priorityLevel
-    }
-  })
-}, [])
+const getContentRecommendations = useCallback(
+  async (analysis: AIAnalysisResult) => {
+    const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`;
+    const tags = [
+      analysis.inquiryType,
+      analysis.industry,
+      analysis.projectScope,
+    ].filter(Boolean);
+
+    const response = await cachedContentService.getRecommendations({
+      query: title,
+      contentType: 'all',
+      maxResults: 4,
+      tags: tags,
+      context: {
+        inquiryType: analysis.inquiryType,
+        industry: analysis.industry,
+        projectScope: analysis.projectScope,
+        messageType: analysis.messageType,
+        priorityLevel: analysis.priorityLevel,
+      },
+    });
+  },
+  []
+);
 ```
 
 ### Recommendation Display
+
 - **Relevance Scoring**: Percentage-based relevance indicators
 - **Content Type Icons**: Visual content type identification
 - **Tag Display**: Relevant tags for each recommendation
@@ -173,6 +194,7 @@ const getContentRecommendations = useCallback(async (analysis: AIAnalysisResult)
 Advanced fuzzy search with semantic matching capabilities.
 
 #### Search Configuration
+
 ```tsx
 const fuseOptions: IFuseOptions<CachedContentItem> = {
   keys: [
@@ -181,7 +203,7 @@ const fuseOptions: IFuseOptions<CachedContentItem> = {
     { name: 'content', weight: 0.2 },
     { name: 'tags', weight: 0.15 },
     { name: 'keywords', weight: 0.15 },
-    { name: 'category', weight: 0.1 }
+    { name: 'category', weight: 0.1 },
   ],
   threshold: 0.3, // Lower threshold for more precise matches
   distance: 100, // Allow for more flexible matching
@@ -189,11 +211,12 @@ const fuseOptions: IFuseOptions<CachedContentItem> = {
   includeMatches: true,
   minMatchCharLength: 3,
   ignoreLocation: true, // Better for content matching
-  useExtendedSearch: true
-}
+  useExtendedSearch: true,
+};
 ```
 
 #### Search Weights
+
 - **Title**: 40% weight (highest priority)
 - **Description**: 30% weight
 - **Content**: 20% weight
@@ -206,25 +229,26 @@ const fuseOptions: IFuseOptions<CachedContentItem> = {
 Traditional text-based search when semantic search is unavailable.
 
 #### Scoring Algorithm
+
 ```tsx
 private searchItems(items: CachedContentItem[], query: string, tags: string[], maxResults: number) {
   const scoredItems = items.map(item => {
     let score = 0
-    
+
     // Title match (highest weight)
     if (item.title.toLowerCase().includes(queryLower)) {
       score += 15
     }
-    
+
     // Description match
     if (item.description.toLowerCase().includes(queryLower)) {
       score += 8
     }
-    
+
     // Tags match (high weight for exact matches)
     const matchingTags = tagsLower.filter(tag => itemTags.includes(tag))
     score += matchingTags.length * 10
-    
+
     return { item, score }
   })
 }
@@ -237,26 +261,28 @@ private searchItems(items: CachedContentItem[], query: string, tags: string[], m
 Unified search across all content types with intelligent categorization.
 
 #### Content Types Supported
+
 - **Portfolio Items**: Leadership, technical, and organizational skills
 - **Blog Posts**: Insights, articles, and thought leadership content
 - **Project Analysis**: Case studies and project documentation
 - **Page Content**: General site content and information
 
 #### Content Metadata
+
 ```tsx
 export interface CachedContentItem {
-  id: string
-  title: string
-  description: string
-  url: string
-  contentType: 'blog' | 'portfolio' | 'project' | 'page'
-  category: string
-  tags: string[]
-  keywords: string[]
-  content: string
-  relevanceScore?: number
-  date?: string
-  fileName: string
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  contentType: 'blog' | 'portfolio' | 'project' | 'page';
+  category: string;
+  tags: string[];
+  keywords: string[];
+  content: string;
+  relevanceScore?: number;
+  date?: string;
+  fileName: string;
 }
 ```
 
@@ -265,6 +291,7 @@ export interface CachedContentItem {
 Automatic content suggestions based on current page context.
 
 #### Context-Aware Recommendations
+
 - **Current Page Exclusion**: Prevents recommending the current page
 - **Content Type Matching**: Suggests similar content types
 - **Tag-Based Discovery**: Finds content with matching tags
@@ -277,18 +304,20 @@ Automatic content suggestions based on current page context.
 High-performance content service using pre-built cache and Fuse.js.
 
 #### Service Architecture
+
 ```tsx
 export class CachedContentService {
-  private portfolioItems: CachedContentItem[] = []
-  private blogItems: CachedContentItem[] = []
-  private projectItems: CachedContentItem[] = []
-  private allItems: CachedContentItem[] = []
-  private fuse: Fuse<CachedContentItem> | null = null
-  private isFuseInitialized = false
+  private portfolioItems: CachedContentItem[] = [];
+  private blogItems: CachedContentItem[] = [];
+  private projectItems: CachedContentItem[] = [];
+  private allItems: CachedContentItem[] = [];
+  private fuse: Fuse<CachedContentItem> | null = null;
+  private isFuseInitialized = false;
 }
 ```
 
 #### Initialization Process
+
 1. **Content Loading**: Load content from cached JSON files
 2. **Fuse.js Setup**: Initialize semantic search engine
 3. **Fallback Handling**: Graceful degradation if initialization fails
@@ -297,12 +326,14 @@ export class CachedContentService {
 ### Performance Optimizations
 
 #### Caching Strategy
+
 - **Pre-built Cache**: Content pre-processed and cached as JSON
 - **Local Storage**: Recent searches stored in browser
 - **Service Singleton**: Single instance for all search operations
 - **Lazy Initialization**: Fuse.js initialized only when needed
 
 #### Search Optimization
+
 - **Debounced Input**: 300ms delay for search queries
 - **Result Limiting**: Configurable max results (default: 8)
 - **Score Thresholding**: Only return relevant results (score > 0)
@@ -315,12 +346,14 @@ export class CachedContentService {
 Full keyboard support for accessibility and power users.
 
 #### Navigation Controls
+
 - **Arrow Keys**: Navigate through search results
 - **Enter**: Select highlighted result
 - **Escape**: Close search dialog
 - **Ctrl/Cmd + K**: Open search from anywhere
 
 #### Visual Feedback
+
 - **Selection Highlighting**: Clear indication of selected result
 - **Hover States**: Interactive hover effects
 - **Loading Indicators**: Search progress indication
@@ -331,12 +364,14 @@ Full keyboard support for accessibility and power users.
 Mobile-first design with adaptive layouts.
 
 #### Mobile Optimizations
+
 - **Touch-Friendly**: Large touch targets for mobile
 - **Responsive Grid**: Adaptive result layout
 - **Mobile Navigation**: Optimized for small screens
 - **Touch Scrolling**: Native mobile scrolling support
 
 #### Desktop Enhancements
+
 - **Large Dialog**: Maximum 4xl width for desktop
 - **Keyboard Shortcuts**: Full keyboard navigation
 - **Hover Effects**: Rich hover interactions
@@ -349,12 +384,14 @@ Mobile-first design with adaptive layouts.
 Optimized search algorithms for fast results.
 
 #### Algorithm Efficiency
+
 - **Fuse.js Integration**: Industry-standard fuzzy search
 - **Weighted Scoring**: Intelligent relevance calculation
 - **Result Caching**: Cached search results
 - **Debounced Input**: Reduced unnecessary API calls
 
 #### Memory Management
+
 - **Content Pre-loading**: All content loaded at startup
 - **Efficient Data Structures**: Optimized for search operations
 - **Garbage Collection**: Proper cleanup of search timeouts
@@ -365,6 +402,7 @@ Optimized search algorithms for fast results.
 Smooth user experience during search operations.
 
 #### Loading Indicators
+
 - **Search Spinner**: Animated loading indicator
 - **Skeleton Loading**: Placeholder content while loading
 - **Progressive Loading**: Load results as they become available
@@ -377,6 +415,7 @@ Smooth user experience during search operations.
 RESTful API for content search and recommendations.
 
 #### Search Endpoints
+
 ```typescript
 // Search content
 POST /api/content/search
@@ -406,14 +445,15 @@ POST /api/content/recommendations
 ```
 
 #### Response Format
+
 ```typescript
 interface SearchResponse {
-  success: boolean
-  results: CachedContentItem[]
-  totalResults: number
-  query: string
-  timestamp: string
-  error?: string
+  success: boolean;
+  results: CachedContentItem[];
+  totalResults: number;
+  query: string;
+  timestamp: string;
+  error?: string;
 }
 ```
 
@@ -424,12 +464,14 @@ interface SearchResponse {
 Configurable search parameters and behavior.
 
 #### Search Options
+
 - **Threshold**: Fuse.js matching threshold (default: 0.3)
 - **Distance**: Maximum edit distance (default: 100)
 - **Min Match Length**: Minimum character match (default: 3)
 - **Max Results**: Maximum results returned (default: 8)
 
 #### Content Weights
+
 - **Title Weight**: 0.4 (40% importance)
 - **Description Weight**: 0.3 (30% importance)
 - **Content Weight**: 0.2 (20% importance)
@@ -442,12 +484,14 @@ Configurable search parameters and behavior.
 Extensible search system for different use cases.
 
 #### Content Type Support
+
 - **Custom Content Types**: Add new content categories
 - **Custom Fields**: Extend content metadata
 - **Custom Scoring**: Implement custom relevance algorithms
 - **Custom UI**: Customize search result display
 
 #### Integration Points
+
 - **External APIs**: Connect to external search services
 - **Content Sources**: Integrate with CMS systems
 - **Analytics**: Track search behavior and performance
@@ -460,18 +504,21 @@ Extensible search system for different use cases.
 Solutions to common search problems.
 
 #### Search Not Working
+
 1. Check browser console for errors
 2. Verify content service initialization
 3. Check network connectivity
 4. Clear browser cache and localStorage
 
 #### Slow Search Performance
+
 1. Reduce maxResults parameter
 2. Optimize content size
 3. Check Fuse.js configuration
 4. Monitor memory usage
 
 #### Missing Results
+
 1. Verify content indexing
 2. Check search threshold settings
 3. Review content metadata
@@ -482,17 +529,19 @@ Solutions to common search problems.
 Enable debug mode for troubleshooting.
 
 #### Debug Logging
+
 ```typescript
 // Enable debug logging
-logger.setLevel('debug')
+logger.setLevel('debug');
 
 // Check service status
-console.log('Content service ready:', cachedContentService.isReady())
-console.log('Fuse.js ready:', cachedContentService.isFuseReady())
-console.log('Total items:', cachedContentService.getAllContent().length)
+console.log('Content service ready:', cachedContentService.isReady());
+console.log('Fuse.js ready:', cachedContentService.isFuseReady());
+console.log('Total items:', cachedContentService.getAllContent().length);
 ```
 
 #### Performance Monitoring
+
 - **Search Response Time**: Track search performance
 - **Result Quality**: Monitor relevance scoring
 - **User Behavior**: Analyze search patterns

@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from './ui/card';
 import { Button } from './ui/button';
 import { P, H3 } from './ui/typography';
-import { Shield, RefreshCw, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
+import {
+  Shield,
+  RefreshCw,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  Info,
+} from 'lucide-react';
 import { environment } from '../config/environment';
 
 interface StatusDetails {
@@ -42,7 +55,9 @@ interface StatusDetails {
 }
 
 export const CloudflareStatusChecker: React.FC = () => {
-  const [status, setStatus] = useState<'checking' | 'connected' | 'disconnected' | 'error'>('checking');
+  const [status, setStatus] = useState<
+    'checking' | 'connected' | 'disconnected' | 'error'
+  >('checking');
   const [details, setDetails] = useState<StatusDetails | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -53,12 +68,29 @@ export const CloudflareStatusChecker: React.FC = () => {
       if (!environment.isProduction()) {
         setStatus('disconnected');
         setDetails({
-          cookies: { all: '', cfAuth: false, cfAccessJWT: false, cfAccessEmail: false, cfAccessIdentity: false, cfAccessUser: false, cfAccessUserEmail: false, cfAccessUserName: false, cfAccessUserUUID: false, cfAccessUserPattern: false, cfAccessIdentityPattern: false },
+          cookies: {
+            all: '',
+            cfAuth: false,
+            cfAccessJWT: false,
+            cfAccessEmail: false,
+            cfAccessIdentity: false,
+            cfAccessUser: false,
+            cfAccessUserEmail: false,
+            cfAccessUserName: false,
+            cfAccessUserUUID: false,
+            cfAccessUserPattern: false,
+            cfAccessIdentityPattern: false,
+          },
           localStorage: { storedUser: null, accessToken: null },
-          urlParams: { cfAccessMessage: false, cfAccessRedirect: false, accessToken: false, userEmail: false },
+          urlParams: {
+            cfAccessMessage: false,
+            cfAccessRedirect: false,
+            accessToken: false,
+            userEmail: false,
+          },
           identityEndpoint: null,
           timestamp: new Date().toISOString(),
-          message: 'Not in production mode'
+          message: 'Not in production mode',
         });
         return;
       }
@@ -76,7 +108,7 @@ export const CloudflareStatusChecker: React.FC = () => {
         cfAccessUserName: cookies.includes('CF_Access_User_Name'),
         cfAccessUserUUID: cookies.includes('CF_Access_User_UUID'),
         cfAccessUserPattern: cookies.includes('CF_Access_User_'),
-        cfAccessIdentityPattern: cookies.includes('CF_Access_Identity_')
+        cfAccessIdentityPattern: cookies.includes('CF_Access_Identity_'),
       };
 
       // Check for stored user data
@@ -89,23 +121,30 @@ export const CloudflareStatusChecker: React.FC = () => {
         cfAccessMessage: urlParams.has('__cf_access_message'),
         cfAccessRedirect: urlParams.has('__cf_access_redirect'),
         accessToken: urlParams.has('access_token'),
-        userEmail: urlParams.has('user_email')
+        userEmail: urlParams.has('user_email'),
       };
 
       // Try to fetch from identity endpoint
       let identityEndpoint = null;
       try {
         const response = await fetch('/cdn-cgi/access/get-identity', {
-          credentials: 'include'
+          credentials: 'include',
         });
         if (response.ok) {
           const data = await response.json();
           identityEndpoint = { success: true, data };
         } else {
-          identityEndpoint = { success: false, status: response.status, statusText: response.statusText };
+          identityEndpoint = {
+            success: false,
+            status: response.status,
+            statusText: response.statusText,
+          };
         }
       } catch (error) {
-        identityEndpoint = { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+        identityEndpoint = {
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        };
       }
 
       const allDetails = {
@@ -113,39 +152,56 @@ export const CloudflareStatusChecker: React.FC = () => {
         localStorage: { storedUser, accessToken },
         urlParams: urlDetails,
         identityEndpoint,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       setDetails(allDetails);
 
       // Determine status based on evidence
-      const hasAuthEvidence = cookieDetails.cfAuth || 
-                             cookieDetails.cfAccessJWT || 
-                             cookieDetails.cfAccessEmail || 
-                             cookieDetails.cfAccessIdentity || 
-                             cookieDetails.cfAccessUser ||
-                             cookieDetails.cfAccessUserEmail ||
-                             cookieDetails.cfAccessUserName ||
-                             cookieDetails.cfAccessUserUUID ||
-                             storedUser ||
-                             urlDetails.accessToken ||
-                             urlDetails.userEmail;
+      const hasAuthEvidence =
+        cookieDetails.cfAuth ||
+        cookieDetails.cfAccessJWT ||
+        cookieDetails.cfAccessEmail ||
+        cookieDetails.cfAccessIdentity ||
+        cookieDetails.cfAccessUser ||
+        cookieDetails.cfAccessUserEmail ||
+        cookieDetails.cfAccessUserName ||
+        cookieDetails.cfAccessUserUUID ||
+        storedUser ||
+        urlDetails.accessToken ||
+        urlDetails.userEmail;
 
       if (hasAuthEvidence) {
         setStatus('connected');
       } else {
         setStatus('disconnected');
       }
-
     } catch (error) {
       setStatus('error');
-      setDetails({ 
-        cookies: { all: '', cfAuth: false, cfAccessJWT: false, cfAccessEmail: false, cfAccessIdentity: false, cfAccessUser: false, cfAccessUserEmail: false, cfAccessUserName: false, cfAccessUserUUID: false, cfAccessUserPattern: false, cfAccessIdentityPattern: false },
+      setDetails({
+        cookies: {
+          all: '',
+          cfAuth: false,
+          cfAccessJWT: false,
+          cfAccessEmail: false,
+          cfAccessIdentity: false,
+          cfAccessUser: false,
+          cfAccessUserEmail: false,
+          cfAccessUserName: false,
+          cfAccessUserUUID: false,
+          cfAccessUserPattern: false,
+          cfAccessIdentityPattern: false,
+        },
         localStorage: { storedUser: null, accessToken: null },
-        urlParams: { cfAccessMessage: false, cfAccessRedirect: false, accessToken: false, userEmail: false },
+        urlParams: {
+          cfAccessMessage: false,
+          cfAccessRedirect: false,
+          accessToken: false,
+          userEmail: false,
+        },
         identityEndpoint: null,
         timestamp: new Date().toISOString(),
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   };
@@ -157,13 +213,13 @@ export const CloudflareStatusChecker: React.FC = () => {
   const getStatusIcon = () => {
     switch (status) {
       case 'connected':
-        return <CheckCircle className="h-6 w-6 text-green-600" />;
+        return <CheckCircle className='h-6 w-6 text-green-600' />;
       case 'disconnected':
-        return <XCircle className="h-6 w-6 text-red-600" />;
+        return <XCircle className='h-6 w-6 text-red-600' />;
       case 'error':
-        return <AlertTriangle className="h-6 w-6 text-yellow-600" />;
+        return <AlertTriangle className='h-6 w-6 text-yellow-600' />;
       default:
-        return <RefreshCw className="h-6 w-6 text-blue-600 animate-spin" />;
+        return <RefreshCw className='h-6 w-6 text-blue-600 animate-spin' />;
     }
   };
 
@@ -198,19 +254,21 @@ export const CloudflareStatusChecker: React.FC = () => {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto border-teal-200 shadow-lg">
-      <CardHeader className="text-center">
-        <div className="flex items-center justify-center space-x-2">
-          <Shield className="h-6 w-6 text-teal-600" />
-          <CardTitle className="text-xl font-bold text-teal-900">Cloudflare Access Status</CardTitle>
+    <Card className='w-full max-w-4xl mx-auto border-teal-200 shadow-lg'>
+      <CardHeader className='text-center'>
+        <div className='flex items-center justify-center space-x-2'>
+          <Shield className='h-6 w-6 text-teal-600' />
+          <CardTitle className='text-xl font-bold text-teal-900'>
+            Cloudflare Access Status
+          </CardTitle>
         </div>
-        <CardDescription className="text-teal-700">
+        <CardDescription className='text-teal-700'>
           Monitor your Cloudflare Access authentication status
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className='space-y-4'>
         {/* Status Display */}
-        <div className="flex items-center justify-center space-x-3 p-4 bg-teal-50 rounded-lg border border-teal-200">
+        <div className='flex items-center justify-center space-x-3 p-4 bg-teal-50 rounded-lg border border-teal-200'>
           {getStatusIcon()}
           <span className={`font-semibold text-lg ${getStatusColor()}`}>
             {getStatusText()}
@@ -218,99 +276,141 @@ export const CloudflareStatusChecker: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-center space-x-3">
+        <div className='flex justify-center space-x-3'>
           <Button
             onClick={checkStatus}
             disabled={status === 'checking'}
-            className="bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2"
+            className='bg-teal-600 hover:bg-teal-700 focus:ring-teal-500 focus:ring-2 focus:ring-offset-2'
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${status === 'checking' ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${status === 'checking' ? 'animate-spin' : ''}`}
+            />
             Refresh Status
           </Button>
           <Button
             onClick={() => setIsExpanded(!isExpanded)}
-            variant="outline"
-            className="border-teal-300 text-teal-700 hover:bg-teal-50"
+            variant='outline'
+            className='border-teal-300 text-teal-700 hover:bg-teal-50'
           >
-            <Info className="h-4 w-4 mr-2" />
+            <Info className='h-4 w-4 mr-2' />
             {isExpanded ? 'Hide Details' : 'Show Details'}
           </Button>
         </div>
 
         {/* Detailed Information */}
         {isExpanded && details && (
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4">
-            <H3 className="font-semibold text-gray-800">Detailed Status Information</H3>
-            
+          <div className='bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4'>
+            <H3 className='font-semibold text-gray-800'>
+              Detailed Status Information
+            </H3>
+
             {/* Cookies Section */}
-            <div className="space-y-2">
-              <P className="font-semibold text-gray-700">Authentication Cookies:</P>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="flex items-center space-x-2">
-                  <span className={`w-3 h-3 rounded-full ${details.cookies?.cfAuth ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                  <span>CF_Authorization: {details.cookies?.cfAuth ? '✅' : '❌'}</span>
+            <div className='space-y-2'>
+              <P className='font-semibold text-gray-700'>
+                Authentication Cookies:
+              </P>
+              <div className='grid grid-cols-2 gap-2 text-sm'>
+                <div className='flex items-center space-x-2'>
+                  <span
+                    className={`w-3 h-3 rounded-full ${details.cookies?.cfAuth ? 'bg-green-500' : 'bg-red-500'}`}
+                  ></span>
+                  <span>
+                    CF_Authorization: {details.cookies?.cfAuth ? '✅' : '❌'}
+                  </span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessUserEmail ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                  <span>CF_Access_User_Email: {details.cookies?.cfAccessUserEmail ? '✅' : '❌'}</span>
+                <div className='flex items-center space-x-2'>
+                  <span
+                    className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessUserEmail ? 'bg-green-500' : 'bg-red-500'}`}
+                  ></span>
+                  <span>
+                    CF_Access_User_Email:{' '}
+                    {details.cookies?.cfAccessUserEmail ? '✅' : '❌'}
+                  </span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessIdentity ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                  <span>CF_Access_Identity: {details.cookies?.cfAccessIdentity ? '✅' : '❌'}</span>
+                <div className='flex items-center space-x-2'>
+                  <span
+                    className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessIdentity ? 'bg-green-500' : 'bg-red-500'}`}
+                  ></span>
+                  <span>
+                    CF_Access_Identity:{' '}
+                    {details.cookies?.cfAccessIdentity ? '✅' : '❌'}
+                  </span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessUser ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                  <span>CF_Access_User: {details.cookies?.cfAccessUser ? '✅' : '❌'}</span>
+                <div className='flex items-center space-x-2'>
+                  <span
+                    className={`w-3 h-3 rounded-full ${details.cookies?.cfAccessUser ? 'bg-green-500' : 'bg-red-500'}`}
+                  ></span>
+                  <span>
+                    CF_Access_User:{' '}
+                    {details.cookies?.cfAccessUser ? '✅' : '❌'}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Local Storage Section */}
-            <div className="space-y-2">
-              <P className="font-semibold text-gray-700">Local Storage:</P>
-              <div className="text-sm space-y-1">
-                <div>Stored User: {details.localStorage?.storedUser ? '✅' : '❌'}</div>
-                <div>Access Token: {details.localStorage?.accessToken ? '✅' : '❌'}</div>
+            <div className='space-y-2'>
+              <P className='font-semibold text-gray-700'>Local Storage:</P>
+              <div className='text-sm space-y-1'>
+                <div>
+                  Stored User: {details.localStorage?.storedUser ? '✅' : '❌'}
+                </div>
+                <div>
+                  Access Token:{' '}
+                  {details.localStorage?.accessToken ? '✅' : '❌'}
+                </div>
               </div>
             </div>
 
             {/* URL Parameters Section */}
-            <div className="space-y-2">
-              <P className="font-semibold text-gray-700">URL Parameters:</P>
-              <div className="text-sm space-y-1">
-                <div>CF Access Message: {details.urlParams?.cfAccessMessage ? '✅' : '❌'}</div>
-                <div>CF Access Redirect: {details.urlParams?.cfAccessRedirect ? '✅' : '❌'}</div>
-                <div>Access Token: {details.urlParams?.accessToken ? '✅' : '❌'}</div>
-                <div>User Email: {details.urlParams?.userEmail ? '✅' : '❌'}</div>
+            <div className='space-y-2'>
+              <P className='font-semibold text-gray-700'>URL Parameters:</P>
+              <div className='text-sm space-y-1'>
+                <div>
+                  CF Access Message:{' '}
+                  {details.urlParams?.cfAccessMessage ? '✅' : '❌'}
+                </div>
+                <div>
+                  CF Access Redirect:{' '}
+                  {details.urlParams?.cfAccessRedirect ? '✅' : '❌'}
+                </div>
+                <div>
+                  Access Token: {details.urlParams?.accessToken ? '✅' : '❌'}
+                </div>
+                <div>
+                  User Email: {details.urlParams?.userEmail ? '✅' : '❌'}
+                </div>
               </div>
             </div>
 
             {/* Identity Endpoint Section */}
-            <div className="space-y-2">
-              <P className="font-semibold text-gray-700">Identity Endpoint:</P>
-              <div className="text-sm">
+            <div className='space-y-2'>
+              <P className='font-semibold text-gray-700'>Identity Endpoint:</P>
+              <div className='text-sm'>
                 {details.identityEndpoint?.success ? (
-                  <div className="text-green-700">
-                    ✅ Success: {JSON.stringify(details.identityEndpoint.data, null, 2)}
+                  <div className='text-green-700'>
+                    ✅ Success:{' '}
+                    {JSON.stringify(details.identityEndpoint.data, null, 2)}
                   </div>
                 ) : (
-                  <div className="text-red-700">
-                    ❌ Failed: {JSON.stringify(details.identityEndpoint, null, 2)}
+                  <div className='text-red-700'>
+                    ❌ Failed:{' '}
+                    {JSON.stringify(details.identityEndpoint, null, 2)}
                   </div>
                 )}
               </div>
             </div>
 
             {/* Raw Cookie Data */}
-            <div className="space-y-2">
-              <P className="font-semibold text-gray-700">All Cookies:</P>
-              <div className="bg-white border border-gray-300 rounded p-2 text-xs font-mono overflow-x-auto">
+            <div className='space-y-2'>
+              <P className='font-semibold text-gray-700'>All Cookies:</P>
+              <div className='bg-white border border-gray-300 rounded p-2 text-xs font-mono overflow-x-auto'>
                 {details.cookies?.all || 'No cookies found'}
               </div>
             </div>
 
             {/* Timestamp */}
-            <div className="text-xs text-gray-500 text-center">
+            <div className='text-xs text-gray-500 text-center'>
               Last checked: {details.timestamp}
             </div>
           </div>

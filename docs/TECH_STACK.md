@@ -67,6 +67,7 @@ This document provides a comprehensive overview of the technology stack used in 
 - **Cost Optimization**: No egress fees for content delivery
 
 #### R2 Bucket Structure
+
 ```
 tanstack-portfolio-r2/
 ├── content/
@@ -82,23 +83,27 @@ tanstack-portfolio-r2/
 ### Cloudflare Workers
 
 #### AI Contact Analyzer Worker
+
 - **Purpose**: AI-powered contact form analysis and content recommendations
 - **AI Integration**: Cloudflare AI binding for natural language processing
 - **Route**: `ai-contact-analyzer.rcormier.dev`
 - **Features**: Inquiry analysis, industry detection, project scope assessment
 
 #### R2 Content Proxy Worker
+
 - **Purpose**: Secure content delivery and access control
 - **Route**: `r2-content-proxy.rcormier.dev`
 - **Features**: Content caching, access control, rate limiting
 - **Environments**: Production and development configurations
 
 #### Blog Subscription Worker
+
 - **Purpose**: Handle blog subscription management via Resend
 - **Features**: Email list management, subscription workflows, newsletter delivery
 - **Integration**: Resend API for reliable email delivery
 
 #### Email Worker
+
 - **Purpose**: Contact form email processing via Resend API
 - **Features**: Email validation, spam protection, delivery confirmation
 - **Integration**: Resend email service with domain verification

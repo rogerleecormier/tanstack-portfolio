@@ -1,45 +1,45 @@
 ---
-title: "About Roger Lee Cormier"
-description: "PMP-certified Technical Project Manager, military veteran, and Christian leader with AAS in Technical Studies, BS in Information Technology, and MS in Organizational Leadership (in progress). Specializing in precision-targeting digital transformation, AI automation, and satellite communications."
+title: 'About Roger Lee Cormier'
+description: 'PMP-certified Technical Project Manager, military veteran, and Christian leader with AAS in Technical Studies, BS in Information Technology, and MS in Organizational Leadership (in progress). Specializing in precision-targeting digital transformation, AI automation, and satellite communications.'
 tags:
   [
-    "About",
-    "Biography",
-    "Christian Faith",
-    "Military Service",
-    "Family",
-    "AI Automation",
-    "Digital Transformation",
-    "Leadership",
-    "Technology",
-    "Satellite Communications",
-    "RF Communications",
-    "PMP Certified",
-    "Education",
-    "Lifelong Learning",
+    'About',
+    'Biography',
+    'Christian Faith',
+    'Military Service',
+    'Family',
+    'AI Automation',
+    'Digital Transformation',
+    'Leadership',
+    'Technology',
+    'Satellite Communications',
+    'RF Communications',
+    'PMP Certified',
+    'Education',
+    'Lifelong Learning',
   ]
-date: "2024-12-19"
-author: "Roger Lee Cormier"
+date: '2024-12-19'
+author: 'Roger Lee Cormier'
 keywords:
   [
-    "Roger Lee Cormier",
-    "Technical Project Manager",
-    "PMP Certified",
-    "Christian",
-    "Military Veteran",
-    "Operation New Dawn",
-    "Iraq Deployment",
-    "Satellite Communications",
-    "RF Communications",
-    "AI Automation",
-    "Digital Transformation",
-    "Family",
-    "Leadership",
-    "Technology",
-    "AAS Technical Studies",
-    "BS Information Technology",
-    "MS Organizational Leadership",
-    "Lifelong Learning",
+    'Roger Lee Cormier',
+    'Technical Project Manager',
+    'PMP Certified',
+    'Christian',
+    'Military Veteran',
+    'Operation New Dawn',
+    'Iraq Deployment',
+    'Satellite Communications',
+    'RF Communications',
+    'AI Automation',
+    'Digital Transformation',
+    'Family',
+    'Leadership',
+    'Technology',
+    'AAS Technical Studies',
+    'BS Information Technology',
+    'MS Organizational Leadership',
+    'Lifelong Learning',
   ]
 ---
 

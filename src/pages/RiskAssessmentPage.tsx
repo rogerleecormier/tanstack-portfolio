@@ -6,7 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Plus, Trash2, Download } from 'lucide-react';
 import { SortableTable } from '@/components/SortableTable';
 import * as ExcelJS from 'exceljs';
@@ -26,9 +32,17 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const RiskAssessmentPage: React.FC = () => {
-  const [matrixData, setMatrixData] = useState<{ headers: string[]; rows: string[][] } | null>(null);
+  const [matrixData, setMatrixData] = useState<{
+    headers: string[];
+    rows: string[][];
+  } | null>(null);
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectName: '',
@@ -51,7 +65,13 @@ const RiskAssessmentPage: React.FC = () => {
     }));
 
     // Generate table data
-    const headers = ['Risk Description', 'Likelihood', 'Impact', 'Score', 'Risk Level'];
+    const headers = [
+      'Risk Description',
+      'Likelihood',
+      'Impact',
+      'Score',
+      'Risk Level',
+    ];
     const rows = parsedRisks.map(risk => [
       risk.description,
       risk.likelihood.toString(),
@@ -78,7 +98,7 @@ const RiskAssessmentPage: React.FC = () => {
 
     // Add header row
     const headerRow = worksheet.addRow(matrixData.headers);
-    headerRow.eachCell((cell) => {
+    headerRow.eachCell(cell => {
       cell.font = { bold: true };
     });
 
@@ -97,46 +117,67 @@ const RiskAssessmentPage: React.FC = () => {
   // Placeholder for AI augmentation
   const handleAIMitigate = () => {
     // TODO: Call Cloudflare Worker for AI-suggested mitigations
-    alert('AI mitigation suggestions coming soon - will generate recommendations using Cloudflare AI.');
+    alert(
+      'AI mitigation suggestions coming soon - will generate recommendations using Cloudflare AI.'
+    );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className='min-h-screen bg-gray-50 py-8'>
+      <div className='max-w-4xl mx-auto px-4'>
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Risk Assessment Tool</CardTitle>
-            <p className="text-gray-600">Assess project risks with likelihood and impact scores. Generate matrix and export to XLSX. Ready for AI mitigation suggestions.</p>
+            <CardTitle className='text-2xl font-bold'>
+              Risk Assessment Tool
+            </CardTitle>
+            <p className='text-gray-600'>
+              Assess project risks with likelihood and impact scores. Generate
+              matrix and export to XLSX. Ready for AI mitigation suggestions.
+            </p>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
               <div>
-                <Label htmlFor="projectName">Project Name</Label>
-                <Input id="projectName" {...register('projectName')} />
-                {errors.projectName && <p className="text-red-500 text-sm">{errors.projectName.message}</p>}
+                <Label htmlFor='projectName'>Project Name</Label>
+                <Input id='projectName' {...register('projectName')} />
+                {errors.projectName && (
+                  <p className='text-red-500 text-sm'>
+                    {errors.projectName.message}
+                  </p>
+                )}
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Risks</h3>
+                <h3 className='text-lg font-semibold mb-2'>Risks</h3>
                 {fields.map((field, index) => (
-                  <div key={field.id} className="border p-4 mb-4 rounded">
+                  <div key={field.id} className='border p-4 mb-4 rounded'>
                     <Input
-                      placeholder="Risk Description"
+                      placeholder='Risk Description'
                       {...register(`risks.${index}.description` as const)}
-                      className="mb-2"
+                      className='mb-2'
                     />
-                    {errors.risks?.[index]?.description && <p className="text-red-500 text-sm">{errors.risks[index]?.description?.message}</p>}
-                    <div className="grid grid-cols-2 gap-2">
+                    {errors.risks?.[index]?.description && (
+                      <p className='text-red-500 text-sm'>
+                        {errors.risks[index]?.description?.message}
+                      </p>
+                    )}
+                    <div className='grid grid-cols-2 gap-2'>
                       <div>
                         <Label>Likelihood (1-5)</Label>
-                        <Select {...register(`risks.${index}.likelihood` as const)}>
+                        <Select
+                          {...register(`risks.${index}.likelihood` as const)}
+                        >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select likelihood" />
+                            <SelectValue placeholder='Select likelihood' />
                           </SelectTrigger>
                           <SelectContent>
-                            {Array.from({ length: 5 }, (_, i) => i + 1).map(num => (
-                              <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
-                            ))}
+                            {Array.from({ length: 5 }, (_, i) => i + 1).map(
+                              num => (
+                                <SelectItem key={num} value={num.toString()}>
+                                  {num}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                       </div>
@@ -144,40 +185,60 @@ const RiskAssessmentPage: React.FC = () => {
                         <Label>Impact (1-5)</Label>
                         <Select {...register(`risks.${index}.impact` as const)}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select impact" />
+                            <SelectValue placeholder='Select impact' />
                           </SelectTrigger>
                           <SelectContent>
-                            {Array.from({ length: 5 }, (_, i) => i + 1).map(num => (
-                              <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
-                            ))}
+                            {Array.from({ length: 5 }, (_, i) => i + 1).map(
+                              num => (
+                                <SelectItem key={num} value={num.toString()}>
+                                  {num}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
-                    <Button type="button" variant="outline" onClick={() => remove(index)} className="mt-2">
-                      <Trash2 className="h-4 w-4 mr-2" /> Remove Risk
+                    <Button
+                      type='button'
+                      variant='outline'
+                      onClick={() => remove(index)}
+                      className='mt-2'
+                    >
+                      <Trash2 className='h-4 w-4 mr-2' /> Remove Risk
                     </Button>
                   </div>
                 ))}
-                <Button type="button" onClick={() => append({ description: '', likelihood: '3', impact: '3' })}>
-                  <Plus className="h-4 w-4 mr-2" /> Add Risk
+                <Button
+                  type='button'
+                  onClick={() =>
+                    append({ description: '', likelihood: '3', impact: '3' })
+                  }
+                >
+                  <Plus className='h-4 w-4 mr-2' /> Add Risk
                 </Button>
               </div>
 
-              <div className="flex gap-2">
-                <Button type="submit">Generate Risk Matrix</Button>
-                <Button type="button" variant="outline" onClick={handleAIMitigate}>
+              <div className='flex gap-2'>
+                <Button type='submit'>Generate Risk Matrix</Button>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={handleAIMitigate}
+                >
                   AI Suggest Mitigations
                 </Button>
               </div>
             </form>
 
             {matrixData && (
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold mb-2">Risk Matrix Table</h3>
+              <div className='mt-8'>
+                <h3 className='text-lg font-semibold mb-2'>
+                  Risk Matrix Table
+                </h3>
                 <SortableTable data={matrixData} />
-                <Button onClick={handleExport} className="mt-4">
-                  <Download className="h-4 w-4 mr-2" /> Export to XLSX
+                <Button onClick={handleExport} className='mt-4'>
+                  <Download className='h-4 w-4 mr-2' /> Export to XLSX
                 </Button>
               </div>
             )}

@@ -51,7 +51,9 @@ export class ApiClient {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: 'Unknown error' }));
         return {
           success: false,
           error: {
@@ -62,7 +64,7 @@ export class ApiClient {
         };
       }
 
-      const data = await response.json() as T;
+      const data = (await response.json()) as T;
       return { success: true, data };
     } catch (error) {
       return {
@@ -74,7 +76,6 @@ export class ApiClient {
       };
     }
   }
-
 
   async listContent(prefix?: string, cursor?: string, limit?: number) {
     const params = new URLSearchParams();
@@ -88,20 +89,32 @@ export class ApiClient {
     if (proxyBase) {
       try {
         const url = `${proxyBase}/_list?${params.toString()}`;
-        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        const res = await fetch(url, {
+          headers: { Accept: 'application/json' },
+        });
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}`);
         }
         const data = await res.json();
         return { success: true, data } as ApiResponse<unknown>;
       } catch (e) {
-        return { success: false, error: { code: 'NETWORK_ERROR', message: (e as Error).message } };
+        return {
+          success: false,
+          error: { code: 'NETWORK_ERROR', message: (e as Error).message },
+        };
       }
     }
 
-    return this.request<{ prefixes?: string[]; objects: Array<{ key: string; size: number; uploaded: string; etag: string }>; cursor?: string }>(
-      `/content/list?${params}`
-    );
+    return this.request<{
+      prefixes?: string[];
+      objects: Array<{
+        key: string;
+        size: number;
+        uploaded: string;
+        etag: string;
+      }>;
+      cursor?: string;
+    }>(`/content/list?${params}`);
   }
 
   async readContent(key: string) {
@@ -110,18 +123,26 @@ export class ApiClient {
       try {
         const url = `${proxyBase}/${key}?ts=${Date.now()}`;
         const res = await fetch(url, {
-          headers: { 'Accept': 'text/markdown' },
-          cache: 'no-store'
+          headers: { Accept: 'text/markdown' },
+          cache: 'no-store',
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const body = await res.text();
         const etag = res.headers.get('ETag') || '';
-        return { success: true, data: { body, etag } } as ApiResponse<{ body: string; etag: string }>;
+        return { success: true, data: { body, etag } } as ApiResponse<{
+          body: string;
+          etag: string;
+        }>;
       } catch (e) {
-        return { success: false, error: { code: 'NETWORK_ERROR', message: (e as Error).message } };
+        return {
+          success: false,
+          error: { code: 'NETWORK_ERROR', message: (e as Error).message },
+        };
       }
     }
-    return this.request<{ body: string; etag: string }>(`/content/read?key=${encodeURIComponent(key)}`);
+    return this.request<{ body: string; etag: string }>(
+      `/content/read?key=${encodeURIComponent(key)}`
+    );
   }
 
   async writeContent(key: string, content: string, etag?: string) {
@@ -129,7 +150,7 @@ export class ApiClient {
       key,
       contentLength: content.length,
       etag,
-      url: `${this.baseUrl}/content/write`
+      url: `${this.baseUrl}/content/write`,
     });
 
     return this.request<{ etag: string }>(`/content/write`, {
@@ -139,13 +160,14 @@ export class ApiClient {
   }
 
   async validateFrontmatter(yaml: string) {
-    return this.request<{ ok: boolean; normalized?: Record<string, unknown>; errors?: string[] }>(
-      `/validate/frontmatter`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ yaml }),
-      }
-    );
+    return this.request<{
+      ok: boolean;
+      normalized?: Record<string, unknown>;
+      errors?: string[];
+    }>(`/validate/frontmatter`, {
+      method: 'POST',
+      body: JSON.stringify({ yaml }),
+    });
   }
 
   async generateFrontmatter(markdown: string) {
@@ -156,39 +178,47 @@ export class ApiClient {
         const res = await fetch(`${aiUrl.replace(/\/$/, '')}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ markdown })
+          body: JSON.stringify({ markdown }),
         });
         if (res.ok) {
           const data = await res.json();
-          return { success: true, data } as ApiResponse<{ frontmatter: Record<string, unknown> }>;
+          return { success: true, data } as ApiResponse<{
+            frontmatter: Record<string, unknown>;
+          }>;
         }
       } catch {
         // fall through to default request below
       }
     }
 
-    const apiResp = await this.request<{ frontmatter: Record<string, unknown> }>(
-      '/generate',
-      {
-        method: 'POST',
-        body: JSON.stringify({ markdown }),
-      }
-    );
+    const apiResp = await this.request<{
+      frontmatter: Record<string, unknown>;
+    }>('/generate', {
+      method: 'POST',
+      body: JSON.stringify({ markdown }),
+    });
 
     if (apiResp.success) return apiResp;
 
     // Fallback: generate smart frontmatter client-side if API is unavailable (e.g., 405/404)
     try {
-      console.warn('Frontmatter generate API unavailable, using client-side fallback:', apiResp.error);
+      console.warn(
+        'Frontmatter generate API unavailable, using client-side fallback:',
+        apiResp.error
+      );
       const fm = generateSmartFrontmatter(markdown);
-      return { success: true, data: { frontmatter: fm } } as ApiResponse<{ frontmatter: Record<string, unknown> }>;
+      return { success: true, data: { frontmatter: fm } } as ApiResponse<{
+        frontmatter: Record<string, unknown>;
+      }>;
     } catch {
       return apiResp; // keep original error if fallback fails
     }
   }
 
   async existsContent(key: string) {
-    return this.request<{ exists: boolean; etag?: string }>(`/content/exists?key=${encodeURIComponent(key)}`);
+    return this.request<{ exists: boolean; etag?: string }>(
+      `/content/exists?key=${encodeURIComponent(key)}`
+    );
   }
 
   async deleteContentSoft(key: string) {
@@ -199,12 +229,19 @@ export class ApiClient {
   }
 
   async rebuildCache() {
-    return this.request<{ success: boolean; message: string; output?: string }>(`/content/rebuild-cache`, {
-      method: 'POST',
-    });
+    return this.request<{ success: boolean; message: string; output?: string }>(
+      `/content/rebuild-cache`,
+      {
+        method: 'POST',
+      }
+    );
   }
 
-  async restoreContent(trashKey: string, overwrite?: boolean, targetKey?: string) {
+  async restoreContent(
+    trashKey: string,
+    overwrite?: boolean,
+    targetKey?: string
+  ) {
     return this.request<{ ok: boolean; key: string }>(`/content/restore`, {
       method: 'POST',
       body: JSON.stringify({ trashKey, overwrite, targetKey }),

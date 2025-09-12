@@ -5,12 +5,20 @@ import { cardSchema } from '../../schemas/card';
 import { chartSchema } from '../../schemas/chart';
 
 interface ComponentRegistryProps {
-  type: 'x-fenced-card' | 'x-fenced-chart' | 'x-fenced-component' | 'x-fenced-error';
+  type:
+    | 'x-fenced-card'
+    | 'x-fenced-chart'
+    | 'x-fenced-component'
+    | 'x-fenced-error';
   json?: string;
   componentType?: string;
 }
 
-export function ComponentRegistry({ type, json, componentType }: ComponentRegistryProps) {
+export function ComponentRegistry({
+  type,
+  json,
+  componentType,
+}: ComponentRegistryProps) {
   switch (type) {
     case 'x-fenced-card':
       return <FencedCard json={json} />;
@@ -33,11 +41,15 @@ function FencedCard({ json }: { json?: string }) {
     const validated = cardSchema.parse(data);
 
     return (
-      <Card className={`border-l-4 ${
-        validated.variant === 'success' ? 'border-l-green-500' :
-        validated.variant === 'warning' ? 'border-l-yellow-500' :
-        'border-l-blue-500'
-      }`}>
+      <Card
+        className={`border-l-4 ${
+          validated.variant === 'success'
+            ? 'border-l-green-500'
+            : validated.variant === 'warning'
+              ? 'border-l-yellow-500'
+              : 'border-l-blue-500'
+        }`}
+      >
         <CardHeader>
           <CardTitle>{validated.title}</CardTitle>
         </CardHeader>
@@ -48,9 +60,10 @@ function FencedCard({ json }: { json?: string }) {
     );
   } catch (error) {
     return (
-      <Alert variant="destructive">
+      <Alert variant='destructive'>
         <AlertDescription>
-          Invalid card data: {error instanceof Error ? error.message : 'Unknown error'}
+          Invalid card data:{' '}
+          {error instanceof Error ? error.message : 'Unknown error'}
         </AlertDescription>
       </Alert>
     );
@@ -67,16 +80,23 @@ function FencedChart({ json }: { json?: string }) {
     return <ChartRenderer data={validated} />;
   } catch (error) {
     return (
-      <Alert variant="destructive">
+      <Alert variant='destructive'>
         <AlertDescription>
-          Invalid chart data: {error instanceof Error ? error.message : 'Unknown error'}
+          Invalid chart data:{' '}
+          {error instanceof Error ? error.message : 'Unknown error'}
         </AlertDescription>
       </Alert>
     );
   }
 }
 
-function FencedComponent({ componentType, json }: { componentType?: string; json?: string }) {
+function FencedComponent({
+  componentType,
+  json,
+}: {
+  componentType?: string;
+  json?: string;
+}) {
   if (!componentType || !json) return <div>Invalid component data</div>;
 
   try {
@@ -93,9 +113,10 @@ function FencedComponent({ componentType, json }: { componentType?: string; json
     );
   } catch (error) {
     return (
-      <Alert variant="destructive">
+      <Alert variant='destructive'>
         <AlertDescription>
-          Invalid component data: {error instanceof Error ? error.message : 'Unknown error'}
+          Invalid component data:{' '}
+          {error instanceof Error ? error.message : 'Unknown error'}
         </AlertDescription>
       </Alert>
     );
@@ -104,7 +125,7 @@ function FencedComponent({ componentType, json }: { componentType?: string; json
 
 function FencedError({ json }: { json?: string }) {
   return (
-    <Alert variant="destructive">
+    <Alert variant='destructive'>
       <AlertDescription>
         {json || 'Unknown error in fenced block'}
       </AlertDescription>

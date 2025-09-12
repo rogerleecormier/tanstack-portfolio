@@ -15,10 +15,13 @@ export async function onRequest(context: { request: Request; env: Env }) {
 
     const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
       .split(',')
-      .map((s) => s.trim())
+      .map(s => s.trim())
       .filter(Boolean);
-    const isAllowed = allowedDirs.some((d) => key === d || key.startsWith(`${d}/`));
-    if (!isAllowed) return Response.json({ error: 'Invalid key' }, { status: 400 });
+    const isAllowed = allowedDirs.some(
+      d => key === d || key.startsWith(`${d}/`)
+    );
+    if (!isAllowed)
+      return Response.json({ error: 'Invalid key' }, { status: 400 });
 
     // Get the original object
     const obj = await env.R2_CONTENT.get(key);
@@ -30,7 +33,8 @@ export async function onRequest(context: { request: Request; env: Env }) {
     // Copy to trash (retain original content type if available)
     await env.R2_CONTENT.put(trashKey, obj.body, {
       httpMetadata: {
-        contentType: obj.httpMetadata?.contentType || 'text/markdown; charset=utf-8',
+        contentType:
+          obj.httpMetadata?.contentType || 'text/markdown; charset=utf-8',
       },
     });
 
@@ -42,4 +46,3 @@ export async function onRequest(context: { request: Request; env: Env }) {
     return Response.json({ error: 'Failed to delete' }, { status: 500 });
   }
 }
-

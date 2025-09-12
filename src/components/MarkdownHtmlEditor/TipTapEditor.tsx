@@ -39,22 +39,27 @@ interface ToolbarButtonProps {
 }
 
 // Memoized toolbar button to prevent unnecessary re-renders
-const ToolbarButton = React.memo<ToolbarButtonProps>(({ onClick, isActive, children, className = '' }) => (
-  <Button
-    variant="ghost"
-    size="sm"
-    onClick={onClick}
-    className={`rounded-lg border border-slate-200/30 dark:border-slate-700/30 hover:border-slate-300/60 dark:hover:border-slate-600/60 transition-all duration-200 bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-700/60 ${
-      isActive
-        ? 'bg-teal-600 text-white border-teal-600 dark:border-teal-500'
-        : 'hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300'
-    } ${className}`}
-  >
-    {children}
-  </Button>
-));
+const ToolbarButton = React.memo<ToolbarButtonProps>(
+  ({ onClick, isActive, children, className = '' }) => (
+    <Button
+      variant='ghost'
+      size='sm'
+      onClick={onClick}
+      className={`rounded-lg border border-slate-200/30 dark:border-slate-700/30 hover:border-slate-300/60 dark:hover:border-slate-600/60 transition-all duration-200 bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-700/60 ${
+        isActive
+          ? 'bg-teal-600 text-white border-teal-600 dark:border-teal-500'
+          : 'hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300'
+      } ${className}`}
+    >
+      {children}
+    </Button>
+  )
+);
 
-export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps) {
+export function TipTapEditor({
+  initialMarkdown,
+  onDocChange,
+}: TipTapEditorProps) {
   // Debounce TipTap -> parent updates to reduce re-renders and keep behavior
   // consistent with the Markdown editor. This avoids cursor jumps on idle.
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -127,7 +132,11 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
       const docSize = editor.state.doc.content.size;
       const clampedFrom = Math.min(from, docSize);
       const clampedTo = Math.min(to, docSize);
-      editor?.chain().setTextSelection({ from: clampedFrom, to: clampedTo }).focus().run();
+      editor
+        ?.chain()
+        .setTextSelection({ from: clampedFrom, to: clampedTo })
+        .focus()
+        .run();
     });
   }, [editor, initialMarkdown]);
 
@@ -189,104 +198,112 @@ export function TipTapEditor({ initialMarkdown, onDocChange }: TipTapEditorProps
   }
 
   return (
-    <div className="h-full flex flex-col bg-white/70 dark:bg-slate-900/70 backdrop-blur">
+    <div className='h-full flex flex-col bg-white/70 dark:bg-slate-900/70 backdrop-blur'>
       {/* Enhanced Toolbar with Brand Theme */}
-      <div className="border-b border-slate-200/60 dark:border-slate-700/60 p-4 flex flex-wrap gap-2 flex-shrink-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur">
+      <div className='border-b border-slate-200/60 dark:border-slate-700/60 p-4 flex flex-wrap gap-2 flex-shrink-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur'>
         <ToolbarButton
-          onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+          onClick={() =>
+            editor?.chain().focus().toggleHeading({ level: 1 }).run()
+          }
           isActive={editor?.isActive('heading', { level: 1 }) || false}
         >
-          <Heading1 className="h-4 w-4" />
+          <Heading1 className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() =>
+            editor?.chain().focus().toggleHeading({ level: 2 }).run()
+          }
           isActive={editor?.isActive('heading', { level: 2 }) || false}
         >
-          <Heading2 className="h-4 w-4" />
+          <Heading2 className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
+          onClick={() =>
+            editor?.chain().focus().toggleHeading({ level: 3 }).run()
+          }
           isActive={editor?.isActive('heading', { level: 3 }) || false}
         >
-          <Heading3 className="h-4 w-4" />
+          <Heading3 className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleBold().run()}
           isActive={editor?.isActive('bold') || false}
         >
-          <Bold className="h-4 w-4" />
+          <Bold className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleItalic().run()}
           isActive={editor?.isActive('italic') || false}
         >
-          <Italic className="h-4 w-4" />
+          <Italic className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleStrike().run()}
           isActive={editor?.isActive('strike') || false}
         >
-          <Strikethrough className="h-4 w-4" />
+          <Strikethrough className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleBulletList().run()}
           isActive={editor?.isActive('bulletList') || false}
         >
-          <List className="h-4 w-4" />
+          <List className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleOrderedList().run()}
           isActive={editor?.isActive('orderedList') || false}
         >
-          <ListOrdered className="h-4 w-4" />
+          <ListOrdered className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleBlockquote().run()}
           isActive={editor?.isActive('blockquote') || false}
         >
-          <Quote className="h-4 w-4" />
+          <Quote className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().setHorizontalRule().run()}
           isActive={false}
         >
-          <Minus className="h-4 w-4" />
+          <Minus className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={addLink}
           isActive={editor?.isActive('link') || false}
         >
-          <LinkIcon className="h-4 w-4" />
+          <LinkIcon className='h-4 w-4' />
         </ToolbarButton>
-        <ToolbarButton
-          onClick={addImage}
-          isActive={false}
-        >
-          <ImageIcon className="h-4 w-4" />
+        <ToolbarButton onClick={addImage} isActive={false}>
+          <ImageIcon className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
           isActive={editor?.isActive('codeBlock') || false}
         >
-          <Code className="h-4 w-4" />
+          <Code className='h-4 w-4' />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+          onClick={() =>
+            editor
+              ?.chain()
+              .focus()
+              .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+              .run()
+          }
           isActive={false}
         >
-          <TableIcon className="h-4 w-4" />
+          <TableIcon className='h-4 w-4' />
         </ToolbarButton>
       </div>
       {/* Editor Content Area */}
-      <div className="flex-1 bg-white/70 dark:bg-slate-900/70 overflow-hidden">
+      <div className='flex-1 bg-white/70 dark:bg-slate-900/70 overflow-hidden'>
         {editor && (
           <EditorContent
             editor={editor}
-            className="h-full p-6 max-w-none focus-within:outline-none cursor-text prose prose-slate dark:prose-invert focus-within:ring-2 focus-within:ring-teal-500/30 rounded-b-xl overflow-auto"
+            className='h-full p-6 max-w-none focus-within:outline-none cursor-text prose prose-slate dark:prose-invert focus-within:ring-2 focus-within:ring-teal-500/30 rounded-b-xl overflow-auto'
           />
         )}
       </div>
     </div>
   );
 }
-

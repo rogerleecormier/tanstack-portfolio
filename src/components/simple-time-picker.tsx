@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { format } from "date-fns";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface SimpleTimePickerProps {
   value?: Date;
@@ -12,20 +12,20 @@ interface SimpleTimePickerProps {
 
 export function SimpleTimePicker({ value, onChange }: SimpleTimePickerProps) {
   const [time, setTime] = useState<string>(
-    value ? format(value, "HH:mm") : "00:00"
+    value ? format(value, 'HH:mm') : '00:00'
   );
 
   useEffect(() => {
     if (value) {
-      setTime(format(value, "HH:mm"));
+      setTime(format(value, 'HH:mm'));
     }
   }, [value]);
 
   const handleTimeChange = (newTime: string) => {
     setTime(newTime);
-    
+
     if (onChange && value) {
-      const [hours, minutes] = newTime.split(":").map(Number);
+      const [hours, minutes] = newTime.split(':').map(Number);
       const newDate = new Date(value);
       newDate.setHours(hours);
       newDate.setMinutes(minutes);
@@ -36,16 +36,16 @@ export function SimpleTimePicker({ value, onChange }: SimpleTimePickerProps) {
   };
 
   return (
-    <div className="flex items-center space-x-2">
-      <Label htmlFor="time" className="text-sm font-medium">
+    <div className='flex items-center space-x-2'>
+      <Label htmlFor='time' className='text-sm font-medium'>
         Time
       </Label>
       <Input
-        id="time"
-        type="time"
+        id='time'
+        type='time'
         value={time}
-        onChange={(e) => handleTimeChange(e.target.value)}
-        className="w-32"
+        onChange={e => handleTimeChange(e.target.value)}
+        className='w-32'
       />
     </div>
   );

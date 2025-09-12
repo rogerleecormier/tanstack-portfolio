@@ -14,80 +14,82 @@ This utility provides centralized logging across the entire site that automatica
 ### Basic Import
 
 ```typescript
-import { logger } from './utils/logger'
+import { logger } from './utils/logger';
 // or import specific methods
-import { info, error, warn } from './utils/logger'
+import { info, error, warn } from './utils/logger';
 ```
 
 ### Log Levels
 
 ```typescript
 // Debug - only in dev/localhost
-logger.debug('Debug information')
+logger.debug('Debug information');
 
-// Info - only in dev/localhost  
-logger.info('General information')
+// Info - only in dev/localhost
+logger.info('General information');
 
 // Success - only in dev/localhost
-logger.success('Operation completed successfully')
+logger.success('Operation completed successfully');
 
 // Warning - always shown
-logger.warn('Something to be aware of')
+logger.warn('Something to be aware of');
 
 // Error - always shown
-logger.error('Something went wrong')
+logger.error('Something went wrong');
 ```
 
 ### Specialized Logging Methods
 
 ```typescript
 // Content discovery
-logger.discovered('portfolio.md')
-logger.notFound('missing-file.md')
-logger.contentSummary(14, 10, 1)
+logger.discovered('portfolio.md');
+logger.notFound('missing-file.md');
+logger.contentSummary(14, 10, 1);
 
 // AI Worker
-logger.aiWorker('Processing request...')
-logger.portfolioLoading('Loading portfolio items...')
+logger.aiWorker('Processing request...');
+logger.portfolioLoading('Loading portfolio items...');
 
 // Testing
-logger.test('Running test...')
+logger.test('Running test...');
 
 // Network & Security
-logger.network('API call to...')
-logger.security('Authentication check...')
-logger.location('Worker URL:', url)
+logger.network('API call to...');
+logger.security('Authentication check...');
+logger.location('Worker URL:', url);
 
 // Data & Response
-logger.data('Sending data:', data)
-logger.response('Response received:', response)
+logger.data('Sending data:', data);
+logger.response('Response received:', response);
 
 // Validation
-logger.validation('Validating input:', input)
+logger.validation('Validating input:', input);
 ```
 
 ### Environment Detection
 
 ```typescript
-const env = logger.getEnvironmentInfo()
-console.log(env)
+const env = logger.getEnvironmentInfo();
+console.log(env);
 // Output: { isDevelopment: true, isLocalhost: true, shouldLog: true }
 ```
 
 ## Migration from console.log
 
 ### Before
+
 ```typescript
-console.log('🔍 Attempting AI analysis...')
-console.log('✅ Success!')
-console.error('❌ Error occurred')
+console.log('🔍 Attempting AI analysis...');
+console.log('✅ Success!');
+console.error('❌ Error occurred');
 ```
 
 ### After
+
 ```typescript
-logger.aiWorker('Attempting AI analysis...')
-logger.success('Success!')
-logger.error('Error occurred')
+logger.aiWorker('Attempting AI analysis...');
+logger.success('Success!');
+logger.error('Error occurred');
 ```
 
 ## Benefits
@@ -101,6 +103,7 @@ logger.error('Error occurred')
 ## Configuration
 
 The logger automatically detects:
+
 - `import.meta.env.DEV` for development mode
 - `window.location.hostname` for localhost detection
 

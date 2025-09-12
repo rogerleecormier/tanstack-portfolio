@@ -1,36 +1,39 @@
-import { logger } from './logger'
+import { logger } from './logger';
 // Removed r2PortfolioLoader imports - now using cachedContentService exclusively
-import { cachedContentService, type CachedContentItem } from '@/api/cachedContentService'
+import {
+  cachedContentService,
+  type CachedContentItem,
+} from '@/api/cachedContentService';
 
 export interface BlogPost {
-  slug: string
-  title: string
-  description: string
-  date?: string
-  author: string
-  tags: string[]
-  readTime: number
-  content: string
-  image?: string
-  keywords: string[]
+  slug: string;
+  title: string;
+  description: string;
+  date?: string;
+  author: string;
+  tags: string[];
+  readTime: number;
+  content: string;
+  image?: string;
+  keywords: string[];
 }
 
 export interface BlogFrontmatter {
-  title?: string
-  description?: string
-  date?: string
-  author?: string
-  tags?: string[]
-  readTime?: number
-  image?: string
-  keywords?: string[]
+  title?: string;
+  description?: string;
+  date?: string;
+  author?: string;
+  tags?: string[];
+  readTime?: number;
+  image?: string;
+  keywords?: string[];
 }
 
 // Calculate reading time based on content length
 function calculateReadingTime(content: string): number {
-  const wordsPerMinute = 200
-  const wordCount = content.split(/\s+/).length
-  return Math.ceil(wordCount / wordsPerMinute)
+  const wordsPerMinute = 200;
+  const wordCount = content.split(/\s+/).length;
+  return Math.ceil(wordCount / wordsPerMinute);
 }
 
 // Format date for display
@@ -38,36 +41,36 @@ export function formatDate(dateString: string | undefined): string {
   try {
     // Handle undefined, null, or empty date strings
     if (!dateString || dateString.trim() === '') {
-      return 'Date not available'
+      return 'Date not available';
     }
 
     // Parse the date string directly without adding time to avoid timezone issues
     // Split the date string to get year, month, day
-    const [year, month, day] = dateString.split('-').map(Number)
-    
+    const [year, month, day] = dateString.split('-').map(Number);
+
     // Check if we have valid year, month, day
     if (!year || !month || !day || isNaN(year) || isNaN(month) || isNaN(day)) {
-      logger.warn(`⚠️ Invalid date format: ${dateString}`)
-      return 'Date not available'
+      logger.warn(`⚠️ Invalid date format: ${dateString}`);
+      return 'Date not available';
     }
 
     // Create date using UTC to avoid timezone shifts
-    const date = new Date(Date.UTC(year, month - 1, day))
-    
+    const date = new Date(Date.UTC(year, month - 1, day));
+
     // Check if the date is valid
     if (isNaN(date.getTime())) {
-      logger.warn(`⚠️ Invalid date: ${dateString}`)
-      return 'Date not available'
+      logger.warn(`⚠️ Invalid date: ${dateString}`);
+      return 'Date not available';
     }
 
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
-    })
+      day: 'numeric',
+    });
   } catch (error) {
-    logger.error(`❌ Error formatting date: ${dateString}`, error)
-    return 'Date not available'
+    logger.error(`❌ Error formatting date: ${dateString}`, error);
+    return 'Date not available';
   }
 }
 
@@ -83,145 +86,168 @@ function convertCachedItemToBlogPost(item: CachedContentItem): BlogPost {
     readTime: item.readTime || calculateReadingTime(item.content),
     content: item.content,
     image: undefined, // Could be extracted from content if needed
-    keywords: item.keywords
-  }
+    keywords: item.keywords,
+  };
 }
 
 // Load all blog posts from KV cache service (production) or local files (development)
 export async function loadAllBlogPosts(): Promise<BlogPost[]> {
   try {
-    logger.info('🔄 Loading blog posts from KV cache service...')
+    logger.info('🔄 Loading blog posts from KV cache service...');
 
     // Use KV cache service for faster access
-    const blogItems = await cachedContentService.getBlogPosts()
-    const blogPosts = blogItems.map(convertCachedItemToBlogPost)
-    logger.info(`📚 Found ${blogPosts.length} blog posts from KV cache`)
+    const blogItems = await cachedContentService.getBlogPosts();
+    const blogPosts = blogItems.map(convertCachedItemToBlogPost);
+    logger.info(`📚 Found ${blogPosts.length} blog posts from KV cache`);
 
     // Sort by date (most recent first)
     const sortedPosts = blogPosts.sort((a, b) => {
       try {
         // Handle posts without dates by putting them at the end
-        if (!a.date && !b.date) return 0
-        if (!a.date) return 1
-        if (!b.date) return -1
+        if (!a.date && !b.date) return 0;
+        if (!a.date) return 1;
+        if (!b.date) return -1;
 
         // Parse dates using UTC to avoid timezone shifts
-        const [yearA, monthA, dayA] = a.date!.split('-').map(Number)
-        const [yearB, monthB, dayB] = b.date!.split('-').map(Number)
+        const [yearA, monthA, dayA] = a.date!.split('-').map(Number);
+        const [yearB, monthB, dayB] = b.date!.split('-').map(Number);
 
-        const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA))
-        const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB))
+        const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA));
+        const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB));
 
         // Handle invalid dates by putting them at the end
-        if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0
-        if (isNaN(dateA.getTime())) return 1
-        if (isNaN(dateB.getTime())) return -1
+        if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+        if (isNaN(dateA.getTime())) return 1;
+        if (isNaN(dateB.getTime())) return -1;
 
-        return dateB.getTime() - dateA.getTime()
+        return dateB.getTime() - dateA.getTime();
       } catch (error) {
-        logger.error('❌ Error sorting blog posts by date:', error)
-        return 0
+        logger.error('❌ Error sorting blog posts by date:', error);
+        return 0;
       }
-    })
+    });
 
-    logger.info(`✅ Successfully loaded ${sortedPosts.length} blog posts from KV cache`)
-    return sortedPosts
+    logger.info(
+      `✅ Successfully loaded ${sortedPosts.length} blog posts from KV cache`
+    );
+    return sortedPosts;
   } catch (error) {
-    logger.error('❌ Failed to load blog posts from KV cache:', error)
-    logger.error('💡 Check that the KV cache service is accessible and the cache worker is running')
-    throw error
+    logger.error('❌ Failed to load blog posts from KV cache:', error);
+    logger.error(
+      '💡 Check that the KV cache service is accessible and the cache worker is running'
+    );
+    throw error;
   }
 }
 
 // Load a specific blog post by slug from KV cache service
 export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    logger.info(`🔄 Loading blog post: ${slug}`)
+    logger.info(`🔄 Loading blog post: ${slug}`);
 
     // Try KV cache service first
-    const allBlogItems = await cachedContentService.getBlogPosts()
-    const blogItem = allBlogItems.find(item => item.id === slug)
+    const allBlogItems = await cachedContentService.getBlogPosts();
+    const blogItem = allBlogItems.find(item => item.id === slug);
 
     if (blogItem) {
-      const blogPost = convertCachedItemToBlogPost(blogItem)
-      logger.info(`✅ Successfully loaded blog post from KV cache: ${blogPost.title}`)
-      return blogPost
+      const blogPost = convertCachedItemToBlogPost(blogItem);
+      logger.info(
+        `✅ Successfully loaded blog post from KV cache: ${blogPost.title}`
+      );
+      return blogPost;
     }
 
     // Blog post not found in KV cache
-    logger.warn(`⚠️ Blog post not found in KV cache: ${slug}`)
-    return null
+    logger.warn(`⚠️ Blog post not found in KV cache: ${slug}`);
+    return null;
   } catch (error) {
-    logger.error(`❌ Error loading blog post ${slug}:`, error)
-    return null
+    logger.error(`❌ Error loading blog post ${slug}:`, error);
+    return null;
   }
 }
 
 // Get recent blog posts (default: 5)
-export async function getRecentBlogPosts(limit: number = 5): Promise<BlogPost[]> {
-  const allPosts = await loadAllBlogPosts()
-  return allPosts.slice(0, limit)
+export async function getRecentBlogPosts(
+  limit: number = 5
+): Promise<BlogPost[]> {
+  const allPosts = await loadAllBlogPosts();
+  return allPosts.slice(0, limit);
 }
 
 // Search blog posts
 export function searchBlogPosts(posts: BlogPost[], query: string): BlogPost[] {
-  if (!query.trim()) return posts
+  if (!query.trim()) return posts;
 
-  const searchTerm = query.toLowerCase()
-  return posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm) ||
-    post.description.toLowerCase().includes(searchTerm) ||
-    post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-  )
+  const searchTerm = query.toLowerCase();
+  return posts.filter(
+    post =>
+      post.title.toLowerCase().includes(searchTerm) ||
+      post.description.toLowerCase().includes(searchTerm) ||
+      post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+  );
 }
 
 // Filter blog posts by tags
-export function filterBlogPostsByTags(posts: BlogPost[], tags: string[]): BlogPost[] {
-  if (tags.length === 0) return posts
+export function filterBlogPostsByTags(
+  posts: BlogPost[],
+  tags: string[]
+): BlogPost[] {
+  if (tags.length === 0) return posts;
 
-  return posts.filter(post =>
-    tags.some(tag => post.tags.includes(tag))
-  )
+  return posts.filter(post => tags.some(tag => post.tags.includes(tag)));
 }
 
 // Get all unique tags from blog posts (alias for compatibility)
 export function getAllTags(posts: BlogPost[]): string[] {
-  const allTags = posts.flatMap(post => post.tags)
-  return [...new Set(allTags)].sort()
+  const allTags = posts.flatMap(post => post.tags);
+  return [...new Set(allTags)].sort();
 }
 
 // Get all unique tags from blog posts (new name)
 export function getAllBlogTags(posts: BlogPost[]): string[] {
-  const allTags = posts.flatMap(post => post.tags)
-  return [...new Set(allTags)].sort()
+  const allTags = posts.flatMap(post => post.tags);
+  return [...new Set(allTags)].sort();
 }
 
 // Get blog posts by tag
 export function getBlogPostsByTag(posts: BlogPost[], tag: string): BlogPost[] {
-  return posts.filter(post => post.tags.includes(tag))
+  return posts.filter(post => post.tags.includes(tag));
 }
 
 // Get blog posts by author
-export function getBlogPostsByAuthor(posts: BlogPost[], author: string): BlogPost[] {
-  return posts.filter(post => post.author.toLowerCase().includes(author.toLowerCase()))
+export function getBlogPostsByAuthor(
+  posts: BlogPost[],
+  author: string
+): BlogPost[] {
+  return posts.filter(post =>
+    post.author.toLowerCase().includes(author.toLowerCase())
+  );
 }
 
 // Get blog posts by date range
-export function getBlogPostsByDateRange(posts: BlogPost[], startDate: Date, endDate: Date): BlogPost[] {
+export function getBlogPostsByDateRange(
+  posts: BlogPost[],
+  startDate: Date,
+  endDate: Date
+): BlogPost[] {
   return posts.filter(post => {
-    if (!post.date) return false
-    const postDate = new Date(post.date)
-    return postDate >= startDate && postDate <= endDate
-  })
+    if (!post.date) return false;
+    const postDate = new Date(post.date);
+    return postDate >= startDate && postDate <= endDate;
+  });
 }
 
 // Get blog posts by keyword
-export function getBlogPostsByKeyword(posts: BlogPost[], keyword: string): BlogPost[] {
-  const searchTerm = keyword.toLowerCase()
-  return posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm) ||
-    post.description.toLowerCase().includes(searchTerm) ||
-    post.content.toLowerCase().includes(searchTerm) ||
-    post.keywords.some(k => k.toLowerCase().includes(searchTerm))
-  )
+export function getBlogPostsByKeyword(
+  posts: BlogPost[],
+  keyword: string
+): BlogPost[] {
+  const searchTerm = keyword.toLowerCase();
+  return posts.filter(
+    post =>
+      post.title.toLowerCase().includes(searchTerm) ||
+      post.description.toLowerCase().includes(searchTerm) ||
+      post.content.toLowerCase().includes(searchTerm) ||
+      post.keywords.some(k => k.toLowerCase().includes(searchTerm))
+  );
 }

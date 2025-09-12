@@ -24,6 +24,7 @@ The content indexing system solves the issue of related content hanging on skele
 ### Development
 
 For development builds without content indexing:
+
 ```bash
 npm run build:dev
 ```
@@ -43,6 +44,7 @@ npm run deploy:pages   # Deploy with fresh KV cache
 ### Manual Content Indexing
 
 To manually index content when R2 is accessible:
+
 ```bash
 npm run index-content
 ```
@@ -56,6 +58,7 @@ The build process now includes:
 3. **Vite Build**: Builds the production bundle
 
 If R2 is not accessible during build:
+
 - Empty cache files are created
 - Build continues successfully
 - Related content will show "no recommendations" instead of hanging
@@ -66,7 +69,7 @@ The system creates several JSON files:
 
 - `content-cache.json` - Main cache with metadata
 - `portfolio-items.json` - Portfolio content items
-- `blog-items.json` - Blog content items  
+- `blog-items.json` - Blog content items
 - `project-items.json` - Project content items
 - `search-index.json` - Search index for fast lookups
 

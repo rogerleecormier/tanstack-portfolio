@@ -17,7 +17,10 @@ export async function onRequest(context: { request: Request }) {
     const { markdown } = await request.json();
 
     if (!markdown) {
-      return Response.json({ error: 'Markdown content required' }, { status: 400 });
+      return Response.json(
+        { error: 'Markdown content required' },
+        { status: 400 }
+      );
     }
 
     const suggestions: FrontmatterSuggestion = {};
@@ -39,15 +42,36 @@ export async function onRequest(context: { request: Request }) {
 
     // Extract potential tags from headings and keywords
     const headings = markdown.match(/^#+\s+(.+)$/gm) || [];
-    const keywords = ['tutorial', 'guide', 'react', 'javascript', 'typescript', 'api', 'component'];
+    const keywords = [
+      'tutorial',
+      'guide',
+      'react',
+      'javascript',
+      'typescript',
+      'api',
+      'component',
+    ];
 
     const potentialTags = [
       ...headings.map(h => h.replace(/^#+\s+/, '').toLowerCase()),
-      ...keywords.filter(k => markdown.toLowerCase().includes(k))
+      ...keywords.filter(k => markdown.toLowerCase().includes(k)),
     ];
 
     // Use Fuse.js for fuzzy matching of common tags
-    const commonTags = ['blog', 'tutorial', 'guide', 'documentation', 'react', 'javascript', 'typescript', 'api', 'component', 'ui', 'frontend', 'backend'];
+    const commonTags = [
+      'blog',
+      'tutorial',
+      'guide',
+      'documentation',
+      'react',
+      'javascript',
+      'typescript',
+      'api',
+      'component',
+      'ui',
+      'frontend',
+      'backend',
+    ];
     const fuse = new Fuse(commonTags, { threshold: 0.4 });
 
     const matchedTags = potentialTags
@@ -64,6 +88,9 @@ export async function onRequest(context: { request: Request }) {
     return Response.json({ frontmatter: suggestions });
   } catch (error) {
     console.error('Generation error:', error);
-    return Response.json({ error: 'Failed to generate frontmatter' }, { status: 500 });
+    return Response.json(
+      { error: 'Failed to generate frontmatter' },
+      { status: 500 }
+    );
   }
 }

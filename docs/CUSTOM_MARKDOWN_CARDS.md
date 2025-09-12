@@ -6,8 +6,8 @@ This document explains how to use the custom markdown card syntax in your conten
 
 The basic syntax for custom cards uses code blocks with the "card" language identifier (same pattern as charts):
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "info",
   "props": {
@@ -17,6 +17,7 @@ The basic syntax for custom cards uses code blocks with the "card" language iden
   "content": "Your card content here with **markdown** support."
 }
 ```
+````
 
 **Important Note**: There must be a space between the backticks and "card" (```` card`) for the syntax to work properly. This ensures ReactMarkdown recognizes the block as a code block that needs special processing.
 
@@ -25,7 +26,7 @@ The basic syntax for custom cards uses code blocks with the "card" language iden
 All card content now supports full markdown formatting! You can use:
 
 - **Bold text** with `**text**`
-- *Italic text* with `*text*`
+- _Italic text_ with `*text*`
 - ~~Strikethrough~~ with `~~text~~`
 - `Inline code` with backticks
 - [Links](https://example.com) with `[text](url)`
@@ -42,8 +43,8 @@ The markdown is rendered with styling that matches your card design and maintain
 
 Creates a simple informational card with teal styling.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "info",
   "props": {
@@ -54,20 +55,21 @@ Creates a simple informational card with teal styling.
 
 ## Key Features
 - **Bold emphasis** for important points
-- *Italic styling* for subtle emphasis  
+- *Italic styling* for subtle emphasis
 - `Inline code` for technical terms
 - [External links](https://example.com) for references
 
 > This is a blockquote that stands out from the main content."
 }
 ```
+````
 
 ### 2. Hero Card
 
 Large, prominent cards for key content with gradient backgrounds and optional images.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "hero",
   "props": {
@@ -87,8 +89,10 @@ Large, prominent cards for key content with gradient backgrounds and optional im
   "content": "Your hero content here with **markdown** support."
 }
 ```
+````
 
 **Hero Card Options:**
+
 - `variant`: "primary" (teal), "secondary" (slate), "accent" (blue)
 - `size`: "sm", "md", "lg"
 - `badges`: Comma-separated string or array of badge text
@@ -99,8 +103,8 @@ Large, prominent cards for key content with gradient backgrounds and optional im
 
 A specialized profile card designed for main profile display with image, name, tagline, and multi-colored badges.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "hero-profile",
   "props": {
@@ -120,8 +124,10 @@ A specialized profile card designed for main profile display with image, name, t
 - **Innovation Focus**: AI/ML integration, workflow automation, and emerging technology adoption"
 }
 ```
+````
 
 **Hero Profile Card Features:**
+
 - **Image**: Circular profile image with teal border
 - **Name/Title**: Large, prominent display
 - **Tagline**: Descriptive text that wraps properly
@@ -132,8 +138,8 @@ A specialized profile card designed for main profile display with image, name, t
 
 Green-accented cards for positive content with icons.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "success",
   "props": {
@@ -145,6 +151,7 @@ Green-accented cards for positive content with icons.
   "content": "98% on-time delivery rate across 25+ enterprise projects."
 }
 ```
+````
 
 **Success Card Icons:** "check", "award", "star", "target"
 **Badges:** Comma-separated string or array of badge names
@@ -153,8 +160,8 @@ Green-accented cards for positive content with icons.
 
 Orange-accented cards for important notices with icons.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "warning",
   "props": {
@@ -166,6 +173,7 @@ Orange-accented cards for important notices with icons.
   "content": "All implementations follow zero-trust principles."
 }
 ```
+````
 
 **Warning Card Icons:** "alert", "info", "shield", "lock"
 **Badges:** Comma-separated string or array of badge names
@@ -174,8 +182,8 @@ Orange-accented cards for important notices with icons.
 
 Blue-accented cards for technical content with technology badges.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "tech",
   "props": {
@@ -187,6 +195,7 @@ Blue-accented cards for technical content with technology badges.
   "content": "Specialized in cloud-native architectures and edge computing."
 }
 ```
+````
 
 **Tech Card Icons:** "code", "database", "cloud", "rocket", "zap"
 **Badges:** Comma-separated string or array of badge names
@@ -195,8 +204,8 @@ Blue-accented cards for technical content with technology badges.
 
 Creates a feature card with an icon, badges, and optional link.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "feature",
   "props": {
@@ -210,6 +219,7 @@ Creates a feature card with an icon, badges, and optional link.
   "content": "Our cloud integration services help you modernize legacy systems and leverage the power of cloud-native architectures."
 }
 ```
+````
 
 **Available Icons:** `award`, `briefcase`, `graduation`, `star`, `trending`, `shield`, `zap`
 **Badges:** Comma-separated string or array of badge names
@@ -218,8 +228,8 @@ Creates a feature card with an icon, badges, and optional link.
 
 Creates a profile card with image, contact info, and badges.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "profile",
   "props": {
@@ -233,13 +243,14 @@ Creates a profile card with image, contact info, and badges.
   "content": "Experienced technical project manager specializing in digital transformation and cloud-native solutions."
 }
 ```
+````
 
 ### 9. Stats Card
 
 Creates a card displaying statistics and metrics.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "stats",
   "props": {
@@ -249,13 +260,14 @@ Creates a card displaying statistics and metrics.
   "content": "Projects Completed: 25\nSuccess Rate: 98%\nClient Satisfaction: 4.9/5"
 }
 ```
+````
 
 ### 10. Timeline Card
 
 Creates a timeline card showing chronological events.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "timeline",
   "props": {
@@ -265,37 +277,43 @@ Creates a timeline card showing chronological events.
   "content": "2023-01-15 | Senior Technical PM | Led digital transformation initiative | Current\n2021-06-01 | Technical Project Manager | ERP modernization projects | Completed\n2019-03-15 | U.S. Army NCO | Signal Corps operations | Veteran"
 }
 ```
+````
 
 ### 11. Multi-Column Layout
 
 Create 2 or 3 column layouts with different card types.
 
-```markdown
-``` card
+````markdown
+```card
 {
   "type": "columns",
   "props": {},
   "content": "{\n  \"columns\": 3,\n  \"cards\": [\n    {\n      \"type\": \"success\",\n      \"props\": {\n        \"title\": \"Project Success\",\n        \"description\": \"Consistent delivery excellence\",\n        \"icon\": \"target\",\n        \"badges\": \"On-Time Delivery, Quality Assurance\"\n      },\n      \"content\": \"98% on-time delivery rate.\"\n    },\n    {\n      \"type\": \"tech\",\n      \"props\": {\n        \"title\": \"Cloud Expertise\",\n        \"description\": \"Modern platform mastery\",\n        \"icon\": \"cloud\",\n        \"badges\": \"Azure, Cloudflare, GitHub Actions\"\n      },\n      \"content\": \"Specialized in cloud-native architectures.\"\n    },\n    {\n      \"type\": \"warning\",\n      \"props\": {\n        \"title\": \"Security First\",\n        \"description\": \"Enterprise-grade protection\",\n        \"icon\": \"shield\",\n        \"badges\": \"Zero-Trust, Compliance\"\n      },\n      \"content\": \"Zero-trust principles with audit trails.\"\n    }\n  ]\n}"
 }
 ```
+````
 
 ## Badges System
 
 All card types now support a unified badges system that provides consistent styling and multi-colored display:
 
 ### Badge Format
+
 - **String format**: `"badges": "Badge 1, Badge 2, Badge 3"`
 - **Array format**: `"badges": ["Badge 1", "Badge 2", "Badge 3"]`
 
 ### Badge Colors
+
 Badges automatically cycle through a predefined color palette:
+
 - **Blue**: Professional certifications and credentials
-- **Green**: Success metrics and achievements  
+- **Green**: Success metrics and achievements
 - **Orange**: Technical skills and expertise
 - **Red**: Security and compliance focus
 - **Purple**: Innovation and emerging technologies
 
 ### Badge Usage Examples
+
 ```markdown
 // Success Card
 "badges": "On-Time Delivery, Client Satisfaction, Quality Assurance"
@@ -325,14 +343,18 @@ All cards are designed to integrate with your teal-blue brand:
 ## Content Formats
 
 ### Stats Card Content
+
 Use colon-separated format:
+
 ```
 Label: Value
 Another Label: Another Value
 ```
 
 ### Timeline Card Content
+
 Use pipe-separated format:
+
 ```
 Date | Title | Description | Badge
 ```
@@ -340,10 +362,11 @@ Date | Title | Description | Badge
 ## Examples in Practice
 
 ### About Page Enhancement
-```markdown
+
+````markdown
 ## Professional Focus
 
-``` card
+```card
 {
   "type": "hero-profile",
   "props": {
@@ -357,16 +380,19 @@ Date | Title | Description | Badge
   "content": "Experienced technical project manager with a proven track record of leading complex digital transformation initiatives."
 }
 ```
+````
 
 ### Multi-Column Showcase
-```markdown
-``` card
+
+````markdown
+```card
 {
   "type": "columns",
   "props": {},
   "content": "{\n  \"columns\": 2,\n  \"cards\": [\n    {\n      \"type\": \"tech\",\n      \"props\": {\n        \"title\": \"ERP & SaaS\",\n        \"description\": \"Enterprise system integration\",\n        \"icon\": \"database\",\n        \"badges\": \"NetSuite, Ramp, Vena, Box\"\n      },\n      \"content\": \"Modernizing legacy ERP systems with cloud-native integrations.\"\n    },\n    {\n      \"type\": \"tech\",\n      \"props\": {\n        \"title\": \"Cloud Platforms\",\n        \"description\": \"Edge computing and automation\",\n        \"icon\": \"cloud\",\n        \"badges\": \"Azure, Cloudflare, GitHub Actions\"\n      },\n      \"content\": \"Building scalable, secure cloud architectures with AI-augmented workflows.\"\n    }\n  ]\n}"
 }
 ```
+````
 
 ## Styling
 
@@ -399,6 +425,7 @@ The custom card syntax is automatically processed when rendering markdown conten
 ## Troubleshooting
 
 If a card doesn't render correctly:
+
 1. **Check the syntax spacing** - Ensure there's a space between backticks and "card" (```` card`)
 2. Check the JSON syntax - ensure proper brackets and braces
 3. Verify prop values are properly quoted
@@ -408,7 +435,8 @@ If a card doesn't render correctly:
 7. Verify that badges are properly formatted as comma-separated strings or arrays
 
 **Common Issues:**
-- **Cards not rendering**: Make sure to use ```` card` (with space) not ````card`
+
+- **Cards not rendering**: Make sure to use ``card` (with space) not``card`
 - **Monospaced fonts**: This issue has been resolved with comprehensive CSS overrides
 - **Badge styling**: All badges now use proper sans-serif fonts with automatic color cycling
 
