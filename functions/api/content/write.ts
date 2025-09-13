@@ -15,16 +15,21 @@ export async function onRequest(context: { request: Request; env: Env }) {
     const { key, content, etag } = await request.json();
 
     if (!key || !content) {
-      return Response.json({ error: 'Key and content required' }, { status: 400 });
+      return Response.json(
+        { error: 'Key and content required' },
+        { status: 400 }
+      );
     }
 
     // Security: Ensure key is under allowed directories and filename is safe
     const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
       .split(',')
-      .map((s) => s.trim())
+      .map(s => s.trim())
       .filter(Boolean);
 
-    const isAllowed = allowedDirs.some((d) => key === `${d}` || key.startsWith(`${d}/`));
+    const isAllowed = allowedDirs.some(
+      d => key === `${d}` || key.startsWith(`${d}/`)
+    );
     if (!isAllowed) {
       return Response.json({ error: 'Invalid key' }, { status: 400 });
     }
@@ -46,10 +51,13 @@ export async function onRequest(context: { request: Request; env: Env }) {
     if (etag) {
       const existing = await env.R2_CONTENT.get(key);
       if (existing && existing.etag !== etag) {
-        return Response.json({
-          code: 'etag_conflict',
-          error: 'Object has been modified'
-        }, { status: 409 });
+        return Response.json(
+          {
+            code: 'etag_conflict',
+            error: 'Object has been modified',
+          },
+          { status: 409 }
+        );
       }
     }
 

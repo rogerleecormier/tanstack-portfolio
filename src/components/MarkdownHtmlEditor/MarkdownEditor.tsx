@@ -10,7 +10,11 @@ interface MarkdownEditorProps {
   onTypingStateChange?: (isTyping: boolean) => void;
 }
 
-export function MarkdownEditor({ initialMarkdown = '', onChange, onTypingStateChange }: MarkdownEditorProps) {
+export function MarkdownEditor({
+  initialMarkdown = '',
+  onChange,
+  onTypingStateChange,
+}: MarkdownEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -18,28 +22,31 @@ export function MarkdownEditor({ initialMarkdown = '', onChange, onTypingStateCh
   const lastValueRef = useRef(initialMarkdown);
   const isInitializedRef = useRef(false);
 
-  const debouncedOnChange = useCallback((value: string) => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    // Set typing state
-    setIsTyping(true);
-    onTypingStateChange?.(true);
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      // Store the current value for external use
-      lastValueRef.current = value;
-
-      // Only call onChange if value has actually changed from the initial state
-      if (value !== initialMarkdown) {
-        onChange(value);
+  const debouncedOnChange = useCallback(
+    (value: string) => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
       }
 
-      setIsTyping(false);
-      onTypingStateChange?.(false);
-    }, 300); // 300ms debounce
-  }, [onChange, onTypingStateChange, initialMarkdown]);
+      // Set typing state
+      setIsTyping(true);
+      onTypingStateChange?.(true);
+
+      debounceTimeoutRef.current = setTimeout(() => {
+        // Store the current value for external use
+        lastValueRef.current = value;
+
+        // Only call onChange if value has actually changed from the initial state
+        if (value !== initialMarkdown) {
+          onChange(value);
+        }
+
+        setIsTyping(false);
+        onTypingStateChange?.(false);
+      }, 300); // 300ms debounce
+    },
+    [onChange, onTypingStateChange, initialMarkdown]
+  );
 
   // Initialize CodeMirror once on mount. Do NOT re-create when props change,
   // otherwise focus/selection will be lost on parent re-renders.
@@ -52,7 +59,7 @@ export function MarkdownEditor({ initialMarkdown = '', onChange, onTypingStateCh
         markdown(),
         oneDark,
         EditorView.lineWrapping,
-        EditorView.updateListener.of((update) => {
+        EditorView.updateListener.of(update => {
           if (update.docChanged) {
             debouncedOnChange(update.state.doc.toString());
           }
@@ -61,7 +68,12 @@ export function MarkdownEditor({ initialMarkdown = '', onChange, onTypingStateCh
         EditorView.theme({
           '&': { height: '100%' },
           '.cm-scroller': { height: '100%', overflow: 'auto' },
-          '.cm-content': { minHeight: '100%', whiteSpace: 'pre-wrap', wordWrap: 'break-word', overflowWrap: 'anywhere' }
+          '.cm-content': {
+            minHeight: '100%',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+            overflowWrap: 'anywhere',
+          },
         }),
       ],
     });
@@ -106,7 +118,12 @@ export function MarkdownEditor({ initialMarkdown = '', onChange, onTypingStateCh
 
   useEffect(() => {
     // Only update if this is an external change AND we're not currently typing
-    if (viewRef.current && isInitializedRef.current && !isTyping && initialMarkdown !== viewRef.current.state.doc.toString()) {
+    if (
+      viewRef.current &&
+      isInitializedRef.current &&
+      !isTyping &&
+      initialMarkdown !== viewRef.current.state.doc.toString()
+    ) {
       // Store the current selection state before updating
       const currentSelection = viewRef.current.state.selection;
 
@@ -123,7 +140,7 @@ export function MarkdownEditor({ initialMarkdown = '', onChange, onTypingStateCh
         if (viewRef.current) {
           viewRef.current.focus();
           viewRef.current.dispatch({
-            selection: currentSelection
+            selection: currentSelection,
           });
         }
       });
@@ -142,13 +159,11 @@ export function MarkdownEditor({ initialMarkdown = '', onChange, onTypingStateCh
   return (
     <div
       ref={editorRef}
-      className="h-full w-full overflow-hidden"
+      className='size-full overflow-hidden'
       style={{
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
       }}
     />
   );
 }
-
-

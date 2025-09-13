@@ -2,7 +2,7 @@
 # Handles blog subscription management and email notifications
 
 name = "tanstack-portfolio-blog-subscription"
-main = "workers/blog-subscription-worker.js"
+main = "../workers/blog-subscription-worker.js"
 compatibility_date = "2024-01-01"
 
 # Environment variables

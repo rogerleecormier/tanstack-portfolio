@@ -1,5 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { UserProfilesAPI, UserMedication, MedicationType } from '@/api/userProfiles';
+import {
+  UserProfilesAPI,
+  UserMedication,
+  MedicationType,
+} from '@/api/userProfiles';
 
 // Query keys for medications
 export const medicationKeys = {
@@ -17,7 +21,9 @@ export const useMedicationTypes = () => {
     queryKey: medicationKeys.types(),
     queryFn: async () => {
       // Fetch medication types from the API
-      const response = await fetch('https://healthbridge-enhanced.rcormier.workers.dev/api/v2/medication-types');
+      const response = await fetch(
+        'https://healthbridge-enhanced.rcormier.workers.dev/api/v2/medication-types'
+      );
       if (!response.ok) {
         throw new Error(`Failed to fetch medication types: ${response.status}`);
       }
@@ -46,14 +52,16 @@ export const useMedicationMutation = () => {
 
   return useMutation({
     mutationFn: UserProfilesAPI.updateUserMedication,
-    onSuccess: (updatedMedication) => {
+    onSuccess: updatedMedication => {
       // Update the medications list cache
       queryClient.setQueryData(
         medicationKeys.list(updatedMedication.user_id),
         (old: UserMedication[] = []) => {
           const existing = old.find(m => m.id === updatedMedication.id);
           if (existing) {
-            return old.map(m => m.id === updatedMedication.id ? updatedMedication : m);
+            return old.map(m =>
+              m.id === updatedMedication.id ? updatedMedication : m
+            );
           } else {
             return [...old, updatedMedication];
           }
@@ -71,7 +79,7 @@ export const useMedicationMutation = () => {
         queryKey: medicationKeys.lists(),
       });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Medication mutation failed:', error);
       // You could add toast notifications here
     },
@@ -88,7 +96,7 @@ export const useDeleteMedication = () => {
       // Remove from all medication lists
       queryClient.setQueryData(
         medicationKeys.lists(),
-        (old: UserMedication[][] = []) => 
+        (old: UserMedication[][] = []) =>
           old.map(list => list.filter(m => m.id !== medicationId))
       );
 
@@ -102,7 +110,7 @@ export const useDeleteMedication = () => {
         queryKey: medicationKeys.lists(),
       });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error deleting medication:', error);
     },
   });

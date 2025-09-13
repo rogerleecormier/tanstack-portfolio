@@ -12,6 +12,12 @@ binding = "AI"
 # Example: "http://localhost:5173,https://rcormier.dev"
 ALLOWED_ORIGINS = "http://localhost:5173,https://*.rcormier.dev,https://*.tanstack-portfolio.pages.dev"
 
+# KV cache for similar content
+[[kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id"  # Replace with actual KV namespace ID
+preview_id = "your-preview-kv-namespace-id"  # Replace with actual preview KV namespace ID
+
 [observability]
 enabled = true
 # 0.0-1.0 sampling for traces; 1.0 = sample all

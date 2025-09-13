@@ -1,10 +1,10 @@
 // Lightweight HTML -> Markdown conversion using Turndown with GFM
 // We keep the converter here so both editors can share it.
 // Types are provided via local ambient declarations in src/types.
-import TurndownService from 'turndown'
-import { gfm } from 'turndown-plugin-gfm'
+import TurndownService from 'turndown';
+import { gfm } from 'turndown-plugin-gfm';
 
-let td: TurndownService | null = null
+let td: TurndownService | null = null;
 
 export function htmlToMarkdown(html: string): string {
   if (!td) {
@@ -14,17 +14,16 @@ export function htmlToMarkdown(html: string): string {
       bulletListMarker: '-',
       emDelimiter: '*',
       strongDelimiter: '**',
-    })
+    });
     // Enable GFM features like tables/strikethrough/task lists
-    td.use(gfm)
+    td.use(gfm);
     // Preserve line breaks inside paragraphs similar to GitHub
     td.addRule('breaks', {
       filter: ['br'],
       replacement() {
-        return '  \n'
+        return '  \n';
       },
-    })
+    });
   }
-  return td.turndown(html)
+  return td.turndown(html);
 }
-

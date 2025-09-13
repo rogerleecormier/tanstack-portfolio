@@ -25,7 +25,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
-    
+
     /* Refined Teal-Blue Color System - Darker, More Professional */
     --brand-primary: 180 100% 25%; /* teal-800 - Deep teal */
     --brand-primary-light: 180 100% 35%; /* teal-700 */
@@ -36,20 +36,46 @@
     --brand-accent: 25 95% 45%; /* orange-600 - Target orange */
     --brand-accent-light: 25 95% 55%; /* orange-500 */
     --brand-accent-dark: 25 95% 35%; /* orange-700 */
-    
+
     /* Refined Background Gradients - More Subtle and Professional */
-    --gradient-primary: linear-gradient(135deg, hsl(180 100% 98%) 0%, hsl(217 91% 98%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(180 100% 96%) 0%, hsl(217 91% 96%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(180 100% 25%) 0%, hsl(217 91% 35%) 100%);
-    --gradient-target: linear-gradient(135deg, hsl(25 95% 45%) 0%, hsl(180 100% 25%) 100%);
-    
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(180 100% 98%) 0%,
+      hsl(217 91% 98%) 100%
+    );
+    --gradient-secondary: linear-gradient(
+      135deg,
+      hsl(180 100% 96%) 0%,
+      hsl(217 91% 96%) 100%
+    );
+    --gradient-accent: linear-gradient(
+      135deg,
+      hsl(180 100% 25%) 0%,
+      hsl(217 91% 35%) 100%
+    );
+    --gradient-target: linear-gradient(
+      135deg,
+      hsl(25 95% 45%) 0%,
+      hsl(180 100% 25%) 100%
+    );
+
     /* Signature Brand Gradient - For Key Elements */
-    --gradient-signature: linear-gradient(135deg, hsl(180 100% 25%) 0%, hsl(217 91% 35%) 100%);
-    
+    --gradient-signature: linear-gradient(
+      135deg,
+      hsl(180 100% 25%) 0%,
+      hsl(217 91% 35%) 100%
+    );
+
     /* Subtle Pattern Overlays */
-    --pattern-dots: radial-gradient(circle at 1px 1px, hsl(168 100% 90%) 1px, transparent 0);
-    --pattern-grid: linear-gradient(hsl(168 100% 95%) 1px, transparent 1px), linear-gradient(90deg, hsl(168 100% 95%) 1px, transparent 1px);
-    
+    --pattern-dots: radial-gradient(
+      circle at 1px 1px,
+      hsl(168 100% 90%) 1px,
+      transparent 0
+    );
+    --pattern-grid:
+      linear-gradient(hsl(168 100% 95%) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(168 100% 95%) 1px, transparent 1px);
+
     /* Teal-themed sidebar colors */
     --sidebar-background: 168 100% 97%; /* teal-50 */
     --sidebar-foreground: 168 100% 20%; /* teal-900 */
@@ -81,7 +107,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    
+
     /* Dark mode refined color system */
     --brand-primary: 180 100% 60%; /* dark teal-400 */
     --brand-primary-light: 180 100% 70%; /* dark teal-300 */
@@ -92,20 +118,46 @@
     --brand-accent: 25 95% 65%; /* dark orange-400 */
     --brand-accent-light: 25 95% 75%; /* dark orange-300 */
     --brand-accent-dark: 25 95% 55%; /* dark orange-500 */
-    
+
     /* Dark mode gradients - Refined */
-    --gradient-primary: linear-gradient(135deg, hsl(180 100% 8%) 0%, hsl(217 91% 8%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(180 100% 12%) 0%, hsl(217 91% 12%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(180 100% 60%) 0%, hsl(217 91% 60%) 100%);
-    --gradient-target: linear-gradient(135deg, hsl(25 95% 65%) 0%, hsl(180 100% 60%) 100%);
-    
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(180 100% 8%) 0%,
+      hsl(217 91% 8%) 100%
+    );
+    --gradient-secondary: linear-gradient(
+      135deg,
+      hsl(180 100% 12%) 0%,
+      hsl(217 91% 12%) 100%
+    );
+    --gradient-accent: linear-gradient(
+      135deg,
+      hsl(180 100% 60%) 0%,
+      hsl(217 91% 60%) 100%
+    );
+    --gradient-target: linear-gradient(
+      135deg,
+      hsl(25 95% 65%) 0%,
+      hsl(180 100% 60%) 100%
+    );
+
     /* Dark mode signature gradient */
-    --gradient-signature: linear-gradient(135deg, hsl(180 100% 50%) 0%, hsl(217 91% 55%) 100%);
-    
+    --gradient-signature: linear-gradient(
+      135deg,
+      hsl(180 100% 50%) 0%,
+      hsl(217 91% 55%) 100%
+    );
+
     /* Dark mode patterns */
-    --pattern-dots: radial-gradient(circle at 1px 1px, hsl(168 100% 20%) 1px, transparent 0);
-    --pattern-grid: linear-gradient(hsl(168 100% 15%) 1px, transparent 1px), linear-gradient(90deg, hsl(168 100% 15%) 1px, transparent 1px);
-    
+    --pattern-dots: radial-gradient(
+      circle at 1px 1px,
+      hsl(168 100% 20%) 1px,
+      transparent 0
+    );
+    --pattern-grid:
+      linear-gradient(hsl(168 100% 15%) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(168 100% 15%) 1px, transparent 1px);
+
     /* Dark mode teal sidebar colors */
     --sidebar-background: 168 100% 10%; /* dark teal-900 */
     --sidebar-foreground: 168 100% 90%; /* dark teal-100 */
@@ -120,50 +172,50 @@
   * {
     @apply border-border;
   }
-  
+
   /* HTML content styling for search results */
   .content-code-block {
-    @apply bg-gray-100 dark:bg-gray-800 rounded p-2 my-2 font-mono text-sm;
+    @apply my-2 rounded bg-gray-100 p-2 font-mono text-sm dark:bg-gray-800;
   }
-  
+
   .inline-code {
-    @apply bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 font-mono text-sm;
+    @apply rounded bg-gray-100 px-1 py-0.5 font-mono text-sm dark:bg-gray-800;
   }
-  
+
   .content-link {
-    @apply text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300;
+    @apply text-blue-600 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
   }
-  
+
   .content-list {
     @apply my-2 ml-4;
   }
-  
+
   .content-list-item {
     @apply my-1;
   }
-  
+
   .content-blockquote {
-    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 my-2 italic text-gray-700 dark:text-gray-300;
+    @apply my-2 border-l-4 border-gray-300 pl-4 italic text-gray-700 dark:border-gray-600 dark:text-gray-300;
   }
-  
+
   .content-table {
-    @apply w-full border-collapse border border-gray-300 dark:border-gray-600 my-2;
+    @apply my-2 w-full border-collapse border border-gray-300 dark:border-gray-600;
   }
-  
+
   .content-table-row {
     @apply border-b border-gray-300 dark:border-gray-600;
   }
-  
+
   .content-table-cell {
-    @apply border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm;
+    @apply border border-gray-300 px-2 py-1 text-sm dark:border-gray-600;
   }
-  
+
   .content-heading {
-    @apply font-semibold text-gray-900 dark:text-gray-100 my-2;
+    @apply my-2 font-semibold text-gray-900 dark:text-gray-100;
   }
-  
+
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background font-sans text-foreground;
   }
 }
 
@@ -172,73 +224,73 @@
   .brand-gradient {
     background: var(--gradient-primary);
   }
-  
+
   .brand-gradient-secondary {
     background: var(--gradient-secondary);
   }
-  
+
   .brand-gradient-accent {
     background: var(--gradient-accent);
   }
-  
+
   .brand-gradient-signature {
     background: var(--gradient-signature);
   }
-  
+
   .brand-gradient-target {
     background: var(--gradient-target);
   }
-  
+
   .brand-pattern-dots {
     background: var(--pattern-dots);
     background-size: 20px 20px;
   }
-  
+
   .brand-pattern-grid {
     background: var(--pattern-grid);
     background-size: 20px 20px;
   }
-  
+
   .brand-card {
-    @apply bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 border border-teal-200 dark:border-teal-800 shadow-sm;
+    @apply border border-teal-200 bg-gradient-to-br from-teal-50 to-blue-50 shadow-sm dark:border-teal-800 dark:from-teal-950 dark:to-blue-950;
   }
-  
+
   .brand-button-primary {
-    @apply bg-teal-800 hover:bg-teal-900 text-white focus:ring-teal-700 focus:ring-2 focus:ring-offset-2 transition-all duration-200;
+    @apply bg-teal-800 text-white transition-all duration-200 hover:bg-teal-900 focus:ring-2 focus:ring-teal-700 focus:ring-offset-2;
   }
-  
+
   .brand-button-secondary {
-    @apply bg-blue-800 hover:bg-blue-900 text-white focus:ring-blue-700 focus:ring-2 focus:ring-offset-2 transition-all duration-200;
+    @apply bg-blue-800 text-white transition-all duration-200 hover:bg-blue-900 focus:ring-2 focus:ring-blue-700 focus:ring-offset-2;
   }
-  
+
   .brand-button-target {
-    @apply bg-orange-600 hover:bg-orange-700 text-white focus:ring-orange-500 focus:ring-2 focus:ring-offset-2 transition-all duration-200;
+    @apply bg-orange-600 text-white transition-all duration-200 hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2;
   }
-  
+
   .brand-text-primary {
     @apply text-teal-800 dark:text-teal-400;
   }
-  
+
   .brand-text-secondary {
     @apply text-blue-800 dark:text-blue-400;
   }
-  
+
   .brand-text-target {
     @apply text-orange-600 dark:text-orange-400;
   }
-  
+
   .brand-border-primary {
     @apply border-teal-200 dark:border-teal-800;
   }
-  
+
   .brand-border-secondary {
     @apply border-blue-200 dark:border-blue-800;
   }
-  
+
   .brand-bg-primary {
     @apply bg-teal-50 dark:bg-teal-950;
   }
-  
+
   .brand-bg-secondary {
     @apply bg-blue-50 dark:bg-blue-950;
   }
@@ -247,52 +299,52 @@
   .spacing-section {
     @apply py-4 md:py-6;
   }
-  
+
   .spacing-component {
     @apply p-5;
   }
-  
+
   .spacing-card {
     @apply p-5;
   }
-  
+
   .spacing-gap {
     @apply gap-3;
   }
-  
+
   .spacing-gap-lg {
     @apply gap-6;
   }
 
   /* Header name styling */
   .header-name {
-    @apply font-black tracking-tighter font-sans;
+    @apply font-sans font-black tracking-tighter;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .header-tagline {
-    @apply font-medium tracking-wide font-sans;
+    @apply font-sans font-medium tracking-wide;
   }
 
   /* Mobile sidebar overlay styling */
   @media (max-width: 768px) {
-    [data-sidebar="sidebar"] {
+    [data-sidebar='sidebar'] {
       @apply fixed z-50;
       transition: transform 200ms ease-in-out;
     }
-    
-    [data-sidebar="sidebar"][data-state="expanded"] {
+
+    [data-sidebar='sidebar'][data-state='expanded'] {
       @apply translate-x-0;
     }
-    
-    [data-sidebar="sidebar"][data-state="collapsed"] {
+
+    [data-sidebar='sidebar'][data-state='collapsed'] {
       @apply -translate-x-full;
     }
   }
-  
+
   /* Desktop sidebar fixed positioning */
   @media (min-width: 769px) {
-    [data-sidebar="sidebar"] {
+    [data-sidebar='sidebar'] {
       @apply relative;
       transform: none !important;
     }
@@ -304,46 +356,46 @@
     padding-left: 1.5rem;
     margin: 0.5rem 0;
   }
-  
+
   .ProseMirror ol {
     list-style-type: decimal;
     padding-left: 1.5rem;
     margin: 0.5rem 0;
   }
-  
+
   .ProseMirror li {
     margin: 0.5rem 0;
     display: block;
   }
-  
+
   .ProseMirror li::marker {
     color: hsl(var(--foreground));
     font-weight: 500;
   }
-  
+
   /* Ensure list markers are visible */
   .ProseMirror ul li::marker {
-    content: "•";
+    content: '•';
     color: hsl(var(--foreground));
   }
-  
+
   .ProseMirror ol li::marker {
-    content: counter(list-item) ".";
+    content: counter(list-item) '.';
     color: hsl(var(--foreground));
   }
-  
+
   /* Override any potential list-style: none */
   .ProseMirror ul,
   .ProseMirror ol {
     list-style: revert !important;
   }
-  
+
   /* Additional TipTap list styling */
   .ProseMirror .ProseMirror-focused ul,
   .ProseMirror .ProseMirror-focused ol {
     list-style: revert !important;
   }
-  
+
   /* Force list display */
   .ProseMirror ul li,
   .ProseMirror ol li {
@@ -351,42 +403,43 @@
     margin-left: 0;
     padding-left: 0.5rem;
   }
-  
+
   /* Debug: Make sure lists are visible */
   .ProseMirror ul,
   .ProseMirror ol {
     border: 1px solid transparent;
     min-height: 1em;
   }
-  
+
   /* More specific list styling */
   .ProseMirror .list-disc {
     list-style-type: disc;
   }
-  
+
   .ProseMirror .list-decimal {
     list-style-type: decimal;
   }
-  
+
   /* Ensure list items are properly displayed */
   .ProseMirror li {
     list-style-position: outside;
     margin-left: 0;
     padding-left: 0.5rem;
   }
-  
+
   /* Override any global list resets */
   .ProseMirror * {
     list-style: inherit !important;
   }
-  
+
   .ProseMirror ul,
   .ProseMirror ol {
     list-style: revert !important;
   }
 
   /* Ensure proper scrolling behavior */
-  html, body {
+  html,
+  body {
     @apply overflow-x-hidden;
     scroll-behavior: smooth;
   }
@@ -417,7 +470,7 @@
   }
 
   .search-results-container::-webkit-scrollbar-thumb {
-    @apply bg-muted rounded;
+    @apply rounded bg-muted;
   }
 
   .search-results-container::-webkit-scrollbar-thumb:hover {
@@ -425,64 +478,72 @@
   }
 
   /* Fix sidebar positioning to start below fixed header */
-  [data-sidebar="sidebar"] {
+  [data-sidebar='sidebar'] {
     @apply top-24 h-[calc(100vh-6rem)];
-    background: linear-gradient(135deg, hsl(168 100% 97%) 0%, hsl(199 89% 97%) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(168 100% 97%) 0%,
+      hsl(199 89% 97%) 100%
+    );
     overflow-y: auto;
   }
-  
+
   /* Ultra-compact sidebar content spacing */
-  [data-sidebar="sidebar"] .sidebar-content {
+  [data-sidebar='sidebar'] .sidebar-content {
     @apply gap-0.5;
   }
-  
+
   /* Minimal spacing between sidebar groups */
-  [data-sidebar="sidebar"] [data-sidebar="group"] {
+  [data-sidebar='sidebar'] [data-sidebar='group'] {
     @apply mb-0.5;
   }
-  
+
   /* Compact sidebar menu items */
-  [data-sidebar="sidebar"] [data-sidebar="menu"] {
+  [data-sidebar='sidebar'] [data-sidebar='menu'] {
     @apply space-y-0;
   }
-  
+
   /* Minimal sidebar group labels */
-  [data-sidebar="sidebar"] [data-sidebar="group-label"] {
-    @apply text-xs font-medium py-0.5 px-2;
+  [data-sidebar='sidebar'] [data-sidebar='group-label'] {
+    @apply px-2 py-0.5 text-xs font-medium;
   }
-  
+
   /* Ultra-compact sidebar menu items */
-  [data-sidebar="sidebar"] [data-sidebar="menu-item"] {
+  [data-sidebar='sidebar'] [data-sidebar='menu-item'] {
     @apply py-0.5;
   }
-  
+
   /* Dark mode sidebar background */
-  .dark [data-sidebar="sidebar"] {
-    background: linear-gradient(135deg, hsl(168 100% 10%) 0%, hsl(199 89% 10%) 100%);
+  .dark [data-sidebar='sidebar'] {
+    background: linear-gradient(
+      135deg,
+      hsl(168 100% 10%) 0%,
+      hsl(199 89% 10%) 100%
+    );
   }
-  
+
   /* Mobile sidebar positioning fix */
-  [data-mobile="true"][data-sidebar="sidebar"] {
+  [data-mobile='true'][data-sidebar='sidebar'] {
     @apply top-0 h-screen;
   }
-  
+
   /* Enhanced sidebar hover effects */
-  [data-sidebar="sidebar"] .group:hover {
+  [data-sidebar='sidebar'] .group:hover {
     transform: translateX(2px);
   }
-  
+
   /* Smooth transitions for sidebar interactions */
-  [data-sidebar="sidebar"] * {
+  [data-sidebar='sidebar'] * {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   /* Fix sidebar gap positioning for desktop */
-  .group[data-side="left"] > div:first-child {
+  .group[data-side='left'] > div:first-child {
     @apply mt-0;
   }
-  
+
   /* Ensure sidebar content doesn't overlap header */
-  .group[data-side="left"] > div:last-child {
+  .group[data-side='left'] > div:last-child {
     @apply mt-0;
   }
 
@@ -493,7 +554,7 @@
 
   /* Ensure text wrapping in cards */
   .card-content {
-    @apply break-words hyphens-auto max-w-full;
+    @apply max-w-full hyphens-auto break-words;
   }
 
   .card-content p,
@@ -502,31 +563,31 @@
   .card-content strong,
   .card-content em,
   .card-content li {
-    @apply break-words hyphens-auto max-w-full whitespace-normal;
+    @apply max-w-full hyphens-auto whitespace-normal break-words;
   }
 
   /* Fix markdown card content styling */
   .markdown-card-content {
-    @apply break-words whitespace-normal text-base leading-relaxed font-sans;
+    @apply whitespace-normal break-words font-sans text-base leading-relaxed;
   }
 
   .markdown-card-content * {
-    @apply break-words whitespace-normal;
+    @apply whitespace-normal break-words;
   }
 
   /* Override any pre/code styling that might be applied */
   .markdown-card-content pre,
   .markdown-card-content code {
-    @apply font-sans whitespace-normal break-words;
+    @apply whitespace-normal break-words font-sans;
   }
 
   /* Ensure hero-profile card content is properly styled */
   .hero-profile-content {
-    @apply break-words whitespace-normal text-base leading-relaxed font-sans;
+    @apply whitespace-normal break-words font-sans text-base leading-relaxed;
   }
 
   .hero-profile-content * {
-    @apply break-words whitespace-normal;
+    @apply whitespace-normal break-words;
   }
 
   /* Add missing overflow-wrap-break-word class */
@@ -541,7 +602,7 @@
   .card-header,
   .card-content,
   .card-footer {
-    @apply break-words whitespace-normal;
+    @apply whitespace-normal break-words;
   }
 
   /* Specific text wrapping for card titles and descriptions */
@@ -552,20 +613,20 @@
   .card .card-description,
   .card p,
   .card div {
-    @apply break-words whitespace-normal overflow-wrap-break-word;
+    @apply overflow-wrap-break-word whitespace-normal break-words;
   }
 
   /* Ensure feature cards have proper text wrapping */
   .feature-card .card-content,
   .tech-card .card-content,
   .info-card .card-content {
-    @apply break-words whitespace-normal overflow-wrap-break-word;
+    @apply overflow-wrap-break-word whitespace-normal break-words;
   }
 
   /* Target all card content areas */
-  [class*="card"] .card-content,
-  [class*="Card"] .card-content {
-    @apply break-words whitespace-normal overflow-wrap-break-word;
+  [class*='card'] .card-content,
+  [class*='Card'] .card-content {
+    @apply overflow-wrap-break-word whitespace-normal break-words;
   }
 
   /* Reduce top margin from h2 in hero-profile cards */
@@ -575,7 +636,7 @@
 
   /* Control pre tag styling in hero-profile cards */
   .hero-profile-card pre {
-    @apply mt-0 mb-0 p-0 bg-transparent border-none rounded-none shadow-none m-0;
+    @apply m-0 mb-0 mt-0 rounded-none border-none bg-transparent p-0 shadow-none;
     background-image: none !important;
   }
 
@@ -583,13 +644,13 @@
   .hero-profile-content p,
   .hero-profile-content h2,
   .hero-profile-content h3 {
-    @apply break-words whitespace-normal max-w-full;
+    @apply max-w-full whitespace-normal break-words;
   }
 
   /* Target the specific tagline paragraph in CardHeader */
   .hero-profile-content .text-lg.text-teal-600,
   .hero-profile-content .text-lg.text-teal-400 {
-    @apply break-words whitespace-normal max-w-full leading-tight;
+    @apply max-w-full whitespace-normal break-words leading-tight;
   }
 
   /* Remove all backgrounds from hero-profile cards and their containers */
@@ -603,7 +664,7 @@
 
   /* Remove any box-shadow or border-radius that might create the card appearance */
   .hero-profile-card .card {
-    @apply shadow-none rounded-none;
+    @apply rounded-none shadow-none;
   }
 
   /* Target parent containers that might have backgrounds */
@@ -617,7 +678,7 @@
   .about-page-content,
   .page-content,
   .content-area,
-  [data-page="about"],
+  [data-page='about'],
   main,
   article,
   section {
@@ -641,7 +702,7 @@
 
   /* Specifically target badges and colored elements */
   .hero-profile-card .badge,
-  .hero-profile-card [class*="badge"],
+  .hero-profile-card [class*='badge'],
   .hero-profile-card .bg-blue-100,
   .hero-profile-card .bg-green-100,
   .hero-profile-card .bg-orange-100,
@@ -668,7 +729,7 @@
 
   /* Specifically target badges and colored elements inside pre tags */
   .hero-profile-card pre .badge,
-  .hero-profile-card pre [class*="badge"],
+  .hero-profile-card pre [class*='badge'],
   .hero-profile-card pre .bg-blue-100,
   .hero-profile-card pre .bg-green-100,
   .hero-profile-card pre .bg-orange-100,
@@ -715,16 +776,16 @@
   .card *,
   .card *::before,
   .card *::after,
-  [class*="Card"],
-  [class*="Card"] *,
-  [class*="Card"] *::before,
-  [class*="Card"] *::after {
+  [class*='Card'],
+  [class*='Card'] *,
+  [class*='Card'] *::before,
+  [class*='Card'] *::after {
     @apply font-sans;
   }
 
   /* Specifically target badges in all cards */
   .badge,
-  [class*="badge"],
+  [class*='badge'],
   .bg-blue-100,
   .bg-green-100,
   .bg-orange-100,
@@ -752,29 +813,27 @@
   /* Target specific card title and description components */
   .card-title,
   .card-description,
-  [class*="card-title"],
-  [class*="card-description"],
+  [class*='card-title'],
+  [class*='card-description'],
   .CardTitle,
   .CardDescription,
-  [class*="CardTitle"],
-  [class*="CardDescription"] {
+  [class*='CardTitle'],
+  [class*='CardDescription'] {
     @apply font-sans;
   }
 
-
-
   /* Target all possible badge variations */
   .badge,
-  [class*="badge"],
+  [class*='badge'],
   .Badge,
-  [class*="Badge"],
+  [class*='Badge'],
   [data-radix-collection-item],
-  [class*="border-green-200"],
-  [class*="border-orange-200"],
-  [class*="border-blue-200"],
-  [class*="text-green-700"],
-  [class*="text-orange-700"],
-  [class*="text-blue-700"] {
+  [class*='border-green-200'],
+  [class*='border-orange-200'],
+  [class*='border-blue-200'],
+  [class*='text-green-700'],
+  [class*='text-orange-700'],
+  [class*='text-blue-700'] {
     @apply font-sans;
   }
 
@@ -830,39 +889,37 @@
   .card em,
   .card b,
   .card i,
-  [class*="Card"] h1,
-  [class*="Card"] h2,
-  [class*="Card"] h3,
-  [class*="Card"] h4,
-  [class*="Card"] h5,
-  [class*="Card"] h6,
-  [class*="Card"] p,
-  [class*="Card"] span,
-  [class*="Card"] div,
-  [class*="Card"] strong,
-  [class*="Card"] em,
-  [class*="Card"] b,
-  [class*="Card"] i {
+  [class*='Card'] h1,
+  [class*='Card'] h2,
+  [class*='Card'] h3,
+  [class*='Card'] h4,
+  [class*='Card'] h5,
+  [class*='Card'] h6,
+  [class*='Card'] p,
+  [class*='Card'] span,
+  [class*='Card'] div,
+  [class*='Card'] strong,
+  [class*='Card'] em,
+  [class*='Card'] b,
+  [class*='Card'] i {
     @apply font-sans;
   }
 
   /* Nuclear option: Override ALL elements in cards with !important */
   .card *,
-  [class*="Card"] *,
+  [class*='Card'] *,
   .card *::before,
   .card *::after,
-  [class*="Card"] *::before,
-  [class*="Card"] *::after {
+  [class*='Card'] *::before,
+  [class*='Card'] *::after {
     @apply font-sans;
   }
-
-
 
   /* Target specific shadcn components that might have their own font styling */
   [data-radix-collection-item],
   [data-radix-slot],
-  [class*="radix-"],
-  [class*="shadcn-"] {
+  [class*='radix-'],
+  [class*='shadcn-'] {
     @apply font-sans;
   }
 
@@ -904,7 +961,7 @@
 
   /* Prevent any layout shifts from dropdown menus */
   [data-radix-dropdown-menu-portal] {
-    @apply fixed inset-0 pointer-events-none;
+    @apply pointer-events-none fixed inset-0;
   }
 
   [data-radix-dropdown-menu-content] {
@@ -993,7 +1050,7 @@
 
 /* Blockquote Styles */
 .ProseMirror blockquote {
-  @apply border-l-2 pl-6 italic text-muted-foreground my-6;
+  @apply my-6 border-l-2 pl-6 italic text-muted-foreground;
 }
 
 /* Code Block Styles */

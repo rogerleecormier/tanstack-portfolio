@@ -56,16 +56,16 @@ export function SortableTable({ data, headers }: SortableTableProps) {
     <Table>
       <TableHeader>
         <TableRow>
-          {headers.map((header) => (
+          {headers.map(header => (
             <TableHead
               key={header}
               onClick={() => handleSort(header)}
               style={{ cursor: 'pointer' }}
-              className="select-none"
+              className='select-none'
             >
               {header}
               {sortColumn === header && (
-                <span className="ml-1">
+                <span className='ml-1'>
                   {sortDirection === 'asc' ? '↑' : '↓'}
                 </span>
               )}
@@ -77,16 +77,14 @@ export function SortableTable({ data, headers }: SortableTableProps) {
         {sortedData.length ? (
           sortedData.map((row, index) => (
             <TableRow key={index}>
-              {headers.map((header) => (
-                <TableCell key={header}>
-                  {String(row[header] ?? '')}
-                </TableCell>
+              {headers.map(header => (
+                <TableCell key={header}>{String(row[header] ?? '')}</TableCell>
               ))}
             </TableRow>
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={headers.length} className="h-24 text-center">
+            <TableCell colSpan={headers.length} className='h-24 text-center'>
               No results.
             </TableCell>
           </TableRow>

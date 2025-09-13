@@ -22,11 +22,14 @@ export async function onRequest(context: { request: Request }) {
     } else {
       return Response.json({
         ok: false,
-        errors: result.error.errors.map(err => err.message)
+        errors: result.error.errors.map(err => err.message),
       });
     }
   } catch (error) {
     console.error('Validation error:', error);
-    return Response.json({ error: 'Failed to validate frontmatter' }, { status: 500 });
+    return Response.json(
+      { error: 'Failed to validate frontmatter' },
+      { status: 500 }
+    );
   }
 }

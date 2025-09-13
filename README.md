@@ -5,6 +5,7 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 ## 🚀 Features
 
 ### Core Functionality
+
 - **Portfolio Management**: Dynamic portfolio pages with markdown content loading
 - **Blog System**: Blog posts with markdown support and frontmatter parsing
 - **Project Showcase**: Dedicated project pages with detailed information
@@ -16,6 +17,7 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 - **Responsive Design**: Mobile-first design with Tailwind CSS
 
 ### AI & Automation Features
+
 - **Contact Form Analysis**: AI-powered inquiry classification and priority assessment
 - **Content Recommendations**: Intelligent related content suggestions
 - **Portfolio Assistant**: AI-driven portfolio insights and guidance
@@ -23,6 +25,7 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 - **Newsletter Management**: Smart subscription handling with blog integration
 
 ### Security & Performance
+
 - **Cloudflare Integration**: Optimized for Cloudflare Workers and Pages
 - **Authentication**: Secure access control with rate limiting
 - **Content Security Policy**: Comprehensive security headers
@@ -34,6 +37,7 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 > 📚 **For detailed technology stack information, see [Tech Stack Documentation](./docs/TECH_STACK.md)**
 
 ### Frontend
+
 - **React 19**: Latest React with concurrent features
 - **TanStack Router**: Type-safe routing with file-based routing
 - **TypeScript**: Full type safety throughout the application
@@ -42,6 +46,7 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 - **TipTap**: Rich text editor for markdown creation
 
 ### Cloudflare Infrastructure
+
 - **Cloudflare Pages**: Static site hosting with global CDN
 - **Cloudflare R2**: Object storage for content and assets
 - **Cloudflare Workers**: Serverless functions for AI, email, and content delivery
@@ -49,12 +54,14 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 - **Cloudflare Secrets Store**: Secure environment variable management
 
 ### AI & Backend Services
+
 - **Cloudflare AI Workers**: AI-powered contact form analysis
 - **Fuse.js**: Fuzzy search implementation
 - **Gray Matter**: Markdown frontmatter parsing
 - **Resend**: Email delivery service for contact forms and blog subscriptions
 
 ### Development Tools
+
 - **Vite**: Fast build tool and development server
 - **ESLint**: Code quality and consistency
 - **PostCSS**: CSS processing and optimization
@@ -63,16 +70,19 @@ A modern, AI-enhanced portfolio website built with TanStack Router, React, and T
 
 The Content Creation Studio reads/lists from an R2 proxy worker and writes via Cloudflare Pages Functions.
 
-1) Deploy the R2 content proxy worker (one-time)
+1. Deploy the R2 content proxy worker (one-time)
+
 - `wrangler login`
 - `wrangler deploy -c wrangler/wrangler-r2-proxy.toml --env production`
 - Verify: `https://r2-content-proxy.<your-domain>.workers.dev/_list?prefix=blog/`
 
-2) Configure the app for reads via the proxy
+2. Configure the app for reads via the proxy
+
 - Create `.env.local` in the repo root:
   - `VITE_R2_PROXY_BASE=https://r2-content-proxy.<your-domain>.workers.dev`
 
-3) Choose write target
+3. Choose write target
+
 - Local Functions (dev):
   - `npm run dev:functions` (Pages Functions on :8788; binds `R2_CONTENT`)
   - `npm run dev:web` (Vite dev; proxies `/api` to :8788)
@@ -80,13 +90,15 @@ The Content Creation Studio reads/lists from an R2 proxy worker and writes via C
   - `npm run deploy:pages`
   - Add in `.env.local`: `VITE_API_PROXY_TARGET=https://<your-pages-project>.pages.dev`
 
-4) Run the app
+4. Run the app
+
 - `npm run dev:web` or `npm run dev:full`
 - Header badges indicate backend:
   - `Read: R2 Proxy` vs `Read: Functions`
   - `Write: Prod API` vs `Write: Local API`
 
-5) Production bindings (Cloudflare Pages)
+5. Production bindings (Cloudflare Pages)
+
 - R2 binding: `R2_CONTENT` → `tanstack-portfolio-r2`
 - Env vars: `ALLOWED_DIRS=blog,portfolio,projects`, `MAX_FILE_BYTES=1048576`
 - **Autoprefixer**: CSS vendor prefixing
@@ -131,24 +143,28 @@ src/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 - Cloudflare account (for production deployment)
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd tanstack-portfolio
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -193,11 +209,13 @@ The site uses several Cloudflare Workers for enhanced functionality:
 ## 🔐 Authentication
 
 ### Development Mode
+
 - Mock authentication system for local development
 - Session timeout after 30 minutes
 - Rate limiting on login attempts
 
 ### Production Mode
+
 - Cloudflare Access integration
 - Secure JWT-based authentication
 - Automatic redirect handling
@@ -205,23 +223,27 @@ The site uses several Cloudflare Workers for enhanced functionality:
 ## 📝 Content Management
 
 ### Adding Portfolio Items
+
 1. Create markdown file in `src/content/portfolio/`
 2. Add frontmatter with metadata (title, description, tags, category)
 3. Add the slug to the router configuration
 4. Content automatically appears in portfolio listings
 
 ### Adding Blog Posts
+
 1. Create markdown file in `src/content/blog/`
 2. Include frontmatter with post metadata
 3. Posts automatically appear in blog listings and search
 
 ### Markdown Editor
+
 - Rich text editing with TipTap
 - Real-time markdown preview
 - Syntax highlighting for code blocks
 - Export functionality
 
 ### Content Studio
+
 - **Secure CMS**: Cloudflare Access JWT authentication
 - **Rich Editor**: WYSIWYG, Markdown, and split-view modes
 - **Fenced Blocks**: Custom components (cards, charts, tables)
@@ -233,12 +255,14 @@ The site uses several Cloudflare Workers for enhanced functionality:
 ## 🔍 Search & Discovery
 
 ### Search Features
+
 - Full-text search across all content
 - Fuzzy matching with Fuse.js
 - Tag-based filtering
 - Content type categorization
 
 ### AI Recommendations
+
 - Intelligent content suggestions
 - Context-aware recommendations
 - Portfolio-specific insights
@@ -247,6 +271,7 @@ The site uses several Cloudflare Workers for enhanced functionality:
 ## 🤖 AI Features
 
 ### Contact Form Analysis
+
 - Automatic inquiry classification
 - Priority assessment
 - Industry identification
@@ -254,6 +279,7 @@ The site uses several Cloudflare Workers for enhanced functionality:
 - Spam detection and prevention
 
 ### Content Intelligence
+
 - Smart content recommendations
 - Portfolio insights and analysis
 - Meeting scheduling assistance
@@ -262,17 +288,20 @@ The site uses several Cloudflare Workers for enhanced functionality:
 ## 🛡️ Security Features
 
 ### Content Security Policy
+
 - Strict CSP headers
 - XSS protection
 - Frame options
 - Referrer policy
 
 ### Rate Limiting
+
 - Request throttling
 - Abuse prevention
 - IP-based limiting
 
 ### Authentication Security
+
 - Secure session management
 - JWT token handling
 - Development mode safeguards
@@ -291,17 +320,20 @@ The Content Studio is a secure, cloud-based CMS built with modern web technologi
 ### Features
 
 #### Editor Modes
+
 - **WYSIWYG**: Rich text editing with TipTap
 - **Markdown**: CodeMirror 6 with syntax highlighting
 - **Split View**: Simultaneous editing and preview
 
 #### Custom Components
+
 - **Fenced Blocks**: `card {json}`, `chart {json}`, `component:type {json}`
 - **Interactive Tables**: Sortable TanStack tables
 - **Charts**: Recharts integration (bar, line, area)
 - **Custom Components**: Extensible component registry
 
 #### Security & Performance
+
 - **JWT Authentication**: Cloudflare Access integration
 - **Content Sanitization**: rehype-sanitize with strict schema
 - **ETag Concurrency**: Prevents silent overwrites
@@ -310,6 +342,7 @@ The Content Studio is a secure, cloud-based CMS built with modern web technologi
 ### Environment Setup
 
 #### Cloudflare Pages Configuration
+
 Set these environment variables in your Cloudflare Pages project:
 
 ```bash
@@ -326,6 +359,7 @@ ACCESS_ISS = your-access-issuer
 ```
 
 #### Cloudflare Access Setup
+
 1. Enable Cloudflare Access for your domain
 2. Configure JWT tokens with user roles
 3. Set up role-based permissions (reader, author, admin)
@@ -334,16 +368,19 @@ ACCESS_ISS = your-access-issuer
 ### Usage
 
 #### Accessing the Studio
+
 - **Full Studio**: `/studio` - Complete CMS with R2 integration
 - **Markdown Only**: `/markdown` - Local editor without server features
 
 #### File Management
+
 - Browse R2 bucket contents with pagination
 - Open files with automatic frontmatter extraction
 - Save with ETag conflict resolution
 - Download files locally
 
 #### Front-matter Management
+
 - Auto-generate from content using Fuse.js
 - Validate against Zod schemas
 - Diff view before applying changes
@@ -369,6 +406,7 @@ npm run test
 ```
 
 Tests cover:
+
 - XSS sanitization (scripts, event handlers, javascript: URLs)
 - Markdown roundtrip preservation
 - Frontmatter extraction and assembly
@@ -377,12 +415,14 @@ Tests cover:
 ## 🔧 Configuration
 
 ### Environment Variables
+
 - Development vs production mode detection
 - Cloudflare Access configuration
 - API endpoint configuration
 - Security settings
 
 ### Customization
+
 - Tailwind CSS configuration
 - Component theming
 - Content structure
@@ -391,6 +431,7 @@ Tests cover:
 ## 📊 Performance
 
 ### Optimization Features
+
 - Vite build optimization
 - Code splitting
 - Lazy loading
@@ -398,6 +439,7 @@ Tests cover:
 - CSS purging
 
 ### Monitoring
+
 - Cloudflare Analytics integration
 - Performance metrics
 - Error tracking
@@ -418,6 +460,7 @@ This project is licensed under the MIT License.
 ## 🆘 Support
 
 For support and questions:
+
 - Check the documentation
 - Review existing issues
 - Create a new issue with detailed information
@@ -425,6 +468,7 @@ For support and questions:
 ## 🔄 Updates
 
 This site is actively maintained with regular updates for:
+
 - Security patches
 - Performance improvements
 - New features

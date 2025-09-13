@@ -37,7 +37,9 @@ export const fencedPlugin: Plugin<[], Root> = () => {
             hName: `x-fenced-${parsed.type}`,
             hProperties: {
               'data-json': parsed.json,
-              ...(parsed.componentType && { 'data-component-type': parsed.componentType }),
+              ...(parsed.componentType && {
+                'data-component-type': parsed.componentType,
+              }),
             },
           },
         });
@@ -73,7 +75,9 @@ function parseFencedBlock(content: string): FencedBlock | null {
     const colonIndex = firstLine.indexOf(':');
     const spaceIndex = firstLine.indexOf(' ', colonIndex);
     if (spaceIndex !== -1) {
-      const componentType = firstLine.substring(colonIndex + 1, spaceIndex).trim();
+      const componentType = firstLine
+        .substring(colonIndex + 1, spaceIndex)
+        .trim();
       const jsonStr = firstLine.substring(spaceIndex).trim();
       if (isValidJson(jsonStr)) {
         return { type: 'component', componentType, json: jsonStr };
@@ -84,7 +88,10 @@ function parseFencedBlock(content: string): FencedBlock | null {
   return null;
 }
 
-function isValidJson(jsonStr: string, schema?: { safeParse: (data: unknown) => { success: boolean } }): boolean {
+function isValidJson(
+  jsonStr: string,
+  schema?: { safeParse: (data: unknown) => { success: boolean } }
+): boolean {
   try {
     const parsed = JSON.parse(jsonStr);
     if (schema) {

@@ -64,7 +64,10 @@ export function renderMarkdownForPreview(markdown: string): ReactElement {
     return createElement('pre', {}, String(e));
   }
 }
-export function extractFrontMatter(markdown: string): { attributes: Record<string, unknown>; body: string } {
+export function extractFrontMatter(markdown: string): {
+  attributes: Record<string, unknown>;
+  body: string;
+} {
   return fm(markdown);
 }
 
@@ -75,7 +78,12 @@ function serializeYamlValue(value: unknown): string {
 
   if (typeof value === 'string') {
     // For strings, check if they need quotes
-    if (value.includes('\n') || value.includes(':') || value.startsWith(' ') || value.endsWith(' ')) {
+    if (
+      value.includes('\n') ||
+      value.includes(':') ||
+      value.startsWith(' ') ||
+      value.endsWith(' ')
+    ) {
       return JSON.stringify(value); // Use JSON for multiline or special chars
     }
     return value; // No quotes needed for simple strings
@@ -102,12 +110,16 @@ function serializeYamlValue(value: unknown): string {
   return String(value);
 }
 
-export function assemble(frontmatter: Record<string, unknown>, body: string): string {
-  const yaml = Object.keys(frontmatter).length > 0
-    ? `---\n${Object.entries(frontmatter)
-        .map(([key, value]) => `${key}: ${serializeYamlValue(value)}`)
-        .join('\n')}\n---\n`
-    : '';
+export function assemble(
+  frontmatter: Record<string, unknown>,
+  body: string
+): string {
+  const yaml =
+    Object.keys(frontmatter).length > 0
+      ? `---\n${Object.entries(frontmatter)
+          .map(([key, value]) => `${key}: ${serializeYamlValue(value)}`)
+          .join('\n')}\n---\n`
+      : '';
   return yaml + body;
 }
 
@@ -121,9 +133,8 @@ export function markdownToHtml(markdown: string): string {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeSanitize, sanitizeSchema)
-    .use(rehypeStringify)
+    .use(rehypeStringify);
 
-  const file = processor.processSync(markdown)
-  return String(file)
+  const file = processor.processSync(markdown);
+  return String(file);
 }
-

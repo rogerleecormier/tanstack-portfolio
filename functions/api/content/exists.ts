@@ -14,10 +14,10 @@ export async function onRequest(context: { request: Request; env: Env }) {
 
   const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
     .split(',')
-    .map((s) => s.trim())
+    .map(s => s.trim())
     .filter(Boolean);
 
-  const isAllowed = allowedDirs.some((d) => key === d || key.startsWith(`${d}/`));
+  const isAllowed = allowedDirs.some(d => key === d || key.startsWith(`${d}/`));
   if (!isAllowed) {
     return Response.json({ error: 'Invalid key' }, { status: 400 });
   }
@@ -30,4 +30,3 @@ export async function onRequest(context: { request: Request; env: Env }) {
     return Response.json({ error: 'Failed to check' }, { status: 500 });
   }
 }
-

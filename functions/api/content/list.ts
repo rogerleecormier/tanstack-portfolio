@@ -14,7 +14,7 @@ export async function onRequest(context: { request: Request; env: Env }) {
 
   const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
     .split(',')
-    .map((s) => s.trim())
+    .map(s => s.trim())
     .filter(Boolean);
 
   // Normalize prefix to ensure folder-style prefixes end with '/'
@@ -24,14 +24,16 @@ export async function onRequest(context: { request: Request; env: Env }) {
   // If no prefix, return only the allowed top-level directories as folders
   if (!prefix) {
     return Response.json({
-      prefixes: allowedDirs.map((d) => `${d}/`),
+      prefixes: allowedDirs.map(d => `${d}/`),
       objects: [],
       cursor: undefined,
     });
   }
 
   // Security: Only allow listing within allowed directories
-  const isAllowed = allowedDirs.some((d) => prefix === `${d}/` || prefix.startsWith(`${d}/`));
+  const isAllowed = allowedDirs.some(
+    d => prefix === `${d}/` || prefix.startsWith(`${d}/`)
+  );
   if (!isAllowed) {
     return Response.json({ error: 'Invalid prefix' }, { status: 400 });
   }
@@ -41,16 +43,18 @@ export async function onRequest(context: { request: Request; env: Env }) {
     const result = await env.R2_CONTENT.list({ prefix, cursor, limit });
 
     const filesInCurrentDir = result.objects
-      .filter((obj) => {
+      .filter(obj => {
         const key: string = obj.key;
         if (!key.endsWith('.md')) return false;
         const rest = key.slice(prefix.length);
         return !rest.includes('/');
       })
-      .map((obj) => ({
+      .map(obj => ({
         key: obj.key,
         size: obj.size,
-        uploaded: obj.uploaded ? new Date(obj.uploaded).toISOString() : new Date().toISOString(),
+        uploaded: obj.uploaded
+          ? new Date(obj.uploaded).toISOString()
+          : new Date().toISOString(),
         etag: obj.etag,
       }));
 

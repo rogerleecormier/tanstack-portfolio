@@ -1,5 +1,15 @@
-// AI-powered contact form analyzer using Cloudflare AI
+// AI-powered contact form analyzer using Cloudflare AI with Smart Model Selection
 // HARDENED VERSION with security, privacy, and abuse prevention
+
+// Available AI models with their characteristics
+const AI_MODELS = {
+  // Fast, lightweight model for simple inquiries
+  FAST: '@cf/meta/llama-3.1-8b-instruct',
+  // Balanced model for medium complexity inquiries
+  BALANCED: '@cf/meta/llama-3.1-70b-instruct', 
+  // Most capable model for complex technical inquiries
+  ADVANCED: '@cf/meta/llama-3.1-405b-instruct'
+}
 
 // PII and sensitive data patterns to filter out
 const SENSITIVE_PATTERNS = {
@@ -584,6 +594,108 @@ EXAMPLES:
 
 Return ONLY the JSON object, no additional text.`
 
+// ----- AI Model Selection Functions -----
+
+// Analyze content complexity for contact messages (consistent with ai-generator)
+function analyzeContactComplexity(message, subject, company) {
+  // Combine all text for analysis (similar to markdown content)
+  const combinedText = `${subject || ''} ${message || ''}`.trim()
+  
+  // Remove any potential markdown-like formatting for consistency
+  const noCode = combinedText.replace(/```[\s\S]*?```/g, '').replace(/`[^`]+`/g, '')
+  
+  // Length factor (0-1) - using same scale as ai-generator
+  const length = Math.min(noCode.length / 10000, 1)
+  
+  // Structure factor - based on organization and formatting
+  const headings = (noCode.match(/^#{1,6}\s+.+$/gm) || []).length
+  const bulletPoints = (noCode.match(/^[\s]*[-*+]\s+/gm) || []).length
+  const numberedLists = (noCode.match(/^[\s]*\d+\.\s+/gm) || []).length
+  const structure = Math.min((headings + bulletPoints + numberedLists) / 20, 1)
+  
+  // Technical factor - code blocks, technical terms, special syntax (same as ai-generator)
+  const codeBlocks = (combinedText.match(/```[\s\S]*?```/g) || []).length
+  const inlineCode = (combinedText.match(/`[^`]+`/g) || []).length
+  const technicalTerms = (noCode.match(/\b(api|function|class|method|variable|database|server|client|framework|library|algorithm|protocol|interface|endpoint|request|response|json|xml|html|css|javascript|typescript|python|java|c\+\+|react|vue|angular|node|express|mongodb|mysql|postgresql|redis|docker|kubernetes|aws|azure|gcp|git|github|gitlab|ci\/cd|devops|microservices|rest|graphql|oauth|jwt|ssl|tls|http|https|tcp|udp|dns|cdn|load\s+balancer|cache|queue|message\s+broker|event\s+streaming|real\s+time|websocket|sse|pwa|spa|ssr|csr|jamstack|headless|cms|erp|saas|paas|iaas|cloud|migration|integration|automation|workflow|pipeline|deployment|infrastructure|architecture|system|platform|backend|frontend|fullstack|mobile|web|desktop|application|software|development|programming|coding|scripting|debugging|testing|qa|quality\s+assurance|performance|optimization|scalability|security|authentication|authorization|encryption|compliance|governance|monitoring|logging|analytics|metrics|dashboard|reporting|business\s+intelligence|data\s+science|machine\s+learning|artificial\s+intelligence|ai|ml|nlp|computer\s+vision|blockchain|cryptocurrency|fintech|healthtech|edtech|martech|adtech|proptech|insurtech|regtech|legaltech|hrtech|salesforce|hubspot|zendesk|slack|microsoft|google|amazon|oracle|sap|workday|servicenow|atlassian|jira|confluence|bitbucket|jenkins|terraform|ansible|chef|puppet|vagrant|virtualbox|vmware|hypervisor|container|kubernetes|helm|istio|linkerd|prometheus|grafana|elasticsearch|kibana|logstash|splunk|datadog|newrelic|sentry|rollbar|bugsnag|honeycomb|lightstep|jaeger|zipkin|opentelemetry|observability|apm|rum|synthetic|real\s+user\s+monitoring|synthetic\s+monitoring|end\s+to\s+end\s+testing|e2e|unit\s+testing|integration\s+testing|acceptance\s+testing|regression\s+testing|smoke\s+testing|load\s+testing|stress\s+testing|performance\s+testing|security\s+testing|penetration\s+testing|vulnerability\s+assessment|risk\s+assessment|threat\s+modeling|security\s+audit|compliance\s+audit|code\s+review|peer\s+review|pull\s+request|merge\s+request|code\s+quality|static\s+analysis|dynamic\s+analysis|linting|formatting|prettier|eslint|sonarqube|codeclimate|codacy|snyk|whitesource|veracode|checkmarx|fortify|burp|nessus|qualys|rapid7|tenable|crowdstrike|sentinelone|carbon\s+black|cylance|symantec|mcafee|trend\s+micro|kaspersky|bitdefender|malwarebytes|norton|avast|avg|panda|eset|f-secure|sophos|webroot|vipre|comodo|avira|bullguard|g\s+data|emsisoft|adaware|superantispyware|spybot|malwarebytes|hitmanpro|roguekiller|tdsskiller|combofix|rkill|adwcleaner|jrt|frst|sfc|dism|chkdsk|defrag|disk\s+cleanup|ccleaner|glary\s+utilities|advanced\s+systemcare|iobit|revo\s+uninstaller|geek\s+uninstaller|wise\s+program\s+uninstaller|total\s+uninstaller|my\s+uninstaller|perfect\s+uninstaller)\b/gi) || []).length
+  const technical = Math.min((codeBlocks * 0.3 + inlineCode * 0.1 + technicalTerms * 0.05), 1)
+  
+  // Links factor (same as ai-generator)
+  const links = (noCode.match(/\[[^\]]*\]\([^)]+\)/g) || []).length
+  const linkFactor = Math.min(links / 50, 1)
+  
+  // Images factor (same as ai-generator)
+  const images = (noCode.match(/!\[[^\]]*\]\([^)]+\)/g) || []).length
+  const imageFactor = Math.min(images / 20, 1)
+  
+  // Calculate overall complexity score (0-1) - using same weights as ai-generator
+  const score = (length * 0.3 + structure * 0.2 + technical * 0.3 + linkFactor * 0.1 + imageFactor * 0.1)
+  
+  return {
+    score,
+    factors: {
+      length,
+      structure,
+      technical,
+      codeBlocks,
+      links,
+      images
+    }
+  }
+}
+
+// Select optimal AI model based on complexity
+function selectOptimalModel(complexity, requestedModel) {
+  // If a specific model is requested, use it
+  if (requestedModel) {
+    const modelType = Object.entries(AI_MODELS).find(([_, id]) => id === requestedModel)?.[0]
+    if (modelType) {
+      return { id: requestedModel, type: modelType }
+    }
+  }
+  
+  // Smart selection based on complexity
+  if (complexity.score >= 0.7) {
+    return { id: AI_MODELS.ADVANCED, type: 'ADVANCED' }
+  } else if (complexity.score >= 0.4) {
+    return { id: AI_MODELS.BALANCED, type: 'BALANCED' }
+  } else {
+    return { id: AI_MODELS.FAST, type: 'FAST' }
+  }
+}
+
+// Get model-specific system prompt
+function getSystemPrompt(modelType) {
+  const basePrompt = 'You are a JSON-only response bot. You must return ONLY valid JSON with no additional text, explanations, or formatting. Never use markdown, never add explanations.'
+  
+  switch (modelType) {
+    case 'FAST':
+      return basePrompt + ' Focus on speed and basic accuracy for simple inquiries.'
+    
+    case 'BALANCED':
+      return basePrompt + ' Provide balanced quality and performance for medium complexity inquiries.'
+    
+    case 'ADVANCED':
+      return basePrompt + ' Provide the highest quality analysis for complex technical and business inquiries. Deeply understand context and generate sophisticated insights.'
+    
+    default:
+      return basePrompt
+  }
+}
+
+// Get model-specific max tokens
+function getMaxTokens(modelType) {
+  switch (modelType) {
+    case 'FAST':
+      return 400
+    case 'BALANCED':
+      return 600
+    case 'ADVANCED':
+      return 800
+    default:
+      return 600
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     // Handle CORS preflight request
@@ -605,11 +717,52 @@ export default {
       return addCorsHeaders(new Response(JSON.stringify({
         status: 'healthy',
         timestamp: new Date().toISOString(),
-        cors: 'enabled'
+        cors: 'enabled',
+        version: '2.0',
+        features: ['ai-analysis', 'sensitive-data-scrubbing', 'rate-limiting', 'fallback-analysis', 'smart-model-selection'],
+        models: AI_MODELS,
+        smartModelSelection: true
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       }))
+    }
+
+    // Handle complexity analysis endpoint
+    if (request.method === 'POST' && request.url.includes('/analyze-complexity')) {
+      try {
+        const body = await request.json()
+        const { message, subject, company } = body
+        
+        if (!message) {
+          return addCorsHeaders(new Response(JSON.stringify({
+            error: 'Message is required'
+          }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+          }))
+        }
+        
+        const complexity = analyzeContactComplexity(message, subject || '', company || '')
+        const recommendedModel = selectOptimalModel(complexity)
+        
+        return addCorsHeaders(new Response(JSON.stringify({
+          complexity,
+          recommendedModel,
+          allModels: AI_MODELS
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }))
+      } catch (error) {
+        return addCorsHeaders(new Response(JSON.stringify({
+          error: 'Failed to analyze complexity',
+          message: error.message
+        }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        }))
+      }
     }
 
     if (request.method !== 'POST') {
@@ -716,23 +869,20 @@ export default {
         console.log('🤖 Attempting AI service call...')
         console.log('📝 Input data:', { name, company, subject: scrubbedSubject, messageLength: scrubbedMessage.length })
         
-        // Try multiple AI models for better JSON compliance
-        const models = [
-          '@cf/meta/llama-2-7b-chat-int8',
-          '@cf/mistral/mistral-7b-instruct-v0.2',
-          '@cf/meta/llama-3.1-8b-instruct'
-        ]
+        // Smart model selection based on content complexity
+        const complexity = analyzeContactComplexity(scrubbedMessage, scrubbedSubject, company)
+        const selectedModel = selectOptimalModel(complexity, body.model)
         
-        console.log('🚀 Starting AI model attempts...')
+        console.log('🧠 Content complexity analysis:', complexity)
+        console.log('🎯 Selected model:', selectedModel)
         
-        for (const model of models) {
-          try {
-            console.log(`🤖 Attempting AI model: ${model}`)
-            aiResponse = await env.ai.run(model, {
-              messages: [{
-                role: 'system',
-                content: 'You are a JSON-only response bot. You must return ONLY valid JSON with no additional text, explanations, or formatting. Never use markdown, never add explanations.'
-              }, {
+        try {
+          console.log(`🤖 Using AI model: ${selectedModel.id} (${selectedModel.type})`)
+          aiResponse = await env.ai.run(selectedModel.id, {
+            messages: [{
+              role: 'system',
+              content: getSystemPrompt(selectedModel.type)
+            }, {
                 role: 'user',
                 content: `Analyze this contact form message and return ONLY a JSON object:
 
@@ -761,27 +911,20 @@ Return this exact JSON structure (no other text):
   "followUpQuestions": ["Generate 2-3 unique questions based on the message content"]
 }`
               }],
-                             temperature: 0.1,
-               max_tokens: 600
+              temperature: 0.1,
+              max_tokens: getMaxTokens(selectedModel.type)
             })
             
-            console.log(`✅ AI model ${model} successful`)
-            console.log(`📝 Raw AI response from ${model}:`, aiResponse)
-            break
-          } catch (modelError) {
-            console.log(`❌ AI model ${model} failed:`, modelError.message)
-            console.log(`🔍 Error details for ${model}:`, {
-              name: modelError.name,
-              message: modelError.message,
-              stack: modelError.stack
-            })
-            continue
-          }
-        }
-        
-        // If all models failed, throw an error
-        if (!aiResponse) {
-          throw new Error('All AI models failed to respond')
+            console.log(`✅ AI model ${selectedModel.id} successful`)
+            console.log(`📝 Raw AI response from ${selectedModel.id}:`, aiResponse)
+        } catch (modelError) {
+          console.log(`❌ AI model ${selectedModel.id} failed:`, modelError.message)
+          console.log(`🔍 Error details for ${selectedModel.id}:`, {
+            name: modelError.name,
+            message: modelError.message,
+            stack: modelError.stack
+          })
+          throw new Error(`AI model ${selectedModel.id} failed: ${modelError.message}`)
         }
         
         console.log('✅ AI service call successful')
@@ -1136,7 +1279,7 @@ Return this exact JSON structure (no other text):
         analysis.suggestedResponse = `${baseResponse} I'd be happy to schedule a ${deterministicDuration} meeting to discuss this further.`
       }
 
-      // Add metadata
+      // Add metadata including model selection info
       const enhancedAnalysis = {
         ...analysis,
         timestamp: new Date().toISOString(),
@@ -1144,7 +1287,14 @@ Return this exact JSON structure (no other text):
         wordCount: scrubbedMessage.split(' ').length,
         hasCompany: !!company,
         emailDomain: email ? email.split('@')[1] || 'unknown' : 'unknown',
-        fallback: false // Explicitly mark as successful AI analysis
+        fallback: false, // Explicitly mark as successful AI analysis
+        metadata: {
+          modelUsed: selectedModel.id,
+          modelType: selectedModel.type,
+          complexity: complexity.score,
+          complexityFactors: complexity.factors,
+          smartModelSelection: true
+        }
       }
       
       // ALWAYS calculate confidence based on actual data quality, overriding any AI-set value
