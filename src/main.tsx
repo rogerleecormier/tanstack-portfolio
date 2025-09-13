@@ -1,22 +1,22 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { RouterProvider } from '@tanstack/react-router'
-import { TooltipProvider } from './components/ui/tooltip'
-import { router } from './router'
-import './index.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider } from '@tanstack/react-router';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { TooltipProvider } from './components/ui/tooltip';
+import './index.css';
+import { router } from './router';
 
 // Performance optimizations for React Refresh
 if (import.meta.env.DEV) {
   // Reduce React Refresh overhead in development
-  const originalConsoleWarn = console.warn
+  const originalConsoleWarn = console.warn;
   console.warn = (...args) => {
     // Filter out React Refresh warnings that can cause performance issues
-    if (args[0]?.includes?.('React Refresh')) {
-      return
+    if (typeof args[0] === 'string' && args[0].includes('React Refresh')) {
+      return;
     }
-    originalConsoleWarn(...args)
-  }
+    originalConsoleWarn(...args);
+  };
 }
 
 const queryClient = new QueryClient({
@@ -28,14 +28,18 @@ const queryClient = new QueryClient({
       retry: 1,
     },
   },
-})
+});
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('Root element not found');
+}
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <TooltipProvider>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
     </TooltipProvider>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);

@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { environment } from '../config/environment';
 import { logger } from '@/utils/logger';
+import { useCallback, useEffect, useState } from 'react';
+import { environment } from '../config/environment';
 
 // CloudflareUser interface moved from cloudflareAuth.ts
 export interface CloudflareUser {
@@ -26,35 +26,40 @@ const simpleAuth = {
         logger.info('simpleAuth: Not in development mode, returning false');
         return false;
       }
-      
+
       const isAuth = localStorage.getItem('dev_auth') === 'true';
       const sessionStart = localStorage.getItem('session_start');
-      
+
       logger.info('simpleAuth: localStorage check', { isAuth, sessionStart });
-      
+
       if (!isAuth || !sessionStart) {
         logger.info('simpleAuth: Missing auth data, returning false');
         return false;
       }
-      
+
       // Check if session is still valid (30 minutes)
       const now = Date.now();
       const elapsed = now - parseInt(sessionStart, 10);
       const sessionTimeout = 30 * 60 * 1000; // 30 minutes
-      
-      logger.info('simpleAuth: Session timeout check', { now, sessionStart: parseInt(sessionStart, 10), elapsed, sessionTimeout });
-      
+
+      logger.info('simpleAuth: Session timeout check', {
+        now,
+        sessionStart: parseInt(sessionStart, 10),
+        elapsed,
+        sessionTimeout,
+      });
+
       if (elapsed > sessionTimeout) {
         // Session expired, clear it
         logger.info('simpleAuth: Session expired, clearing auth');
         this.clearMockAuth();
         return false;
       }
-      
+
       logger.info('simpleAuth: User is authenticated');
       return true;
     } catch (error) {
-              logger.error('Error checking mock authentication:', error);
+      logger.error('Error checking mock authentication:', error);
       return false;
     }
   },
@@ -64,17 +69,17 @@ const simpleAuth = {
     try {
       if (!environment.isDevelopment()) return null;
       if (!this.isMockAuthenticated()) return null;
-      
+
       const userData = localStorage.getItem('dev_user');
       if (userData) {
-        return JSON.parse(userData);
+        return JSON.parse(userData) as CloudflareUser;
       }
-      
+
       // Return default user if no stored data
       return {
         email: 'dev@rcormier.dev',
         name: 'Development User',
-        sub: 'dev-user-123'
+        sub: 'dev-user-123',
       };
     } catch (error) {
       logger.error('Error getting mock user:', error);
@@ -90,25 +95,30 @@ const simpleAuth = {
         logger.info('simpleAuth: Not in development mode, returning early');
         return;
       }
-      
+
       logger.info('simpleAuth: Setting localStorage items');
       localStorage.setItem('dev_auth', 'true');
       localStorage.setItem('session_start', Date.now().toString());
-      localStorage.setItem('dev_user', JSON.stringify({
-        email: 'dev@rcormier.dev',
-        name: 'Development User',
-        sub: 'dev-user-123'
-      }));
-      
+      localStorage.setItem(
+        'dev_user',
+        JSON.stringify({
+          email: 'dev@rcormier.dev',
+          name: 'Development User',
+          sub: 'dev-user-123',
+        })
+      );
+
       logger.info('simpleAuth: Dispatching authStateChanged event');
       // Dispatch a custom event to notify other components
-      window.dispatchEvent(new CustomEvent('authStateChanged', { 
-        detail: { isAuthenticated: true, user: this.getMockUser() } 
-      }));
-      
+      window.dispatchEvent(
+        new CustomEvent('authStateChanged', {
+          detail: { isAuthenticated: true, user: this.getMockUser() },
+        })
+      );
+
       logger.info('simpleAuth: Mock session started successfully');
     } catch (error) {
-              logger.error('Error starting mock session:', error);
+      logger.error('Error starting mock session:', error);
     }
   },
 
@@ -118,42 +128,51 @@ const simpleAuth = {
       localStorage.removeItem('dev_auth');
       localStorage.removeItem('dev_user');
       localStorage.removeItem('session_start');
-      
+
       // Dispatch a custom event to notify other components
-      window.dispatchEvent(new CustomEvent('authStateChanged', { 
-        detail: { isAuthenticated: false, user: null } 
-      }));
+      window.dispatchEvent(
+        new CustomEvent('authStateChanged', {
+          detail: { isAuthenticated: false, user: null },
+        })
+      );
     } catch (error) {
       logger.error('Error clearing mock auth:', error);
     }
   },
 
   // Check Cloudflare Access authentication (production)
-  async checkCloudflareAuth(): Promise<{ isAuthenticated: boolean; user: CloudflareUser | null }> {
+  async checkCloudflareAuth(): Promise<{
+    isAuthenticated: boolean;
+    user: CloudflareUser | null;
+  }> {
     try {
       // First check if we're in a browser environment
       if (typeof window === 'undefined') {
-        logger.debug('Not in browser environment, skipping Cloudflare auth check');
+        logger.debug(
+          'Not in browser environment, skipping Cloudflare auth check'
+        );
         return { isAuthenticated: false, user: null };
       }
 
       // Check if Cloudflare Access cookies exist - look for any CF_ cookies
       const allCookies = document.cookie.split(';').map(c => c.trim());
-      const cfCookies = allCookies.filter(cookie => 
-        cookie.startsWith('CF_') || cookie.startsWith('cf_')
+      const cfCookies = allCookies.filter(
+        cookie => cookie.startsWith('CF_') || cookie.startsWith('cf_')
       );
       const hasCfCookies = cfCookies.length > 0;
 
-      logger.debug('Cookie check:', { 
-        allCookies: allCookies.length, 
-        cfCookies, 
+      logger.debug('Cookie check:', {
+        allCookies: allCookies.length,
+        cfCookies,
         hasCfCookies,
-        fullCookieString: document.cookie
+        fullCookieString: document.cookie,
       });
 
       // Even if we don't see CF_ cookies, try the identity endpoint
       // as it might be working (as shown in your debugger)
-      logger.debug('Proceeding to check identity endpoint regardless of cookies');
+      logger.debug(
+        'Proceeding to check identity endpoint regardless of cookies'
+      );
 
       logger.debug('Making identity endpoint request...');
       const response = await fetch('/cdn-cgi/access/get-identity', {
@@ -161,55 +180,68 @@ const simpleAuth = {
         headers: {
           'Content-Type': 'application/json',
         },
-        signal: AbortSignal.timeout(5000) // 5 second timeout
+        signal: AbortSignal.timeout(5000), // 5 second timeout
       });
 
       logger.debug('Identity endpoint response:', {
         status: response.status,
         statusText: response.statusText,
         ok: response.ok,
-        url: response.url
+        url: response.url,
       });
 
       if (response.ok) {
         try {
-          const identity = await response.json();
+          const identity = (await response.json()) as Record<string, unknown>;
           logger.debug('Identity response data:', identity);
-          
+
           if (identity.email) {
             const user: CloudflareUser = {
-              email: identity.email,
-              name: identity.name || identity.given_name || identity.family_name || 'Authenticated User',
-              sub: identity.sub || identity.user_uuid,
+              email: identity.email as string,
+              name:
+                (identity.name as string) ||
+                (identity.given_name as string) ||
+                (identity.family_name as string) ||
+                'Authenticated User',
+              sub: (identity.sub as string) || (identity.user_uuid as string),
             };
-            logger.debug('Cloudflare Access authentication successful', { user });
+            logger.debug('Cloudflare Access authentication successful', {
+              user,
+            });
             return { isAuthenticated: true, user };
           } else {
             logger.warn('Identity response missing email field:', identity);
           }
         } catch (parseError) {
-          logger.error('Failed to parse identity response as JSON:', parseError);
+          logger.error(
+            'Failed to parse identity response as JSON:',
+            parseError
+          );
         }
       }
-      
+
       // Handle specific error cases
       if (response.status === 400) {
-        logger.warn('Cloudflare Access configuration issue - endpoint returned 400');
+        logger.warn(
+          'Cloudflare Access configuration issue - endpoint returned 400'
+        );
         // This might indicate a configuration issue, but don't block the app
         return { isAuthenticated: false, user: null };
       }
-      
+
       if (response.status === 403) {
         logger.debug('Cloudflare Access forbidden - user not authenticated');
         return { isAuthenticated: false, user: null };
       }
-      
+
       if (response.status === 404) {
-        logger.warn('Cloudflare Access endpoint not found - service may not be configured');
+        logger.warn(
+          'Cloudflare Access endpoint not found - service may not be configured'
+        );
         // If the endpoint doesn't exist, Cloudflare Access might not be set up
         return { isAuthenticated: false, user: null };
       }
-      
+
       // If we get here, user is not authenticated
       // Clear any stored user data to ensure consistency
       try {
@@ -217,29 +249,33 @@ const simpleAuth = {
       } catch {
         logger.warn('Could not clear localStorage during auth check');
       }
-      
+
       return { isAuthenticated: false, user: null };
     } catch (error) {
       logger.debug('Cloudflare Access identity check failed:', error);
-      
+
       // On error, assume not authenticated and clear stored data
       try {
         localStorage.removeItem('cf_user');
       } catch {
         logger.warn('Could not clear localStorage during auth check error');
       }
-      
+
       return { isAuthenticated: false, user: null };
     }
   },
 
   // Enhanced development authentication that simulates Cloudflare Access
-  async checkDevCloudflareAuth(): Promise<{ isAuthenticated: boolean; user: CloudflareUser | null }> {
+  async checkDevCloudflareAuth(): Promise<{
+    isAuthenticated: boolean;
+    user: CloudflareUser | null;
+  }> {
     try {
       // Simulate the same flow as production but with mock data
+      await new Promise(resolve => setTimeout(resolve, 0)); // Simulate async behavior
       const allCookies = document.cookie.split(';').map(c => c.trim());
-      const cfCookies = allCookies.filter(cookie => 
-        cookie.startsWith('CF_') || cookie.startsWith('cf_')
+      const cfCookies = allCookies.filter(
+        cookie => cookie.startsWith('CF_') || cookie.startsWith('cf_')
       );
 
       // Simulate a successful response like Cloudflare Access would return
@@ -249,7 +285,7 @@ const simpleAuth = {
         id: 'dev-user-123',
         user_uuid: 'dev-uuid-456',
         given_name: 'Development',
-        family_name: 'User'
+        family_name: 'User',
       };
 
       // Simulate the same user object structure
@@ -259,13 +295,16 @@ const simpleAuth = {
         sub: mockIdentity.id,
       };
 
-      logger.debug('Development Cloudflare Access simulation successful', { user, cfCookies });
+      logger.debug('Development Cloudflare Access simulation successful', {
+        user,
+        cfCookies,
+      });
       return { isAuthenticated: true, user };
     } catch (error) {
       logger.debug('Development Cloudflare Access simulation failed:', error);
       return { isAuthenticated: false, user: null };
     }
-  }
+  },
 };
 
 export const useAuth = () => {
@@ -278,46 +317,58 @@ export const useAuth = () => {
     try {
       setIsLoading(true);
       logger.info('useAuth: checkAuth called');
-      
+
       // Check if we just returned from authentication (URL contains returnTo parameter)
       const urlParams = new URLSearchParams(window.location.search);
       const returnTo = urlParams.get('returnTo');
       const isReturningFromAuth = returnTo !== null;
-      
+
       if (isReturningFromAuth) {
-        logger.info('useAuth: Detected return from authentication, checking auth state');
+        logger.info(
+          'useAuth: Detected return from authentication, checking auth state'
+        );
         // Clean up the URL by removing the returnTo parameter
         const newUrl = new URL(window.location.href);
         newUrl.searchParams.delete('returnTo');
         window.history.replaceState({}, '', newUrl.toString());
       }
-      
+
       if (environment.isDevelopment()) {
         logger.info('useAuth: Development mode detected, checking mock auth');
         // Development mode - use simple mock authentication
         const isAuth = simpleAuth.isMockAuthenticated();
         const mockUser = simpleAuth.getMockUser();
-        
-        logger.info('useAuth: Development auth check result', { isAuth, mockUser });
-        
+
+        logger.info('useAuth: Development auth check result', {
+          isAuth,
+          mockUser,
+        });
+
         setIsAuthenticated(isAuth);
         setUser(mockUser);
         setError(null);
       } else {
         // Production mode - only check Cloudflare Access if we're on a protected route
-        const isProtectedRoute = window.location.pathname.startsWith('/protected');
-        
+        const isProtectedRoute =
+          window.location.pathname.startsWith('/protected');
+
         if (isProtectedRoute) {
-          logger.info('useAuth: Production mode detected, checking Cloudflare Access for protected route');
+          logger.info(
+            'useAuth: Production mode detected, checking Cloudflare Access for protected route'
+          );
           // Production mode - check Cloudflare Access
-          const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
-          
-          logger.info('useAuth: Cloudflare Access check result', { isAuth, userInfo });
-          
+          const { isAuthenticated: isAuth, user: userInfo } =
+            await simpleAuth.checkCloudflareAuth();
+
+          logger.info('useAuth: Cloudflare Access check result', {
+            isAuth,
+            userInfo,
+          });
+
           setIsAuthenticated(isAuth);
           setUser(userInfo);
           setError(null);
-          
+
           // Store user info if authenticated
           if (isAuth && userInfo) {
             try {
@@ -325,19 +376,24 @@ export const useAuth = () => {
             } catch {
               logger.warn('Could not store user info in localStorage');
             }
-            
-                       // The router will handle redirecting from /protected to home page
-             logger.info('useAuth: Authentication successful, router will handle redirect');
+
+            // The router will handle redirecting from /protected to home page
+            logger.info(
+              'useAuth: Authentication successful, router will handle redirect'
+            );
           }
         } else {
           // For public pages, check authentication state
           logger.info('useAuth: Public page, checking authentication state');
-          
+
           // If we're returning from authentication, always check Cloudflare Access first
           if (isReturningFromAuth) {
-            logger.info('useAuth: Returning from auth, checking Cloudflare Access');
-            const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
-            
+            logger.info(
+              'useAuth: Returning from auth, checking Cloudflare Access'
+            );
+            const { isAuthenticated: isAuth, user: userInfo } =
+              await simpleAuth.checkCloudflareAuth();
+
             if (isAuth && userInfo) {
               // User is authenticated, store the info and update state
               try {
@@ -348,7 +404,9 @@ export const useAuth = () => {
               setIsAuthenticated(true);
               setUser(userInfo);
               setError(null);
-              logger.info('useAuth: Authentication successful after redirect', { userInfo });
+              logger.info('useAuth: Authentication successful after redirect', {
+                userInfo,
+              });
             } else {
               setIsAuthenticated(false);
               setUser(null);
@@ -360,16 +418,19 @@ export const useAuth = () => {
             try {
               const storedUser = localStorage.getItem('cf_user');
               if (storedUser) {
-                const userInfo = JSON.parse(storedUser);
+                const userInfo = JSON.parse(storedUser) as CloudflareUser;
                 setIsAuthenticated(true);
                 setUser(userInfo);
                 setError(null);
                 logger.info('useAuth: Found stored user info', { userInfo });
               } else {
                 // No stored user info, check Cloudflare Access as fallback
-                logger.info('useAuth: No stored user info, checking Cloudflare Access');
-                const { isAuthenticated: isAuth, user: userInfo } = await simpleAuth.checkCloudflareAuth();
-                
+                logger.info(
+                  'useAuth: No stored user info, checking Cloudflare Access'
+                );
+                const { isAuthenticated: isAuth, user: userInfo } =
+                  await simpleAuth.checkCloudflareAuth();
+
                 if (isAuth && userInfo) {
                   // User is authenticated, store the info and update state
                   try {
@@ -380,7 +441,10 @@ export const useAuth = () => {
                   setIsAuthenticated(true);
                   setUser(userInfo);
                   setError(null);
-                  logger.info('useAuth: Found authentication via Cloudflare Access', { userInfo });
+                  logger.info(
+                    'useAuth: Found authentication via Cloudflare Access',
+                    { userInfo }
+                  );
                 } else {
                   setIsAuthenticated(false);
                   setUser(null);
@@ -389,7 +453,10 @@ export const useAuth = () => {
                 }
               }
             } catch (error) {
-              logger.error('useAuth: Error checking authentication state:', error);
+              logger.error(
+                'useAuth: Error checking authentication state:',
+                error
+              );
               setIsAuthenticated(false);
               setUser(null);
               setError(null);
@@ -409,28 +476,31 @@ export const useAuth = () => {
 
   // Initial auth check - only run once
   useEffect(() => {
-    checkAuth();
-    
+    void checkAuth();
+
     // Additional auth check after a delay to catch cookies that might be set after page load
     const delayedAuthCheck = setTimeout(() => {
-      logger.info('useAuth: Running delayed auth check to catch late-set cookies');
-      checkAuth();
+      logger.info(
+        'useAuth: Running delayed auth check to catch late-set cookies'
+      );
+      void checkAuth();
     }, 2000);
-    
+
     return () => clearTimeout(delayedAuthCheck);
-    
+
     // Check if we're returning from a logout redirect (common on mobile)
     const urlParams = new URLSearchParams(window.location.search);
-    const isLogoutRedirect = urlParams.get('logout') === 'true' || 
-                           window.location.pathname.includes('logout') ||
-                           document.referrer.includes('logout');
-    
+    const isLogoutRedirect =
+      urlParams.get('logout') === 'true' ||
+      window.location.pathname.includes('logout') ||
+      document.referrer.includes('logout');
+
     if (isLogoutRedirect) {
       logger.info('useAuth: Detected logout redirect, clearing auth state');
       setIsAuthenticated(false);
       setUser(null);
       setError(null);
-      
+
       // Clean up the URL
       if (urlParams.get('logout') === 'true') {
         const newUrl = new URL(window.location.href);
@@ -438,17 +508,22 @@ export const useAuth = () => {
         window.history.replaceState({}, '', newUrl.toString());
       }
     }
-    
+
     // Check if we're returning from Cloudflare Access login
-    const isLoginRedirect = document.referrer.includes('cloudflareaccess.com') || 
-                           document.referrer.includes('rcormier.cloudflareaccess.com');
-    
+    const isLoginRedirect =
+      document.referrer.includes('cloudflareaccess.com') ||
+      document.referrer.includes('rcormier.cloudflareaccess.com');
+
     if (isLoginRedirect && window.location.pathname.startsWith('/protected')) {
-      logger.info('useAuth: Detected login redirect from Cloudflare Access, will check auth state');
+      logger.info(
+        'useAuth: Detected login redirect from Cloudflare Access, will check auth state'
+      );
       // Force an additional auth check after a short delay to ensure cookies are set
       setTimeout(() => {
-        logger.info('useAuth: Running delayed auth check after Cloudflare Access redirect');
-        checkAuth();
+        logger.info(
+          'useAuth: Running delayed auth check after Cloudflare Access redirect'
+        );
+        void checkAuth();
       }, 1000);
     }
   }, [checkAuth]);
@@ -460,58 +535,70 @@ export const useAuth = () => {
   useEffect(() => {
     const handleAuthChange = (event: CustomEvent) => {
       logger.info('useAuth: Received auth state change event', event.detail);
-      const { isAuthenticated: newAuthState, user: newUser } = event.detail;
-      setIsAuthenticated(newAuthState);
-      setUser(newUser);
+      const { isAuthenticated: newAuthState, user: newUser } =
+        event.detail as Record<string, unknown>;
+      setIsAuthenticated(newAuthState as boolean);
+      setUser(newUser as CloudflareUser);
     };
 
-    window.addEventListener('authStateChanged', handleAuthChange as EventListener);
-    
+    window.addEventListener(
+      'authStateChanged',
+      handleAuthChange as EventListener
+    );
+
     return () => {
-      window.removeEventListener('authStateChanged', handleAuthChange as EventListener);
+      window.removeEventListener(
+        'authStateChanged',
+        handleAuthChange as EventListener
+      );
     };
   }, []);
 
   const login = () => {
     try {
-              logger.info('useAuth: Login called');
-        
-        if (environment.isDevelopment()) {
-          logger.info('useAuth: Starting development mock session');
-          simpleAuth.startMockSession();
-          // Update state immediately
-          setIsAuthenticated(true);
-          setUser(simpleAuth.getMockUser());
-          setError(null);
-          logger.info('useAuth: Development login successful');
+      logger.info('useAuth: Login called');
+
+      if (environment.isDevelopment()) {
+        logger.info('useAuth: Starting development mock session');
+        simpleAuth.startMockSession();
+        // Update state immediately
+        setIsAuthenticated(true);
+        setUser(simpleAuth.getMockUser());
+        setError(null);
+        logger.info('useAuth: Development login successful');
       } else {
         // In production, redirect to protected route to trigger Cloudflare Access
         // Cloudflare will automatically intercept this and redirect to authentication
-        
+
         // Check if we're on a mobile browser
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isMobile =
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+          );
         const isEdge = /Edge/i.test(navigator.userAgent);
-        
+
         logger.info('useAuth: Login redirect:', {
           isMobile,
           isEdge,
           userAgent: navigator.userAgent,
-          currentUrl: window.location.href
+          currentUrl: window.location.href,
         });
-        
-                 // Get the current page to return to after authentication
-         const currentPage = encodeURIComponent(window.location.href);
-         const protectedUrl = `/protected?returnTo=${currentPage}`;
-         
-         // For mobile Edge, we might need to handle the redirect differently
-         if (isMobile && isEdge) {
-           logger.info('useAuth: Mobile Edge detected - using alternative redirect method');
-           // Try using window.location.replace for mobile Edge
-           window.location.replace(protectedUrl);
-         } else {
-           // Standard redirect for other browsers
-           window.location.href = protectedUrl;
-         }
+
+        // Get the current page to return to after authentication
+        const currentPage = encodeURIComponent(window.location.href);
+        const protectedUrl = `/protected?returnTo=${currentPage}`;
+
+        // For mobile Edge, we might need to handle the redirect differently
+        if (isMobile && isEdge) {
+          logger.info(
+            'useAuth: Mobile Edge detected - using alternative redirect method'
+          );
+          // Try using window.location.replace for mobile Edge
+          window.location.replace(protectedUrl);
+        } else {
+          // Standard redirect for other browsers
+          window.location.href = protectedUrl;
+        }
       }
     } catch (error) {
       logger.error('Login failed:', error);
@@ -536,20 +623,27 @@ export const useAuth = () => {
         } catch {
           logger.warn('Could not clear localStorage');
         }
-        
+
         // Check if we're on a mobile browser
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
+        const isMobile =
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+          );
+
         if (isMobile) {
-          logger.info('useAuth: Mobile logout detected, clearing state immediately');
+          logger.info(
+            'useAuth: Mobile logout detected, clearing state immediately'
+          );
           // For mobile, clear the state immediately before redirect
           setIsAuthenticated(false);
           setUser(null);
           setError(null);
         }
-        
+
         // Redirect to Cloudflare Access logout with redirect back to site
-        const redirectUrl = encodeURIComponent(customRedirectUrl || window.location.origin);
+        const redirectUrl = encodeURIComponent(
+          customRedirectUrl ?? window.location.origin
+        );
         const logoutUrl = `/cdn-cgi/access/logout?returnTo=${redirectUrl}`;
         window.location.href = logoutUrl;
       }
@@ -561,7 +655,7 @@ export const useAuth = () => {
 
   const refreshAuth = () => {
     logger.info('useAuth: Refresh auth called');
-    checkAuth();
+    void checkAuth();
   };
 
   const clearError = () => {
@@ -570,7 +664,12 @@ export const useAuth = () => {
 
   // Debug logging for state changes
   useEffect(() => {
-    logger.info('useAuth: State changed', { isAuthenticated, user, isLoading, error });
+    logger.info('useAuth: State changed', {
+      isAuthenticated,
+      user,
+      isLoading,
+      error,
+    });
   }, [isAuthenticated, user, isLoading, error]);
 
   return {
@@ -587,6 +686,6 @@ export const useAuth = () => {
     // Simplified security info for development
     remainingAttempts: 3,
     isLockedOut: false,
-    sessionTimeRemaining: 0
+    sessionTimeRemaining: 0,
   };
 };

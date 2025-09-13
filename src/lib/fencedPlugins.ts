@@ -1,5 +1,5 @@
+import { Code, Root } from 'mdast';
 import { Plugin } from 'unified';
-import { Root, Code } from 'mdast';
 import { cardSchema } from '../schemas/card';
 import { chartSchema } from '../schemas/chart';
 
@@ -37,7 +37,9 @@ export const fencedPlugin: Plugin<[], Root> = () => {
             hName: `x-fenced-${parsed.type}`,
             hProperties: {
               'data-json': parsed.json,
-              ...(parsed.componentType && { 'data-component-type': parsed.componentType }),
+              ...(parsed.componentType && {
+                'data-component-type': parsed.componentType,
+              }),
             },
           },
         });
@@ -50,7 +52,8 @@ function parseFencedBlock(content: string): FencedBlock | null {
   const lines = content.trim().split('\n');
   if (lines.length === 0) return null;
 
-  const firstLine = lines[0].trim();
+  const firstLine = lines[0]?.trim();
+  if (!firstLine) return null;
 
   // Check for card {json}
   if (firstLine.startsWith('card ')) {
@@ -73,7 +76,9 @@ function parseFencedBlock(content: string): FencedBlock | null {
     const colonIndex = firstLine.indexOf(':');
     const spaceIndex = firstLine.indexOf(' ', colonIndex);
     if (spaceIndex !== -1) {
-      const componentType = firstLine.substring(colonIndex + 1, spaceIndex).trim();
+      const componentType = firstLine
+        .substring(colonIndex + 1, spaceIndex)
+        .trim();
       const jsonStr = firstLine.substring(spaceIndex).trim();
       if (isValidJson(jsonStr)) {
         return { type: 'component', componentType, json: jsonStr };
@@ -84,9 +89,12 @@ function parseFencedBlock(content: string): FencedBlock | null {
   return null;
 }
 
-function isValidJson(jsonStr: string, schema?: { safeParse: (data: unknown) => { success: boolean } }): boolean {
+function isValidJson(
+  jsonStr: string,
+  schema?: { safeParse: (data: unknown) => { success: boolean } }
+): boolean {
   try {
-    const parsed = JSON.parse(jsonStr);
+    const parsed = JSON.parse(jsonStr) as Record<string, unknown>;
     if (schema) {
       const result = schema.safeParse(parsed);
       if (!result.success) {

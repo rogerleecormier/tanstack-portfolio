@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  quick-check:
+    name: Quick Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      - name: Install dependencies
+        run: |
+          if [ -d "node_modules" ]; then
+            echo "Using cached node_modules"
+            npm ci --prefer-offline --no-audit --no-fund
+          else
+            echo "Installing fresh dependencies"
+            npm ci --no-audit --no-fund
+          fi
+
+      - name: TypeScript type check
+        run: npm run type-check
+
+      - name: ESLint check and fix
+        run: npm run lint:fix
+
+      - name: Prettier format check and fix
+        run: |
+          npx prettier --write .
+          npx prettier --check .
+
+      - name: Security audit
+        run: npm run audit
+
+      - name: Build project
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1

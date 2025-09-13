@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserProfilesAPI } from '@/api/userProfiles';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 // Query keys for user profiles
 export const userProfileKeys = {
@@ -47,7 +47,7 @@ export const useUserProfileMutation = () => {
 
   return useMutation({
     mutationFn: UserProfilesAPI.updateUserProfile,
-    onSuccess: (updatedProfile) => {
+    onSuccess: updatedProfile => {
       // Update the user profile cache
       queryClient.setQueryData(
         userProfileKeys.detail(updatedProfile.id),
@@ -55,11 +55,11 @@ export const useUserProfileMutation = () => {
       );
 
       // Invalidate related queries
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userProfileKeys.lists(),
       });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('User profile mutation failed:', error);
     },
   });
@@ -71,7 +71,7 @@ export const useWeightGoalMutation = () => {
 
   return useMutation({
     mutationFn: UserProfilesAPI.updateWeightGoal,
-    onSuccess: (updatedGoal) => {
+    onSuccess: updatedGoal => {
       // Update the weight goal cache
       queryClient.setQueryData(
         weightGoalKeys.detail(updatedGoal.user_id),
@@ -79,11 +79,11 @@ export const useWeightGoalMutation = () => {
       );
 
       // Invalidate related queries
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: weightGoalKeys.lists(),
       });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Weight goal mutation failed:', error);
     },
   });

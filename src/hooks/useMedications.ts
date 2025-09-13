@@ -1,5 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { UserProfilesAPI, UserMedication, MedicationType } from '@/api/userProfiles';
+import {
+  MedicationType,
+  UserMedication,
+  UserProfilesAPI,
+} from '@/api/userProfiles';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 // Query keys for medications
 export const medicationKeys = {
@@ -13,16 +17,20 @@ export const medicationKeys = {
 
 // Custom hook for fetching medication types
 export const useMedicationTypes = () => {
-  return useQuery({
+  return useQuery<MedicationType[]>({
     queryKey: medicationKeys.types(),
     queryFn: async () => {
       // Fetch medication types from the API
-      const response = await fetch('https://healthbridge-enhanced.rcormier.workers.dev/api/v2/medication-types');
+      const response = await fetch(
+        'https://healthbridge-enhanced.rcormier.workers.dev/api/v2/medication-types'
+      );
       if (!response.ok) {
         throw new Error(`Failed to fetch medication types: ${response.status}`);
       }
-      const data = await response.json();
-      return data.medication_types || [];
+      const data = (await response.json()) as {
+        medication_types?: MedicationType[];
+      };
+      return data.medication_types ?? [];
     },
     staleTime: 10 * 60 * 1000, // 10 minutes - medication types don't change often
     gcTime: 30 * 60 * 1000, // 30 minutes
@@ -46,14 +54,16 @@ export const useMedicationMutation = () => {
 
   return useMutation({
     mutationFn: UserProfilesAPI.updateUserMedication,
-    onSuccess: (updatedMedication) => {
+    onSuccess: updatedMedication => {
       // Update the medications list cache
       queryClient.setQueryData(
         medicationKeys.list(updatedMedication.user_id),
         (old: UserMedication[] = []) => {
           const existing = old.find(m => m.id === updatedMedication.id);
           if (existing) {
-            return old.map(m => m.id === updatedMedication.id ? updatedMedication : m);
+            return old.map(m =>
+              m.id === updatedMedication.id ? updatedMedication : m
+            );
           } else {
             return [...old, updatedMedication];
           }
@@ -67,11 +77,11 @@ export const useMedicationMutation = () => {
       );
 
       // Invalidate related queries to ensure data consistency
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: medicationKeys.lists(),
       });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Medication mutation failed:', error);
       // You could add toast notifications here
     },
@@ -88,7 +98,7 @@ export const useDeleteMedication = () => {
       // Remove from all medication lists
       queryClient.setQueryData(
         medicationKeys.lists(),
-        (old: UserMedication[][] = []) => 
+        (old: UserMedication[][] = []) =>
           old.map(list => list.filter(m => m.id !== medicationId))
       );
 
@@ -98,11 +108,11 @@ export const useDeleteMedication = () => {
       });
 
       // Invalidate related queries
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: medicationKeys.lists(),
       });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error deleting medication:', error);
     },
   });

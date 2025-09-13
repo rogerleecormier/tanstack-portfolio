@@ -1,4 +1,4 @@
-import { TableData } from '@/components/UnifiedTableRenderer'
+import { TableData } from '@/components/UnifiedTableRenderer';
 
 /**
  * Parses markdown table syntax into structured data
@@ -6,51 +6,54 @@ import { TableData } from '@/components/UnifiedTableRenderer'
  * @returns Parsed table data or null if invalid
  */
 export function parseMarkdownTable(markdownTable: string): TableData | null {
-  const lines = markdownTable.trim().split('\n')
-  
+  const lines = markdownTable.trim().split('\n');
+
   if (lines.length < 3) {
-    return null // Need at least header, separator, and one data row
+    return null; // Need at least header, separator, and one data row
   }
 
   // Parse header row
-  const headerLine = lines[0]
+  const headerLine = lines[0];
+  if (!headerLine) {
+    return null;
+  }
   const headers = headerLine
     .split('|')
     .map(cell => cell.trim())
-    .filter(cell => cell.length > 0)
+    .filter(cell => cell.length > 0);
 
   if (headers.length === 0) {
-    return null
+    return null;
   }
 
   // Skip separator line (the one with dashes)
-  const dataLines = lines.slice(2)
+  const dataLines = lines.slice(2);
 
   // Parse data rows
-  const rows: string[][] = []
-  
+  const rows: string[][] = [];
+
   for (const line of dataLines) {
-    if (!line.trim()) continue
-    
+    if (!line.trim()) continue;
+
     const cells = line
       .split('|')
       .map(cell => cell.trim())
-      .filter(cell => cell.length > 0)
-    
+      .filter(cell => cell.length > 0);
+
     if (cells.length > 0) {
       // Ensure row has same number of cells as headers
-      const paddedCells = [...cells]
+      const paddedCells = [...cells];
       while (paddedCells.length < headers.length) {
-        paddedCells.push('')
+        paddedCells.push('');
       }
-      rows.push(paddedCells)
+      rows.push(paddedCells);
     }
   }
 
   return {
     headers,
-    rows
-  }
+    rows,
+  };
 }
 
 /**
@@ -61,52 +64,52 @@ export function parseMarkdownTable(markdownTable: string): TableData | null {
 export function htmlTableToMarkdown(htmlTable: string): string {
   try {
     // Create a temporary DOM element to parse the HTML
-    const tempDiv = document.createElement('div')
-    tempDiv.innerHTML = htmlTable
-    
-    const table = tempDiv.querySelector('table')
-    if (!table) return ''
-    
-    const headers: string[] = []
-    const rows: string[][] = []
-    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlTable;
+
+    const table = tempDiv.querySelector('table');
+    if (!table) return '';
+
+    const headers: string[] = [];
+    const rows: string[][] = [];
+
     // Extract headers
-    const headerCells = table.querySelectorAll('thead th, th')
+    const headerCells = table.querySelectorAll('thead th, th');
     headerCells.forEach(cell => {
-      headers.push(cell.textContent?.trim() || '')
-    })
-    
+      headers.push(cell.textContent?.trim() ?? '');
+    });
+
     // Extract data rows
-    const dataRows = table.querySelectorAll('tbody tr, tr')
+    const dataRows = table.querySelectorAll('tbody tr, tr');
     dataRows.forEach(row => {
-      const cells = row.querySelectorAll('td')
+      const cells = row.querySelectorAll('td');
       if (cells.length > 0) {
-        const rowData: string[] = []
+        const rowData: string[] = [];
         cells.forEach(cell => {
-          rowData.push(cell.textContent?.trim() || '')
-        })
-        rows.push(rowData)
+          rowData.push(cell.textContent?.trim() ?? '');
+        });
+        rows.push(rowData);
       }
-    })
-    
+    });
+
     // Build markdown table
-    if (headers.length === 0) return ''
-    
-    let markdown = '| ' + headers.join(' | ') + ' |\n'
-    markdown += '|' + headers.map(() => '---').join('|') + '|\n'
-    
+    if (headers.length === 0) return '';
+
+    let markdown = '| ' + headers.join(' | ') + ' |\n';
+    markdown += '|' + headers.map(() => '---').join('|') + '|\n';
+
     rows.forEach(row => {
-      const paddedRow = [...row]
+      const paddedRow = [...row];
       while (paddedRow.length < headers.length) {
-        paddedRow.push('')
+        paddedRow.push('');
       }
-      markdown += '| ' + paddedRow.join(' | ') + ' |\n'
-    })
-    
-    return markdown.trim()
+      markdown += '| ' + paddedRow.join(' | ') + ' |\n';
+    });
+
+    return markdown.trim();
   } catch (error) {
-    console.error('Error converting HTML table to markdown:', error)
-    return ''
+    console.error('Error converting HTML table to markdown:', error);
+    return '';
   }
 }
 
@@ -116,36 +119,36 @@ export function htmlTableToMarkdown(htmlTable: string): string {
  * @returns True if the text contains a markdown table
  */
 export function containsMarkdownTable(text: string): boolean {
-  const lines = text.split('\n')
-  let inTable = false
-  let hasHeader = false
-  let hasSeparator = false
-  
+  const lines = text.split('\n');
+  let inTable = false;
+  let hasHeader = false;
+  let hasSeparator = false;
+
   for (const line of lines) {
-    const trimmed = line.trim()
-    
+    const trimmed = line.trim();
+
     if (trimmed.includes('|')) {
       if (!inTable) {
-        inTable = true
-        hasHeader = true
+        inTable = true;
+        hasHeader = true;
       } else if (hasHeader && !hasSeparator) {
         // Check if this is a separator line (contains only dashes, pipes, and spaces)
         if (/^[\s|\-:]+$/.test(trimmed)) {
-          hasSeparator = true
+          hasSeparator = true;
         }
       }
     } else if (inTable && trimmed === '') {
       // Empty line might end the table
       if (hasHeader && hasSeparator) {
-        return true
+        return true;
       }
-      inTable = false
-      hasHeader = false
-      hasSeparator = false
+      inTable = false;
+      hasHeader = false;
+      hasSeparator = false;
     }
   }
-  
-  return hasHeader && hasSeparator
+
+  return hasHeader && hasSeparator;
 }
 
 /**
@@ -154,45 +157,47 @@ export function containsMarkdownTable(text: string): boolean {
  * @returns Array of table markdown strings
  */
 export function extractTableBlocks(markdown: string): string[] {
-  const lines = markdown.split('\n')
-  const tableBlocks: string[] = []
-  let currentTable: string[] = []
-  let inTable = false
-  
+  const lines = markdown.split('\n');
+  const tableBlocks: string[] = [];
+  let currentTable: string[] = [];
+  let inTable = false;
+
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    const trimmed = line.trim()
-    
+    const line = lines[i];
+    if (!line) continue;
+    const trimmed = line.trim();
+
     if (trimmed.includes('|')) {
       if (!inTable) {
-        inTable = true
-        currentTable = [line]
+        inTable = true;
+        currentTable = [line];
       } else {
-        currentTable.push(line)
+        currentTable.push(line);
       }
     } else if (inTable) {
       if (trimmed === '') {
         // Empty line might end the table
-        if (currentTable.length >= 3) { // Need at least header, separator, and one data row
-          tableBlocks.push(currentTable.join('\n'))
+        if (currentTable.length >= 3) {
+          // Need at least header, separator, and one data row
+          tableBlocks.push(currentTable.join('\n'));
         }
-        inTable = false
-        currentTable = []
+        inTable = false;
+        currentTable = [];
       } else {
         // Non-empty line that's not a table row - end the table
         if (currentTable.length >= 3) {
-          tableBlocks.push(currentTable.join('\n'))
+          tableBlocks.push(currentTable.join('\n'));
         }
-        inTable = false
-        currentTable = []
+        inTable = false;
+        currentTable = [];
       }
     }
   }
-  
+
   // Don't forget the last table if we're still in one
   if (inTable && currentTable.length >= 3) {
-    tableBlocks.push(currentTable.join('\n'))
+    tableBlocks.push(currentTable.join('\n'));
   }
-  
-  return tableBlocks
+
+  return tableBlocks;
 }

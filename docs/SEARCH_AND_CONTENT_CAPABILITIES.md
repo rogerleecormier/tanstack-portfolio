@@ -1,179 +1,369 @@
-# Search and Related Content Capabilities
+# Search and Content Capabilities System Documentation
 
 ## Overview
 
-This document provides comprehensive documentation of the search functionality and related content capabilities implemented throughout the portfolio site. The system features multiple search interfaces, semantic content matching, intelligent recommendations, and cross-content type discovery.
+The TanStack Portfolio implements a sophisticated, AI-powered content discovery and search system that integrates multiple search interfaces, semantic content matching, intelligent recommendations, and cross-content type discovery. The system features advanced AI contact analysis, smart content recommendations, and seamless integration between content creation, indexing, and search capabilities.
 
-## Table of Contents
+## 🏗️ System Architecture
 
-1. [Global Search System](#global-search-system)
-2. [Blog Search and Filtering](#blog-search-and-filtering)
-3. [Content Recommendations](#content-recommendations)
-4. [Semantic Search Engine](#semantic-search-engine)
-5. [Content Discovery Features](#content-discovery-features)
-6. [Technical Implementation](#technical-implementation)
-7. [User Experience Features](#user-experience-features)
-8. [Performance Optimizations](#performance-optimizations)
-9. [API Endpoints](#api-endpoints)
-10. [Configuration and Customization](#configuration-and-customization)
+### Core Components
 
-## Global Search System
+- **Global Search System**: Universal search interface with semantic matching
+- **Content Creation Studio**: Integrated content management with AI frontmatter generation
+- **AI Contact Analyzer**: Intelligent inquiry analysis with content recommendations
+- **Cached Content Service**: High-performance content indexing and retrieval
+- **Smart Recommendations Engine**: Context-aware content discovery
+- **Multi-Layer Caching**: R2 storage, KV cache, and browser caching
+
+### Technology Stack
+
+- **Search Engine**: Fuse.js with semantic matching and fallback algorithms
+- **AI Integration**: Cloudflare AI models for content analysis and generation
+- **Storage**: Cloudflare R2 for content, KV for caching
+- **Workers**: Multiple specialized workers for content processing
+- **Frontend**: React with TypeScript and Tailwind CSS
+- **Content Processing**: TipTap editor with Markdown conversion
+
+## 📊 Content Discovery Flow
+
+### Data Flow Diagram
+
+```mermaid
+graph TD
+    A[User Query/Inquiry] --> B{Query Type}
+
+    B -->|Global Search| C[RedesignedSearch Component]
+    B -->|Contact Form| D[AI Contact Analyzer]
+    B -->|Content Creation| E[Content Creation Studio]
+
+    C --> F[Cached Content Service]
+    D --> G[AI Analysis + Recommendations]
+    E --> H[R2 Storage + Cache Rebuild]
+
+    F --> I[Fuse.js Semantic Search]
+    G --> J[Smart Content Matching]
+    H --> K[KV Cache Update]
+
+    I --> L[Search Results]
+    J --> M[Contextual Recommendations]
+    K --> N[Updated Content Index]
+
+    L --> O[Unified Search Results]
+    M --> O
+    N --> O
+
+    O --> P[User Interface]
+
+    subgraph "AI-Powered Analysis"
+        G
+        Q[Industry Detection]
+        R[Inquiry Classification]
+        S[Priority Assessment]
+        T[Meeting Detection]
+    end
+
+    subgraph "Content Processing"
+        H
+        U[Frontmatter Generation]
+        V[Content Indexing]
+        W[Metadata Extraction]
+    end
+
+    subgraph "Search & Discovery"
+        I
+        X[Relevance Scoring]
+        Y[Tag Matching]
+        Z[Content Type Filtering]
+    end
+```
+
+## 🔍 Global Search System
 
 ### RedesignedSearch Component
 
-The primary search interface accessible from the header across all pages.
+The primary search interface providing universal access across all pages.
 
-#### Features
-- **Global Access**: Available on every page via header
-- **Keyboard Shortcuts**: `Ctrl/Cmd + K` to open search
-- **Smart Search**: Semantic content matching using Fuse.js
-- **Recent Searches**: Stores last 5 searches in localStorage
-- **Content Type Filtering**: Search across portfolio, blog, and project content
-- **Relevance Scoring**: Intelligent ranking of search results
+#### Advanced Features
 
-#### Search Interface
-```tsx
-// Keyboard shortcut handling
-useEffect(() => {
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-      event.preventDefault()
-      setOpen(true)
-      setTimeout(() => searchInputRef.current?.focus(), 100)
-    }
-  }
-}, [])
+- **Universal Access**: Available on every page via header with `Ctrl/Cmd + K`
+- **Semantic Search**: Fuse.js-powered fuzzy search with intelligent matching
+- **Recent Searches**: Stores last 5 searches in localStorage with persistence
+- **Content Type Filtering**: Cross-content search (portfolio, blog, projects, pages)
+- **Relevance Scoring**: Multi-factor scoring with visual indicators
+- **Keyboard Navigation**: Full keyboard support for accessibility
+
+#### Search Configuration
+
+```typescript
+const fuseOptions: IFuseOptions<CachedContentItem> = {
+  keys: [
+    { name: 'title', weight: 0.4 }, // 40% - Highest priority
+    { name: 'description', weight: 0.3 }, // 30% - Content summary
+    { name: 'content', weight: 0.2 }, // 20% - Full content
+    { name: 'tags', weight: 0.15 }, // 15% - Tag matching
+    { name: 'keywords', weight: 0.15 }, // 15% - Keyword matching
+    { name: 'category', weight: 0.1 }, // 10% - Category classification
+  ],
+  threshold: 0.3, // Matching precision
+  distance: 100, // Edit distance tolerance
+  includeScore: true, // Include relevance scores
+  includeMatches: true, // Include match details
+  minMatchCharLength: 3, // Minimum match length
+  ignoreLocation: true, // Location-independent matching
+  useExtendedSearch: true, // Advanced search syntax
+};
 ```
 
 #### Search Results Display
-- **Content Type Icons**: Visual indicators for portfolio, blog, and project content
+
+- **Content Type Icons**: Visual indicators for different content types
 - **Relevance Badges**: Color-coded relevance scores (Excellent, Very Good, Good, Fair, Basic)
 - **Tag Display**: Shows up to 4 tags with "+X more" indicator
 - **Category Information**: Displays content category and relevance percentage
 - **External Link Icons**: Visual cues for navigation
+- **Responsive Layout**: Adaptive design for all device sizes
 
-### Search Dialog Layout
-- **Responsive Design**: Max width 4xl, max height 85vh
-- **Fixed Header**: Search title and semantic search badge
-- **Fixed Search Input**: Always visible search field with clear button
-- **Scrollable Results**: Main content area with custom scrollbars
-- **Fixed Footer**: Keyboard navigation instructions and search engine info
+## 🤖 AI-Powered Content Discovery
 
-## Blog Search and Filtering
+### Contact Analysis Integration
 
-### BlogListPage Search
+The AI contact analyzer provides intelligent content recommendations based on user inquiries.
 
-Dedicated search functionality for blog content with advanced filtering.
+#### AI Analysis Capabilities
 
-#### Search Features
-- **Real-time Search**: Instant filtering as you type
-- **Tag-based Filtering**: Multi-select tag filtering system
-- **Content Search**: Searches title, description, and tag content
-- **Debounced Input**: Optimized performance with 300ms debounce
-
-#### Filtering System
-```tsx
-// Combined search and tag filtering
-useEffect(() => {
-  let filtered = blogPosts
-
-  // Filter by search query
-  if (searchQuery.trim()) {
-    filtered = searchBlogPosts(filtered, searchQuery)
-  }
-
-  // Filter by selected tags
-  if (selectedTags.length > 0) {
-    filtered = filterBlogPostsByTags(filtered, selectedTags)
-  }
-
-  setFilteredPosts(filtered)
-  setCurrentPage(1) // Reset pagination
-}, [blogPosts, searchQuery, selectedTags])
-```
-
-#### Tag Management
-- **Dynamic Tag Loading**: Automatically extracts tags from blog posts
-- **Tag Selection UI**: Interactive tag selection with visual feedback
-- **Tag Combination**: AND logic for multiple tag selection
-- **Tag Count Display**: Shows number of posts per tag
-
-### Blog Search Functions
-
-#### searchBlogPosts()
-```tsx
-export function searchBlogPosts(posts: BlogPost[], query: string): BlogPost[] {
-  if (!query.trim()) return posts
-
-  const searchTerm = query.toLowerCase()
-  return posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm) ||
-    post.description.toLowerCase().includes(searchTerm) ||
-    post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-  )
+```typescript
+interface AIAnalysisResult {
+  inquiryType:
+    | 'consultation'
+    | 'project'
+    | 'partnership'
+    | 'general'
+    | 'urgent';
+  priorityLevel: 'high' | 'medium' | 'low';
+  industry:
+    | 'technology'
+    | 'healthcare'
+    | 'finance'
+    | 'manufacturing'
+    | 'retail'
+    | 'education'
+    | 'government'
+    | 'nonprofit'
+    | 'startup'
+    | 'enterprise'
+    | 'other';
+  projectScope: 'small' | 'medium' | 'large' | 'enterprise';
+  urgency: 'immediate' | 'soon' | 'flexible';
+  messageType: 'message' | 'meeting-request';
+  suggestedResponse: string;
+  meetingDuration: '30 minutes' | '1 hour' | '1.5 hours' | '2 hours';
+  relevantContent: string[];
+  shouldScheduleMeeting: boolean;
+  meetingType:
+    | 'consultation'
+    | 'project-planning'
+    | 'technical-review'
+    | 'strategy-session'
+    | 'general-discussion';
+  recommendedTimeSlots: string[];
+  timezoneConsideration: string;
+  userTimezone: string;
+  followUpRequired: boolean;
+  redFlags: string[];
+  followUpQuestions: string[];
+  confidence: number;
+  timestamp: string;
+  originalMessage: string;
+  wordCount: number;
+  hasCompany: boolean;
+  emailDomain: string;
 }
 ```
 
-#### filterBlogPostsByTags()
-```tsx
-export function filterBlogPostsByTags(posts: BlogPost[], tags: string[]): BlogPost[] {
-  if (tags.length === 0) return posts
+#### Smart Content Recommendations
 
-  return posts.filter(post =>
-    tags.some(tag => post.tags.includes(tag))
-  )
+```typescript
+const getContentRecommendations = useCallback(
+  async (analysis: AIAnalysisResult) => {
+    const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`;
+    const tags = [
+      analysis.inquiryType,
+      analysis.industry,
+      analysis.projectScope,
+    ].filter(Boolean);
+
+    const response = await cachedContentService.getRecommendations({
+      query: title,
+      contentType: 'all',
+      maxResults: 4,
+      tags: tags,
+      context: {
+        inquiryType: analysis.inquiryType,
+        industry: analysis.industry,
+        projectScope: analysis.projectScope,
+        messageType: analysis.messageType,
+        priorityLevel: analysis.priorityLevel,
+      },
+    });
+
+    return response.results.map(item => ({
+      title: item.title,
+      path: item.url,
+      description: item.description,
+      relevance: item.relevanceScore || 0,
+      contentType: item.contentType,
+      tags: item.tags,
+    }));
+  },
+  []
+);
+```
+
+### Portfolio Assistant
+
+The site assistant provides intelligent content recommendations based on user queries.
+
+#### Assistant Features
+
+- **Natural Language Processing**: Understands user intent and context
+- **Cross-Content Recommendations**: Suggests relevant portfolio, blog, and project content
+- **Confidence Scoring**: Provides relevance scores for recommendations
+- **Contextual Awareness**: Considers current page and user behavior
+- **Interactive Interface**: Chat-like interaction with the assistant
+
+## 📝 Content Creation Integration
+
+### Content Creation Studio
+
+The integrated content creation system with AI-powered features.
+
+#### Key Features
+
+- **TipTap Editor**: Rich text editing with real-time Markdown conversion
+- **AI Frontmatter Generation**: Automatic metadata generation using Cloudflare AI
+- **R2 Integration**: Direct content storage in Cloudflare R2 bucket
+- **Smart Cache Rebuilds**: Automatic cache updates for search indexing
+- **Content Types**: Support for blog, portfolio, and project content
+
+#### AI Frontmatter Generation
+
+````typescript
+// AI model selection based on content complexity
+const selectAIModel = (content: string): string => {
+  const complexity = analyzeContentComplexity(content);
+
+  if (complexity.simple) return '@cf/meta/llama-3.1-8b-instruct';
+  if (complexity.medium) return '@cf/meta/llama-3.1-70b-instruct';
+  return '@cf/meta/llama-3.1-405b-instruct';
+};
+
+// Content complexity analysis
+const analyzeContentComplexity = (content: string) => {
+  const wordCount = content.split(/\s+/).length;
+  const hasCodeBlocks = /```[\s\S]*?```/.test(content);
+  const hasLinks = /\[.*?\]\(.*?\)/.test(content);
+  const hasImages = /!\[.*?\]\(.*?\)/.test(content);
+  const technicalTerms =
+    content.match(/\b(API|database|framework|algorithm|architecture)\b/gi)
+      ?.length || 0;
+
+  return {
+    simple: wordCount < 500 && !hasCodeBlocks && technicalTerms < 3,
+    medium: wordCount < 1500 && technicalTerms < 8,
+    complex: wordCount >= 1500 || hasCodeBlocks || technicalTerms >= 8,
+  };
+};
+````
+
+## 🔧 Content Service Implementation
+
+### Cached Content Service
+
+High-performance content service with advanced search capabilities.
+
+#### Service Architecture
+
+```typescript
+export class CachedContentService {
+  private portfolioItems: CachedContentItem[] = [];
+  private blogItems: CachedContentItem[] = [];
+  private projectItems: CachedContentItem[] = [];
+  private allItems: CachedContentItem[] = [];
+  private fuse: Fuse<CachedContentItem> | null = null;
+  private isFuseInitialized = false;
+
+  // Core content retrieval
+  async getContentByType(
+    contentType: 'blog' | 'portfolio' | 'project'
+  ): Promise<CachedContentItem[]>;
+  async getAllContent(): Promise<CachedContentItem[]>;
+
+  // Search and recommendations
+  async searchContent(
+    request: CachedSearchRequest
+  ): Promise<CachedSearchResponse>;
+  async getRecommendations(
+    request: CachedRecommendationsRequest
+  ): Promise<CachedRecommendationsResponse>;
+
+  // Utility methods
+  isReady(): boolean;
+  getContentMetadata(): ContentMetadata;
+  reinitializeFuse(): Promise<void>;
 }
 ```
 
-## Content Recommendations
+#### Content Data Structure
 
-### AI-Powered Content Discovery
+```typescript
+interface CachedContentItem {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  contentType: 'blog' | 'portfolio' | 'project' | 'page';
+  category: string;
+  tags: string[];
+  keywords: string[];
+  content: string;
+  relevanceScore?: number;
+  date?: string;
+  fileName: string;
+  readTime?: number;
+  author?: string;
+  draft?: boolean;
+  layout?: string;
+  status?: string;
+  technologies?: string[];
+}
 
-Intelligent content recommendations based on user inquiries and context.
-
-#### Contact Analysis Integration
-- **Inquiry Analysis**: AI analysis of contact form submissions
-- **Context Awareness**: Industry, project scope, and inquiry type detection
-- **Smart Matching**: Semantic content matching for relevant recommendations
-- **Cross-Content Discovery**: Recommendations across portfolio, blog, and project content
-
-#### Recommendation Engine
-```tsx
-const getContentRecommendations = useCallback(async (analysis: AIAnalysisResult) => {
-  const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`
-  const tags = [analysis.inquiryType, analysis.industry, analysis.projectScope].filter(Boolean)
-  
-  const response = await cachedContentService.getRecommendations({
-    query: title,
-    contentType: 'all',
-    maxResults: 4,
-    tags: tags,
-    context: {
-      inquiryType: analysis.inquiryType,
-      industry: analysis.industry,
-      projectScope: analysis.projectScope,
-      messageType: analysis.messageType,
-      priorityLevel: analysis.priorityLevel
-    }
-  })
-}, [])
+interface CacheData {
+  portfolio: CachedContentItem[];
+  blog: CachedContentItem[];
+  projects: CachedContentItem[];
+  all: CachedContentItem[];
+  metadata: {
+    portfolioCount: number;
+    blogCount: number;
+    projectCount: number;
+    lastUpdated: string;
+    version: string;
+    trigger: string;
+  };
+}
 ```
 
-### Recommendation Display
-- **Relevance Scoring**: Percentage-based relevance indicators
-- **Content Type Icons**: Visual content type identification
-- **Tag Display**: Relevant tags for each recommendation
-- **Description Preview**: Brief content descriptions
-- **Direct Navigation**: Click-to-navigate functionality
+## 🚀 Search and Recommendation Engine
 
-## Semantic Search Engine
+### Semantic Search Implementation
 
-### Fuse.js Integration
+Advanced fuzzy search with multiple matching strategies.
 
-Advanced fuzzy search with semantic matching capabilities.
+#### Search Algorithms
 
-#### Search Configuration
-```tsx
+**Primary: Fuse.js Semantic Search**
+
+```typescript
 const fuseOptions: IFuseOptions<CachedContentItem> = {
   keys: [
     { name: 'title', weight: 0.4 },
@@ -181,325 +371,496 @@ const fuseOptions: IFuseOptions<CachedContentItem> = {
     { name: 'content', weight: 0.2 },
     { name: 'tags', weight: 0.15 },
     { name: 'keywords', weight: 0.15 },
-    { name: 'category', weight: 0.1 }
+    { name: 'category', weight: 0.1 },
   ],
-  threshold: 0.3, // Lower threshold for more precise matches
-  distance: 100, // Allow for more flexible matching
+  threshold: 0.3,
+  distance: 100,
   includeScore: true,
   includeMatches: true,
   minMatchCharLength: 3,
-  ignoreLocation: true, // Better for content matching
-  useExtendedSearch: true
-}
+  ignoreLocation: true,
+  useExtendedSearch: true,
+};
 ```
 
-#### Search Weights
-- **Title**: 40% weight (highest priority)
-- **Description**: 30% weight
-- **Content**: 20% weight
-- **Tags**: 15% weight
-- **Keywords**: 15% weight
-- **Category**: 10% weight
+**Fallback: Traditional Text Search**
 
-### Fallback Search System
-
-Traditional text-based search when semantic search is unavailable.
-
-#### Scoring Algorithm
-```tsx
+```typescript
 private searchItems(items: CachedContentItem[], query: string, tags: string[], maxResults: number) {
   const scoredItems = items.map(item => {
-    let score = 0
-    
+    let score = 0;
+    const queryLower = query.toLowerCase();
+    const itemTags = item.tags.map(tag => tag.toLowerCase());
+    const tagsLower = tags.map(tag => tag.toLowerCase());
+
     // Title match (highest weight)
     if (item.title.toLowerCase().includes(queryLower)) {
-      score += 15
+      score += 25;
     }
-    
+
     // Description match
     if (item.description.toLowerCase().includes(queryLower)) {
-      score += 8
+      score += 15;
     }
-    
+
+    // Content match
+    if (item.content.toLowerCase().includes(queryLower)) {
+      score += 10;
+    }
+
     // Tags match (high weight for exact matches)
-    const matchingTags = tagsLower.filter(tag => itemTags.includes(tag))
-    score += matchingTags.length * 10
-    
-    return { item, score }
-  })
+    const matchingTags = tagsLower.filter(tag => itemTags.includes(tag));
+    score += matchingTags.length * 12;
+
+    // Keywords match
+    const matchingKeywords = item.keywords.filter(keyword =>
+      keyword.toLowerCase().includes(queryLower)
+    );
+    score += matchingKeywords.length * 8;
+
+    // Category match
+    if (item.category.toLowerCase().includes(queryLower)) {
+      score += 10;
+    }
+
+    // Content quality bonus
+    if (item.readTime && item.readTime > 5) score += 5;
+    if (item.tags.length > 3) score += 3;
+    if (item.keywords.length > 5) score += 2;
+
+    return { item, score };
+  });
+
+  return scoredItems
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, maxResults)
+    .map(({ item, score }) => ({
+      ...item,
+      relevanceScore: Math.min(100, (score / 100) * 100),
+    }));
 }
 ```
 
-## Content Discovery Features
+### Recommendation Engine
 
-### Cross-Content Type Search
+Context-aware content recommendations with multiple strategies.
 
-Unified search across all content types with intelligent categorization.
+#### Recommendation Strategies
 
-#### Content Types Supported
-- **Portfolio Items**: Leadership, technical, and organizational skills
-- **Blog Posts**: Insights, articles, and thought leadership content
-- **Project Analysis**: Case studies and project documentation
-- **Page Content**: General site content and information
+1. **Tag-Based Matching**: Find content with similar tags
+2. **Category-Based Matching**: Match content within same category
+3. **Content Similarity**: Semantic similarity based on content analysis
+4. **User Context**: Recommendations based on current page and user behavior
+5. **AI-Enhanced**: Use AI analysis for intelligent recommendations
 
-#### Content Metadata
-```tsx
-export interface CachedContentItem {
-  id: string
-  title: string
-  description: string
-  url: string
-  contentType: 'blog' | 'portfolio' | 'project' | 'page'
-  category: string
-  tags: string[]
-  keywords: string[]
-  content: string
-  relevanceScore?: number
-  date?: string
-  fileName: string
+#### Recommendation Algorithm
+
+```typescript
+async getRecommendations(request: CachedRecommendationsRequest): Promise<CachedRecommendationsResponse> {
+  const { query, contentType, maxResults, excludeUrl, tags, context } = request;
+
+  let candidates = this.allItems;
+
+  // Filter by content type
+  if (contentType !== 'all') {
+    candidates = candidates.filter(item => item.contentType === contentType);
+  }
+
+  // Exclude current page
+  if (excludeUrl) {
+    candidates = candidates.filter(item => item.url !== excludeUrl);
+  }
+
+  // Tag-based filtering
+  if (tags && tags.length > 0) {
+    candidates = candidates.filter(item =>
+      tags.some(tag => item.tags.includes(tag))
+    );
+  }
+
+  // Context-aware scoring
+  const scoredCandidates = candidates.map(item => {
+    let score = 0;
+
+    // Title similarity
+    if (query && item.title.toLowerCase().includes(query.toLowerCase())) {
+      score += 30;
+    }
+
+    // Tag matching
+    if (tags) {
+      const matchingTags = tags.filter(tag => item.tags.includes(tag));
+      score += matchingTags.length * 15;
+    }
+
+    // Context matching
+    if (context) {
+      if (context.industry && item.tags.includes(context.industry)) score += 20;
+      if (context.inquiryType && item.tags.includes(context.inquiryType)) score += 15;
+      if (context.projectScope && item.tags.includes(context.projectScope)) score += 10;
+    }
+
+    // Content quality bonus
+    if (item.readTime && item.readTime > 3) score += 5;
+    if (item.tags.length > 2) score += 3;
+
+    return { ...item, relevanceScore: Math.min(100, score) };
+  });
+
+  const results = scoredCandidates
+    .filter(item => item.relevanceScore > 0)
+    .sort((a, b) => b.relevanceScore - a.relevanceScore)
+    .slice(0, maxResults);
+
+  return {
+    success: true,
+    results,
+    totalResults: results.length,
+    query,
+    timestamp: new Date().toISOString(),
+  };
 }
 ```
 
-### Related Content Discovery
+## 📱 Frontend Integration
 
-Automatic content suggestions based on current page context.
+### Component Usage Patterns
 
-#### Context-Aware Recommendations
-- **Current Page Exclusion**: Prevents recommending the current page
-- **Content Type Matching**: Suggests similar content types
-- **Tag-Based Discovery**: Finds content with matching tags
-- **Relevance Ranking**: Prioritizes most relevant content
+#### Global Search Implementation
 
-## Technical Implementation
+```typescript
+// RedesignedSearch component
+const handleSearch = useCallback(async (query: string) => {
+  if (!query.trim()) {
+    setSearchResults([]);
+    return;
+  }
 
-### Cached Content Service
+  const results = await cachedContentService.searchContent({
+    query,
+    contentType: 'all',
+    maxResults: 8,
+  });
 
-High-performance content service using pre-built cache and Fuse.js.
-
-#### Service Architecture
-```tsx
-export class CachedContentService {
-  private portfolioItems: CachedContentItem[] = []
-  private blogItems: CachedContentItem[] = []
-  private projectItems: CachedContentItem[] = []
-  private allItems: CachedContentItem[] = []
-  private fuse: Fuse<CachedContentItem> | null = null
-  private isFuseInitialized = false
-}
+  setSearchResults(results.results);
+}, []);
 ```
 
-#### Initialization Process
-1. **Content Loading**: Load content from cached JSON files
-2. **Fuse.js Setup**: Initialize semantic search engine
-3. **Fallback Handling**: Graceful degradation if initialization fails
-4. **Service Readiness**: Check service availability
+#### Blog Search and Filtering
 
-### Performance Optimizations
+```typescript
+// BlogListPage component
+useEffect(() => {
+  const loadBlogs = async () => {
+    const blogs = await cachedContentService.getContentByType('blog');
+    setBlogPosts(blogs);
+  };
+  loadBlogs();
+}, []);
 
-#### Caching Strategy
-- **Pre-built Cache**: Content pre-processed and cached as JSON
-- **Local Storage**: Recent searches stored in browser
-- **Service Singleton**: Single instance for all search operations
-- **Lazy Initialization**: Fuse.js initialized only when needed
+// Combined search and tag filtering
+useEffect(() => {
+  let filtered = blogPosts;
 
-#### Search Optimization
-- **Debounced Input**: 300ms delay for search queries
-- **Result Limiting**: Configurable max results (default: 8)
-- **Score Thresholding**: Only return relevant results (score > 0)
-- **Efficient Filtering**: Optimized array operations
+  if (searchQuery.trim()) {
+    filtered = searchBlogPosts(filtered, searchQuery);
+  }
 
-## User Experience Features
+  if (selectedTags.length > 0) {
+    filtered = filterBlogPostsByTags(filtered, selectedTags);
+  }
 
-### Keyboard Navigation
+  setFilteredPosts(filtered);
+  setCurrentPage(1);
+}, [blogPosts, searchQuery, selectedTags]);
+```
 
-Full keyboard support for accessibility and power users.
+#### Related Content Component
 
-#### Navigation Controls
-- **Arrow Keys**: Navigate through search results
-- **Enter**: Select highlighted result
-- **Escape**: Close search dialog
-- **Ctrl/Cmd + K**: Open search from anywhere
+```typescript
+// UnifiedRelatedContent component
+const getRelatedContent = async (currentUrl: string, query: string) => {
+  const recommendations = await cachedContentService.getRecommendations({
+    query,
+    maxResults: 3,
+    excludeUrl: currentUrl,
+  });
+  return recommendations.results;
+};
+```
 
-#### Visual Feedback
-- **Selection Highlighting**: Clear indication of selected result
-- **Hover States**: Interactive hover effects
-- **Loading Indicators**: Search progress indication
-- **Result Counts**: Number of results found
+## 🔧 Configuration and Deployment
 
-### Responsive Design
+### Environment Configuration
 
-Mobile-first design with adaptive layouts.
+#### Worker URLs
 
-#### Mobile Optimizations
-- **Touch-Friendly**: Large touch targets for mobile
-- **Responsive Grid**: Adaptive result layout
-- **Mobile Navigation**: Optimized for small screens
-- **Touch Scrolling**: Native mobile scrolling support
+```typescript
+const WORKER_URLS = {
+  CACHE_REBUILD: 'https://cache-rebuild-worker.rcormier.workers.dev',
+  KV_CACHE_GET: 'https://kv-cache-get.rcormier.workers.dev',
+  R2_PROXY: 'https://r2-content-proxy.rcormier.workers.dev',
+  AI_CONTACT_ANALYZER: 'https://ai-contact-analyzer.rcormier.workers.dev',
+  AI_GENERATOR: 'https://ai-generator.rcormier.workers.dev',
+};
+```
 
-#### Desktop Enhancements
-- **Large Dialog**: Maximum 4xl width for desktop
-- **Keyboard Shortcuts**: Full keyboard navigation
-- **Hover Effects**: Rich hover interactions
-- **Multi-column Layout**: Efficient use of screen space
+#### R2 Configuration
 
-## Performance Optimizations
+```typescript
+export const R2_CONFIG = {
+  BASE_URL: 'https://r2-content-proxy.rcormier.workers.dev',
+  BUCKET_NAME: 'tanstack-portfolio-r2',
+  DIRECTORIES: {
+    PORTFOLIO: 'portfolio',
+    BLOG: 'blog',
+    PROJECTS: 'projects',
+    TRASH: 'trash',
+  },
+  CACHE: {
+    DURATION: 3600, // 1 hour
+    ENABLED: true,
+  },
+};
+```
 
-### Search Performance
+## 📊 Performance Optimization
 
-Optimized search algorithms for fast results.
+### Caching Strategy
+
+#### Multi-Layer Caching
+
+1. **R2 Storage**: Primary content storage
+2. **KV Cache**: Production content index
+3. **Worker Cache**: In-memory caching
+4. **Browser Cache**: HTTP caching headers
+5. **Local Storage**: Recent searches and user preferences
+
+#### Performance Metrics
+
+- **KV cache retrieval**: < 50ms
+- **Content search**: < 100ms
+- **Recommendations**: < 150ms
+- **Cache rebuild**: 2-5 seconds
+- **AI analysis**: 1-3 seconds
+
+### Search Optimization
 
 #### Algorithm Efficiency
+
 - **Fuse.js Integration**: Industry-standard fuzzy search
 - **Weighted Scoring**: Intelligent relevance calculation
 - **Result Caching**: Cached search results
-- **Debounced Input**: Reduced unnecessary API calls
+- **Debounced Input**: Reduced unnecessary API calls (300ms)
+- **Lazy Initialization**: Fuse.js initialized only when needed
 
 #### Memory Management
+
 - **Content Pre-loading**: All content loaded at startup
 - **Efficient Data Structures**: Optimized for search operations
 - **Garbage Collection**: Proper cleanup of search timeouts
 - **Memory Monitoring**: Track memory usage
 
-### Loading States
+## 🔐 Security and Access Control
 
-Smooth user experience during search operations.
+### CORS Configuration
 
-#### Loading Indicators
-- **Search Spinner**: Animated loading indicator
-- **Skeleton Loading**: Placeholder content while loading
-- **Progressive Loading**: Load results as they become available
-- **Error Handling**: Graceful error states
+#### R2 Proxy Worker
 
-## API Endpoints
-
-### Content Search API
-
-RESTful API for content search and recommendations.
-
-#### Search Endpoints
 ```typescript
-// Search content
-POST /api/content/search
-{
-  query: string
-  contentType?: 'blog' | 'portfolio' | 'project' | 'all'
-  maxResults?: number
-  tags?: string[]
-}
-
-// Get recommendations
-POST /api/content/recommendations
-{
-  query: string
-  contentType?: 'blog' | 'portfolio' | 'project' | 'all'
-  maxResults?: number
-  excludeUrl?: string
-  tags?: string[]
-  context?: {
-    inquiryType?: string
-    industry?: string
-    projectScope?: string
-    messageType?: string
-    priorityLevel?: string
-  }
-}
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Credentials': 'false',
+  'Access-Control-Max-Age': '86400',
+};
 ```
 
-#### Response Format
+### Path Validation
+
+#### Allowed Paths
+
 ```typescript
-interface SearchResponse {
-  success: boolean
-  results: CachedContentItem[]
-  totalResults: number
-  query: string
-  timestamp: string
-  error?: string
-}
+const allowedPaths = ['blog/', 'portfolio/', 'projects/', 'trash/', ''];
+const allowedExtensions = ['.md', '.json'];
 ```
 
-## Configuration and Customization
+### Rate Limiting
 
-### Search Configuration
+#### KV-Based Rate Limiting
 
-Configurable search parameters and behavior.
+```typescript
+const RATE_LIMITS = {
+  requestsPerMinute: 60,
+  requestsPerHour: 1000,
+  searchRequestsPerMinute: 120,
+  recommendationRequestsPerMinute: 30,
+};
+```
 
-#### Search Options
-- **Threshold**: Fuse.js matching threshold (default: 0.3)
-- **Distance**: Maximum edit distance (default: 100)
-- **Min Match Length**: Minimum character match (default: 3)
-- **Max Results**: Maximum results returned (default: 8)
+## 🧪 Testing and Monitoring
 
-#### Content Weights
-- **Title Weight**: 0.4 (40% importance)
-- **Description Weight**: 0.3 (30% importance)
-- **Content Weight**: 0.2 (20% importance)
-- **Tags Weight**: 0.15 (15% importance)
-- **Keywords Weight**: 0.15 (15% importance)
-- **Category Weight**: 0.1 (10% importance)
+### Health Checks
 
-### Customization Options
+```typescript
+// Check cache health
+const isHealthy = await cachedContentService.isReady();
 
-Extensible search system for different use cases.
+// Get cache status
+const status = await getCacheStatus();
 
-#### Content Type Support
-- **Custom Content Types**: Add new content categories
-- **Custom Fields**: Extend content metadata
-- **Custom Scoring**: Implement custom relevance algorithms
-- **Custom UI**: Customize search result display
-
-#### Integration Points
-- **External APIs**: Connect to external search services
-- **Content Sources**: Integrate with CMS systems
-- **Analytics**: Track search behavior and performance
-- **A/B Testing**: Test different search configurations
-
-## Troubleshooting
-
-### Common Issues
-
-Solutions to common search problems.
-
-#### Search Not Working
-1. Check browser console for errors
-2. Verify content service initialization
-3. Check network connectivity
-4. Clear browser cache and localStorage
-
-#### Slow Search Performance
-1. Reduce maxResults parameter
-2. Optimize content size
-3. Check Fuse.js configuration
-4. Monitor memory usage
-
-#### Missing Results
-1. Verify content indexing
-2. Check search threshold settings
-3. Review content metadata
-4. Test with different queries
+// Monitor performance
+const metrics = await getPerformanceMetrics();
+```
 
 ### Debug Information
 
-Enable debug mode for troubleshooting.
-
-#### Debug Logging
 ```typescript
 // Enable debug logging
-logger.setLevel('debug')
+logger.setLevel('debug');
 
 // Check service status
-console.log('Content service ready:', cachedContentService.isReady())
-console.log('Fuse.js ready:', cachedContentService.isFuseReady())
-console.log('Total items:', cachedContentService.getAllContent().length)
+console.log('Content service ready:', cachedContentService.isReady());
+console.log('Fuse.js ready:', cachedContentService.isFuseReady());
+console.log('Total items:', cachedContentService.getAllContent().length);
 ```
 
-#### Performance Monitoring
-- **Search Response Time**: Track search performance
-- **Result Quality**: Monitor relevance scoring
-- **User Behavior**: Analyze search patterns
-- **Error Rates**: Track search failures
+## 🚨 Error Handling and Fallbacks
 
-## Conclusion
+### Graceful Degradation
 
-The search and related content capabilities provide a comprehensive, intelligent content discovery system that enhances user experience across the portfolio site. With semantic search, intelligent recommendations, and cross-content type discovery, users can efficiently find relevant information and discover new content based on their interests and needs.
+#### Fallback Chain
 
-The system is designed for performance, accessibility, and extensibility, making it easy to add new features and integrate with external systems as needed.
+1. **Primary**: KV cache retrieval
+2. **Secondary**: R2 proxy worker
+3. **Tertiary**: Empty results with user notification
+
+#### Error Recovery
+
+```typescript
+try {
+  const content = await cachedContentService.getContentByType('blog');
+  return content;
+} catch (error) {
+  logger.error('Content retrieval failed:', error);
+  return []; // Graceful fallback
+}
+```
+
+## 📈 Analytics and Monitoring
+
+### Cache Performance Metrics
+
+#### Key Metrics
+
+- Cache hit rate
+- Response times
+- Error rates
+- Content freshness
+- Search relevance scores
+- AI analysis accuracy
+- User engagement with recommendations
+
+#### Monitoring Dashboard
+
+- Real-time cache status
+- Performance graphs
+- Error tracking
+- Usage statistics
+- Search analytics
+- Recommendation effectiveness
+
+## 🎯 Best Practices
+
+### Content Creation
+
+- Use AI frontmatter generation for consistent metadata
+- Organize content in appropriate directories (blog/, portfolio/, projects/)
+- Use descriptive tags and keywords for better searchability
+- Leverage the TipTap editor for rich content creation
+- Enable cache rebuilds for important content changes
+
+### Search Optimization
+
+- Use specific, descriptive search queries
+- Leverage content type filtering for targeted results
+- Take advantage of tag-based filtering
+- Use keyboard shortcuts for efficient navigation
+- Review search results and relevance scores
+
+### Performance
+
+- Monitor cache performance and hit rates
+- Optimize content size and structure
+- Use debounced search inputs
+- Implement proper error handling and fallbacks
+- Monitor search analytics and user behavior
+
+### AI Integration
+
+- Provide clear, descriptive content for better AI analysis
+- Review AI-generated content before publishing
+- Use context-aware recommendations effectively
+- Monitor AI analysis accuracy and effectiveness
+- Leverage AI for content optimization and suggestions
+
+## 📚 Examples and Use Cases
+
+### Global Search Usage
+
+```typescript
+// Search across all content types
+const results = await cachedContentService.searchContent({
+  query: 'NetSuite implementation',
+  contentType: 'all',
+  maxResults: 10,
+});
+
+// Filter by content type
+const blogResults = await cachedContentService.searchContent({
+  query: 'AI automation',
+  contentType: 'blog',
+  maxResults: 5,
+});
+```
+
+### Content Recommendations
+
+```typescript
+// Get recommendations for current page
+const recommendations = await cachedContentService.getRecommendations({
+  query: 'ERP integration',
+  maxResults: 3,
+  excludeUrl: currentUrl,
+  tags: ['technology', 'enterprise'],
+});
+
+// AI-enhanced recommendations
+const aiRecommendations = await cachedContentService.getRecommendations({
+  query: analysis.inquiryType,
+  contentType: 'all',
+  maxResults: 4,
+  tags: [analysis.industry, analysis.projectScope],
+  context: {
+    inquiryType: analysis.inquiryType,
+    industry: analysis.industry,
+    projectScope: analysis.projectScope,
+  },
+});
+```
+
+### Content Creation Integration
+
+```typescript
+// Create new content with AI frontmatter
+const newContent = await createContent({
+  title: 'AI-Powered Content Management',
+  content: markdownContent,
+  contentType: 'blog',
+  directory: 'blog/',
+  generateFrontmatter: true,
+  rebuildCache: true,
+});
+```

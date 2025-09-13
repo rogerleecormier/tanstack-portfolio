@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Trash2, Download } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { differenceInDays, format } from 'date-fns';
 import * as ExcelJS from 'exceljs';
-import { format, differenceInDays } from 'date-fns';
+import { Download, Plus, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import * as z from 'zod';
 
 // Schema for form validation
 const taskSchema = z.object({
@@ -35,7 +44,12 @@ interface GanttTask {
 const GanttChartBuilderPage: React.FC = () => {
   const [ganttData, setGanttData] = useState<GanttTask[]>([]);
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectName: '',
@@ -73,7 +87,7 @@ const GanttChartBuilderPage: React.FC = () => {
 
     // Add header row
     const headerRow = worksheet.addRow(['Task', 'Start', 'Duration', 'End']);
-    headerRow.eachCell((cell) => {
+    headerRow.eachCell(cell => {
       cell.font = { bold: true };
     });
 
@@ -97,80 +111,133 @@ const GanttChartBuilderPage: React.FC = () => {
   // Placeholder for AI augmentation
   const handleAISuggest = () => {
     // TODO: Call Cloudflare Worker for AI-suggested schedule
-    alert('AI suggestion feature coming soon - will optimize timeline using Cloudflare AI.');
+    alert(
+      'AI suggestion feature coming soon - will optimize timeline using Cloudflare AI.'
+    );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <div className='min-h-screen bg-gray-50 py-8'>
+      <div className='mx-auto max-w-6xl px-4'>
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Gantt Chart Builder</CardTitle>
-            <p className="text-gray-600">Create project timelines with tasks, start and end dates. Visualize with Gantt chart and export to XLSX. Ready for AI optimization.</p>
+            <CardTitle className='text-2xl font-bold'>
+              Gantt Chart Builder
+            </CardTitle>
+            <p className='text-gray-600'>
+              Create project timelines with tasks, start and end dates.
+              Visualize with Gantt chart and export to XLSX. Ready for AI
+              optimization.
+            </p>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={void handleSubmit(onSubmit)} className='space-y-6'>
               <div>
-                <Label htmlFor="projectName">Project Name</Label>
-                <Input id="projectName" {...register('projectName')} />
-                {errors.projectName && <p className="text-red-500 text-sm">{errors.projectName.message}</p>}
+                <Label htmlFor='projectName'>Project Name</Label>
+                <Input id='projectName' {...register('projectName')} />
+                {errors.projectName && (
+                  <p className='text-sm text-red-500'>
+                    {errors.projectName.message}
+                  </p>
+                )}
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Tasks</h3>
+                <h3 className='mb-2 text-lg font-semibold'>Tasks</h3>
                 {fields.map((field, index) => (
-                  <div key={field.id} className="border p-4 mb-4 rounded">
+                  <div key={field.id} className='mb-4 rounded border p-4'>
                     <Input
-                      placeholder="Task Name"
+                      placeholder='Task Name'
                       {...register(`tasks.${index}.name` as const)}
-                      className="mb-2"
+                      className='mb-2'
                     />
-                    {errors.tasks?.[index]?.name && <p className="text-red-500 text-sm">{errors.tasks[index]?.name?.message}</p>}
-                    <div className="grid grid-cols-2 gap-2 mb-2">
+                    {errors.tasks?.[index]?.name && (
+                      <p className='text-sm text-red-500'>
+                        {errors.tasks[index]?.name?.message}
+                      </p>
+                    )}
+                    <div className='mb-2 grid grid-cols-2 gap-2'>
                       <div>
                         <Label>Start Date</Label>
-                        <Input type="date" {...register(`tasks.${index}.startDate` as const)} />
-                        {errors.tasks?.[index]?.startDate && <p className="text-red-500 text-sm">{errors.tasks[index]?.startDate?.message}</p>}
+                        <Input
+                          type='date'
+                          {...register(`tasks.${index}.startDate` as const)}
+                        />
+                        {errors.tasks?.[index]?.startDate && (
+                          <p className='text-sm text-red-500'>
+                            {errors.tasks[index]?.startDate?.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <Label>End Date</Label>
-                        <Input type="date" {...register(`tasks.${index}.endDate` as const)} />
-                        {errors.tasks?.[index]?.endDate && <p className="text-red-500 text-sm">{errors.tasks[index]?.endDate?.message}</p>}
+                        <Input
+                          type='date'
+                          {...register(`tasks.${index}.endDate` as const)}
+                        />
+                        {errors.tasks?.[index]?.endDate && (
+                          <p className='text-sm text-red-500'>
+                            {errors.tasks[index]?.endDate?.message}
+                          </p>
+                        )}
                       </div>
                     </div>
-                    <Button type="button" variant="outline" onClick={() => remove(index)} className="mt-2">
-                      <Trash2 className="h-4 w-4 mr-2" /> Remove Task
+                    <Button
+                      type='button'
+                      variant='outline'
+                      onClick={() => remove(index)}
+                      className='mt-2'
+                    >
+                      <Trash2 className='mr-2 size-4' /> Remove Task
                     </Button>
                   </div>
                 ))}
-                <Button type="button" onClick={() => append({ name: '', startDate: '', endDate: '' })}>
-                  <Plus className="h-4 w-4 mr-2" /> Add Task
+                <Button
+                  type='button'
+                  onClick={() =>
+                    append({ name: '', startDate: '', endDate: '' })
+                  }
+                >
+                  <Plus className='mr-2 size-4' /> Add Task
                 </Button>
               </div>
 
-              <div className="flex gap-2">
-                <Button type="submit">Generate Gantt Chart</Button>
-                <Button type="button" variant="outline" onClick={handleAISuggest}>
+              <div className='flex gap-2'>
+                <Button type='submit'>Generate Gantt Chart</Button>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={handleAISuggest}
+                >
                   AI Suggest Schedule
                 </Button>
               </div>
             </form>
 
             {ganttData.length > 0 && (
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold mb-2">Gantt Chart Visualization</h3>
-                <ResponsiveContainer width="100%" height={400}>
-                  <BarChart data={ganttData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
+              <div className='mt-8'>
+                <h3 className='mb-2 text-lg font-semibold'>
+                  Gantt Chart Visualization
+                </h3>
+                <ResponsiveContainer width='100%' height={400}>
+                  <BarChart
+                    data={ganttData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray='3 3' />
+                    <XAxis dataKey='name' />
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="duration" fill="#8884d8" name="Duration (days)" />
+                    <Bar
+                      dataKey='duration'
+                      fill='#8884d8'
+                      name='Duration (days)'
+                    />
                   </BarChart>
                 </ResponsiveContainer>
-                <Button onClick={handleExport} className="mt-4">
-                  <Download className="h-4 w-4 mr-2" /> Export to XLSX
+                <Button onClick={() => void handleExport()} className='mt-4'>
+                  <Download className='mr-2 size-4' /> Export to XLSX
                 </Button>
               </div>
             )}

@@ -1,317 +1,391 @@
-import React from 'react'
-import { 
-  InfoCard, 
-  FeatureCard, 
-  ProfileCard, 
-  StatsCard, 
-  TimelineCard,
+import {
+  FeatureCard,
   HeroCard,
-  SuccessCard,
-  WarningCard,
-  TechCard,
   HeroProfileCard,
-  MultiColumnCards
-} from '@/components/markdown/CardComponents'
+  InfoCard,
+  MultiColumnCards,
+  ProfileCard,
+  StatsCard,
+  SuccessCard,
+  TechCard,
+  TimelineCard,
+  WarningCard,
+} from '@/components/markdown/CardComponents';
+import React from 'react';
 
 // Types for card data
 interface CardData {
-  type: 'info' | 'feature' | 'profile' | 'stats' | 'timeline' | 'hero' | 'success' | 'warning' | 'tech' | 'columns' | 'hero-profile'
-  props: Record<string, unknown>
-  content: string
+  type:
+    | 'info'
+    | 'feature'
+    | 'profile'
+    | 'stats'
+    | 'timeline'
+    | 'hero'
+    | 'success'
+    | 'warning'
+    | 'tech'
+    | 'columns'
+    | 'hero-profile';
+  props: Record<string, unknown>;
+  content: string;
 }
 
 // Parse custom markdown card syntax - both old and new formats
 export function parseCardMarkdown(markdown: string): CardData | null {
   // Match old card syntax: :::card[type]{props}
-  const oldCardRegex = /^:::card\[(\w+)\]\{([^}]*)\}\n([\s\S]*?)\n:::$/gm
-  
+  const oldCardRegex = /^:::card\[(\w+)\]\{([^}]*)\}\n([\s\S]*?)\n:::$/gm;
+
   // Match new card syntax: ```card\n{JSON content}\n```
-  const newCardRegex = /^```card\n([\s\S]*?)\n```$/gm
-  
+  const newCardRegex = /^```card\n([\s\S]*?)\n```$/gm;
+
   // Try old syntax first
-  let match = oldCardRegex.exec(markdown)
+  let match = oldCardRegex.exec(markdown);
   if (match) {
-    const [, type, propsString, content] = match
+    const [, type, propsString, content] = match;
 
     // Parse props from JSON-like syntax
-    const props: Record<string, unknown> = {}
-    if (propsString.trim()) {
+    const props: Record<string, unknown> = {};
+    if (propsString?.trim()) {
       try {
         // Handle simple key-value pairs: key="value" key2="value2"
-        const propPairs = propsString.match(/(\w+)="([^"]*)"/g)
+        const propPairs = propsString?.match(/(\w+)="([^"]*)"/g);
         if (propPairs) {
           propPairs.forEach(pair => {
-            const [, key, value] = pair.match(/(\w+)="([^"]*)"/) || []
+            const [, key, value] = pair.match(/(\w+)="([^"]*)"/) ?? [];
             if (key && value) {
               // Handle special cases
               if (key === 'badges' || key === 'stats' || key === 'items') {
-                props[key] = value.split(',').map(s => s.trim())
+                props[key] = value.split(',').map(s => s.trim());
               } else if (key === 'contact') {
                 // Parse contact object: contact="email:test@example.com,phone:123-456-7890"
-                const contactPairs = value.split(',').map(s => s.trim())
-                props[key] = {} as Record<string, string>
+                const contactPairs = value.split(',').map(s => s.trim());
+                props[key] = {} as Record<string, string>;
                 contactPairs.forEach(contactPair => {
-                  const [contactKey, contactValue] = contactPair.split(':')
+                  const [contactKey, contactValue] = contactPair.split(':');
                   if (contactKey && contactValue) {
-                    (props[key] as Record<string, string>)[contactKey.trim()] = contactValue.trim()
+                    (props[key] as Record<string, string>)[contactKey.trim()] =
+                      contactValue.trim();
                   }
-                })
+                });
               } else {
-                props[key] = value
+                props[key] = value;
               }
             }
-          })
+          });
         }
       } catch (error) {
-        console.warn('Error parsing card props:', error)
+        console.warn('Error parsing card props:', error);
       }
     }
 
     return {
       type: type as CardData['type'],
       props,
-      content: content.trim()
-    }
+      content: content?.trim() ?? '',
+    };
   }
 
   // Try new syntax
-  match = newCardRegex.exec(markdown)
+  match = newCardRegex.exec(markdown);
   if (match) {
     try {
-      const jsonContent = match[1].trim()
-      const parsedCard = JSON.parse(jsonContent)
-      
+      const jsonContent = match[1]?.trim();
+      if (!jsonContent) return null;
+      const parsedCard = JSON.parse(jsonContent) as Record<string, unknown>;
+
       return {
         type: parsedCard.type as CardData['type'],
-        props: parsedCard.props || {},
-        content: parsedCard.content || ''
-      }
+        props: (parsedCard.props as Record<string, unknown>) ?? {},
+        content: (parsedCard.content as string) ?? '',
+      };
     } catch (error) {
-      console.warn('Error parsing new card syntax:', error)
-      return null
+      console.warn('Error parsing new card syntax:', error);
+      return null;
     }
   }
 
-  return null
+  return null;
 }
 
 // Render card component based on type
-export function renderCardComponent(cardData: CardData): React.ReactElement | null {
-  const { type, props, content } = cardData
+export function renderCardComponent(
+  cardData: CardData
+): React.ReactElement | null {
+  const { type, props, content } = cardData;
 
   // Parse content as markdown-like text (simple parsing for now)
-  let parsedContent = ''
+  let parsedContent = '';
   if (typeof content === 'string') {
     parsedContent = content
       .split('\n')
       .map(line => line.trim())
       .filter(line => line.length > 0)
-      .join('\n')
+      .join('\n');
   } else {
     // For non-string content (like objects), use as-is
-    parsedContent = content
+    parsedContent = content;
   }
 
   switch (type) {
     case 'info':
       return React.createElement(InfoCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'feature':
       return React.createElement(FeatureCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'profile':
       return React.createElement(ProfileCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'stats':
       // Parse stats from content if not provided in props
       if (!props.stats && content && typeof content === 'string') {
-        const statLines = content.split('\n').filter(line => line.includes(':'))
+        const statLines = content
+          .split('\n')
+          .filter(line => line.includes(':'));
         props.stats = statLines.map(line => {
-          const [label, value] = line.split(':').map(s => s.trim())
-          return { label, value }
-        })
+          const [label, value] = line.split(':').map(s => s.trim());
+          return { label, value };
+        });
       }
       return React.createElement(StatsCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'timeline':
       // Parse timeline items from content if not provided in props
       if (!props.items && content && typeof content === 'string') {
-        const itemLines = content.split('\n').filter(line => line.includes('|'))
+        const itemLines = content
+          .split('\n')
+          .filter(line => line.includes('|'));
         props.items = itemLines.map(line => {
-          const [date, title, description, badge] = line.split('|').map(s => s.trim())
-          return { date, title, description, badge }
-        })
+          const [date, title, description, badge] = line
+            .split('|')
+            .map(s => s.trim());
+          return { date, title, description, badge };
+        });
       }
       return React.createElement(TimelineCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'hero':
       return React.createElement(HeroCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'success':
       return React.createElement(SuccessCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'warning':
       return React.createElement(WarningCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'tech':
       return React.createElement(TechCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'hero-profile':
       return React.createElement(HeroProfileCard, {
         ...props,
-        children: parsedContent
-      })
+        children: parsedContent,
+      });
 
     case 'columns':
       // Parse columns data from content
       if (content) {
         try {
           // If content is already an object, use it directly
-          let columnsData
+          let columnsData;
           if (typeof content === 'string') {
-            columnsData = JSON.parse(content)
+            columnsData = JSON.parse(content) as Record<string, unknown>;
           } else if (typeof content === 'object') {
-            columnsData = content
+            columnsData = content as Record<string, unknown>;
           } else {
-            return null
+            return null;
           }
-          
+
           return React.createElement(MultiColumnCards, {
-            columns: columnsData.columns || 2,
-            cards: columnsData.cards || [],
-            ...props
-          })
+            columns: (columnsData.columns as number) === 3 ? 3 : 2,
+            cards:
+              (columnsData.cards as Array<{
+                type: string;
+                props: Record<string, unknown>;
+                content: string;
+              }>) ?? [],
+            ...props,
+          });
         } catch {
-          return null
+          return null;
         }
       }
       return React.createElement(MultiColumnCards, {
         columns: 2,
         cards: [],
-        ...props
-      })
+        ...props,
+      });
 
     default:
-      console.warn(`Unknown card type: ${type}`)
-      return null
+      console.warn(`Unknown card type: ${String(type)}`);
+      return null;
   }
 }
 
 // Process markdown content and replace card syntax with React components
 export function processMarkdownWithCards(markdown: string): {
-  processedMarkdown: string
-  cardComponents: Array<{ id: string; component: React.ReactElement }>
+  processedMarkdown: string;
+  cardComponents: Array<{ id: string; component: React.ReactElement }>;
 } {
-  const cardComponents: Array<{ id: string; component: React.ReactElement }> = []
-  let processedMarkdown = markdown
-  let cardIndex = 0
+  const cardComponents: Array<{ id: string; component: React.ReactElement }> =
+    [];
+  let processedMarkdown = markdown;
+  let cardIndex = 0;
 
   // Find all card blocks and replace with placeholders
   // Handle both old and new syntax
-  const oldCardRegex = /^:::card\[(\w+)\]\{([^}]*)\}\n([\s\S]*?)\n:::$/gm
-  const newCardRegex = /^```card\n([\s\S]*?)\n```$/gm
-  
+  const oldCardRegex = /^:::card\[(\w+)\]\{([^}]*)\}\n([\s\S]*?)\n:::$/gm;
+  const newCardRegex = /^```card\n([\s\S]*?)\n```$/gm;
+
   // Process old syntax first
-  let match
+  let match;
   while ((match = oldCardRegex.exec(markdown)) !== null) {
-    const cardData = parseCardMarkdown(match[0])
+    const cardData = parseCardMarkdown(match[0]);
     if (cardData) {
-      const component = renderCardComponent(cardData)
+      const component = renderCardComponent(cardData);
       if (component) {
-        const cardId = `__CARD_${cardIndex}__`
-        cardComponents.push({ id: cardId, component })
-        processedMarkdown = processedMarkdown.replace(match[0], cardId)
-        cardIndex++
+        const cardId = `__CARD_${cardIndex}__`;
+        cardComponents.push({ id: cardId, component });
+        processedMarkdown = processedMarkdown.replace(match[0], cardId);
+        cardIndex++;
       }
     }
   }
 
   // Process new syntax
   while ((match = newCardRegex.exec(processedMarkdown)) !== null) {
-    const cardData = parseCardMarkdown(match[0])
+    const cardData = parseCardMarkdown(match[0]);
     if (cardData) {
-      const component = renderCardComponent(cardData)
+      const component = renderCardComponent(cardData);
       if (component) {
-        const cardId = `__CARD_${cardIndex}__`
-        cardComponents.push({ id: cardId, component })
-        processedMarkdown = processedMarkdown.replace(match[0], cardId)
-        cardIndex++
+        const cardId = `__CARD_${cardIndex}__`;
+        cardComponents.push({ id: cardId, component });
+        processedMarkdown = processedMarkdown.replace(match[0], cardId);
+        cardIndex++;
       }
     }
   }
 
-  return { processedMarkdown, cardComponents }
+  return { processedMarkdown, cardComponents };
 }
 
 // Alternative approach: Custom ReactMarkdown component for cards
 export function createCardComponent(type: string) {
-  return function CardComponent({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-    const content = typeof children === 'string' ? children : ''
-    
+  return function CardComponent({
+    children,
+    ...props
+  }: React.HTMLAttributes<HTMLDivElement>) {
+    const content = typeof children === 'string' ? children : '';
+
+    // Base props that all cards need
+    const baseProps = {
+      title: props.title ?? 'Untitled',
+      className: props.className ?? '',
+    };
+
     switch (type) {
       case 'info':
-        return React.createElement(InfoCard, { ...props, children: content })
+        return React.createElement(InfoCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'feature':
-        return React.createElement(FeatureCard, { ...props, children: content })
+        return React.createElement(FeatureCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'profile':
-        return React.createElement(ProfileCard, { ...props, children: content })
+        return React.createElement(ProfileCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'stats':
-        return React.createElement(StatsCard, { ...props, children: content })
+        return React.createElement(StatsCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'timeline':
-        return React.createElement(TimelineCard, { ...props, children: content })
+        return React.createElement(TimelineCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'hero':
-        return React.createElement(HeroCard, { ...props, children: content })
+        return React.createElement(HeroCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'success':
-        return React.createElement(SuccessCard, { ...props, children: content })
+        return React.createElement(SuccessCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'warning':
-        return React.createElement(WarningCard, { ...props, children: content })
+        return React.createElement(WarningCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'tech':
-        return React.createElement(TechCard, { ...props, children: content })
+        return React.createElement(TechCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'hero-profile':
-        return React.createElement(HeroProfileCard, { ...props, children: content })
+        return React.createElement(HeroProfileCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'columns':
         // MultiColumnCards doesn't accept children, it needs cards array
-        return React.createElement(MultiColumnCards, { 
-          columns: 2, 
-          cards: [], 
-          className: props.className 
-        })
+        return React.createElement(MultiColumnCards, {
+          columns: 2,
+          cards: [],
+          ...(props.className && { className: props.className }),
+        });
       default:
-        return React.createElement('div', {
-          className: "p-4 border border-red-200 bg-red-50 rounded-lg"
-        }, [
-          React.createElement('p', {
-            className: "text-red-600"
-          }, `Unknown card type: ${type}`),
-          children
-        ])
+        return React.createElement(
+          'div',
+          {
+            className: 'p-4 border border-red-200 bg-red-50 rounded-lg',
+          },
+          [
+            React.createElement(
+              'p',
+              {
+                className: 'text-red-600',
+              },
+              `Unknown card type: ${type}`
+            ),
+            children,
+          ]
+        );
     }
-  }
+  };
 }

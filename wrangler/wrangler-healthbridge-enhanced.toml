@@ -1,5 +1,5 @@
 name = "healthbridge-enhanced"
-main = "workers/healthbridge-enhanced.js"
+main = "../workers/healthbridge-enhanced.js"
 compatibility_date = "2024-01-01"
 
 # D1 Database binding

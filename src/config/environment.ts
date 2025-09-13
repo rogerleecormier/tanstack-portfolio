@@ -7,7 +7,7 @@ const isDevelopmentMode = (): boolean => {
   if (import.meta.env.DEV) {
     return true;
   }
-  
+
   // In production, never return true for development mode
   return false;
 };
@@ -23,37 +23,38 @@ export const securityConfig = {
     'default-src': ["'self'"],
     'script-src': ["'self'", "'unsafe-inline'"],
     'style-src': ["'self'", "'unsafe-inline'"],
-    'img-src': ["'self'", "data:", "https:"],
+    'img-src': ["'self'", 'data:', 'https:'],
     'connect-src': [
-      "'self'", 
-      "https://health-bridge-api.rcormier.workers.dev",
-      "https://r2-content-proxy.rcormier.workers.dev",
-      "https://rcormier.dev",
-      "https://www.rcormier.dev",
-      "https://*.pages.dev" // Allow all Cloudflare Pages preview URLs
+      "'self'",
+      'https://health-bridge-api.rcormier.workers.dev',
+      'https://r2-content-proxy.rcormier.workers.dev',
+      'https://r2-content-full.rcormier.workers.dev',
+      'https://rcormier.dev',
+      'https://www.rcormier.dev',
+      'https://*.pages.dev', // Allow all Cloudflare Pages preview URLs
     ],
     'frame-src': ["'none'"],
     'object-src': ["'none'"],
     'base-uri': ["'self'"],
     'form-action': ["'self'"],
-    'upgrade-insecure-requests': true
+    'upgrade-insecure-requests': true,
   },
-  
+
   // Security headers
   headers: {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   },
-  
+
   // Rate limiting configuration
   rateLimit: {
     maxRequests: 100,
     windowMs: 15 * 60 * 1000, // 15 minutes
-    message: 'Too many requests from this IP, please try again later.'
-  }
+    message: 'Too many requests from this IP, please try again later.',
+  },
 };
 
 export const environment = {
@@ -73,12 +74,12 @@ export const environment = {
       email: 'dev@rcormier.dev',
       name: 'Development User',
       picture: undefined,
-      sub: 'dev-user-123'
+      sub: 'dev-user-123',
     },
     // Add session timeout for development
     sessionTimeout: 30 * 60 * 1000, // 30 minutes
     maxLoginAttempts: 3,
-    lockoutDuration: 15 * 60 * 1000 // 15 minutes
+    lockoutDuration: 15 * 60 * 1000, // 15 minutes
   },
 
   // Cloudflare Access settings
@@ -89,21 +90,21 @@ export const environment = {
     identityUrl: '/cdn-cgi/access/get-identity',
     // Cloudflare Access parameter names as per official documentation
     loginRedirectParam: 'redirect_url', // for /login: restricted to relative paths
-    logoutRedirectParam: 'returnTo',    // for /logout: restricted to authdomain, cloudflare.com subdomains, and org apps
-    cliRedirectParam: 'redirect_url'    // for /cli: restricted to org apps
+    logoutRedirectParam: 'returnTo', // for /logout: restricted to authdomain, cloudflare.com subdomains, and org apps
+    cliRedirectParam: 'redirect_url', // for /cli: restricted to org apps
   },
 
   // API configuration with security
-  // Always use local /api proxy which points to production KV in development
+  // Use dedicated R2 worker for content operations to avoid CORS issues
   api: {
-    baseUrl: '/api',
+    baseUrl: isDevelopmentMode()
+      ? 'https://r2-content-full.rcormier.workers.dev/api'
+      : 'https://r2-content-full.rcormier.workers.dev/api',
     timeout: 10000, // 10 seconds - back to original fast timeout
     retryAttempts: 3,
     // Secure endpoints that require authentication
-    protectedEndpoints: ['/auth/verify', '/auth/me', '/auth/logout']
+    protectedEndpoints: ['/auth/verify', '/auth/me', '/auth/logout'],
   },
-
-
 };
 
 export default environment;

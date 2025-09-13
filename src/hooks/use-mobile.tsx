@@ -1,31 +1,31 @@
-import * as React from "react"
+import * as React from 'react';
 
-const MOBILE_BREAKPOINT = 768
+const MOBILE_BREAKPOINT = 768;
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean>(false)
-  const [isHydrated, setIsHydrated] = React.useState(false)
+  const [isMobile, setIsMobile] = React.useState<boolean>(false);
+  const [isHydrated, setIsHydrated] = React.useState(false);
 
   React.useEffect(() => {
-    setIsHydrated(true)
+    setIsHydrated(true);
 
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
 
     const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    }
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
 
     // Set initial value
-    onChange()
+    onChange();
 
-    mql.addEventListener("change", onChange)
-    return () => mql.removeEventListener("change", onChange)
-  }, [])
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
 
   // Return false during SSR/initial render to prevent hydration mismatch
   if (!isHydrated) {
-    return false
+    return false;
   }
 
-  return isMobile
+  return isMobile;
 }
