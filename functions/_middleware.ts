@@ -7,8 +7,9 @@ interface Env {
   // Add any environment variables you need
 }
 
-export const onRequest = async (context: EventContext<Env, any, any>) => {
-  const { request } = context;
+// Handle all requests and add CORS headers
+export async function onRequest(context: EventContext<Env, any, any>) {
+  const { request, next } = context;
   
   // CORS headers for all API requests
   const corsHeaders = {
@@ -18,7 +19,7 @@ export const onRequest = async (context: EventContext<Env, any, any>) => {
     'Access-Control-Max-Age': '86400',
   };
 
-  // Handle CORS preflight requests
+  // Handle CORS preflight requests (OPTIONS)
   if (request.method === 'OPTIONS') {
     return new Response(null, {
       status: 200,
@@ -27,7 +28,7 @@ export const onRequest = async (context: EventContext<Env, any, any>) => {
   }
 
   // Continue to the next function/handler
-  const response = await context.next();
+  const response = await next();
   
   // Add CORS headers to all responses
   Object.entries(corsHeaders).forEach(([key, value]) => {
@@ -35,4 +36,17 @@ export const onRequest = async (context: EventContext<Env, any, any>) => {
   });
 
   return response;
-};
+}
+
+// Specific handler for OPTIONS requests (preflight)
+export async function onRequestOptions(context: EventContext<Env, any, any>) {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, CF-Access-Jwt-Assertion, Authorization',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
+}
