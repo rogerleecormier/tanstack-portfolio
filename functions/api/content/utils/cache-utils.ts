@@ -1,22 +1,23 @@
 // Note: Using basic frontmatter parsing for Pages Functions environment
 // import matter from 'gray-matter'
-import type { R2Bucket, KVNamespace } from '@cloudflare/workers-types';
+// import type { R2Bucket, KVNamespace } from '@cloudflare/workers-types';
 // Use console for logging in Worker environment
 
-interface CachedContentItem {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  date?: string;
-  content: string;
-  contentType: 'portfolio' | 'blog' | 'project';
-  category: string;
-  fileName: string;
-  keywords: string[];
-}
+/**
+ * @typedef {Object} CachedContentItem
+ * @property {string} id
+ * @property {string} title
+ * @property {string} description
+ * @property {string[]} tags
+ * @property {string} [date]
+ * @property {string} content
+ * @property {'portfolio'|'blog'|'project'} contentType
+ * @property {string} category
+ * @property {string} fileName
+ * @property {string[]} keywords
+ */
 
-function getCategoryFromTags(tags: string[], fileName: string): string {
+function getCategoryFromTags(tags, fileName) {
   const tagString = tags.join(' ').toLowerCase();
   const fileNameLower = fileName.toLowerCase();
 
@@ -88,10 +89,7 @@ function getCategoryFromTags(tags: string[], fileName: string): string {
 }
 
 // Parse frontmatter (simple implementation for Pages Functions environment)
-function parseFrontmatter(content: string): {
-  attributes: Record<string, unknown>;
-  body: string;
-} {
+function parseFrontmatter(content) {
   try {
     const lines = content.split('\n');
     const frontmatterStart = lines.findIndex(line => line.trim() === '---');
@@ -112,12 +110,12 @@ function parseFrontmatter(content: string): {
     const body = lines.slice(frontmatterEnd + 1).join('\n');
 
     // Simple YAML parsing
-    const attributes: Record<string, unknown> = {};
+    const attributes = {};
     for (const line of frontmatterLines) {
       const colonIndex = line.indexOf(':');
       if (colonIndex > 0) {
         const key = line.substring(0, colonIndex).trim();
-        let value: unknown = line.substring(colonIndex + 1).trim();
+        let value = line.substring(colonIndex + 1).trim();
 
         // Parse arrays
         if (
@@ -151,10 +149,7 @@ function parseFrontmatter(content: string): {
   }
 }
 
-async function processContentFile(
-  bucket: R2Bucket,
-  key: string
-): Promise<CachedContentItem | null> {
+async function processContentFile(bucket, key) {
   try {
     const object = await bucket.get(key);
     if (!object) return null;
@@ -169,19 +164,19 @@ async function processContentFile(
     const id = key.split('/').pop()?.replace('.md', '') || '';
     const fileName = key.split('/').pop() || '';
     const category = getCategoryFromTags(
-      (attributes.tags as string[]) || [],
+      attributes.tags || [],
       fileName
     );
 
     return {
       id,
-      title: (attributes.title as string) || id.replace(/-/g, ' '),
+      title: attributes.title || id.replace(/-/g, ' '),
       description:
-        (attributes.description as string) || body.substring(0, 200) + '...',
-      tags: (attributes.tags as string[]) || [],
-      keywords: (attributes.keywords as string[]) || [],
+        attributes.description || body.substring(0, 200) + '...',
+      tags: attributes.tags || [],
+      keywords: attributes.keywords || [],
       content: body,
-      date: attributes.date as string,
+      date: attributes.date,
       contentType,
       category,
       fileName,
@@ -192,11 +187,9 @@ async function processContentFile(
   }
 }
 
-async function rebuildCache(env: {
-  R2_CONTENT: R2Bucket;
-}): Promise<CachedContentItem[]> {
+async function rebuildCache(env) {
   const { R2_CONTENT: bucket } = env;
-  const allItems: CachedContentItem[] = [];
+  const allItems = [];
   const dirs = ['portfolio/', 'blog/', 'projects/'];
 
   for (const dir of dirs) {
@@ -218,10 +211,7 @@ async function rebuildCache(env: {
   return allItems;
 }
 
-export async function rebuildAndStoreCache(env: {
-  R2_CONTENT: R2Bucket;
-  CONTENT_CACHE: KVNamespace;
-}): Promise<CachedContentItem[]> {
+export async function rebuildAndStoreCache(env) {
   const allItems = await rebuildCache(env);
   const cacheData = {
     all: allItems,
@@ -239,10 +229,7 @@ export async function rebuildAndStoreCache(env: {
   return allItems;
 }
 
-export async function getContentCache(env: {
-  CONTENT_CACHE: KVNamespace;
-  R2_CONTENT: R2Bucket;
-}): Promise<unknown> {
+export async function getContentCache(env) {
   try {
     let cacheData = await env.CONTENT_CACHE.get('content-cache', 'json');
     if (!cacheData) {
