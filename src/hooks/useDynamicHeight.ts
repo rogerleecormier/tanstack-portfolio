@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface UseDynamicHeightOptions {
   containerRef: React.RefObject<HTMLElement>;
@@ -51,6 +51,7 @@ export function useDynamicHeight({
     });
 
     setItemCount(clampedCount);
+    return clampedCount;
   }, [containerRef, itemHeight, minItems, maxItems, padding]);
 
   useEffect(() => {

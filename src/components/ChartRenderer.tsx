@@ -22,11 +22,11 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ node }) => {
     <UnifiedChartRenderer
       chartType={attrs.chartType}
       data={attrs.data}
-      chartTitle={attrs.chartTitle}
-      xAxisLabel={attrs.xAxisLabel}
-      yAxisLabel={attrs.yAxisLabel}
-      width={attrs.width}
-      height={attrs.height}
+      {...(attrs.chartTitle && { chartTitle: attrs.chartTitle })}
+      {...(attrs.xAxisLabel && { xAxisLabel: attrs.xAxisLabel })}
+      {...(attrs.yAxisLabel && { yAxisLabel: attrs.yAxisLabel })}
+      {...(attrs.width && { width: attrs.width })}
+      {...(attrs.height && { height: attrs.height })}
     />
   );
 };

@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserProfilesAPI } from '@/api/userProfiles';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 // Query keys for user profiles
 export const userProfileKeys = {
@@ -55,7 +55,7 @@ export const useUserProfileMutation = () => {
       );
 
       // Invalidate related queries
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userProfileKeys.lists(),
       });
     },
@@ -79,7 +79,7 @@ export const useWeightGoalMutation = () => {
       );
 
       // Invalidate related queries
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: weightGoalKeys.lists(),
       });
     },

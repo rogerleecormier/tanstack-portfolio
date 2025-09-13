@@ -1,36 +1,36 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { H1, H2, P } from '@/components/ui/typography';
-import { ScrollToTop } from '@/components/ScrollToTop';
 import {
-  Mail,
-  MapPin,
-  Send,
-  CheckCircle,
-  Linkedin,
-  Github,
-  Clock,
-  Building,
-  User,
-  MessageSquare,
-  Calendar,
-} from 'lucide-react';
-import { FaLinkedin } from 'react-icons/fa';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { useScrollToTopOnMount } from '@/hooks/useScrollToTop';
-import { sendEmail } from '@/api/emailService';
-import { format } from 'date-fns';
-import { ContactAnalysis } from '@/components/ContactAnalysis';
-import { AIMeetingScheduler } from '@/components/AIMeetingScheduler';
-import {
+  AIAnalysisError,
   analyzeContactForm,
   type AIAnalysisResult,
-  AIAnalysisError,
 } from '@/api/contactAnalyzer';
+import { sendEmail } from '@/api/emailService';
+import { AIMeetingScheduler } from '@/components/AIMeetingScheduler';
+import { ContactAnalysis } from '@/components/ContactAnalysis';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { H1, H2, P } from '@/components/ui/typography';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { useScrollToTopOnMount } from '@/hooks/useScrollToTop';
+import { format } from 'date-fns';
+import {
+  Building,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Github,
+  Linkedin,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Send,
+  User,
+} from 'lucide-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FaLinkedin } from 'react-icons/fa';
 
 // Dynamic Action Button Component
 interface DynamicActionButtonProps {
@@ -264,7 +264,7 @@ export default function ContactPage() {
     // Set new timeout for debounced analysis
     const timeout = setTimeout(() => {
       if (formData.message.length > 20) {
-        triggerAIAnalysis();
+        void triggerAIAnalysis();
       }
     }, 1500); // 1.5 second delay for better mobile experience
 
@@ -309,8 +309,8 @@ export default function ContactPage() {
         subject: formData.subject,
         message: formData.message,
         reply_to: formData.email,
-        ai_analysis: aiAnalysis || undefined,
-        meeting_data: meetingData || undefined,
+        ...(aiAnalysis && { ai_analysis: aiAnalysis }),
+        ...(meetingData && { meeting_data: meetingData }),
       };
 
       const success = await sendEmail(emailData);
@@ -342,7 +342,7 @@ export default function ContactPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Send confirmation email to user
-    sendConfirmationEmail(meetingData);
+    void sendConfirmationEmail(meetingData);
   };
 
   const sendConfirmationEmail = async (meetingData: MeetingData) => {
@@ -402,7 +402,7 @@ This meeting request was generated based on AI analysis of their contact form su
     setShowMessageForm(true);
   };
 
-  const handleScheduleMeeting = async () => {
+  const handleScheduleMeeting = () => {
     if (!aiAnalysis) return;
 
     setIsSubmitting(true);
@@ -414,7 +414,7 @@ This meeting request was generated based on AI analysis of their contact form su
         date: new Date(), // This will be set by the meeting scheduler
         time: '09:00', // This will be set by the meeting scheduler
         duration: aiAnalysis.meetingDuration,
-        type: aiAnalysis.meetingType || 'general-discussion',
+        type: aiAnalysis.meetingType ?? 'general-discussion',
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         analysis: aiAnalysis,
       };
@@ -724,7 +724,7 @@ This meeting request was generated based on AI analysis of their contact form su
                   <CardContent>
                     <form
                       id='contact-form'
-                      onSubmit={handleSubmit}
+                      onSubmit={e => void handleSubmit(e)}
                       className='space-y-6'
                     >
                       {/* Form Fields */}
@@ -894,7 +894,7 @@ This meeting request was generated based on AI analysis of their contact form su
                       </div>
 
                       {/* Message Analysis - Above Meeting Scheduler */}
-                      {(aiAnalysis ||
+                      {((aiAnalysis ?? false) ||
                         isAnalyzing ||
                         formData.message.length >= 20) && (
                         <div className='border-t border-gray-200 pt-4'>
@@ -926,7 +926,7 @@ This meeting request was generated based on AI analysis of their contact form su
                           meetingScheduled={meetingScheduled}
                           showMessageForm={showMessageForm}
                           isSubmitting={isSubmitting}
-                          onScheduleMeeting={handleScheduleMeeting}
+                          onScheduleMeeting={() => void handleScheduleMeeting()}
                         />
 
                         {/* Send Message Instead Link - Only show when meeting is recommended */}

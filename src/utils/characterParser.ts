@@ -124,7 +124,7 @@ export const parseMarkdownContent = (content: string): string => {
     // Handle common markdown formatting issues
     parsed = parsed
       // Fix broken links
-      .replace(/\[([^\]]*)\]\(([^)]*)\)/g, (_, text, url) => {
+      .replace(/\[([^\]]*)\]\(([^)]*)\)/g, (_, text: string, url: string) => {
         // Clean the text and URL
         const cleanText = cleanTextContent(text);
         const cleanUrl = cleanTextContent(url);

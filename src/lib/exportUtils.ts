@@ -1,8 +1,8 @@
 // Export utilities for PM tools
 import * as ExcelJS from 'exceljs';
+import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import html2canvas from 'html2canvas';
 
 export const createStyledXLSX = async (
   tableData: { headers: string[]; rows: string[][] },
@@ -47,7 +47,7 @@ export const createStyledXLSX = async (
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: colors[index % 2] },
+        fgColor: { argb: colors[index % 2] ?? 'FF000000' },
       };
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = {
@@ -77,8 +77,8 @@ export const createStyledPDF = async (
   doc.setFontSize(16);
   doc.text(`${projectName} - Matrix`, 14, 20);
 
-  // @ts-expect-error jsPDF autoTable method
-  doc.autoTable({
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+  (doc as any).autoTable({
     head: [tableData.headers],
     body: tableData.rows,
     theme: 'grid',

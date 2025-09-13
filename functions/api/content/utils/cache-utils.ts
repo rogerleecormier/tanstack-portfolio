@@ -163,16 +163,12 @@ async function processContentFile(bucket, key) {
         : 'project';
     const id = key.split('/').pop()?.replace('.md', '') || '';
     const fileName = key.split('/').pop() || '';
-    const category = getCategoryFromTags(
-      attributes.tags || [],
-      fileName
-    );
+    const category = getCategoryFromTags(attributes.tags || [], fileName);
 
     return {
       id,
       title: attributes.title || id.replace(/-/g, ' '),
-      description:
-        attributes.description || body.substring(0, 200) + '...',
+      description: attributes.description || body.substring(0, 200) + '...',
       tags: attributes.tags || [],
       keywords: attributes.keywords || [],
       content: body,

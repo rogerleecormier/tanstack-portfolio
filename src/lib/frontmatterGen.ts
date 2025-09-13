@@ -124,7 +124,7 @@ function stripMdFormatting(md: string): string {
 
 function extractH1(md: string): string | undefined {
   const m = md.match(/^#\s+(.+)$/m);
-  return m ? m[1].trim() : undefined;
+  return m?.[1]?.trim() ?? undefined;
 }
 
 function sentenceSplit(text: string): string[] {
@@ -171,13 +171,13 @@ export function generateSmartFrontmatter(
   // Build term frequency across content
   const tf = new Map<string, number>();
   for (const token of tokenize(plain)) {
-    tf.set(token, (tf.get(token) || 0) + 1);
+    tf.set(token, (tf.get(token) ?? 0) + 1);
   }
 
   // Score sentences by sum of token frequencies
   const scored: Array<{ s: string; score: number }> = sentences.map(s => ({
     s,
-    score: tokenize(s).reduce((acc, t) => acc + (tf.get(t) || 0), 0),
+    score: tokenize(s).reduce((acc, t) => acc + (tf.get(t) ?? 0), 0),
   }));
 
   // Summary: pick top sentences until ~220 chars
@@ -203,7 +203,12 @@ export function generateSmartFrontmatter(
     if (keywords.length >= 2) {
       title = titleCase(keywords.slice(0, 3).join(' '));
     } else if (sentences.length) {
-      title = titleCase(truncate(sentences[0], 80));
+      const firstSentence = sentences[0];
+      if (firstSentence) {
+        title = titleCase(truncate(firstSentence, 80));
+      } else {
+        title = 'Untitled';
+      }
     } else {
       title = 'Untitled';
     }

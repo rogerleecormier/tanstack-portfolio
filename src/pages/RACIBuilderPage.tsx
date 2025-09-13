@@ -86,7 +86,7 @@ const formSchema = z
     }
     val.tasks.forEach((_, index) => {
       const hasAccountable = roleNames.some(
-        role => val.tasks[index].raci[role]?.A
+        role => val.tasks[index]?.raci?.[role]?.A
       );
       if (!hasAccountable) {
         ctx.addIssue({
@@ -96,7 +96,7 @@ const formSchema = z
         });
       }
       roleNames.forEach(role => {
-        const assignments = val.tasks[index].raci[role];
+        const assignments = val.tasks[index]?.raci?.[role];
         if (assignments) {
           const trueCount =
             (assignments.R ? 1 : 0) +
@@ -254,7 +254,7 @@ const RACIBuilderPage: React.FC = () => {
   ) => {
     const newName = e.target.value.trim();
     const currentRoles = getValues('roles');
-    const oldName = currentRoles[index].name;
+    const oldName = currentRoles[index]?.name;
     if (oldName !== newName) {
       // If rename between valid names, migrate data
       if (
@@ -264,9 +264,12 @@ const RACIBuilderPage: React.FC = () => {
       ) {
         const tasks = getValues('tasks');
         const updatedTasks = tasks.map(task => {
-          if (task.raci[oldName]) {
+          if (oldName && task.raci[oldName]) {
             const newRaci = { ...task.raci };
-            newRaci[newName] = newRaci[oldName];
+            const oldRaci = newRaci[oldName];
+            if (oldRaci) {
+              newRaci[newName] = oldRaci;
+            }
             delete newRaci[oldName];
             return { ...task, raci: newRaci };
           }
@@ -320,12 +323,12 @@ const RACIBuilderPage: React.FC = () => {
         addDebugLog(
           `📋 Task "${task.name}", Role "${role}": ${JSON.stringify(assignments)}`
         );
-        if (!assignments) return { value: '', color: undefined };
+        if (!assignments) return { value: '', color: 'R' as const };
         if (assignments.R) return { value: 'R', color: 'R' as const };
         if (assignments.A) return { value: 'A', color: 'A' as const };
         if (assignments.C) return { value: 'C', color: 'C' as const };
         if (assignments.I) return { value: 'I', color: 'I' as const };
-        return { value: '', color: undefined };
+        return { value: '', color: 'R' as const };
       }),
     }));
     addDebugLog('📊 Generated matrix rows: ' + safeStringify(matrixRows));
@@ -374,7 +377,7 @@ const RACIBuilderPage: React.FC = () => {
     try {
       return JSON.stringify(
         obj,
-        (key, value) => {
+        (key: string, value: unknown) => {
           // Skip properties that might cause circular references
           if (key === 'ref' || key === 'refs' || key.startsWith('__react')) {
             return '[Circular]';
@@ -388,7 +391,7 @@ const RACIBuilderPage: React.FC = () => {
     }
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     addDebugLog('📤 Form submit triggered');
@@ -449,7 +452,7 @@ const RACIBuilderPage: React.FC = () => {
       const renderMermaid = async () => {
         try {
           addDebugLog('🎨 Starting Mermaid diagram rendering...');
-          await mermaid.initialize({ startOnLoad: false, theme: 'default' });
+          mermaid.initialize({ startOnLoad: false, theme: 'default' });
           addDebugLog('📊 Mermaid initialized, rendering diagram...');
           const result = (await mermaid.render(
             'mermaid-diag',
@@ -465,7 +468,7 @@ const RACIBuilderPage: React.FC = () => {
           console.error('Mermaid rendering error:', error);
         }
       };
-      renderMermaid();
+      void renderMermaid();
     }
   }, [mermaidCode]);
 
@@ -553,10 +556,10 @@ const RACIBuilderPage: React.FC = () => {
 
     // Auto-fit column widths based on content
     const maxLengths = fullHeaders.map((_, colIndex) => {
-      let maxLen = fullHeaders[colIndex].length;
+      let maxLen = fullHeaders[colIndex]?.length ?? 0;
       fullRows.forEach(rowData => {
         const cellValue = rowData[colIndex];
-        maxLen = Math.max(maxLen, (cellValue || '').length);
+        maxLen = Math.max(maxLen, (cellValue ?? '').length);
       });
       return Math.max(maxLen, 8) + 2;
     });
@@ -805,7 +808,7 @@ const RACIBuilderPage: React.FC = () => {
     const currentValues = getValues();
     const currentTask = currentValues.tasks[taskIndex];
 
-    if (!currentTask || !currentTask.raci[roleName]) {
+    if (!currentTask?.raci[roleName]) {
       addDebugLog(
         `❌ Task or role not found: taskIndex=${taskIndex}, roleName=${roleName}`
       );
@@ -814,7 +817,13 @@ const RACIBuilderPage: React.FC = () => {
 
     // Create updated RACI object
     const updatedRaci = { ...currentTask.raci };
-    const updatedRoleRaci = { ...updatedRaci[roleName] };
+    const updatedRoleRaci = {
+      R: false,
+      A: false,
+      C: false,
+      I: false,
+      ...updatedRaci[roleName],
+    };
 
     if (checked) {
       // Uncheck other categories for this role
@@ -935,67 +944,88 @@ const RACIBuilderPage: React.FC = () => {
                   )}
                   {errors.tasks &&
                     Array.isArray(errors.tasks) &&
-                    errors.tasks.map(
-                      (taskError, index) =>
-                        taskError && (
+                    (errors.tasks as Array<Record<string, unknown>>)
+                      .filter(taskError => taskError)
+                      .map(
+                        (taskError: Record<string, unknown>, index: number) => (
                           <div key={index}>
                             <p className='font-medium'>Task {index + 1}:</p>
-                            {taskError.name && (
+                            {(taskError as { name?: { message?: string } })
+                              .name && (
                               <p className='ml-4'>
-                                • Name: {taskError.name.message}
+                                • Name:{' '}
+                                {
+                                  (taskError as { name: { message: string } })
+                                    .name.message
+                                }
                               </p>
                             )}
-                            {taskError.message && (
-                              <p className='ml-4'>• {taskError.message}</p>
+                            {(taskError as { message?: string }).message && (
+                              <p className='ml-4'>
+                                • {(taskError as { message: string }).message}
+                              </p>
                             )}
-                            {taskError.raci &&
-                              Object.entries(taskError.raci).map(
-                                ([roleName, roleError]) => (
-                                  <div key={roleName} className='ml-4'>
-                                    {roleError &&
+                            {(taskError as { raci?: Record<string, unknown> })
+                              .raci &&
+                              Object.entries(
+                                (taskError as { raci: Record<string, unknown> })
+                                  .raci
+                              ).map(([roleName, roleError]) => (
+                                <div key={roleName} className='ml-4'>
+                                  {roleError &&
+                                  typeof roleError === 'object' &&
+                                  'message' in roleError &&
+                                  typeof roleError.message === 'string' ? (
+                                    <p>
+                                      • {roleName}: {roleError.message}
+                                    </p>
+                                  ) : roleError &&
                                     typeof roleError === 'object' &&
-                                    'message' in roleError &&
-                                    typeof roleError.message === 'string' ? (
-                                      <p>
-                                        • {roleName}: {roleError.message}
+                                    !('message' in roleError) ? (
+                                    // Handle nested RACI category errors
+                                    <div>
+                                      <p className='font-medium'>
+                                        • {roleName}:
                                       </p>
-                                    ) : roleError &&
-                                      typeof roleError === 'object' &&
-                                      !('message' in roleError) ? (
-                                      // Handle nested RACI category errors
-                                      <div>
-                                        <p className='font-medium'>
-                                          • {roleName}:
-                                        </p>
-                                        {Object.entries(roleError).map(
-                                          ([category, categoryError]) =>
-                                            categoryError &&
-                                            typeof categoryError === 'object' &&
-                                            'message' in categoryError &&
-                                            typeof categoryError.message ===
-                                              'string' && (
-                                              <p
-                                                key={category}
-                                                className='ml-6'
-                                              >
-                                                • {category}:{' '}
-                                                {categoryError.message}
-                                              </p>
-                                            )
-                                        )}
-                                      </div>
-                                    ) : null}
-                                  </div>
-                                )
-                              )}
+                                      {Object.entries(roleError).map(
+                                        ([category, categoryError]) =>
+                                          categoryError &&
+                                          typeof categoryError === 'object' &&
+                                          'message' in categoryError &&
+                                          typeof (
+                                            categoryError as Record<
+                                              string,
+                                              unknown
+                                            >
+                                          ).message === 'string' ? (
+                                            <p key={category} className='ml-6'>
+                                              • {category}:{' '}
+                                              {
+                                                (
+                                                  categoryError as Record<
+                                                    string,
+                                                    unknown
+                                                  >
+                                                ).message as string
+                                              }
+                                            </p>
+                                          ) : null
+                                      )}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              ))}
                           </div>
                         )
-                    )}
+                      )}
                 </div>
               </div>
             )}
 
-            <form onSubmit={handleFormSubmit} className='space-y-8'>
+            <form
+              onSubmit={e => void handleFormSubmit(e)}
+              className='space-y-8'
+            >
               {/* Project Name Section */}
               <div className='space-y-3'>
                 <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
@@ -1126,7 +1156,7 @@ const RACIBuilderPage: React.FC = () => {
                         </div>
                         {roleFields.map((roleField, roleIndex) => {
                           const role = watchedRolesRaw[roleIndex]; // Use raw data for rendering all roles
-                          const roleName = role?.name?.trim() || '';
+                          const roleName = role?.name?.trim() ?? '';
 
                           // Check if this role is filtered out (incomplete)
                           const isFilteredOut = !watchedRoles.some(
@@ -1155,10 +1185,10 @@ const RACIBuilderPage: React.FC = () => {
                           const currentAssignments =
                             watchedTasks[index]?.raci?.[roleName];
                           const hasCategorySelected =
-                            currentAssignments?.R ||
-                            currentAssignments?.A ||
-                            currentAssignments?.C ||
-                            currentAssignments?.I;
+                            Boolean(currentAssignments?.R) ||
+                            Boolean(currentAssignments?.A) ||
+                            Boolean(currentAssignments?.C) ||
+                            Boolean(currentAssignments?.I);
 
                           return (
                             <div
@@ -1309,7 +1339,7 @@ const RACIBuilderPage: React.FC = () => {
               </div>
             </form>
 
-            {(matrixData || mermaidSvg) && (
+            {(matrixData ?? mermaidSvg) && (
               <div className='mt-12 border-t border-teal-200/50 pt-8 dark:border-teal-700/50'>
                 <div className='mb-8 text-center'>
                   <H3 className='mb-2 flex items-center justify-center gap-2 text-xl font-semibold text-gray-900 dark:text-white'>
@@ -1345,20 +1375,20 @@ const RACIBuilderPage: React.FC = () => {
                   {matrixData && (
                     <>
                       <Button
-                        onClick={handleRawXLSXExport}
+                        onClick={() => void handleRawXLSXExport()}
                         variant='outline'
                         className='border-teal-200 text-teal-700 hover:border-teal-300 hover:bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:hover:bg-teal-900/20'
                       >
                         <Download className='mr-2 size-4' /> Export Raw XLSX
                       </Button>
                       <Button
-                        onClick={handleXLSXExport}
+                        onClick={() => void handleXLSXExport()}
                         className='border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg transition-all duration-200 hover:from-teal-600 hover:to-blue-700 hover:shadow-xl'
                       >
                         <Download className='mr-2 size-4' /> Export Matrix XLSX
                       </Button>
                       <Button
-                        onClick={handlePDFExport}
+                        onClick={() => void handlePDFExport()}
                         variant='outline'
                         className='border-purple-200 text-purple-700 hover:border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/20'
                       >

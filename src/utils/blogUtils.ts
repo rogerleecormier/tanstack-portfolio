@@ -69,7 +69,7 @@ export function formatDate(dateString: string | undefined): string {
       day: 'numeric',
     });
   } catch (error) {
-    logger.error(`❌ Error formatting date: ${dateString}`, error);
+    logger.error(`❌ Error formatting date: ${dateString}`, error as Error);
     return 'Date not available';
   }
 }
@@ -80,23 +80,23 @@ function convertCachedItemToBlogPost(item: CachedContentItem): BlogPost {
     slug: item.id,
     title: item.title,
     description: item.description,
-    date: item.date,
+    ...(item.date && { date: item.date }),
     author: 'Roger Lee Cormier', // Default author
     tags: item.tags,
-    readTime: item.readTime || calculateReadingTime(item.content),
+    readTime: item.readTime ?? calculateReadingTime(item.content),
     content: item.content,
-    image: undefined, // Could be extracted from content if needed
+    // image: undefined, // Could be extracted from content if needed
     keywords: item.keywords,
   };
 }
 
 // Load all blog posts from KV cache service (production) or local files (development)
-export async function loadAllBlogPosts(): Promise<BlogPost[]> {
+export function loadAllBlogPosts(): BlogPost[] {
   try {
     logger.info('🔄 Loading blog posts from KV cache service...');
 
     // Use KV cache service for faster access
-    const blogItems = await cachedContentService.getBlogPosts();
+    const blogItems = cachedContentService.getBlogPosts();
     const blogPosts = blogItems.map(convertCachedItemToBlogPost);
     logger.info(`📚 Found ${blogPosts.length} blog posts from KV cache`);
 
@@ -113,6 +113,18 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
         const [yearA, monthA, dayA] = a.date.split('-').map(Number);
         const [yearB, monthB, dayB] = b.date.split('-').map(Number);
 
+        // Check if any date components are undefined
+        if (
+          yearA === undefined ||
+          monthA === undefined ||
+          dayA === undefined ||
+          yearB === undefined ||
+          monthB === undefined ||
+          dayB === undefined
+        ) {
+          return 0;
+        }
+
         const dateA = new Date(Date.UTC(yearA, monthA - 1, dayA));
         const dateB = new Date(Date.UTC(yearB, monthB - 1, dayB));
 
@@ -123,7 +135,7 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
 
         return dateB.getTime() - dateA.getTime();
       } catch (error) {
-        logger.error('❌ Error sorting blog posts by date:', error);
+        logger.error('❌ Error sorting blog posts by date:', error as Error);
         return 0;
       }
     });
@@ -133,7 +145,7 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
     );
     return sortedPosts;
   } catch (error) {
-    logger.error('❌ Failed to load blog posts from KV cache:', error);
+    logger.error('❌ Failed to load blog posts from KV cache:', error as Error);
     logger.error(
       '💡 Check that the KV cache service is accessible and the cache worker is running'
     );
@@ -142,12 +154,12 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
 }
 
 // Load a specific blog post by slug from KV cache service
-export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
+export function loadBlogPost(slug: string): BlogPost | null {
   try {
     logger.info(`🔄 Loading blog post: ${slug}`);
 
     // Try KV cache service first
-    const allBlogItems = await cachedContentService.getBlogPosts();
+    const allBlogItems = cachedContentService.getBlogPosts();
     const blogItem = allBlogItems.find(item => item.id === slug);
 
     if (blogItem) {
@@ -162,16 +174,14 @@ export async function loadBlogPost(slug: string): Promise<BlogPost | null> {
     logger.warn(`⚠️ Blog post not found in KV cache: ${slug}`);
     return null;
   } catch (error) {
-    logger.error(`❌ Error loading blog post ${slug}:`, error);
+    logger.error(`❌ Error loading blog post ${slug}:`, error as Error);
     return null;
   }
 }
 
 // Get recent blog posts (default: 5)
-export async function getRecentBlogPosts(
-  limit: number = 5
-): Promise<BlogPost[]> {
-  const allPosts = await loadAllBlogPosts();
+export function getRecentBlogPosts(limit: number = 5): BlogPost[] {
+  const allPosts = loadAllBlogPosts();
   return allPosts.slice(0, limit);
 }
 

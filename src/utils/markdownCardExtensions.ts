@@ -1,16 +1,16 @@
-import React from 'react';
 import {
-  InfoCard,
   FeatureCard,
+  HeroCard,
+  InfoCard,
+  MultiColumnCards,
   ProfileCard,
   StatsCard,
-  TimelineCard,
-  HeroCard,
   SuccessCard,
-  WarningCard,
   TechCard,
-  MultiColumnCards,
+  TimelineCard,
+  WarningCard,
 } from '@/components/markdown/CardComponents';
+import React from 'react';
 
 // Enhanced card parser that works with ReactMarkdown
 export function parseCardBlock(content: string): React.ReactElement | null {
@@ -24,13 +24,13 @@ export function parseCardBlock(content: string): React.ReactElement | null {
 
   // Parse props from JSON-like syntax
   const props: Record<string, unknown> = {};
-  if (propsString.trim()) {
+  if (propsString?.trim()) {
     try {
       // Handle simple key-value pairs: key="value" key2="value2"
-      const propPairs = propsString.match(/(\w+)="([^"]*)"/g);
+      const propPairs = propsString?.match(/(\w+)="([^"]*)"/g);
       if (propPairs) {
         propPairs.forEach(pair => {
-          const [, key, value] = pair.match(/(\w+)="([^"]*)"/) || [];
+          const [, key, value] = pair.match(/(\w+)="([^"]*)"/) ?? [];
           if (key && value) {
             // Handle special cases
             if (
@@ -63,7 +63,7 @@ export function parseCardBlock(content: string): React.ReactElement | null {
   }
 
   // Parse content for special card types
-  const parsedContent = cardContent.trim();
+  const parsedContent = cardContent?.trim() ?? '';
 
   switch (type) {
     case 'info':
@@ -146,10 +146,18 @@ export function parseCardBlock(content: string): React.ReactElement | null {
       // Parse columns data from content
       if (parsedContent) {
         try {
-          const columnsData = JSON.parse(parsedContent);
+          const columnsData = JSON.parse(parsedContent) as Record<
+            string,
+            unknown
+          >;
           return React.createElement(MultiColumnCards, {
-            columns: columnsData.columns || 2,
-            cards: columnsData.cards || [],
+            columns: (columnsData.columns as number) === 3 ? 3 : 2,
+            cards:
+              (columnsData.cards as Array<{
+                type: string;
+                props: Record<string, unknown>;
+                content: string;
+              }>) || [],
             ...props,
           });
         } catch (error) {
@@ -196,7 +204,9 @@ export function createCardDivComponent() {
     ...props
   }: React.HTMLAttributes<HTMLDivElement>) {
     // Convert children to string if it's not already
-    const content = React.Children.toArray(children).join('');
+    const content = React.Children.toArray(children)
+      .map(child => (typeof child === 'string' ? child : ''))
+      .join('');
 
     // Check if this div contains card syntax
     if (typeof content === 'string' && content.includes(':::card[')) {
@@ -224,7 +234,9 @@ export function createCardParagraphComponent() {
     children,
     ...props
   }: React.HTMLAttributes<HTMLParagraphElement>) {
-    const content = React.Children.toArray(children).join('');
+    const content = React.Children.toArray(children)
+      .map(child => (typeof child === 'string' ? child : ''))
+      .join('');
 
     // Check if this paragraph contains card syntax
     if (typeof content === 'string' && content.includes(':::card[')) {

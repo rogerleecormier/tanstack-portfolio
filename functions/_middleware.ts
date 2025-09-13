@@ -10,12 +10,13 @@ interface Env {
 // Handle all requests and add CORS headers
 export async function onRequest(context: EventContext<Env, any, any>) {
   const { request, next } = context;
-  
+
   // CORS headers for all API requests
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, CF-Access-Jwt-Assertion, Authorization',
+    'Access-Control-Allow-Headers':
+      'Content-Type, CF-Access-Jwt-Assertion, Authorization',
     'Access-Control-Max-Age': '86400',
   };
 
@@ -29,7 +30,7 @@ export async function onRequest(context: EventContext<Env, any, any>) {
 
   // Continue to the next function/handler
   const response = await next();
-  
+
   // Add CORS headers to all responses
   Object.entries(corsHeaders).forEach(([key, value]) => {
     response.headers.set(key, value);
@@ -45,7 +46,8 @@ export async function onRequestOptions(context: EventContext<Env, any, any>) {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, CF-Access-Jwt-Assertion, Authorization',
+      'Access-Control-Allow-Headers':
+        'Content-Type, CF-Access-Jwt-Assertion, Authorization',
       'Access-Control-Max-Age': '86400',
     },
   });

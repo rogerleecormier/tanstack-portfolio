@@ -20,7 +20,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
   const { login } = useAuth();
   const isDevMode = isDevelopment();
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setIsLoading(true);
 
     try {

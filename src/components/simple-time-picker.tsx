@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
 
 interface SimpleTimePickerProps {
   value?: Date;
@@ -26,12 +26,14 @@ export function SimpleTimePicker({ value, onChange }: SimpleTimePickerProps) {
 
     if (onChange && value) {
       const [hours, minutes] = newTime.split(':').map(Number);
-      const newDate = new Date(value);
-      newDate.setHours(hours);
-      newDate.setMinutes(minutes);
-      newDate.setSeconds(0);
-      newDate.setMilliseconds(0);
-      onChange(newDate);
+      if (hours !== undefined && minutes !== undefined) {
+        const newDate = new Date(value);
+        newDate.setHours(hours);
+        newDate.setMinutes(minutes);
+        newDate.setSeconds(0);
+        newDate.setMilliseconds(0);
+        onChange(newDate);
+      }
     }
   };
 

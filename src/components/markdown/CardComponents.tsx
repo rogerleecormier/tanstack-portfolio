@@ -257,7 +257,7 @@ export const FeatureCard: React.FC<
       shield: <Shield className='size-6' />,
       zap: <Zap className='size-6' />,
     };
-    return icons[iconName || 'star'] || <Star className='size-6' />;
+    return icons[iconName ?? 'star'] ?? <Star className='size-6' />;
   };
 
   // Handle badges as either string or array
@@ -384,17 +384,17 @@ export const ProfileCard: React.FC<
             <div className='shrink-0'>
               <img
                 src={image}
-                alt={imageAlt || name || title || 'Profile image'}
+                alt={imageAlt ?? name ?? title ?? 'Profile image'}
                 className='size-20 rounded-full border-2 border-teal-200 object-cover shadow-md'
               />
             </div>
           )}
           <div className='min-w-0 flex-1'>
             <h2 className='mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100'>
-              {name || title}
+              {name ?? title}
             </h2>
             <p className='mb-3 break-words font-sans text-lg font-medium text-teal-600 dark:text-teal-400'>
-              {role || description}
+              {role ?? description}
             </p>
             {badgeArray.length > 0 && (
               <div className='flex flex-wrap gap-2'>
@@ -495,7 +495,7 @@ export const StatsCard: React.FC<
       {/* Teal accent line */}
       <div className='h-1 bg-gradient-to-r from-teal-800 to-blue-800'></div>
 
-      {(title || description) && (
+      {(title ?? description) && (
         <CardHeader className='pb-4'>
           {title && (
             <CardTitle className='text-2xl font-bold text-gray-900 dark:text-gray-100'>
@@ -565,7 +565,7 @@ export const TimelineCard: React.FC<
       {/* Teal accent line */}
       <div className='h-1 bg-gradient-to-r from-teal-800 to-blue-800'></div>
 
-      {(title || description) && (
+      {(title ?? description) && (
         <CardHeader className='pb-4'>
           {title && (
             <CardTitle className='text-2xl font-bold text-gray-900 dark:text-gray-100'>
@@ -680,7 +680,7 @@ export const HeroCard: React.FC<
             <div className='shrink-0'>
               <img
                 src={image}
-                alt={imageAlt || title || 'Hero image'}
+                alt={imageAlt ?? title ?? 'Hero image'}
                 className='size-16 rounded-lg border-2 border-teal-200 object-cover shadow-md'
               />
             </div>
@@ -725,7 +725,7 @@ export const HeroCard: React.FC<
             )}
             {cta && (
               <Button
-                variant={cta.variant || 'default'}
+                variant={cta.variant ?? 'default'}
                 size={size === 'lg' ? 'lg' : 'default'}
                 asChild
                 className='mt-2'
@@ -770,7 +770,7 @@ export const SuccessCard: React.FC<
       star: <Star className='size-6' />,
       target: <Target className='size-6' />,
     };
-    return icons[iconName || 'check'] || <CheckCircle className='size-6' />;
+    return icons[iconName ?? 'check'] ?? <CheckCircle className='size-6' />;
   };
 
   // Handle badges as either string or array
@@ -856,7 +856,7 @@ export const WarningCard: React.FC<
       shield: <Shield className='size-6' />,
       lock: <Lock className='size-6' />,
     };
-    return icons[iconName || 'alert'] || <AlertCircle className='size-6' />;
+    return icons[iconName ?? 'alert'] ?? <AlertCircle className='size-6' />;
   };
 
   // Handle badges as either string or array
@@ -943,7 +943,7 @@ export const TechCard: React.FC<
       rocket: <Rocket className='size-6' />,
       zap: <Zap className='size-6' />,
     };
-    return icons[iconName || 'code'] || <Code className='size-6' />;
+    return icons[iconName ?? 'code'] ?? <Code className='size-6' />;
   };
 
   // Handle badges as either string or array
@@ -1063,14 +1063,14 @@ export const HeroProfileCard: React.FC<
             <div className='shrink-0'>
               <img
                 src={image}
-                alt={imageAlt || name || title || 'Profile image'}
+                alt={imageAlt ?? name ?? title ?? 'Profile image'}
                 className='size-24 rounded-full border-[3px] border-teal-200 object-cover shadow-lg'
               />
             </div>
           )}
           <div className='min-w-0 flex-1'>
             <h2 className='mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100'>
-              {name || title}
+              {name ?? title}
             </h2>
             <p className='overflow-wrap-break-word hero-profile-content markdown-card-content mb-3 whitespace-normal break-words text-lg font-medium text-teal-600 dark:text-teal-400'>
               {description}

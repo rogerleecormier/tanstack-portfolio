@@ -73,15 +73,15 @@ export function R2Browser({
             cursor?: string;
           };
           if (reset) {
-            setObjects((data.objects || []) as R2Object[]);
+            setObjects((data.objects ?? []) as R2Object[]);
           } else {
             setObjects(prev => [
               ...prev,
-              ...((data.objects || []) as R2Object[]),
+              ...((data.objects ?? []) as R2Object[]),
             ]);
           }
-          setPrefixes((data.prefixes || []) as string[]);
-          setCursor(data.cursor || '');
+          setPrefixes((data.prefixes ?? []) as string[]);
+          setCursor(data.cursor ?? '');
           setHasMore(!!data.cursor);
         }
       } catch (error) {
@@ -95,13 +95,13 @@ export function R2Browser({
 
   useEffect(() => {
     // whenever prefix changes, reset list
-    loadListing(true);
+    void loadListing(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPrefix]);
 
   useEffect(() => {
     if (typeof refreshSignal !== 'undefined') {
-      loadListing(true);
+      void loadListing(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshSignal]);
@@ -129,10 +129,10 @@ export function R2Browser({
     return new Date(dateString).toLocaleDateString();
   };
 
-  const handleFileClick = async (key: string) => {
+  const handleFileClick = (key: string) => {
     setLoadingFile(key);
     try {
-      await onFileSelect(key);
+      onFileSelect(key);
     } finally {
       // Add a small delay to show the loading state briefly
       setTimeout(() => setLoadingFile(null), 300);
@@ -192,7 +192,7 @@ export function R2Browser({
             />
           </div>
           <Button
-            onClick={() => loadListing(true)}
+            onClick={() => void loadListing(true)}
             disabled={loading}
             className='border-0 bg-teal-600 text-white shadow-md hover:bg-teal-700'
           >
@@ -226,7 +226,7 @@ export function R2Browser({
         <div className='space-y-1'>
           {prefixes.map(p => {
             const parts = p.split('/').filter(Boolean);
-            const name = parts[parts.length - 1] || p;
+            const name = parts[parts.length - 1] ?? p;
             return (
               <div
                 key={p}
@@ -253,7 +253,7 @@ export function R2Browser({
                   ? 'border-blue-300 bg-blue-50 dark:border-blue-600 dark:bg-blue-900/30'
                   : 'hover:border-slate-300 hover:bg-slate-50 dark:hover:border-slate-600 dark:hover:bg-slate-800/50'
               }`}
-              onClick={() => handleFileClick(obj.key)}
+              onClick={() => void handleFileClick(obj.key)}
             >
               <div className='min-w-0 flex-1'>
                 <div className='flex items-center gap-2 truncate text-sm font-medium text-slate-800 dark:text-slate-200'>
@@ -317,7 +317,7 @@ export function R2Browser({
           {hasMore && (
             <Button
               variant='outline'
-              onClick={() => loadListing()}
+              onClick={() => void loadListing()}
               disabled={loading}
               className='mt-3 w-full border-teal-600 text-teal-600 shadow-md transition-all duration-200 hover:bg-teal-50 hover:shadow-lg dark:hover:bg-teal-950'
             >
@@ -356,7 +356,7 @@ export function R2Browser({
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => handleFileDelete(fileToDelete)}
+              onClick={() => void handleFileDelete(fileToDelete)}
               disabled={deletingFile !== null}
               className='bg-red-600 hover:bg-red-700 focus:ring-red-600'
             >

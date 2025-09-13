@@ -28,6 +28,7 @@ export const securityConfig = {
       "'self'",
       'https://health-bridge-api.rcormier.workers.dev',
       'https://r2-content-proxy.rcormier.workers.dev',
+      'https://r2-content-full.rcormier.workers.dev',
       'https://rcormier.dev',
       'https://www.rcormier.dev',
       'https://*.pages.dev', // Allow all Cloudflare Pages preview URLs
@@ -94,11 +95,11 @@ export const environment = {
   },
 
   // API configuration with security
-  // Use production API directly in development to avoid proxy issues
+  // Use dedicated R2 worker for content operations to avoid CORS issues
   api: {
     baseUrl: isDevelopmentMode()
-      ? 'https://tanstack-portfolio.pages.dev/api'
-      : '/api',
+      ? 'https://r2-content-full.rcormier.workers.dev/api'
+      : 'https://r2-content-full.rcormier.workers.dev/api',
     timeout: 10000, // 10 seconds - back to original fast timeout
     retryAttempts: 3,
     // Secure endpoints that require authentication

@@ -7,23 +7,23 @@ import slugify from 'slugify';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import NewsletterSignup from '@/components/NewsletterSignup';
 import { Skeleton } from '@/components/ui/skeleton';
-import { H1, H2, P, Blockquote } from '@/components/ui/typography';
+import { Blockquote, H1, H2, P } from '@/components/ui/typography';
+import UnifiedChartRenderer from '@/components/UnifiedChartRenderer';
+import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent';
+import UnifiedTableRenderer from '@/components/UnifiedTableRenderer';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { formatDate, loadBlogPost } from '@/utils/blogUtils';
+import { Link } from '@tanstack/react-router';
 import {
-  MessageSquare,
+  ArrowRight,
   Calendar,
   Clock,
-  User,
+  MessageSquare,
   Tag,
-  ArrowRight,
+  User,
 } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
-import NewsletterSignup from '@/components/NewsletterSignup';
-import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent';
-import UnifiedChartRenderer from '@/components/UnifiedChartRenderer';
-import UnifiedTableRenderer from '@/components/UnifiedTableRenderer';
-import { loadBlogPost, formatDate } from '@/utils/blogUtils';
 
 // Define proper types for frontmatter
 interface BlogFrontmatter {
@@ -57,29 +57,29 @@ export default function BlogPage({ slug }: { slug: string }) {
 
   // Generate page-specific keywords
   const getPageKeywords = (tags?: string[]): string[] => {
-    const baseKeywords = tags || [];
+    const baseKeywords = tags ?? [];
     return [...baseKeywords, 'Blog', 'Article', 'Technical Writing'];
   };
 
   // Update document title and meta tags with enhanced SEO
   useDocumentTitle({
-    title: frontmatter.title,
-    description: frontmatter.description,
-    keywords: getPageKeywords(frontmatter.keywords || frontmatter.tags),
-    image: frontmatter.image,
+    ...(frontmatter.title && { title: frontmatter.title }),
+    ...(frontmatter.description && { description: frontmatter.description }),
+    keywords: getPageKeywords(frontmatter.keywords ?? frontmatter.tags),
+    ...(frontmatter.image && { image: frontmatter.image }),
     url: window.location.pathname,
     type: 'article',
-    author: frontmatter.author,
-    publishedTime: frontmatter.date,
+    ...(frontmatter.author && { author: frontmatter.author }),
+    ...(frontmatter.date && { publishedTime: frontmatter.date }),
   });
 
   // Load markdown content and extract TOC
   React.useEffect(() => {
-    const loadMarkdown = async () => {
+    const loadMarkdown = () => {
       setIsLoading(true);
       try {
         // Load blog post from API worker
-        const blogPost = await loadBlogPost(slug);
+        const blogPost = loadBlogPost(slug);
 
         if (blogPost) {
           // Set frontmatter
@@ -87,10 +87,10 @@ export default function BlogPage({ slug }: { slug: string }) {
             title: blogPost.title,
             description: blogPost.description,
             tags: blogPost.tags,
-            date: blogPost.date,
+            ...(blogPost.date && { date: blogPost.date }),
             author: blogPost.author,
             keywords: blogPost.keywords,
-            image: blogPost.image,
+            ...(blogPost.image && { image: blogPost.image }),
             readTime: blogPost.readTime,
           });
 
@@ -107,7 +107,8 @@ export default function BlogPage({ slug }: { slug: string }) {
           let match;
 
           while ((match = headingRegex.exec(blogPost.content)) !== null) {
-            const title = match[1].trim();
+            const title = match[1]?.trim();
+            if (!title) continue;
             let headingSlug = slugify(title, { lower: true, strict: true });
 
             // Handle duplicate slugs by adding a number suffix
@@ -365,7 +366,7 @@ export default function BlogPage({ slug }: { slug: string }) {
               remarkPlugins={[remarkGfm]}
               components={{
                 h1: ({ children, ...props }) => {
-                  const text = String(children);
+                  const text = typeof children === 'string' ? children : '';
                   const id = slugify(text, { lower: true, strict: true });
                   return (
                     <H1 id={id} {...props}>
@@ -374,7 +375,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                   );
                 },
                 h2: ({ children, ...props }) => {
-                  const text = String(children);
+                  const text = typeof children === 'string' ? children : '';
                   const id = slugify(text, { lower: true, strict: true });
                   return (
                     <H2 id={id} className='scroll-m-20' {...props}>
@@ -383,7 +384,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                   );
                 },
                 h3: ({ children, ...props }) => {
-                  const text = String(children);
+                  const text = typeof children === 'string' ? children : '';
                   const id = slugify(text, { lower: true, strict: true });
                   return (
                     <h3
@@ -400,7 +401,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                   <Blockquote {...props}>{children}</Blockquote>
                 ),
                 code: ({ children, className, ...props }) => {
-                  const match = /language-(\w+)/.exec(className || '');
+                  const match = /language-(\w+)/.exec(className ?? '');
                   const language = match ? match[1] : '';
 
                   // SCATTER/BUBBLE CHARTS WITH GROUPING, BUBBLE SIZE, LABELS, CI ERROR BARS
@@ -413,7 +414,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                     return (
                       <UnifiedChartRenderer
                         chartType='scatterplot'
-                        data={String(children)}
+                        data={typeof children === 'string' ? children : ''}
                         chartTitle='Scatter Plot Analysis'
                         xAxisLabel='Budget (USD, scaled)'
                         yAxisLabel='Mean Complexity'
@@ -426,7 +427,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                     return (
                       <UnifiedChartRenderer
                         chartType='barchart'
-                        data={String(children)}
+                        data={typeof children === 'string' ? children : ''}
                         chartTitle='Bar Chart Analysis'
                         xAxisLabel='Budget Tier'
                         yAxisLabel='Frequency'
@@ -439,7 +440,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                     return (
                       <UnifiedChartRenderer
                         chartType='linechart'
-                        data={String(children)}
+                        data={typeof children === 'string' ? children : ''}
                         chartTitle='Line Chart Analysis'
                         xAxisLabel='Budget Tier'
                         yAxisLabel='Frequency'
@@ -455,7 +456,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                     return (
                       <UnifiedChartRenderer
                         chartType='histogram'
-                        data={String(children)}
+                        data={typeof children === 'string' ? children : ''}
                         chartTitle='Histogram Analysis'
                         xAxisLabel='Budget Bins'
                         yAxisLabel='Frequency'
@@ -466,7 +467,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                   // Default code block
                   return (
                     <code
-                      className={`font-mono text-sm ${className || ''}`}
+                      className={`font-mono text-sm ${className ?? ''}`}
                       {...props}
                     >
                       {children}
@@ -557,8 +558,8 @@ export default function BlogPage({ slug }: { slug: string }) {
             <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-gray-50 p-6 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:from-slate-900 dark:to-gray-900'>
               <UnifiedRelatedContent
                 content={content}
-                title={frontmatter.title || ''}
-                tags={frontmatter.tags || []}
+                title={frontmatter.title ?? ''}
+                tags={frontmatter.tags ?? []}
                 currentUrl={`/blog/${slug}`}
                 maxResults={4}
                 variant='sidebar'

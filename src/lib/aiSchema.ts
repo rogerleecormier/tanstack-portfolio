@@ -88,37 +88,37 @@ export function safeValidateAIAnalysis(data: unknown): AIAnalysisResult {
 
       // Return partial data with fallback defaults for missing fields
       return {
-        inquiryType: partialData.inquiryType || 'general',
-        priorityLevel: partialData.priorityLevel || 'medium',
-        industry: partialData.industry || 'other',
-        projectScope: partialData.projectScope || 'medium',
-        urgency: partialData.urgency || 'flexible',
-        messageType: partialData.messageType || 'message',
+        inquiryType: partialData.inquiryType ?? 'general',
+        priorityLevel: partialData.priorityLevel ?? 'medium',
+        industry: partialData.industry ?? 'other',
+        projectScope: partialData.projectScope ?? 'medium',
+        urgency: partialData.urgency ?? 'flexible',
+        messageType: partialData.messageType ?? 'message',
         suggestedResponse:
-          partialData.suggestedResponse ||
+          partialData.suggestedResponse ??
           "Thank you for your message. I'll review it and get back to you soon.",
-        meetingDuration: partialData.meetingDuration || '1 hour',
-        relevantContent: partialData.relevantContent || ['general portfolio'],
-        confidence: partialData.confidence || 0.6,
-        shouldScheduleMeeting: partialData.shouldScheduleMeeting || false,
-        meetingType: partialData.meetingType || 'general-discussion',
-        recommendedTimeSlots: partialData.recommendedTimeSlots || [
+        meetingDuration: partialData.meetingDuration ?? '1 hour',
+        relevantContent: partialData.relevantContent ?? ['general portfolio'],
+        confidence: partialData.confidence ?? 0.6,
+        shouldScheduleMeeting: partialData.shouldScheduleMeeting ?? false,
+        meetingType: partialData.meetingType ?? 'general-discussion',
+        recommendedTimeSlots: partialData.recommendedTimeSlots ?? [
           'morning',
           'afternoon',
         ],
         timezoneConsideration:
-          partialData.timezoneConsideration || "user's local timezone",
-        userTimezone: partialData.userTimezone || '',
-        followUpRequired: partialData.followUpRequired || false,
-        redFlags: partialData.redFlags || [],
-        followUpQuestions: partialData.followUpQuestions || [],
-        timestamp: partialData.timestamp || new Date().toISOString(),
-        originalMessage: partialData.originalMessage || '[CONTENT_ANALYZED]',
-        wordCount: partialData.wordCount || 0,
-        hasCompany: partialData.hasCompany || false,
-        emailDomain: partialData.emailDomain || 'unknown',
+          partialData.timezoneConsideration ?? "user's local timezone",
+        userTimezone: partialData.userTimezone ?? '',
+        followUpRequired: partialData.followUpRequired ?? false,
+        redFlags: partialData.redFlags ?? [],
+        followUpQuestions: partialData.followUpQuestions ?? [],
+        timestamp: partialData.timestamp ?? new Date().toISOString(),
+        originalMessage: partialData.originalMessage ?? '[CONTENT_ANALYZED]',
+        wordCount: partialData.wordCount ?? 0,
+        hasCompany: partialData.hasCompany ?? false,
+        emailDomain: partialData.emailDomain ?? 'unknown',
         fallback: true,
-        aiAvailable: partialData.aiAvailable || false,
+        aiAvailable: partialData.aiAvailable ?? false,
       };
     }
 

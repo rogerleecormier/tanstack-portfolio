@@ -1,5 +1,5 @@
-import React from 'react';
 import { parseCardBlock } from '@/utils/markdownCardExtensions';
+import React from 'react';
 
 interface CardBlockProps {
   children: React.ReactNode;
@@ -7,7 +7,9 @@ interface CardBlockProps {
 
 export const CardBlock: React.FC<CardBlockProps> = ({ children }) => {
   // Convert children to string
-  const content = React.Children.toArray(children).join('');
+  const content = React.Children.toArray(children)
+    .map(child => (typeof child === 'string' ? child : ''))
+    .join('');
 
   // Check if this contains card syntax
   if (typeof content === 'string' && content.includes(':::card[')) {

@@ -237,9 +237,8 @@ export const calculateMedicationProjection = (
     medication_timeline_weeks: medicationTimelineWeeks,
     medication_impact_percentage:
       Math.round(medicationImpactPercentage * 10) / 10,
-    projected_completion_date: projectedCompletionDate
-      .toISOString()
-      .split('T')[0],
+    projected_completion_date:
+      projectedCompletionDate.toISOString().split('T')[0] ?? '',
   };
 };
 
@@ -251,8 +250,8 @@ export const getMedicationTypes = async (): Promise<MedicationType[]> => {
     if (!response.ok) {
       throw new Error(`Failed to fetch medication types: ${response.status}`);
     }
-    const data = await response.json();
-    return data;
+    const data = (await response.json()) as unknown;
+    return data as MedicationType[];
   } catch (error) {
     console.error('Error fetching medication types:', error);
     // Fallback to hardcoded data if API fails
@@ -396,8 +395,8 @@ export class UserProfilesAPI {
         );
       }
 
-      const profile = await response.json();
-      return profile;
+      const profile = (await response.json()) as unknown;
+      return profile as UserProfile;
     } catch (error) {
       console.error('Error fetching user profile:', error);
       // Only return mock data in development mode
@@ -422,16 +421,14 @@ export class UserProfilesAPI {
     }
   }
 
-  static async createUserProfile(
-    data: CreateUserProfileRequest
-  ): Promise<UserProfile> {
+  static createUserProfile(data: CreateUserProfileRequest): UserProfile {
     // Mock implementation - replace with actual API call
     const newProfile: UserProfile = {
       id: Date.now().toString(),
       ...data,
-      age: data.age || (data.birthdate ? calculateAge(data.birthdate) : 25), // Default age if not provided
-      birthdate: data.birthdate || undefined,
-      timezone: data.timezone || getCurrentTimezone(), // Default timezone if not provided
+      age: data.age ?? (data.birthdate ? calculateAge(data.birthdate) : 25), // Default age if not provided
+      ...(data.birthdate && { birthdate: data.birthdate }),
+      timezone: data.timezone ?? getCurrentTimezone(), // Default timezone if not provided
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -462,8 +459,8 @@ export class UserProfilesAPI {
         );
       }
 
-      const updatedProfile = await response.json();
-      return updatedProfile;
+      const updatedProfile = (await response.json()) as unknown;
+      return updatedProfile as UserProfile;
     } catch (error) {
       console.error('Error updating user profile:', error);
       // Fallback to mock implementation if API fails
@@ -483,7 +480,7 @@ export class UserProfilesAPI {
     }
   }
 
-  static async deleteUserProfile(userId: string): Promise<void> {
+  static deleteUserProfile(userId: string): void {
     // Mock implementation - replace with actual API call
     console.log(`Deleting user profile: ${userId}`);
   }
@@ -510,8 +507,8 @@ export class UserProfilesAPI {
         );
       }
 
-      const goal = await response.json();
-      return goal;
+      const goal = (await response.json()) as unknown;
+      return goal as WeightGoal;
     } catch (error) {
       console.error('Error fetching weight goal:', error);
       // Only return mock data in development mode
@@ -521,10 +518,11 @@ export class UserProfilesAPI {
           user_id: userId,
           target_weight_lbs: 180.0,
           start_weight_lbs: 200.0,
-          start_date: new Date().toISOString().split('T')[0],
-          target_date: new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000)
-            .toISOString()
-            .split('T')[0],
+          start_date: new Date().toISOString().split('T')[0] ?? '',
+          target_date:
+            new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000)
+              .toISOString()
+              .split('T')[0] ?? '',
           weekly_goal_lbs: 1.5,
           is_active: true,
           created_at: new Date().toISOString(),
@@ -537,9 +535,7 @@ export class UserProfilesAPI {
     }
   }
 
-  static async createWeightGoal(
-    data: CreateWeightGoalRequest
-  ): Promise<WeightGoal> {
+  static createWeightGoal(data: CreateWeightGoalRequest): WeightGoal {
     // Mock implementation - replace with actual API call
     const newGoal: WeightGoal = {
       id: Date.now(),
@@ -573,7 +569,7 @@ export class UserProfilesAPI {
         );
       }
 
-      const updatedGoal = await response.json();
+      const updatedGoal = (await response.json()) as WeightGoal;
       return updatedGoal;
     } catch (error) {
       console.error('Error updating weight goal:', error);
@@ -596,7 +592,7 @@ export class UserProfilesAPI {
     }
   }
 
-  static async deleteWeightGoal(goalId: number): Promise<void> {
+  static deleteWeightGoal(goalId: number): void {
     // Mock implementation - replace with actual API call
     console.log(`Deleting weight goal: ${goalId}`);
   }
@@ -623,25 +619,23 @@ export class UserProfilesAPI {
         );
       }
 
-      const medications = await response.json();
+      const medications = (await response.json()) as UserMedication[];
 
       // If the API doesn't return medication_type data, fetch it separately and join
-      if (medications.length > 0 && !medications[0].medication_type) {
+      if (medications.length > 0 && !medications[0]?.medication_type) {
         try {
           const medicationTypes = await getMedicationTypes();
 
           // Join medication data with medication type data
-          const enrichedMedications = medications.map(
-            (med: { medication_type_id: number; [key: string]: unknown }) => {
-              const medicationType = medicationTypes.find(
-                type => type.id === med.medication_type_id
-              );
-              return {
-                ...med,
-                medication_type: medicationType || null,
-              };
-            }
-          );
+          const enrichedMedications = medications.map((med: UserMedication) => {
+            const medicationType = medicationTypes.find(
+              type => type.id === med.medication_type_id
+            );
+            return {
+              ...med,
+              medication_type: medicationType ?? null,
+            } as UserMedication;
+          });
 
           return enrichedMedications;
         } catch (typeError) {
@@ -663,9 +657,9 @@ export class UserProfilesAPI {
     }
   }
 
-  static async createUserMedication(
+  static createUserMedication(
     data: Omit<UserMedication, 'id' | 'created_at' | 'updated_at'>
-  ): Promise<UserMedication> {
+  ): UserMedication {
     // Mock implementation - replace with actual API call
     const newMedication: UserMedication = {
       id: Date.now().toString(),
@@ -712,7 +706,7 @@ export class UserProfilesAPI {
         );
       }
 
-      const updatedMedication = await response.json();
+      const updatedMedication = (await response.json()) as UserMedication;
       console.log('Response data:', updatedMedication);
       return updatedMedication;
     } catch (error) {
@@ -722,14 +716,15 @@ export class UserProfilesAPI {
         console.log(`Mock API: Updating medication: ${data.id}`);
         const mockMedication: UserMedication = {
           id: data.id,
-          user_id: data.user_id || '',
-          medication_type_id: data.medication_type_id || 1,
-          start_date: data.start_date || new Date().toISOString().split('T')[0],
-          end_date: data.end_date,
-          dosage_mg: data.dosage_mg,
-          frequency: data.frequency || 'weekly',
+          user_id: data.user_id ?? '',
+          medication_type_id: data.medication_type_id ?? 1,
+          start_date:
+            data.start_date ?? new Date().toISOString().split('T')[0] ?? '',
+          ...(data.end_date && { end_date: data.end_date }),
+          ...(data.dosage_mg !== undefined && { dosage_mg: data.dosage_mg }),
+          frequency: data.frequency ?? 'weekly',
           is_active: data.is_active ?? true,
-          notes: data.notes,
+          ...(data.notes && { notes: data.notes }),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };
@@ -743,5 +738,6 @@ export class UserProfilesAPI {
   static async deleteUserMedication(medicationId: string): Promise<void> {
     // Mock implementation - replace with actual API call
     console.log(`Deleting medication: ${medicationId}`);
+    await new Promise(resolve => setTimeout(resolve, 0)); // Satisfy require-await
   }
 }

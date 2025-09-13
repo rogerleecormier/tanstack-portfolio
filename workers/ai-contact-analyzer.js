@@ -865,13 +865,13 @@ export default {
 
             // Use Cloudflare AI to analyze the message
       let aiResponse
+      // Smart model selection based on content complexity (moved outside try block)
+      const complexity = analyzeContactComplexity(scrubbedMessage, scrubbedSubject, company)
+      const selectedModel = selectOptimalModel(complexity, rawData.model)
+      
       try {
         console.log('🤖 Attempting AI service call...')
         console.log('📝 Input data:', { name, company, subject: scrubbedSubject, messageLength: scrubbedMessage.length })
-        
-        // Smart model selection based on content complexity
-        const complexity = analyzeContactComplexity(scrubbedMessage, scrubbedSubject, company)
-        const selectedModel = selectOptimalModel(complexity, body.model)
         
         console.log('🧠 Content complexity analysis:', complexity)
         console.log('🎯 Selected model:', selectedModel)

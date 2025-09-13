@@ -5,7 +5,7 @@ import { defineConfig, loadEnv } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  // Always use production Pages Functions for KV cache access in development
+  // Always use production Pages Functions for API access
   const apiTarget =
     env.VITE_API_PROXY_TARGET || 'https://tanstack-portfolio.pages.dev';
   return {
@@ -22,9 +22,7 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_AI_WORKER_URL': JSON.stringify(
         'https://tanstack-portfolio-ai-generator.rcormier.workers.dev'
       ),
-      'import.meta.env.VITE_R2_PROXY_BASE': JSON.stringify(
-        'https://r2-content-proxy.rcormier.workers.dev'
-      ),
+      // Content operations use R2 worker, AI generation uses dedicated AI worker
     },
     build: {
       minify: 'terser',
@@ -49,6 +47,23 @@ export default defineConfig(({ mode }) => {
           target: apiTarget,
           changeOrigin: true,
           rewrite: path => path,
+          configure: (proxy, options) => {
+            proxy.on('error', (err, req, res) => {
+              console.log('API proxy error:', err);
+            });
+            proxy.on('proxyReq', (proxyReq, req, res) => {
+              console.log('API Request:', req.method, req.url);
+            });
+            proxy.on('proxyRes', (proxyRes, req, res) => {
+              console.log('API Response:', proxyRes.statusCode, req.url);
+              if (proxyRes.statusCode && proxyRes.statusCode >= 400) {
+                console.log(
+                  'API Error Response Headers:',
+                  Object.fromEntries(proxyRes.headers)
+                );
+              }
+            });
+          },
         },
       },
     },

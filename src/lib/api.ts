@@ -27,7 +27,7 @@ export class ApiClient {
       console.warn('VITE_R2_PROXY_BASE not set, using default for development');
     }
 
-    this.accessJwt = accessJwt;
+    this.accessJwt = accessJwt ?? '';
   }
 
   private async request<T>(
@@ -37,6 +37,7 @@ export class ApiClient {
     const url = `${this.baseUrl}${endpoint}`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+
       ...((options.headers as Record<string, string>) || {}),
     };
 
@@ -51,14 +52,18 @@ export class ApiClient {
       });
 
       if (!response.ok) {
-        const errorData = await response
+        const errorData = (await response
           .json()
-          .catch(() => ({ message: 'Unknown error' }));
+          .catch(() => ({ message: 'Unknown error' }))) as Record<
+          string,
+          unknown
+        >;
         return {
           success: false,
           error: {
             code: `HTTP_${response.status}`,
-            message: errorData.message || `HTTP ${response.status}`,
+
+            message: (errorData.message as string) ?? `HTTP ${response.status}`,
             details: errorData,
           },
         };
@@ -82,28 +87,6 @@ export class ApiClient {
     if (prefix) params.set('prefix', prefix);
     if (cursor) params.set('cursor', cursor);
     if (limit) params.set('limit', limit.toString());
-    params.set('delimiter', '/');
-
-    // If a proxy base is defined, use worker-based listing
-    const proxyBase = import.meta.env.VITE_R2_PROXY_BASE;
-    if (proxyBase) {
-      try {
-        const url = `${proxyBase}/_list?${params.toString()}`;
-        const res = await fetch(url, {
-          headers: { Accept: 'application/json' },
-        });
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-        const data = await res.json();
-        return { success: true, data } as ApiResponse<unknown>;
-      } catch (e) {
-        return {
-          success: false,
-          error: { code: 'NETWORK_ERROR', message: (e as Error).message },
-        };
-      }
-    }
 
     return this.request<{
       prefixes?: string[];
@@ -118,28 +101,6 @@ export class ApiClient {
   }
 
   async readContent(key: string) {
-    const proxyBase = import.meta.env.VITE_R2_PROXY_BASE;
-    if (proxyBase) {
-      try {
-        const url = `${proxyBase}/${key}?ts=${Date.now()}`;
-        const res = await fetch(url, {
-          headers: { Accept: 'text/markdown' },
-          cache: 'no-store',
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const body = await res.text();
-        const etag = res.headers.get('ETag') || '';
-        return { success: true, data: { body, etag } } as ApiResponse<{
-          body: string;
-          etag: string;
-        }>;
-      } catch (e) {
-        return {
-          success: false,
-          error: { code: 'NETWORK_ERROR', message: (e as Error).message },
-        };
-      }
-    }
     return this.request<{ body: string; etag: string }>(
       `/content/read?key=${encodeURIComponent(key)}`
     );
@@ -172,14 +133,14 @@ export class ApiClient {
 
   async generateFrontmatter(markdown: string) {
     // Prefer dedicated AI worker if configured
-    const aiUrl = import.meta.env.VITE_AI_WORKER_URL;
+    const aiUrl = import.meta.env.VITE_AI_WORKER_URL as string | undefined;
     if (aiUrl) {
       try {
         // Add timeout for faster response
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
 
-        const res = await fetch(`${aiUrl.replace(/\/$/, '')}/api/generate`, {
+        const res = await fetch(`${aiUrl?.replace(/\/$/, '')}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ markdown }),
@@ -189,7 +150,7 @@ export class ApiClient {
         clearTimeout(timeoutId);
 
         if (res.ok) {
-          const data = await res.json();
+          const data = (await res.json()) as unknown;
           return { success: true, data } as ApiResponse<{
             frontmatter: Record<string, unknown>;
           }>;

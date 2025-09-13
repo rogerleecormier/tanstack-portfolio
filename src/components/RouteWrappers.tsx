@@ -4,12 +4,26 @@ import ProjectsPage from '../pages/ProjectsPage';
 
 // Wrapper components for dynamic routes
 export function PortfolioPageWrapper() {
-  const { slug } = useParams({ from: '/portfolio/$slug' });
+  const params: unknown = useParams({ from: '/portfolio/$slug' });
+  const slug =
+    params &&
+    typeof params === 'object' &&
+    'slug' in params &&
+    typeof (params as { slug: unknown }).slug === 'string'
+      ? (params as { slug: string }).slug
+      : '';
   return <PortfolioPage file={`portfolio/${slug}`} />;
 }
 
 export function ProjectsPageWrapper() {
-  const { slug } = useParams({ from: '/projects/$slug' });
+  const params: unknown = useParams({ from: '/projects/$slug' });
+  const slug =
+    params &&
+    typeof params === 'object' &&
+    'slug' in params &&
+    typeof (params as { slug: unknown }).slug === 'string'
+      ? (params as { slug: string }).slug
+      : '';
   return <ProjectsPage file={`projects/${slug}`} />;
 }
 

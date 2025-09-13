@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Input } from '@/components/ui/input';
+import {
+  cachedContentService,
+  type CachedContentItem,
+} from '@/api/cachedContentService';
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -7,24 +9,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import {
-  Search,
+  BookOpen,
+  Briefcase,
   Clock,
-  Tag,
+  Command,
   ExternalLink,
   FileText,
-  Briefcase,
-  BookOpen,
+  Search,
   Sparkles,
-  X,
-  Command,
+  Tag,
   Target,
+  X,
 } from 'lucide-react';
-import {
-  cachedContentService,
-  type CachedContentItem,
-} from '@/api/cachedContentService';
-import { cn } from '@/lib/utils';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface SearchResult {
   item: CachedContentItem;
@@ -47,7 +47,7 @@ const RedesignedSearch: React.FC = () => {
     const saved = localStorage.getItem('recentSearches');
     if (saved) {
       try {
-        setRecentSearches(JSON.parse(saved));
+        setRecentSearches(JSON.parse(saved) as string[]);
       } catch {
         setRecentSearches([]);
       }
@@ -67,7 +67,7 @@ const RedesignedSearch: React.FC = () => {
   }, []);
 
   // Perform semantic search
-  const performSearch = useCallback(async (searchQuery: string) => {
+  const performSearch = useCallback((searchQuery: string) => {
     if (!searchQuery.trim()) {
       setResults([]);
       return;
@@ -75,7 +75,7 @@ const RedesignedSearch: React.FC = () => {
 
     setIsSearching(true);
     try {
-      const response = await cachedContentService.getRecommendations({
+      const response = cachedContentService.getRecommendations({
         query: searchQuery,
         contentType: 'all',
         maxResults: 8,
@@ -85,7 +85,7 @@ const RedesignedSearch: React.FC = () => {
       if (response.success && response.results) {
         const searchResults: SearchResult[] = response.results.map(item => ({
           item,
-          relevanceScore: item.relevanceScore || 0,
+          relevanceScore: item.relevanceScore ?? 0,
         }));
 
         searchResults.sort((a, b) => b.relevanceScore - a.relevanceScore);
@@ -109,7 +109,7 @@ const RedesignedSearch: React.FC = () => {
 
     if (query.trim()) {
       searchTimeoutRef.current = setTimeout(() => {
-        performSearch(query);
+        void performSearch(query);
       }, 300);
     } else {
       setResults([]);
@@ -153,7 +153,10 @@ const RedesignedSearch: React.FC = () => {
       setSelectedIndex(prev => (prev > 0 ? prev - 1 : -1));
     } else if (event.key === 'Enter' && selectedIndex >= 0) {
       event.preventDefault();
-      handleResultSelect(results[selectedIndex]);
+      const selectedResult = results[selectedIndex];
+      if (selectedResult) {
+        handleResultSelect(selectedResult);
+      }
     }
   };
 
@@ -339,7 +342,7 @@ const RedesignedSearch: React.FC = () => {
                         key={index}
                         onClick={() => {
                           setQuery(searchTerm);
-                          performSearch(searchTerm);
+                          void performSearch(searchTerm);
                         }}
                         className='rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:shadow-sm'
                       >

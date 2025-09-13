@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Alert, AlertDescription } from '../ui/alert';
 import { ChartRenderer } from '../../lib/charts';
 import { cardSchema } from '../../schemas/card';
 import { chartSchema } from '../../schemas/chart';
+import { Alert, AlertDescription } from '../ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 interface ComponentRegistryProps {
   type:
@@ -21,13 +21,18 @@ export function ComponentRegistry({
 }: ComponentRegistryProps) {
   switch (type) {
     case 'x-fenced-card':
-      return <FencedCard json={json} />;
+      return <FencedCard {...(json && { json })} />;
     case 'x-fenced-chart':
-      return <FencedChart json={json} />;
+      return <FencedChart {...(json && { json })} />;
     case 'x-fenced-component':
-      return <FencedComponent componentType={componentType} json={json} />;
+      return (
+        <FencedComponent
+          {...(componentType && { componentType })}
+          {...(json && { json })}
+        />
+      );
     case 'x-fenced-error':
-      return <FencedError json={json} />;
+      return <FencedError {...(json && { json })} />;
     default:
       return <div>Unknown component type: {type}</div>;
   }
@@ -37,7 +42,7 @@ function FencedCard({ json }: { json?: string }) {
   if (!json) return <div>Invalid card data</div>;
 
   try {
-    const data = JSON.parse(json);
+    const data = JSON.parse(json) as unknown;
     const validated = cardSchema.parse(data);
 
     return (
@@ -74,7 +79,7 @@ function FencedChart({ json }: { json?: string }) {
   if (!json) return <div>Invalid chart data</div>;
 
   try {
-    const data = JSON.parse(json);
+    const data = JSON.parse(json) as unknown;
     const validated = chartSchema.parse(data);
 
     return <ChartRenderer data={validated} />;
@@ -100,7 +105,7 @@ function FencedComponent({
   if (!componentType || !json) return <div>Invalid component data</div>;
 
   try {
-    const data = JSON.parse(json);
+    const data = JSON.parse(json) as unknown;
 
     // For now, just render a placeholder. In a real implementation,
     // you'd have a registry of component types
@@ -127,7 +132,7 @@ function FencedError({ json }: { json?: string }) {
   return (
     <Alert variant='destructive'>
       <AlertDescription>
-        {json || 'Unknown error in fenced block'}
+        {json ?? 'Unknown error in fenced block'}
       </AlertDescription>
     </Alert>
   );

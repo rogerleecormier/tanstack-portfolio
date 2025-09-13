@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { MapPin, AlertCircle } from 'lucide-react';
-import { format, addDays } from 'date-fns';
-import { cn } from '@/lib/utils';
 import type { AIAnalysisResult } from '@/api/contactAnalyzer';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { addDays, format } from 'date-fns';
+import { AlertCircle, MapPin } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface AIMeetingSchedulerProps {
   analysis: AIAnalysisResult;
@@ -109,7 +109,7 @@ export function AIMeetingScheduler({
           </div>
           Recommended Meeting
           <Badge variant='outline' className='text-xs'>
-            {(analysis.meetingType || 'general-discussion').replace('-', ' ')}
+            {(analysis.meetingType ?? 'general-discussion').replace('-', ' ')}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -120,7 +120,7 @@ export function AIMeetingScheduler({
           <p className='text-sm text-teal-800'>
             <strong>Recommendation:</strong> Based on your inquiry, I recommend
             scheduling a <strong>{analysis.meetingDuration}</strong>{' '}
-            {(analysis.meetingType || 'general-discussion').replace('-', ' ')}{' '}
+            {(analysis.meetingType ?? 'general-discussion').replace('-', ' ')}{' '}
             meeting.
           </p>
         </div>
@@ -175,7 +175,7 @@ export function AIMeetingScheduler({
             <div>
               <span className='text-gray-600'>Type:</span>
               <span className='ml-2 font-medium capitalize'>
-                {(analysis.meetingType || 'general-discussion').replace(
+                {(analysis.meetingType ?? 'general-discussion').replace(
                   '-',
                   ' '
                 )}

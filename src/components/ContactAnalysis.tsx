@@ -1,27 +1,27 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { cachedContentService } from '@/api/cachedContentService';
 import {
+  formatRedFlags,
+  getMessageTypeIndicator,
   getPriorityColor,
   getUrgencyIndicator,
-  getMessageTypeIndicator,
-  formatRedFlags,
   type AIAnalysisResult,
 } from '@/api/contactAnalyzer';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import {
-  Building,
-  Target,
   AlertCircle,
+  Building,
   CheckCircle,
-  MessageSquare,
   Clock,
-  MapPin,
-  HelpCircle,
   ExternalLink,
+  HelpCircle,
+  MapPin,
+  MessageSquare,
   Tag,
+  Target,
 } from 'lucide-react';
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { cachedContentService } from '@/api/cachedContentService';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Helper function to safely parse tags
 function parseTagsSafely(tags: unknown): string[] {
@@ -36,7 +36,7 @@ function parseTagsSafely(tags: unknown): string[] {
         // Check if this string looks like JSON
         if (item.trim().startsWith('[') && item.trim().endsWith(']')) {
           try {
-            const parsed = JSON.parse(item);
+            const parsed = JSON.parse(item) as unknown;
             if (Array.isArray(parsed)) {
               allTags.push(
                 ...parsed.filter(
@@ -61,7 +61,7 @@ function parseTagsSafely(tags: unknown): string[] {
   // If tags is a string, try to parse it
   if (typeof tags === 'string') {
     try {
-      const parsed = JSON.parse(tags);
+      const parsed = JSON.parse(tags) as unknown;
       if (Array.isArray(parsed)) {
         return parsed.filter((tag): tag is string => typeof tag === 'string');
       }
@@ -131,7 +131,7 @@ export function ContactAnalysis({
 
   // Smart content recommendations function with enhanced context awareness
   const getContentRecommendations = useCallback(
-    async (analysis: AIAnalysisResult) => {
+    (analysis: AIAnalysisResult) => {
       try {
         const title = `Inquiry: ${analysis.inquiryType} - ${analysis.industry}`;
         const tags = [
@@ -147,7 +147,7 @@ export function ContactAnalysis({
         );
 
         // Enhanced context-aware recommendations using the improved cached content service
-        const response = await cachedContentService.getRecommendations({
+        const response = cachedContentService.getRecommendations({
           query: title,
           contentType: 'all', // Get cross-content type recommendations
           maxResults: 4,
@@ -172,9 +172,9 @@ export function ContactAnalysis({
               title: item.title,
               path: item.url,
               description: item.description,
-              relevance: (item.relevanceScore || 0) / 100, // Convert percentage to decimal
+              relevance: (item.relevanceScore ?? 0) / 100, // Convert percentage to decimal
               contentType: item.contentType as 'blog' | 'portfolio' | 'project',
-              tags: parseTagsSafely(item.tags || []),
+              tags: parseTagsSafely(item.tags ?? []),
             }));
 
           console.log(
@@ -206,7 +206,7 @@ export function ContactAnalysis({
 
       // Set new timeout for debounced search
       searchTimeoutRef.current = setTimeout(() => {
-        getContentRecommendations(analysis);
+        void getContentRecommendations(analysis);
       }, debounceTime);
     }
 
@@ -323,7 +323,7 @@ export function ContactAnalysis({
             </div>
             <div className='mt-1 text-xs text-blue-700'>
               Suggested duration: {analysis.meetingDuration} • Type:{' '}
-              {(analysis.meetingType || 'general-discussion').replace('-', ' ')}
+              {(analysis.meetingType ?? 'general-discussion').replace('-', ' ')}
             </div>
           </div>
         )}
@@ -391,7 +391,7 @@ export function ContactAnalysis({
 
                     <CardContent className='pt-0'>
                       <p className='mb-3 line-clamp-3 text-sm text-gray-600 dark:text-gray-400'>
-                        {content.description || 'No description available'}
+                        {content.description ?? 'No description available'}
                       </p>
 
                       {/* Tags */}

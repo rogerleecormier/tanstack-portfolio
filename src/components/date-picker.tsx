@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
+  PopoverTrigger,
 } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { useState } from 'react';
 
 interface DatePickerProps {
   value: string;
@@ -62,7 +62,7 @@ export function DatePicker({
         <Calendar
           mode='single'
           selected={dateObj}
-          defaultMonth={dateObj}
+          {...(dateObj && { defaultMonth: dateObj })}
           onSelect={d => {
             if (d) {
               onChange(d.toISOString().slice(0, 10)); // yyyy-mm-dd only

@@ -48,9 +48,9 @@ export default {
       // Provide a lightweight listing endpoint for clients that need folder traversal
       // GET /_list?prefix=blog/ (returns { prefixes, objects })
       if (request.method === 'GET' && path === '/_list') {
-        const prefix = url.searchParams.get('prefix') || '';
+        const prefix = url.searchParams.get('prefix') ?? '';
         const limit = Math.min(
-          parseInt(url.searchParams.get('limit') || '1000'),
+          parseInt(url.searchParams.get('limit') ?? '1000'),
           1000
         );
 
@@ -160,7 +160,7 @@ export default {
         // Let R2 determine the content type
         headers.set(
           'Content-Type',
-          object.httpMetadata?.contentType || 'application/octet-stream'
+          object.httpMetadata?.contentType ?? 'application/octet-stream'
         );
       }
 

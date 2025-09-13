@@ -39,7 +39,7 @@ export const isEmailAllowed = (email: string): boolean => {
 
   // Check domain match
   const userDomain = email.split('@')[1];
-  if (accessControl.allowedDomains.includes(userDomain)) {
+  if (userDomain && accessControl.allowedDomains.includes(userDomain)) {
     return true;
   }
 

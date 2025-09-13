@@ -1,5 +1,5 @@
+import { Code, Root } from 'mdast';
 import { Plugin } from 'unified';
-import { Root, Code } from 'mdast';
 import { cardSchema } from '../schemas/card';
 import { chartSchema } from '../schemas/chart';
 
@@ -52,7 +52,8 @@ function parseFencedBlock(content: string): FencedBlock | null {
   const lines = content.trim().split('\n');
   if (lines.length === 0) return null;
 
-  const firstLine = lines[0].trim();
+  const firstLine = lines[0]?.trim();
+  if (!firstLine) return null;
 
   // Check for card {json}
   if (firstLine.startsWith('card ')) {
@@ -93,7 +94,7 @@ function isValidJson(
   schema?: { safeParse: (data: unknown) => { success: boolean } }
 ): boolean {
   try {
-    const parsed = JSON.parse(jsonStr);
+    const parsed = JSON.parse(jsonStr) as Record<string, unknown>;
     if (schema) {
       const result = schema.safeParse(parsed);
       if (!result.success) {

@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from '@tanstack/react-router';
+import { cachedContentService } from '@/api/cachedContentService';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import {
-  ChevronRight,
-  Home,
   Briefcase,
+  ChevronRight,
   FileText,
   FolderOpen,
+  Home,
 } from 'lucide-react';
-import { cachedContentService } from '@/api/cachedContentService';
+import React, { useEffect, useState } from 'react';
 
 const Breadcrumbs: React.FC = () => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const Breadcrumbs: React.FC = () => {
 
   // Get page title from cached content when path changes
   useEffect(() => {
-    const getPageTitle = async () => {
+    const getPageTitle = () => {
       if (currentPath === '/') {
         setPageTitle('Home');
         setIsLoadingTitle(false);
@@ -47,8 +47,10 @@ const Breadcrumbs: React.FC = () => {
           about: 'About',
         };
         const sectionTitle =
-          sectionNames[contentType] ||
-          contentType.charAt(0).toUpperCase() + contentType.slice(1);
+          (contentType && sectionNames[contentType]) ??
+          (contentType
+            ? contentType.charAt(0).toUpperCase() + contentType.slice(1)
+            : 'Page');
         setPageTitle(sectionTitle);
         setIsLoadingTitle(false);
         return;
@@ -57,7 +59,7 @@ const Breadcrumbs: React.FC = () => {
       setIsLoadingTitle(true);
       try {
         // Try to get the page title from cached content
-        const allContent = await cachedContentService.getAllContent();
+        const allContent = cachedContentService.getAllContent();
         const pageContent = allContent.find(item => {
           // Match by URL path
           if (item.url === currentPath) return true;
@@ -98,7 +100,7 @@ const Breadcrumbs: React.FC = () => {
       }
     };
 
-    getPageTitle();
+    void getPageTitle();
   }, [currentPath]);
 
   const generateBreadcrumbs = () => {
@@ -123,8 +125,10 @@ const Breadcrumbs: React.FC = () => {
       else if (sectionName === 'about') icon = Home;
 
       breadcrumbs.push({
-        name: sectionName.charAt(0).toUpperCase() + sectionName.slice(1),
-        path: `/${sectionName}`,
+        name: sectionName
+          ? sectionName.charAt(0).toUpperCase() + sectionName.slice(1)
+          : 'Section',
+        path: `/${sectionName ?? ''}`,
         current: true,
         icon,
       });
@@ -139,15 +143,17 @@ const Breadcrumbs: React.FC = () => {
       else if (sectionName === 'about') sectionIcon = Home;
 
       breadcrumbs.push({
-        name: sectionName.charAt(0).toUpperCase() + sectionName.slice(1),
-        path: `/${sectionName}`,
+        name: sectionName
+          ? sectionName.charAt(0).toUpperCase() + sectionName.slice(1)
+          : 'Section',
+        path: `/${sectionName ?? ''}`,
         current: false,
         icon: sectionIcon,
       });
 
       // Add page breadcrumb
       breadcrumbs.push({
-        name: isLoadingTitle ? 'Loading...' : pageTitle || 'Page',
+        name: isLoadingTitle ? 'Loading...' : (pageTitle ?? 'Page'),
         path: currentPath,
         current: true,
         icon: FolderOpen,
@@ -160,7 +166,7 @@ const Breadcrumbs: React.FC = () => {
   const breadcrumbs = generateBreadcrumbs();
 
   const handleNavigation = (path: string) => {
-    navigate({ to: path });
+    void navigate({ to: path });
   };
 
   return (

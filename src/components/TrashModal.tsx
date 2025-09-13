@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { apiClient } from '@/lib/api';
+import { useEffect, useState } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 import { SaveAsModal } from './SaveAsModal';
 
@@ -39,13 +39,13 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
     const res = await apiClient.listContent('trash/', undefined, 200);
     if (res.success && res.data) {
       const data = res.data as { objects?: unknown[] };
-      setItems((data.objects || []) as Item[]);
+      setItems((data.objects ?? []) as Item[]);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    if (open) load();
+    if (open) void load();
   }, [open]);
 
   const restore = async (trashKey: string) => {
@@ -59,13 +59,15 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
         setConfirm({
           open: true,
           message: `A file already exists at ${toOriginal(trashKey)}. Overwrite?`,
-          onConfirm: async () => {
-            setConfirm({ open: false, message: '' });
-            const r2 = await apiClient.restoreContent(trashKey, true);
-            if (r2.success) {
-              await load();
-              onRestored?.();
-            }
+          onConfirm: () => {
+            void (async () => {
+              setConfirm({ open: false, message: '' });
+              const r2 = await apiClient.restoreContent(trashKey, true);
+              if (r2.success) {
+                await load();
+                onRestored?.();
+              }
+            })();
           },
         });
       }
@@ -75,9 +77,9 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
   const toOriginal = (trashKey: string) =>
     trashKey.split('/').slice(2).join('/');
   const splitDir = (key: string) =>
-    (key.split('/')[0] || 'blog') as 'blog' | 'portfolio' | 'projects';
+    (key.split('/')[0] ?? 'blog') as 'blog' | 'portfolio' | 'projects';
   const baseName = (key: string) =>
-    (key.split('/').pop() || '').replace(/\.md$/, '');
+    (key.split('/').pop() ?? '').replace(/\.md$/, '');
 
   return (
     <>
@@ -107,7 +109,7 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
                   </div>
                 </div>
                 <div className='flex gap-2'>
-                  <Button size='sm' onClick={() => restore(it.key)}>
+                  <Button size='sm' onClick={() => void restore(it.key)}>
                     Restore
                   </Button>
                   <Button
@@ -131,15 +133,17 @@ export function TrashModal({ open, onOpenChange, onRestored }: Props) {
         onOpenChange={setRestoreAsOpen}
         initialDir={restoreAsKey ? splitDir(toOriginal(restoreAsKey)) : 'blog'}
         initialName={restoreAsKey ? baseName(toOriginal(restoreAsKey)) : ''}
-        onConfirm={async key => {
-          if (!restoreAsKey) return;
-          const r = await apiClient.restoreContent(restoreAsKey, false, key);
-          if (r.success) {
-            setRestoreAsOpen(false);
-            setRestoreAsKey(null);
-            await load();
-            onRestored?.();
-          }
+        onConfirm={key => {
+          void (async () => {
+            if (!restoreAsKey) return;
+            const r = await apiClient.restoreContent(restoreAsKey, false, key);
+            if (r.success) {
+              setRestoreAsOpen(false);
+              setRestoreAsKey(null);
+              await load();
+              onRestored?.();
+            }
+          })();
         }}
       />
       <ConfirmDialog

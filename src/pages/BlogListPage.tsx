@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from '@tanstack/react-router';
+import NewsletterSignup from '@/components/NewsletterSignup';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,13 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
-import { ScrollToTop } from '@/components/ScrollToTop';
-import { H1, H2, H3, P } from '@/components/ui/typography';
 import {
   Dialog,
   DialogContent,
@@ -21,26 +16,31 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { H1, H2, H3, P } from '@/components/ui/typography';
 import {
-  Search,
-  Calendar,
-  Clock,
-  User,
-  Tag,
-  BookOpen,
-  Filter,
-  X,
-  ArrowRight,
-} from 'lucide-react';
-import NewsletterSignup from '@/components/NewsletterSignup';
-import {
+  filterBlogPostsByTags,
+  formatDate,
+  getAllTags,
   loadAllBlogPosts,
   searchBlogPosts,
-  filterBlogPostsByTags,
-  getAllTags,
-  formatDate,
   type BlogPost,
 } from '@/utils/blogUtils';
+import { Link } from '@tanstack/react-router';
+import {
+  ArrowRight,
+  BookOpen,
+  Calendar,
+  Clock,
+  Filter,
+  Search,
+  Tag,
+  User,
+  X,
+} from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 export default function BlogListPage() {
   // Scroll to top when component mounts
@@ -61,24 +61,20 @@ export default function BlogListPage() {
 
   // Load blog posts
   useEffect(() => {
-    const loadBlogPosts = async () => {
-      try {
-        setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-        const posts = await loadAllBlogPosts();
+      const posts = loadAllBlogPosts();
 
-        setBlogPosts(posts);
-        setFilteredPosts(posts);
-      } catch (error) {
-        console.error('Error loading blog posts:', error);
-        setBlogPosts([]);
-        setFilteredPosts([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadBlogPosts();
+      setBlogPosts(posts);
+      setFilteredPosts(posts);
+    } catch (error) {
+      console.error('Error loading blog posts:', error);
+      setBlogPosts([]);
+      setFilteredPosts([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   // Filter posts based on search query and selected tags
@@ -131,7 +127,7 @@ export default function BlogListPage() {
           entries => {
             const [entry] = entries;
             if (
-              entry.isIntersecting &&
+              entry?.isIntersecting &&
               !isLoading &&
               !isLoadingMore &&
               displayedPosts.length < filteredPosts.length
@@ -152,6 +148,7 @@ export default function BlogListPage() {
         observer.observe(node);
         return () => observer.disconnect();
       }
+      return undefined;
     },
     [isLoading, isLoadingMore, displayedPosts.length, filteredPosts.length]
   );
@@ -354,7 +351,7 @@ export default function BlogListPage() {
         {/* Blog Posts Grid */}
         {isLoading ? (
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {[...Array(6)].map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
                 className='h-full border-gray-200 dark:border-gray-700'

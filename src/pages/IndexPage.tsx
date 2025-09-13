@@ -39,7 +39,7 @@ interface BlogPost {
   id: string;
   title: string;
   description: string;
-  date: string;
+  date?: string;
   tags: string[];
   category: string;
   url: string;
@@ -111,7 +111,7 @@ export default function IndexPage() {
         }
 
         // Get all content from cached service
-        const allContent = await cachedContentService.getAllContent();
+        const allContent = cachedContentService.getAllContent();
 
         // Get recent blog posts (sorted by date, most recent first)
         const blogs = allContent.filter(item => item.contentType === 'blog');
@@ -127,7 +127,7 @@ export default function IndexPage() {
             id: blog.id,
             title: blog.title,
             description: blog.description,
-            date: blog.date || new Date().toISOString().split('T')[0],
+            ...(blog.date && { date: blog.date }),
             tags: blog.tags,
             category: blog.category,
             url: blog.url,
@@ -202,11 +202,11 @@ export default function IndexPage() {
       }
     };
 
-    loadContent();
+    void loadContent();
   }, []);
 
   const handleNavigation = (url: string) => {
-    navigate({ to: url });
+    void navigate({ to: url });
   };
 
   return (
@@ -558,11 +558,13 @@ export default function IndexPage() {
                       {blog.category}
                     </Badge>
                     <span className='text-xs text-slate-500 dark:text-slate-400'>
-                      {new Date(blog.date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
+                      {blog.date
+                        ? new Date(blog.date).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })
+                        : 'No date'}
                     </span>
                   </div>
                   <CardTitle className='text-lg font-bold text-slate-900 transition-colors group-hover:text-slate-700 dark:text-slate-100 dark:group-hover:text-slate-200'>

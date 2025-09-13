@@ -84,7 +84,7 @@ async function analyzeMessageContent(
     );
 
     if (response.ok) {
-      const result = await response.json();
+      const result = (await response.json()) as Partial<AIAnalysisResult>;
       logger.success('AI Worker Response:', result);
 
       // Mark as AI-available if we got a successful response
@@ -92,7 +92,7 @@ async function analyzeMessageContent(
         ...result,
         fallback: false,
         aiAvailable: true,
-      };
+      } as Partial<AIAnalysisResult>;
     } else {
       logger.error(
         'AI Worker returned error status:',
@@ -109,7 +109,7 @@ async function analyzeMessageContent(
       return createFallbackAnalysis({
         name,
         email: 'user@example.com', // Default email for fallback
-        company,
+        company: company ?? '',
         subject,
         message,
         consent: true, // Default consent for fallback
@@ -129,7 +129,7 @@ async function analyzeMessageContent(
     return createFallbackAnalysis({
       name,
       email: 'user@example.com', // Default email for fallback
-      company,
+      company: company ?? '',
       subject,
       message,
       consent: true, // Default consent for fallback
@@ -234,7 +234,7 @@ const createFallbackAnalysis = (
       (formData.message.length > 200 ? '...' : ''),
     wordCount: formData.message.split(' ').length,
     hasCompany: !!formData.company,
-    emailDomain: formData.email.split('@')[1] || 'unknown',
+    emailDomain: formData.email.split('@')[1] ?? 'unknown',
     fallback: true,
     aiAvailable: false,
   };
@@ -373,7 +373,7 @@ export const analyzeContactForm = async (
     const analysis = await retryWithBackoff(async () => {
       const result = await analyzeMessageContent(
         formData.name,
-        formData.company || '',
+        formData.company ?? '',
         formData.subject,
         formData.message
       );
@@ -513,11 +513,11 @@ export async function testAIWorker(): Promise<{
     );
 
     if (response.ok) {
-      const result = await response.json();
+      const result = (await response.json()) as unknown;
       logger.success('AI Worker Test Successful:', result);
       return {
         success: true,
-        details: { status: response.status, result },
+        details: { status: response.status, result: result },
       };
     } else {
       let errorText = 'Unknown error';
@@ -541,6 +541,7 @@ export async function testAIWorker(): Promise<{
           statusText: response.statusText,
           error: errorText,
           headers: Object.fromEntries(response.headers.entries()),
+          result: errorText as unknown,
         },
       };
     }

@@ -29,7 +29,7 @@ export default function NewsletterSignup({
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email.trim()) {
@@ -50,24 +50,28 @@ export default function NewsletterSignup({
     setStatus('idle');
     setMessage('');
 
-    try {
-      const result = await subscribeToBlog(email, name || undefined);
+    const submitForm = async () => {
+      try {
+        const result = await subscribeToBlog(email, name || undefined);
 
-      if (result.success) {
-        setStatus('success');
-        setMessage(result.message);
-        setEmail('');
-        setName('');
-      } else {
+        if (result.success) {
+          setStatus('success');
+          setMessage(result.message);
+          setEmail('');
+          setName('');
+        } else {
+          setStatus('error');
+          setMessage(result.message);
+        }
+      } catch {
         setStatus('error');
-        setMessage(result.message);
+        setMessage('Something went wrong. Please try again.');
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch {
-      setStatus('error');
-      setMessage('Something went wrong. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    };
+
+    void submitForm();
   };
 
   const getStatusIcon = () => {

@@ -1,9 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  UserProfilesAPI,
-  UserMedication,
   MedicationType,
+  UserMedication,
+  UserProfilesAPI,
 } from '@/api/userProfiles';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 // Query keys for medications
 export const medicationKeys = {
@@ -17,7 +17,7 @@ export const medicationKeys = {
 
 // Custom hook for fetching medication types
 export const useMedicationTypes = () => {
-  return useQuery({
+  return useQuery<MedicationType[]>({
     queryKey: medicationKeys.types(),
     queryFn: async () => {
       // Fetch medication types from the API
@@ -27,8 +27,10 @@ export const useMedicationTypes = () => {
       if (!response.ok) {
         throw new Error(`Failed to fetch medication types: ${response.status}`);
       }
-      const data = await response.json();
-      return data.medication_types || [];
+      const data = (await response.json()) as {
+        medication_types?: MedicationType[];
+      };
+      return data.medication_types ?? [];
     },
     staleTime: 10 * 60 * 1000, // 10 minutes - medication types don't change often
     gcTime: 30 * 60 * 1000, // 30 minutes
@@ -75,7 +77,7 @@ export const useMedicationMutation = () => {
       );
 
       // Invalidate related queries to ensure data consistency
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: medicationKeys.lists(),
       });
     },
@@ -106,7 +108,7 @@ export const useDeleteMedication = () => {
       });
 
       // Invalidate related queries
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: medicationKeys.lists(),
       });
     },

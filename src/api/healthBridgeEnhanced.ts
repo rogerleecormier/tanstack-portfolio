@@ -171,7 +171,11 @@ export class HealthBridgeEnhancedAPI {
         );
       }
 
-      return response.json();
+      return (await response.json()) as {
+        success: boolean;
+        id: number;
+        message: string;
+      };
     } catch (error) {
       console.error('Error creating weight measurement:', error);
       throw error;
@@ -207,7 +211,7 @@ export class HealthBridgeEnhancedAPI {
       );
     }
 
-    return response.json();
+    return (await response.json()) as WeightMeasurement[];
   }
 
   /**
@@ -234,10 +238,14 @@ export class HealthBridgeEnhancedAPI {
 
         for (let i = 1; i <= days; i++) {
           const projectedWeight = currentWeight + dailyRate * i;
+          const dateString = new Date(Date.now() + i * 24 * 60 * 60 * 1000)
+            .toISOString()
+            .split('T')[0];
+          if (!dateString) {
+            throw new Error('Failed to generate date string');
+          }
           mockProjections.push({
-            date: new Date(Date.now() + i * 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split('T')[0],
+            date: dateString,
             projected_weight: Math.max(projectedWeight, 154.0), // Don't go below 154 lbs
             confidence: Math.max(0.95 - i * 0.01, 0.7), // Confidence decreases over time
             daily_rate: dailyRate,
@@ -285,7 +293,7 @@ export class HealthBridgeEnhancedAPI {
         );
       }
 
-      return response.json();
+      return (await response.json()) as WeightProjectionsResponse;
     } catch (error) {
       console.error('Error fetching weight projections:', error);
       throw error;
@@ -296,7 +304,11 @@ export class HealthBridgeEnhancedAPI {
    * Get weight measurements (alias for getWeightMeasurements for backward compatibility)
    */
   static async getWeights(userId?: string): Promise<WeightMeasurement[]> {
-    return this.getWeightMeasurements({ limit: 100, days: 365, userId }); // Get last year of data
+    return this.getWeightMeasurements({
+      limit: 100,
+      days: 365,
+      ...(userId && { userId }),
+    }); // Get last year of data
   }
 
   /**
@@ -311,7 +323,7 @@ export class HealthBridgeEnhancedAPI {
       throw new Error(`Failed to fetch weight trends: ${response.statusText}`);
     }
 
-    return response.json();
+    return (await response.json()) as WeightTrends;
   }
 
   /**
@@ -387,7 +399,7 @@ export class HealthBridgeEnhancedAPI {
         );
       }
 
-      return response.json();
+      return (await response.json()) as AnalyticsDashboard;
     } catch (error) {
       console.error('Error fetching analytics dashboard:', error);
       throw error;
@@ -411,7 +423,7 @@ export class HealthBridgeEnhancedAPI {
       );
     }
 
-    return response.json();
+    return (await response.json()) as ComparativeAnalytics;
   }
 
   /**

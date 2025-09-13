@@ -17,19 +17,23 @@ export async function onRequest(context) {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, CF-Access-Jwt-Assertion, Authorization',
+        'Access-Control-Allow-Headers':
+          'Content-Type, CF-Access-Jwt-Assertion, Authorization',
         'Access-Control-Max-Age': '86400',
       },
     });
   }
 
   if (request.method !== 'POST') {
-    return Response.json({ error: 'Method not allowed' }, {
-      status: 405,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      { error: 'Method not allowed' },
+      {
+        status: 405,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   }
 
   try {
@@ -42,7 +46,7 @@ export async function onRequest(context) {
           status: 400,
           headers: {
             'Access-Control-Allow-Origin': '*',
-          }
+          },
         }
       );
     }
@@ -109,11 +113,14 @@ export async function onRequest(context) {
       suggestions.tags = matchedTags;
     }
 
-    return Response.json({ frontmatter: suggestions }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      { frontmatter: suggestions },
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   } catch (error) {
     console.error('Generation error:', error);
     return Response.json(
@@ -122,7 +129,7 @@ export async function onRequest(context) {
         status: 500,
         headers: {
           'Access-Control-Allow-Origin': '*',
-        }
+        },
       }
     );
   }

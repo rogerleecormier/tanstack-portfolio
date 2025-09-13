@@ -104,7 +104,7 @@ export function FrontMatterModal({
               <Label htmlFor='title'>Title</Label>
               <Input
                 id='title'
-                value={fm.title || ''}
+                value={fm.title ?? ''}
                 onChange={e => update('title', e.target.value)}
               />
             </div>
@@ -112,7 +112,7 @@ export function FrontMatterModal({
               <Label htmlFor='description'>Description</Label>
               <Textarea
                 id='description'
-                value={fm.description || ''}
+                value={fm.description ?? ''}
                 onChange={e => update('description', e.target.value)}
               />
             </div>
@@ -122,7 +122,7 @@ export function FrontMatterModal({
                 <Input
                   id='date'
                   type='date'
-                  value={fm.date || ''}
+                  value={fm.date ?? ''}
                   onChange={e => update('date', e.target.value)}
                 />
               </div>
@@ -130,7 +130,7 @@ export function FrontMatterModal({
                 <Label htmlFor='author'>Author</Label>
                 <Input
                   id='author'
-                  value={fm.author || ''}
+                  value={fm.author ?? ''}
                   onChange={e => update('author', e.target.value)}
                 />
               </div>
@@ -138,7 +138,7 @@ export function FrontMatterModal({
             <div>
               <Label>Tags</Label>
               <div className='mt-2 flex flex-wrap gap-2'>
-                {(fm.tags || []).map(t => (
+                {(fm.tags ?? []).map(t => (
                   <Badge key={t} variant='secondary'>
                     {t}
                     <button
@@ -146,7 +146,7 @@ export function FrontMatterModal({
                       onClick={() =>
                         update(
                           'tags',
-                          (fm.tags || []).filter(x => x !== t)
+                          (fm.tags ?? []).filter(x => x !== t)
                         )
                       }
                     >
@@ -167,7 +167,7 @@ export function FrontMatterModal({
                       if (val) {
                         update(
                           'tags',
-                          Array.from(new Set([...(fm.tags || []), val]))
+                          Array.from(new Set([...(fm.tags ?? []), val]))
                         );
                         setTagInput('');
                       }
@@ -182,7 +182,7 @@ export function FrontMatterModal({
                     if (val) {
                       update(
                         'tags',
-                        Array.from(new Set([...(fm.tags || []), val]))
+                        Array.from(new Set([...(fm.tags ?? []), val]))
                       );
                       setTagInput('');
                     }
@@ -233,20 +233,24 @@ export function FrontMatterModal({
                 type='button'
                 variant='outline'
                 disabled={isGenerating}
-                onClick={async () => {
+                onClick={() => {
                   if (isGenerating) return;
 
-                  setIsGenerating(true);
-                  try {
-                    const generated = await onGenerate();
-                    if (generated && typeof generated === 'object') {
-                      setFm(generated as Partial<Frontmatter>);
+                  const generateFrontmatter = async () => {
+                    setIsGenerating(true);
+                    try {
+                      const generated = await onGenerate();
+                      if (generated && typeof generated === 'object') {
+                        setFm(generated as Partial<Frontmatter>);
+                      }
+                    } catch (error) {
+                      console.error('AI generation failed:', error);
+                    } finally {
+                      setIsGenerating(false);
                     }
-                  } catch (error) {
-                    console.error('AI generation failed:', error);
-                  } finally {
-                    setIsGenerating(false);
-                  }
+                  };
+
+                  void generateFrontmatter();
                 }}
                 className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-teal-950'
               >

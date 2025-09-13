@@ -1,8 +1,8 @@
-import { logger } from './logger';
 import {
   cachedContentService,
   type CachedContentItem,
 } from '@/api/cachedContentService';
+import { logger } from './logger';
 
 export interface PortfolioItem {
   id: string;
@@ -47,13 +47,12 @@ export interface BlogItem {
 }
 
 // Load all portfolio items from KV cache
-export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
+export function loadPortfolioItems(): PortfolioItem[] {
   try {
     logger.info('🔄 Loading portfolio items from KV cache...');
 
     // Use KV cache service
-    const cachedItems =
-      await cachedContentService.getContentByType('portfolio');
+    const cachedItems = cachedContentService.getContentByType('portfolio');
     logger.info(`📁 Found ${cachedItems.length} portfolio items from KV cache`);
 
     // Convert cached items to PortfolioItem format
@@ -67,7 +66,7 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
         url: item.url,
         keywords: item.keywords,
         content: item.content,
-        date: item.date,
+        date: item.date ?? '',
         fileName: item.fileName,
         frontmatter: {},
       })
@@ -87,15 +86,12 @@ export async function loadPortfolioItems(): Promise<PortfolioItem[]> {
 }
 
 // Get a specific portfolio item by ID from KV cache
-export async function getPortfolioItem(
-  id: string
-): Promise<PortfolioItem | null> {
+export function getPortfolioItem(id: string): PortfolioItem | null {
   try {
     logger.info(`🔄 Loading portfolio item: ${id}`);
 
     // Use KV cache service
-    const cachedItems =
-      await cachedContentService.getContentByType('portfolio');
+    const cachedItems = cachedContentService.getContentByType('portfolio');
     const cachedItem = cachedItems.find(
       (item: CachedContentItem) => item.id === id
     );
@@ -111,7 +107,7 @@ export async function getPortfolioItem(
         url: cachedItem.url,
         keywords: cachedItem.keywords,
         content: cachedItem.content,
-        date: cachedItem.date,
+        ...(cachedItem.date && { date: cachedItem.date }),
         fileName: cachedItem.fileName,
         frontmatter: {}, // Will be populated if needed
       };
@@ -131,12 +127,12 @@ export async function getPortfolioItem(
 }
 
 // Load all project items from KV cache
-export async function loadProjectItems(): Promise<ProjectItem[]> {
+export function loadProjectItems(): ProjectItem[] {
   try {
     logger.info('🔄 Loading project items from KV cache...');
 
     // Use KV cache service
-    const cachedItems = await cachedContentService.getContentByType('project');
+    const cachedItems = cachedContentService.getContentByType('project');
     logger.info(`📁 Found ${cachedItems.length} project items from KV cache`);
 
     // Convert cached items to ProjectItem format
@@ -149,7 +145,7 @@ export async function loadProjectItems(): Promise<ProjectItem[]> {
       url: item.url,
       keywords: item.keywords,
       content: item.content,
-      date: item.date,
+      date: item.date ?? '',
       fileName: item.fileName,
       frontmatter: {},
     }));
@@ -168,12 +164,12 @@ export async function loadProjectItems(): Promise<ProjectItem[]> {
 }
 
 // Get a specific project item by ID from KV cache
-export async function getProjectItem(id: string): Promise<ProjectItem | null> {
+export function getProjectItem(id: string): ProjectItem | null {
   try {
     logger.info(`🔄 Loading project item: ${id}`);
 
     // Use KV cache service
-    const cachedItems = await cachedContentService.getContentByType('project');
+    const cachedItems = cachedContentService.getContentByType('project');
     const cachedItem = cachedItems.find(
       (item: CachedContentItem) => item.id === id
     );
@@ -189,7 +185,7 @@ export async function getProjectItem(id: string): Promise<ProjectItem | null> {
         url: cachedItem.url,
         keywords: cachedItem.keywords,
         content: cachedItem.content,
-        date: cachedItem.date,
+        ...(cachedItem.date && { date: cachedItem.date }),
         fileName: cachedItem.fileName,
         frontmatter: {}, // Will be populated if needed
       };
@@ -207,12 +203,12 @@ export async function getProjectItem(id: string): Promise<ProjectItem | null> {
 }
 
 // Load all blog items from KV cache
-export async function loadBlogItems(): Promise<BlogItem[]> {
+export function loadBlogItems(): BlogItem[] {
   try {
     logger.info('🔄 Loading blog items from KV cache...');
 
     // Use KV cache service
-    const cachedItems = await cachedContentService.getBlogPosts();
+    const cachedItems = cachedContentService.getBlogPosts();
     logger.info(`📚 Found ${cachedItems.length} blog items from KV cache`);
 
     // Convert cached items to BlogItem format
@@ -225,7 +221,7 @@ export async function loadBlogItems(): Promise<BlogItem[]> {
       url: item.url,
       keywords: item.keywords,
       content: item.content,
-      date: item.date,
+      date: item.date ?? '',
       fileName: item.fileName,
       frontmatter: {},
     }));
@@ -233,7 +229,7 @@ export async function loadBlogItems(): Promise<BlogItem[]> {
     // Sort by date (most recent first)
     const sortedItems = items.sort(
       (a, b) =>
-        new Date(b.date || '').getTime() - new Date(a.date || '').getTime()
+        new Date(b.date ?? '').getTime() - new Date(a.date ?? '').getTime()
     );
 
     logger.info(
@@ -247,12 +243,12 @@ export async function loadBlogItems(): Promise<BlogItem[]> {
 }
 
 // Get a specific blog item by ID from KV cache
-export async function getBlogItem(id: string): Promise<BlogItem | null> {
+export function getBlogItem(id: string): BlogItem | null {
   try {
     logger.info(`🔄 Loading blog item: ${id}`);
 
     // Use KV cache service
-    const cachedItems = await cachedContentService.getBlogPosts();
+    const cachedItems = cachedContentService.getBlogPosts();
     const cachedItem = cachedItems.find(
       (item: CachedContentItem) => item.id === id
     );
@@ -268,7 +264,7 @@ export async function getBlogItem(id: string): Promise<BlogItem | null> {
         url: cachedItem.url,
         keywords: cachedItem.keywords,
         content: cachedItem.content,
-        date: cachedItem.date,
+        ...(cachedItem.date && { date: cachedItem.date }),
         fileName: cachedItem.fileName,
         frontmatter: {}, // Will be populated if needed
       };

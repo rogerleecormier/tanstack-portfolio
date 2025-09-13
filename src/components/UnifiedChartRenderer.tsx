@@ -1,24 +1,24 @@
-import React from 'react';
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-} from 'recharts';
 import {
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
 } from '@/components/ui/chart';
 import { logger } from '@/utils/logger';
+import React from 'react';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 interface ChartDataPoint {
   [key: string]: string | number | undefined;
@@ -52,11 +52,11 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
     }
     if (typeof dataInput === 'string') {
       try {
-        const parsed = JSON.parse(dataInput);
+        const parsed = JSON.parse(dataInput) as unknown;
         logger.debug('Successfully parsed chart data:', {
           dataLength: Array.isArray(parsed) ? parsed.length : 'not array',
         });
-        return Array.isArray(parsed) ? parsed : [];
+        return Array.isArray(parsed) ? (parsed as ChartDataPoint[]) : [];
       } catch (error) {
         logger.error('Failed to parse chart data:', error, {
           dataInput: dataInput.substring(0, 200) + '...',
@@ -82,7 +82,9 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
     if (!data || data.length === 0)
       return { xKey: 'category', yKeys: ['value'] };
 
-    const keys = Object.keys(data[0]);
+    const firstItem = data[0];
+    if (!firstItem) return { xKey: 'category', yKeys: ['value'] };
+    const keys = Object.keys(firstItem);
     if (keys.length === 0) return { xKey: 'category', yKeys: ['value'] };
 
     // First key is typically the X-axis (category, date, etc.)
@@ -96,7 +98,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
   const generateLabels = (xKey: string, yKeys: string[]) => {
     // Use provided labels or generate meaningful ones
     const xLabel =
-      xAxisLabel ||
+      xAxisLabel ??
       (() => {
         const key = xKey.toLowerCase();
         if (key.includes('budget') || key.includes('tier'))
@@ -113,16 +115,18 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
       })();
 
     const yLabel =
-      yAxisLabel ||
+      yAxisLabel ??
       (() => {
         if (yKeys.length === 1) {
-          const key = yKeys[0].toLowerCase();
+          const firstKey = yKeys[0];
+          if (!firstKey) return 'Value';
+          const key = firstKey.toLowerCase();
           if (key.includes('count')) return 'Count';
           if (key.includes('value') || key.includes('amount')) return 'Value';
           if (key.includes('complexity') || key.includes('score'))
             return 'Complexity Score';
           if (key.includes('gap')) return 'Complexity Gap';
-          return yKeys[0].charAt(0).toUpperCase() + yKeys[0].slice(1);
+          return firstKey.charAt(0).toUpperCase() + firstKey.slice(1);
         }
         return 'Value';
       })();
@@ -131,7 +135,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
   };
 
   const { xKey, yKeys } = getChartKeys(chartData);
-  const { xLabel, yLabel } = generateLabels(xKey, yKeys);
+  const { xLabel, yLabel } = generateLabels(xKey ?? 'category', yKeys);
 
   // Color palette for multiple series
   const colors = [
@@ -168,10 +172,13 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
 
     // Add Y-axis keys (these are the data series that will be plotted)
     yKeys.forEach((key, index) => {
-      config[key] = {
-        label: key.charAt(0).toUpperCase() + key.slice(1),
-        color: colors[index % colors.length],
-      };
+      const color = colors[index % colors.length];
+      if (color) {
+        config[key] = {
+          label: key.charAt(0).toUpperCase() + key.slice(1),
+          color: color,
+        };
+      }
     });
 
     return config;
@@ -200,7 +207,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                 >
                   <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
                   <XAxis
-                    dataKey={xKey}
+                    {...(xKey && { dataKey: xKey })}
                     tickLine={false}
                     axisLine={false}
                     label={{ value: xLabel, position: 'bottom', offset: 0 }}
@@ -218,7 +225,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                   />
                   <ChartTooltip
                     content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
+                      if (active && payload?.length) {
                         return (
                           <ChartTooltipContent
                             active={active}
@@ -233,7 +240,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                   <ChartLegend
                     content={({ payload }) => (
                       <ChartLegendContent
-                        payload={payload}
+                        {...(payload && { payload: payload })}
                         className='justify-start'
                       />
                     )}
@@ -271,7 +278,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                 >
                   <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
                   <XAxis
-                    dataKey={xKey}
+                    {...(xKey && { dataKey: xKey })}
                     tickLine={false}
                     axisLine={false}
                     label={{ value: xLabel, position: 'bottom', offset: 0 }}
@@ -289,7 +296,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                   />
                   <ChartTooltip
                     content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
+                      if (active && payload?.length) {
                         return (
                           <ChartTooltipContent
                             active={active}
@@ -304,7 +311,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                   <ChartLegend
                     content={({ payload }) => (
                       <ChartLegendContent
-                        payload={payload}
+                        {...(payload && { payload: payload })}
                         className='justify-start'
                       />
                     )}
@@ -345,7 +352,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                 >
                   <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
                   <XAxis
-                    dataKey={xKey}
+                    {...(xKey && { dataKey: xKey })}
                     tickLine={false}
                     axisLine={false}
                     label={{ value: xLabel, position: 'bottom', offset: 0 }}
@@ -363,7 +370,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                   />
                   <ChartTooltip
                     content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
+                      if (active && payload?.length) {
                         return (
                           <ChartTooltipContent
                             active={active}
@@ -378,7 +385,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                   <ChartLegend
                     content={({ payload }) => (
                       <ChartLegendContent
-                        payload={payload}
+                        {...(payload && { payload: payload })}
                         className='justify-start'
                       />
                     )}
@@ -416,7 +423,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                 >
                   <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
                   <XAxis
-                    dataKey={xKey}
+                    {...(xKey && { dataKey: xKey })}
                     tickLine={false}
                     axisLine={false}
                     label={{ value: xLabel, position: 'bottom', offset: 0 }}
@@ -434,7 +441,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                   />
                   <ChartTooltip
                     content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
+                      if (active && payload?.length) {
                         return (
                           <ChartTooltipContent
                             active={active}
@@ -449,7 +456,7 @@ const UnifiedChartRenderer: React.FC<UnifiedChartRendererProps> = ({
                   <ChartLegend
                     content={({ payload }) => (
                       <ChartLegendContent
-                        payload={payload}
+                        {...(payload && { payload: payload })}
                         className='justify-start'
                       />
                     )}

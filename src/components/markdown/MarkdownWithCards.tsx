@@ -1,9 +1,9 @@
+import { Blockquote, H1, H2, P } from '@/components/ui/typography';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import slugify from 'slugify';
-import { H1, H2, P, Blockquote } from '@/components/ui/typography';
 // import { renderMarkdownWithCards } from '@/utils/markdownCardExtensions'
 
 interface MarkdownWithCardsProps {
@@ -43,7 +43,7 @@ export const MarkdownWithCards: React.FC<MarkdownWithCardsProps> = ({
             remarkPlugins={[remarkGfm]}
             components={{
               h1: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <H1 id={id} {...props}>
@@ -52,7 +52,7 @@ export const MarkdownWithCards: React.FC<MarkdownWithCardsProps> = ({
                 );
               },
               h2: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <H2 id={id} {...props}>
@@ -61,7 +61,7 @@ export const MarkdownWithCards: React.FC<MarkdownWithCardsProps> = ({
                 );
               },
               h3: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <h3

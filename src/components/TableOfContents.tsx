@@ -17,7 +17,9 @@ export function TableOfContents() {
   useEffect(() => {
     const handleTocUpdate = (event: CustomEvent) => {
       console.log('TOC received toc-updated event:', event.detail);
-      setCurrentToc(event.detail.toc || []);
+      setCurrentToc(
+        ((event.detail as Record<string, unknown>)?.toc as TOCEntry[]) || []
+      );
     };
 
     window.addEventListener('toc-updated', handleTocUpdate as EventListener);
@@ -34,7 +36,9 @@ export function TableOfContents() {
   useEffect(() => {
     const handleBlogTocUpdate = (event: CustomEvent) => {
       console.log('TOC received blog-toc-updated event:', event.detail);
-      setCurrentToc(event.detail.toc || []);
+      setCurrentToc(
+        ((event.detail as Record<string, unknown>)?.toc as TOCEntry[]) || []
+      );
     };
 
     window.addEventListener(
@@ -92,7 +96,10 @@ export function TableOfContents() {
 
       // Fallback to first heading if none are visible
       if (!activeHeading && headings.length > 0) {
-        activeHeading = headings[0];
+        const firstHeading = headings[0];
+        if (firstHeading) {
+          activeHeading = firstHeading;
+        }
       }
 
       if (activeHeading) {

@@ -28,7 +28,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
   };
 
   const handleNavigation = (path: string) => {
-    navigate({ to: path });
+    void navigate({ to: path });
     setIsOpen(false);
   };
 
@@ -48,7 +48,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
   };
 
   const getUserDisplayName = (user: CloudflareUser): string => {
-    return user.name || user.email || 'User';
+    return user.name ?? user.email ?? 'User';
   };
 
   // Close dropdown when clicking outside

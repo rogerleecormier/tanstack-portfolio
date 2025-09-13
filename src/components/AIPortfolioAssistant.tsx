@@ -1,4 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import { cachedContentService } from '@/api/cachedContentService';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -6,26 +8,24 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
+import { PortfolioItem } from '@/utils/portfolioLoader';
 import {
+  ArrowRight,
+  BarChart3,
+  BookOpen,
   Brain,
+  Code,
+  Globe,
   Lightbulb,
+  MessageSquare,
+  Sparkles,
+  Target,
   TrendingUp,
   Users,
-  Target,
-  Code,
-  BarChart3,
-  ArrowRight,
-  Sparkles,
   X,
-  BookOpen,
-  MessageSquare,
-  Globe,
 } from 'lucide-react';
-import { PortfolioItem } from '@/utils/portfolioLoader';
-import { cachedContentService } from '@/api/cachedContentService';
+import React, { useCallback, useState } from 'react';
 
 interface Recommendation {
   type: 'solution' | 'insight' | 'trend' | 'blog' | 'portfolio';
@@ -64,10 +64,10 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
 
   // Get content recommendations from cached content service
   const getContentRecommendations = useCallback(
-    async (query: string): Promise<ContentRecommendation[]> => {
+    (query: string): ContentRecommendation[] => {
       try {
         // Use the cached content service for recommendations
-        const response = await cachedContentService.getRecommendations({
+        const response = cachedContentService.getRecommendations({
           query: query,
           contentType: 'all', // Get cross-content type recommendations
           maxResults: 3,
@@ -85,7 +85,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
             description: item.description,
             url: item.url,
             contentType: item.contentType,
-            confidence: (item.relevanceScore || 0) / 100, // Convert percentage to decimal
+            confidence: (item.relevanceScore ?? 0) / 100, // Convert percentage to decimal
             icon: BookOpen,
             category:
               item.contentType.charAt(0).toUpperCase() +
@@ -340,7 +340,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
   ) => {
     // Handle content recommendations
     if (recommendation && recommendation.type === 'content') {
-      const contentRec = recommendation as ContentRecommendation;
+      const contentRec = recommendation;
       window.location.href = contentRec.url;
       return;
     }
@@ -440,7 +440,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
               className='min-h-[80px] resize-none'
             />
             <Button
-              onClick={handleQuerySubmit}
+              onClick={() => void handleQuerySubmit()}
               disabled={isAnalyzing || !userQuery.trim()}
               className='brand-button-primary w-full'
             >

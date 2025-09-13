@@ -40,20 +40,20 @@
  * "Advanced weight loss tracking dashboard with projections and comprehensive health analytics. Features weight loss projections, trend analysis, and data visualization in pounds."
  */
 
-import { useState, useEffect, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import {
-  CalendarIcon,
-  TrendingUp,
-  TrendingDown,
-  BarChart3,
   Activity,
-  Zap,
-  TableIcon,
-  Scale,
+  BarChart3,
+  CalendarIcon,
   Pill,
+  Scale,
+  TableIcon,
+  TrendingDown,
+  TrendingUp,
+  Zap,
 } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 
 // Enhanced API imports
@@ -66,6 +66,9 @@ import { UserProfilesAPI } from '../api/userProfiles';
 import { getSourceDisplayName } from '../utils/sourceMapping';
 
 // shadcn/ui components
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Calendar } from '../components/ui/calendar';
 import {
   Card,
   CardContent,
@@ -73,9 +76,14 @@ import {
   CardHeader,
   CardTitle,
 } from '../components/ui/card';
-import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../components/ui/popover';
+import { Progress } from '../components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -83,31 +91,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '../components/ui/popover';
-import { Calendar } from '../components/ui/calendar';
-import { Badge } from '../components/ui/badge';
-import { Progress } from '../components/ui/progress';
 import { Separator } from '../components/ui/separator';
 
 // shadcn/ui charts
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '../components/ui/chart';
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  BarChart,
-  Bar,
-} from 'recharts';
 
 // Dummy data for non-authenticated users (no longer used - backend handles dummy data)
 /* const DUMMY_DATA = {
@@ -199,13 +199,6 @@ import {
 
 // Additional imports needed
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '../components/ui/tabs';
-import { H1 } from '../components/ui/typography';
-import {
   Table,
   TableBody,
   TableCell,
@@ -213,6 +206,13 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../components/ui/tabs';
+import { H1 } from '../components/ui/typography';
 
 /**
  * Enhanced weight entry component with additional health metrics (pounds only)
@@ -232,9 +232,9 @@ function EnhancedWeightEntry() {
     onSuccess: () => {
       setSuccess(true);
       setWeight('');
-      queryClient.invalidateQueries({ queryKey: ['enhanced-weights'] });
-      queryClient.invalidateQueries({ queryKey: ['projections'] });
-      queryClient.invalidateQueries({ queryKey: ['analytics'] });
+      void queryClient.invalidateQueries({ queryKey: ['enhanced-weights'] });
+      void queryClient.invalidateQueries({ queryKey: ['projections'] });
+      void queryClient.invalidateQueries({ queryKey: ['analytics'] });
       setTimeout(() => setSuccess(false), 3000);
     },
     onError: (err: Error) => setError(err.message),
@@ -360,7 +360,7 @@ function WeightProjections() {
 
   // Always call hooks, but conditionally use their data
   // Use default userId for non-authenticated users to get dummy data
-  const userId = user?.email || user?.sub || 'dev-user-123';
+  const userId = user?.email ?? user?.sub ?? 'dev-user-123';
 
   const weightGoalQuery = useQuery({
     queryKey: ['weightGoal', userId],
@@ -437,8 +437,11 @@ function WeightProjections() {
   // Calculate key weight values
   const currentWeight = useMemo(() => {
     if (weightData && weightData.length > 0) {
-      const weight = weightData[0].weight_lb || weightData[0].weight;
-      return typeof weight === 'string' ? parseFloat(weight) : weight;
+      const firstWeight = weightData[0];
+      if (firstWeight) {
+        const weight = firstWeight.weight_lb || firstWeight.weight;
+        return typeof weight === 'string' ? parseFloat(weight) : weight;
+      }
     }
     return null;
   }, [weightData]);
@@ -447,19 +450,21 @@ function WeightProjections() {
     if (weightData && weightData.length > 0) {
       // Sort by date to get chronological order
       const sortedWeightData = [...weightData].sort((a, b) => {
-        const dateA = new Date(a.timestamp || 0);
-        const dateB = new Date(b.timestamp || 0);
+        const dateA = new Date(a.timestamp ?? 0);
+        const dateB = new Date(b.timestamp ?? 0);
         return dateA.getTime() - dateB.getTime();
       });
-      const weight =
-        sortedWeightData[0].weight_lb || sortedWeightData[0].weight;
-      return typeof weight === 'string' ? parseFloat(weight) : weight;
+      const firstWeight = sortedWeightData[0];
+      if (firstWeight) {
+        const weight = firstWeight.weight_lb || firstWeight.weight;
+        return typeof weight === 'string' ? parseFloat(weight) : weight;
+      }
     }
     return null;
   }, [weightData]);
 
   const targetWeight = useMemo(() => {
-    return weightGoal?.target_weight_lbs || 150;
+    return weightGoal?.target_weight_lbs ?? 150;
   }, [weightGoal]);
 
   const targetDate = useMemo(() => {
@@ -492,13 +497,13 @@ function WeightProjections() {
 
       // Use evidence-based multipliers from clinical trials (prioritize accuracy over database values)
       const medName = (
-        medication.medication_name ||
-        medication.medication_type?.name ||
+        medication.medication_name ??
+        medication.medication_type?.name ??
         ''
       ).toLowerCase();
       const genericName = (
-        medication.generic_name ||
-        medication.medication_type?.generic_name ||
+        medication.generic_name ??
+        medication.medication_type?.generic_name ??
         ''
       ).toLowerCase();
 
@@ -743,7 +748,7 @@ function WeightProjections() {
 
     // Calculate current profile projection rate (unchangeable)
     const currentProfileRate =
-      currentProfileProjection?.dailyRate || baseDailyRate;
+      currentProfileProjection?.dailyRate ?? baseDailyRate;
 
     // Calculate adjustable projection rate
     const activityAdjustedRate = baseDailyRate * activityMultiplier;
@@ -756,7 +761,7 @@ function WeightProjections() {
     const today = new Date();
     const lastWeightDate =
       weightData && weightData.length > 0
-        ? new Date(weightData[0].timestamp)
+        ? new Date(weightData[0]?.timestamp ?? '')
         : today;
 
     // Always use the selected projection period from the dropdown
@@ -889,7 +894,9 @@ function WeightProjections() {
               </div>
               {weightData && weightData.length > 0 && (
                 <div className='mt-1 text-xs text-blue-500'>
-                  {new Date(weightData[0].timestamp || '').toLocaleDateString()}
+                  {new Date(
+                    weightData[0]?.timestamp ?? ''
+                  ).toLocaleDateString()}
                 </div>
               )}
             </div>
@@ -933,7 +940,7 @@ function WeightProjections() {
                 Active Medications
               </div>
               <div className='text-lg font-bold text-orange-700'>
-                {userMedications?.filter(med => med.is_active).length || 0}
+                {userMedications?.filter(med => med.is_active).length ?? 0}
               </div>
               <div className='mt-1 text-xs text-orange-500'>
                 {medicationMultiplier > 0
@@ -970,13 +977,13 @@ function WeightProjections() {
                       <div className='flex items-start justify-between'>
                         <div>
                           <h4 className='text-lg font-semibold'>
-                            {medication.medication_name ||
-                              medication.medication_type?.name ||
+                            {medication.medication_name ??
+                              medication.medication_type?.name ??
                               'Unknown Medication'}
                           </h4>
                           <p className='text-sm text-muted-foreground'>
-                            {medication.generic_name ||
-                              medication.medication_type?.generic_name ||
+                            {medication.generic_name ??
+                              medication.medication_type?.generic_name ??
                               'Generic name not available'}
                           </p>
                           <div className='mt-2 flex gap-4 text-sm'>
@@ -1014,13 +1021,13 @@ function WeightProjections() {
 
                             // Evidence-based base multipliers from clinical trials
                             const medName = (
-                              medication.medication_name ||
-                              medication.medication_type?.name ||
+                              medication.medication_name ??
+                              medication.medication_type?.name ??
                               ''
                             ).toLowerCase();
                             const genericName = (
-                              medication.generic_name ||
-                              medication.medication_type?.generic_name ||
+                              medication.generic_name ??
+                              medication.medication_type?.generic_name ??
                               ''
                             ).toLowerCase();
 
@@ -1366,9 +1373,9 @@ function WeightProjections() {
               <div className='size-4 rounded-full bg-orange-500'></div>
               <span className='text-sm text-muted-foreground'>
                 Current Profile (
-                {currentProfileProjection?.activityLevel?.replace('_', ' ') ||
+                {currentProfileProjection?.activityLevel?.replace('_', ' ') ??
                   'moderate'}
-                {(currentProfileProjection?.medicationMultiplier || 0) > 0
+                {(currentProfileProjection?.medicationMultiplier ?? 0) > 0
                   ? ', with medication'
                   : ''}
                 )
@@ -1422,14 +1429,14 @@ function WeightProjections() {
                   tickLine={false}
                   axisLine={false}
                   interval={Math.max(0, Math.floor(projectionData.length / 8))} // Show ~8 ticks for readability
-                  tickFormatter={value => {
+                  tickFormatter={(value: unknown) => {
                     // Show more detailed date formatting for longer periods
                     if (projectionDays > 90) {
-                      return value;
+                      return typeof value === 'string' ? value : '';
                     } else if (projectionDays > 30) {
-                      return value;
+                      return typeof value === 'string' ? value : '';
                     } else {
-                      return value;
+                      return typeof value === 'string' ? value : '';
                     }
                   }}
                 />
@@ -1571,7 +1578,7 @@ function AnalyticsDashboard() {
   const { user } = useAuth();
 
   // Use default userId for non-authenticated users to get dummy data
-  const userId = user?.email || user?.sub || 'dev-user-123';
+  const userId = user?.email ?? user?.sub ?? 'dev-user-123';
 
   // Always call hooks, but conditionally use their data
   const analyticsQuery = useQuery({
@@ -1623,7 +1630,7 @@ function AnalyticsDashboard() {
   const projections = projectionsQuery.data;
 
   const isLoading = analyticsQuery.isLoading || weightDataQuery.isLoading;
-  const error = analyticsQuery.error || weightDataQuery.error;
+  const error = analyticsQuery.error ?? weightDataQuery.error;
 
   // Calculate enhanced analytics metrics
   const enhancedMetrics = useMemo(() => {
@@ -1658,6 +1665,9 @@ function AnalyticsDashboard() {
 
     const currentWeight = sortedWeights[sortedWeights.length - 1];
     const startingWeight = sortedWeights[0];
+    if (currentWeight === undefined || startingWeight === undefined)
+      return null;
+
     const totalChange = currentWeight - startingWeight;
     const totalChangePercentage = (totalChange / startingWeight) * 100;
 
@@ -1667,10 +1677,12 @@ function AnalyticsDashboard() {
     for (let i = 7; i < sortedWeights.length; i += 7) {
       const weekStart = sortedWeights[i - 7];
       const weekEnd = sortedWeights[i];
-      const weeklyAvg = (weekStart + weekEnd) / 2;
-      const weeklyChange = weekEnd - weekStart;
-      weeklyAverages.push(weeklyAvg);
-      weeklyChanges.push(weeklyChange);
+      if (weekStart !== undefined && weekEnd !== undefined) {
+        const weeklyAvg = (weekStart + weekEnd) / 2;
+        const weeklyChange = weekEnd - weekStart;
+        weeklyAverages.push(weeklyAvg);
+        weeklyChanges.push(weeklyChange);
+      }
     }
 
     // Calculate statistical measures
@@ -1704,9 +1716,9 @@ function AnalyticsDashboard() {
       dataPoints: weights.length,
       dateRange: {
         start: new Date(
-          sortedWeightData[sortedWeightData.length - 1].timestamp || ''
+          sortedWeightData[sortedWeightData.length - 1]?.timestamp ?? ''
         ),
-        end: new Date(sortedWeightData[0].timestamp || ''),
+        end: new Date(sortedWeightData[0]?.timestamp ?? ''),
       },
     };
   }, [weightData]);
@@ -1714,8 +1726,11 @@ function AnalyticsDashboard() {
   // Derive projections-based metrics (moved from Projections tab)
   const currentWeight = useMemo(() => {
     if (weightData && weightData.length > 0) {
-      const weight = weightData[0].weight_lb || weightData[0].weight;
-      return typeof weight === 'string' ? parseFloat(weight) : weight;
+      const firstWeight = weightData[0];
+      if (firstWeight) {
+        const weight = firstWeight.weight_lb || firstWeight.weight;
+        return typeof weight === 'string' ? parseFloat(weight) : weight;
+      }
     }
     return null;
   }, [weightData]);
@@ -1723,19 +1738,21 @@ function AnalyticsDashboard() {
   const startingWeight = useMemo(() => {
     if (weightData && weightData.length > 0) {
       const sortedWeightData = [...weightData].sort((a, b) => {
-        const dateA = new Date(a.timestamp || 0);
-        const dateB = new Date(b.timestamp || 0);
+        const dateA = new Date(a.timestamp ?? 0);
+        const dateB = new Date(b.timestamp ?? 0);
         return dateA.getTime() - dateB.getTime();
       });
-      const weight =
-        sortedWeightData[0].weight_lb || sortedWeightData[0].weight;
-      return typeof weight === 'string' ? parseFloat(weight) : weight;
+      const firstWeight = sortedWeightData[0];
+      if (firstWeight) {
+        const weight = firstWeight.weight_lb || firstWeight.weight;
+        return typeof weight === 'string' ? parseFloat(weight) : weight;
+      }
     }
     return null;
   }, [weightData]);
 
   const targetWeight = useMemo(() => {
-    return weightGoal?.target_weight_lbs || null;
+    return weightGoal?.target_weight_lbs ?? null;
   }, [weightGoal]);
 
   const medicationMultiplier = useMemo(() => {
@@ -1750,13 +1767,13 @@ function AnalyticsDashboard() {
 
       // Use evidence-based multipliers from clinical trials (same as WeightProjections)
       const medName = (
-        medication.medication_name ||
-        medication.medication_type?.name ||
+        medication.medication_name ??
+        medication.medication_type?.name ??
         ''
       ).toLowerCase();
       const genericName = (
-        medication.generic_name ||
-        medication.medication_type?.generic_name ||
+        medication.generic_name ??
+        medication.medication_type?.generic_name ??
         ''
       ).toLowerCase();
       switch (medName) {
@@ -1971,12 +1988,10 @@ function AnalyticsDashboard() {
 
   // Safe derived values for presentation
   const hasWeights = currentWeight != null && startingWeight != null;
-  const totalLostLbs = hasWeights
-    ? (startingWeight as number) - (currentWeight as number)
-    : 0;
+  const totalLostLbs = hasWeights ? startingWeight - currentWeight : 0;
   const totalLostPct =
-    hasWeights && (startingWeight as number) > 0
-      ? (totalLostLbs / (startingWeight as number)) * 100
+    hasWeights && startingWeight > 0
+      ? (totalLostLbs / startingWeight) * 100
       : 0;
   const dailyRate = projections?.daily_rate ?? null;
   const confidence = projections?.confidence ?? null;
@@ -1989,7 +2004,7 @@ function AnalyticsDashboard() {
     analytics?.trends?.consistency_score ??
     null;
   const dataPointsCount =
-    enhancedMetrics?.dataPoints ?? (weightData?.length || 0);
+    enhancedMetrics?.dataPoints ?? weightData?.length ?? 0;
 
   if (isLoading) {
     return (
@@ -2182,11 +2197,11 @@ function AnalyticsDashboard() {
                 const sorted = [...weightData]
                   .sort(
                     (a, b) =>
-                      new Date(a.timestamp || 0).getTime() -
-                      new Date(b.timestamp || 0).getTime()
+                      new Date(a.timestamp ?? 0).getTime() -
+                      new Date(b.timestamp ?? 0).getTime()
                   )
                   .map(d => ({
-                    date: format(new Date(d.timestamp || ''), 'MMM dd'),
+                    date: format(new Date(d.timestamp ?? ''), 'MMM dd'),
                     weight:
                       typeof (d.weight_lb ?? d.weight) === 'string'
                         ? parseFloat(String(d.weight_lb ?? d.weight))
@@ -2198,7 +2213,7 @@ function AnalyticsDashboard() {
                   const start = Math.max(0, idx - 6);
                   const window = sorted.slice(start, idx + 1);
                   const avg =
-                    window.reduce((sum, v) => sum + (v.weight || 0), 0) /
+                    window.reduce((sum, v) => sum + (v.weight ?? 0), 0) /
                     window.length;
                   return Number(avg.toFixed(2));
                 });
@@ -2267,11 +2282,11 @@ function AnalyticsDashboard() {
                 const sorted = [...weightData]
                   .sort(
                     (a, b) =>
-                      new Date(a.timestamp || 0).getTime() -
-                      new Date(b.timestamp || 0).getTime()
+                      new Date(a.timestamp ?? 0).getTime() -
+                      new Date(b.timestamp ?? 0).getTime()
                   )
                   .map(d => ({
-                    date: format(new Date(d.timestamp || ''), 'MMM dd'),
+                    date: format(new Date(d.timestamp ?? ''), 'MMM dd'),
                     weight:
                       typeof (d.weight_lb ?? d.weight) === 'string'
                         ? parseFloat(String(d.weight_lb ?? d.weight))
@@ -2281,18 +2296,27 @@ function AnalyticsDashboard() {
                   const start = Math.max(0, idx - 6);
                   const window = sorted.slice(start, idx + 1);
                   const avg =
-                    window.reduce((sum, v) => sum + (v.weight || 0), 0) /
+                    window.reduce((sum, v) => sum + (v.weight ?? 0), 0) /
                     window.length;
                   return Number(avg.toFixed(2));
                 });
                 if (ma.length === 0) return null;
                 const lastIdx = ma.length - 1;
                 const compareIdx = Math.max(0, lastIdx - 7);
-                const weeklyChange = Number(
-                  (ma[lastIdx] - ma[compareIdx]).toFixed(2)
-                );
+                const lastMA = ma[lastIdx];
+                const compareMA = ma[compareIdx];
+                const lastWeight = sorted[lastIdx];
+
+                if (
+                  lastMA === undefined ||
+                  compareMA === undefined ||
+                  !lastWeight
+                )
+                  return null;
+
+                const weeklyChange = Number((lastMA - compareMA).toFixed(2));
                 const actualVsMA =
-                  sorted[lastIdx].weight < ma[lastIdx] ? 'below' : 'above';
+                  lastWeight.weight < lastMA ? 'below' : 'above';
                 return (
                   <p className='text-sm text-muted-foreground'>
                     {`Past week, the smoothed trend ${weeklyChange < 0 ? 'decreased' : weeklyChange > 0 ? 'increased' : 'held steady'} by ${Math.abs(weeklyChange).toFixed(2)} lbs. Latest actual is ${actualVsMA} the trendline.`}
@@ -2493,9 +2517,10 @@ function AnalyticsDashboard() {
                       v: Math.abs(dailyRate * m * 7),
                     }));
                     const best = entries.reduce(
-                      (a, b) => (b.v > a.v ? b : a),
+                      (a, b) => (a && b.v > a.v ? b : a),
                       entries[0]
                     );
+                    if (!best) return null;
                     const delta = best.v - currentWeekly;
                     if (delta <= 0.01) {
                       return (
@@ -2505,7 +2530,7 @@ function AnalyticsDashboard() {
                         </p>
                       );
                     }
-                    const label = best.k.replace('_', ' ');
+                    const label = best.k?.replace('_', ' ') || 'unknown';
                     return (
                       <p className='text-sm text-muted-foreground'>{`Shifting to ${label} could increase weekly loss by ~${delta.toFixed(2)} lbs.`}</p>
                     );
@@ -2530,8 +2555,7 @@ function AnalyticsDashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-3'>
-          {enhancedMetrics &&
-          enhancedMetrics.weeklyChanges &&
+          {enhancedMetrics?.weeklyChanges &&
           enhancedMetrics.weeklyChanges.length > 0 ? (
             (() => {
               const wc = enhancedMetrics.weeklyChanges.map(
@@ -2587,8 +2611,7 @@ function AnalyticsDashboard() {
                     indicate weeks with gains or rebounds.
                   </p>
                   {(() => {
-                    const changes =
-                      (enhancedMetrics?.weeklyChanges as number[]) || [];
+                    const changes = enhancedMetrics?.weeklyChanges ?? [];
                     if (!changes.length) return null;
                     const avg =
                       changes.reduce((s, v) => s + v, 0) / changes.length;
@@ -2693,7 +2716,7 @@ function AnalyticsDashboard() {
                     lbs/week
                   </p>
                   <p>
-                    <strong>Data Points:</strong> {weightData?.length || 0}{' '}
+                    <strong>Data Points:</strong> {weightData?.length ?? 0}{' '}
                     weight measurements
                   </p>
                   <p>
@@ -2841,7 +2864,7 @@ function WeightDataTable() {
   const { isAuthenticated, user } = useAuth();
 
   // Use default userId for non-authenticated users to get dummy data
-  const userId = user?.email || user?.sub || 'dev-user-123';
+  const userId = user?.email ?? user?.sub ?? 'dev-user-123';
 
   // Always call hooks, but conditionally use their data
   const measurementsQuery = useQuery({
@@ -2853,7 +2876,7 @@ function WeightDataTable() {
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
-  const measurements = measurementsQuery.data || [];
+  const measurements = measurementsQuery.data ?? [];
   const isLoading = measurementsQuery.isLoading;
   const error = measurementsQuery.error;
 
@@ -2937,11 +2960,14 @@ function WeightDataTable() {
       const sum = dataSlice.reduce((acc, item) => acc + item.weight, 0);
       const average = sum / dataSlice.length;
 
-      movingAverages.push({
-        name: data[i].name,
-        avgWeight: average,
-        index: data[i].index,
-      });
+      const currentItem = data[i];
+      if (currentItem) {
+        movingAverages.push({
+          name: currentItem.name,
+          avgWeight: average,
+          index: currentItem.index,
+        });
+      }
     }
     return movingAverages;
   };
@@ -2984,8 +3010,8 @@ function WeightDataTable() {
 
     return {
       ...item,
-      trendWeight: trendItem?.trendWeight || null,
-      avgWeight: avgItem?.avgWeight || null,
+      trendWeight: trendItem?.trendWeight ?? null,
+      avgWeight: avgItem?.avgWeight ?? null,
     };
   });
 
@@ -3204,7 +3230,7 @@ function WeightDataTable() {
           <div className='mt-6 grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4'>
             <div className='rounded-lg bg-muted p-3 text-center'>
               <div className='text-lg font-semibold'>
-                {displayData.length > 0 ? displayData[0].weight : 0} lbs
+                {displayData.length > 0 ? (displayData[0]?.weight ?? 0) : 0} lbs
               </div>
               <div className='text-muted-foreground'>Current Weight</div>
             </div>
@@ -3212,8 +3238,8 @@ function WeightDataTable() {
               <div className='text-lg font-semibold'>
                 {displayData.length > 1
                   ? (
-                      displayData[0].weight -
-                      displayData[displayData.length - 1].weight
+                      (displayData[0]?.weight ?? 0) -
+                      (displayData[displayData.length - 1]?.weight ?? 0)
                     ).toFixed(1)
                   : 0}{' '}
                 lbs
@@ -3224,8 +3250,8 @@ function WeightDataTable() {
               <div className='text-lg font-semibold'>
                 {displayData.length > 1
                   ? (
-                      (displayData[0].weight -
-                        displayData[displayData.length - 1].weight) /
+                      ((displayData[0]?.weight ?? 0) -
+                        (displayData[displayData.length - 1]?.weight ?? 0)) /
                       (displayData.length - 1)
                     ).toFixed(2)
                   : 0}{' '}
@@ -3294,7 +3320,7 @@ function WeightDataTable() {
           <div className='mt-4 text-center text-sm text-muted-foreground'>
             Showing {displayData.length} measurements • Last updated:{' '}
             {displayData.length > 0
-              ? format(new Date(displayData[0].timestamp), "PPP 'at' p")
+              ? format(new Date(displayData[0]?.timestamp ?? ''), "PPP 'at' p")
               : 'N/A'}
           </div>
         </CardContent>

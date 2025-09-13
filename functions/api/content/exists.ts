@@ -14,7 +14,8 @@ export async function onRequest(context) {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, CF-Access-Jwt-Assertion, Authorization',
+        'Access-Control-Allow-Headers':
+          'Content-Type, CF-Access-Jwt-Assertion, Authorization',
         'Access-Control-Max-Age': '86400',
       },
     });
@@ -24,12 +25,15 @@ export async function onRequest(context) {
   const key = url.searchParams.get('key') || '';
 
   if (!key) {
-    return Response.json({ error: 'Key parameter required' }, {
-      status: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      { error: 'Key parameter required' },
+      {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   }
 
   const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
@@ -39,28 +43,37 @@ export async function onRequest(context) {
 
   const isAllowed = allowedDirs.some(d => key === d || key.startsWith(`${d}/`));
   if (!isAllowed) {
-    return Response.json({ error: 'Invalid key' }, {
-      status: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      { error: 'Invalid key' },
+      {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   }
 
   try {
     const obj = await env.R2_CONTENT.get(key);
     const exists = !!obj;
-    return Response.json({ exists, etag: obj?.etag }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      { exists, etag: obj?.etag },
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   } catch {
-    return Response.json({ error: 'Failed to check' }, {
-      status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      { error: 'Failed to check' },
+      {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   }
 }

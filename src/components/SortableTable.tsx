@@ -13,7 +13,7 @@ interface SortableTableProps {
 export const SortableTable: React.FC<SortableTableProps> = ({ data }) => {
   // Convert the table data to markdown format for UnifiedTableRenderer
   const markdownContent = React.useMemo(() => {
-    if (!data || !data.headers || !data.rows) return '';
+    if (!data?.headers || !data.rows) return '';
 
     // Create markdown table string
     const headerRow = `| ${data.headers.join(' | ')} |`;

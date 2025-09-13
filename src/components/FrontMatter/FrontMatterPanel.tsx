@@ -57,7 +57,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
               </span>
             </div>
             <div className='truncate font-medium text-slate-800 dark:text-slate-200'>
-              {frontmatter.title || 'No title set'}
+              {frontmatter.title ?? 'No title set'}
             </div>
           </div>
 
@@ -70,7 +70,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
               </span>
             </div>
             <div className='line-clamp-3 text-sm text-slate-600 dark:text-slate-300'>
-              {frontmatter.description || 'No description set'}
+              {frontmatter.description ?? 'No description set'}
             </div>
           </div>
 
@@ -107,7 +107,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                 </span>
               </div>
               <div className='text-sm text-slate-800 dark:text-slate-200'>
-                {frontmatter.layout || 'Default'}
+                {frontmatter.layout ?? 'Default'}
               </div>
             </div>
           </div>

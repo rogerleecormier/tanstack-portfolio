@@ -12,7 +12,7 @@ if (import.meta.env.DEV) {
   const originalConsoleWarn = console.warn;
   console.warn = (...args) => {
     // Filter out React Refresh warnings that can cause performance issues
-    if (args[0]?.includes?.('React Refresh')) {
+    if (typeof args[0] === 'string' && args[0].includes('React Refresh')) {
       return;
     }
     originalConsoleWarn(...args);

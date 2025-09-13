@@ -57,7 +57,7 @@ export default {
       }
 
       console.log(
-        `✅ Retrieved cache with ${Array.isArray(cacheData.all) ? cacheData.all.length : 'unknown'} items`
+        `✅ Retrieved cache with ${Array.isArray(cacheData.all) ? (cacheData.all as unknown[]).length : 'unknown'} items`
       );
 
       // Return the cache data

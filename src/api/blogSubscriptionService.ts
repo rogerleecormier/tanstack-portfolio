@@ -52,12 +52,12 @@ export const subscribeToBlog = async (
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as { error?: string };
       console.error('❌ Subscription error:', errorData);
-      throw new Error(errorData.error || 'Failed to subscribe');
+      throw new Error(errorData.error ?? 'Failed to subscribe');
     }
 
-    const result = await response.json();
+    const result = (await response.json()) as SubscriptionResponse;
     console.log('✅ Subscription successful:', result);
     return result;
   } catch (error) {
@@ -93,12 +93,12 @@ export const unsubscribeFromBlog = async (
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as { error?: string };
       console.error('❌ Unsubscription error:', errorData);
-      throw new Error(errorData.error || 'Failed to unsubscribe');
+      throw new Error(errorData.error ?? 'Failed to unsubscribe');
     }
 
-    const result = await response.json();
+    const result = (await response.json()) as SubscriptionResponse;
     console.log('✅ Unsubscription successful:', result);
     return result;
   } catch (error) {
@@ -137,12 +137,12 @@ export const updateSubscriptionPreferences = async (
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as { error?: string };
       console.error('❌ Update preferences error:', errorData);
-      throw new Error(errorData.error || 'Failed to update preferences');
+      throw new Error(errorData.error ?? 'Failed to update preferences');
     }
 
-    const result = await response.json();
+    const result = (await response.json()) as SubscriptionResponse;
     console.log('✅ Preferences updated successfully:', result);
     return result;
   } catch (error) {
@@ -178,12 +178,12 @@ export const checkSubscriptionStatus = async (
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as { error?: string };
       console.error('❌ Check status error:', errorData);
-      throw new Error(errorData.error || 'Failed to check status');
+      throw new Error(errorData.error ?? 'Failed to check status');
     }
 
-    const result = await response.json();
+    const result = (await response.json()) as SubscriptionResponse;
     console.log('✅ Status check successful:', result);
     return result;
   } catch (error) {

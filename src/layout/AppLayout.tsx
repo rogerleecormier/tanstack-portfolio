@@ -1,22 +1,22 @@
 // src/layout/AppLayout.tsx
-import { Outlet } from '@tanstack/react-router';
-import Header from './Header';
-import Footer from './Footer';
-import { AppSidebar } from '@/components/AppSidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import SiteAssistant from '@/components/AIPortfolioAssistant';
 import {
   cachedContentService,
   type CachedContentItem,
 } from '@/api/cachedContentService';
+import SiteAssistant from '@/components/AIPortfolioAssistant';
+import { AppSidebar } from '@/components/AppSidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { Outlet } from '@tanstack/react-router';
 import {
-  useEffect,
-  useState,
-  useCallback,
-  Suspense,
   Component,
   ReactNode,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState,
 } from 'react';
+import Footer from './Footer';
+import Header from './Header';
 
 // PortfolioItem interface for SiteAssistant compatibility
 interface PortfolioItem {
@@ -114,18 +114,17 @@ export default function AppLayout() {
     url: item.url,
     keywords: item.keywords,
     content: item.content,
-    date: item.date,
+    ...(item.date && { date: item.date }),
     fileName: item.fileName,
     frontmatter: {}, // Will be populated if needed
   });
 
   // Memoized portfolio loading function
-  const loadItems = useCallback(async () => {
+  const loadItems = useCallback(() => {
     try {
       setIsLoadingPortfolio(true);
       setPortfolioError(null);
-      const cachedItems =
-        await cachedContentService.getContentByType('portfolio');
+      const cachedItems = cachedContentService.getContentByType('portfolio');
       const items = cachedItems.map(convertToPortfolioItem);
       setPortfolioItems(items);
     } catch (error) {
@@ -139,10 +138,10 @@ export default function AppLayout() {
   useEffect(() => {
     // Use requestIdleCallback for better performance in development
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => loadItems());
+      requestIdleCallback(() => void loadItems());
     } else {
       // Fallback for browsers that don't support requestIdleCallback
-      setTimeout(loadItems, 0);
+      setTimeout(() => void loadItems(), 0);
     }
   }, [loadItems]);
 

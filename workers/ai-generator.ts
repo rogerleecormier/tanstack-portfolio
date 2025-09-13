@@ -155,11 +155,11 @@ export default {
 
         // Check cache for similar content (simple hash-based caching)
         if (env.CACHE) {
-          const contentHash = await generateContentHash(body.markdown);
+          const contentHash = generateContentHash(body.markdown);
           const cached = await env.CACHE.get(`fm:${contentHash}`);
           if (cached) {
             try {
-              const cachedData = JSON.parse(cached);
+              const cachedData = JSON.parse(cached) as Record<string, unknown>;
               return cors(
                 json({
                   frontmatter: cachedData,
@@ -225,9 +225,7 @@ export default {
                   lastValidResult = parsed;
 
                   // Store the first result as our baseline
-                  if (!bestResult) {
-                    bestResult = parsed;
-                  }
+                  bestResult ??= parsed;
 
                   // Use this result if it's significantly different from the last one
                   // or if we're on the first attempt
@@ -263,13 +261,11 @@ export default {
           }
         }
 
-        if (!fm) {
-          fm = generateSmartFrontmatter(body.markdown);
-        }
+        fm ??= generateSmartFrontmatter(body.markdown);
 
         // Cache the result for future similar requests
         if (env.CACHE && fm) {
-          const contentHash = await generateContentHash(body.markdown);
+          const contentHash = generateContentHash(body.markdown);
           await env.CACHE.put(`fm:${contentHash}`, JSON.stringify(fm), {
             expirationTtl: 3600, // Cache for 1 hour
           });
@@ -323,7 +319,7 @@ function jsonError(code: string, message: string, status = 400): Response {
 
 function cors(res: Response, req: Request, env: Env): Response {
   const origin = req.headers.get('Origin');
-  const allowed = (env.ALLOWED_ORIGINS || '*').trim();
+  const allowed = (env.ALLOWED_ORIGINS ?? '*').trim();
   const headers = new Headers(res.headers);
   headers.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   headers.set(
@@ -361,7 +357,7 @@ function isOriginAllowed(origin: string, allowedOrigins: string): boolean {
   return false;
 }
 
-async function safeJson(req: Request): Promise<unknown | null> {
+async function safeJson(req: Request): Promise<unknown> {
   try {
     return await req.json();
   } catch {
@@ -372,9 +368,10 @@ async function safeJson(req: Request): Promise<unknown | null> {
 function parseFrontmatterJson(raw: string): Record<string, unknown> | null {
   try {
     const cleaned = raw.trim().replace(/^```json\s*|```$/g, '');
-    const obj = JSON.parse(cleaned);
-    const title = String(obj.title || '').trim();
-    const description = String(obj.description || '').trim();
+    const obj = JSON.parse(cleaned) as Record<string, unknown>;
+    const title = typeof obj.title === 'string' ? obj.title.trim() : '';
+    const description =
+      typeof obj.description === 'string' ? obj.description.trim() : '';
     let tags: string[] = Array.isArray(obj.tags)
       ? obj.tags.map((t: unknown) => String(t).toLowerCase())
       : [];
@@ -404,7 +401,7 @@ function generateSmartFrontmatter(markdown: string): Record<string, unknown> {
   const today = new Date().toISOString().split('T')[0];
   const noFm = markdown.replace(/^---[\s\S]*?---\s*/m, '');
   const noCode = noFm.replace(/```[\s\S]*?```/g, '').replace(/`[^`]+`/g, '');
-  const h1 = (noCode.match(/^#\s+(.+)$/m) || [])[1];
+  const h1 = (noCode.match(/^#\s+(.+)$/m) ?? [])[1];
   const plain = noCode
     .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
     .replace(/\[[^\]]*\]\([^)]+\)/g, '$1')
@@ -417,11 +414,11 @@ function generateSmartFrontmatter(markdown: string): Record<string, unknown> {
     .filter(Boolean);
   const tokens = tokenize(plain);
   const tf = new Map<string, number>();
-  tokens.forEach(t => tf.set(t, (tf.get(t) || 0) + 1));
+  tokens.forEach(t => tf.set(t, (tf.get(t) ?? 0) + 1));
 
   const scored = sentences.map(s => ({
     s,
-    score: tokenize(s).reduce((a, t) => a + (tf.get(t) || 0), 0),
+    score: tokenize(s).reduce((a, t) => a + (tf.get(t) ?? 0), 0),
   }));
   const desc = pickSummary(scored, 220);
   const keywords = Array.from(tf.entries())
@@ -583,16 +580,16 @@ function analyzeContentComplexity(markdown: string): ContentComplexity {
   const length = Math.min(noCode.length / 10000, 1);
 
   // Structure factor - based on heading hierarchy and organization
-  const headings = (noCode.match(/^#{1,6}\s+.+$/gm) || []).length;
+  const headings = (noCode.match(/^#{1,6}\s+.+$/gm) ?? []).length;
   const structure = Math.min(headings / 20, 1);
 
   // Technical factor - code blocks, technical terms, special syntax
-  const codeBlocks = (noFm.match(/```[\s\S]*?```/g) || []).length;
-  const inlineCode = (noFm.match(/`[^`]+`/g) || []).length;
+  const codeBlocks = (noFm.match(/```[\s\S]*?```/g) ?? []).length;
+  const inlineCode = (noFm.match(/`[^`]+`/g) ?? []).length;
   const technicalTerms = (
     noCode.match(
       /\b(api|function|class|method|variable|database|server|client|framework|library|algorithm|protocol|interface|endpoint|request|response|json|xml|html|css|javascript|typescript|python|java|c\+\+|react|vue|angular|node|express|mongodb|mysql|postgresql|redis|docker|kubernetes|aws|azure|gcp|git|github|gitlab|ci\/cd|devops|microservices|rest|graphql|oauth|jwt|ssl|tls|http|https|tcp|udp|dns|cdn|load\s+balancer|cache|queue|message\s+broker|event\s+streaming|real\s+time|websocket|sse|pwa|spa|ssr|csr|jamstack|headless|cms|cms|headless|jamstack)\b/gi
-    ) || []
+    ) ?? []
   ).length;
   const technical = Math.min(
     codeBlocks * 0.3 + inlineCode * 0.1 + technicalTerms * 0.05,
@@ -600,11 +597,11 @@ function analyzeContentComplexity(markdown: string): ContentComplexity {
   );
 
   // Links factor
-  const links = (noCode.match(/\[[^\]]*\]\([^)]+\)/g) || []).length;
+  const links = (noCode.match(/\[[^\]]*\]\([^)]+\)/g) ?? []).length;
   const linkFactor = Math.min(links / 50, 1);
 
   // Images factor
-  const images = (noCode.match(/!\[[^\]]*\]\([^)]+\)/g) || []).length;
+  const images = (noCode.match(/!\[[^\]]*\]\([^)]+\)/g) ?? []).length;
   const imageFactor = Math.min(images / 20, 1);
 
   // Calculate overall complexity score (0-1)
@@ -918,10 +915,20 @@ function isSignificantlyDifferent(
   newResult: Record<string, unknown>,
   previousResult: Record<string, unknown>
 ): boolean {
-  const newTitle = String(newResult.title || '').toLowerCase();
-  const prevTitle = String(previousResult.title || '').toLowerCase();
-  const newDesc = String(newResult.description || '').toLowerCase();
-  const prevDesc = String(previousResult.description || '').toLowerCase();
+  const newTitle = (
+    typeof newResult.title === 'string' ? newResult.title : ''
+  ).toLowerCase();
+  const prevTitle = (
+    typeof previousResult.title === 'string' ? previousResult.title : ''
+  ).toLowerCase();
+  const newDesc = (
+    typeof newResult.description === 'string' ? newResult.description : ''
+  ).toLowerCase();
+  const prevDesc = (
+    typeof previousResult.description === 'string'
+      ? previousResult.description
+      : ''
+  ).toLowerCase();
 
   // Check if titles are significantly different (less than 60% similarity)
   const titleSimilarity = calculateSimilarity(newTitle, prevTitle);
@@ -946,16 +953,16 @@ function calculateSimilarity(str1: string, str2: string): number {
 }
 
 // Simple content hash for caching similar content
-async function generateContentHash(markdown: string): Promise<string> {
+function generateContentHash(markdown: string): string {
   // Create a simple hash based on content structure and key terms
   const noFm = markdown.replace(/^---[\s\S]*?---\s*/m, '');
   const noCode = noFm.replace(/```[\s\S]*?```/g, '').replace(/`[^`]+`/g, '');
 
   // Extract key structural elements
-  const headings = (noCode.match(/^#{1,6}\s+(.+)$/gm) || []).map(h =>
+  const headings = (noCode.match(/^#{1,6}\s+(.+)$/gm) ?? []).map(h =>
     h.toLowerCase().trim()
   );
-  const firstParagraph = noCode.split('\n\n')[0]?.slice(0, 200) || '';
+  const firstParagraph = noCode.split('\n\n')[0]?.slice(0, 200) ?? '';
   const wordCount = noCode.split(/\s+/).length;
 
   // Create a simple hash key

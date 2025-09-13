@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { SortableTable } from '@/components/SortableTable';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -13,9 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, Trash2, Download } from 'lucide-react';
-import { SortableTable } from '@/components/SortableTable';
+import { zodResolver } from '@hookform/resolvers/zod';
 import * as ExcelJS from 'exceljs';
+import { Download, Plus, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 // Schema for form validation
 const riskSchema = z.object({
@@ -136,7 +136,10 @@ const RiskAssessmentPage: React.FC = () => {
             </p>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+            <form
+              onSubmit={e => void handleSubmit(onSubmit)(e)}
+              className='space-y-6'
+            >
               <div>
                 <Label htmlFor='projectName'>Project Name</Label>
                 <Input id='projectName' {...register('projectName')} />
@@ -237,7 +240,7 @@ const RiskAssessmentPage: React.FC = () => {
                   Risk Matrix Table
                 </h3>
                 <SortableTable data={matrixData} />
-                <Button onClick={handleExport} className='mt-4'>
+                <Button onClick={() => void handleExport()} className='mt-4'>
                   <Download className='mr-2 size-4' /> Export to XLSX
                 </Button>
               </div>

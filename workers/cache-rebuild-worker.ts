@@ -209,19 +209,37 @@ async function processContentFile(
       : key.startsWith('blog/')
         ? 'blog'
         : 'project';
-    const fileName = key.split('/').pop()?.replace('.md', '') || '';
-    const category = getCategoryFromTags(attributes.tags || [], fileName);
+    const fileName = key.split('/').pop()?.replace('.md', '') ?? '';
+    const tagsForCategory = Array.isArray(attributes.tags)
+      ? (attributes.tags as string[])
+      : [];
+    const category = getCategoryFromTags(tagsForCategory, fileName);
+
+    const titleFallback = fileName
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, l => l.toUpperCase());
+    const title =
+      typeof attributes.title === 'string' ? attributes.title : titleFallback;
+
+    const descriptionFallback = body.substring(0, 200) + '...';
+    const description =
+      typeof attributes.description === 'string'
+        ? attributes.description
+        : descriptionFallback;
+
+    const date =
+      typeof attributes.date === 'string' ? attributes.date : undefined;
 
     return {
       id: fileName,
-      title:
-        attributes.title ||
-        fileName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-      description: attributes.description || body.substring(0, 200) + '...',
-      tags: Array.isArray(attributes.tags) ? attributes.tags : [],
-      keywords: Array.isArray(attributes.keywords) ? attributes.keywords : [],
+      title,
+      description,
+      tags: Array.isArray(attributes.tags) ? (attributes.tags as string[]) : [],
+      keywords: Array.isArray(attributes.keywords)
+        ? (attributes.keywords as string[])
+        : [],
       content: body,
-      date: attributes.date,
+      date,
       contentType,
       category,
       fileName,
@@ -270,7 +288,7 @@ async function rebuildCache(
 
   // Sort items
   portfolioItems.sort((a, b) => a.title.localeCompare(b.title));
-  blogItems.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  blogItems.sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
   projectItems.sort((a, b) => a.title.localeCompare(b.title));
 
   const allItems = [...portfolioItems, ...blogItems, ...projectItems];
@@ -338,10 +356,10 @@ export default {
     try {
       // Health check
       if (request.method === 'GET' && path === '/status') {
-        const cacheData = (await env.CONTENT_CACHE.get(
+        const cacheData = await env.CONTENT_CACHE.get<CacheData>(
           'content-cache',
           'json'
-        )) as CacheData | null;
+        );
 
         return new Response(
           JSON.stringify({
@@ -349,13 +367,13 @@ export default {
             timestamp: new Date().toISOString(),
             cache: cacheData
               ? {
-                  lastUpdated: cacheData.metadata?.lastUpdated,
+                  lastUpdated: cacheData.metadata.lastUpdated,
                   totalItems:
-                    cacheData.metadata?.portfolioCount +
-                    cacheData.metadata?.blogCount +
-                    cacheData.metadata?.projectCount,
-                  version: cacheData.metadata?.version,
-                  trigger: cacheData.metadata?.trigger,
+                    cacheData.metadata.portfolioCount +
+                    cacheData.metadata.blogCount +
+                    cacheData.metadata.projectCount,
+                  version: cacheData.metadata.version,
+                  trigger: cacheData.metadata.trigger,
                 }
               : null,
           }),

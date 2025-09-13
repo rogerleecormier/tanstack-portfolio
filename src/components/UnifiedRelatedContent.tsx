@@ -1,4 +1,7 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import {
+  CachedContentItem,
+  cachedContentService,
+} from '@/api/cachedContentService';
 import { Badge } from '@/components/ui/badge';
 import {
   Card,
@@ -9,22 +12,19 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useDynamicHeight } from '@/hooks/useDynamicHeight';
 import {
-  TrendingUp,
-  ExternalLink,
-  Clock,
-  Tag,
-  BookOpen,
-  User,
   ArrowRight,
+  BookOpen,
+  Clock,
+  ExternalLink,
+  Tag,
+  TrendingUp,
+  User,
 } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ContentItem } from '../types/content';
 import { parseContentForSearch } from '../utils/characterParser';
-import {
-  cachedContentService,
-  CachedContentItem,
-} from '@/api/cachedContentService';
-import { useDynamicHeight } from '@/hooks/useDynamicHeight';
 
 interface UnifiedRelatedContentProps {
   title?: string;
@@ -63,7 +63,7 @@ export function UnifiedRelatedContent({
 
   // Dynamic height calculation - simplified approach
   const dynamicMaxResults = useDynamicHeight({
-    containerRef: (containerRef || sidebarRef) as React.RefObject<HTMLElement>,
+    containerRef: (containerRef ?? sidebarRef) as React.RefObject<HTMLElement>,
     itemHeight: 100, // Conservative height estimate for each related content card
     minItems: 2, // Always show at least 2 items
     maxItems: 6, // Reasonable maximum
@@ -120,12 +120,12 @@ export function UnifiedRelatedContent({
       console.log('🔍 Getting recommendations from cached content service...');
 
       // Use the cached content service for recommendations
-      const response = await cachedContentService.getRecommendations({
-        query: title || tags.join(' '),
+      const response = cachedContentService.getRecommendations({
+        query: title ?? tags.join(' '),
         contentType: 'all', // Always use 'all' for cross-content type recommendations
         maxResults: effectiveMaxResults + 1, // Get one extra to account for current page
         excludeUrl: currentUrl,
-        tags: tags || [],
+        tags: tags ?? [],
       });
 
       if (response.success && response.results) {
@@ -180,7 +180,7 @@ export function UnifiedRelatedContent({
   }, [title, tags, currentUrl, effectiveMaxResults]);
 
   useEffect(() => {
-    getRecommendations();
+    void getRecommendations();
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();

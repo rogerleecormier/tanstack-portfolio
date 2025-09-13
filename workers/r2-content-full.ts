@@ -14,6 +14,20 @@ interface Env {
   MAX_FILE_BYTES?: string;
 }
 
+interface WriteRequestBody {
+  key: string;
+  content: string;
+  etag?: string;
+}
+
+interface DeleteRequestBody {
+  key: string;
+}
+
+interface GenerateRequestBody {
+  markdown: string;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -84,7 +98,13 @@ export default {
       return json({ error: 'Method not allowed' }, 405);
     } catch (error) {
       console.error('Worker error:', error);
-      return json({ error: 'Internal server error' }, 500);
+      return json(
+        {
+          error:
+            error instanceof Error ? error.message : 'Internal server error',
+        },
+        500
+      );
     }
   },
 };
@@ -105,7 +125,8 @@ async function handleWrite(request: Request, env: Env): Promise<Response> {
   }
 
   try {
-    const { key, content, etag } = await request.json();
+    const body = await request.json();
+    const { key, content, etag } = body as WriteRequestBody;
 
     if (!key || !content) {
       return new Response(
@@ -121,7 +142,7 @@ async function handleWrite(request: Request, env: Env): Promise<Response> {
     }
 
     // Security: Ensure key is under allowed directories and filename is safe
-    const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+    const allowedDirs = (env.ALLOWED_DIRS ?? 'blog,portfolio,projects')
       .split(',')
       .map(s => s.trim())
       .filter(Boolean);
@@ -140,7 +161,7 @@ async function handleWrite(request: Request, env: Env): Promise<Response> {
     }
 
     // Validate filename part: only allow a-zA-Z0-9-_ and .md extension
-    const fileName = key.split('/').pop() || '';
+    const fileName = key.split('/').pop() ?? '';
     const safeNameRegex = /^[a-zA-Z0-9-_]{3,64}\.md$/;
     if (!safeNameRegex.test(fileName)) {
       return new Response(JSON.stringify({ error: 'Invalid filename' }), {
@@ -153,7 +174,7 @@ async function handleWrite(request: Request, env: Env): Promise<Response> {
     }
 
     // Size check
-    const maxBytes = parseInt(env.MAX_FILE_BYTES || '1048576');
+    const maxBytes = parseInt(env.MAX_FILE_BYTES ?? '1048576');
     if (content.length > maxBytes) {
       return new Response(JSON.stringify({ error: 'Content too large' }), {
         status: 413,
@@ -202,13 +223,19 @@ async function handleWrite(request: Request, env: Env): Promise<Response> {
     });
   } catch (error) {
     console.error('Write error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to write object' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error:
+          error instanceof Error ? error.message : 'Failed to write object',
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
   }
 }
 
@@ -228,7 +255,8 @@ async function handleDelete(request: Request, env: Env): Promise<Response> {
   }
 
   try {
-    const { key } = await request.json();
+    const body = await request.json();
+    const { key } = body as DeleteRequestBody;
     if (!key) {
       return new Response(JSON.stringify({ error: 'Key required' }), {
         status: 400,
@@ -239,7 +267,7 @@ async function handleDelete(request: Request, env: Env): Promise<Response> {
       });
     }
 
-    const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+    const allowedDirs = (env.ALLOWED_DIRS ?? 'blog,portfolio,projects')
       .split(',')
       .map(s => s.trim())
       .filter(Boolean);
@@ -277,7 +305,7 @@ async function handleDelete(request: Request, env: Env): Promise<Response> {
     await env.PORTFOLIO_CONTENT.put(trashKey, obj.body, {
       httpMetadata: {
         contentType:
-          obj.httpMetadata?.contentType || 'text/markdown; charset=utf-8',
+          obj.httpMetadata?.contentType ?? 'text/markdown; charset=utf-8',
       },
     });
 
@@ -296,13 +324,18 @@ async function handleDelete(request: Request, env: Env): Promise<Response> {
     });
   } catch (error) {
     console.error('Delete error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to delete' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error: error instanceof Error ? error.message : 'Failed to delete',
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
   }
 }
 
@@ -321,7 +354,7 @@ async function handleRead(request: Request, env: Env): Promise<Response> {
     });
   }
 
-  const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+  const allowedDirs = (env.ALLOWED_DIRS ?? 'blog,portfolio,projects')
     .split(',')
     .map(s => s.trim())
     .filter(Boolean);
@@ -368,13 +401,18 @@ async function handleRead(request: Request, env: Env): Promise<Response> {
     });
   } catch (error) {
     console.error('Read error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to read object' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error: error instanceof Error ? error.message : 'Failed to read object',
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
   }
 }
 
@@ -396,7 +434,7 @@ async function handleExists(request: Request, env: Env): Promise<Response> {
     });
   }
 
-  const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+  const allowedDirs = (env.ALLOWED_DIRS ?? 'blog,portfolio,projects')
     .split(',')
     .map(s => s.trim())
     .filter(Boolean);
@@ -453,7 +491,12 @@ async function handleExists(request: Request, env: Env): Promise<Response> {
   } catch (error) {
     console.error('Exists error:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to check object existence' }),
+      JSON.stringify({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to check object existence',
+      }),
       {
         status: 500,
         headers: {
@@ -472,11 +515,11 @@ async function handleExists(request: Request, env: Env): Promise<Response> {
 async function handleList(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
 
-  const rawPrefix = url.searchParams.get('prefix') || '';
-  const cursor = url.searchParams.get('cursor') || undefined;
-  const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 1000);
+  const rawPrefix = url.searchParams.get('prefix') ?? '';
+  const cursor = url.searchParams.get('cursor') ?? undefined;
+  const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '50'), 1000);
 
-  const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+  const allowedDirs = (env.ALLOWED_DIRS ?? 'blog,portfolio,projects')
     .split(',')
     .map(s => s.trim())
     .filter(Boolean);
@@ -543,7 +586,7 @@ async function handleList(request: Request, env: Env): Promise<Response> {
     // Derive immediate subfolders
     const folderSet = new Set<string>();
     for (const obj of result.objects) {
-      const rest = (obj.key as string).slice(prefix.length);
+      const rest = obj.key.slice(prefix.length);
       const idx = rest.indexOf('/');
       if (idx > -1) {
         const seg = rest.slice(0, idx);
@@ -571,24 +614,30 @@ async function handleList(request: Request, env: Env): Promise<Response> {
     );
   } catch (error) {
     console.error('List error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to list objects' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error:
+          error instanceof Error ? error.message : 'Failed to list objects',
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
   }
 }
 
 // Handle GET /_list (legacy proxy endpoint)
 async function handleLegacyList(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
-  const prefix = url.searchParams.get('prefix') || '';
-  const cursor = url.searchParams.get('cursor') || undefined;
-  const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 1000);
+  const prefix = url.searchParams.get('prefix') ?? '';
+  const cursor = url.searchParams.get('cursor') ?? undefined;
+  const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '50'), 1000);
 
-  const allowedDirs = (env.ALLOWED_DIRS || 'blog,portfolio,projects')
+  const allowedDirs = (env.ALLOWED_DIRS ?? 'blog,portfolio,projects')
     .split(',')
     .map(s => s.trim())
     .filter(Boolean);
@@ -657,7 +706,7 @@ async function handleLegacyList(request: Request, env: Env): Promise<Response> {
     // Derive immediate subfolders
     const folderSet = new Set<string>();
     for (const obj of result.objects) {
-      const rest = (obj.key as string).slice(normalizedPrefix.length);
+      const rest = obj.key.slice(normalizedPrefix.length);
       const idx = rest.indexOf('/');
       if (idx > -1) {
         const seg = rest.slice(0, idx);
@@ -684,20 +733,27 @@ async function handleLegacyList(request: Request, env: Env): Promise<Response> {
     );
   } catch (error) {
     console.error('Legacy list error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to list objects' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error:
+          error instanceof Error ? error.message : 'Failed to list objects',
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
   }
 }
 
 // Handle POST /api/generate
-async function handleGenerate(request: Request): Promise<Response> {
+async function handleGenerate(request: Request, _env: Env): Promise<Response> {
   try {
-    const { markdown } = await request.json();
+    const body = await request.json();
+    const { markdown } = body as GenerateRequestBody;
 
     if (!markdown || typeof markdown !== 'string') {
       return new Response(
@@ -731,7 +787,12 @@ async function handleGenerate(request: Request): Promise<Response> {
   } catch (error) {
     console.error('Generate error:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to generate frontmatter' }),
+      JSON.stringify({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to generate frontmatter',
+      }),
       {
         status: 500,
         headers: {
@@ -1105,10 +1166,18 @@ async function handleRebuildCache(
     }
 
     // Sort items
-    portfolioItems.sort((a, b) => a.title.localeCompare(b.title));
-    blogItems.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    projectItems.sort((a, b) => a.title.localeCompare(b.title));
-    allItems.sort((a, b) => a.title.localeCompare(b.title));
+    portfolioItems.sort((a, b) =>
+      ((a.title as string) ?? '').localeCompare((b.title as string) ?? '')
+    );
+    blogItems.sort((a, b) =>
+      ((b.date as string) ?? '').localeCompare((a.date as string) ?? '')
+    );
+    projectItems.sort((a, b) =>
+      ((a.title as string) ?? '').localeCompare((b.title as string) ?? '')
+    );
+    allItems.sort((a, b) =>
+      ((a.title as string) ?? '').localeCompare((b.title as string) ?? '')
+    );
 
     // Note: cache data is returned directly in the response below
 

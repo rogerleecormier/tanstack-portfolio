@@ -46,8 +46,8 @@ export function SortableTable({ data, headers }: SortableTableProps) {
     }
 
     // Fallback to string comparison
-    const aStr = String(aValue ?? '');
-    const bStr = String(bValue ?? '');
+    const aStr = typeof aValue === 'string' ? aValue : '';
+    const bStr = typeof bValue === 'string' ? bValue : '';
     const comparison = aStr < bStr ? -1 : 1;
     return sortDirection === 'asc' ? comparison : -comparison;
   });
@@ -78,7 +78,9 @@ export function SortableTable({ data, headers }: SortableTableProps) {
           sortedData.map((row, index) => (
             <TableRow key={index}>
               {headers.map(header => (
-                <TableCell key={header}>{String(row[header] ?? '')}</TableCell>
+                <TableCell key={header}>
+                  {typeof row[header] === 'string' ? row[header] : ''}
+                </TableCell>
               ))}
             </TableRow>
           ))

@@ -199,30 +199,28 @@ class Logger {
 // Create and export a singleton instance
 export const logger = new Logger();
 
-// Export individual methods for convenience
-export const {
-  debug,
-  info,
-  success,
-  warn,
-  error,
-  discovered,
-  notFound,
-  contentSummary,
-  aiWorker,
-  portfolioLoading,
-  test,
-  network,
-  security,
-  location,
-  data,
-  response,
-  assetLoading,
-  mimeType,
-  validation,
-  getEnvironmentInfo,
-  toggleDebug,
-} = logger;
+// Export individual methods for convenience (bound to avoid this scoping issues)
+export const debug = logger.debug.bind(logger);
+export const info = logger.info.bind(logger);
+export const success = logger.success.bind(logger);
+export const warn = logger.warn.bind(logger);
+export const error = logger.error.bind(logger);
+export const discovered = logger.discovered.bind(logger);
+export const notFound = logger.notFound.bind(logger);
+export const contentSummary = logger.contentSummary.bind(logger);
+export const aiWorker = logger.aiWorker.bind(logger);
+export const portfolioLoading = logger.portfolioLoading.bind(logger);
+export const test = logger.test.bind(logger);
+export const network = logger.network.bind(logger);
+export const security = logger.security.bind(logger);
+export const location = logger.location.bind(logger);
+export const data = logger.data.bind(logger);
+export const response = logger.response.bind(logger);
+export const assetLoading = logger.assetLoading.bind(logger);
+export const mimeType = logger.mimeType.bind(logger);
+export const validation = logger.validation.bind(logger);
+export const getEnvironmentInfo = logger.getEnvironmentInfo.bind(logger);
+export const toggleDebug = logger.toggleDebug.bind(logger);
 
 // Default export
 export default logger;

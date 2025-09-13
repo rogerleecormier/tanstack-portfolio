@@ -377,7 +377,7 @@ const PriorityMatrixPage: React.FC = () => {
           });
         });
 
-        workbook.xlsx.writeBuffer().then(buffer => {
+        void workbook.xlsx.writeBuffer().then(buffer => {
           const blob = new Blob([buffer], {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           });
@@ -908,7 +908,7 @@ const PriorityMatrixPage: React.FC = () => {
             .catch(error => {
               console.error('Error generating PDF with chart:', error);
               // Fallback to original PDF without chart
-              pdf(<MyDocument />)
+              void pdf(<MyDocument />)
                 .toBlob()
                 .then(blob => {
                   const url = window.URL.createObjectURL(blob);
@@ -996,7 +996,10 @@ const PriorityMatrixPage: React.FC = () => {
       <div className='mx-auto max-w-4xl px-4 py-8'>
         <Card className='border border-teal-200/50 bg-white/80 shadow-xl backdrop-blur-sm dark:border-teal-800/50 dark:bg-slate-900/80'>
           <CardContent className='p-8'>
-            <form onSubmit={handleSubmit(onSubmit)} className='space-y-8'>
+            <form
+              onSubmit={e => void handleSubmit(onSubmit)(e)}
+              className='space-y-8'
+            >
               {/* Project Name Section */}
               <div className='space-y-3'>
                 <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
@@ -1330,20 +1333,20 @@ const PriorityMatrixPage: React.FC = () => {
                 </>
                 <div className='mt-8 flex flex-col justify-center gap-4 sm:flex-row'>
                   <Button
-                    onClick={() => handleExport('raw')}
+                    onClick={() => void handleExport('raw')}
                     variant='outline'
                     className='border-teal-200 text-teal-700 hover:border-teal-300 hover:bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:hover:bg-teal-900/20'
                   >
                     <Download className='mr-2 size-4' /> Export Raw XLSX
                   </Button>
                   <Button
-                    onClick={() => handleExport('formatted-xlsx')}
+                    onClick={() => void handleExport('formatted-xlsx')}
                     className='border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg transition-all duration-200 hover:from-teal-600 hover:to-blue-700 hover:shadow-xl'
                   >
                     <Download className='mr-2 size-4' /> Export Matrix XLSX
                   </Button>
                   <Button
-                    onClick={() => handleExport('formatted-pdf')}
+                    onClick={() => void handleExport('formatted-pdf')}
                     variant='outline'
                     className='border-purple-200 text-purple-700 hover:border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/20'
                   >

@@ -14,7 +14,8 @@ export async function onRequest(context) {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, CF-Access-Jwt-Assertion, Authorization',
+        'Access-Control-Allow-Headers':
+          'Content-Type, CF-Access-Jwt-Assertion, Authorization',
         'Access-Control-Max-Age': '86400',
       },
     });
@@ -32,20 +33,23 @@ export async function onRequest(context) {
     .filter(Boolean);
 
   // Normalize prefix to ensure folder-style prefixes end with '/'
-  const normalizePrefix = (p) => (p && !p.endsWith('/') ? `${p}/` : p);
+  const normalizePrefix = p => (p && !p.endsWith('/') ? `${p}/` : p);
   const prefix = normalizePrefix(rawPrefix);
 
   // If no prefix, return only the allowed top-level directories as folders
   if (!prefix) {
-    return Response.json({
-      prefixes: allowedDirs.map(d => `${d}/`),
-      objects: [],
-      cursor: undefined,
-    }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      {
+        prefixes: allowedDirs.map(d => `${d}/`),
+        objects: [],
+        cursor: undefined,
+      },
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   }
 
   // Security: Only allow listing within allowed directories
@@ -53,12 +57,15 @@ export async function onRequest(context) {
     d => prefix === `${d}/` || prefix.startsWith(`${d}/`)
   );
   if (!isAllowed) {
-    return Response.json({ error: 'Invalid prefix' }, {
-      status: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      { error: 'Invalid prefix' },
+      {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   }
 
   try {
@@ -93,22 +100,28 @@ export async function onRequest(context) {
     }
     const prefixes = Array.from(folderSet);
 
-    return Response.json({
-      prefixes,
-      objects: filesInCurrentDir,
-      cursor: result.truncated ? result.cursor : undefined,
-    }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      {
+        prefixes,
+        objects: filesInCurrentDir,
+        cursor: result.truncated ? result.cursor : undefined,
+      },
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   } catch (error) {
     console.error('List error:', error);
-    return Response.json({ error: 'Failed to list objects' }, {
-      status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+    return Response.json(
+      { error: 'Failed to list objects' },
+      {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
       }
-    });
+    );
   }
 }

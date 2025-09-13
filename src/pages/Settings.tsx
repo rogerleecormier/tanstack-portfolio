@@ -1,17 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import {
-  User,
-  Activity,
-  Settings,
-  TrendingUp,
-  Plus,
-  Edit3,
-  Trash2,
-} from 'lucide-react';
+  MedicationType,
+  TIMEZONES,
+  UserMedication,
+  UserProfile,
+  WeightGoal,
+  convertLbsToKg,
+  formatDateInTimezone,
+  getCurrentTimezone,
+} from '@/api/userProfiles';
 import { DatePicker } from '@/components/date-picker';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -21,39 +29,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useAuth } from '@/hooks/useAuth';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import {
-  UserProfile,
-  WeightGoal,
-  UserMedication,
-  MedicationType,
-  convertLbsToKg,
-  TIMEZONES,
-  getCurrentTimezone,
-  formatDateInTimezone,
-} from '@/api/userProfiles';
+  formatMedicationFrequency,
+  getMedicationTypeById,
+  useDeleteMedication,
+  useMedicationMutation,
+  useMedicationTypes,
+  useUserMedications,
+} from '@/hooks/useMedications';
 import {
   useUserProfile,
-  useWeightGoal,
   useUserProfileMutation,
+  useWeightGoal,
   useWeightGoalMutation,
 } from '@/hooks/useUserProfile';
 import {
-  useMedicationTypes,
-  useUserMedications,
-  useMedicationMutation,
-  useDeleteMedication,
-  getMedicationTypeById,
-  formatMedicationFrequency,
-} from '@/hooks/useMedications';
-import { useAuth } from '@/hooks/useAuth';
+  Activity,
+  Edit3,
+  Plus,
+  Settings,
+  Trash2,
+  TrendingUp,
+  User,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function SettingsPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -65,7 +65,7 @@ export default function SettingsPage() {
 
   // Use custom hooks for data fetching - only when authenticated
   // Use email instead of sub for more reliable mapping
-  const userId = user?.email || user?.sub || '';
+  const userId = user?.email ?? user?.sub ?? '';
   const { data: profile, isLoading: profileLoading } = useUserProfile(userId);
   const { data: goal, isLoading: goalLoading } = useWeightGoal(userId);
   const { data: medications, isLoading: medicationsLoading } =
@@ -96,7 +96,10 @@ export default function SettingsPage() {
       setEditingGoal({ ...goal });
     }
     if (medications && medications.length > 0) {
-      setEditingMedication({ ...medications[0] });
+      const firstMedication = medications[0];
+      if (firstMedication) {
+        setEditingMedication({ ...firstMedication });
+      }
     }
   }, [profile, goal, medications]);
 
@@ -133,7 +136,12 @@ export default function SettingsPage() {
 
   const handleMedicationCancel = () => {
     if (medications && medications.length > 0) {
-      setEditingMedication({ ...medications[0] });
+      const firstMedication = medications[0];
+      if (firstMedication) {
+        setEditingMedication({ ...firstMedication });
+      } else {
+        setEditingMedication(null);
+      }
     } else {
       setEditingMedication(null);
     }
@@ -164,14 +172,11 @@ export default function SettingsPage() {
 
     const newMedication: UserMedication = {
       id: `temp_${Date.now()}`, // Generate temporary ID for new medications
-      user_id: user?.sub || '',
+      user_id: user?.sub ?? '',
       medication_type_id: 1,
       start_date: todayString,
-      end_date: undefined, // Set explicit undefined for optional field
-      dosage_mg: undefined, // Set explicit undefined for optional field
       frequency: 'weekly',
       is_active: true,
-      notes: undefined, // Set explicit undefined for optional field
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -332,7 +337,7 @@ export default function SettingsPage() {
                     <Label htmlFor='name'>Full Name</Label>
                     <Input
                       id='name'
-                      value={editingProfile?.name || ''}
+                      value={editingProfile?.name ?? ''}
                       onChange={e =>
                         setEditingProfile(prev =>
                           prev ? { ...prev, name: e.target.value } : null
@@ -345,7 +350,7 @@ export default function SettingsPage() {
                   <div>
                     <Label htmlFor='birthdate'>Birth Date</Label>
                     <DatePicker
-                      value={editingProfile?.birthdate || ''}
+                      value={editingProfile?.birthdate ?? ''}
                       onChange={dateString => {
                         if (dateString && editingProfile) {
                           console.log(
@@ -365,7 +370,7 @@ export default function SettingsPage() {
                   <div>
                     <Label htmlFor='gender'>Gender</Label>
                     <Select
-                      value={editingProfile?.gender || 'male'}
+                      value={editingProfile?.gender ?? 'male'}
                       onValueChange={value =>
                         setEditingProfile(prev =>
                           prev
@@ -395,7 +400,7 @@ export default function SettingsPage() {
                         <Input
                           type='number'
                           placeholder='Ft'
-                          value={editingProfile?.height_ft || ''}
+                          value={editingProfile?.height_ft ?? ''}
                           onChange={e =>
                             updateHeightFt(parseInt(e.target.value) || 0)
                           }
@@ -407,7 +412,7 @@ export default function SettingsPage() {
                         <Input
                           type='number'
                           placeholder='In'
-                          value={editingProfile?.height_in || ''}
+                          value={editingProfile?.height_in ?? ''}
                           onChange={e =>
                             updateHeightIn(parseInt(e.target.value) || 0)
                           }
@@ -421,7 +426,7 @@ export default function SettingsPage() {
                   <div className='md:col-span-2'>
                     <Label htmlFor='activity'>Activity Level</Label>
                     <Select
-                      value={editingProfile?.activity_level || 'moderate'}
+                      value={editingProfile?.activity_level ?? 'moderate'}
                       onValueChange={value =>
                         setEditingProfile(prev =>
                           prev
@@ -454,7 +459,7 @@ export default function SettingsPage() {
                   <div className='md:col-span-2'>
                     <Label htmlFor='timezone'>Timezone</Label>
                     <Select
-                      value={editingProfile?.timezone || getCurrentTimezone()}
+                      value={editingProfile?.timezone ?? getCurrentTimezone()}
                       onValueChange={value =>
                         setEditingProfile(prev =>
                           prev ? { ...prev, timezone: value } : null
@@ -477,7 +482,7 @@ export default function SettingsPage() {
 
                 <div className='flex gap-3 pt-6'>
                   <Button
-                    onClick={handleProfileSave}
+                    onClick={() => void handleProfileSave()}
                     disabled={profileMutation.isPending}
                     className='rounded-lg border-0 bg-teal-600 px-8 text-white hover:bg-teal-700'
                   >
@@ -580,7 +585,7 @@ export default function SettingsPage() {
                   </Label>
                   <p className='text-lg font-medium'>
                     {TIMEZONES.find(tz => tz.value === profile.timezone)
-                      ?.label || profile.timezone}
+                      ?.label ?? profile.timezone}
                   </p>
                   <p className='text-sm text-gray-500'>
                     All dates are displayed in your local timezone
@@ -628,7 +633,7 @@ export default function SettingsPage() {
                       id='startWeight'
                       type='number'
                       step='0.1'
-                      value={editingGoal?.start_weight_lbs || ''}
+                      value={editingGoal?.start_weight_lbs ?? ''}
                       onChange={e =>
                         setEditingGoal(prev =>
                           prev
@@ -650,7 +655,7 @@ export default function SettingsPage() {
                       id='targetWeight'
                       type='number'
                       step='0.1'
-                      value={editingGoal?.target_weight_lbs || ''}
+                      value={editingGoal?.target_weight_lbs ?? ''}
                       onChange={e =>
                         setEditingGoal(prev =>
                           prev
@@ -672,7 +677,7 @@ export default function SettingsPage() {
                       id='weeklyGoal'
                       type='number'
                       step='0.1'
-                      value={editingGoal?.weekly_goal_lbs || ''}
+                      value={editingGoal?.weekly_goal_lbs ?? ''}
                       onChange={e =>
                         setEditingGoal(prev =>
                           prev
@@ -691,7 +696,7 @@ export default function SettingsPage() {
                   <div>
                     <Label htmlFor='targetDate'>Target Date</Label>
                     <DatePicker
-                      value={editingGoal?.target_date || ''}
+                      value={editingGoal?.target_date ?? ''}
                       onChange={dateString => {
                         if (dateString && editingGoal) {
                           console.log(
@@ -711,7 +716,7 @@ export default function SettingsPage() {
 
                 <div className='flex gap-3 pt-6'>
                   <Button
-                    onClick={handleGoalSave}
+                    onClick={() => void handleGoalSave()}
                     disabled={goalMutation.isPending}
                     className='rounded-lg border-0 bg-blue-600 px-8 text-white hover:bg-blue-700'
                   >
@@ -878,7 +883,7 @@ export default function SettingsPage() {
           <CardContent>
             {medicationsLoading ? (
               <div className='space-y-4'>
-                {[...Array(2)].map((_, i) => (
+                {Array.from({ length: 2 }).map((_, i) => (
                   <Card key={i} className='animate-pulse border-0 shadow-sm'>
                     <CardHeader className='pb-3'>
                       <div className='flex items-center justify-between'>
@@ -891,7 +896,7 @@ export default function SettingsPage() {
                     </CardHeader>
                     <CardContent className='pt-0'>
                       <div className='space-y-3'>
-                        {[...Array(4)].map((_, j) => (
+                        {Array.from({ length: 4 }).map((_, j) => (
                           <div key={j} className='flex justify-between'>
                             <div className='h-3 w-20 rounded bg-gray-200'></div>
                             <div className='h-3 w-24 rounded bg-gray-200'></div>
@@ -911,7 +916,7 @@ export default function SettingsPage() {
                 {medicationTypesLoading ? (
                   <div className='space-y-4'>
                     <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                      {[...Array(4)].map((_, i) => (
+                      {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className='space-y-2'>
                           <div className='h-4 w-20 animate-pulse rounded bg-gray-200'></div>
                           <div className='h-10 animate-pulse rounded bg-gray-200'></div>
@@ -930,7 +935,7 @@ export default function SettingsPage() {
                         <Label htmlFor='medicationType'>Medication</Label>
                         <Select
                           value={
-                            editingMedication?.medication_type_id?.toString() ||
+                            editingMedication?.medication_type_id?.toString() ??
                             '1'
                           }
                           onValueChange={value =>
@@ -1020,7 +1025,7 @@ export default function SettingsPage() {
                       <div className='space-y-3'>
                         <Label htmlFor='medicationStartDate'>Start Date</Label>
                         <DatePicker
-                          value={editingMedication?.start_date || ''}
+                          value={editingMedication?.start_date ?? ''}
                           onChange={dateString => {
                             if (dateString && editingMedication) {
                               console.log(
@@ -1043,14 +1048,15 @@ export default function SettingsPage() {
                           id='medicationDosage'
                           type='number'
                           step='0.1'
-                          value={editingMedication?.dosage_mg || ''}
+                          value={editingMedication?.dosage_mg ?? ''}
                           onChange={e =>
                             setEditingMedication(prev =>
                               prev
                                 ? {
                                     ...prev,
-                                    dosage_mg:
-                                      parseFloat(e.target.value) || undefined,
+                                    ...(e.target.value && {
+                                      dosage_mg: parseFloat(e.target.value),
+                                    }),
                                   }
                                 : null
                             )
@@ -1063,7 +1069,7 @@ export default function SettingsPage() {
                       <div className='space-y-3'>
                         <Label htmlFor='medicationFrequency'>Frequency</Label>
                         <Select
-                          value={editingMedication?.frequency || 'weekly'}
+                          value={editingMedication?.frequency ?? 'weekly'}
                           onValueChange={value =>
                             setEditingMedication(prev =>
                               prev ? { ...prev, frequency: value } : null
@@ -1118,7 +1124,7 @@ export default function SettingsPage() {
                         <Label htmlFor='medicationNotes'>Notes</Label>
                         <Input
                           id='medicationNotes'
-                          value={editingMedication?.notes || ''}
+                          value={editingMedication?.notes ?? ''}
                           onChange={e =>
                             setEditingMedication(prev =>
                               prev ? { ...prev, notes: e.target.value } : null
@@ -1132,7 +1138,7 @@ export default function SettingsPage() {
 
                     <div className='flex gap-3 pt-8'>
                       <Button
-                        onClick={handleMedicationSave}
+                        onClick={() => void handleMedicationSave()}
                         disabled={
                           medicationMutation.isPending ||
                           deleteMedicationMutation.isPending
@@ -1214,10 +1220,10 @@ export default function SettingsPage() {
                             <div className='flex items-center justify-between'>
                               <div>
                                 <h4 className='font-semibold text-gray-900'>
-                                  {medicationType?.name || 'Unknown Medication'}
+                                  {medicationType?.name ?? 'Unknown Medication'}
                                 </h4>
                                 <p className='text-sm text-gray-600'>
-                                  {medicationType?.generic_name || 'Unknown'}
+                                  {medicationType?.generic_name ?? 'Unknown'}
                                 </p>
                               </div>
                               <Badge
@@ -1292,7 +1298,7 @@ export default function SettingsPage() {
                               </Button>
                               <Button
                                 onClick={() =>
-                                  handleDeleteMedication(medication.id)
+                                  void handleDeleteMedication(medication.id)
                                 }
                                 variant='destructive'
                                 size='sm'

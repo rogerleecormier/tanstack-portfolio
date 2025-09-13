@@ -1,17 +1,17 @@
-import React from 'react';
 import {
-  InfoCard,
   FeatureCard,
+  HeroCard,
+  HeroProfileCard,
+  InfoCard,
+  MultiColumnCards,
   ProfileCard,
   StatsCard,
-  TimelineCard,
-  HeroCard,
   SuccessCard,
-  WarningCard,
   TechCard,
-  HeroProfileCard,
-  MultiColumnCards,
+  TimelineCard,
+  WarningCard,
 } from '@/components/markdown/CardComponents';
+import React from 'react';
 
 // Types for card data
 interface CardData {
@@ -46,13 +46,13 @@ export function parseCardMarkdown(markdown: string): CardData | null {
 
     // Parse props from JSON-like syntax
     const props: Record<string, unknown> = {};
-    if (propsString.trim()) {
+    if (propsString?.trim()) {
       try {
         // Handle simple key-value pairs: key="value" key2="value2"
-        const propPairs = propsString.match(/(\w+)="([^"]*)"/g);
+        const propPairs = propsString?.match(/(\w+)="([^"]*)"/g);
         if (propPairs) {
           propPairs.forEach(pair => {
-            const [, key, value] = pair.match(/(\w+)="([^"]*)"/) || [];
+            const [, key, value] = pair.match(/(\w+)="([^"]*)"/) ?? [];
             if (key && value) {
               // Handle special cases
               if (key === 'badges' || key === 'stats' || key === 'items') {
@@ -82,7 +82,7 @@ export function parseCardMarkdown(markdown: string): CardData | null {
     return {
       type: type as CardData['type'],
       props,
-      content: content.trim(),
+      content: content?.trim() ?? '',
     };
   }
 
@@ -90,13 +90,14 @@ export function parseCardMarkdown(markdown: string): CardData | null {
   match = newCardRegex.exec(markdown);
   if (match) {
     try {
-      const jsonContent = match[1].trim();
-      const parsedCard = JSON.parse(jsonContent);
+      const jsonContent = match[1]?.trim();
+      if (!jsonContent) return null;
+      const parsedCard = JSON.parse(jsonContent) as Record<string, unknown>;
 
       return {
         type: parsedCard.type as CardData['type'],
-        props: parsedCard.props || {},
-        content: parsedCard.content || '',
+        props: (parsedCard.props as Record<string, unknown>) ?? {},
+        content: (parsedCard.content as string) ?? '',
       };
     } catch (error) {
       console.warn('Error parsing new card syntax:', error);
@@ -216,16 +217,21 @@ export function renderCardComponent(
           // If content is already an object, use it directly
           let columnsData;
           if (typeof content === 'string') {
-            columnsData = JSON.parse(content);
+            columnsData = JSON.parse(content) as Record<string, unknown>;
           } else if (typeof content === 'object') {
-            columnsData = content;
+            columnsData = content as Record<string, unknown>;
           } else {
             return null;
           }
 
           return React.createElement(MultiColumnCards, {
-            columns: columnsData.columns || 2,
-            cards: columnsData.cards || [],
+            columns: (columnsData.columns as number) === 3 ? 3 : 2,
+            cards:
+              (columnsData.cards as Array<{
+                type: string;
+                props: Record<string, unknown>;
+                content: string;
+              }>) ?? [],
             ...props,
           });
         } catch {
@@ -239,7 +245,7 @@ export function renderCardComponent(
       });
 
     default:
-      console.warn(`Unknown card type: ${type}`);
+      console.warn(`Unknown card type: ${String(type)}`);
       return null;
   }
 }
@@ -299,43 +305,61 @@ export function createCardComponent(type: string) {
   }: React.HTMLAttributes<HTMLDivElement>) {
     const content = typeof children === 'string' ? children : '';
 
+    // Base props that all cards need
+    const baseProps = {
+      title: props.title ?? 'Untitled',
+      className: props.className ?? '',
+    };
+
     switch (type) {
       case 'info':
-        return React.createElement(InfoCard, { ...props, children: content });
+        return React.createElement(InfoCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'feature':
         return React.createElement(FeatureCard, {
-          ...props,
+          ...baseProps,
           children: content,
         });
       case 'profile':
         return React.createElement(ProfileCard, {
-          ...props,
+          ...baseProps,
           children: content,
         });
       case 'stats':
-        return React.createElement(StatsCard, { ...props, children: content });
+        return React.createElement(StatsCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'timeline':
         return React.createElement(TimelineCard, {
-          ...props,
+          ...baseProps,
           children: content,
         });
       case 'hero':
-        return React.createElement(HeroCard, { ...props, children: content });
+        return React.createElement(HeroCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'success':
         return React.createElement(SuccessCard, {
-          ...props,
+          ...baseProps,
           children: content,
         });
       case 'warning':
         return React.createElement(WarningCard, {
-          ...props,
+          ...baseProps,
           children: content,
         });
       case 'tech':
-        return React.createElement(TechCard, { ...props, children: content });
+        return React.createElement(TechCard, {
+          ...baseProps,
+          children: content,
+        });
       case 'hero-profile':
         return React.createElement(HeroProfileCard, {
-          ...props,
+          ...baseProps,
           children: content,
         });
       case 'columns':
@@ -343,7 +367,7 @@ export function createCardComponent(type: string) {
         return React.createElement(MultiColumnCards, {
           columns: 2,
           cards: [],
-          className: props.className,
+          ...(props.className && { className: props.className }),
         });
       default:
         return React.createElement(

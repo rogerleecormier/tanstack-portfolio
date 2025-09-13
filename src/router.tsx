@@ -5,22 +5,22 @@
  * No need to manually add new portfolio pages to the router
  */
 
+import { createBrowserHistory } from '@tanstack/history';
 import {
   createRootRoute,
   createRoute,
   createRouter,
 } from '@tanstack/react-router';
-import { createBrowserHistory } from '@tanstack/history';
 import AppLayout from './layout/AppLayout';
 
 // Core pages - loaded immediately
 import { lazy } from 'react';
-import IndexPage from './pages/IndexPage';
 import AboutPage from './pages/AboutPage';
+import BlogListPage from './pages/BlogListPage';
+import IndexPage from './pages/IndexPage';
+import NotFound from './pages/NotFound';
 import PortfolioListPage from './pages/PortfolioListPage';
 import ProjectsListPage from './pages/ProjectsListPage';
-import BlogListPage from './pages/BlogListPage';
-import NotFound from './pages/NotFound';
 
 // Dynamic imports for heavier components - loaded on demand
 const ToolsListPage = lazy(() => import('./pages/ToolsListPage'));
@@ -46,11 +46,7 @@ const CloudflareStatusChecker = lazy(() =>
     default: m.CloudflareStatusChecker,
   }))
 );
-const CreationStudioPage = lazy(() =>
-  import('./pages/CreationStudioPage').then(m => ({
-    default: m.CreationStudioPage,
-  }))
-);
+const CreationStudioPage = lazy(() => import('./pages/CreationStudioPage'));
 const MarkdownOnlyPage = lazy(() =>
   import('./pages/MarkdownOnlyPage').then(m => ({
     default: m.MarkdownOnlyPage,
@@ -149,7 +145,7 @@ const protectedRoute = createRoute({
     // Get the original page the user was trying to access
     const urlParams = new URLSearchParams(window.location.search);
     const returnTo =
-      urlParams.get('returnTo') || urlParams.get('redirect_url') || '/';
+      urlParams.get('returnTo') ?? urlParams.get('redirect_url') ?? '/';
 
     // Redirect back to the original page, now authenticated
     window.location.href = returnTo;

@@ -1,4 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import {
+  AlertTriangle,
+  CheckCircle,
+  Info,
+  RefreshCw,
+  Shield,
+  XCircle,
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { environment } from '../config/environment';
+import { Button } from './ui/button';
 import {
   Card,
   CardContent,
@@ -6,17 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card';
-import { Button } from './ui/button';
-import { P, H3 } from './ui/typography';
-import {
-  Shield,
-  RefreshCw,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Info,
-} from 'lucide-react';
-import { environment } from '../config/environment';
+import { H3, P } from './ui/typography';
 
 interface StatusDetails {
   cookies: {
@@ -131,7 +131,7 @@ export const CloudflareStatusChecker: React.FC = () => {
           credentials: 'include',
         });
         if (response.ok) {
-          const data = await response.json();
+          const data = (await response.json()) as Record<string, unknown>;
           identityEndpoint = { success: true, data };
         } else {
           identityEndpoint = {
@@ -167,7 +167,7 @@ export const CloudflareStatusChecker: React.FC = () => {
         cookieDetails.cfAccessUserEmail ||
         cookieDetails.cfAccessUserName ||
         cookieDetails.cfAccessUserUUID ||
-        storedUser ||
+        (storedUser ?? false) ||
         urlDetails.accessToken ||
         urlDetails.userEmail;
 
@@ -207,7 +207,7 @@ export const CloudflareStatusChecker: React.FC = () => {
   };
 
   useEffect(() => {
-    checkStatus();
+    void checkStatus();
   }, []);
 
   const getStatusIcon = () => {
@@ -278,7 +278,7 @@ export const CloudflareStatusChecker: React.FC = () => {
         {/* Action Buttons */}
         <div className='flex justify-center space-x-3'>
           <Button
-            onClick={checkStatus}
+            onClick={() => void checkStatus()}
             disabled={status === 'checking'}
             className='bg-teal-600 hover:bg-teal-700 focus:ring-2 focus:ring-teal-500 focus:ring-offset-2'
           >

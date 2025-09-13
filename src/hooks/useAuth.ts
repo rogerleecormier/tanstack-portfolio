@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { environment } from '../config/environment';
 import { logger } from '@/utils/logger';
+import { useCallback, useEffect, useState } from 'react';
+import { environment } from '../config/environment';
 
 // CloudflareUser interface moved from cloudflareAuth.ts
 export interface CloudflareUser {
@@ -72,7 +72,7 @@ const simpleAuth = {
 
       const userData = localStorage.getItem('dev_user');
       if (userData) {
-        return JSON.parse(userData);
+        return JSON.parse(userData) as CloudflareUser;
       }
 
       // Return default user if no stored data
@@ -192,18 +192,18 @@ const simpleAuth = {
 
       if (response.ok) {
         try {
-          const identity = await response.json();
+          const identity = (await response.json()) as Record<string, unknown>;
           logger.debug('Identity response data:', identity);
 
           if (identity.email) {
             const user: CloudflareUser = {
-              email: identity.email,
+              email: identity.email as string,
               name:
-                identity.name ||
-                identity.given_name ||
-                identity.family_name ||
+                (identity.name as string) ||
+                (identity.given_name as string) ||
+                (identity.family_name as string) ||
                 'Authenticated User',
-              sub: identity.sub || identity.user_uuid,
+              sub: (identity.sub as string) || (identity.user_uuid as string),
             };
             logger.debug('Cloudflare Access authentication successful', {
               user,
@@ -272,6 +272,7 @@ const simpleAuth = {
   }> {
     try {
       // Simulate the same flow as production but with mock data
+      await new Promise(resolve => setTimeout(resolve, 0)); // Simulate async behavior
       const allCookies = document.cookie.split(';').map(c => c.trim());
       const cfCookies = allCookies.filter(
         cookie => cookie.startsWith('CF_') || cookie.startsWith('cf_')
@@ -417,7 +418,7 @@ export const useAuth = () => {
             try {
               const storedUser = localStorage.getItem('cf_user');
               if (storedUser) {
-                const userInfo = JSON.parse(storedUser);
+                const userInfo = JSON.parse(storedUser) as CloudflareUser;
                 setIsAuthenticated(true);
                 setUser(userInfo);
                 setError(null);
@@ -475,14 +476,14 @@ export const useAuth = () => {
 
   // Initial auth check - only run once
   useEffect(() => {
-    checkAuth();
+    void checkAuth();
 
     // Additional auth check after a delay to catch cookies that might be set after page load
     const delayedAuthCheck = setTimeout(() => {
       logger.info(
         'useAuth: Running delayed auth check to catch late-set cookies'
       );
-      checkAuth();
+      void checkAuth();
     }, 2000);
 
     return () => clearTimeout(delayedAuthCheck);
@@ -522,7 +523,7 @@ export const useAuth = () => {
         logger.info(
           'useAuth: Running delayed auth check after Cloudflare Access redirect'
         );
-        checkAuth();
+        void checkAuth();
       }, 1000);
     }
   }, [checkAuth]);
@@ -534,9 +535,10 @@ export const useAuth = () => {
   useEffect(() => {
     const handleAuthChange = (event: CustomEvent) => {
       logger.info('useAuth: Received auth state change event', event.detail);
-      const { isAuthenticated: newAuthState, user: newUser } = event.detail;
-      setIsAuthenticated(newAuthState);
-      setUser(newUser);
+      const { isAuthenticated: newAuthState, user: newUser } =
+        event.detail as Record<string, unknown>;
+      setIsAuthenticated(newAuthState as boolean);
+      setUser(newUser as CloudflareUser);
     };
 
     window.addEventListener(
@@ -640,7 +642,7 @@ export const useAuth = () => {
 
         // Redirect to Cloudflare Access logout with redirect back to site
         const redirectUrl = encodeURIComponent(
-          customRedirectUrl || window.location.origin
+          customRedirectUrl ?? window.location.origin
         );
         const logoutUrl = `/cdn-cgi/access/logout?returnTo=${redirectUrl}`;
         window.location.href = logoutUrl;
@@ -653,7 +655,7 @@ export const useAuth = () => {
 
   const refreshAuth = () => {
     logger.info('useAuth: Refresh auth called');
-    checkAuth();
+    void checkAuth();
   };
 
   const clearError = () => {

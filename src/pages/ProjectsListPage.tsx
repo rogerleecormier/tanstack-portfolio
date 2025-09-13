@@ -1,5 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import {
+  cachedContentService,
+  type CachedContentItem,
+} from '@/api/cachedContentService';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,24 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import {
-  ArrowRight,
-  BarChart3,
-  TrendingUp,
-  Calendar,
-  User,
-  Briefcase,
-  Filter,
-  Search,
-  X,
-  Tag,
-} from 'lucide-react';
-import { H1, H2, H3, P } from '@/components/ui/typography';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import {
   Dialog,
   DialogContent,
@@ -32,12 +19,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { ScrollToTop } from '@/components/ScrollToTop';
-import {
-  cachedContentService,
-  type CachedContentItem,
-} from '@/api/cachedContentService';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { H1, H2, H3, P } from '@/components/ui/typography';
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { useNavigate } from '@tanstack/react-router';
+import {
+  ArrowRight,
+  BarChart3,
+  Briefcase,
+  Calendar,
+  Filter,
+  Search,
+  Tag,
+  TrendingUp,
+  User,
+  X,
+} from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 export default function ProjectsListPage() {
   const navigate = useNavigate();
@@ -80,12 +80,11 @@ export default function ProjectsListPage() {
 
   // Load projects from cache
   useEffect(() => {
-    const loadProjects = async () => {
+    const loadProjects = () => {
       try {
         setIsLoading(true);
 
-        const loadedProjects =
-          await cachedContentService.getContentByType('project');
+        const loadedProjects = cachedContentService.getContentByType('project');
         setProjects(loadedProjects);
         setFilteredProjects(loadedProjects);
       } catch (error) {
@@ -158,7 +157,7 @@ export default function ProjectsListPage() {
           entries => {
             const [entry] = entries;
             if (
-              entry.isIntersecting &&
+              entry?.isIntersecting &&
               !isLoading &&
               !isLoadingMore &&
               displayedProjects.length < filteredProjects.length
@@ -179,6 +178,7 @@ export default function ProjectsListPage() {
         observer.observe(node);
         return () => observer.disconnect();
       }
+      return undefined;
     },
     [
       isLoading,
@@ -189,7 +189,7 @@ export default function ProjectsListPage() {
   );
 
   const handleProjectClick = (projectId: string) => {
-    navigate({ to: `/projects/${projectId}` });
+    void navigate({ to: `/projects/${projectId}` });
   };
 
   // Category icons mapping
@@ -219,7 +219,7 @@ export default function ProjectsListPage() {
 
           {/* Grid Skeleton */}
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {[...Array(6)].map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
                 className='h-80 border-0 bg-white/50 shadow-xl backdrop-blur-sm dark:bg-slate-900/50'
@@ -459,7 +459,7 @@ export default function ProjectsListPage() {
         {/* Projects Grid */}
         {isLoading ? (
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {[...Array(6)].map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
                 className='h-full border-gray-200 dark:border-gray-700'
@@ -509,7 +509,7 @@ export default function ProjectsListPage() {
               </H2>
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
                 {displayedProjects.map(project => {
-                  const categoryIcon = categoryIcons[project.category] || (
+                  const categoryIcon = categoryIcons[project.category] ?? (
                     <Briefcase className='mr-1 size-3' />
                   );
                   return (
@@ -683,7 +683,7 @@ export default function ProjectsListPage() {
             </p>
             <div className='flex flex-col justify-center gap-3 sm:flex-row'>
               <Button
-                onClick={() => navigate({ to: '/contact' })}
+                onClick={() => void navigate({ to: '/contact' })}
                 variant='secondary'
                 size='default'
                 className='border-0 bg-white text-teal-600 hover:bg-gray-100'
@@ -691,7 +691,7 @@ export default function ProjectsListPage() {
                 Get in Touch
               </Button>
               <Button
-                onClick={() => navigate({ to: '/portfolio' })}
+                onClick={() => void navigate({ to: '/portfolio' })}
                 variant='secondary'
                 size='default'
                 className='border border-white/30 bg-white/20 text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-teal-600'

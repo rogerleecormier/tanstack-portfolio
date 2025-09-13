@@ -1,26 +1,26 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Link } from '@tanstack/react-router';
-import {
-  Briefcase,
-  Tag,
-  Search,
-  X,
-  Filter,
-  ChevronDown,
-  Sparkles,
-  TrendingUp,
-  Users,
-  Zap,
-  Shield,
-} from 'lucide-react';
 import {
   cachedContentService,
   type CachedContentItem,
 } from '@/api/cachedContentService';
+import { Link } from '@tanstack/react-router';
+import {
+  Briefcase,
+  ChevronDown,
+  Filter,
+  Search,
+  Shield,
+  Sparkles,
+  Tag,
+  TrendingUp,
+  Users,
+  X,
+  Zap,
+} from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 // PortfolioItem type is now CachedContentItem from cachedContentService
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { ScrollToTop } from '@/components/ScrollToTop';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -28,16 +28,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
-import { ScrollToTop } from '@/components/ScrollToTop';
-import { H1, H2, H3, P } from '@/components/ui/typography';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
@@ -45,6 +35,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { H1, H2, H3, P } from '@/components/ui/typography';
 import { logger } from '@/utils/logger';
 
 // Helper function to safely parse tags
@@ -60,7 +60,7 @@ function parseTagsSafely(tags: unknown): string[] {
         // Check if this string looks like JSON
         if (item.trim().startsWith('[') && item.trim().endsWith(']')) {
           try {
-            const parsed = JSON.parse(item);
+            const parsed = JSON.parse(item) as unknown;
             if (Array.isArray(parsed)) {
               allTags.push(
                 ...parsed.filter(
@@ -85,7 +85,7 @@ function parseTagsSafely(tags: unknown): string[] {
   // If tags is a string, try to parse it
   if (typeof tags === 'string') {
     try {
-      const parsed = JSON.parse(tags);
+      const parsed = JSON.parse(tags) as unknown;
       if (Array.isArray(parsed)) {
         return parsed.filter((tag): tag is string => typeof tag === 'string');
       }
@@ -215,13 +215,12 @@ export default function PortfolioListPage() {
 
   // Load portfolio items on component mount
   useEffect(() => {
-    const loadItems = async () => {
+    const loadItems = () => {
       try {
         setIsLoading(true);
         logger.debug('🚀 Starting to load portfolio items from KV cache...');
 
-        const cachedItems =
-          await cachedContentService.getContentByType('portfolio');
+        const cachedItems = cachedContentService.getContentByType('portfolio');
 
         const items: CachedContentItem[] = cachedItems;
         logger.debug('✨ Portfolio items loaded from KV:', items);
@@ -242,7 +241,7 @@ export default function PortfolioListPage() {
         setIsLoading(false);
       }
     };
-    loadItems();
+    void loadItems();
   }, []);
 
   // Update filtered results when search criteria change
@@ -288,7 +287,7 @@ export default function PortfolioListPage() {
           entries => {
             const [entry] = entries;
             if (
-              entry.isIntersecting &&
+              entry?.isIntersecting &&
               !isLoading &&
               !isLoadingMore &&
               displayedItems.length < filteredItems.length
@@ -309,6 +308,7 @@ export default function PortfolioListPage() {
         observer.observe(node);
         return () => observer.disconnect();
       }
+      return undefined;
     },
     [isLoading, isLoadingMore, displayedItems.length, filteredItems.length]
   );
@@ -334,7 +334,7 @@ export default function PortfolioListPage() {
 
           {/* Grid Skeleton */}
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {[...Array(6)].map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
                 className='h-80 border-0 bg-white/50 shadow-xl backdrop-blur-sm dark:bg-slate-900/50'
@@ -416,12 +416,12 @@ export default function PortfolioListPage() {
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
                 <div className='size-2 rounded-full bg-blue-500'></div>
                 <span>
-                  {portfolioSearch?.getCategories().length || 0} Categories
+                  {portfolioSearch?.getCategories().length ?? 0} Categories
                 </span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
                 <div className='size-2 rounded-full bg-purple-500'></div>
-                <span>{portfolioSearch?.getTags().length || 0} Topics</span>
+                <span>{portfolioSearch?.getTags().length ?? 0} Topics</span>
               </div>
             </div>
           </div>

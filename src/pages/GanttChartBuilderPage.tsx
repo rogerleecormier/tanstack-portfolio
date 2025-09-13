@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Trash2, Download } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { differenceInDays, format } from 'date-fns';
+import * as ExcelJS from 'exceljs';
+import { Download, Plus, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
 import {
-  ResponsiveContainer,
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
 } from 'recharts';
-import * as ExcelJS from 'exceljs';
-import { format, differenceInDays } from 'date-fns';
+import * as z from 'zod';
 
 // Schema for form validation
 const taskSchema = z.object({
@@ -131,7 +131,7 @@ const GanttChartBuilderPage: React.FC = () => {
             </p>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+            <form onSubmit={void handleSubmit(onSubmit)} className='space-y-6'>
               <div>
                 <Label htmlFor='projectName'>Project Name</Label>
                 <Input id='projectName' {...register('projectName')} />
@@ -236,7 +236,7 @@ const GanttChartBuilderPage: React.FC = () => {
                     />
                   </BarChart>
                 </ResponsiveContainer>
-                <Button onClick={handleExport} className='mt-4'>
+                <Button onClick={() => void handleExport()} className='mt-4'>
                   <Download className='mr-2 size-4' /> Export to XLSX
                 </Button>
               </div>

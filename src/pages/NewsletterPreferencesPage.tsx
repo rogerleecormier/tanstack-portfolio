@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
 import {
-  useScrollToTopOnMount,
-  useScrollToTopOnSuccess,
-} from '../hooks/useScrollToTop';
+  AlertTriangle,
+  CheckCircle,
+  Mail,
+  Settings,
+  UserCheck,
+  XCircle,
+} from 'lucide-react';
+import React, { useState } from 'react';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
 import {
   Card,
   CardContent,
@@ -10,19 +17,12 @@ import {
   CardHeader,
   CardTitle,
 } from '../components/ui/card';
-import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
-import { Alert, AlertDescription } from '../components/ui/alert';
 import {
-  CheckCircle,
-  XCircle,
-  Mail,
-  Settings,
-  UserCheck,
-  AlertTriangle,
-} from 'lucide-react';
+  useScrollToTopOnMount,
+  useScrollToTopOnSuccess,
+} from '../hooks/useScrollToTop';
 
 // No props needed for this component
 
@@ -34,6 +34,12 @@ interface SubscriptionStatus {
     newPosts: boolean;
     specialOffers: boolean;
   };
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  subscription?: SubscriptionStatus;
 }
 
 const NewsletterPreferencesPage = () => {
@@ -56,7 +62,7 @@ const NewsletterPreferencesPage = () => {
   useScrollToTopOnMount();
 
   // Scroll to top after successful form submissions
-  useScrollToTopOnSuccess(result?.success || false);
+  useScrollToTopOnSuccess(result?.success ?? false);
 
   const API_URL =
     'https://tanstack-portfolio-blog-subscription.rcormier.workers.dev';
@@ -81,13 +87,13 @@ const NewsletterPreferencesPage = () => {
         }),
       });
 
-      const result = await response.json();
+      const result = (await response.json()) as ApiResponse;
 
       if (result.success) {
         setResult({
           message: result.message,
           success: true,
-          subscription: result.subscription,
+          ...(result.subscription && { subscription: result.subscription }),
         });
 
         if (action === 'check_status' && result.subscription) {
@@ -141,7 +147,7 @@ const NewsletterPreferencesPage = () => {
       });
       return;
     }
-    makeRequest('check_status');
+    void makeRequest('check_status');
   };
 
   const handleUpdatePreferences = () => {
@@ -152,7 +158,7 @@ const NewsletterPreferencesPage = () => {
       });
       return;
     }
-    makeRequest('update_preferences', { preferences });
+    void makeRequest('update_preferences', { preferences });
   };
 
   const handleUnsubscribe = () => {
@@ -169,7 +175,7 @@ const NewsletterPreferencesPage = () => {
         'Are you sure you want to unsubscribe from the newsletter?'
       )
     ) {
-      makeRequest('unsubscribe');
+      void makeRequest('unsubscribe');
     }
   };
 
@@ -181,7 +187,7 @@ const NewsletterPreferencesPage = () => {
       });
       return;
     }
-    makeRequest('subscribe', { name: '', preferences });
+    void makeRequest('subscribe', { name: '', preferences });
   };
 
   // Auto-fill email from URL parameters

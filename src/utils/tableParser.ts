@@ -14,6 +14,9 @@ export function parseMarkdownTable(markdownTable: string): TableData | null {
 
   // Parse header row
   const headerLine = lines[0];
+  if (!headerLine) {
+    return null;
+  }
   const headers = headerLine
     .split('|')
     .map(cell => cell.trim())
@@ -73,7 +76,7 @@ export function htmlTableToMarkdown(htmlTable: string): string {
     // Extract headers
     const headerCells = table.querySelectorAll('thead th, th');
     headerCells.forEach(cell => {
-      headers.push(cell.textContent?.trim() || '');
+      headers.push(cell.textContent?.trim() ?? '');
     });
 
     // Extract data rows
@@ -83,7 +86,7 @@ export function htmlTableToMarkdown(htmlTable: string): string {
       if (cells.length > 0) {
         const rowData: string[] = [];
         cells.forEach(cell => {
-          rowData.push(cell.textContent?.trim() || '');
+          rowData.push(cell.textContent?.trim() ?? '');
         });
         rows.push(rowData);
       }
@@ -161,6 +164,7 @@ export function extractTableBlocks(markdown: string): string[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    if (!line) continue;
     const trimmed = line.trim();
 
     if (trimmed.includes('|')) {

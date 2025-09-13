@@ -1,45 +1,45 @@
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import fm from 'front-matter';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
-import fm from 'front-matter';
 import slugify from 'slugify';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollToTop } from '@/components/ScrollToTop';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
+  Blockquote,
   H1,
   H2,
   H3,
   H4,
-  P,
-  Blockquote,
   InlineCode,
+  P,
 } from '@/components/ui/typography';
+import UnifiedTableRenderer from '@/components/UnifiedTableRenderer';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { logger } from '@/utils/logger';
+import { MessageSquare } from 'lucide-react';
 import {
-  BarChart,
   Bar,
+  BarChart,
   CartesianGrid,
+  ErrorBar,
+  Label,
+  LabelList,
+  Legend,
+  Line,
+  LineChart,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
   XAxis,
   YAxis,
-  Label,
-  Legend,
-  Tooltip as RechartsTooltip,
-  LineChart,
-  Line,
-  ScatterChart,
-  Scatter,
   ZAxis,
-  ResponsiveContainer,
-  LabelList,
-  ErrorBar,
 } from 'recharts';
-import { MessageSquare } from 'lucide-react';
-import { logger } from '@/utils/logger';
-import UnifiedTableRenderer from '@/components/UnifiedTableRenderer';
 
 import { renderCardComponent } from '@/utils/markdownCardParser';
 import aboutContent from '../content/about.md?raw';
@@ -61,9 +61,10 @@ export type TOCEntry = {
   slug: string;
 };
 
-function parseChartData(code: string) {
+function parseChartData(code: string): ChartDataPoint[] {
   try {
-    return JSON.parse(code.trim());
+    const parsed = JSON.parse(code.trim()) as unknown;
+    return Array.isArray(parsed) ? (parsed as ChartDataPoint[]) : [];
   } catch {
     return [];
   }
@@ -81,7 +82,9 @@ interface ChartDataPoint {
 function getSeriesKeys(data: ChartDataPoint[]) {
   if (!Array.isArray(data) || data.length === 0) return [];
   // Exclude 'date' key
-  return Object.keys(data[0]).filter(key => key !== 'date');
+  const firstItem = data[0];
+  if (!firstItem) return [];
+  return Object.keys(firstItem).filter(key => key !== 'date');
 }
 
 export default function AboutPage() {
@@ -96,24 +99,24 @@ export default function AboutPage() {
 
   // Update document title and meta tags with enhanced SEO for About page
   useDocumentTitle({
-    title: frontmatter.title,
-    description: frontmatter.description,
+    ...(frontmatter.title && { title: frontmatter.title }),
+    ...(frontmatter.description && { description: frontmatter.description }),
     keywords: [
       'About',
       'Biography',
       'Professional Background',
-      ...(frontmatter.keywords || frontmatter.tags || []),
+      ...(frontmatter.keywords ?? frontmatter.tags ?? []),
     ],
-    image: frontmatter.image,
+    ...(frontmatter.image && { image: frontmatter.image }),
     url: window.location.pathname,
     type: 'profile',
-    author: frontmatter.author,
-    publishedTime: frontmatter.date,
+    ...(frontmatter.author && { author: frontmatter.author }),
+    ...(frontmatter.date && { publishedTime: frontmatter.date }),
   });
 
   // Load markdown content and extract TOC
   React.useEffect(() => {
-    const loadMarkdown = async () => {
+    const loadMarkdown = () => {
       setIsLoading(true);
       try {
         // Use static import instead of dynamic import to avoid chunking issues
@@ -146,7 +149,8 @@ export default function AboutPage() {
         let match;
 
         while ((match = headingRegex.exec(cleanedBody)) !== null) {
-          const title = match[1].trim();
+          const title = match[1]?.trim();
+          if (!title) continue;
           let slug = slugify(title, { lower: true, strict: true });
 
           // Handle duplicate slugs by adding a number suffix
@@ -185,7 +189,7 @@ export default function AboutPage() {
       }
     };
 
-    loadMarkdown();
+    void loadMarkdown();
   }, []);
 
   // Clean up event when component unmounts
@@ -276,7 +280,7 @@ export default function AboutPage() {
             components={{
               p: ({ children, ...props }) => <P {...props}>{children}</P>,
               h1: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <H1 id={id} {...props}>
@@ -285,7 +289,7 @@ export default function AboutPage() {
                 );
               },
               h2: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <H2 id={id} {...props}>
@@ -294,7 +298,7 @@ export default function AboutPage() {
                 );
               },
               h3: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <H3 id={id} {...props}>
@@ -303,7 +307,7 @@ export default function AboutPage() {
                 );
               },
               h4: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <H4 id={id} {...props}>
@@ -315,19 +319,36 @@ export default function AboutPage() {
                 <Blockquote {...props}>{children}</Blockquote>
               ),
               code: ({ children, className, ...props }) => {
-                const match = /language-(\w+)/.exec(className || '');
+                const match = /language-(\w+)/.exec(className ?? '');
                 const language = match ? match[1] : '';
 
                 // CUSTOM CARD COMPONENTS
                 if (language === 'card' || language === 'json') {
                   try {
-                    const cardData = JSON.parse(String(children));
+                    const cardData = JSON.parse(
+                      typeof children === 'string' ? children : ''
+                    ) as {
+                      type: string;
+                      props?: Record<string, unknown>;
+                      content?: string;
+                    };
 
                     // Create the card component directly using the parsed data
                     const cardComponent = renderCardComponent({
-                      type: cardData.type,
-                      props: cardData.props || {},
-                      content: cardData.content || '',
+                      type: cardData.type as
+                        | 'info'
+                        | 'success'
+                        | 'stats'
+                        | 'profile'
+                        | 'columns'
+                        | 'feature'
+                        | 'timeline'
+                        | 'hero'
+                        | 'warning'
+                        | 'tech'
+                        | 'hero-profile',
+                      props: cardData.props ?? {},
+                      content: cardData.content ?? '',
                     });
 
                     if (cardComponent) {
@@ -337,7 +358,7 @@ export default function AboutPage() {
                         <div className='rounded-lg border border-yellow-200 bg-yellow-50 p-4'>
                           <p className='text-yellow-600'>
                             Card component not rendered for type:{' '}
-                            {cardData.type}
+                            {String(cardData.type)}
                           </p>
                           <p className='text-xs text-gray-600'>
                             Content type: {typeof cardData.content}
@@ -355,7 +376,9 @@ export default function AboutPage() {
                         <p className='text-red-600'>
                           Error rendering card: {String(error)}
                         </p>
-                        <pre className='mt-2 text-xs'>{String(children)}</pre>
+                        <pre className='mt-2 text-xs'>
+                          {typeof children === 'string' ? children : ''}
+                        </pre>
                       </div>
                     );
                   }
@@ -368,7 +391,9 @@ export default function AboutPage() {
                   language === 'scatter-trend' ||
                   language === 'scattertrend'
                 ) {
-                  const chartData = parseChartData(String(children));
+                  const chartData = parseChartData(
+                    typeof children === 'string' ? children : ''
+                  );
                   if (!Array.isArray(chartData) || chartData.length === 0) {
                     return (
                       <div className='text-red-500'>Invalid chart data</div>
@@ -377,12 +402,19 @@ export default function AboutPage() {
                   // Group by series (optional). If no 'series', treat as single series named 'Data'.
                   const groups: Record<string, ChartDataPoint[]> = {};
                   for (const d of chartData) {
-                    const key = d.series ?? 'Data';
-                    if (!groups[key]) groups[key] = [];
-                    groups[key].push(d);
+                    const item = d as Record<string, unknown>;
+                    const seriesValue = item.series;
+                    const key =
+                      typeof seriesValue === 'string' ? seriesValue : 'Data';
+                    groups[key] ??= [];
+                    groups[key].push(item as ChartDataPoint);
                   }
-                  const xs = chartData.map(d => Number(d.x));
-                  const ys = chartData.map(d => Number(d.y));
+                  const xs = chartData.map(d =>
+                    Number((d as Record<string, unknown>).x)
+                  );
+                  const ys = chartData.map(d =>
+                    Number((d as Record<string, unknown>).y)
+                  );
                   const xMin = Math.min(...xs),
                     xMax = Math.max(...xs);
                   const yMin = Math.min(...ys),
@@ -402,10 +434,10 @@ export default function AboutPage() {
                     Object.fromEntries(
                       seriesNames.map(name => [
                         name,
-                        groups[name].reduce(
+                        groups[name]?.reduce(
                           (acc, d) => acc + (Number(d.n) || 0),
                           0
-                        ),
+                        ) ?? 0,
                       ])
                     );
 
@@ -413,14 +445,14 @@ export default function AboutPage() {
                   function getTrendLine(data: ChartDataPoint[]) {
                     const n = data.length;
                     if (n < 2) return [];
-                    const sumX = data.reduce((acc, d) => acc + (d.x || 0), 0);
-                    const sumY = data.reduce((acc, d) => acc + (d.y || 0), 0);
+                    const sumX = data.reduce((acc, d) => acc + (d.x ?? 0), 0);
+                    const sumY = data.reduce((acc, d) => acc + (d.y ?? 0), 0);
                     const sumXY = data.reduce(
-                      (acc, d) => acc + (d.x || 0) * (d.y || 0),
+                      (acc, d) => acc + (d.x ?? 0) * (d.y ?? 0),
                       0
                     );
                     const sumXX = data.reduce(
-                      (acc, d) => acc + (d.x || 0) * (d.x || 0),
+                      (acc, d) => acc + (d.x ?? 0) * (d.x ?? 0),
                       0
                     );
                     const meanX = sumX / n;
@@ -428,7 +460,7 @@ export default function AboutPage() {
                     const slope =
                       (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
                     const intercept = meanY - slope * meanX;
-                    const xVals = data.map(d => d.x || 0);
+                    const xVals = data.map(d => d.x ?? 0);
                     const xStart = Math.min(...xVals);
                     const xEnd = Math.max(...xVals);
                     return [
@@ -514,7 +546,11 @@ export default function AboutPage() {
                               if (name === 'n') return formatCount(value);
                               return value;
                             }}
-                            labelFormatter={label => formatCurrency(label)}
+                            labelFormatter={label =>
+                              formatCurrency(
+                                typeof label === 'number' ? label : 0
+                              )
+                            }
                           />
                           {seriesNames.map((name, i) => (
                             <Scatter
@@ -534,7 +570,9 @@ export default function AboutPage() {
                           {(language === 'scatter-trend' ||
                             language === 'scattertrend') &&
                             seriesNames.map((name, i) => {
-                              const trend = getTrendLine(groups[name]);
+                              const trend = groups[name]
+                                ? getTrendLine(groups[name])
+                                : [];
                               return trend.length === 2 ? (
                                 <Scatter
                                   key={name + '-trend'}
@@ -556,7 +594,9 @@ export default function AboutPage() {
                 // -----------------------------
                 // Expects pre-binned data: [{ "date": "<bin label>", "value": <count> }, ...]
                 if (language === 'histogram' || language === 'histchart') {
-                  const chartData = parseChartData(String(children));
+                  const chartData = parseChartData(
+                    typeof children === 'string' ? children : ''
+                  );
                   if (!Array.isArray(chartData) || chartData.length === 0) {
                     return (
                       <div className='text-red-500'>Invalid chart data</div>
@@ -564,7 +604,7 @@ export default function AboutPage() {
                   }
                   const seriesKeys = ['value'];
                   const allValues = chartData.flatMap(d =>
-                    seriesKeys.map(k => d[k])
+                    seriesKeys.map(k => d[k] as number)
                   );
                   const min = Math.min(...allValues);
                   const max = Math.max(...allValues);
@@ -620,7 +660,9 @@ export default function AboutPage() {
 
                 // Multi-series grouped bar chart
                 if (language === 'barchart' || language === 'bar-chart') {
-                  const chartData = parseChartData(String(children));
+                  const chartData = parseChartData(
+                    typeof children === 'string' ? children : ''
+                  );
                   if (!Array.isArray(chartData) || chartData.length === 0) {
                     return (
                       <div className='text-red-500'>Invalid chart data</div>
@@ -628,7 +670,7 @@ export default function AboutPage() {
                   }
                   const seriesKeys = getSeriesKeys(chartData);
                   const allValues = chartData.flatMap(d =>
-                    seriesKeys.map(k => d[k])
+                    seriesKeys.map(k => d[k] as number)
                   );
                   const min = Math.min(...allValues);
                   const max = Math.max(...allValues);
@@ -662,7 +704,7 @@ export default function AboutPage() {
                             axisLine={false}
                             tickMargin={8}
                             minTickGap={32}
-                            tickFormatter={value => value}
+                            tickFormatter={value => String(value)}
                           >
                             <Label
                               value='Budget Tier'
@@ -692,9 +734,15 @@ export default function AboutPage() {
                               const perSeriesN = props?.payload?.[`${name}_n`];
                               const globalN = props?.payload?.n;
                               if (perSeriesN != null)
-                                return [`${value} (n=${perSeriesN})`, name];
+                                return [
+                                  `${value} (n=${Number(perSeriesN)})`,
+                                  name,
+                                ];
                               if (globalN != null)
-                                return [`${value} (n=${globalN})`, name];
+                                return [
+                                  `${value} (n=${Number(globalN)})`,
+                                  name,
+                                ];
                               return [value, name];
                             }}
                           />
@@ -715,7 +763,9 @@ export default function AboutPage() {
 
                 // Multi-series line chart
                 if (language === 'linechart' || language === 'line-chart') {
-                  const chartData = parseChartData(String(children));
+                  const chartData = parseChartData(
+                    typeof children === 'string' ? children : ''
+                  );
                   if (!Array.isArray(chartData) || chartData.length === 0) {
                     return (
                       <div className='text-red-500'>Invalid chart data</div>
@@ -723,7 +773,7 @@ export default function AboutPage() {
                   }
                   const seriesKeys = getSeriesKeys(chartData);
                   const allValues = chartData.flatMap(d =>
-                    seriesKeys.map(k => d[k])
+                    seriesKeys.map(k => d[k] as number)
                   );
                   const min = Math.min(...allValues);
                   const max = Math.max(...allValues);
@@ -757,7 +807,7 @@ export default function AboutPage() {
                             axisLine={false}
                             tickMargin={8}
                             minTickGap={32}
-                            tickFormatter={value => value}
+                            tickFormatter={value => String(value)}
                           >
                             <Label
                               value='Budget Tier'
@@ -787,9 +837,15 @@ export default function AboutPage() {
                               const perSeriesN = props?.payload?.[`${name}_n`];
                               const globalN = props?.payload?.n;
                               if (perSeriesN != null)
-                                return [`${value} (n=${perSeriesN})`, name];
+                                return [
+                                  `${value} (n=${Number(perSeriesN)})`,
+                                  name,
+                                ];
                               if (globalN != null)
-                                return [`${value} (n=${globalN})`, name];
+                                return [
+                                  `${value} (n=${Number(globalN)})`,
+                                  name,
+                                ];
                               return [value, name];
                             }}
                           />
@@ -818,7 +874,7 @@ export default function AboutPage() {
 
                 return (
                   <code
-                    className={`font-mono text-sm ${className || ''}`}
+                    className={`font-mono text-sm ${className ?? ''}`}
                     {...props}
                   >
                     {children}

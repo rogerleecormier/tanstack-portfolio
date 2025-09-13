@@ -1,30 +1,30 @@
-import React, { useCallback, useEffect, useRef } from 'react';
 import { htmlToMarkdown } from '@/lib/htmlToMarkdown';
 import { markdownToHtml } from '@/lib/markdown';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { Table } from '@tiptap/extension-table';
-import TableRow from '@tiptap/extension-table-row';
-import TableHeader from '@tiptap/extension-table-header';
-import TableCell from '@tiptap/extension-table-cell';
 import ImageExtension from '@tiptap/extension-image';
-import { Button } from '../ui/button';
+import { Table } from '@tiptap/extension-table';
+import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
+import TableRow from '@tiptap/extension-table-row';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import {
   Bold,
-  Italic,
-  Strikethrough,
-  List,
-  ListOrdered,
-  Quote,
-  Minus,
-  Link as LinkIcon,
-  Image as ImageIcon,
   Code,
-  Table as TableIcon,
   Heading1,
   Heading2,
   Heading3,
+  Image as ImageIcon,
+  Italic,
+  Link as LinkIcon,
+  List,
+  ListOrdered,
+  Minus,
+  Quote,
+  Strikethrough,
+  Table as TableIcon,
 } from 'lucide-react';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { Button } from '../ui/button';
 
 interface TipTapEditorProps {
   initialMarkdown?: string;
@@ -82,7 +82,7 @@ export function TipTapEditor({
       ImageExtension,
     ],
     // Hydrate TipTap with HTML converted from current Markdown state
-    content: markdownToHtml(initialMarkdown || ''),
+    content: markdownToHtml(initialMarkdown ?? ''),
     editorProps: {
       attributes: {
         class: 'min-h-full focus:outline-none',
@@ -106,7 +106,7 @@ export function TipTapEditor({
   useEffect(() => {
     if (!editor) return;
 
-    const nextHtml = markdownToHtml(initialMarkdown || '');
+    const nextHtml = markdownToHtml(initialMarkdown ?? '');
 
     // If parent-provided HTML matches what we last emitted, skip to avoid caret jumps
     if (lastHtmlRef.current === nextHtml) {
@@ -155,7 +155,7 @@ export function TipTapEditor({
     // Prevent multiple rapid clicks
     if (addLinkTimeoutRef.current) return;
 
-    const previousUrl = editor.getAttributes('link').href;
+    const previousUrl = editor.getAttributes('link').href as string | undefined;
     const url = window.prompt('URL', previousUrl);
 
     if (url === null) {

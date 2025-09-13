@@ -67,13 +67,15 @@ export function SaveAsModal({
       return;
     }
     setChecking(true);
-    const t = setTimeout(async () => {
-      const res = await apiClient.existsContent(key);
-      if (!cancelled) {
-        setExists(!!(res.success && res.data?.exists));
-        setAllowOverwrite(false);
-        setChecking(false);
-      }
+    const t = setTimeout(() => {
+      void (async () => {
+        const res = await apiClient.existsContent(key);
+        if (!cancelled) {
+          setExists(!!(res.success && res.data?.exists));
+          setAllowOverwrite(false);
+          setChecking(false);
+        }
+      })();
     }, 300);
     return () => {
       cancelled = true;
@@ -112,7 +114,7 @@ export function SaveAsModal({
             </div>
           </div>
           <div className='text-xs text-muted-foreground'>
-            Key preview: {key || '—'}
+            Key preview: {key ?? '—'}
           </div>
           {error && <div className='text-xs text-destructive'>{error}</div>}
         </div>

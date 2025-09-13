@@ -1,47 +1,47 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { MarkdownHtmlEditor } from '../components/MarkdownHtmlEditor';
-import { FrontMatterPanel } from '../components/FrontMatter/FrontMatterPanel';
-import { FrontMatterModal } from '../components/FrontMatter/FrontMatterModal';
-import { SaveAsModal } from '../components/SaveAsModal';
-import { ConfirmDialog } from '../components/ConfirmDialog';
-import { TrashModal } from '../components/TrashModal';
-import { R2Browser } from '../components/R2/R2Browser';
-import { Button } from '../components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  AlertTriangle,
+  Archive,
+  Database,
+  Download,
+  FileText,
+  Maximize,
+  Minimize,
+  Plus,
+  RefreshCw,
+  Save,
+  SaveIcon,
+  Trash2,
+} from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ConfirmDialog } from '../components/ConfirmDialog';
+import { FrontMatterModal } from '../components/FrontMatter/FrontMatterModal';
+import { FrontMatterPanel } from '../components/FrontMatter/FrontMatterPanel';
+import { MarkdownHtmlEditor } from '../components/MarkdownHtmlEditor';
+import { R2Browser } from '../components/R2/R2Browser';
+import { SaveAsModal } from '../components/SaveAsModal';
+import { TrashModal } from '../components/TrashModal';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { Button } from '../components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '../components/ui/dialog';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '../components/ui/separator';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '../components/ui/tooltip';
-import { Separator } from '../components/ui/separator';
 import { apiClient } from '../lib/api';
-import { extractFrontMatter, assemble } from '../lib/markdown';
+import { assemble, extractFrontMatter } from '../lib/markdown';
 import {
-  Download,
-  Save,
-  AlertTriangle,
-  Maximize,
-  Minimize,
-  FileText,
-  Plus,
-  SaveIcon,
-  Trash2,
-  RefreshCw,
-  Archive,
-  Database,
-} from 'lucide-react';
-import {
+  getEnhancedCacheStatus,
   triggerContentStudioRebuild,
   triggerManualRebuild,
-  getEnhancedCacheStatus,
 } from '../utils/cacheRebuildService';
 
 // Helper function to format relative time
@@ -152,10 +152,10 @@ export function CreationStudioPage() {
     };
 
     // Load immediately
-    loadCacheStatus();
+    void loadCacheStatus();
 
     // Refresh every 30 seconds to keep relative time accurate
-    const interval = setInterval(loadCacheStatus, 30000);
+    const interval = setInterval(() => void loadCacheStatus(), 30000);
 
     return () => clearInterval(interval);
   }, []);
@@ -163,7 +163,7 @@ export function CreationStudioPage() {
   // Re-measure heights when content changes
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      measureHeights();
+      void measureHeights();
     }, 100); // Small delay to allow DOM updates
     return () => clearTimeout(timeoutId);
   }, [frontmatter, markdown, measureHeights]);
@@ -224,9 +224,11 @@ export function CreationStudioPage() {
         setConfirm({
           open: true,
           message: 'You have unsaved changes. Continue without saving?',
-          onConfirm: async () => {
-            setConfirm({ open: false, message: '' });
-            await doLoad(key);
+          onConfirm: () => {
+            void (async () => {
+              setConfirm({ open: false, message: '' });
+              await doLoad(key);
+            })();
           },
         });
         return;
@@ -244,7 +246,7 @@ export function CreationStudioPage() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = key.split('/').pop() || 'file.md';
+        a.download = key.split('/').pop() ?? 'file.md';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -257,7 +259,7 @@ export function CreationStudioPage() {
 
   const handleSave = useCallback(
     async (force = false, fileKey?: string) => {
-      const keyToUse = fileKey || currentFile;
+      const keyToUse = fileKey ?? currentFile;
       if (!keyToUse) {
         setIsSaveAsOpen(true);
         return;
@@ -289,8 +291,8 @@ export function CreationStudioPage() {
 
         // Smart cache rebuild suggestions
         const shouldSuggestRebuild =
-          isNewFile ||
-          (contentChanged && keyToUse.includes('blog/')) ||
+          Boolean(isNewFile) ||
+          (Boolean(contentChanged) && keyToUse.includes('blog/')) ||
           keyToUse.includes('portfolio/');
 
         // Trigger cache rebuild if requested or auto-suggested for new/important content
@@ -305,7 +307,7 @@ export function CreationStudioPage() {
                 `✅ Cache rebuilt successfully${isAutoRebuild ? ' (auto-triggered)' : ''}`
               );
               console.log(
-                `📊 Total items: ${cacheResponse.stats?.total || 'unknown'}`
+                `📊 Total items: ${cacheResponse.stats?.total ?? 'unknown'}`
               );
 
               // Update cache status with enhanced data
@@ -332,7 +334,7 @@ export function CreationStudioPage() {
               setCacheRebuildStatus('error');
               console.error(
                 '❌ Cache rebuild failed:',
-                cacheResponse.error || cacheResponse.message
+                cacheResponse.error ?? cacheResponse.message
               );
             }
           } catch (error) {
@@ -354,14 +356,14 @@ export function CreationStudioPage() {
             {
               label: 'Reload and merge',
               action: () => {
-                handleFileSelect(currentFile);
+                void handleFileSelect(currentFile);
                 setConflictModal({ open: false, message: '', options: [] });
               },
             },
             {
               label: 'Force save',
               action: () => {
-                handleSave(true);
+                void handleSave(true);
                 setConflictModal({ open: false, message: '', options: [] });
               },
             },
@@ -397,7 +399,7 @@ export function CreationStudioPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = currentFile.split('/').pop() || 'untitled.md';
+    a.download = currentFile.split('/').pop() ?? 'untitled.md';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -416,7 +418,7 @@ export function CreationStudioPage() {
       const isMac = navigator.platform.toUpperCase().includes('MAC');
       if ((isMac ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
-        handleSave();
+        void handleSave();
       }
       if (e.key === 'Escape' && isFullscreen) {
         setIsFullscreen(false);
@@ -565,7 +567,7 @@ export function CreationStudioPage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  onClick={() => handleSave()}
+                  onClick={() => void handleSave()}
                   size='sm'
                   className='border-0 bg-teal-600 px-3 text-white shadow-lg transition-all duration-200 hover:bg-teal-700 hover:shadow-xl'
                 >
@@ -656,36 +658,38 @@ export function CreationStudioPage() {
                 <Button
                   variant='ghost'
                   size='sm'
-                  onClick={async () => {
-                    setCacheRebuildStatus('rebuilding');
-                    try {
-                      const cacheResponse = await triggerManualRebuild();
-                      if (cacheResponse.success) {
-                        setCacheRebuildStatus('completed');
+                  onClick={() =>
+                    void (async () => {
+                      setCacheRebuildStatus('rebuilding');
+                      try {
+                        const cacheResponse = await triggerManualRebuild();
+                        if (cacheResponse.success) {
+                          setCacheRebuildStatus('completed');
 
-                        // Update cache status with enhanced data
-                        const enhancedStatus = await getEnhancedCacheStatus();
-                        if (enhancedStatus?.cache) {
-                          setCacheStatus({
-                            lastUpdated: enhancedStatus.cache.lastUpdated,
-                            totalItems: enhancedStatus.cache.totalItems,
-                            trigger: enhancedStatus.cache.trigger,
-                          });
-                        } else if (cacheResponse.stats) {
-                          setCacheStatus({
-                            lastUpdated: cacheResponse.timestamp,
-                            totalItems: cacheResponse.stats.total,
-                            trigger: cacheResponse.trigger,
-                          });
+                          // Update cache status with enhanced data
+                          const enhancedStatus = await getEnhancedCacheStatus();
+                          if (enhancedStatus?.cache) {
+                            setCacheStatus({
+                              lastUpdated: enhancedStatus.cache.lastUpdated,
+                              totalItems: enhancedStatus.cache.totalItems,
+                              trigger: enhancedStatus.cache.trigger,
+                            });
+                          } else if (cacheResponse.stats) {
+                            setCacheStatus({
+                              lastUpdated: cacheResponse.timestamp,
+                              totalItems: cacheResponse.stats.total,
+                              trigger: cacheResponse.trigger,
+                            });
+                          }
+                        } else {
+                          setCacheRebuildStatus('error');
                         }
-                      } else {
+                      } catch {
                         setCacheRebuildStatus('error');
                       }
-                    } catch {
-                      setCacheRebuildStatus('error');
-                    }
-                    setTimeout(() => setCacheRebuildStatus('idle'), 3000);
-                  }}
+                      setTimeout(() => setCacheRebuildStatus('idle'), 3000);
+                    })()
+                  }
                   disabled={cacheRebuildStatus === 'rebuilding'}
                   className='size-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700'
                 >
@@ -733,25 +737,29 @@ export function CreationStudioPage() {
                   <Button
                     variant='destructive'
                     size='sm'
-                    onClick={async () => {
-                      setConfirm({
-                        open: true,
-                        message: `Move to trash?\n${currentFile}`,
-                        onConfirm: async () => {
-                          setConfirm({ open: false, message: '' });
-                          const res =
-                            await apiClient.deleteContentSoft(currentFile);
-                          if (res.success) {
-                            setMarkdown('');
-                            setFrontmatter({});
-                            setCurrentFile('');
-                            setCurrentEtag('');
-                            setIsDirty(false);
-                            setBrowserNonce(n => n + 1);
-                          }
-                        },
-                      });
-                    }}
+                    onClick={() =>
+                      void (() => {
+                        setConfirm({
+                          open: true,
+                          message: `Move to trash?\n${currentFile}`,
+                          onConfirm: () => {
+                            void (async () => {
+                              setConfirm({ open: false, message: '' });
+                              const res =
+                                await apiClient.deleteContentSoft(currentFile);
+                              if (res.success) {
+                                setMarkdown('');
+                                setFrontmatter({});
+                                setCurrentFile('');
+                                setCurrentEtag('');
+                                setIsDirty(false);
+                                setBrowserNonce(n => n + 1);
+                              }
+                            })();
+                          },
+                        });
+                      })()
+                    }
                     className='border-0 bg-red-600 shadow-lg transition-all duration-200 hover:bg-red-700 hover:shadow-xl'
                   >
                     <Trash2 className='size-4' />
@@ -825,8 +833,8 @@ export function CreationStudioPage() {
             <div className='overflow-hidden'>
               <R2Browser
                 refreshSignal={browserNonce}
-                onFileSelect={handleFileSelect}
-                onFileDownload={handleFileDownload}
+                onFileSelect={file => void handleFileSelect(file)}
+                onFileDownload={file => void handleFileDownload(file)}
               />
             </div>
             <div className='overflow-hidden'>
@@ -915,11 +923,11 @@ export function CreationStudioPage() {
           (currentFile.split('/')[0] as 'blog' | 'portfolio' | 'projects') ||
           'blog'
         }
-        initialName={(currentFile.split('/').pop() || '').replace(/\.md$/, '')}
-        onConfirm={async key => {
+        initialName={(currentFile.split('/').pop() ?? '').replace(/\.md$/, '')}
+        onConfirm={key => {
           setCurrentFile(key);
           setIsSaveAsOpen(false);
-          await handleSave(true, key);
+          void handleSave(true, key);
         }}
       />
       <ConfirmDialog

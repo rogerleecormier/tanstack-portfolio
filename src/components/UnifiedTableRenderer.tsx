@@ -1,5 +1,3 @@
-import React, { useState, useMemo } from 'react';
-import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   UnifiedTable,
@@ -9,8 +7,15 @@ import {
   UnifiedTableHeader,
   UnifiedTableRow,
 } from '@/components/ui/table';
-import { parseMarkdownTable } from '@/utils/tableParser';
 import { logger } from '@/utils/logger';
+import { parseMarkdownTable } from '@/utils/tableParser';
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+
+// Helper function to safely extract children from React elements
+function getElementChildren(element: React.ReactElement): React.ReactNode {
+  return (element.props as { children?: React.ReactNode })?.children;
+}
 
 // Helper function to extract table data from React table nodes
 function extractTableFromReactNodes(
@@ -25,7 +30,7 @@ function extractTableFromReactNodes(
 
       // Check if this is a thead/tbody structure
       const hasTheadTbody = content.some(
-        node =>
+        (node: React.ReactNode) =>
           React.isValidElement(node) &&
           (node.type === 'thead' || node.type === 'tbody')
       );
@@ -37,14 +42,13 @@ function extractTableFromReactNodes(
 
         // Look for thead first to get headers
         const theadElement = content.find(
-          node => React.isValidElement(node) && node.type === 'thead'
-        );
+          (node: React.ReactNode) =>
+            React.isValidElement(node) && node.type === 'thead'
+        ) as React.ReactElement | undefined;
 
         if (theadElement && React.isValidElement(theadElement)) {
           logger.debug('Found thead element');
-          const theadChildren = (
-            theadElement as React.ReactElement<{ children?: React.ReactNode }>
-          ).props?.children;
+          const theadChildren = getElementChildren(theadElement);
           logger.debug('Thead children:', theadChildren);
 
           // Handle both array and single element cases
@@ -52,7 +56,7 @@ function extractTableFromReactNodes(
             ? theadChildren
             : [theadChildren];
 
-          theadRows.forEach(theadChild => {
+          theadRows.forEach((theadChild: React.ReactNode) => {
             if (React.isValidElement(theadChild) && theadChild.type === 'tr') {
               logger.debug('Processing thead tr:', theadChild);
               const headerCells = (
@@ -84,19 +88,25 @@ function extractTableFromReactNodes(
                         children?: React.ReactNode;
                       }>;
                     if (cellChildrenElement.props?.children) {
-                      cellContent = String(cellChildrenElement.props.children);
+                      cellContent =
+                        typeof cellChildrenElement.props.children === 'string'
+                          ? cellChildrenElement.props.children
+                          : '';
                     }
                   } else if (Array.isArray(cellChildren)) {
                     // If it's an array, extract text from each child
                     cellContent = cellChildren
-                      .map(child => {
+                      .map((child: React.ReactNode) => {
                         if (typeof child === 'string') {
                           return child;
                         } else if (React.isValidElement(child)) {
                           const childElement = child as React.ReactElement<{
                             children?: React.ReactNode;
                           }>;
-                          return String(childElement.props?.children || '');
+                          return typeof childElement.props?.children ===
+                            'string'
+                            ? childElement.props.children
+                            : '';
                         }
                         return '';
                       })
@@ -113,8 +123,9 @@ function extractTableFromReactNodes(
 
         // Look for tbody to get data rows
         const tbodyElement = content.find(
-          node => React.isValidElement(node) && node.type === 'tbody'
-        );
+          (node: React.ReactNode) =>
+            React.isValidElement(node) && node.type === 'tbody'
+        ) as React.ReactElement | undefined;
 
         if (tbodyElement && React.isValidElement(tbodyElement)) {
           logger.debug('Found tbody element');
@@ -125,7 +136,7 @@ function extractTableFromReactNodes(
 
           if (Array.isArray(tbodyChildren)) {
             // Extract rows from tbody
-            tbodyChildren.forEach(tbodyChild => {
+            tbodyChildren.forEach((tbodyChild: React.ReactNode) => {
               if (
                 React.isValidElement(tbodyChild) &&
                 tbodyChild.type === 'tr'
@@ -145,9 +156,10 @@ function extractTableFromReactNodes(
                       const cellElement = cell as React.ReactElement<{
                         children?: React.ReactNode;
                       }>;
-                      const cellContent = String(
-                        cellElement.props?.children || ''
-                      );
+                      const cellContent =
+                        typeof cellElement.props?.children === 'string'
+                          ? cellElement.props.children
+                          : '';
                       logger.debug('Cell content:', cellContent);
                       rowData.push(cellContent);
                     }
@@ -177,8 +189,9 @@ function extractTableFromReactNodes(
 
       // Find the first row to extract headers
       const firstRow = content.find(
-        node => React.isValidElement(node) && node.type === 'tr'
-      );
+        (node: React.ReactNode) =>
+          React.isValidElement(node) && node.type === 'tr'
+      ) as React.ReactElement | undefined;
 
       logger.debug('First row found:', firstRow);
 
@@ -196,7 +209,10 @@ function extractTableFromReactNodes(
               const cellElement = cell as React.ReactElement<{
                 children?: React.ReactNode;
               }>;
-              const cellContent = String(cellElement.props?.children || '');
+              const cellContent =
+                typeof cellElement.props?.children === 'string'
+                  ? cellElement.props.children
+                  : '';
               logger.debug(`Header cell ${cellIndex} content:`, cellContent);
               headers.push(cellContent);
             }
@@ -207,7 +223,7 @@ function extractTableFromReactNodes(
       logger.debug('Extracted headers:', headers);
 
       // Extract data rows
-      content.forEach((node, index) => {
+      content.forEach((node: React.ReactNode, index) => {
         if (React.isValidElement(node) && node.type === 'tr' && index > 0) {
           logger.debug(`Processing data row ${index}:`, node);
           const rowData: string[] = [];
@@ -222,7 +238,10 @@ function extractTableFromReactNodes(
                 const cellElement = cell as React.ReactElement<{
                   children?: React.ReactNode;
                 }>;
-                const cellContent = String(cellElement.props?.children || '');
+                const cellContent =
+                  typeof cellElement.props?.children === 'string'
+                    ? cellElement.props.children
+                    : '';
                 logger.debug(
                   `Row ${index}, Cell ${cellIndex} content:`,
                   cellContent
@@ -291,7 +310,7 @@ function extractTableFromReactNodes(
         const headers: string[] = [];
         const rows: string[][] = [];
 
-        children.forEach((child, index) => {
+        children.forEach((child: React.ReactNode, index) => {
           if (React.isValidElement(child) && child.type === 'tr') {
             const cells = (
               child as React.ReactElement<{ children?: React.ReactNode }>
@@ -304,7 +323,9 @@ function extractTableFromReactNodes(
                     cell as React.ReactElement<{ children?: React.ReactNode }>
                   ).props?.children;
                   if (cellContent !== undefined) {
-                    rowData.push(String(cellContent));
+                    rowData.push(
+                      typeof cellContent === 'string' ? cellContent : ''
+                    );
                   }
                 }
               });
@@ -410,7 +431,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
             'Full element:',
             JSON.stringify(
               content,
-              (key, value) => {
+              (key: string, value: unknown): unknown => {
                 if (key === 'type' || key === 'props') return value;
                 if (typeof value === 'function') return '[Function]';
                 if (typeof value === 'object' && value !== null)
@@ -424,11 +445,13 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
 
         if (Array.isArray(content)) {
           logger.debug('Content is array with length:', content.length);
-          content.forEach((item, index) => {
+          content.forEach((item: React.ReactNode, index) => {
             logger.debug(`Array item ${index}:`, {
               type: typeof item,
               isElement: React.isValidElement(item),
-              elementType: React.isValidElement(item) ? item.type : 'N/A',
+              elementType: React.isValidElement(item)
+                ? (item as React.ReactElement).type
+                : 'N/A',
             });
           });
         }
@@ -436,8 +459,8 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
         const result = extractTableFromReactNodes(content);
         logger.debug('=== EXTRACTION RESULT ===');
         logger.debug('Extracted table data:', result);
-        logger.debug('Headers found:', result?.headers?.length || 0);
-        logger.debug('Rows found:', result?.rows?.length || 0);
+        logger.debug('Headers found:', result?.headers?.length ?? 0);
+        logger.debug('Rows found:', result?.rows?.length ?? 0);
 
         return result;
       }
@@ -456,8 +479,8 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
     if (!tableData || !sortConfig) return tableData;
 
     const sortedRows = [...tableData.rows].sort((a, b) => {
-      const aValue = a[sortConfig.key] || '';
-      const bValue = b[sortConfig.key] || '';
+      const aValue = a[sortConfig.key] ?? '';
+      const bValue = b[sortConfig.key] ?? '';
 
       // Try to convert to numbers for numeric sorting
       const aNum = parseFloat(aValue);
@@ -512,7 +535,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
     }
   };
 
-  if (!tableData || !tableData.headers || tableData.headers.length === 0) {
+  if (!tableData?.headers || tableData.headers.length === 0) {
     return (
       <div className='rounded-lg border border-teal-200 bg-teal-50 p-4 text-center text-teal-600'>
         Invalid table data
@@ -520,7 +543,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
     );
   }
 
-  const dataToRender = sortedData || tableData;
+  const dataToRender = sortedData ?? tableData;
 
   return (
     <div className={`my-6 ${className}`}>
@@ -568,7 +591,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
                   key={colIndex}
                   className='min-w-[120px] border-r border-teal-100 px-5 py-4 align-middle text-sm leading-relaxed text-teal-700 last:border-r-0'
                 >
-                  {row[colIndex] || ''}
+                  {row[colIndex] ?? ''}
                 </UnifiedTableCell>
               ))}
             </UnifiedTableRow>

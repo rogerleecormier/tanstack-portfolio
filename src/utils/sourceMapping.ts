@@ -19,7 +19,7 @@ export const getSourceDisplayName = (source: string): string => {
     Scale: 'Scale', // Handle already formatted values
   };
 
-  return sourceMap[source] || source.charAt(0).toUpperCase() + source.slice(1);
+  return sourceMap[source] ?? source.charAt(0).toUpperCase() + source.slice(1);
 };
 
 /**
@@ -41,5 +41,5 @@ export const getSourceIcon = (source: string): string => {
     Scale: '⚖️',
   };
 
-  return iconMap[source] || '📊';
+  return iconMap[source] ?? '📊';
 };

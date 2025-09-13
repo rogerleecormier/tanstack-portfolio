@@ -57,12 +57,12 @@ export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as { error?: string };
       console.error('❌ Worker error:', errorData);
-      throw new Error(errorData.error || 'Failed to send email');
+      throw new Error(errorData.error ?? 'Failed to send email');
     }
 
-    const result = await response.json();
+    const result = (await response.json()) as unknown;
     console.log('✅ Email sent successfully:', result);
     return true;
   } catch (error) {

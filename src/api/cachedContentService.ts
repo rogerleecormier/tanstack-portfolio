@@ -61,6 +61,21 @@ export interface CachedRecommendationsResponse {
   error?: string;
 }
 
+interface CacheData {
+  all?: CachedContentItem[];
+}
+
+/**
+ * Type guard to check if data is valid CacheData
+ */
+function isCacheData(data: unknown): data is CacheData {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    (!('all' in data) || Array.isArray((data as CacheData).all))
+  );
+}
+
 /**
  * Service for content search and recommendations using production KV cache
  * This service exclusively uses the production KV cache via Pages Functions API
@@ -78,8 +93,8 @@ export class CachedContentService {
     console.log(
       '🚀 CachedContentService constructor called - starting initialization'
     );
-    this.initializeContent();
-    this.initializeFuse();
+    void this.initializeContent();
+    void this.initializeFuse();
 
     // If initialization failed, log the issue but don't try fallback endpoints that are failing
     if (!this.isReady()) {
@@ -123,26 +138,30 @@ export class CachedContentService {
           'https://kv-cache-get.rcormier.workers.dev'
         );
         if (workerResponse.ok) {
-          const cacheData = await workerResponse.json();
-          this.allItems = cacheData.all || [];
+          const rawData = (await workerResponse.json()) as CacheData;
+          if (isCacheData(rawData)) {
+            this.allItems = rawData.all ?? [];
 
-          // If we got data, process it
-          if (this.allItems.length > 0) {
-            // Separate by type
-            this.portfolioItems = this.allItems.filter(
-              item => item.contentType === 'portfolio'
-            );
-            this.blogItems = this.allItems.filter(
-              item => item.contentType === 'blog'
-            );
-            this.projectItems = this.allItems.filter(
-              item => item.contentType === 'project'
-            );
+            // If we got data, process it
+            if (this.allItems.length > 0) {
+              // Separate by type
+              this.portfolioItems = this.allItems.filter(
+                item => item.contentType === 'portfolio'
+              );
+              this.blogItems = this.allItems.filter(
+                item => item.contentType === 'blog'
+              );
+              this.projectItems = this.allItems.filter(
+                item => item.contentType === 'project'
+              );
 
-            logger.info(
-              `✅ Loaded content from production KV cache via dedicated worker with ${this.allItems.length} items`
-            );
-            return;
+              logger.info(
+                `✅ Loaded content from production KV cache via dedicated worker with ${this.allItems.length} items`
+              );
+              return;
+            }
+          } else {
+            logger.warn('⚠️ Invalid cache data format from KV worker');
           }
         } else {
           logger.warn(
@@ -164,26 +183,30 @@ export class CachedContentService {
       try {
         const retryResponse = await fetch('/api/content/cache-get');
         if (retryResponse.ok) {
-          const cacheData = await retryResponse.json();
-          this.allItems = cacheData.all || [];
+          const rawData = (await retryResponse.json()) as CacheData;
+          if (isCacheData(rawData)) {
+            this.allItems = rawData.all ?? [];
 
-          if (this.allItems.length > 0) {
-            this.portfolioItems = this.allItems.filter(
-              item => item.contentType === 'portfolio'
-            );
-            this.blogItems = this.allItems.filter(
-              item => item.contentType === 'blog'
-            );
-            this.projectItems = this.allItems.filter(
-              item => item.contentType === 'project'
-            );
+            if (this.allItems.length > 0) {
+              this.portfolioItems = this.allItems.filter(
+                item => item.contentType === 'portfolio'
+              );
+              this.blogItems = this.allItems.filter(
+                item => item.contentType === 'blog'
+              );
+              this.projectItems = this.allItems.filter(
+                item => item.contentType === 'project'
+              );
 
-            logger.info(
-              `✅ Successfully loaded content from KV cache after population: ${this.allItems.length} items`
-            );
-            return;
+              logger.info(
+                `✅ Successfully loaded content from KV cache after population: ${this.allItems.length} items`
+              );
+              return;
+            } else {
+              logger.warn('⚠️ KV cache still empty after population attempt');
+            }
           } else {
-            logger.warn('⚠️ KV cache still empty after population attempt');
+            logger.warn('⚠️ Invalid cache data format from retry');
           }
         }
       } catch (error) {
@@ -252,11 +275,11 @@ export class CachedContentService {
 
       if (result.success) {
         logger.info(
-          `✅ Production KV cache populated successfully: ${result.stats?.total || 'unknown'} items`
+          `✅ Production KV cache populated successfully: ${result.stats?.total ?? 'unknown'} items`
         );
       } else {
         logger.warn(
-          `⚠️ Failed to populate production KV cache: ${result.error || result.message}`
+          `⚠️ Failed to populate production KV cache: ${result.error ?? result.message}`
         );
       }
     } catch (error) {
@@ -273,7 +296,7 @@ export class CachedContentService {
   /**
    * Initialize Fuse.js for semantic search
    */
-  private async initializeFuse() {
+  private initializeFuse() {
     try {
       if (this.allItems.length === 0) {
         // Wait for content to be initialized
@@ -313,9 +336,7 @@ export class CachedContentService {
   /**
    * Search content using cached data
    */
-  async searchContent(
-    request: CachedSearchRequest
-  ): Promise<CachedSearchResponse> {
+  searchContent(request: CachedSearchRequest): CachedSearchResponse {
     try {
       const {
         query,
@@ -363,9 +384,9 @@ export class CachedContentService {
   /**
    * Get content recommendations using cached data
    */
-  async getRecommendations(
+  getRecommendations(
     request: CachedRecommendationsRequest
-  ): Promise<CachedRecommendationsResponse> {
+  ): CachedRecommendationsResponse {
     try {
       const {
         query,
@@ -568,16 +589,16 @@ export class CachedContentService {
   /**
    * Get all content items
    */
-  async getAllContent(): Promise<CachedContentItem[]> {
+  getAllContent(): CachedContentItem[] {
     return this.allItems;
   }
 
   /**
    * Get content by type
    */
-  async getContentByType(
+  getContentByType(
     contentType: 'blog' | 'portfolio' | 'project'
-  ): Promise<CachedContentItem[]> {
+  ): CachedContentItem[] {
     console.log(`🔍 getContentByType called for: ${contentType}`);
     console.log(
       `📊 Current cache status - Portfolio: ${this.portfolioItems.length}, Blog: ${this.blogItems.length}, Projects: ${this.projectItems.length}`
@@ -586,7 +607,7 @@ export class CachedContentService {
     // If no items are loaded yet, wait a bit and try again
     if (this.allItems.length === 0) {
       console.log('⏳ Cache is empty, waiting for initialization...');
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+      void new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
       console.log(
         `📊 After wait - Portfolio: ${this.portfolioItems.length}, Blog: ${this.blogItems.length}, Projects: ${this.projectItems.length}`
       );
@@ -605,7 +626,7 @@ export class CachedContentService {
         console.log(`🚀 Returning ${this.projectItems.length} project items`);
         return this.projectItems;
       default:
-        console.log(`❓ Unknown content type: ${contentType}`);
+        console.log(`❓ Unknown content type: ${String(contentType)}`);
         return [];
     }
   }
@@ -613,8 +634,8 @@ export class CachedContentService {
   /**
    * Get blog posts in BlogPost format for backward compatibility
    */
-  async getBlogPosts(): Promise<CachedContentItem[]> {
-    const blogItems = await this.getContentByType('blog');
+  getBlogPosts(): CachedContentItem[] {
+    const blogItems = this.getContentByType('blog');
 
     // Convert CachedContentItem to include calculated fields
     return blogItems.map(item => ({
@@ -655,10 +676,10 @@ export class CachedContentService {
   /**
    * Force reinitialization of Fuse.js (useful for content updates)
    */
-  async reinitializeFuse(): Promise<void> {
+  reinitializeFuse(): void {
     this.isFuseInitialized = false;
     this.fuse = null;
-    await this.initializeFuse();
+    this.initializeFuse();
   }
 
   /**

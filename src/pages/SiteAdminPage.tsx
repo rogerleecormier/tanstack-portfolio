@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { cachedContentService } from '@/api/cachedContentService';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -9,26 +9,26 @@ import {
 } from '@/components/ui/card';
 import { P } from '@/components/ui/typography';
 import {
-  Shield,
+  Activity,
   ArrowRight,
-  Loader2,
-  UserCheck,
+  BarChart3,
   Briefcase,
   CheckCircle,
-  XCircle,
-  Activity,
-  Database,
-  Globe,
-  BarChart3,
-  Settings,
-  Users,
-  Mail,
   Code,
+  Database,
   FileText,
+  Globe,
+  Loader2,
+  Mail,
+  Settings,
+  Shield,
+  UserCheck,
+  Users,
+  XCircle,
 } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import React, { useEffect, useState } from 'react';
 import { testAIWorker } from '../api/contactAnalyzer';
-import { cachedContentService } from '@/api/cachedContentService';
+import { useAuth } from '../hooks/useAuth';
 
 export const SiteAdminPage: React.FC = () => {
   const { isAuthenticated, user, isLoading, isDevelopment, logout } = useAuth();
@@ -57,6 +57,7 @@ export const SiteAdminPage: React.FC = () => {
     if (isAuthenticated) {
       sessionStorage.removeItem('cf_access_reload_attempted');
     }
+    return undefined;
   }, [isAuthenticated, isLoading, isDevelopment]);
 
   // API testing state
@@ -255,11 +256,11 @@ export const SiteAdminPage: React.FC = () => {
     }
   };
 
-  const testContentSearchWorkerConnectivity = async () => {
+  const testContentSearchWorkerConnectivity = () => {
     setApiStatus(prev => ({ ...prev, contentSearch: 'testing' }));
     try {
       // Test the cached content service instead of the old worker
-      const response = await cachedContentService.getRecommendations({
+      const response = cachedContentService.getRecommendations({
         query: 'test',
         contentType: 'all',
         maxResults: 1,
@@ -334,11 +335,11 @@ export const SiteAdminPage: React.FC = () => {
     }
   };
 
-  const testSmartRecommendationsAPI = async () => {
+  const testSmartRecommendationsAPI = () => {
     setApiStatus(prev => ({ ...prev, smartRecommendations: 'testing' }));
     try {
       // Test the cached content service instead of the old worker
-      const response = await cachedContentService.getRecommendations({
+      const response = cachedContentService.getRecommendations({
         query: 'test',
         contentType: 'all',
         maxResults: 1,
@@ -455,7 +456,7 @@ export const SiteAdminPage: React.FC = () => {
 
         if (response.ok) {
           try {
-            identity = await response.json();
+            identity = (await response.json()) as Record<string, unknown>;
           } catch {
             // Response might not be JSON
           }
@@ -486,20 +487,22 @@ export const SiteAdminPage: React.FC = () => {
       } else {
         cfHeaders.forEach(header => {
           const value =
-            (window as unknown as Record<string, string>)[header] ||
+            (window as unknown as Record<string, string>)[header] ??
             'Not found';
           headers[header] = value;
         });
       }
 
       const result = {
-        success: status === 200 && identity?.email,
+        success: Boolean(
+          status === 200 && (identity as Record<string, unknown>)?.email
+        ),
         status,
         statusText,
-        identity,
+        ...(identity && { identity }),
         cookies: cfCookies,
         headers,
-        error: status === 200 ? undefined : `HTTP ${status}: ${statusText}`,
+        ...(status !== 200 && { error: `HTTP ${status}: ${statusText}` }),
       };
 
       setApiResults(prev => ({ ...prev, cloudflareAccess: result }));
@@ -661,7 +664,7 @@ export const SiteAdminPage: React.FC = () => {
                       Name
                     </div>
                     <div className='font-medium text-gray-900'>
-                      {user?.name || 'Not provided'}
+                      {user?.name ?? 'Not provided'}
                     </div>
                   </div>
                   <div className='rounded-lg bg-gray-50 p-4'>
@@ -822,16 +825,18 @@ export const SiteAdminPage: React.FC = () => {
                 {/* Test All Button */}
                 <div className='flex justify-center pb-4'>
                   <Button
-                    onClick={async () => {
-                      await testAIWorkerConnectivity();
-                      await testEmailWorkerConnectivity();
-                      await testNewsletterWorkerConnectivity();
-                      await testContentSearchWorkerConnectivity();
-                      await testHealthBridgeAPI();
-                      await testSmartRecommendationsAPI();
-                      await testR2BucketConnectivity();
-                      await testCloudflareAccess();
-                    }}
+                    onClick={() =>
+                      void (async () => {
+                        await testAIWorkerConnectivity();
+                        await testEmailWorkerConnectivity();
+                        await testNewsletterWorkerConnectivity();
+                        testContentSearchWorkerConnectivity();
+                        await testHealthBridgeAPI();
+                        testSmartRecommendationsAPI();
+                        await testR2BucketConnectivity();
+                        await testCloudflareAccess();
+                      })()
+                    }
                     className='rounded-lg border-0 bg-orange-600 px-8 text-white hover:bg-orange-700'
                   >
                     Test All Services
@@ -868,7 +873,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Button
                       size='sm'
                       variant='outline'
-                      onClick={testAIWorkerConnectivity}
+                      onClick={() => void testAIWorkerConnectivity()}
                       disabled={apiStatus.ai === 'testing'}
                       className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
                     >
@@ -908,7 +913,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Button
                       size='sm'
                       variant='outline'
-                      onClick={testEmailWorkerConnectivity}
+                      onClick={() => void testEmailWorkerConnectivity()}
                       disabled={apiStatus.email === 'testing'}
                       className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
                     >
@@ -948,7 +953,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Button
                       size='sm'
                       variant='outline'
-                      onClick={testNewsletterWorkerConnectivity}
+                      onClick={() => void testNewsletterWorkerConnectivity()}
                       disabled={apiStatus.newsletter === 'testing'}
                       className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
                     >
@@ -988,7 +993,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Button
                       size='sm'
                       variant='outline'
-                      onClick={testContentSearchWorkerConnectivity}
+                      onClick={() => void testContentSearchWorkerConnectivity()}
                       disabled={apiStatus.contentSearch === 'testing'}
                       className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
                     >
@@ -1028,7 +1033,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Button
                       size='sm'
                       variant='outline'
-                      onClick={testHealthBridgeAPI}
+                      onClick={() => void testHealthBridgeAPI()}
                       disabled={apiStatus.healthBridge === 'testing'}
                       className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
                     >
@@ -1068,7 +1073,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Button
                       size='sm'
                       variant='outline'
-                      onClick={testSmartRecommendationsAPI}
+                      onClick={() => void testSmartRecommendationsAPI()}
                       disabled={apiStatus.smartRecommendations === 'testing'}
                       className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
                     >
@@ -1106,7 +1111,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Button
                       size='sm'
                       variant='outline'
-                      onClick={testR2BucketConnectivity}
+                      onClick={() => void testR2BucketConnectivity()}
                       disabled={apiStatus.r2Bucket === 'testing'}
                       className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
                     >
@@ -1146,7 +1151,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Button
                       size='sm'
                       variant='outline'
-                      onClick={testCloudflareAccess}
+                      onClick={() => void testCloudflareAccess()}
                       disabled={apiStatus.cloudflareAccess === 'testing'}
                       className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
                     >
@@ -1158,13 +1163,13 @@ export const SiteAdminPage: React.FC = () => {
             </Card>
 
             {/* Test Results Summary */}
-            {(apiResults.ai ||
-              apiResults.email ||
-              apiResults.newsletter ||
-              apiResults.contentSearch ||
-              apiResults.healthBridge ||
-              apiResults.smartRecommendations ||
-              apiResults.r2Bucket ||
+            {(apiResults.ai ??
+              apiResults.email ??
+              apiResults.newsletter ??
+              apiResults.contentSearch ??
+              apiResults.healthBridge ??
+              apiResults.smartRecommendations ??
+              apiResults.r2Bucket ??
               apiResults.cloudflareAccess) && (
               <Card className='border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
                 <CardHeader className='pb-6'>
@@ -1367,7 +1372,7 @@ export const SiteAdminPage: React.FC = () => {
                                 Cookies:
                               </span>
                               <span className='ml-2 text-gray-600'>
-                                {apiResults.cloudflareAccess.cookies?.length ||
+                                {apiResults.cloudflareAccess.cookies?.length ??
                                   0}{' '}
                                 found
                               </span>
@@ -1382,26 +1387,28 @@ export const SiteAdminPage: React.FC = () => {
                               <div className='space-y-1 text-gray-700'>
                                 <div>
                                   <span className='font-medium'>Email:</span>{' '}
-                                  {String(
-                                    apiResults.cloudflareAccess.identity
-                                      .email || ''
-                                  )}
+                                  {typeof apiResults.cloudflareAccess.identity
+                                    .email === 'string'
+                                    ? apiResults.cloudflareAccess.identity.email
+                                    : ''}
                                 </div>
                                 <div>
                                   <span className='font-medium'>Name:</span>{' '}
-                                  {String(
-                                    apiResults.cloudflareAccess.identity.name ||
-                                      ''
-                                  )}
+                                  {typeof apiResults.cloudflareAccess.identity
+                                    .name === 'string'
+                                    ? apiResults.cloudflareAccess.identity.name
+                                    : ''}
                                 </div>
                                 <div>
                                   <span className='font-medium'>ID:</span>{' '}
-                                  {String(
-                                    apiResults.cloudflareAccess.identity.id ||
-                                      apiResults.cloudflareAccess.identity
-                                        .user_uuid ||
-                                      ''
-                                  )}
+                                  {typeof apiResults.cloudflareAccess.identity
+                                    .id === 'string'
+                                    ? apiResults.cloudflareAccess.identity.id
+                                    : typeof apiResults.cloudflareAccess
+                                          .identity.user_uuid === 'string'
+                                      ? apiResults.cloudflareAccess.identity
+                                          .user_uuid
+                                      : ''}
                                 </div>
                               </div>
                             </div>

@@ -1,28 +1,28 @@
+import { Separator } from '@/components/ui/separator';
+import { Blockquote, H1, H2, P } from '@/components/ui/typography';
+import UnifiedTableRenderer from '@/components/UnifiedTableRenderer';
+import { logger } from '@/utils/logger';
+import { parseCardBlock } from '@/utils/markdownCardExtensions';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  XAxis,
+  YAxis,
+  ZAxis,
+} from 'recharts';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import slugify from 'slugify';
-import { H1, H2, P, Blockquote } from '@/components/ui/typography';
-import { Separator } from '@/components/ui/separator';
-import {
-  BarChart,
-  Bar,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Legend,
-  Tooltip as RechartsTooltip,
-  LineChart,
-  Line,
-  ScatterChart,
-  Scatter,
-  ZAxis,
-  ResponsiveContainer,
-} from 'recharts';
-import { logger } from '@/utils/logger';
-import UnifiedTableRenderer from '@/components/UnifiedTableRenderer';
-import { parseCardBlock } from '@/utils/markdownCardExtensions';
 
 interface EnhancedMarkdownWithCardsProps {
   content: string;
@@ -33,7 +33,9 @@ interface EnhancedMarkdownWithCardsProps {
 function getSeriesKeys(data: Record<string, unknown>[]) {
   if (!Array.isArray(data) || data.length === 0) return [];
   // Exclude 'date' key
-  return Object.keys(data[0]).filter(key => key !== 'date');
+  const firstItem = data[0];
+  if (!firstItem) return [];
+  return Object.keys(firstItem).filter(key => key !== 'date');
 }
 
 export const EnhancedMarkdownWithCards: React.FC<
@@ -91,7 +93,7 @@ export const EnhancedMarkdownWithCards: React.FC<
             remarkPlugins={[remarkGfm]}
             components={{
               h1: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <H1 id={id} {...props}>
@@ -100,7 +102,7 @@ export const EnhancedMarkdownWithCards: React.FC<
                 );
               },
               h2: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <H2 id={id} {...props}>
@@ -109,7 +111,7 @@ export const EnhancedMarkdownWithCards: React.FC<
                 );
               },
               h3: ({ children, ...props }) => {
-                const text = String(children);
+                const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
                   <h3
@@ -126,13 +128,15 @@ export const EnhancedMarkdownWithCards: React.FC<
                 <Blockquote {...props}>{children}</Blockquote>
               ),
               code: ({ children, className, ...props }) => {
-                const match = /language-(\w+)/.exec(className || '');
+                const match = /language-(\w+)/.exec(className ?? '');
                 const language = match ? match[1] : '';
 
                 // SCATTER/BUBBLE CHARTS WITH GROUPING, BUBBLE SIZE, LABELS, CI ERROR BARS
                 if (language === 'scatter') {
                   try {
-                    const chartData = JSON.parse(String(children));
+                    const chartData = JSON.parse(
+                      typeof children === 'string' ? children : ''
+                    ) as Record<string, unknown>[];
                     return (
                       <div className='my-8'>
                         <ResponsiveContainer width='100%' height={400}>
@@ -157,7 +161,9 @@ export const EnhancedMarkdownWithCards: React.FC<
                         <p className='text-red-600'>
                           Error rendering scatter chart: {String(error)}
                         </p>
-                        <pre className='mt-2 text-xs'>{String(children)}</pre>
+                        <pre className='mt-2 text-xs'>
+                          {typeof children === 'string' ? children : ''}
+                        </pre>
                       </div>
                     );
                   }
@@ -166,7 +172,9 @@ export const EnhancedMarkdownWithCards: React.FC<
                 // LINE CHARTS WITH MULTIPLE SERIES, ANNOTATIONS, AND CUSTOM STYLING
                 if (language === 'linechart') {
                   try {
-                    const chartData = JSON.parse(String(children));
+                    const chartData = JSON.parse(
+                      typeof children === 'string' ? children : ''
+                    ) as Record<string, unknown>[];
                     return (
                       <div className='my-8'>
                         <ResponsiveContainer width='100%' height={400}>
@@ -196,7 +204,9 @@ export const EnhancedMarkdownWithCards: React.FC<
                         <p className='text-red-600'>
                           Error rendering line chart: {String(error)}
                         </p>
-                        <pre className='mt-2 text-xs'>{String(children)}</pre>
+                        <pre className='mt-2 text-xs'>
+                          {typeof children === 'string' ? children : ''}
+                        </pre>
                       </div>
                     );
                   }
@@ -205,7 +215,9 @@ export const EnhancedMarkdownWithCards: React.FC<
                 // BAR CHARTS WITH MULTIPLE SERIES, STACKING, AND CUSTOM COLORS
                 if (language === 'chart') {
                   try {
-                    const chartData = JSON.parse(String(children));
+                    const chartData = JSON.parse(
+                      typeof children === 'string' ? children : ''
+                    ) as Record<string, unknown>[];
                     return (
                       <div className='my-8'>
                         <ResponsiveContainer width='100%' height={400}>
@@ -233,7 +245,9 @@ export const EnhancedMarkdownWithCards: React.FC<
                         <p className='text-red-600'>
                           Error rendering chart: {String(error)}
                         </p>
-                        <pre className='mt-2 text-xs'>{String(children)}</pre>
+                        <pre className='mt-2 text-xs'>
+                          {typeof children === 'string' ? children : ''}
+                        </pre>
                       </div>
                     );
                   }
