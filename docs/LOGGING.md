@@ -21,15 +21,15 @@ A comprehensive logging system that provides centralized, environment-aware logg
 import { logger } from '@/utils/logger';
 
 // Or import specific methods for convenience
-import { 
-  debug, 
-  info, 
-  success, 
-  warn, 
+import {
+  debug,
+  info,
+  success,
+  warn,
   error,
   aiWorker,
   network,
-  validation 
+  validation,
 } from '@/utils/logger';
 
 // Or use default export
@@ -60,6 +60,7 @@ logger.error('Something went wrong', errorDetails);
 The logger provides 15+ specialized methods for different types of operations:
 
 #### Content Discovery & Management
+
 ```typescript
 // File discovery (✓)
 logger.discovered('portfolio.md');
@@ -72,6 +73,7 @@ logger.contentSummary(14, 10, 1); // portfolio, blog, projects
 ```
 
 #### AI & Worker Operations
+
 ```typescript
 // AI worker operations (🤖)
 logger.aiWorker('Processing request...', requestData);
@@ -81,6 +83,7 @@ logger.portfolioLoading('Loading portfolio items...', count);
 ```
 
 #### Network & API Operations
+
 ```typescript
 // Network requests (🌐)
 logger.network('API call to:', endpoint);
@@ -96,12 +99,14 @@ logger.location('Worker URL:', url);
 ```
 
 #### Security & Authentication
+
 ```typescript
 // Security operations (🔒)
 logger.security('Authentication check...', user);
 ```
 
 #### Asset & File Operations
+
 ```typescript
 // Asset loading (📦)
 logger.assetLoading('Loading asset:', assetPath);
@@ -111,6 +116,7 @@ logger.mimeType('Detected MIME type:', mimeType);
 ```
 
 #### Validation & Testing
+
 ```typescript
 // Input validation (🔍)
 logger.validation('Validating input:', inputData);
@@ -143,6 +149,7 @@ The logger automatically detects the environment using:
   - Any hostname containing `localhost`
 
 **Log Visibility Rules:**
+
 - **Development/Localhost**: All logs are shown (debug, info, success, warn, error)
 - **Production**: Only warnings and errors are shown by default
 - **Debug Toggle**: When enabled, all logs are shown regardless of environment
@@ -224,12 +231,14 @@ The logger requires no manual configuration. It automatically detects:
 ## Best Practices
 
 ### Do's
+
 - Use specialized methods when available (`aiWorker`, `network`, etc.)
 - Include relevant context data with log messages
 - Use appropriate log levels for the situation
 - Leverage debug toggle for production troubleshooting
 
 ### Don'ts
+
 - Don't use `console.log` directly (use logger instead)
 - Don't log sensitive information (passwords, tokens, etc.)
 - Don't over-log in production-critical paths

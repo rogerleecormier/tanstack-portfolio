@@ -31,29 +31,29 @@ The TanStack Portfolio implements a sophisticated, AI-powered content discovery 
 ```mermaid
 graph TD
     A[User Query/Inquiry] --> B{Query Type}
-    
+
     B -->|Global Search| C[RedesignedSearch Component]
     B -->|Contact Form| D[AI Contact Analyzer]
     B -->|Content Creation| E[Content Creation Studio]
-    
+
     C --> F[Cached Content Service]
     D --> G[AI Analysis + Recommendations]
     E --> H[R2 Storage + Cache Rebuild]
-    
+
     F --> I[Fuse.js Semantic Search]
     G --> J[Smart Content Matching]
     H --> K[KV Cache Update]
-    
+
     I --> L[Search Results]
     J --> M[Contextual Recommendations]
     K --> N[Updated Content Index]
-    
+
     L --> O[Unified Search Results]
     M --> O
     N --> O
-    
+
     O --> P[User Interface]
-    
+
     subgraph "AI-Powered Analysis"
         G
         Q[Industry Detection]
@@ -61,14 +61,14 @@ graph TD
         S[Priority Assessment]
         T[Meeting Detection]
     end
-    
+
     subgraph "Content Processing"
         H
         U[Frontmatter Generation]
         V[Content Indexing]
         W[Metadata Extraction]
     end
-    
+
     subgraph "Search & Discovery"
         I
         X[Relevance Scoring]
@@ -97,20 +97,20 @@ The primary search interface providing universal access across all pages.
 ```typescript
 const fuseOptions: IFuseOptions<CachedContentItem> = {
   keys: [
-    { name: 'title', weight: 0.4 },        // 40% - Highest priority
-    { name: 'description', weight: 0.3 },  // 30% - Content summary
-    { name: 'content', weight: 0.2 },      // 20% - Full content
-    { name: 'tags', weight: 0.15 },        // 15% - Tag matching
-    { name: 'keywords', weight: 0.15 },    // 15% - Keyword matching
-    { name: 'category', weight: 0.1 },     // 10% - Category classification
+    { name: 'title', weight: 0.4 }, // 40% - Highest priority
+    { name: 'description', weight: 0.3 }, // 30% - Content summary
+    { name: 'content', weight: 0.2 }, // 20% - Full content
+    { name: 'tags', weight: 0.15 }, // 15% - Tag matching
+    { name: 'keywords', weight: 0.15 }, // 15% - Keyword matching
+    { name: 'category', weight: 0.1 }, // 10% - Category classification
   ],
-  threshold: 0.3,           // Matching precision
-  distance: 100,            // Edit distance tolerance
-  includeScore: true,       // Include relevance scores
-  includeMatches: true,     // Include match details
-  minMatchCharLength: 3,    // Minimum match length
-  ignoreLocation: true,     // Location-independent matching
-  useExtendedSearch: true,  // Advanced search syntax
+  threshold: 0.3, // Matching precision
+  distance: 100, // Edit distance tolerance
+  includeScore: true, // Include relevance scores
+  includeMatches: true, // Include match details
+  minMatchCharLength: 3, // Minimum match length
+  ignoreLocation: true, // Location-independent matching
+  useExtendedSearch: true, // Advanced search syntax
 };
 ```
 
@@ -133,9 +133,25 @@ The AI contact analyzer provides intelligent content recommendations based on us
 
 ```typescript
 interface AIAnalysisResult {
-  inquiryType: 'consultation' | 'project' | 'partnership' | 'general' | 'urgent';
+  inquiryType:
+    | 'consultation'
+    | 'project'
+    | 'partnership'
+    | 'general'
+    | 'urgent';
   priorityLevel: 'high' | 'medium' | 'low';
-  industry: 'technology' | 'healthcare' | 'finance' | 'manufacturing' | 'retail' | 'education' | 'government' | 'nonprofit' | 'startup' | 'enterprise' | 'other';
+  industry:
+    | 'technology'
+    | 'healthcare'
+    | 'finance'
+    | 'manufacturing'
+    | 'retail'
+    | 'education'
+    | 'government'
+    | 'nonprofit'
+    | 'startup'
+    | 'enterprise'
+    | 'other';
   projectScope: 'small' | 'medium' | 'large' | 'enterprise';
   urgency: 'immediate' | 'soon' | 'flexible';
   messageType: 'message' | 'meeting-request';
@@ -143,7 +159,12 @@ interface AIAnalysisResult {
   meetingDuration: '30 minutes' | '1 hour' | '1.5 hours' | '2 hours';
   relevantContent: string[];
   shouldScheduleMeeting: boolean;
-  meetingType: 'consultation' | 'project-planning' | 'technical-review' | 'strategy-session' | 'general-discussion';
+  meetingType:
+    | 'consultation'
+    | 'project-planning'
+    | 'technical-review'
+    | 'strategy-session'
+    | 'general-discussion';
   recommendedTimeSlots: string[];
   timezoneConsideration: string;
   userTimezone: string;
@@ -226,11 +247,11 @@ The integrated content creation system with AI-powered features.
 
 #### AI Frontmatter Generation
 
-```typescript
+````typescript
 // AI model selection based on content complexity
 const selectAIModel = (content: string): string => {
   const complexity = analyzeContentComplexity(content);
-  
+
   if (complexity.simple) return '@cf/meta/llama-3.1-8b-instruct';
   if (complexity.medium) return '@cf/meta/llama-3.1-70b-instruct';
   return '@cf/meta/llama-3.1-405b-instruct';
@@ -242,15 +263,17 @@ const analyzeContentComplexity = (content: string) => {
   const hasCodeBlocks = /```[\s\S]*?```/.test(content);
   const hasLinks = /\[.*?\]\(.*?\)/.test(content);
   const hasImages = /!\[.*?\]\(.*?\)/.test(content);
-  const technicalTerms = content.match(/\b(API|database|framework|algorithm|architecture)\b/gi)?.length || 0;
-  
+  const technicalTerms =
+    content.match(/\b(API|database|framework|algorithm|architecture)\b/gi)
+      ?.length || 0;
+
   return {
     simple: wordCount < 500 && !hasCodeBlocks && technicalTerms < 3,
     medium: wordCount < 1500 && technicalTerms < 8,
     complex: wordCount >= 1500 || hasCodeBlocks || technicalTerms >= 8,
   };
 };
-```
+````
 
 ## 🔧 Content Service Implementation
 
@@ -270,17 +293,23 @@ export class CachedContentService {
   private isFuseInitialized = false;
 
   // Core content retrieval
-  async getContentByType(contentType: 'blog' | 'portfolio' | 'project'): Promise<CachedContentItem[]>
-  async getAllContent(): Promise<CachedContentItem[]>
-  
+  async getContentByType(
+    contentType: 'blog' | 'portfolio' | 'project'
+  ): Promise<CachedContentItem[]>;
+  async getAllContent(): Promise<CachedContentItem[]>;
+
   // Search and recommendations
-  async searchContent(request: CachedSearchRequest): Promise<CachedSearchResponse>
-  async getRecommendations(request: CachedRecommendationsRequest): Promise<CachedRecommendationsResponse>
-  
+  async searchContent(
+    request: CachedSearchRequest
+  ): Promise<CachedSearchResponse>;
+  async getRecommendations(
+    request: CachedRecommendationsRequest
+  ): Promise<CachedRecommendationsResponse>;
+
   // Utility methods
-  isReady(): boolean
-  getContentMetadata(): ContentMetadata
-  reinitializeFuse(): Promise<void>
+  isReady(): boolean;
+  getContentMetadata(): ContentMetadata;
+  reinitializeFuse(): Promise<void>;
 }
 ```
 
@@ -333,6 +362,7 @@ Advanced fuzzy search with multiple matching strategies.
 #### Search Algorithms
 
 **Primary: Fuse.js Semantic Search**
+
 ```typescript
 const fuseOptions: IFuseOptions<CachedContentItem> = {
   keys: [
@@ -354,6 +384,7 @@ const fuseOptions: IFuseOptions<CachedContentItem> = {
 ```
 
 **Fallback: Traditional Text Search**
+
 ```typescript
 private searchItems(items: CachedContentItem[], query: string, tags: string[], maxResults: number) {
   const scoredItems = items.map(item => {
@@ -382,7 +413,7 @@ private searchItems(items: CachedContentItem[], query: string, tags: string[], m
     score += matchingTags.length * 12;
 
     // Keywords match
-    const matchingKeywords = item.keywords.filter(keyword => 
+    const matchingKeywords = item.keywords.filter(keyword =>
       keyword.toLowerCase().includes(queryLower)
     );
     score += matchingKeywords.length * 8;
@@ -428,60 +459,60 @@ Context-aware content recommendations with multiple strategies.
 ```typescript
 async getRecommendations(request: CachedRecommendationsRequest): Promise<CachedRecommendationsResponse> {
   const { query, contentType, maxResults, excludeUrl, tags, context } = request;
-  
+
   let candidates = this.allItems;
-  
+
   // Filter by content type
   if (contentType !== 'all') {
     candidates = candidates.filter(item => item.contentType === contentType);
   }
-  
+
   // Exclude current page
   if (excludeUrl) {
     candidates = candidates.filter(item => item.url !== excludeUrl);
   }
-  
+
   // Tag-based filtering
   if (tags && tags.length > 0) {
-    candidates = candidates.filter(item => 
+    candidates = candidates.filter(item =>
       tags.some(tag => item.tags.includes(tag))
     );
   }
-  
+
   // Context-aware scoring
   const scoredCandidates = candidates.map(item => {
     let score = 0;
-    
+
     // Title similarity
     if (query && item.title.toLowerCase().includes(query.toLowerCase())) {
       score += 30;
     }
-    
+
     // Tag matching
     if (tags) {
       const matchingTags = tags.filter(tag => item.tags.includes(tag));
       score += matchingTags.length * 15;
     }
-    
+
     // Context matching
     if (context) {
       if (context.industry && item.tags.includes(context.industry)) score += 20;
       if (context.inquiryType && item.tags.includes(context.inquiryType)) score += 15;
       if (context.projectScope && item.tags.includes(context.projectScope)) score += 10;
     }
-    
+
     // Content quality bonus
     if (item.readTime && item.readTime > 3) score += 5;
     if (item.tags.length > 2) score += 3;
-    
+
     return { ...item, relevanceScore: Math.min(100, score) };
   });
-  
+
   const results = scoredCandidates
     .filter(item => item.relevanceScore > 0)
     .sort((a, b) => b.relevanceScore - a.relevanceScore)
     .slice(0, maxResults);
-  
+
   return {
     success: true,
     results,
@@ -497,28 +528,27 @@ async getRecommendations(request: CachedRecommendationsRequest): Promise<CachedR
 ### Component Usage Patterns
 
 #### Global Search Implementation
+
 ```typescript
 // RedesignedSearch component
-const handleSearch = useCallback(
-  async (query: string) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
+const handleSearch = useCallback(async (query: string) => {
+  if (!query.trim()) {
+    setSearchResults([]);
+    return;
+  }
 
-    const results = await cachedContentService.searchContent({
-      query,
-      contentType: 'all',
-      maxResults: 8,
-    });
+  const results = await cachedContentService.searchContent({
+    query,
+    contentType: 'all',
+    maxResults: 8,
+  });
 
-    setSearchResults(results.results);
-  },
-  []
-);
+  setSearchResults(results.results);
+}, []);
 ```
 
 #### Blog Search and Filtering
+
 ```typescript
 // BlogListPage component
 useEffect(() => {
@@ -547,6 +577,7 @@ useEffect(() => {
 ```
 
 #### Related Content Component
+
 ```typescript
 // UnifiedRelatedContent component
 const getRelatedContent = async (currentUrl: string, query: string) => {
@@ -564,6 +595,7 @@ const getRelatedContent = async (currentUrl: string, query: string) => {
 ### Environment Configuration
 
 #### Worker URLs
+
 ```typescript
 const WORKER_URLS = {
   CACHE_REBUILD: 'https://cache-rebuild-worker.rcormier.workers.dev',
@@ -575,6 +607,7 @@ const WORKER_URLS = {
 ```
 
 #### R2 Configuration
+
 ```typescript
 export const R2_CONFIG = {
   BASE_URL: 'https://r2-content-proxy.rcormier.workers.dev',
@@ -597,6 +630,7 @@ export const R2_CONFIG = {
 ### Caching Strategy
 
 #### Multi-Layer Caching
+
 1. **R2 Storage**: Primary content storage
 2. **KV Cache**: Production content index
 3. **Worker Cache**: In-memory caching
@@ -604,6 +638,7 @@ export const R2_CONFIG = {
 5. **Local Storage**: Recent searches and user preferences
 
 #### Performance Metrics
+
 - **KV cache retrieval**: < 50ms
 - **Content search**: < 100ms
 - **Recommendations**: < 150ms
@@ -613,6 +648,7 @@ export const R2_CONFIG = {
 ### Search Optimization
 
 #### Algorithm Efficiency
+
 - **Fuse.js Integration**: Industry-standard fuzzy search
 - **Weighted Scoring**: Intelligent relevance calculation
 - **Result Caching**: Cached search results
@@ -620,6 +656,7 @@ export const R2_CONFIG = {
 - **Lazy Initialization**: Fuse.js initialized only when needed
 
 #### Memory Management
+
 - **Content Pre-loading**: All content loaded at startup
 - **Efficient Data Structures**: Optimized for search operations
 - **Garbage Collection**: Proper cleanup of search timeouts
@@ -630,6 +667,7 @@ export const R2_CONFIG = {
 ### CORS Configuration
 
 #### R2 Proxy Worker
+
 ```typescript
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -643,6 +681,7 @@ const corsHeaders = {
 ### Path Validation
 
 #### Allowed Paths
+
 ```typescript
 const allowedPaths = ['blog/', 'portfolio/', 'projects/', 'trash/', ''];
 const allowedExtensions = ['.md', '.json'];
@@ -651,6 +690,7 @@ const allowedExtensions = ['.md', '.json'];
 ### Rate Limiting
 
 #### KV-Based Rate Limiting
+
 ```typescript
 const RATE_LIMITS = {
   requestsPerMinute: 60,
@@ -692,11 +732,13 @@ console.log('Total items:', cachedContentService.getAllContent().length);
 ### Graceful Degradation
 
 #### Fallback Chain
+
 1. **Primary**: KV cache retrieval
 2. **Secondary**: R2 proxy worker
 3. **Tertiary**: Empty results with user notification
 
 #### Error Recovery
+
 ```typescript
 try {
   const content = await cachedContentService.getContentByType('blog');
@@ -712,6 +754,7 @@ try {
 ### Cache Performance Metrics
 
 #### Key Metrics
+
 - Cache hit rate
 - Response times
 - Error rates
@@ -721,6 +764,7 @@ try {
 - User engagement with recommendations
 
 #### Monitoring Dashboard
+
 - Real-time cache status
 - Performance graphs
 - Error tracking
@@ -731,6 +775,7 @@ try {
 ## 🎯 Best Practices
 
 ### Content Creation
+
 - Use AI frontmatter generation for consistent metadata
 - Organize content in appropriate directories (blog/, portfolio/, projects/)
 - Use descriptive tags and keywords for better searchability
@@ -738,6 +783,7 @@ try {
 - Enable cache rebuilds for important content changes
 
 ### Search Optimization
+
 - Use specific, descriptive search queries
 - Leverage content type filtering for targeted results
 - Take advantage of tag-based filtering
@@ -745,6 +791,7 @@ try {
 - Review search results and relevance scores
 
 ### Performance
+
 - Monitor cache performance and hit rates
 - Optimize content size and structure
 - Use debounced search inputs
@@ -752,6 +799,7 @@ try {
 - Monitor search analytics and user behavior
 
 ### AI Integration
+
 - Provide clear, descriptive content for better AI analysis
 - Review AI-generated content before publishing
 - Use context-aware recommendations effectively
@@ -761,6 +809,7 @@ try {
 ## 📚 Examples and Use Cases
 
 ### Global Search Usage
+
 ```typescript
 // Search across all content types
 const results = await cachedContentService.searchContent({
@@ -778,6 +827,7 @@ const blogResults = await cachedContentService.searchContent({
 ```
 
 ### Content Recommendations
+
 ```typescript
 // Get recommendations for current page
 const recommendations = await cachedContentService.getRecommendations({
@@ -802,6 +852,7 @@ const aiRecommendations = await cachedContentService.getRecommendations({
 ```
 
 ### Content Creation Integration
+
 ```typescript
 // Create new content with AI frontmatter
 const newContent = await createContent({

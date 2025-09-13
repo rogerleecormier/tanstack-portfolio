@@ -1,11 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -235,7 +235,7 @@ export function FrontMatterModal({
                 disabled={isGenerating}
                 onClick={async () => {
                   if (isGenerating) return;
-                  
+
                   setIsGenerating(true);
                   try {
                     const generated = await onGenerate();
@@ -248,9 +248,11 @@ export function FrontMatterModal({
                     setIsGenerating(false);
                   }
                 }}
-                className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 dark:hover:bg-teal-950 disabled:opacity-50 disabled:cursor-not-allowed'
+                className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-teal-950'
               >
-                <Sparkles className={`mr-2 size-4 ${isGenerating ? 'animate-spin' : ''}`} />
+                <Sparkles
+                  className={`mr-2 size-4 ${isGenerating ? 'animate-spin' : ''}`}
+                />
                 {isGenerating ? 'Generating...' : 'Generate with AI'}
               </Button>
               <Button

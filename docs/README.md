@@ -7,7 +7,9 @@ Welcome to the comprehensive documentation for the TanStack Portfolio project. T
 ### 🏗️ System Architecture
 
 #### **[Tech Stack](./TECH_STACK.md)**
+
 Complete technology stack overview including:
+
 - Frontend framework (React 19, TypeScript, TanStack Router)
 - Cloudflare infrastructure (Pages, R2, Workers, D1, KV, AI)
 - AI-powered features and integrations
@@ -15,7 +17,9 @@ Complete technology stack overview including:
 - Performance optimization and security features
 
 #### **[Content Indexing and Cache System](./CONTENT_INDEXING_AND_CACHE_SYSTEM.md)**
+
 Comprehensive guide to the content management and caching architecture:
+
 - Cloudflare R2 storage configuration
 - KV cache system and rebuild workers
 - Content flow and indexing processes
@@ -25,7 +29,9 @@ Comprehensive guide to the content management and caching architecture:
 ### 🤖 AI & Automation
 
 #### **[HealthBridge Enhanced System](./HEALTHBRIDGE_ENHANCED_SYSTEM.md)**
+
 Advanced health tracking and projection system:
+
 - Weight loss projections with AI-powered linear regression
 - Medication efficacy research and modeling
 - iOS integration with Apple Health shortcuts
@@ -35,7 +41,9 @@ Advanced health tracking and projection system:
 ### 📝 Content Management
 
 #### **[Content Creation Studio](./CONTENT_CREATION_STUDIO_README.md)**
+
 Complete guide to the on-site content management system:
+
 - TipTap-based rich text editor
 - AI-powered frontmatter generation
 - R2 bucket integration and file management
@@ -43,7 +51,9 @@ Complete guide to the on-site content management system:
 - Real-time preview and version control
 
 #### **[Custom Markdown Cards](./CUSTOM_MARKDOWN_CARDS.md)**
+
 Comprehensive guide to the custom card system:
+
 - 11 different card types with examples
 - JSON-based syntax and rendering pipeline
 - Markdown content support and styling
@@ -53,7 +63,9 @@ Comprehensive guide to the custom card system:
 ### 🔍 Search & Discovery
 
 #### **[Search and Content Capabilities](./SEARCH_AND_CONTENT_CAPABILITIES.md)**
+
 Complete search and content discovery system:
+
 - Global search with keyboard shortcuts
 - Fuse.js semantic search implementation
 - AI-powered content recommendations
@@ -63,7 +75,9 @@ Complete search and content discovery system:
 ### 🛠️ Development & Operations
 
 #### **[Logging](./LOGGING.md)**
+
 Centralized logging system and debugging capabilities:
+
 - Environment-aware logging (development vs. production)
 - 15+ specialized logging methods
 - Debug toggle functionality
@@ -99,6 +113,7 @@ Centralized logging system and debugging capabilities:
 The TanStack Portfolio is a sophisticated, AI-powered web application built on modern technologies:
 
 ### **Frontend Stack**
+
 - **React 19.1.0** with TypeScript 5.8.3 for type safety
 - **TanStack Router 1.130.12** for type-safe routing
 - **TanStack Query 5.85.3** for server state management
@@ -107,6 +122,7 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 - **TipTap 3.4.1** for rich text editing
 
 ### **Cloudflare Infrastructure**
+
 - **Pages**: Static site hosting with global CDN
 - **R2**: Object storage for content and assets
 - **Workers**: 10+ specialized workers for AI, caching, and APIs
@@ -116,12 +132,14 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 - **Secrets Store**: Secure environment variable management
 
 ### **AI-Powered Features**
+
 - **Content Generation**: AI-powered frontmatter generation
 - **Contact Analysis**: Intelligent inquiry analysis and recommendations
 - **Health Projections**: Linear regression with confidence intervals
 - **Smart Recommendations**: Context-aware content suggestions
 
 ### **Content Management**
+
 - **On-Site CMS**: TipTap-based content creation studio
 - **Custom Cards**: 11 different card types with markdown support
 - **Smart Caching**: Multi-layer caching with automatic rebuilds
@@ -130,6 +148,7 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 ## 📋 Key Features
 
 ### **Content Creation Studio**
+
 - Rich text editor with real-time markdown conversion
 - AI-powered frontmatter generation using Cloudflare AI
 - Direct R2 storage integration
@@ -137,6 +156,7 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 - File management and browsing interface
 
 ### **Advanced Search System**
+
 - Global search with `Ctrl/Cmd + K` keyboard shortcut
 - Semantic search using Fuse.js with weighted scoring
 - AI-powered content recommendations
@@ -144,6 +164,7 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 - Recent searches and search analytics
 
 ### **HealthBridge Enhanced**
+
 - Weight loss tracking with AI projections
 - Medication efficacy modeling
 - iOS integration with Apple Health shortcuts
@@ -151,6 +172,7 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 - Automated projection calculations
 
 ### **Custom Markdown Cards**
+
 - 11 different card types (info, hero, success, warning, tech, etc.)
 - Full markdown support within card content
 - Badge system with automatic color cycling
@@ -158,6 +180,7 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 - Integration with ReactMarkdown
 
 ### **Performance Optimization**
+
 - Multi-layer caching (R2, KV, Worker, Browser)
 - Automatic cache rebuilding every 4 hours
 - Code splitting and lazy loading
@@ -167,6 +190,7 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 ## 🔧 Development Workflow
 
 ### **Local Development**
+
 1. Clone repository and install dependencies
 2. Configure environment variables
 3. Run `npm run dev` for development server
@@ -174,12 +198,14 @@ The TanStack Portfolio is a sophisticated, AI-powered web application built on m
 5. Access Content Creation Studio at `/creation-studio`
 
 ### **Content Management**
+
 1. Use Content Creation Studio for content creation
 2. Leverage AI frontmatter generation for metadata
 3. Apply custom markdown cards for rich layouts
 4. Monitor cache rebuilds and search indexing
 
 ### **Deployment**
+
 1. Push to GitHub for automatic deployment
 2. Cloudflare Pages handles build and deployment
 3. Workers deploy separately via Wrangler
@@ -199,17 +225,20 @@ All documentation follows these standards:
 ## 🚨 Important Notes
 
 ### **Critical Syntax Requirements**
-- Custom markdown cards require space between backticks: ````` card` (not `````card`)
+
+- Custom markdown cards require space between backticks: ``card` (not``card`)
 - JSON syntax must be valid with proper escaping
 - All required fields must be present in card definitions
 
 ### **Performance Considerations**
+
 - KV cache rebuilds every 4 hours automatically
 - R2 content served from global edge locations
 - AI models selected based on content complexity
 - Multi-layer caching for optimal performance
 
 ### **Security Features**
+
 - HTTPS-only with SSL/TLS encryption
 - CORS configuration with allowed origins
 - Rate limiting on API endpoints
@@ -230,18 +259,21 @@ When updating documentation:
 ## 📞 Support & Troubleshooting
 
 ### **Common Issues**
+
 - Check syntax requirements for custom cards
 - Verify JSON formatting in card definitions
 - Ensure proper environment variable configuration
 - Review cache rebuild status for content updates
 
 ### **Getting Help**
+
 1. Check troubleshooting sections in each document
 2. Review GitHub repository issues
 3. Consult the main project README for setup
 4. Use the logging system for debugging
 
 ### **System Monitoring**
+
 - Use centralized logging system for debugging
 - Monitor KV cache rebuilds and performance
 - Check Cloudflare Analytics for usage metrics

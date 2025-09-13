@@ -61,11 +61,11 @@ The system uses code blocks with the "card" language identifier:
 
 The system also supports legacy syntax for backward compatibility:
 
-````markdown
+```markdown
 :::card[type]{props}
 content
 :::
-````
+```
 
 ## Card Types
 
@@ -74,11 +74,13 @@ content
 Basic informational card with teal styling and accent line.
 
 **Props:**
+
 - `title` (string): Card title
 - `description` (string): Card description
 - `badges` (string|array): Comma-separated badges or array
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -98,6 +100,7 @@ Basic informational card with teal styling and accent line.
 Large, prominent cards for key content with optional images and CTAs.
 
 **Props:**
+
 - `title` (string): Hero title
 - `description` (string): Hero description
 - `size` (string): "sm", "md", "lg"
@@ -110,6 +113,7 @@ Large, prominent cards for key content with optional images and CTAs.
   - `variant` (string): "default", "outline", "secondary"
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -137,6 +141,7 @@ Large, prominent cards for key content with optional images and CTAs.
 Specialized profile card for main profile display with multi-colored badges.
 
 **Props:**
+
 - `name` (string): Full name
 - `title` (string): Professional title
 - `description` (string): Professional description
@@ -145,6 +150,7 @@ Specialized profile card for main profile display with multi-colored badges.
 - `badges` (string|array): Multi-colored badges
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -167,12 +173,14 @@ Specialized profile card for main profile display with multi-colored badges.
 Green-accented cards for positive content with icons.
 
 **Props:**
+
 - `title` (string): Card title
 - `description` (string): Card description
 - `icon` (string): Icon name ("check", "award", "star", "target")
 - `badges` (string|array): Badge text
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -193,12 +201,14 @@ Green-accented cards for positive content with icons.
 Orange-accented cards for important notices with icons.
 
 **Props:**
+
 - `title` (string): Card title
 - `description` (string): Card description
 - `icon` (string): Icon name ("alert", "info", "shield", "lock")
 - `badges` (string|array): Badge text
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -219,12 +229,14 @@ Orange-accented cards for important notices with icons.
 Blue-accented cards for technical content with technology badges.
 
 **Props:**
+
 - `title` (string): Card title
 - `description` (string): Card description
 - `icon` (string): Icon name ("code", "database", "cloud", "rocket", "zap")
 - `badges` (string|array): Technology badges
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -245,6 +257,7 @@ Blue-accented cards for technical content with technology badges.
 Feature cards with icons, badges, and optional links.
 
 **Props:**
+
 - `title` (string): Feature title
 - `description` (string): Feature description
 - `icon` (string): Icon name ("award", "briefcase", "graduation", "star", "trending", "shield", "zap")
@@ -253,6 +266,7 @@ Feature cards with icons, badges, and optional links.
 - `linkText` (string): Link text (default: "Learn More")
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -275,6 +289,7 @@ Feature cards with icons, badges, and optional links.
 Profile cards with images, contact info, and badges.
 
 **Props:**
+
 - `name` (string): Full name
 - `role` (string): Professional role
 - `image` (string): Profile image URL
@@ -287,6 +302,7 @@ Profile cards with images, contact info, and badges.
   - `website` (string): Website URL
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -314,18 +330,21 @@ Profile cards with images, contact info, and badges.
 Cards displaying statistics and metrics in a structured format.
 
 **Props:**
+
 - `title` (string): Stats title
 - `description` (string): Stats description
 - `stats` (string|array): Stats data
 
 **Content Format:**
 Use colon-separated format for stats:
+
 ```
 Label: Value
 Another Label: Another Value
 ```
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -344,17 +363,20 @@ Another Label: Another Value
 Cards showing chronological events and milestones.
 
 **Props:**
+
 - `title` (string): Timeline title
 - `description` (string): Timeline description
 - `items` (array): Timeline items (optional, can be parsed from content)
 
 **Content Format:**
 Use pipe-separated format:
+
 ```
 Date | Title | Description | Badge
 ```
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -373,10 +395,12 @@ Date | Title | Description | Badge
 Create responsive 2 or 3 column layouts with different card types.
 
 **Props:**
+
 - `columns` (number): Number of columns (2 or 3)
 - `cards` (array): Array of card objects
 
 **Example:**
+
 ````markdown
 ```card
 {
@@ -405,6 +429,7 @@ All card content supports full markdown formatting:
 Unified badge system across all card types with automatic color cycling:
 
 **Color Palette:**
+
 - **Blue**: Professional certifications and credentials
 - **Green**: Success metrics and achievements
 - **Orange**: Technical skills and expertise
@@ -412,6 +437,7 @@ Unified badge system across all card types with automatic color cycling:
 - **Purple**: Innovation and emerging technologies
 
 **Format Options:**
+
 - **String**: `"badges": "Badge 1, Badge 2, Badge 3"`
 - **Array**: `"badges": ["Badge 1", "Badge 2", "Badge 3"]`
 
@@ -420,6 +446,7 @@ Unified badge system across all card types with automatic color cycling:
 Comprehensive icon library using Lucide React:
 
 **Available Icons by Category:**
+
 - **Success**: `check`, `award`, `star`, `target`
 - **Warning**: `alert`, `info`, `shield`, `lock`
 - **Tech**: `code`, `database`, `cloud`, `rocket`, `zap`
@@ -428,6 +455,7 @@ Comprehensive icon library using Lucide React:
 ### Responsive Design
 
 All cards are fully responsive with:
+
 - **Mobile-first**: Optimized for mobile devices
 - **Grid layouts**: Automatic column adjustment
 - **Text wrapping**: Proper word breaking and overflow handling
@@ -493,21 +521,25 @@ The system integrates seamlessly with ReactMarkdown:
 ### Common Issues
 
 **Cards Not Rendering:**
+
 - Ensure there's a space between backticks and "card" (```` card`)
 - Check JSON syntax for proper brackets and braces
 - Verify all required fields are present
 
 **Styling Issues:**
+
 - Check for CSS conflicts with existing styles
 - Verify Tailwind classes are properly applied
 - Ensure dark mode compatibility
 
 **Content Parsing Errors:**
+
 - Validate JSON syntax using a JSON validator
 - Check for proper escaping of quotes and special characters
 - Verify markdown syntax within content
 
 **Performance Issues:**
+
 - Optimize images and reduce file sizes
 - Limit the number of badges and complex content
 - Consider lazy loading for large card collections
@@ -532,6 +564,7 @@ Enable debug mode by adding `debug: true` to card props:
 ### Error Handling
 
 The system includes comprehensive error handling:
+
 - **JSON Parsing**: Graceful fallback for invalid JSON
 - **Missing Props**: Default values for missing properties
 - **Unknown Types**: Error display for unsupported card types
@@ -549,10 +582,10 @@ graph TD
     D --> E[Card Components]
     E --> F[ReactMarkdown Integration]
     F --> G[Rendered Output]
-    
+
     B --> H[Legacy Syntax Parser]
     H --> C
-    
+
     I[CardExtensions] --> B
     J[CardComponents] --> D
 ```
@@ -576,6 +609,7 @@ graph TD
 ### Extension Points
 
 The system is designed for extensibility:
+
 - **New Card Types**: Add new card types by extending the component library
 - **Custom Props**: Add new props to existing card types
 - **Styling Customization**: Override default styles with CSS classes

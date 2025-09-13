@@ -119,12 +119,14 @@ tanstack-portfolio-r2/
 #### AI-Powered Workers
 
 **AI Contact Analyzer Worker**
+
 - **Name**: `tanstack-portfolio-ai-contact-analyzer`
 - **Purpose**: AI-powered contact form analysis and content recommendations
 - **AI Integration**: Cloudflare AI binding for natural language processing
 - **Features**: Inquiry analysis, industry detection, project scope assessment, meeting detection
 
 **AI Frontmatter Generator Worker**
+
 - **Name**: `tanstack-portfolio-ai-generator`
 - **Purpose**: AI-powered frontmatter generation for content creation
 - **AI Models**: Llama 3.1 8B/70B/405B with smart model selection
@@ -133,23 +135,27 @@ tanstack-portfolio-r2/
 #### Content Management Workers
 
 **R2 Content Proxy Worker**
+
 - **Name**: `r2-content-proxy`
 - **Purpose**: Secure content delivery and CORS handling
 - **Features**: Content caching, access control, rate limiting
 - **Environments**: Production and development configurations
 
 **Cache Rebuild Worker**
+
 - **Name**: `cache-rebuild-worker`
 - **Purpose**: Automated content indexing and KV cache management
 - **Features**: Content parsing, metadata extraction, cache versioning
 - **Cron Jobs**: Every 4 hours automatic rebuilds
 
 **KV Cache Get Worker**
+
 - **Name**: `kv-cache-get`
 - **Purpose**: Fast cache retrieval for content search
 - **Features**: CORS-enabled responses, cache validation, error handling
 
 **R2 Content Full Worker**
+
 - **Name**: `r2-content-full`
 - **Purpose**: Full content access and management
 - **Features**: Complete R2 bucket operations, file management
@@ -157,12 +163,14 @@ tanstack-portfolio-r2/
 #### Communication Workers
 
 **Email Worker**
+
 - **Name**: `tanstack-portfolio-email-worker`
 - **Purpose**: Contact form email processing via Resend API
 - **Features**: Email validation, spam protection, delivery confirmation
 - **Integration**: Resend email service with domain verification
 
 **Blog Subscription Worker**
+
 - **Name**: `tanstack-portfolio-blog-subscription`
 - **Purpose**: Handle blog subscription management via Resend
 - **Features**: Email list management, subscription workflows, newsletter delivery
@@ -171,6 +179,7 @@ tanstack-portfolio-r2/
 #### HealthBridge Enhanced Worker
 
 **HealthBridge Enhanced Worker**
+
 - **Name**: `healthbridge-enhanced`
 - **Purpose**: Advanced weight loss tracking and projection system
 - **Database**: D1 SQLite database with 8+ tables
@@ -513,4 +522,3 @@ The combination of Cloudflare Workers, AI services, and modern frontend technolo
 - **Troubleshooting**: Maintain troubleshooting guides for all systems
 - **Change Logs**: Document all significant changes and feature additions
 - **User Guides**: Update user documentation for new features and capabilities
-

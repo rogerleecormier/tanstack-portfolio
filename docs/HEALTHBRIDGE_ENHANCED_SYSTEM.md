@@ -28,6 +28,7 @@ HealthBridge Enhanced is a comprehensive weight loss tracking and projection sys
 ### Core Tables
 
 #### Weight Measurements (`weight` table)
+
 ```sql
 CREATE TABLE weight (
   uuid TEXT PRIMARY KEY,
@@ -41,6 +42,7 @@ CREATE TABLE weight (
 ```
 
 #### User Profiles (`user_profiles` table)
+
 ```sql
 CREATE TABLE user_profiles (
   id TEXT PRIMARY KEY,
@@ -57,6 +59,7 @@ CREATE TABLE user_profiles (
 ```
 
 #### Weight Goals (`weight_goals` table)
+
 ```sql
 CREATE TABLE weight_goals (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,6 +77,7 @@ CREATE TABLE weight_goals (
 ```
 
 #### Medication Tracking (`user_medications` & `medication_types`)
+
 ```sql
 CREATE TABLE medication_types (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -103,6 +107,7 @@ CREATE TABLE user_medications (
 ## 🔌 API Endpoints
 
 ### Base URL
+
 ```
 https://healthbridge-enhanced.rcormier.workers.dev
 ```
@@ -110,6 +115,7 @@ https://healthbridge-enhanced.rcormier.workers.dev
 ### Weight Management
 
 #### Create Weight Measurement
+
 ```http
 POST /api/v2/weight/measurement
 Content-Type: application/json
@@ -126,6 +132,7 @@ Content-Type: application/json
 ```
 
 #### Get Weight Measurements
+
 ```http
 GET /api/v2/weight/measurement?limit=100&days=30&userId=dev-user-123
 ```
@@ -133,11 +140,13 @@ GET /api/v2/weight/measurement?limit=100&days=30&userId=dev-user-123
 ### Weight Loss Projections
 
 #### Get AI Projections
+
 ```http
 GET /api/v2/weight/projections?days=30&userId=dev-user-123
 ```
 
 **Response includes:**
+
 - Current weight and daily loss rate
 - Confidence intervals
 - Medication vs non-medication scenarios
@@ -147,11 +156,13 @@ GET /api/v2/weight/projections?days=30&userId=dev-user-123
 ### Analytics Dashboard
 
 #### Get Comprehensive Analytics
+
 ```http
 GET /api/v2/analytics/dashboard?period=30&userId=dev-user-123
 ```
 
 **Includes:**
+
 - Weight metrics (current, average, min/max)
 - Trend analysis with moving averages
 - Plateau detection
@@ -161,11 +172,13 @@ GET /api/v2/analytics/dashboard?period=30&userId=dev-user-123
 ### User Management
 
 #### Get User Profile
+
 ```http
 GET /api/v2/user/profile?userId=dev-user-123
 ```
 
 #### Update User Profile
+
 ```http
 PUT /api/v2/user/profile
 Content-Type: application/json
@@ -185,11 +198,13 @@ Content-Type: application/json
 ### Medication Management
 
 #### Get User Medications
+
 ```http
 GET /api/v2/user/medications?userId=dev-user-123
 ```
 
 #### Get Available Medication Types
+
 ```http
 GET /api/v2/medication-types
 ```
@@ -201,23 +216,29 @@ GET /api/v2/medication-types
 The system uses clinical trial data to calculate medication effects:
 
 #### GLP-1 Receptor Agonists
+
 - **Semaglutide (Wegovy)**: 1.35x weekly efficacy (35% improvement)
 - **Liraglutide (Saxenda)**: 1.25x weekly efficacy (25% improvement)
 
 #### Dual GIP/GLP-1 Receptor Agonists
+
 - **Tirzepatide (Zepbound)**: 1.65x weekly efficacy (65% improvement)
 
 #### Combination Therapies
+
 - **Phentermine-Topiramate (Qsymia)**: 1.20x weekly efficacy (20% improvement)
 - **Naltrexone-Bupropion (Contrave)**: 1.15x weekly efficacy (15% improvement)
 
 ### Dosage Scaling
+
 Medications are scaled based on:
+
 - **Dosage strength**: Higher doses = better efficacy
 - **Frequency**: Daily/weekly = 100%, bi-weekly = 80%, monthly = 50%
 - **Time on medication**: 12-16 weeks to reach full effectiveness
 
 ### Clinical Evidence Sources
+
 - STEP trials (Semaglutide)
 - SURMOUNT trials (Tirzepatide)
 - SCALE trials (Liraglutide)
@@ -231,6 +252,7 @@ Medications are scaled based on:
 The system integrates with Apple Health through iOS Shortcuts:
 
 #### Data Flow
+
 1. **iOS Shortcut**: User enters weight in shortcut
 2. **Apple Health**: Data automatically synced to Health app
 3. **Webhook**: Apple Health webhook triggers data sync
@@ -238,6 +260,7 @@ The system integrates with Apple Health through iOS Shortcuts:
 5. **Dashboard**: Updates projections and analytics
 
 #### Supported Data Sources
+
 - `com.apple.Health` - Apple Health app
 - `com.myfitnesspal` - MyFitnessPal
 - `com.google.android.apps.fitness` - Google Fit
@@ -245,7 +268,9 @@ The system integrates with Apple Health through iOS Shortcuts:
 - `com.samsung.shealth` - Samsung Health
 
 #### iOS Shortcut Configuration
+
 The iOS shortcut:
+
 - Prompts user for weight input
 - Saves to Apple Health with timestamp
 - Triggers webhook to Cloudflare Worker
@@ -258,6 +283,7 @@ The iOS shortcut:
 The system uses advanced linear regression with multiple factors:
 
 #### Base Calculation
+
 ```javascript
 // Calculate daily weight loss rate
 const totalDays = (latestDate - earliestDate) / (1000 * 60 * 60 * 24);
@@ -266,6 +292,7 @@ const dailyRate = totalWeightLoss / totalDays;
 ```
 
 #### Activity Level Multipliers
+
 - **Sedentary**: 1.2x (little/no exercise)
 - **Light**: 1.375x (1-3 days/week)
 - **Moderate**: 1.55x (3-5 days/week)
@@ -273,6 +300,7 @@ const dailyRate = totalWeightLoss / totalDays;
 - **Very Active**: 1.9x (heavy exercise + physical job)
 
 #### Medication Impact Calculation
+
 ```javascript
 // Calculate medication multiplier
 const medicationMultiplier = calculateMedicationMultiplier(userMedications);
@@ -281,6 +309,7 @@ const medicationDailyRate = adjustedDailyRate * (1 + medicationMultiplier);
 ```
 
 #### Confidence Scoring
+
 - Based on data consistency and variance
 - Minimum 7 measurements required
 - Higher confidence with more consistent data
@@ -289,16 +318,19 @@ const medicationDailyRate = adjustedDailyRate * (1 + medicationMultiplier);
 ## 📈 Analytics Features
 
 ### Trend Analysis
+
 - **Moving Averages**: 7-day, 14-day, 30-day
 - **Plateau Detection**: Identifies periods of no significant change
 - **Overall Trend**: Losing, gaining, stable, or insufficient data
 
 ### Consistency Scoring
+
 - Measures weight fluctuation consistency
 - Threshold-based scoring (1 lb variance)
 - Percentage of consistent days vs total days
 
 ### Comparative Analytics
+
 - Compare different time periods
 - Track improvement over time
 - Identify patterns and trends
@@ -306,6 +338,7 @@ const medicationDailyRate = adjustedDailyRate * (1 + medicationMultiplier);
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```toml
 [vars]
 ENVIRONMENT = "production"
@@ -313,6 +346,7 @@ API_VERSION = "v2"
 ```
 
 ### Database Configuration
+
 ```toml
 [[d1_databases]]
 binding = "DB"
@@ -321,6 +355,7 @@ database_id = "dd2b4664-fa2b-4534-8f07-3d1d0361ec06"
 ```
 
 ### Cron Jobs
+
 ```toml
 [triggers]
 crons = [
@@ -331,6 +366,7 @@ crons = [
 ## 🚀 Deployment
 
 ### Worker Deployment
+
 ```bash
 # Deploy the enhanced worker
 wrangler deploy --config wrangler/wrangler-healthbridge-enhanced.toml
@@ -340,6 +376,7 @@ wrangler tail healthbridge-enhanced
 ```
 
 ### Database Migrations
+
 ```bash
 # Run migrations in order
 wrangler d1 execute health_bridge --file migrations/001_enhanced_weight_tracking.sql
@@ -351,17 +388,20 @@ wrangler d1 execute health_bridge --file migrations/006_convert_to_pounds.sql
 ## 🔐 Security Features
 
 ### Authentication
+
 - Cloudflare Access integration
 - API key authentication
 - User ID mapping system
 
 ### Data Validation
+
 - Input sanitization
 - SQL injection protection
 - Weight range validation (0-2000 lbs)
 - Date format validation
 
 ### CORS Configuration
+
 ```javascript
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -374,16 +414,19 @@ const corsHeaders = {
 ## 📊 Performance Optimization
 
 ### Database Indexing
+
 - Timestamp-based indexes for weight queries
 - User ID indexes for profile lookups
 - Active goal indexes for quick access
 
 ### Caching Strategy
+
 - Projection caching in database
 - Daily cron job for projection updates
 - Development user dummy data for testing
 
 ### Response Times
+
 - API responses typically under 500ms
 - Optimized database queries
 - Efficient data structures
@@ -391,11 +434,13 @@ const corsHeaders = {
 ## 🧪 Development & Testing
 
 ### Development Mode
+
 - Dummy data for development users (`dev-user-123`, `dev@rcormier.dev`)
 - Mock API responses for local testing
 - Comprehensive logging and debugging
 
 ### Testing Features
+
 - User mapping debug endpoint
 - Comprehensive error handling
 - Validation testing for all endpoints
@@ -403,19 +448,21 @@ const corsHeaders = {
 ## 📞 Support & Maintenance
 
 ### Monitoring
+
 - Cloudflare Workers analytics
 - Database performance monitoring
 - API response time tracking
 - Error rate monitoring
 
 ### Backup Strategy
+
 - Automated D1 database backups
 - Migration rollback procedures
 - Data export capabilities
 
 ### Documentation Updates
+
 - API documentation maintenance
 - Clinical research updates
 - User guide improvements
 - Developer documentation
-

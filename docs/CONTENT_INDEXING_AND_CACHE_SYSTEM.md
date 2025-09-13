@@ -32,40 +32,40 @@ The TanStack Portfolio site implements a sophisticated content indexing and cach
 ```mermaid
 graph TD
     A[Markdown Files<br/>portfolio/*.md<br/>blog/*.md<br/>projects/*.md] --> B[R2 Storage<br/>tanstack-portfolio-r2]
-    
+
     B --> C[R2 Content Proxy Worker<br/>r2-content-proxy.rcormier.workers.dev]
     C --> D[Cache Rebuild Worker<br/>cache-rebuild-worker.rcormier.workers.dev]
-    
+
     D --> E[KV Cache<br/>Production Content Cache]
     E --> F[KV Cache Get Worker<br/>kv-cache-get.rcormier.workers.dev]
-    
+
     F --> G[Cached Content Service<br/>cachedContentService.ts]
     G --> H[Frontend Components<br/>UnifiedRelatedContent<br/>BlogListPage<br/>PortfolioListPage]
-    
+
     I[Content Creation Studio] --> D
     J[Manual Cache Rebuild] --> D
     K[Build Process] --> D
-    
+
     subgraph "Storage Layer"
         A
         B
     end
-    
+
     subgraph "Processing Layer"
         C
         D
     end
-    
+
     subgraph "Cache Layer"
         E
         F
     end
-    
+
     subgraph "Application Layer"
         G
         H
     end
-    
+
     subgraph "Trigger Sources"
         I
         J
@@ -101,12 +101,14 @@ tanstack-portfolio-r2/
 **Purpose**: Resolves CORS issues when accessing R2 content directly from custom domains.
 
 **Features**:
+
 - CORS header management
 - Content listing endpoints
 - Path validation and security
 - Error handling and logging
 
 **Configuration**:
+
 ```toml
 # wrangler/wrangler-r2-proxy.toml
 name = "r2-content-proxy"
@@ -118,6 +120,7 @@ bucket_name = "tanstack-portfolio-r2"
 ```
 
 **API Endpoints**:
+
 - `GET /_list?prefix=blog/` - List content in directory
 - `GET /portfolio/analytics.md` - Retrieve specific content file
 - `GET /blog/post.md` - Retrieve blog post content
@@ -166,6 +169,7 @@ interface CacheData {
 **Purpose**: Automatically populates and manages the KV cache from R2 content.
 
 **Features**:
+
 - Automated content indexing
 - Frontmatter parsing
 - Content metadata extraction
@@ -173,6 +177,7 @@ interface CacheData {
 - Error handling and logging
 
 **Configuration**:
+
 ```toml
 # wrangler/wrangler-cache-rebuild.toml
 name = "cache-rebuild-worker"
@@ -188,6 +193,7 @@ bucket_name = "tanstack-portfolio-r2"
 ```
 
 **API Endpoints**:
+
 - `POST /rebuild` - Trigger manual cache rebuild
 - `POST /rebuild/content` - Trigger content studio rebuild
 - `GET /status` - Get cache status and health
@@ -197,12 +203,14 @@ bucket_name = "tanstack-portfolio-r2"
 **Purpose**: Provides direct access to cached content for all environments.
 
 **Features**:
+
 - Fast cache retrieval
 - CORS-enabled responses
 - Error handling
 - Cache validation
 
 **Configuration**:
+
 ```toml
 # wrangler/wrangler-kv-cache-get.toml
 name = "kv-cache-get"
@@ -222,23 +230,30 @@ The `CachedContentService` provides a comprehensive interface for content operat
 ```typescript
 export class CachedContentService {
   // Core content retrieval
-  async getContentByType(contentType: 'blog' | 'portfolio' | 'project'): Promise<CachedContentItem[]>
-  async getAllContent(): Promise<CachedContentItem[]>
-  
+  async getContentByType(
+    contentType: 'blog' | 'portfolio' | 'project'
+  ): Promise<CachedContentItem[]>;
+  async getAllContent(): Promise<CachedContentItem[]>;
+
   // Search and recommendations
-  async searchContent(request: CachedSearchRequest): Promise<CachedSearchResponse>
-  async getRecommendations(request: CachedRecommendationsRequest): Promise<CachedRecommendationsResponse>
-  
+  async searchContent(
+    request: CachedSearchRequest
+  ): Promise<CachedSearchResponse>;
+  async getRecommendations(
+    request: CachedRecommendationsRequest
+  ): Promise<CachedRecommendationsResponse>;
+
   // Utility methods
-  isReady(): boolean
-  getContentMetadata(): ContentMetadata
-  reinitializeFuse(): Promise<void>
+  isReady(): boolean;
+  getContentMetadata(): ContentMetadata;
+  reinitializeFuse(): Promise<void>;
 }
 ```
 
 ### Search and Recommendation Engine
 
 **Fuse.js Configuration**:
+
 ```typescript
 const fuseOptions: IFuseOptions<CachedContentItem> = {
   keys: [
@@ -260,6 +275,7 @@ const fuseOptions: IFuseOptions<CachedContentItem> = {
 ```
 
 **Relevance Scoring Algorithm**:
+
 - Title match: 25 points (highest weight)
 - Description match: 15 points
 - Content match: 10 points
@@ -274,12 +290,14 @@ const fuseOptions: IFuseOptions<CachedContentItem> = {
 ### Automatic Cache Rebuild
 
 **Triggers**:
+
 1. **Build Process**: Automatic rebuild during `npm run build`
 2. **Content Studio**: Manual rebuild from content creation interface
 3. **Scheduled**: Daily automated rebuilds via cron jobs
 4. **Manual**: Developer-initiated rebuilds
 
 **Rebuild Process**:
+
 1. Fetch all content from R2 via proxy worker
 2. Parse frontmatter and extract metadata
 3. Generate content IDs and URLs
@@ -293,19 +311,19 @@ The `cacheRebuildService.ts` provides frontend utilities for cache management:
 
 ```typescript
 // Trigger cache rebuild from content studio
-export async function triggerContentStudioRebuild(): Promise<CacheRebuildResponse>
+export async function triggerContentStudioRebuild(): Promise<CacheRebuildResponse>;
 
 // Trigger manual cache rebuild
-export async function triggerManualRebuild(): Promise<CacheRebuildResponse>
+export async function triggerManualRebuild(): Promise<CacheRebuildResponse>;
 
 // Get cache status and health
-export async function getCacheStatus(): Promise<CacheStatus>
+export async function getCacheStatus(): Promise<CacheStatus>;
 
 // Get current cache data
-export async function getCurrentCacheData(): Promise<CacheData>
+export async function getCurrentCacheData(): Promise<CacheData>;
 
 // Enhanced cache status with current data
-export async function getEnhancedCacheStatus(): Promise<CacheStatus>
+export async function getEnhancedCacheStatus(): Promise<CacheStatus>;
 ```
 
 ## 📱 Frontend Integration
@@ -313,6 +331,7 @@ export async function getEnhancedCacheStatus(): Promise<CacheStatus>
 ### Component Usage
 
 **Blog List Page**:
+
 ```typescript
 useEffect(() => {
   const loadBlogs = async () => {
@@ -324,6 +343,7 @@ useEffect(() => {
 ```
 
 **Related Content Component**:
+
 ```typescript
 const getRelatedContent = async (currentUrl: string, query: string) => {
   const recommendations = await cachedContentService.getRecommendations({
@@ -336,6 +356,7 @@ const getRelatedContent = async (currentUrl: string, query: string) => {
 ```
 
 **Search Implementation**:
+
 ```typescript
 const searchContent = async (query: string, contentType?: string) => {
   const results = await cachedContentService.searchContent({
@@ -352,6 +373,7 @@ const searchContent = async (query: string, contentType?: string) => {
 ### Environment Configuration
 
 **R2 Configuration**:
+
 ```typescript
 export const R2_CONFIG = {
   BASE_URL: 'https://r2-content-proxy.rcormier.workers.dev',
@@ -369,6 +391,7 @@ export const R2_CONFIG = {
 ```
 
 **Worker URLs**:
+
 ```typescript
 const WORKER_URLS = {
   CACHE_REBUILD: 'https://cache-rebuild-worker.rcormier.workers.dev',
@@ -380,6 +403,7 @@ const WORKER_URLS = {
 ### Build Process Integration
 
 **Package.json Scripts**:
+
 ```json
 {
   "scripts": {
@@ -392,6 +416,7 @@ const WORKER_URLS = {
 ```
 
 **Build Steps**:
+
 1. Content indexing and KV cache population
 2. TypeScript compilation
 3. Vite production build
@@ -402,12 +427,14 @@ const WORKER_URLS = {
 ### Caching Strategy
 
 **Multi-Layer Caching**:
+
 1. **R2 Storage**: Primary content storage
 2. **KV Cache**: Production content index
 3. **Worker Cache**: In-memory caching
 4. **Browser Cache**: HTTP caching headers
 
 **Cache Headers**:
+
 ```typescript
 headers: {
   'Cache-Control': 'public, max-age=300', // 5 minutes
@@ -418,12 +445,14 @@ headers: {
 ### Performance Metrics
 
 **Response Times**:
+
 - KV cache retrieval: < 50ms
 - Content search: < 100ms
 - Recommendations: < 150ms
 - Cache rebuild: 2-5 seconds
 
 **Scalability**:
+
 - Supports 1000+ content items
 - Handles concurrent requests
 - Automatic cache invalidation
@@ -434,6 +463,7 @@ headers: {
 ### CORS Configuration
 
 **R2 Proxy Worker**:
+
 ```typescript
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -447,6 +477,7 @@ const corsHeaders = {
 ### Path Validation
 
 **Allowed Paths**:
+
 ```typescript
 const allowedPaths = ['blog/', 'portfolio/', 'projects/', 'trash/', ''];
 const allowedExtensions = ['.md', '.json'];
@@ -455,6 +486,7 @@ const allowedExtensions = ['.md', '.json'];
 ### Rate Limiting
 
 **KV-Based Rate Limiting**:
+
 ```typescript
 const RATE_LIMITS = {
   requestsPerMinute: 60,
@@ -467,12 +499,14 @@ const RATE_LIMITS = {
 ### Debugging and Monitoring
 
 **Logging**:
+
 - Comprehensive console logging
 - Error tracking and reporting
 - Performance metrics
 - Cache hit/miss statistics
 
 **Health Checks**:
+
 ```typescript
 // Check cache health
 const isHealthy = await cachedContentService.isReady();
@@ -489,17 +523,20 @@ const metrics = await getPerformanceMetrics();
 ### Graceful Degradation
 
 **Fallback Chain**:
+
 1. **Primary**: KV cache retrieval
 2. **Secondary**: R2 proxy worker
 3. **Tertiary**: Empty results with user notification
 
 **Error Scenarios**:
+
 - KV cache unavailable
 - R2 proxy worker down
 - Network connectivity issues
 - Content parsing errors
 
 **Error Recovery**:
+
 ```typescript
 try {
   const content = await cachedContentService.getContentByType('blog');
@@ -515,6 +552,7 @@ try {
 ### Cache Performance Metrics
 
 **Key Metrics**:
+
 - Cache hit rate
 - Response times
 - Error rates
@@ -522,6 +560,7 @@ try {
 - Search relevance scores
 
 **Monitoring Dashboard**:
+
 - Real-time cache status
 - Performance graphs
 - Error tracking

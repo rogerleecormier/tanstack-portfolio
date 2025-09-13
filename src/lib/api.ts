@@ -178,16 +178,16 @@ export class ApiClient {
         // Add timeout for faster response
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
-        
+
         const res = await fetch(`${aiUrl.replace(/\/$/, '')}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ markdown }),
           signal: controller.signal,
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (res.ok) {
           const data = await res.json();
           return { success: true, data } as ApiResponse<{
