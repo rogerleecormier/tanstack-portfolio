@@ -1,18 +1,18 @@
-import { useEffect, useState, useRef } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogFooter,
-  DialogDescription,
-} from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { FileText, Sparkles, AlertCircle } from 'lucide-react';
 import type { Frontmatter } from '@/schemas/frontmatter';
+import { AlertCircle, FileText, Sparkles } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   open: boolean;
@@ -34,6 +34,7 @@ export function FrontMatterModal({
 }: Props) {
   const [fm, setFm] = useState<Partial<Frontmatter>>({});
   const [tagInput, setTagInput] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     setFm(value as Partial<Frontmatter>);
@@ -231,16 +232,26 @@ export function FrontMatterModal({
               <Button
                 type='button'
                 variant='outline'
+                disabled={isGenerating}
                 onClick={async () => {
-                  const generated = await onGenerate();
-                  if (generated && typeof generated === 'object') {
-                    setFm(generated as Partial<Frontmatter>);
+                  if (isGenerating) return;
+                  
+                  setIsGenerating(true);
+                  try {
+                    const generated = await onGenerate();
+                    if (generated && typeof generated === 'object') {
+                      setFm(generated as Partial<Frontmatter>);
+                    }
+                  } catch (error) {
+                    console.error('AI generation failed:', error);
+                  } finally {
+                    setIsGenerating(false);
                   }
                 }}
-                className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 dark:hover:bg-teal-950'
+                className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 dark:hover:bg-teal-950 disabled:opacity-50 disabled:cursor-not-allowed'
               >
-                <Sparkles className='mr-2 size-4' />
-                Generate with AI
+                <Sparkles className={`mr-2 size-4 ${isGenerating ? 'animate-spin' : ''}`} />
+                {isGenerating ? 'Generating...' : 'Generate with AI'}
               </Button>
               <Button
                 type='button'
