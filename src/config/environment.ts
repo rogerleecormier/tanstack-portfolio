@@ -94,9 +94,11 @@ export const environment = {
   },
 
   // API configuration with security
-  // Use Vite proxy in development to handle CORS, production API in production
+  // Use production API directly in development to avoid proxy issues
   api: {
-    baseUrl: '/api', // Always use relative path - Vite proxy handles development
+    baseUrl: isDevelopmentMode()
+      ? 'https://tanstack-portfolio.pages.dev/api'
+      : '/api',
     timeout: 10000, // 10 seconds - back to original fast timeout
     retryAttempts: 3,
     // Secure endpoints that require authentication
