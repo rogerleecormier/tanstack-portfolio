@@ -46,6 +46,7 @@ dist-ssr
 *.sln
 *.sw?
 .kilocodemodes
+*.code-workspace
 
 # Additional build/cache directories
 .turbo
