@@ -45,6 +45,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.kilocodemodes
+
+# Additional build/cache directories
+.turbo
+.next
+.nuxt
+.output
+.vercel
+.netlify
 
 # OS generated files
 Thumbs.db
