@@ -151,8 +151,8 @@ export function TableOfContents() {
                 href={`#${entry.slug}`}
                 className={`block rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
                   activeId === entry.slug
-                    ? 'bg-gold-500/10 dark:bg-gold-500/10 border-l-2 border-gold-500 font-semibold text-white dark:border-gold-400 dark:text-white'
-                    : 'hover:bg-gold-500/10 dark:hover:bg-gold-500/10 text-white dark:text-white'
+                    ? 'border-l-2 border-gold-500 bg-gold-500/10 font-semibold text-white dark:border-gold-400 dark:bg-gold-500/10 dark:text-white'
+                    : 'text-white hover:bg-gold-500/10 dark:text-white dark:hover:bg-gold-500/10'
                 }`}
                 onClick={e => {
                   e.preventDefault();

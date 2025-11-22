@@ -240,7 +240,9 @@ export default function IndexPage() {
           {/* Professional Identity */}
           <div className='mb-10'>
             <p className='mx-auto max-w-2xl text-lg leading-relaxed text-slate-200'>
-              Digital transformation specialist driving organizational success through strategic technology implementation, enterprise system integration, and AI-powered automation.
+              Digital transformation specialist driving organizational success
+              through strategic technology implementation, enterprise system
+              integration, and AI-powered automation.
             </p>
           </div>
 
@@ -249,8 +251,12 @@ export default function IndexPage() {
             <div className='flex items-start gap-3 rounded-lg border border-hunter-600/20 bg-hunter-600/5 p-4 backdrop-blur-sm'>
               <div className='mt-1 size-2 flex-shrink-0 rounded-full bg-hunter-400'></div>
               <div>
-                <p className='font-semibold text-hunter-300'>ERP & SaaS Integration</p>
-                <p className='text-sm text-slate-400'>NetSuite, Ramp, Cloudflare</p>
+                <p className='font-semibold text-hunter-300'>
+                  ERP & SaaS Integration
+                </p>
+                <p className='text-sm text-slate-400'>
+                  NetSuite, Ramp, Cloudflare
+                </p>
               </div>
             </div>
             <div className='flex items-start gap-3 rounded-lg border border-hunter-600/20 bg-hunter-600/5 p-4 backdrop-blur-sm'>
@@ -263,7 +269,9 @@ export default function IndexPage() {
             <div className='flex items-start gap-3 rounded-lg border border-hunter-600/20 bg-hunter-600/5 p-4 backdrop-blur-sm'>
               <div className='mt-1 size-2 flex-shrink-0 rounded-full bg-slate-400'></div>
               <div>
-                <p className='font-semibold text-slate-300'>Project Leadership</p>
+                <p className='font-semibold text-slate-300'>
+                  Project Leadership
+                </p>
                 <p className='text-sm text-slate-400'>PMP-certified delivery</p>
               </div>
             </div>

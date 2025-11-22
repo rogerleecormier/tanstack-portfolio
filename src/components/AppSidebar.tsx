@@ -39,7 +39,7 @@ export function AppSidebar() {
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
-                      className='hover:bg-gold-500/10 data-[active]:bg-gold-500/10 dark:hover:bg-gold-500/10 dark:data-[active]:bg-gold-500/10 group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:border-l-2 hover:border-gold-500/50 data-[active]:border-l-2 data-[active]:border-gold-500 data-[active]:font-semibold dark:text-white dark:hover:border-gold-500/50 dark:data-[active]:border-gold-500'
+                      className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:border-l-2 hover:border-gold-500/50 hover:bg-gold-500/10 data-[active]:border-l-2 data-[active]:border-gold-500 data-[active]:bg-gold-500/10 data-[active]:font-semibold dark:text-white dark:hover:border-gold-500/50 dark:hover:bg-gold-500/10 dark:data-[active]:border-gold-500 dark:data-[active]:bg-gold-500/10'
                     >
                       {item.icon && (
                         <item.icon className='size-4 shrink-0 text-slate-400 transition-colors duration-200 group-hover:text-gold-400 group-data-[active]:text-gold-400 dark:text-slate-400 dark:group-hover:text-gold-400 dark:group-data-[active]:text-gold-400' />
