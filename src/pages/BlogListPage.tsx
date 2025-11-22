@@ -19,7 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { H1, H2, H3, P } from '@/components/ui/typography';
+import { H2, H3, P } from '@/components/ui/typography';
 import {
   filterBlogPostsByTags,
   formatDate,
@@ -154,58 +154,55 @@ export default function BlogListPage() {
   );
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Header with Targeting Theme - More Compact */}
-      <div className='relative overflow-hidden border-b border-teal-200 dark:border-teal-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
+      <div className='relative overflow-hidden border-b border-hunter-200 dark:border-hunter-800'>
+        <div className='absolute inset-0 bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Targeting Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-500 to-slate-600 shadow-lg'>
                   <BookOpen className='size-7 text-white' />
                 </div>
                 {/* Targeting indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-purple-600'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
-                <H1
-                  className='text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl'
-                  style={{ fontWeight: 700 }}
-                >
-                  <span className='bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent'>
+                <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
                     Insights & Articles
                   </span>
-                </H1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
+                </h1>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-slate-500'></div>
               </div>
             </div>
 
             {/* Description with Targeting Language */}
-            <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-gray-300'>
-              Strategic insights, technical deep-dives, and leadership
-              perspectives on enterprise technology transformation.
-              <span className='font-medium text-teal-700 dark:text-teal-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
+              Thought leadership, technical insights, and strategic analysis on
+              modern enterprise challenges and technology trends.
+              <span className='font-medium text-gold-300'>
                 {' '}
-                Target your knowledge{' '}
+                Target your thinking{' '}
               </span>
-              with expertly curated content and on-point analysis.
-            </P>
+              with expert perspectives and actionable industry insights.
+            </p>
 
             {/* Quick Stats with Targeting Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-teal-500'></div>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>Strategic Targeting</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
                 <div className='size-2 rounded-full bg-blue-500'></div>
                 <span>Precision Analysis</span>
               </div>
@@ -421,10 +418,10 @@ export default function BlogListPage() {
             {displayedPosts.length === filteredPosts.length &&
               filteredPosts.length > 0 && (
                 <div className='py-12 text-center'>
-                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50'>
-                    <BookOpen className='size-6 text-blue-600 dark:text-blue-400' />
+                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-600/15 to-slate-600/15'>
+                    <BookOpen className='size-6 text-hunter-400' />
                   </div>
-                  <p className='font-medium text-gray-500 dark:text-gray-400'>
+                  <p className='font-medium text-slate-400'>
                     You've reached the end of all articles
                   </p>
                 </div>
@@ -433,8 +430,8 @@ export default function BlogListPage() {
         )}
       </div>
 
-      {/* Newsletter Signup with Blue Accent */}
-      <div className='border-t border-gray-200 bg-gradient-to-b from-blue-50/30 via-gray-50 to-gray-50 dark:border-gray-800 dark:from-blue-950/20 dark:via-gray-950 dark:to-gray-950'>
+      {/* Newsletter Signup with Hunter Accent */}
+      <div className='border-t border-hunter-600/20 bg-gradient-to-b from-hunter-600/5 via-slate-900 to-slate-950'>
         <div className='mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8'>
           <NewsletterSignup />
         </div>
@@ -453,30 +450,30 @@ interface BlogPostCardProps {
 
 const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
   return (
-    <Card className='group flex h-full flex-col overflow-hidden border-gray-200 bg-white transition-all duration-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900'>
-      {/* Blue-to-teal top accent */}
-      <div className='h-1 bg-gradient-to-r from-blue-600 to-teal-600'></div>
+    <Card className='group flex h-full flex-col overflow-hidden border-hunter-600/20 bg-slate-900/40 transition-all duration-200 hover:shadow-lg hover:shadow-hunter-600/20 dark:border-hunter-600/20 dark:bg-slate-900/40'>
+      {/* Hunter green top accent */}
+      <div className='h-1 bg-gradient-to-r from-hunter-600 to-hunter-400'></div>
 
       <CardHeader className='pb-4'>
-        <CardTitle className='line-clamp-2 text-lg leading-tight transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-300'>
+        <CardTitle className='line-clamp-2 text-lg leading-tight text-white transition-colors group-hover:text-hunter-300'>
           <Link to={`/blog/${post.slug}`} className='hover:no-underline'>
             {post.title}
           </Link>
         </CardTitle>
-        <CardDescription className='line-clamp-3 leading-relaxed text-gray-600 dark:text-gray-400'>
+        <CardDescription className='line-clamp-3 leading-relaxed text-slate-300'>
           {post.description}
         </CardDescription>
       </CardHeader>
 
       <CardContent className='flex flex-1 flex-col'>
-        {/* Tags with Blue Accent */}
+        {/* Tags with Hunter Accent */}
         {post.tags.length > 0 && (
           <div className='mb-5 flex flex-wrap gap-2'>
             {post.tags.slice(0, 3).map((tag: string, index: number) => (
               <Badge
                 key={index}
                 variant='secondary'
-                className='h-auto border-blue-200 bg-blue-50 px-2 py-1 text-xs text-blue-700 dark:border-blue-800 dark:bg-blue-950/30 dark:text-blue-300'
+                className='h-auto border-hunter-600/30 bg-hunter-600/15 px-2 py-1 text-xs text-hunter-300'
               >
                 <Tag className='mr-1 size-3' />
                 <span className='whitespace-nowrap'>{tag}</span>
@@ -485,7 +482,7 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
             {post.tags.length > 3 && (
               <Badge
                 variant='secondary'
-                className='border-gray-200 bg-gray-100 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                className='border-slate-600/30 bg-slate-700/50 text-xs text-slate-300'
               >
                 +{post.tags.length - 3} more
               </Badge>
@@ -493,40 +490,38 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
           </div>
         )}
 
-        {/* Meta Info with Blue Accent */}
-        <div className='mb-5 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400'>
+        {/* Meta Info with Hunter Accent */}
+        <div className='mb-5 flex items-center justify-between text-sm text-slate-400'>
           <div className='flex items-center gap-2'>
-            <div className='flex size-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50'>
-              <Calendar className='size-3 text-blue-600 dark:text-blue-400' />
+            <div className='flex size-6 items-center justify-center rounded-full bg-hunter-600/15'>
+              <Calendar className='size-3 text-hunter-400' />
             </div>
-            <span className='font-medium text-blue-700 dark:text-blue-300'>
+            <span className='font-medium text-hunter-300'>
               {formatDate(post.date)}
             </span>
           </div>
           <div className='flex items-center gap-2'>
-            <div className='flex size-6 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800'>
-              <Clock className='size-3 text-gray-500' />
+            <div className='flex size-6 items-center justify-center rounded-full bg-slate-700/50'>
+              <Clock className='size-3 text-slate-400' />
             </div>
-            <span className='font-medium text-gray-700 dark:text-gray-300'>
+            <span className='font-medium text-slate-300'>
               {post.readTime} min read
             </span>
           </div>
         </div>
 
-        {/* Author with Blue Accent */}
-        <div className='mb-6 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-          <div className='flex size-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50'>
-            <User className='size-3 text-blue-600 dark:text-blue-400' />
+        {/* Author with Hunter Accent */}
+        <div className='mb-6 flex items-center gap-2 text-sm text-slate-400'>
+          <div className='flex size-6 items-center justify-center rounded-full bg-hunter-600/15'>
+            <User className='size-3 text-hunter-400' />
           </div>
-          <span className='font-medium text-blue-700 dark:text-blue-300'>
-            {post.author}
-          </span>
+          <span className='font-medium text-hunter-300'>{post.author}</span>
         </div>
 
-        {/* Action Button with Blue-to-teal Gradient */}
+        {/* Action Button with Hunter Gradient */}
         <div className='mt-auto'>
           <Button
-            className='w-full border-0 bg-gradient-to-r from-blue-600 to-teal-600 font-medium text-white transition-all duration-200 hover:from-blue-700 hover:to-teal-700 group-hover:scale-[1.01]'
+            className='w-full border-0 bg-gradient-to-r from-hunter-600 to-hunter-500 font-medium text-white transition-all duration-200 hover:from-hunter-700 hover:to-hunter-600 group-hover:scale-[1.01]'
             asChild
           >
             <Link to={`/blog/${post.slug}`}>

@@ -26,147 +26,119 @@
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
 
-    /* Refined Teal-Blue Color System - Darker, More Professional */
-    --brand-primary: 180 100% 25%; /* teal-800 - Deep teal */
-    --brand-primary-light: 180 100% 35%; /* teal-700 */
-    --brand-primary-dark: 180 100% 20%; /* teal-900 */
-    --brand-secondary: 217 91% 35%; /* blue-800 - Steel blue */
-    --brand-secondary-light: 217 91% 45%; /* blue-700 */
-    --brand-secondary-dark: 217 91% 25%; /* blue-900 */
-    --brand-accent: 25 95% 45%; /* orange-600 - Target orange */
-    --brand-accent-light: 25 95% 55%; /* orange-500 */
-    --brand-accent-dark: 25 95% 35%; /* orange-700 */
+    /* Hunter Green Brand System - Dark Mode Optimized */
+    --brand-hunter: 165 65% 35%; /* Professional forest green with more visibility */
+    --brand-hunter-light: 165 65% 45%;
+    --brand-hunter-dark: 165 65% 25%;
 
-    /* Refined Background Gradients - More Subtle and Professional */
-    --gradient-primary: linear-gradient(
-      135deg,
-      hsl(180 100% 98%) 0%,
-      hsl(217 91% 98%) 100%
-    );
-    --gradient-secondary: linear-gradient(
-      135deg,
-      hsl(180 100% 96%) 0%,
-      hsl(217 91% 96%) 100%
-    );
-    --gradient-accent: linear-gradient(
-      135deg,
-      hsl(180 100% 25%) 0%,
-      hsl(217 91% 35%) 100%
-    );
-    --gradient-target: linear-gradient(
-      135deg,
-      hsl(25 95% 45%) 0%,
-      hsl(180 100% 25%) 100%
+    --brand-slate: 215 20% 35%; /* Professional slate */
+    --brand-slate-light: 215 20% 45%;
+    --brand-slate-dark: 215 20% 25%;
+
+    --brand-gold: 41 91% 47%; /* Rich warm gold - expanded accent usage */
+    --brand-gold-light: 41 91% 57%;
+    --brand-gold-dark: 41 91% 37%;
+
+    /* Subtle gradients for depth */
+    --gradient-hunter-depth: linear-gradient(
+      180deg,
+      hsl(165 60% 28%) 0%,
+      hsl(165 60% 18%) 100%
     );
 
-    /* Signature Brand Gradient - For Key Elements */
-    --gradient-signature: linear-gradient(
+    --gradient-slate-depth: linear-gradient(
+      180deg,
+      hsl(215 20% 35%) 0%,
+      hsl(215 20% 25%) 100%
+    );
+
+    --gradient-gold-subtle: linear-gradient(
       135deg,
-      hsl(180 100% 25%) 0%,
-      hsl(217 91% 35%) 100%
+      rgba(212, 163, 40, 0.15) 0%,
+      transparent 100%
     );
 
-    /* Subtle Pattern Overlays */
-    --pattern-dots: radial-gradient(
-      circle at 1px 1px,
-      hsl(168 100% 90%) 1px,
-      transparent 0
-    );
-    --pattern-grid:
-      linear-gradient(hsl(168 100% 95%) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(168 100% 95%) 1px, transparent 1px);
+    /* Glassmorphism utilities */
+    --glass-bg: hsl(165 60% 95% / 0.08);
+    --glass-border: hsl(165 60% 28% / 0.15);
 
-    /* Teal-themed sidebar colors */
-    --sidebar-background: 168 100% 97%; /* teal-50 */
-    --sidebar-foreground: 168 100% 20%; /* teal-900 */
-    --sidebar-primary: 168 100% 20%; /* teal-900 */
-    --sidebar-primary-foreground: 168 100% 97%; /* teal-50 */
-    --sidebar-accent: 168 100% 90%; /* teal-200 */
-    --sidebar-accent-foreground: 168 100% 20%; /* teal-900 */
-    --sidebar-border: 168 100% 85%; /* teal-200 */
-    --sidebar-ring: 168 100% 60%; /* teal-400 */
+    /* Sidebar colors - neutral slate */
+    --sidebar-background: 0 0% 100%; /* Pure white */
+    --sidebar-foreground: 215 20% 25%;
+    --sidebar-primary: 165 60% 28%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 20% 95%;
+    --sidebar-accent-foreground: 215 20% 25%;
+    --sidebar-border: 215 20% 90%;
+    --sidebar-ring: 165 60% 28%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 165 15% 6%;
+    --foreground: 165 10% 95%;
+    --card: 165 12% 10%;
+    --card-foreground: 165 10% 95%;
+    --popover: 165 12% 10%;
+    --popover-foreground: 165 10% 95%;
+    --primary: 165 10% 95%;
+    --primary-foreground: 165 60% 28%;
+    --secondary: 165 20% 20%;
+    --secondary-foreground: 165 10% 95%;
+    --muted: 165 20% 20%;
+    --muted-foreground: 165 10% 75%;
+    --accent: 165 20% 20%;
+    --accent-foreground: 165 10% 95%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --destructive-foreground: 165 10% 95%;
+    --border: 165 20% 20%;
+    --input: 165 20% 20%;
+    --ring: 165 10% 95%;
 
-    /* Dark mode refined color system */
-    --brand-primary: 180 100% 60%; /* dark teal-400 */
-    --brand-primary-light: 180 100% 70%; /* dark teal-300 */
-    --brand-primary-dark: 180 100% 50%; /* dark teal-500 */
-    --brand-secondary: 217 91% 70%; /* dark blue-300 */
-    --brand-secondary-light: 217 91% 80%; /* dark blue-200 */
-    --brand-secondary-dark: 217 91% 60%; /* dark blue-400 */
-    --brand-accent: 25 95% 65%; /* dark orange-400 */
-    --brand-accent-light: 25 95% 75%; /* dark orange-300 */
-    --brand-accent-dark: 25 95% 55%; /* dark orange-500 */
+    /* Hunter Green Brand System - Dark Mode */
+    --brand-hunter: 165 65% 42%; /* Vibrant hunter green */
+    --brand-hunter-light: 165 65% 52%;
+    --brand-hunter-dark: 165 65% 32%;
 
-    /* Dark mode gradients - Refined */
-    --gradient-primary: linear-gradient(
-      135deg,
-      hsl(180 100% 8%) 0%,
-      hsl(217 91% 8%) 100%
-    );
-    --gradient-secondary: linear-gradient(
-      135deg,
-      hsl(180 100% 12%) 0%,
-      hsl(217 91% 12%) 100%
-    );
-    --gradient-accent: linear-gradient(
-      135deg,
-      hsl(180 100% 60%) 0%,
-      hsl(217 91% 60%) 100%
-    );
-    --gradient-target: linear-gradient(
-      135deg,
-      hsl(25 95% 65%) 0%,
-      hsl(180 100% 60%) 100%
+    --brand-slate: 215 25% 65%; /* Lighter slate for dark mode */
+    --brand-slate-light: 215 25% 75%;
+    --brand-slate-dark: 215 25% 55%;
+
+    --brand-gold: 41 100% 52%; /* Bright gold for dark mode - expanded usage */
+    --brand-gold-light: 41 100% 62%;
+    --brand-gold-dark: 41 100% 42%;
+
+    /* Dark mode gradients */
+    --gradient-hunter-depth: linear-gradient(
+      180deg,
+      hsl(165 65% 42%) 0%,
+      hsl(165 65% 32%) 100%
     );
 
-    /* Dark mode signature gradient */
-    --gradient-signature: linear-gradient(
+    --gradient-slate-depth: linear-gradient(
+      180deg,
+      hsl(215 25% 65%) 0%,
+      hsl(215 25% 55%) 100%
+    );
+
+    --gradient-gold-subtle: linear-gradient(
       135deg,
-      hsl(180 100% 50%) 0%,
-      hsl(217 91% 55%) 100%
+      rgba(244, 196, 48, 0.2) 0%,
+      transparent 100%
     );
 
-    /* Dark mode patterns */
-    --pattern-dots: radial-gradient(
-      circle at 1px 1px,
-      hsl(168 100% 20%) 1px,
-      transparent 0
-    );
-    --pattern-grid:
-      linear-gradient(hsl(168 100% 15%) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(168 100% 15%) 1px, transparent 1px);
+    /* Dark mode glass */
+    --glass-bg: hsl(165 70% 95% / 0.06);
+    --glass-border: hsl(165 65% 42% / 0.2);
 
-    /* Dark mode teal sidebar colors */
-    --sidebar-background: 168 100% 10%; /* dark teal-900 */
-    --sidebar-foreground: 168 100% 90%; /* dark teal-100 */
-    --sidebar-primary: 168 100% 60%; /* dark teal-400 */
-    --sidebar-primary-foreground: 168 100% 10%; /* dark teal-900 */
-    --sidebar-accent: 168 100% 20%; /* dark teal-800 */
-    --sidebar-accent-foreground: 168 100% 90%; /* dark teal-100 */
-    --sidebar-border: 168 100% 25%; /* dark teal-800 */
-    --sidebar-ring: 168 100% 60%; /* dark teal-400 */
+    /* Dark mode sidebar - neutral slate */
+    --sidebar-background: 165 15% 8%; /* Dark teal */
+    --sidebar-foreground: 165 10% 90%;
+    --sidebar-primary: 165 65% 42%;
+    --sidebar-primary-foreground: 165 15% 8%;
+    --sidebar-accent: 165 20% 18%;
+    --sidebar-accent-foreground: 165 10% 90%;
+    --sidebar-border: 165 20% 22%;
+    --sidebar-ring: 165 65% 42%;
   }
 
   * {
@@ -220,79 +192,293 @@
 }
 
 @layer components {
-  /* Standardized teal-blue component classes */
-  .brand-gradient {
-    background: var(--gradient-primary);
+  /* ========== GLASS MORPHISM SYSTEM ========== */
+  .glass-base {
+    @apply rounded-lg border border-white/10 bg-white/5 backdrop-blur-md;
   }
 
-  .brand-gradient-secondary {
-    background: var(--gradient-secondary);
+  .glass-card {
+    @apply glass-base p-5 transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:shadow-glass;
   }
 
-  .brand-gradient-accent {
-    background: var(--gradient-accent);
+  .glass-header {
+    @apply glass-base rounded-xl p-6;
   }
 
-  .brand-gradient-signature {
-    background: var(--gradient-signature);
+  .glass-input {
+    @apply glass-base focus:bg-white/8 px-4 py-2 text-foreground placeholder:text-foreground/50 focus:border-hunter-500/50 focus:outline-none;
   }
 
-  .brand-gradient-target {
-    background: var(--gradient-target);
+  .glass-button {
+    @apply rounded-lg border border-gold-600/30 bg-gold-600/10 px-4 py-2 text-gold-600 backdrop-blur-md transition-all duration-200 hover:border-gold-600/60 hover:bg-gold-600/20 dark:text-gold-400 dark:hover:text-gold-300;
   }
 
-  .brand-pattern-dots {
-    background: var(--pattern-dots);
-    background-size: 20px 20px;
+  /* ========== TYPOGRAPHY SYSTEM ========== */
+  .text-h1 {
+    @apply scroll-m-20 text-balance text-4xl font-bold tracking-tight;
   }
 
-  .brand-pattern-grid {
-    background: var(--pattern-grid);
-    background-size: 20px 20px;
+  .text-h2 {
+    @apply scroll-m-20 text-3xl font-bold tracking-tight;
   }
 
-  .brand-card {
-    @apply border border-teal-200 bg-gradient-to-br from-teal-50 to-blue-50 shadow-sm dark:border-teal-800 dark:from-teal-950 dark:to-blue-950;
+  .text-h3 {
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
   }
 
-  .brand-button-primary {
-    @apply bg-teal-800 text-white transition-all duration-200 hover:bg-teal-900 focus:ring-2 focus:ring-teal-700 focus:ring-offset-2;
+  .text-h4 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight;
   }
 
-  .brand-button-secondary {
-    @apply bg-blue-800 text-white transition-all duration-200 hover:bg-blue-900 focus:ring-2 focus:ring-blue-700 focus:ring-offset-2;
+  .text-h5 {
+    @apply text-lg font-semibold tracking-tight;
   }
 
-  .brand-button-target {
-    @apply bg-orange-600 text-white transition-all duration-200 hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2;
+  .text-h6 {
+    @apply text-base font-semibold tracking-tight;
   }
 
-  .brand-text-primary {
-    @apply text-teal-800 dark:text-teal-400;
+  .text-body {
+    @apply text-base leading-relaxed text-foreground/90;
   }
 
-  .brand-text-secondary {
-    @apply text-blue-800 dark:text-blue-400;
+  .text-small {
+    @apply text-sm leading-relaxed text-foreground/75;
   }
 
-  .brand-text-target {
-    @apply text-orange-600 dark:text-orange-400;
+  .text-xs-subtle {
+    @apply text-xs font-medium text-foreground/60;
   }
 
-  .brand-border-primary {
-    @apply border-teal-200 dark:border-teal-800;
+  .text-blockquote {
+    @apply border-l-4 border-gold-600/40 pl-4 text-lg italic text-foreground/85 dark:border-gold-400/40;
   }
 
-  .brand-border-secondary {
-    @apply border-blue-200 dark:border-blue-800;
+  /* ========== BRAND TEXT & ACCENTS ========== */
+  .text-hunter {
+    @apply text-hunter-900 dark:text-hunter-300;
   }
 
-  .brand-bg-primary {
-    @apply bg-teal-50 dark:bg-teal-950;
+  .text-hunter-strong {
+    @apply font-semibold text-hunter-800 dark:text-hunter-200;
   }
 
-  .brand-bg-secondary {
-    @apply bg-blue-50 dark:bg-blue-950;
+  .text-slate {
+    @apply text-slate-700 dark:text-slate-300;
+  }
+
+  .text-gold {
+    @apply font-medium text-gold-600 dark:text-gold-400;
+  }
+
+  .text-gold-accent {
+    @apply font-semibold text-gold-600 dark:text-gold-400;
+  }
+
+  .text-gold-muted {
+    @apply text-gold-500/70 dark:text-gold-500/80;
+  }
+
+  /* ========== BRAND BORDERS & ACCENTS ========== */
+  .border-hunter {
+    @apply border-hunter-200 dark:border-hunter-800;
+  }
+
+  .border-gold {
+    @apply border-gold-300/40 dark:border-gold-600/30;
+  }
+
+  .border-gold-strong {
+    @apply border-gold-500 dark:border-gold-400;
+  }
+
+  .border-slate {
+    @apply border-slate-200 dark:border-slate-700;
+  }
+
+  .accent-gold-left {
+    @apply border-l-4 border-gold-600 pl-4 dark:border-gold-400;
+  }
+
+  .accent-gold-top {
+    @apply border-t-4 border-gold-600 pt-2 dark:border-gold-400;
+  }
+
+  .accent-hunter-left {
+    @apply border-l-4 border-hunter-600 pl-4 dark:border-hunter-400;
+  }
+
+  /* ========== BRAND BACKGROUNDS ========== */
+  .bg-hunter-subtle {
+    @apply bg-hunter-50 dark:bg-hunter-950;
+  }
+
+  .bg-hunter-subtle-hover {
+    @apply bg-hunter-100 dark:bg-hunter-900;
+  }
+
+  .bg-slate-subtle {
+    @apply bg-slate-100 dark:bg-slate-900;
+  }
+
+  .bg-gold-highlight {
+    @apply bg-gold-100/40 dark:bg-gold-900/20;
+  }
+
+  .bg-gold-subtle {
+    @apply bg-gold-50/50 dark:bg-gold-950/40;
+  }
+
+  /* ========== BUTTON SYSTEM ========== */
+  .btn-primary {
+    @apply rounded-lg bg-hunter-600 px-4 py-2 font-medium text-white transition-colors duration-200 hover:bg-hunter-700 active:bg-hunter-800 disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply rounded-lg bg-slate-600 px-4 py-2 font-medium text-white transition-colors duration-200 hover:bg-slate-700 active:bg-slate-800 disabled:opacity-50;
+  }
+
+  .btn-accent {
+    @apply rounded-lg bg-gold-600 px-4 py-2 font-medium text-slate-900 transition-colors duration-200 hover:bg-gold-700 active:bg-gold-800 disabled:opacity-50 dark:bg-gold-500 dark:text-gold-950 dark:hover:bg-gold-600;
+  }
+
+  .btn-ghost {
+    @apply rounded-lg border border-white/10 px-4 py-2 font-medium text-foreground transition-colors duration-200 hover:bg-white/10 active:bg-white/20 disabled:opacity-50;
+  }
+
+  .btn-gold-outline {
+    @apply rounded-lg border-2 border-gold-600/60 px-4 py-2 font-medium text-gold-600 transition-colors duration-200 hover:bg-gold-600/10 active:bg-gold-600/20 disabled:opacity-50 dark:border-gold-400/60 dark:text-gold-400 dark:hover:bg-gold-400/10 dark:active:bg-gold-400/20;
+  }
+
+  .btn-hunter-outline {
+    @apply rounded-lg border-2 border-hunter-600/60 px-4 py-2 font-medium text-hunter-600 transition-colors duration-200 hover:bg-hunter-600/10 active:bg-hunter-600/20 disabled:opacity-50 dark:border-hunter-400/60 dark:text-hunter-400 dark:hover:bg-hunter-400/10 dark:active:bg-hunter-400/20;
+  }
+
+  /* ========== BADGE & TAG SYSTEM ========== */
+  .badge-gold {
+    @apply inline-flex items-center rounded-full bg-gold-100/60 px-3 py-1 text-xs font-medium text-gold-800 dark:bg-gold-900/40 dark:text-gold-200;
+  }
+
+  .badge-hunter {
+    @apply inline-flex items-center rounded-full bg-hunter-100/60 px-3 py-1 text-xs font-medium text-hunter-800 dark:bg-hunter-900/40 dark:text-hunter-200;
+  }
+
+  .badge-slate {
+    @apply inline-flex items-center rounded-full bg-slate-100/60 px-3 py-1 text-xs font-medium text-slate-800 dark:bg-slate-900/40 dark:text-slate-200;
+  }
+
+  /* ========== HIGHLIGHT & EMPHASIS ========== */
+  .highlight-gold {
+    @apply rounded bg-gold-100/40 px-1 py-0.5 text-gold-800 dark:bg-gold-900/30 dark:text-gold-200;
+  }
+
+  .highlight-hunter {
+    @apply rounded bg-hunter-100/40 px-1 py-0.5 text-hunter-800 dark:bg-hunter-900/30 dark:text-hunter-200;
+  }
+
+  .text-highlight-gold {
+    @apply font-semibold text-gold-600 dark:text-gold-400;
+  }
+
+  .text-highlight-hunter {
+    @apply font-semibold text-hunter-600 dark:text-hunter-400;
+  }
+
+  /* ========== LINK STYLES ========== */
+  .link-gold {
+    @apply text-gold-600 underline transition-colors duration-200 hover:text-gold-700 dark:text-gold-400 dark:hover:text-gold-300;
+  }
+
+  .link-hunter {
+    @apply text-hunter-600 underline transition-colors duration-200 hover:text-hunter-700 dark:text-hunter-400 dark:hover:text-hunter-300;
+  }
+
+  .link-gold-no-underline {
+    @apply text-gold-600 transition-colors duration-200 hover:text-gold-700 dark:text-gold-400 dark:hover:text-gold-300;
+  }
+
+  /* ========== DIVIDERS & SEPARATORS ========== */
+  .divider-gold {
+    @apply border-t border-gold-300/40 dark:border-gold-700/30;
+  }
+
+  .divider-hunter {
+    @apply border-t border-hunter-300/40 dark:border-hunter-700/30;
+  }
+
+  /* ========== CARD STYLING ========== */
+  .card-primary {
+    @apply rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:border-gold-300/50 hover:shadow-lg dark:hover:border-gold-700/30;
+  }
+
+  /* Hunter Green Component Classes */
+  .brand-gradient-hunter {
+    background: var(--gradient-hunter-depth);
+  }
+
+  .brand-gradient-slate {
+    background: var(--gradient-slate-depth);
+  }
+
+  .brand-gradient-gold {
+    background: var(--gradient-gold-subtle);
+  }
+
+  /* Glass Card System */
+  .glass-card {
+    @apply border border-white/20 bg-white/10 backdrop-blur-md;
+  }
+
+  .dark .glass-card {
+    @apply border-white/10 bg-white/5;
+  }
+
+  /* Brand Buttons */
+  .btn-hunter {
+    @apply bg-hunter-600 text-white transition-all duration-200 hover:bg-hunter-700 focus:ring-2 focus:ring-hunter-500 focus:ring-offset-2 dark:bg-hunter-600 dark:hover:bg-hunter-700;
+  }
+
+  .btn-slate {
+    @apply bg-slate-700 text-white transition-all duration-200 hover:bg-slate-800 focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 dark:bg-slate-600 dark:hover:bg-slate-700;
+  }
+
+  .btn-gold {
+    @apply bg-gold-600 text-white transition-all duration-200 hover:bg-gold-700 focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 dark:bg-gold-500 dark:hover:bg-gold-600;
+  }
+
+  /* Brand Text Colors */
+  .text-brand-hunter {
+    @apply text-hunter-800 dark:text-hunter-400;
+  }
+
+  .text-brand-slate {
+    @apply text-slate-700 dark:text-slate-400;
+  }
+
+  .text-brand-gold {
+    @apply text-gold-600 dark:text-gold-400;
+  }
+
+  /* Brand Borders */
+  .border-brand-hunter {
+    @apply border-hunter-200 dark:border-hunter-800;
+  }
+
+  .border-brand-slate {
+    @apply border-slate-200 dark:border-slate-800;
+  }
+
+  /* Brand Backgrounds */
+  .bg-brand-hunter {
+    @apply bg-hunter-50 dark:bg-hunter-950;
+  }
+
+  .bg-brand-slate {
+    @apply bg-slate-50 dark:bg-slate-950;
   }
 
   /* Standardized Spacing System */
@@ -478,13 +664,9 @@
   }
 
   /* Fix sidebar positioning to start below fixed header */
+  /* Fix sidebar positioning to start below fixed header */
   [data-sidebar='sidebar'] {
     @apply top-24 h-[calc(100vh-6rem)];
-    background: linear-gradient(
-      135deg,
-      hsl(168 100% 97%) 0%,
-      hsl(199 89% 97%) 100%
-    );
     overflow-y: auto;
   }
 
@@ -514,12 +696,9 @@
   }
 
   /* Dark mode sidebar background */
+  /* Dark mode sidebar background */
   .dark [data-sidebar='sidebar'] {
-    background: linear-gradient(
-      135deg,
-      hsl(168 100% 10%) 0%,
-      hsl(199 89% 10%) 100%
-    );
+    background: none;
   }
 
   /* Mobile sidebar positioning fix */
@@ -698,6 +877,12 @@
   .hero-profile-card *::before,
   .hero-profile-card *::after {
     @apply font-sans;
+  }
+
+  /* Remove padding from all cards in about page wrapper */
+  .hero-profile-card-wrapper pre,
+  .about-page [class*='card'] pre {
+    @apply p-0;
   }
 
   /* Specifically target badges and colored elements */

@@ -544,7 +544,7 @@ export default function ProjectsPage({ file }: { file: string }) {
                   },
                   pre: ({ children, ...props }) => (
                     <pre
-                      className='w-full overflow-x-auto rounded-lg border bg-muted p-4'
+                      className='w-full overflow-x-auto rounded-lg border bg-muted p-0'
                       {...props}
                     >
                       {children}
@@ -585,19 +585,19 @@ export default function ProjectsPage({ file }: { file: string }) {
               </ReactMarkdown>
 
               {/* Contact Section at bottom of every page */}
-              <div className='mt-16 border-t border-gray-200 pt-8'>
+              <div className='mt-16 border-t border-hunter-600/20 pt-8'>
                 <div className='text-center'>
-                  <H2 className='mb-4 text-2xl font-semibold text-gray-900'>
+                  <H2 className='mb-4 text-2xl font-semibold text-white'>
                     Ready to discuss your next project?
                   </H2>
-                  <P className='mx-auto mb-6 max-w-2xl text-gray-600'>
+                  <P className='mx-auto mb-6 max-w-2xl text-slate-300'>
                     Whether you need enterprise integration expertise, DevOps
                     transformation, or strategic technology leadership, I'm here
                     to help bring your vision to life.
                   </P>
                   <a
                     href='/contact'
-                    className='inline-flex items-center gap-2 rounded-lg bg-teal-600 px-6 py-3 font-medium text-white transition-colors hover:bg-teal-700'
+                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-hunter-600 to-hunter-500 px-6 py-3 font-medium text-white transition-all hover:from-hunter-500 hover:to-hunter-400 hover:shadow-lg'
                   >
                     <MessageSquare className='size-4' />
                     Get in Touch

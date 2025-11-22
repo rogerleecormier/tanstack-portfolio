@@ -46,7 +46,7 @@ export const Logo: React.FC<LogoProps> = ({
           }}
         />
         <div
-          className={`${sizeClass} hidden items-center justify-center rounded-2xl border border-teal-600/50 bg-gradient-to-br from-teal-800 to-blue-800 shadow-lg`}
+          className={`${sizeClass} hidden items-center justify-center rounded-2xl border border-slate-400/50 bg-gradient-to-br from-slate-700 to-slate-800 shadow-lg`}
         >
           <Target className='size-1/2 text-white' />
         </div>
@@ -69,7 +69,7 @@ export const Logo: React.FC<LogoProps> = ({
           }}
         />
         <div
-          className={`${sizeClass} hidden items-center justify-center rounded-2xl border border-teal-600/50 bg-gradient-to-br from-teal-800 to-blue-800 shadow-lg`}
+          className={`${sizeClass} hidden items-center justify-center rounded-2xl border border-slate-400/50 bg-gradient-to-br from-slate-700 to-slate-800 shadow-lg`}
         >
           <Target className='size-1/2 text-white' />
         </div>
@@ -92,7 +92,7 @@ export const Logo: React.FC<LogoProps> = ({
       />
       {/* Fallback Target icon (hidden by default) */}
       <div
-        className={`${sizeClass} hidden items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg`}
+        className={`${sizeClass} hidden items-center justify-center rounded-2xl bg-gradient-to-br from-slate-600 to-slate-700 shadow-lg`}
       >
         <Target className='size-1/2 text-white' />
       </div>
@@ -106,7 +106,7 @@ export const Logo: React.FC<LogoProps> = ({
             <div className={`${dotSize.inner} rounded-full bg-white`}></div>
           </div>
           <div
-            className={`absolute -bottom-1 -left-1 ${dotSize.outer} flex items-center justify-center rounded-full border border-teal-300/50 bg-gradient-to-br from-teal-600 to-blue-600 shadow-md`}
+            className={`absolute -bottom-1 -left-1 ${dotSize.outer} flex items-center justify-center rounded-full border border-slate-300/50 bg-gradient-to-br from-slate-500 to-slate-600 shadow-md`}
           >
             <div className={`${dotSize.inner} rounded-full bg-white`}></div>
           </div>

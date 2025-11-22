@@ -148,7 +148,7 @@ export default function AppLayout() {
   return (
     <SidebarProvider defaultOpen={true}>
       <Header />
-      <div className='flex min-h-screen bg-gray-50 pt-48 md:pt-44'>
+      <div className='flex min-h-screen bg-gradient-to-br from-slate-950 via-slate-900/40 to-slate-950 pt-48 md:pt-44'>
         <AppSidebar />
         {/* Main content area - Header is now fixed at top */}
         <div className='min-w-0 flex-1'>

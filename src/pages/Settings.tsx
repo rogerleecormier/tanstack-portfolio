@@ -289,18 +289,47 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100'>
-      <div className='container mx-auto max-w-5xl px-4 py-8'>
-        {/* Modern Header */}
-        <div className='mb-12 text-center'>
-          <div className='mb-4 inline-flex size-16 items-center justify-center rounded-2xl bg-gradient-to-r from-teal-500 to-blue-600'>
-            <Settings className='size-8 text-white' />
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-purple-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+      {/* Header with Administrative Theme - Settings Focused */}
+      <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
+        <div className='absolute inset-0 bg-gradient-to-r from-purple-600/3 via-slate-600/3 to-purple-600/3 dark:from-purple-400/8 dark:via-slate-400/8 dark:to-purple-400/8'></div>
+
+        <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
+          <div className='mx-auto max-w-4xl text-center'>
+            {/* Icon and Title with Administrative Theme */}
+            <div className='mb-4 flex items-center justify-center gap-4'>
+              <div className='relative'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-slate-600 shadow-lg'>
+                  <Settings className='size-7 text-white' />
+                </div>
+                {/* Settings indicator dots */}
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-purple-600'>
+                  <div className='size-2 rounded-full bg-white'></div>
+                </div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-purple-400 to-slate-500'>
+                  <div className='size-1.5 rounded-full bg-white'></div>
+                </div>
+              </div>
+              <div>
+                <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-purple-600 to-purple-500 dark:from-purple-400 dark:to-purple-300 bg-clip-text text-transparent'>
+                    Settings
+                  </span>
+                </h1>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-purple-500 to-slate-500'></div>
+              </div>
+            </div>
+
+            {/* Description with Settings Language */}
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+              Manage your profile, preferences, and personal information in one central location
+            </p>
           </div>
-          <h1 className='mb-3 text-4xl font-bold text-gray-900'>Settings</h1>
-          <p className='mx-auto max-w-2xl text-lg text-gray-600'>
-            Manage your profile, goals, and preferences in one place
-          </p>
         </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className='container mx-auto max-w-5xl px-4 py-8'>
 
         {/* User Profile Section */}
         <Card className='mb-8 border-0 bg-white/80 shadow-lg backdrop-blur-sm'>

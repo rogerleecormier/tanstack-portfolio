@@ -4,6 +4,7 @@ import {
 } from '@/api/cachedContentService';
 import { Link } from '@tanstack/react-router';
 import {
+  ArrowRight,
   Briefcase,
   ChevronDown,
   Filter,
@@ -21,13 +22,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -44,7 +39,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { H1, H2, H3, P } from '@/components/ui/typography';
+import { H2, H3, P } from '@/components/ui/typography';
 import { logger } from '@/utils/logger';
 
 // Helper function to safely parse tags
@@ -169,9 +164,9 @@ const categoryConfig = {
   },
   'Technology & Operations': {
     icon: Zap,
-    color: 'from-teal-500 to-teal-600',
-    bgColor: 'bg-teal-50 dark:bg-teal-950/20',
-    borderColor: 'border-teal-200 dark:border-teal-800',
+    color: 'from-hunter-500 to-hunter-600',
+    bgColor: 'bg-hunter-50 dark:bg-hunter-950/20',
+    borderColor: 'border-hunter-200 dark:border-hunter-800',
   },
   'AI & Automation': {
     icon: Sparkles,
@@ -362,58 +357,55 @@ export default function PortfolioListPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Hero Section - Compact with Targeting Theme */}
-      <div className='relative overflow-hidden border-b border-teal-200 dark:border-teal-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
+      <div className='relative overflow-hidden border-b border-hunter-200 dark:border-hunter-800'>
+        <div className='absolute inset-0 bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Targeting Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-500 to-slate-600 shadow-lg'>
                   <Briefcase className='size-7 text-white' />
                 </div>
                 {/* Targeting indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-purple-600'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
-                <H1
-                  className='text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl'
-                  style={{ fontWeight: 700 }}
-                >
-                  <span className='bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent'>
+                <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
                     Portfolio & Expertise
                   </span>
-                </H1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
+                </h1>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-slate-500'></div>
               </div>
             </div>
 
             {/* Description with Targeting Language */}
-            <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-gray-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
               Strategic technology leadership, enterprise modernization, and
               operational excellence across complex business environments.
-              <span className='font-medium text-teal-700 dark:text-teal-300'>
+              <span className='font-medium text-gold-300'>
                 {' '}
                 Target your transformation{' '}
               </span>
               with proven expertise and strategic leadership.
-            </P>
+            </p>
 
             {/* Quick Stats with Targeting Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-teal-500'></div>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>{portfolioItems.length} Portfolio Items</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
                 <div className='size-2 rounded-full bg-blue-500'></div>
                 <span>
                   {portfolioSearch?.getCategories().length ?? 0} Categories
@@ -441,7 +433,7 @@ export default function PortfolioListPage() {
                   placeholder='Search portfolio and expertise...'
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className='h-12 rounded-xl border-0 bg-white/50 pl-12 shadow-sm focus:ring-2 focus:ring-teal-500/20 dark:bg-slate-800/50'
+                  className='h-12 rounded-xl border-0 bg-white/50 pl-12 shadow-sm focus:ring-2 focus:ring-hunter-500/20 dark:bg-slate-800/50'
                 />
               </div>
 
@@ -463,7 +455,7 @@ export default function PortfolioListPage() {
                 <DropdownMenuContent className='max-h-60 w-full overflow-y-auto rounded-xl border-0 bg-white/95 shadow-xl backdrop-blur-sm dark:bg-slate-900/95 sm:w-64'>
                   <DropdownMenuItem
                     onClick={() => setSelectedCategory('all')}
-                    className='mx-2 my-1 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950/20'
+                    className='mx-2 my-1 rounded-lg hover:bg-hunter-50 dark:hover:bg-hunter-950/20'
                   >
                     All Categories
                   </DropdownMenuItem>
@@ -471,7 +463,7 @@ export default function PortfolioListPage() {
                     <DropdownMenuItem
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className='mx-2 my-1 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950/20'
+                      className='mx-2 my-1 rounded-lg hover:bg-hunter-50 dark:hover:bg-hunter-950/20'
                     >
                       {category}
                     </DropdownMenuItem>
@@ -490,7 +482,7 @@ export default function PortfolioListPage() {
                 {selectedTags.length > 0 && (
                   <Badge
                     variant='secondary'
-                    className='ml-2 bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200'
+                    className='ml-2 bg-hunter-100 text-hunter-800 dark:bg-hunter-900 dark:text-hunter-200'
                   >
                     {selectedTags.length}
                   </Badge>
@@ -525,7 +517,7 @@ export default function PortfolioListPage() {
                     <Badge
                       key={tag}
                       variant='default'
-                      className='cursor-pointer border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-sm hover:from-teal-600 hover:to-blue-700'
+                      className='btn-hunter cursor-pointer border-0 shadow-sm'
                       onClick={() => toggleTag(tag)}
                     >
                       <Tag className='mr-1 size-3' />
@@ -565,7 +557,7 @@ export default function PortfolioListPage() {
                 </P>
                 <Button
                   onClick={clearFilters}
-                  className='border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg hover:from-teal-600 hover:to-blue-700'
+                  className='btn-hunter border-0 shadow-lg'
                 >
                   Clear all filters
                 </Button>
@@ -592,44 +584,42 @@ export default function PortfolioListPage() {
                   const CategoryIcon = categoryInfo.icon;
 
                   return (
-                    <Card
+                    <div
                       key={item.id}
-                      className='group h-full border-0 bg-white/70 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:bg-slate-900/70'
+                      className='group relative flex h-full flex-col overflow-hidden rounded-2xl border border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-hunter-600/20'
                     >
-                      <CardHeader className='pb-4'>
+                      {/* Gradient accent on top */}
+                      <div className='absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-hunter-600/0 via-hunter-500 to-hunter-600/0'></div>
+
+                      <div className='relative flex flex-1 flex-col p-6'>
                         {/* Category Badge */}
-                        <div className='mb-3 flex items-center justify-between'>
+                        <div className='mb-4 flex items-start justify-between'>
                           <Badge
                             variant='secondary'
-                            className={`${categoryInfo.bgColor} ${categoryInfo.borderColor} border text-slate-700 shadow-sm dark:text-slate-300`}
+                            className='border-hunter-600/30 bg-hunter-600/15 text-hunter-300 shadow-sm'
                           >
                             <CategoryIcon className='mr-1 size-3' />
                             {item.category}
                           </Badge>
-                          <div className='flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-200 opacity-0 transition-opacity group-hover:opacity-100 dark:from-slate-800 dark:to-slate-700'>
-                            <ChevronDown className='size-4 text-slate-500' />
-                          </div>
                         </div>
 
                         {/* Title */}
-                        <CardTitle className='mb-3 text-xl transition-colors group-hover:text-teal-600 dark:group-hover:text-teal-400'>
+                        <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-hunter-300'>
                           <Link
                             to={`/${item.url}`}
                             className='decoration-2 underline-offset-4 hover:underline'
                           >
                             {item.title}
                           </Link>
-                        </CardTitle>
+                        </h3>
 
                         {/* Description */}
-                        <CardDescription className='line-clamp-3 leading-relaxed text-slate-600 dark:text-slate-300'>
+                        <p className='mb-4 line-clamp-3 flex-1 leading-relaxed text-slate-300'>
                           {item.description}
-                        </CardDescription>
-                      </CardHeader>
+                        </p>
 
-                      <CardContent className='pt-0'>
                         {/* Tags */}
-                        <div className='mb-4 flex flex-wrap gap-1'>
+                        <div className='mb-6 flex flex-wrap gap-2'>
                           {(() => {
                             const cleanTags = parseTagsSafely(item.tags).filter(
                               tag => tag && tag.trim().length > 0
@@ -640,7 +630,7 @@ export default function PortfolioListPage() {
                                   <Badge
                                     key={tag}
                                     variant='secondary'
-                                    className='h-auto border-0 bg-slate-100 px-2 py-1 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+                                    className='h-auto border-hunter-600/30 bg-hunter-600/15 px-2 py-1 text-xs text-hunter-300'
                                   >
                                     <Tag className='mr-1 size-3' />
                                     <span className='whitespace-nowrap'>
@@ -651,7 +641,7 @@ export default function PortfolioListPage() {
                                 {cleanTags.length > 3 && (
                                   <Badge
                                     variant='secondary'
-                                    className='border-0 bg-slate-200 px-2 py-1 text-xs text-slate-600 dark:bg-slate-700 dark:text-slate-300'
+                                    className='border-slate-600/30 bg-slate-700/50 px-2 py-1 text-xs text-slate-300'
                                   >
                                     +{cleanTags.length - 3}
                                   </Badge>
@@ -661,20 +651,16 @@ export default function PortfolioListPage() {
                           })()}
                         </div>
 
-                        {/* View Details Link */}
-                        <div className='flex items-center justify-between'>
-                          <Link
-                            to={`/${item.url}`}
-                            className='text-sm font-medium text-teal-600 transition-colors hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300'
-                          >
-                            View Details
-                          </Link>
-                          <div className='flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-blue-600 opacity-0 transition-opacity group-hover:opacity-100'>
-                            <ChevronDown className='size-3 -rotate-90 text-white' />
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        {/* Prominent View Details Button */}
+                        <Link
+                          to={`/${item.url}`}
+                          className='mt-auto inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-hunter-600 to-hunter-500 px-4 py-3 font-semibold text-white transition-all duration-200 hover:from-hunter-700 hover:to-hunter-600 hover:shadow-lg hover:shadow-hunter-600/50'
+                        >
+                          View Details
+                          <ArrowRight className='size-4 transition-transform group-hover:translate-x-1' />
+                        </Link>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
@@ -684,7 +670,7 @@ export default function PortfolioListPage() {
             {displayedItems.length < filteredItems.length && (
               <div ref={loadingRef} className='py-12 text-center'>
                 <div className='inline-flex items-center gap-3 text-slate-500 dark:text-slate-400'>
-                  <div className='size-6 animate-spin rounded-full border-b-2 border-teal-600'></div>
+                  <div className='size-6 animate-spin rounded-full border-b-2 border-hunter-600'></div>
                   <span className='font-medium'>Loading more items...</span>
                 </div>
               </div>
@@ -694,8 +680,8 @@ export default function PortfolioListPage() {
             {displayedItems.length === filteredItems.length &&
               filteredItems.length > 0 && (
                 <div className='py-12 text-center'>
-                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-blue-100 dark:from-teal-900/50 dark:to-blue-900/50'>
-                    <Briefcase className='size-6 text-teal-600 dark:text-teal-400' />
+                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-100 to-slate-100 dark:from-hunter-900/50 dark:to-slate-900/50'>
+                    <Briefcase className='size-6 text-hunter-600 dark:text-hunter-400' />
                   </div>
                   <p className='font-medium text-slate-500 dark:text-slate-400'>
                     You've reached the end of all portfolio items
@@ -710,7 +696,7 @@ export default function PortfolioListPage() {
           <DialogContent className='flex max-h-[85vh] max-w-3xl flex-col rounded-2xl border-0 bg-white/95 shadow-2xl backdrop-blur-sm dark:bg-slate-900/95'>
             <DialogHeader className='pb-4'>
               <DialogTitle className='flex items-center gap-3 text-xl'>
-                <div className='flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-blue-600'>
+                <div className='flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-hunter-500 to-slate-600'>
                   <Filter className='size-5 text-white' />
                 </div>
                 Filter by Topics
@@ -737,8 +723,8 @@ export default function PortfolioListPage() {
                       }
                       className={`cursor-pointer px-3 py-2 text-sm transition-all duration-200 ${
                         selectedTags.includes(tag)
-                          ? 'border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg hover:from-teal-600 hover:to-blue-700'
-                          : 'border-slate-200 bg-white/50 hover:border-teal-300 hover:bg-teal-50 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-teal-700 dark:hover:bg-teal-950/20'
+                          ? 'btn-hunter border-0 shadow-lg'
+                          : 'border-slate-200 bg-white/50 hover:border-hunter-300 hover:bg-hunter-50 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-hunter-700 dark:hover:bg-hunter-950/20'
                       }`}
                       onClick={() => toggleTag(tag)}
                     >
@@ -766,7 +752,7 @@ export default function PortfolioListPage() {
                 </Button>
                 <Button
                   onClick={closeTagFilter}
-                  className='border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg hover:from-teal-600 hover:to-blue-700'
+                  className='btn-hunter border-0 shadow-lg'
                 >
                   Apply Filters
                 </Button>

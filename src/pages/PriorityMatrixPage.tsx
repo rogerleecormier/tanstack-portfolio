@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { H1, H3, P } from '@/components/ui/typography';
+import { H3, P } from '@/components/ui/typography';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ExcelJS from 'exceljs';
@@ -950,40 +950,37 @@ const PriorityMatrixPage: React.FC = () => {
                 </div>
               </div>
               <div>
-                <H1
-                  className='text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl'
-                  style={{ fontWeight: 700 }}
-                >
-                  <span className='bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent'>
+                <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
                     Priority Matrix Generator
                   </span>
-                </H1>
+                </h1>
                 <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
               </div>
             </div>
 
             {/* Description with Targeting Language */}
-            <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-gray-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
               Strategic task prioritization using the Eisenhower Matrix
               methodology.
-              <span className='font-medium text-teal-700 dark:text-teal-300'>
+              <span className='font-medium text-gold-300'>
                 {' '}
                 Target your priorities{' '}
               </span>
               with precision scoring for importance and urgency.
-            </P>
+            </p>
 
             {/* Quick Stats with Targeting Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-teal-500'></div>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>Strategic Focus</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
                 <div className='size-2 rounded-full bg-blue-500'></div>
                 <span>Priority Analysis</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
                 <div className='size-2 rounded-full bg-purple-500'></div>
                 <span>Action Targeting</span>
               </div>

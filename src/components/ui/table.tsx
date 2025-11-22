@@ -20,7 +20,11 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
+  <thead
+    ref={ref}
+    className={cn('[&_tr]:border-b [&_tr]:border-hunter-600/20', className)}
+    {...props}
+  />
 ));
 TableHeader.displayName = 'TableHeader';
 
@@ -43,7 +47,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={ref}
     className={cn(
-      'border-t bg-muted/50 font-medium [&>tr]:last:border-b-0',
+      'border-t border-hunter-600/20 bg-slate-800/50 font-medium [&>tr]:last:border-b-0',
       className
     )}
     {...props}
@@ -58,7 +62,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
+      'border-b border-hunter-600/20 transition-colors hover:bg-slate-800/50 data-[state=selected]:bg-slate-800',
       className
     )}
     {...props}
@@ -73,7 +77,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0',
+      'h-12 px-4 text-left align-middle font-semibold text-slate-300 [&:has([role=checkbox])]:pr-0',
       className
     )}
     {...props}
@@ -87,7 +91,10 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn('p-4 align-middle [&:has([role=checkbox])]:pr-0', className)}
+    className={cn(
+      'p-4 align-middle text-slate-300 [&:has([role=checkbox])]:pr-0',
+      className
+    )}
     {...props}
   />
 ));
@@ -99,13 +106,13 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={cn('mt-4 text-sm text-muted-foreground', className)}
+    className={cn('mt-4 text-sm text-slate-400', className)}
     {...props}
   />
 ));
 TableCaption.displayName = 'TableCaption';
 
-// Unified table styling that matches TipTap editor styling
+// Unified table styling that matches dark theme
 const UnifiedTable = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
@@ -114,7 +121,7 @@ const UnifiedTable = React.forwardRef<
     <table
       ref={ref}
       className={cn(
-        'my-4 w-full caption-bottom border-collapse overflow-hidden rounded-xl border border-teal-200 bg-white text-sm shadow-sm',
+        'my-4 w-full caption-bottom border-collapse overflow-hidden rounded-xl border border-hunter-600/20 bg-slate-900/40 text-sm shadow-sm backdrop-blur-sm',
         className
       )}
       {...props}
@@ -127,7 +134,7 @@ const UnifiedTableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('bg-teal-50', className)} {...props} />
+  <thead ref={ref} className={cn('bg-slate-800/50', className)} {...props} />
 ));
 UnifiedTableHeader.displayName = 'UnifiedTableHeader';
 
@@ -146,7 +153,7 @@ const UnifiedTableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      'border-b border-teal-100 transition-all duration-200 ease-in-out last:border-b-0 hover:bg-teal-50 hover:shadow-sm',
+      'border-b border-hunter-600/20 transition-all duration-200 ease-in-out last:border-b-0 hover:bg-slate-700/50 hover:shadow-sm',
       className
     )}
     {...props}
@@ -161,7 +168,7 @@ const UnifiedTableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      'h-14 border-r border-teal-200 bg-teal-50 px-5 text-left align-middle text-sm font-semibold tracking-wide text-teal-900 last:border-r-0',
+      'h-14 border-r border-hunter-600/20 bg-slate-800/50 px-5 text-left align-middle text-sm font-semibold tracking-wide text-white last:border-r-0',
       className
     )}
     {...props}
@@ -176,7 +183,7 @@ const UnifiedTableCell = React.forwardRef<
   <td
     ref={ref}
     className={cn(
-      'min-w-[120px] border-r border-teal-100 px-5 py-4 align-middle text-sm leading-relaxed text-teal-700 last:border-r-0',
+      'min-w-[120px] border-r border-hunter-600/20 px-5 py-4 align-middle text-sm leading-relaxed text-slate-300 last:border-r-0',
       className
     )}
     {...props}

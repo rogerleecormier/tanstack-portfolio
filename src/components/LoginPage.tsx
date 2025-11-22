@@ -37,10 +37,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
 
   return (
     <div className='flex w-full justify-center'>
-      <Card className='w-full max-w-md border-teal-200 shadow-xl'>
+      <Card className='w-full max-w-md border-hunter-200 shadow-xl'>
         <CardHeader className='space-y-3 text-center'>
           <div className='relative mx-auto'>
-            <div className='flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 p-3 shadow-lg'>
+            <div className='flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-600 to-hunter-800 p-3 shadow-lg'>
               <img
                 src='/header-logo.svg'
                 alt='RCormier Logo'
@@ -58,30 +58,30 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               <Target className='hidden size-8 text-white' />
             </div>
             {/* Targeting indicator dots */}
-            <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
+            <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-gold-600'>
               <div className='size-2 rounded-full bg-white'></div>
             </div>
-            <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
+            <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-hunter-600'>
               <div className='size-1.5 rounded-full bg-white'></div>
             </div>
           </div>
-          <CardTitle className='bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-2xl font-semibold text-transparent'>
+          <CardTitle className='bg-gradient-to-r from-hunter-600 to-hunter-700 dark:from-hunter-500 dark:to-hunter-600 bg-clip-text text-2xl font-semibold text-transparent'>
             Roger Lee Cormier
           </CardTitle>
-          <CardDescription className='text-teal-700'>
+          <CardDescription className='text-slate-700 dark:text-slate-300'>
             Access your portfolio administration area
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='space-y-4 text-center'>
-            <P className='text-sm leading-relaxed text-teal-700'>
+            <P className='text-sm leading-relaxed text-slate-700 dark:text-slate-300'>
               Authenticate to access your portfolio administration area and
               private projects.
             </P>
 
             {/* Authentication Notice */}
-            <div className='rounded-lg border border-teal-200 bg-teal-50 p-4'>
-              <div className='text-sm text-teal-800'>
+            <div className='rounded-lg border border-hunter-300 bg-hunter-50 p-4 dark:border-hunter-700 dark:bg-hunter-950/50'>
+              <div className='text-sm text-hunter-800 dark:text-hunter-100'>
                 <strong className='font-semibold'>🔒 Secure Access:</strong>{' '}
                 {isDevMode
                   ? 'Development mode authentication'
@@ -93,7 +93,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
             <Button
               onClick={handleLogin}
               disabled={isLoading}
-              className='w-full bg-gradient-to-r from-teal-600 to-blue-600 shadow-lg transition-all duration-200 hover:from-teal-700 hover:to-blue-700 hover:shadow-xl focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:opacity-50'
+              className='w-full bg-hunter-600 text-white shadow-lg transition-all duration-200 hover:bg-hunter-700 hover:shadow-xl focus:ring-2 focus:ring-hunter-500 focus:ring-offset-2 disabled:opacity-50'
               size='lg'
             >
               {isLoading ? (
@@ -115,8 +115,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
           </div>
 
           {/* Simplified Information */}
-          <div className='rounded-lg border border-teal-200 bg-teal-50 p-4'>
-            <P className='text-xs text-teal-800'>
+          <div className='rounded-lg border border-hunter-300 bg-hunter-50 p-4 dark:border-hunter-700 dark:bg-hunter-950/50'>
+            <P className='text-xs text-hunter-800 dark:text-hunter-100'>
               <strong className='font-semibold'>What happens next:</strong>{' '}
               {isDevMode
                 ? "You'll be authenticated and redirected to the administration area."
@@ -129,7 +129,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               variant='ghost'
               onClick={onClose}
               disabled={isLoading}
-              className='text-sm text-teal-600 transition-colors duration-200 hover:bg-teal-50 hover:text-teal-700'
+              className='text-sm text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
             >
               Cancel
             </Button>

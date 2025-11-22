@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Wrench, ArrowRight, Lock, TestTube } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
-import { H1, H2, P } from '@/components/ui/typography';
+import { H2, P } from '@/components/ui/typography';
 
 interface PrivateTool {
   id: string;
@@ -103,7 +103,7 @@ const PrivateToolsPage: React.FC = () => {
         return (
           <Badge
             variant='secondary'
-            className='brand-bg-secondary brand-border-secondary text-blue-800 hover:bg-blue-200'
+            className='border-blue-500/50 bg-blue-500/10 text-blue-400'
           >
             Beta Testing
           </Badge>
@@ -112,7 +112,7 @@ const PrivateToolsPage: React.FC = () => {
         return (
           <Badge
             variant='outline'
-            className='border-orange-300 text-orange-600'
+            className='border-orange-500/50 text-orange-400'
           >
             In Development
           </Badge>
@@ -132,64 +132,59 @@ const PrivateToolsPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-teal-100 dark:from-teal-950 dark:via-blue-950 dark:to-teal-900'>
-      {/* Hero Section - Compact with Private Theme */}
-      <div className='relative overflow-hidden border-b border-teal-200 dark:border-teal-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-cyan-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+      {/* Header with Administrative Theme - Tools Focused */}
+      <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
+        <div className='absolute inset-0 bg-gradient-to-r from-cyan-600/3 via-slate-600/3 to-cyan-600/3 dark:from-cyan-400/8 dark:via-slate-400/8 dark:to-cyan-400/8'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
-            {/* Icon and Title with Private Theme */}
+            {/* Icon and Title with Administrative Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
-                  <Lock className='size-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-slate-600 shadow-lg'>
+                  <Wrench className='size-7 text-white' />
                 </div>
-                {/* Private indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-purple-600'>
+                {/* Tools indicator dots */}
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-cyan-600'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
-                <H1
-                  className='text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl'
-                  style={{ fontWeight: 700 }}
-                >
-                  <span className='bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent'>
+                <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-cyan-600 to-cyan-500 dark:from-cyan-400 dark:to-cyan-300 bg-clip-text text-transparent'>
                     Private Tools
                   </span>
-                </H1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
+                </h1>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-cyan-500 to-slate-500'></div>
               </div>
             </div>
 
-            {/* Description with Private Language */}
-            <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-gray-300'>
-              Access your private toolkit with tools currently in development
-              and beta testing.
-              <span className='font-medium text-teal-700 dark:text-teal-300'>
-                {' '}
-                Exclusive access{' '}
+            {/* Description with Tools Language */}
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+              Access your private toolkit with utilities currently in development and beta testing.
+              <span className='font-medium text-cyan-600 dark:text-cyan-400'>
+                {' '}Exclusive access{' '}
               </span>
-              to cutting-edge utilities and experimental features.
-            </P>
+              to cutting-edge features and experimental tools.
+            </p>
 
-            {/* Quick Stats with Private Theme */}
+            {/* Quick Stats with Administrative Focus */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-red-500'></div>
-                <span>Private Access</span>
+              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
+                <div className='size-2 rounded-full bg-cyan-500'></div>
+                <span>Development & Beta</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-orange-500'></div>
-                <span>Early Access</span>
+              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
+                <div className='size-2 rounded-full bg-slate-500'></div>
+                <span>Experimental Features</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-purple-500'></div>
-                <span>Development Tools</span>
+              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
+                <div className='size-2 rounded-full bg-cyan-400'></div>
+                <span>Exclusive Access</span>
               </div>
             </div>
           </div>
@@ -203,27 +198,30 @@ const PrivateToolsPage: React.FC = () => {
           {privateTools.map(tool => (
             <Card
               key={tool.id}
-              className='group border border-gray-200 transition-all duration-200 hover:border-gray-300 hover:shadow-lg'
+              className='group relative overflow-hidden border border-slate-700 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 transition-all duration-300 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 dark:border-slate-700'
             >
-              <CardHeader className='pb-3'>
+              {/* Subtle gradient overlay on hover */}
+              <div className='absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-cyan-500/0 transition-all duration-300 group-hover:from-cyan-500/5 group-hover:to-cyan-500/10'></div>
+              
+              <CardHeader className='relative pb-3'>
                 <div className='flex items-start justify-between'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-teal-100 p-2 transition-colors group-hover:bg-teal-200'>
-                      <tool.icon className='size-6 text-teal-700' />
+                    <div className='rounded-lg bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 p-2 transition-all duration-300 group-hover:from-cyan-500/30 group-hover:to-cyan-600/30'>
+                      <tool.icon className='size-6 text-cyan-400' />
                     </div>
                     <div>
-                      <CardTitle className='text-xl transition-colors group-hover:text-gray-900'>
+                      <CardTitle className='text-xl font-semibold text-slate-100 transition-colors group-hover:text-cyan-300'>
                         {tool.title}
                       </CardTitle>
                       <div className='mt-1 flex items-center gap-2'>
-                        <div className='flex items-center gap-1 text-sm text-gray-500'>
+                        <div className='flex items-center gap-1 text-sm text-slate-400'>
                           {getCategoryIcon(tool.category)}
                           <span>{tool.category}</span>
                         </div>
                         {getStatusBadge(tool.status)}
                         <Badge
                           variant='outline'
-                          className='border-red-300 text-xs text-red-600'
+                          className='border-red-500/50 text-xs text-red-400'
                         >
                           <Lock className='mr-1 size-3' />
                           Private
@@ -234,13 +232,13 @@ const PrivateToolsPage: React.FC = () => {
                 </div>
               </CardHeader>
 
-              <CardContent className='pt-0'>
-                <P className='mb-4 leading-relaxed text-gray-600'>
+              <CardContent className='relative pt-0'>
+                <P className='mb-4 leading-relaxed text-slate-300'>
                   {tool.description}
                 </P>
 
                 <div className='mb-4'>
-                  <H2 className='mb-2 text-sm font-semibold text-gray-700'>
+                  <H2 className='mb-2 text-sm font-semibold text-slate-200'>
                     Key Features:
                   </H2>
                   <div className='flex flex-wrap gap-1'>
@@ -248,7 +246,7 @@ const PrivateToolsPage: React.FC = () => {
                       <Badge
                         key={index}
                         variant='secondary'
-                        className='border-gray-200 bg-gray-50 text-xs text-gray-600'
+                        className='border-slate-600 bg-slate-700/50 text-xs text-slate-300'
                       >
                         {feature}
                       </Badge>
@@ -256,8 +254,8 @@ const PrivateToolsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className='flex items-center justify-between'>
-                  <div className='text-sm text-gray-500'>
+                <div className='flex items-center justify-between border-t border-slate-700 pt-4'>
+                  <div className='text-sm text-slate-400'>
                     {tool.status === 'beta'
                       ? 'Available for testing'
                       : 'Development in progress'}
@@ -267,24 +265,23 @@ const PrivateToolsPage: React.FC = () => {
                     <Button
                       asChild
                       size='sm'
-                      className='bg-teal-600 text-white transition-colors hover:bg-teal-700 group-hover:bg-teal-800'
+                      className='bg-gradient-to-r from-cyan-600 to-cyan-500 text-white transition-all duration-300 hover:from-cyan-500 hover:to-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30'
                     >
                       <Link to={tool.url}>
                         Try Beta
-                        <ArrowRight className='ml-2 size-4 transition-transform group-hover:translate-x-1' />
+                        <ArrowRight className='ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1' />
                       </Link>
                     </Button>
                   ) : (
                     <Button
                       asChild
                       size='sm'
-                      variant='outline'
-                      className='border-orange-300 text-orange-600 transition-colors hover:bg-orange-50 group-hover:border-orange-400'
+                      className='border-orange-500/50 bg-orange-500/10 text-orange-400 transition-all duration-300 hover:border-orange-500 hover:bg-orange-500/20'
                     >
                       <Link to={tool.url}>
                         <TestTube className='mr-2 size-4' />
                         Test Development
-                        <ArrowRight className='ml-2 size-4 transition-transform group-hover:translate-x-1' />
+                        <ArrowRight className='ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1' />
                       </Link>
                     </Button>
                   )}
@@ -296,17 +293,17 @@ const PrivateToolsPage: React.FC = () => {
 
         {/* Coming Soon Section */}
         <div className='text-center'>
-          <Card className='border-teal-200 bg-gradient-to-r from-teal-50 to-blue-50'>
+          <Card className='border-cyan-500/30 bg-gradient-to-r from-slate-800 via-slate-800 to-slate-900'>
             <CardContent className='p-8'>
               <div className='mb-4 flex items-center justify-center'>
-                <div className='flex size-12 items-center justify-center rounded-xl bg-teal-100'>
-                  <Wrench className='size-6 text-teal-600' />
+                <div className='flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/20'>
+                  <Wrench className='size-6 text-cyan-400' />
                 </div>
               </div>
-              <H2 className='mb-2 text-2xl font-bold text-gray-900'>
+              <H2 className='mb-2 text-2xl font-bold text-slate-100'>
                 More Private Tools Coming Soon
               </H2>
-              <P className='mx-auto mb-4 max-w-2xl text-gray-600'>
+              <P className='mx-auto mb-4 max-w-2xl text-slate-300'>
                 We're constantly developing new private tools and utilities.
                 These exclusive tools are available only to authenticated users
                 during their development phase.
@@ -314,8 +311,7 @@ const PrivateToolsPage: React.FC = () => {
               <div className='flex flex-col justify-center gap-3 sm:flex-row'>
                 <Button
                   asChild
-                  variant='outline'
-                  className='border-teal-300 text-teal-700 hover:bg-teal-50'
+                  className='border-cyan-500/50 bg-cyan-500/10 text-cyan-400 transition-all duration-300 hover:border-cyan-500 hover:bg-cyan-500/20'
                 >
                   <Link to='/tools'>
                     View Public Tools
@@ -324,8 +320,7 @@ const PrivateToolsPage: React.FC = () => {
                 </Button>
                 <Button
                   asChild
-                  variant='outline'
-                  className='border-orange-300 text-orange-700 hover:bg-orange-50'
+                  className='border-orange-500/50 bg-orange-500/10 text-orange-400 transition-all duration-300 hover:border-orange-500 hover:bg-orange-500/20'
                 >
                   <Link to='/protected/content-studio'>
                     Content Studio

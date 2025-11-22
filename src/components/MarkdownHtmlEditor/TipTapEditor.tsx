@@ -47,7 +47,7 @@ const ToolbarButton = React.memo<ToolbarButtonProps>(
       onClick={onClick}
       className={`rounded-lg border border-slate-200/30 bg-white/40 transition-all duration-200 hover:border-slate-300/60 hover:bg-white/60 dark:border-slate-700/30 dark:bg-slate-800/40 dark:hover:border-slate-600/60 dark:hover:bg-slate-700/60 ${
         isActive
-          ? 'border-teal-600 bg-teal-600 text-white dark:border-teal-500'
+          ? 'border-hunter-600 bg-hunter-600 text-white dark:border-hunter-500'
           : 'hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300'
       } ${className}`}
     >
@@ -300,7 +300,7 @@ export function TipTapEditor({
         {editor && (
           <EditorContent
             editor={editor}
-            className='prose prose-slate h-full max-w-none cursor-text overflow-auto rounded-b-xl p-6 dark:prose-invert focus-within:outline-none focus-within:ring-2 focus-within:ring-teal-500/30'
+            className='prose prose-slate h-full max-w-none cursor-text overflow-auto rounded-b-xl p-6 dark:prose-invert focus-within:outline-none focus-within:ring-2 focus-within:ring-hunter-500/30'
           />
         )}
       </div>

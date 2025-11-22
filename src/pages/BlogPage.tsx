@@ -212,7 +212,7 @@ export default function BlogPage({ slug }: { slug: string }) {
         <div className='lg:col-span-3'>
           {/* Blog Header */}
           {frontmatter.title && (
-            <header className='mb-8'>
+            <header className='mb-8 border-b border-hunter-600/20 pb-8'>
               {/* Header Image */}
               {frontmatter.image && (
                 <div className='mb-6'>
@@ -224,17 +224,17 @@ export default function BlogPage({ slug }: { slug: string }) {
                 </div>
               )}
 
-              <H1 className='mb-4 text-4xl font-bold leading-tight'>
+              <H1 className='mb-4 text-4xl font-bold leading-tight text-white'>
                 {frontmatter.title}
               </H1>
               {frontmatter.description && (
-                <P className='mb-6 text-xl leading-7 text-muted-foreground'>
+                <P className='mb-6 text-lg leading-7 text-slate-300'>
                   {frontmatter.description}
                 </P>
               )}
 
               {/* Blog Meta Information */}
-              <div className='mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground'>
+              <div className='mb-6 flex flex-wrap items-center gap-4 text-sm text-slate-400'>
                 {frontmatter.author && (
                   <div className='flex items-center gap-2'>
                     <User className='size-4' />
@@ -343,8 +343,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                     return uniqueTags.map((tag: string, index: number) => (
                       <Badge
                         key={`${frontmatter.title}-${tag}-${index}`}
-                        variant='secondary'
-                        className='h-auto px-1.5 py-0.5 text-xs'
+                        className='border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
                         title={formatTag(tag)}
                       >
                         <Tag className='mr-1 size-3' />
@@ -389,14 +388,18 @@ export default function BlogPage({ slug }: { slug: string }) {
                   return (
                     <h3
                       id={id}
-                      className='scroll-m-20 text-2xl font-semibold tracking-tight'
+                      className='scroll-m-20 text-2xl font-semibold tracking-tight text-white'
                       {...props}
                     >
                       {children}
                     </h3>
                   );
                 },
-                p: ({ children, ...props }) => <P {...props}>{children}</P>,
+                p: ({ children, ...props }) => (
+                  <P className='text-slate-300' {...props}>
+                    {children}
+                  </P>
+                ),
                 blockquote: ({ children, ...props }) => (
                   <Blockquote {...props}>{children}</Blockquote>
                 ),
@@ -512,12 +515,12 @@ export default function BlogPage({ slug }: { slug: string }) {
             </ReactMarkdown>
 
             {/* Blog Footer */}
-            <div className='mt-16 border-t border-gray-200 pt-8'>
+            <div className='mt-16 border-t border-hunter-600/20 pt-8'>
               <div className='text-center'>
-                <H2 className='mb-4 text-2xl font-semibold text-gray-900 dark:text-white'>
+                <H2 className='mb-4 text-2xl font-semibold text-white'>
                   Enjoyed this article?
                 </H2>
-                <P className='mx-auto mb-6 max-w-2xl text-gray-600 dark:text-gray-400'>
+                <P className='mx-auto mb-6 max-w-2xl text-slate-300'>
                   If you found this helpful, consider sharing it with your
                   network or reaching out to discuss how we can apply these
                   concepts to your projects.
@@ -525,19 +528,17 @@ export default function BlogPage({ slug }: { slug: string }) {
                 <div className='flex flex-col justify-center gap-4 sm:flex-row'>
                   <a
                     href='/contact'
-                    className='inline-flex items-center gap-2 rounded-lg bg-teal-600 px-6 py-3 font-medium text-white transition-colors hover:bg-teal-700'
+                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-hunter-600 to-hunter-500 px-6 py-3 font-medium text-white transition-all hover:from-hunter-500 hover:to-hunter-400'
                   >
-                    <MessageSquare className='size-4 text-white' />
-                    <span className='text-white'>Get in Touch</span>
+                    <MessageSquare className='size-4' />
+                    <span>Get in Touch</span>
                   </a>
                   <Link
                     to='/blog'
-                    className='inline-flex items-center gap-2 rounded-lg border border-teal-300 bg-white px-6 py-3 font-medium text-teal-700 transition-colors hover:bg-gray-50 dark:border-teal-300 dark:bg-teal-50 dark:text-teal-800 dark:hover:bg-teal-100'
+                    className='inline-flex items-center gap-2 rounded-lg border border-hunter-600/40 bg-transparent px-6 py-3 font-medium text-hunter-400 transition-colors hover:border-hunter-600/60 hover:bg-hunter-600/10'
                   >
-                    <Calendar className='size-4 text-teal-700 dark:text-teal-800' />
-                    <span className='text-teal-700 dark:text-teal-800'>
-                      Read More Articles
-                    </span>
+                    <Calendar className='size-4' />
+                    <span>Read More Articles</span>
                   </Link>
                 </div>
               </div>
@@ -555,7 +556,7 @@ export default function BlogPage({ slug }: { slug: string }) {
         <div className='lg:col-span-1'>
           <div className='sticky top-36 space-y-6'>
             {/* Smart Related Content Sidebar */}
-            <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-gray-50 p-6 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:from-slate-900 dark:to-gray-900'>
+            <div className='rounded-xl border border-hunter-600/20 bg-slate-900/40 p-6 backdrop-blur-sm'>
               <UnifiedRelatedContent
                 content={content}
                 title={frontmatter.title ?? ''}
@@ -577,7 +578,7 @@ export default function BlogPage({ slug }: { slug: string }) {
               </p>
               <Link
                 to='/about'
-                className='inline-flex items-center gap-2 text-sm font-medium text-teal-600 transition-colors hover:text-teal-700'
+                className='inline-flex items-center gap-2 text-sm font-medium text-hunter-600 transition-colors hover:text-hunter-700'
               >
                 Learn more about Roger
                 <ArrowRight className='size-3' />

@@ -22,51 +22,51 @@ interface MatrixTableProps {
 const getCellClass = (color: string | undefined): string => {
   switch (color) {
     case 'R':
-      return 'bg-green-50 text-green-800 border-green-200';
+      return 'bg-hunter-600/15 text-hunter-300 border-hunter-600/40';
     case 'A':
-      return 'bg-amber-50 text-amber-800 border-amber-200';
+      return 'bg-gold-600/15 text-gold-300 border-gold-600/40';
     case 'C':
-      return 'bg-blue-50 text-blue-800 border-blue-200';
+      return 'bg-slate-600/15 text-slate-300 border-slate-600/40';
     case 'I':
-      return 'bg-gray-50 text-gray-800 border-gray-200';
+      return 'bg-purple-600/15 text-purple-300 border-purple-600/40';
     default:
-      return 'bg-white text-gray-500 border-gray-100';
+      return 'bg-slate-800/30 text-slate-400 border-slate-600/20';
   }
 };
 
 export const MatrixTable: React.FC<MatrixTableProps> = ({ data }) => {
   if (!data || data.rows.length === 0) {
-    return <div className='text-gray-500'>No data available</div>;
+    return <div className='text-slate-400'>No data available</div>;
   }
 
   return (
     <div className='overflow-x-auto'>
-      <table className='min-w-full border-collapse divide-y divide-gray-200 rounded-lg bg-white shadow-sm'>
+      <table className='min-w-full border-collapse divide-y divide-hunter-600/20 rounded-lg bg-slate-900/40 shadow-sm backdrop-blur-sm'>
         <thead>
           <tr>
-            <th className='border-r border-gray-100 bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-900'>
+            <th className='border-r border-hunter-600/20 bg-slate-800/50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-white'>
               Task
             </th>
             {data.headers.slice(1).map((header, index) => (
               <th
                 key={index}
-                className='border-r border-gray-100 bg-slate-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-900'
+                className='border-r border-hunter-600/20 bg-slate-800/50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-white'
               >
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className='divide-y divide-gray-200'>
+        <tbody className='divide-y divide-hunter-600/20'>
           {data.rows.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              <td className='whitespace-nowrap border-r border-gray-100 bg-gray-50 px-6 py-4 text-sm font-medium text-gray-900'>
+              <td className='whitespace-nowrap border-r border-hunter-600/20 bg-slate-800/30 px-6 py-4 text-sm font-medium text-slate-300'>
                 {row.taskName}
               </td>
               {row.cells.map((cell, cellIndex) => (
                 <td
                   key={cellIndex}
-                  className={`whitespace-nowrap px-6 py-4 text-center text-sm font-medium ${getCellClass(cell.color)} border-r border-gray-100`}
+                  className={`whitespace-nowrap px-6 py-4 text-center text-sm font-medium ${getCellClass(cell.color)} border-r border-hunter-600/20`}
                 >
                   {cell.value || ''}
                 </td>

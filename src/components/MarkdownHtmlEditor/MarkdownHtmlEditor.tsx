@@ -70,13 +70,13 @@ export function MarkdownHtmlEditor({
                 <TabsList className='border border-slate-200/60 bg-white/80 dark:border-slate-700/60 dark:bg-slate-800/80'>
                   <TabsTrigger
                     value='wysiwyg'
-                    className='transition-colors data-[state=active]:bg-teal-600 data-[state=active]:text-white'
+                    className='transition-colors data-[state=active]:bg-hunter-600 data-[state=active]:text-white'
                   >
                     WYSIWYG
                   </TabsTrigger>
                   <TabsTrigger
                     value='markdown'
-                    className='transition-colors data-[state=active]:bg-teal-600 data-[state=active]:text-white'
+                    className='transition-colors data-[state=active]:bg-hunter-600 data-[state=active]:text-white'
                   >
                     Markdown
                   </TabsTrigger>
@@ -92,7 +92,7 @@ export function MarkdownHtmlEditor({
                     variant='outline'
                     size='sm'
                     onClick={handleLoadExample}
-                    className='rounded-md border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950'
+                    className='rounded-md border-hunter-600 text-hunter-600 hover:bg-hunter-50 dark:hover:bg-hunter-950'
                   >
                     <FileText className='size-4' />
                     <span className='ml-2 hidden sm:inline'>Example</span>
@@ -124,7 +124,7 @@ export function MarkdownHtmlEditor({
                     variant='outline'
                     size='sm'
                     onClick={() => setShowPreview(v => !v)}
-                    className='rounded-md border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950'
+                    className='rounded-md border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-950'
                   >
                     {showPreview ? (
                       <EyeOff className='size-4' />
@@ -158,7 +158,7 @@ export function MarkdownHtmlEditor({
               {/* Editor Mode Indicator */}
               <div className='flex items-center justify-between border-b border-slate-200/60 px-4 py-2 dark:border-slate-700/60'>
                 <div className='flex items-center gap-2'>
-                  <div className='size-2 rounded-full bg-teal-600'></div>
+                  <div className='size-2 rounded-full bg-hunter-600'></div>
                   <span className='text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300'>
                     {activeTab === 'wysiwyg'
                       ? 'Rich Text Editor'
@@ -194,14 +194,14 @@ export function MarkdownHtmlEditor({
                 {/* Preview Header */}
                 <div className='flex items-center justify-between border-b border-slate-200/60 px-4 py-2 dark:border-slate-700/60'>
                   <div className='flex items-center gap-2'>
-                    <div className='size-2 rounded-full bg-blue-600'></div>
+                    <div className='size-2 rounded-full bg-slate-600'></div>
                     <span className='text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300'>
                       Live Preview
                     </span>
                   </div>
                   {isPending && (
                     <div className='flex items-center gap-2 text-xs text-muted-foreground'>
-                      <div className='size-3 animate-spin rounded-full border border-blue-600 border-t-transparent dark:border-blue-400'></div>
+                      <div className='size-3 animate-spin rounded-full border border-slate-600 border-t-transparent dark:border-slate-400'></div>
                       Updating...
                     </div>
                   )}
@@ -209,7 +209,7 @@ export function MarkdownHtmlEditor({
 
                 {/* Preview Content */}
                 <div className='h-full overflow-auto'>
-                  <div className='prose prose-slate max-w-none p-6 dark:prose-invert prose-headings:text-slate-900 prose-a:text-teal-600 hover:prose-a:underline prose-strong:text-slate-900 prose-code:text-purple-700 prose-pre:rounded-lg prose-pre:bg-slate-950/90 prose-pre:text-slate-100 prose-pre:ring-1 prose-pre:ring-slate-200/20 prose-li:marker:text-slate-400 dark:prose-headings:text-slate-100 dark:prose-a:text-teal-400 dark:prose-strong:text-slate-100 dark:prose-code:text-purple-300 dark:prose-pre:bg-slate-900/70'>
+                  <div className='prose prose-slate max-w-none p-6 dark:prose-invert prose-headings:text-slate-900 prose-a:text-hunter-600 hover:prose-a:underline prose-strong:text-slate-900 prose-code:text-gold-700 prose-pre:rounded-lg prose-pre:bg-slate-950/90 prose-pre:text-slate-100 prose-pre:ring-1 prose-pre:ring-slate-200/20 prose-li:marker:text-slate-400 dark:prose-headings:text-slate-100 dark:prose-a:text-hunter-400 dark:prose-strong:text-slate-100 dark:prose-code:text-gold-300 dark:prose-pre:bg-slate-900/70'>
                     {previewContent}
                   </div>
                 </div>

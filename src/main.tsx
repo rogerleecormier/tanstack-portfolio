@@ -34,6 +34,10 @@ const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error('Root element not found');
 }
+
+// Apply dark mode to HTML element
+document.documentElement.classList.add('dark');
+
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <TooltipProvider>

@@ -2,7 +2,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   AlertTriangle,
-  Archive,
   Database,
   Download,
   FileText,
@@ -468,362 +467,308 @@ export function CreationStudioPage() {
   }, [anyModalOpen, scrollbarWidth]);
 
   return (
-    <div className='flex h-full min-h-0 flex-col bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
-      {/* Enhanced Header with Brand Theme */}
-      <div className='relative border-b border-teal-200 bg-white/80 backdrop-blur-sm dark:border-teal-800 dark:bg-slate-900/80'>
-        <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
-        <div className='relative flex items-center justify-between p-4'>
-          <div className='flex flex-col gap-2'>
-            {/* Enhanced Title with Targeting Theme */}
+    <div className='flex h-full min-h-0 flex-col bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950'>
+      {/* Administrative Header with Content Creation Focus */}
+      <div className='relative border-b border-slate-200 bg-white/80 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+        <div className='absolute inset-0 bg-gradient-to-r from-indigo-600/3 via-slate-600/3 to-indigo-600/3 dark:from-indigo-400/8 dark:via-slate-400/8 dark:to-indigo-400/8'></div>
+        <div className='relative px-4 py-6 sm:px-6 lg:px-8'>
+          <div className='max-w-7xl'>
+            {/* Enhanced Title with Administrative Theme */}
             <div className='flex items-center gap-4'>
-              <div className='rounded-xl bg-gradient-to-br from-teal-600 to-blue-600 p-3 shadow-lg'>
-                <FileText className='size-6 text-white' />
+              <div className='relative'>
+                <div className='flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-slate-600 shadow-lg'>
+                  <FileText className='size-6 text-white' />
+                </div>
+                {/* Content indicator dots */}
+                <div className='absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-indigo-600'>
+                  <div className='size-1.5 rounded-full bg-white'></div>
+                </div>
+                <div className='absolute -bottom-1 -left-1 flex size-2.5 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-slate-500'>
+                  <div className='size-1 rounded-full bg-white'></div>
+                </div>
               </div>
               <div>
-                <h1
-                  className='text-3xl font-bold tracking-tight text-slate-900 dark:text-white'
-                  style={{ fontWeight: 700 }}
-                >
-                  Content Creation Studio
+                <h1 className='text-3xl font-bold tracking-tight text-slate-900 dark:text-white'>
+                  <span className='bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent'>
+                    Content Studio
+                  </span>
                 </h1>
-                <div className='mt-1 h-1 w-32 rounded-full bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600'></div>
+                <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-slate-500'></div>
               </div>
             </div>
-            {/* Enhanced File Status - Always present to prevent layout shifts */}
-            <div className='flex min-h-[20px] items-center gap-2'>
+            {/* File Status Line */}
+            <div className='mt-3 flex min-h-[20px] items-center gap-2'>
               {currentFile ? (
                 <>
-                  <div className='size-1.5 rounded-full bg-orange-500'></div>
+                  <div className='size-1.5 rounded-full bg-indigo-500'></div>
                   <p className='text-sm text-slate-600 dark:text-slate-400'>
-                    <span className='font-medium'>Currently Editing:</span>{' '}
+                    <span className='font-medium'>Editing:</span>{' '}
                     {currentFile}{' '}
                     {isDirty && (
-                      <span className='font-medium text-orange-600 dark:text-orange-400'>
-                        • Unsaved changes
+                      <span className='font-medium text-indigo-600 dark:text-indigo-400'>
+                        • Unsaved
                       </span>
                     )}
                   </p>
                 </>
               ) : (
-                <div className='size-1.5 rounded-full bg-slate-300'></div>
+                <>
+                  <div className='size-1.5 rounded-full bg-slate-300 dark:bg-slate-600'></div>
+                  <p className='text-sm text-slate-500 dark:text-slate-400'>
+                    Ready to create or open a file
+                  </p>
+                </>
               )}
             </div>
           </div>
-          <div className='flex items-center gap-1'>
-            {/* File Operations Group */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => {
-                    if (isDirty) {
-                      setConfirm({
-                        open: true,
-                        message:
-                          'You have unsaved changes. Start a new document?',
-                        onConfirm: () => {
-                          setConfirm({ open: false, message: '' });
-                          setMarkdown('');
-                          setFrontmatter({});
-                          setCurrentFile('');
-                          setCurrentEtag('');
-                          setIsDirty(true);
-                        },
-                      });
-                    } else {
-                      setMarkdown('');
-                      setFrontmatter({});
-                      setCurrentFile('');
-                      setCurrentEtag('');
-                      setIsDirty(true);
-                    }
-                  }}
-                  className='border-slate-600 text-slate-600 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800'
-                >
-                  <Plus className='size-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>New Document</TooltipContent>
-            </Tooltip>
+        </div>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={handleDownload}
-                  className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 dark:hover:bg-teal-950'
-                >
-                  <Download className='size-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Download File</TooltipContent>
-            </Tooltip>
+        {/* Header Actions */}
+        <div className='flex items-center justify-end gap-1 border-t border-slate-200 bg-slate-50/50 p-4 dark:border-slate-700 dark:bg-slate-900/50'>
+          {/* File Operations Group */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => {
+                  if (isDirty) {
+                    setConfirm({
+                      open: true,
+                      message:
+                        'You have unsaved changes. Start a new document?',
+                      onConfirm: () => {
+                        setConfirm({ open: false, message: '' });
+                        setMarkdown('');
+                        setFrontmatter({});
+                        setCurrentFile('');
+                        setCurrentEtag('');
+                        setIsDirty(true);
+                      },
+                    });
+                  } else {
+                    setMarkdown('');
+                    setFrontmatter({});
+                    setCurrentFile('');
+                    setCurrentEtag('');
+                    setIsDirty(true);
+                  }
+                }}
+                className='border-slate-600 text-slate-600 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+              >
+                <Plus className='size-4' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>New Document</TooltipContent>
+          </Tooltip>
 
-            <Separator orientation='vertical' className='mx-1 h-6' />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={handleDownload}
+                className='border-hunter-600 text-hunter-600 transition-all duration-200 hover:bg-hunter-50 dark:hover:bg-hunter-950'
+              >
+                <Download className='size-4' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Download File</TooltipContent>
+          </Tooltip>
 
-            {/* Save & Cache Operations Group */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={() => void handleSave()}
-                  size='sm'
-                  className='border-0 bg-teal-600 px-3 text-white shadow-lg transition-all duration-200 hover:bg-teal-700 hover:shadow-xl'
-                >
-                  <Save className='size-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {saveStatus === 'saving'
-                  ? 'Saving...'
-                  : saveStatus === 'saved'
-                    ? 'Saved!'
-                    : 'Save Document'}
-              </TooltipContent>
-            </Tooltip>
+          <Separator orientation='vertical' className='mx-1 h-6' />
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => setIsSaveAsOpen(true)}
-                  className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 dark:hover:bg-teal-950'
-                >
-                  <SaveIcon className='size-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Save As New File</TooltipContent>
-            </Tooltip>
+          {/* Save & Cache Operations Group */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => void handleSave()}
+                size='sm'
+                className='border-0 bg-hunter-600 px-3 text-white shadow-lg transition-all duration-200 hover:bg-hunter-700 hover:shadow-xl'
+              >
+                <Save className='size-4' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {saveStatus === 'saving'
+                ? 'Saving...'
+                : saveStatus === 'saved'
+                  ? 'Saved!'
+                  : 'Save Document'}
+            </TooltipContent>
+          </Tooltip>
 
-            {/* Cache Controls */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className='flex h-9 items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 dark:border-slate-700 dark:bg-slate-800'>
-                  <Checkbox
-                    id='rebuild-cache'
-                    checked={shouldRebuildCache}
-                    onCheckedChange={(checked: boolean | 'indeterminate') =>
-                      setShouldRebuildCache(checked === true)
-                    }
-                    className='size-3 data-[state=checked]:border-teal-600 data-[state=checked]:bg-teal-600'
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => setIsSaveAsOpen(true)}
+                className='border-hunter-600 text-hunter-600 transition-all duration-200 hover:bg-hunter-50 dark:hover:bg-hunter-950'
+              >
+                <SaveIcon className='size-4' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Save As New File</TooltipContent>
+          </Tooltip>
+
+          {/* Cache Controls */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className='flex h-9 items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 dark:border-slate-700 dark:bg-slate-800'>
+                <Checkbox
+                  id='rebuild-cache'
+                  checked={shouldRebuildCache}
+                  onCheckedChange={(checked: boolean | 'indeterminate') =>
+                    setShouldRebuildCache(checked === true)
+                  }
+                  className='size-3 data-[state=checked]:border-hunter-600 data-[state=checked]:bg-hunter-600'
+                />
+                <Database className='size-3 text-slate-600 dark:text-slate-400' />
+                {cacheRebuildStatus !== 'idle' && (
+                  <RefreshCw
+                    className={`size-3 ${
+                      cacheRebuildStatus === 'rebuilding'
+                        ? 'animate-spin text-orange-500'
+                        : cacheRebuildStatus === 'completed'
+                          ? 'text-green-500'
+                          : 'text-red-500'
+                    }`}
                   />
-                  <Database className='size-3 text-slate-600 dark:text-slate-400' />
-                  {cacheRebuildStatus !== 'idle' && (
-                    <RefreshCw
-                      className={`size-3 ${
-                        cacheRebuildStatus === 'rebuilding'
-                          ? 'animate-spin text-orange-500'
-                          : cacheRebuildStatus === 'completed'
-                            ? 'text-green-500'
-                            : 'text-red-500'
-                      }`}
-                    />
-                  )}
+                )}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <div className='text-sm'>
+                <div className='font-medium'>Rebuild Cache on Save</div>
+                <div className='mt-1 text-xs opacity-80'>
+                  Updates search and navigation cache using production KV
                 </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <div className='text-sm'>
-                  <div className='font-medium'>Rebuild Cache on Save</div>
-                  <div className='mt-1 text-xs opacity-80'>
-                    Updates search and navigation cache using production KV
-                  </div>
-                  <div className='mt-1 text-xs text-blue-500'>
-                    Works in: Localhost, Preview & Production
-                  </div>
-                  {cacheStatus && (
-                    <div className='mt-1 border-t pt-1 text-xs text-slate-400'>
-                      Current: {cacheStatus.totalItems} items •{' '}
-                      {getRelativeTimeString(cacheStatus.lastUpdated)}
-                    </div>
-                  )}
-                  {cacheRebuildStatus === 'rebuilding' && (
-                    <div className='mt-1 text-xs text-orange-500'>
-                      Building...
-                    </div>
-                  )}
-                  {cacheRebuildStatus === 'completed' && (
-                    <div className='mt-1 text-xs text-green-500'>Complete</div>
-                  )}
-                  {cacheRebuildStatus === 'error' && (
-                    <div className='mt-1 text-xs text-red-500'>Failed</div>
-                  )}
+                <div className='mt-1 text-xs text-hunter-500'>
+                  Works in: Localhost, Preview & Production
                 </div>
-              </TooltipContent>
-            </Tooltip>
+                {cacheStatus && (
+                  <div className='mt-1 border-t pt-1 text-xs text-slate-400'>
+                    Current: {cacheStatus.totalItems} items •{' '}
+                    {getRelativeTimeString(cacheStatus.lastUpdated)}
+                  </div>
+                )}
+                {cacheRebuildStatus === 'rebuilding' && (
+                  <div className='mt-1 text-xs text-orange-500'>
+                    Building...
+                  </div>
+                )}
+                {cacheRebuildStatus === 'completed' && (
+                  <div className='mt-1 text-xs text-green-500'>Complete</div>
+                )}
+                {cacheRebuildStatus === 'error' && (
+                  <div className='mt-1 text-xs text-red-500'>Failed</div>
+                )}
+              </div>
+            </TooltipContent>
+          </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={() =>
-                    void (async () => {
-                      setCacheRebuildStatus('rebuilding');
-                      try {
-                        const cacheResponse = await triggerManualRebuild();
-                        if (cacheResponse.success) {
-                          setCacheRebuildStatus('completed');
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={() =>
+                  void (async () => {
+                    setCacheRebuildStatus('rebuilding');
+                    try {
+                      const cacheResponse = await triggerManualRebuild();
+                      if (cacheResponse.success) {
+                        setCacheRebuildStatus('completed');
 
-                          // Update cache status with enhanced data
-                          const enhancedStatus = await getEnhancedCacheStatus();
-                          if (enhancedStatus?.cache) {
-                            setCacheStatus({
-                              lastUpdated: enhancedStatus.cache.lastUpdated,
-                              totalItems: enhancedStatus.cache.totalItems,
-                              trigger: enhancedStatus.cache.trigger,
-                            });
-                          } else if (cacheResponse.stats) {
-                            setCacheStatus({
-                              lastUpdated: cacheResponse.timestamp,
-                              totalItems: cacheResponse.stats.total,
-                              trigger: cacheResponse.trigger,
-                            });
-                          }
-                        } else {
-                          setCacheRebuildStatus('error');
+                        // Update cache status with enhanced data
+                        const enhancedStatus = await getEnhancedCacheStatus();
+                        if (enhancedStatus?.cache) {
+                          setCacheStatus({
+                            lastUpdated: enhancedStatus.cache.lastUpdated,
+                            totalItems: enhancedStatus.cache.totalItems,
+                            trigger: enhancedStatus.cache.trigger,
+                          });
+                        } else if (cacheResponse.stats) {
+                          setCacheStatus({
+                            lastUpdated: cacheResponse.timestamp,
+                            totalItems: cacheResponse.stats.total,
+                            trigger: cacheResponse.trigger,
+                          });
                         }
-                      } catch {
+                      } else {
                         setCacheRebuildStatus('error');
                       }
-                      setTimeout(() => setCacheRebuildStatus('idle'), 3000);
-                    })()
-                  }
-                  disabled={cacheRebuildStatus === 'rebuilding'}
-                  className='size-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700'
-                >
-                  <RefreshCw
-                    className={`size-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`}
-                  />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <div className='text-center'>
-                  <div className='font-medium'>Rebuild Cache Manually</div>
-                  <div className='mt-1 text-xs text-slate-500'>
-                    Force refresh of search and navigation cache using
-                    production KV
-                  </div>
-                  <div className='mt-1 text-xs text-blue-500'>
-                    Works in: Localhost, Preview & Production
-                  </div>
-                  {cacheStatus && (
-                    <div className='mt-1 border-t pt-1 text-xs text-slate-400'>
-                      <div>{cacheStatus.totalItems} items</div>
-                      <div>
-                        Updated{' '}
-                        {new Date(cacheStatus.lastUpdated).toLocaleDateString()}{' '}
-                        at{' '}
-                        {new Date(cacheStatus.lastUpdated).toLocaleTimeString()}
-                      </div>
-                      {cacheStatus.trigger && (
-                        <div className='mt-1 text-slate-500'>
-                          Trigger: {cacheStatus.trigger}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </TooltipContent>
-            </Tooltip>
-
-            <Separator orientation='vertical' className='mx-1 h-6' />
-
-            {/* Management Operations Group */}
-            {currentFile ? (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant='destructive'
-                    size='sm'
-                    onClick={() =>
-                      void (() => {
-                        setConfirm({
-                          open: true,
-                          message: `Move to trash?\n${currentFile}`,
-                          onConfirm: () => {
-                            void (async () => {
-                              setConfirm({ open: false, message: '' });
-                              const res =
-                                await apiClient.deleteContentSoft(currentFile);
-                              if (res.success) {
-                                setMarkdown('');
-                                setFrontmatter({});
-                                setCurrentFile('');
-                                setCurrentEtag('');
-                                setIsDirty(false);
-                                setBrowserNonce(n => n + 1);
-                              }
-                            })();
-                          },
-                        });
-                      })()
+                    } catch {
+                      setCacheRebuildStatus('error');
                     }
-                    className='border-0 bg-red-600 shadow-lg transition-all duration-200 hover:bg-red-700 hover:shadow-xl'
-                  >
-                    <Trash2 className='size-4' />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Delete File</TooltipContent>
-              </Tooltip>
-            ) : (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    disabled
-                    className='cursor-not-allowed border-red-200 text-red-400 opacity-50'
-                  >
-                    <Trash2 className='size-4' />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>No file selected</TooltipContent>
-              </Tooltip>
-            )}
+                    setTimeout(() => setCacheRebuildStatus('idle'), 3000);
+                  })()
+                }
+                disabled={cacheRebuildStatus === 'rebuilding'}
+                className='size-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700'
+              >
+                <RefreshCw
+                  className={`size-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`}
+                />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <div className='text-center'>
+                <div className='font-medium'>Rebuild Cache Manually</div>
+                <div className='mt-1 text-xs text-slate-500'>
+                  Force refresh of search and navigation cache using
+                  production KV
+                </div>
+                <div className='mt-1 text-xs text-hunter-500'>
+                  Works in: Localhost, Preview & Production
+                </div>
+                {cacheStatus && (
+                  <div className='mt-1 border-t pt-1 text-xs text-slate-400'>
+                    <div>{cacheStatus.totalItems} items</div>
+                    <div>
+                      Updated{' '}
+                      {new Date(cacheStatus.lastUpdated).toLocaleDateString()}{' '}
+                      at{' '}
+                      {new Date(cacheStatus.lastUpdated).toLocaleTimeString()}
+                    </div>
+                    {cacheStatus.trigger && (
+                      <div className='mt-1 text-slate-500'>
+                        Trigger: {cacheStatus.trigger}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </TooltipContent>
+          </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => setTrashOpen(true)}
-                  className='border-slate-600 text-slate-600 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800'
-                >
-                  <Archive className='size-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Open Archive/Trash</TooltipContent>
-            </Tooltip>
+          <Separator orientation='vertical' className='mx-1 h-6' />
 
-            <Separator orientation='vertical' className='mx-1 h-6' />
-
-            {/* Layout Operations Group */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => setIsFullscreen(!isFullscreen)}
-                  className='border-orange-600 text-orange-600 transition-all duration-200 hover:bg-orange-50 dark:hover:bg-orange-950'
-                >
-                  {isFullscreen ? (
-                    <Minimize className='size-4' />
-                  ) : (
-                    <Maximize className='size-4' />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-              </TooltipContent>
-            </Tooltip>
-          </div>
+          {/* Layout Operations Group */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => setIsFullscreen(!isFullscreen)}
+                className='border-orange-600 text-orange-600 transition-all duration-200 hover:bg-orange-50 dark:hover:bg-orange-950'
+              >
+                {isFullscreen ? (
+                  <Minimize className='size-4' />
+                ) : (
+                  <Maximize className='size-4' />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
-      {/* Main Content Area: content browser + front matter define height */}
-      <div className='min-h-[70vh] flex-1 px-0 py-6' data-content-area>
+      <div className='min-h-[70vh] flex-1 px-4 py-6 sm:px-6 lg:px-8' data-content-area>
+        <div className='max-w-7xl'>
         <div className='grid grid-cols-12 items-start gap-6'>
           {/* Left Panel - Content Browser & Frontmatter */}
           <div
@@ -853,27 +798,83 @@ export function CreationStudioPage() {
             {/* Editor Header */}
             <div
               ref={editorHeaderRef}
-              className='rounded-t-xl border border-slate-200/50 bg-white/90 backdrop-blur-sm dark:border-slate-700/50 dark:bg-slate-900/90'
+              className='rounded-t-xl border border-indigo-200/50 bg-gradient-to-r from-white/95 to-indigo-50/95 backdrop-blur-sm dark:border-indigo-800/50 dark:bg-gradient-to-r dark:from-slate-900/95 dark:to-indigo-950/95'
             >
-              <div className='flex items-center gap-3 border-b border-slate-200 p-4 dark:border-slate-700'>
-                <div className='rounded-lg bg-gradient-to-br from-teal-600 to-blue-600 p-2'>
-                  <FileText className='size-5 text-white' />
+              <div className='flex items-center justify-between gap-3 border-b border-indigo-200/50 p-4 dark:border-indigo-800/50'>
+                <div className='flex items-center gap-3'>
+                  <div className='rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 p-2 shadow-md'>
+                    <FileText className='size-5 text-white' />
+                  </div>
+                  <div>
+                    <h3
+                      className='text-lg font-bold bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent'
+                      style={{ fontWeight: 700 }}
+                    >
+                      Content Editor
+                    </h3>
+                    <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-slate-500'></div>
+                  </div>
                 </div>
-                <div>
-                  <h3
-                    className='text-lg font-bold text-slate-900 dark:text-white'
-                    style={{ fontWeight: 700 }}
-                  >
-                    Content Editor
-                  </h3>
-                  <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600'></div>
+                {/* Delete Button Group */}
+                <div className='flex items-center gap-2'>
+                  {currentFile ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant='destructive'
+                          size='sm'
+                          onClick={() =>
+                            void (() => {
+                              setConfirm({
+                                open: true,
+                                message: `Move to trash?\n${currentFile}`,
+                                onConfirm: () => {
+                                  void (async () => {
+                                    setConfirm({ open: false, message: '' });
+                                    const res =
+                                      await apiClient.deleteContentSoft(currentFile);
+                                    if (res.success) {
+                                      setMarkdown('');
+                                      setFrontmatter({});
+                                      setCurrentFile('');
+                                      setCurrentEtag('');
+                                      setIsDirty(false);
+                                      setBrowserNonce(n => n + 1);
+                                    }
+                                  })();
+                                },
+                              });
+                            })()
+                          }
+                          className='border-0 bg-red-600 shadow-lg transition-all duration-200 hover:bg-red-700 hover:shadow-xl'
+                        >
+                          <Trash2 className='size-4' />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Delete File</TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          disabled
+                          className='cursor-not-allowed border-red-200 text-red-400 opacity-50'
+                        >
+                          <Trash2 className='size-4' />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>No file selected</TooltipContent>
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             </div>
             {/* Editor Content (dynamically scales to fill available space) */}
             <div
               ref={editorWrapperRef}
-              className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-slate-200/50 bg-white/90 backdrop-blur-sm dark:border-slate-700/50 dark:bg-slate-900/90'
+              className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-indigo-200/50 bg-gradient-to-br from-white/95 to-slate-50/95 backdrop-blur-sm shadow-lg dark:border-indigo-800/50 dark:bg-gradient-to-br dark:from-slate-900/95 dark:to-slate-950/95'
               style={{
                 minHeight: '200px',
               }}
@@ -896,6 +897,7 @@ export function CreationStudioPage() {
               )}
             </div>
           </div>
+        </div>
         </div>
       </div>
       <FrontMatterModal
@@ -964,20 +966,20 @@ export function CreationStudioPage() {
           </div>
         </DialogContent>
       </Dialog>
-      {/* Fullscreen Editor Modal with Brand Theme */}
+      {/* Fullscreen Editor Modal with Indigo Theme */}
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-        <DialogContent className='size-full max-h-[95vh] max-w-[95vw] bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 p-0 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
+        <DialogContent className='size-full max-h-[95vh] max-w-[95vw] bg-gradient-to-br from-slate-50 via-indigo-50 to-slate-50 p-0 dark:from-slate-950 dark:via-indigo-950 dark:to-slate-950'>
           <div className='flex h-full flex-col'>
-            {/* Enhanced Header with Brand Theme */}
-            <div className='relative flex items-center justify-between border-b border-teal-200 bg-white/90 p-6 backdrop-blur-sm dark:border-teal-800 dark:bg-slate-900/90'>
-              <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
+            {/* Enhanced Header with Indigo Theme */}
+            <div className='relative flex items-center justify-between border-b border-indigo-200 bg-white/90 p-6 backdrop-blur-sm dark:border-indigo-800 dark:bg-slate-900/90'>
+              <div className='absolute inset-0 bg-gradient-to-r from-indigo-600/5 via-slate-600/5 to-indigo-600/5 dark:from-indigo-400/10 dark:via-slate-400/10 dark:to-indigo-400/10'></div>
               <div className='relative flex items-center gap-4'>
-                <div className='rounded-xl bg-gradient-to-br from-teal-600 to-blue-600 p-3 shadow-lg'>
+                <div className='rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 p-3 shadow-lg'>
                   <FileText className='size-6 text-white' />
                 </div>
                 <div>
                   <h2
-                    className='text-2xl font-bold tracking-tight text-slate-900 dark:text-white'
+                    className='text-2xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent'
                     style={{ fontWeight: 700 }}
                   >
                     Fullscreen Editor
@@ -985,18 +987,18 @@ export function CreationStudioPage() {
                   <div className='mt-1 flex min-h-[20px] items-center gap-2'>
                     {currentFile ? (
                       <>
-                        <div className='size-1.5 rounded-full bg-orange-500'></div>
+                        <div className='size-1.5 rounded-full bg-indigo-500'></div>
                         <p className='text-sm text-slate-600 dark:text-slate-400'>
                           {currentFile}{' '}
                           {isDirty && (
-                            <span className='font-medium text-orange-600 dark:text-orange-400'>
+                            <span className='font-medium text-indigo-600 dark:text-indigo-400'>
                               • Unsaved changes
                             </span>
                           )}
                         </p>
                       </>
                     ) : (
-                      <div className='size-1.5 rounded-full bg-slate-300'></div>
+                      <div className='size-1.5 rounded-full bg-slate-300 dark:bg-slate-600'></div>
                     )}
                   </div>
                 </div>
@@ -1005,7 +1007,7 @@ export function CreationStudioPage() {
                 variant='outline'
                 size='sm'
                 onClick={() => setIsFullscreen(false)}
-                className='relative z-10 gap-2 border-orange-600 text-orange-600 shadow-md transition-all duration-200 hover:bg-orange-50 hover:shadow-lg dark:hover:bg-orange-950'
+                className='relative z-10 gap-2 border-indigo-600 text-indigo-600 shadow-md transition-all duration-200 hover:bg-indigo-50 hover:shadow-lg dark:hover:bg-indigo-950'
               >
                 <Minimize className='size-4' />
                 Return to Studio
@@ -1013,7 +1015,7 @@ export function CreationStudioPage() {
             </div>
             {/* Enhanced Editor Content */}
             <div className='flex-1 overflow-hidden p-2'>
-              <div className='h-full rounded-xl border border-slate-200/50 bg-white/90 shadow-lg backdrop-blur-sm dark:border-slate-700/50 dark:bg-slate-900/90'>
+              <div className='h-full rounded-xl border border-indigo-200/50 bg-gradient-to-br from-white/95 to-slate-50/95 shadow-lg backdrop-blur-sm dark:border-indigo-800/50 dark:bg-gradient-to-br dark:from-slate-900/95 dark:to-slate-950/95'>
                 <MarkdownHtmlEditor
                   initialMarkdown={markdown}
                   onChange={handleMarkdownChange}

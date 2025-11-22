@@ -75,10 +75,10 @@ export function FrontMatterModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='max-w-2xl bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
         {/* Enhanced Header with Brand Theme */}
-        <div className='relative rounded-t-lg border-b border-teal-200 bg-white/80 backdrop-blur-sm dark:border-teal-800 dark:bg-slate-900/80'>
-          <div className='absolute inset-0 rounded-t-lg bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
+        <div className='relative rounded-t-lg border-b border-hunter-200 bg-white/80 backdrop-blur-sm dark:border-hunter-800 dark:bg-slate-900/80'>
+          <div className='absolute inset-0 rounded-t-lg bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
           <div className='relative flex items-center gap-4 p-6'>
-            <div className='rounded-xl bg-gradient-to-br from-teal-600 to-blue-600 p-3 shadow-lg'>
+            <div className='rounded-xl bg-gradient-to-br from-hunter-600 to-hunter-800 p-3 shadow-lg'>
               <FileText className='size-6 text-white' />
             </div>
             <div>
@@ -88,7 +88,7 @@ export function FrontMatterModal({
               >
                 Edit Front Matter
               </DialogTitle>
-              <div className='mt-1 h-1 w-32 rounded-full bg-gradient-to-r from-orange-500 via-teal-600 to-blue-600'></div>
+              <div className='mt-1 h-1 w-32 rounded-full bg-gradient-to-r from-gold-500 via-hunter-600 to-hunter-800'></div>
             </div>
           </div>
           <DialogDescription className='sr-only'>
@@ -206,9 +206,9 @@ export function FrontMatterModal({
 
         {/* AI Usage Note */}
         <div className='bg-white/90 px-6 pb-4 backdrop-blur-sm dark:bg-slate-900/90'>
-          <div className='flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-950/50'>
-            <AlertCircle className='size-4 shrink-0 text-blue-600 dark:text-blue-400' />
-            <p className='text-xs text-blue-700 dark:text-blue-300'>
+          <div className='flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950/50'>
+            <AlertCircle className='size-4 shrink-0 text-slate-600 dark:text-slate-400' />
+            <p className='text-xs text-slate-700 dark:text-slate-300'>
               <strong>AI-Generated Content:</strong> Front matter fields can be
               auto-generated using AI. Review and edit generated content before
               saving.
@@ -217,8 +217,8 @@ export function FrontMatterModal({
         </div>
 
         {/* Enhanced Footer with Brand Theme */}
-        <div className='relative rounded-b-lg border-t border-teal-200 bg-white/80 backdrop-blur-sm dark:border-teal-800 dark:bg-slate-900/80'>
-          <div className='absolute inset-0 rounded-b-lg bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
+        <div className='relative rounded-b-lg border-t border-hunter-200 bg-white/80 backdrop-blur-sm dark:border-hunter-800 dark:bg-slate-900/80'>
+          <div className='absolute inset-0 rounded-b-lg bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
           <DialogFooter className='relative flex items-center justify-between gap-2 p-6'>
             <Button
               type='button'
@@ -252,7 +252,7 @@ export function FrontMatterModal({
 
                   void generateFrontmatter();
                 }}
-                className='border-teal-600 text-teal-600 transition-all duration-200 hover:bg-teal-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-teal-950'
+                className='border-hunter-600 text-hunter-600 transition-all duration-200 hover:bg-hunter-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-hunter-950'
               >
                 <Sparkles
                   className={`mr-2 size-4 ${isGenerating ? 'animate-spin' : ''}`}
@@ -262,7 +262,7 @@ export function FrontMatterModal({
               <Button
                 type='button'
                 onClick={() => onSave(fm as Record<string, unknown>)}
-                className='border-0 bg-teal-600 text-white shadow-lg transition-all duration-200 hover:bg-teal-700 hover:shadow-xl'
+                className='border-0 bg-hunter-600 text-white shadow-lg transition-all duration-200 hover:bg-hunter-700 hover:shadow-xl'
               >
                 Update Front Matter
               </Button>

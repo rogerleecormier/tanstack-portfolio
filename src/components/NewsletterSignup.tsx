@@ -131,7 +131,7 @@ export default function NewsletterSignup({
           <Button
             type='submit'
             disabled={isSubmitting}
-            className='w-full bg-teal-600 text-white hover:bg-teal-700 sm:w-auto'
+            className='w-full bg-hunter-600 text-white hover:bg-hunter-700 sm:w-auto'
           >
             {isSubmitting ? (
               <>
@@ -181,7 +181,7 @@ export default function NewsletterSignup({
         <Button
           type='submit'
           disabled={isSubmitting}
-          className='whitespace-nowrap bg-teal-600 text-white hover:bg-teal-700'
+          className='whitespace-nowrap bg-hunter-600 text-white hover:bg-hunter-700'
         >
           {isSubmitting ? (
             <>
@@ -200,7 +200,7 @@ export default function NewsletterSignup({
     <div className={cn('mt-16 border-t border-gray-200 pt-8', className)}>
       <Card className='text-center'>
         <CardContent className='py-8'>
-          <BookOpen className='mx-auto mb-4 size-12 text-teal-600' />
+          <BookOpen className='mx-auto mb-4 size-12 text-hunter-600' />
           <h3 className='mb-2 text-2xl font-semibold text-gray-900 dark:text-white'>
             {title}
           </h3>
@@ -231,7 +231,7 @@ export default function NewsletterSignup({
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='w-full bg-teal-600 text-white hover:bg-teal-700 sm:w-auto'
+              className='w-full bg-hunter-600 text-white hover:bg-hunter-700 sm:w-auto'
             >
               {isSubmitting ? (
                 <>

@@ -164,32 +164,75 @@ export default function PrivacyPage() {
   ];
 
   return (
-    <div className='w-full'>
-      <div className='mx-auto max-w-4xl'>
-        {/* Header */}
-        <div className='mb-8 text-center sm:mb-12'>
-          <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-teal-100 sm:mb-6 sm:size-20'>
-            <Shield className='size-8 text-teal-600 sm:size-10' />
-          </div>
-          <H1 className='mb-3 text-2xl font-bold text-gray-900 sm:mb-4 sm:text-3xl lg:text-4xl'>
-            Privacy Policy
-          </H1>
-          <P className='mx-auto max-w-3xl text-lg text-gray-600 sm:text-xl'>
-            How we protect your data and use AI responsibly to enhance your
-            experience
-          </P>
-          <div className='mt-4 sm:mt-6'>
-            <Badge variant='outline' className='text-xs sm:text-sm'>
-              Last Updated: {lastUpdated}
-            </Badge>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-blue-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+      {/* Header with Administrative Theme - Shield & Trust Focused */}
+      <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
+        <div className='absolute inset-0 bg-gradient-to-r from-blue-600/3 via-slate-600/3 to-blue-600/3 dark:from-blue-400/8 dark:via-slate-400/8 dark:to-blue-400/8'></div>
+
+        <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
+          <div className='mx-auto max-w-4xl text-center'>
+            {/* Icon and Title with Administrative Theme */}
+            <div className='mb-4 flex items-center justify-center gap-4'>
+              <div className='relative'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-slate-600 shadow-lg'>
+                  <Shield className='size-7 text-white' />
+                </div>
+                {/* Security indicator dots */}
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-blue-600'>
+                  <div className='size-2 rounded-full bg-white'></div>
+                </div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-slate-500'>
+                  <div className='size-1.5 rounded-full bg-white'></div>
+                </div>
+              </div>
+              <div>
+                <H1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent'>
+                    Privacy Policy
+                  </span>
+                </H1>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-blue-500 to-slate-500'></div>
+              </div>
+            </div>
+
+            {/* Description with Compliance Language */}
+            <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+              Complete transparency on data protection and
+              <span className='font-medium text-blue-600 dark:text-blue-400'>
+                {' '}responsible AI practices
+              </span>
+              . Your privacy and security are our top priorities.
+            </P>
+
+            {/* Quick Stats with Administrative Focus */}
+            <div className='mt-6 flex justify-center gap-6'>
+              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
+                <div className='size-2 rounded-full bg-blue-500'></div>
+                <span>GDPR Compliant</span>
+              </div>
+              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
+                <div className='size-2 rounded-full bg-slate-500'></div>
+                <span>Transparent AI</span>
+              </div>
+              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
+                <div className='size-2 rounded-full bg-blue-400'></div>
+                <Badge variant='outline' className='ml-1 text-xs'>
+                  {lastUpdated}
+                </Badge>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className='mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8'>
 
         {/* Overview Card */}
-        <Card className='mb-8 border-l-4 border-l-teal-500 sm:mb-12'>
+        <Card className='mb-8 border-l-4 border-l-blue-500 sm:mb-12'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-              <Info className='size-5 text-teal-600' />
+              <Info className='size-5 text-blue-400' />
               Overview
             </CardTitle>
           </CardHeader>
@@ -222,7 +265,7 @@ export default function PrivacyPage() {
         <Card className='mb-8 sm:mb-12'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-              <Database className='size-5 text-teal-600' />
+              <Database className='size-5 text-blue-400' />
               Data Collection and Use
             </CardTitle>
           </CardHeader>
@@ -231,36 +274,38 @@ export default function PrivacyPage() {
               {dataCategories.map(category => (
                 <div
                   key={category.title}
-                  className='rounded-lg border border-gray-200 p-4'
+                  className='rounded-lg border border-slate-700/50 bg-slate-900/30 p-4'
                 >
                   <div className='mb-3 flex items-center gap-3'>
-                    <div className='flex size-10 items-center justify-center rounded-lg bg-teal-100'>
-                      <category.icon className='size-5 text-teal-600' />
+                    <div className='flex size-10 items-center justify-center rounded-lg bg-blue-600/20'>
+                      <category.icon className='size-5 text-blue-400' />
                     </div>
-                    <h3 className='text-sm font-semibold text-gray-900 sm:text-base'>
+                    <h3 className='text-sm font-semibold text-white sm:text-base'>
                       {category.title}
                     </h3>
                   </div>
                   <div className='space-y-2 text-xs sm:text-sm'>
                     <div>
-                      <span className='font-medium text-gray-700'>
+                      <span className='font-medium text-slate-200'>
                         What we collect:
                       </span>
-                      <p className='mt-1 text-gray-600'>
+                      <p className='mt-1 text-slate-400'>
                         {category.description}
                       </p>
                     </div>
                     <div>
-                      <span className='font-medium text-gray-700'>
+                      <span className='font-medium text-slate-200'>
                         Purpose:
                       </span>
-                      <p className='mt-1 text-gray-600'>{category.purpose}</p>
+                      <p className='mt-1 text-slate-400'>{category.purpose}</p>
                     </div>
                     <div>
-                      <span className='font-medium text-gray-700'>
+                      <span className='font-medium text-slate-200'>
                         Retention:
                       </span>
-                      <p className='mt-1 text-gray-600'>{category.retention}</p>
+                      <p className='mt-1 text-slate-400'>
+                        {category.retention}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -273,7 +318,7 @@ export default function PrivacyPage() {
         <Card className='mb-8 sm:mb-12'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-              <Cpu className='size-5 text-teal-600' />
+              <Cpu className='size-5 text-blue-400' />
               AI Features and Processing
             </CardTitle>
           </CardHeader>
@@ -286,14 +331,14 @@ export default function PrivacyPage() {
             <div className='grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2'>
               {aiFeatures.map(feature => (
                 <div key={feature.title} className='flex items-start gap-3'>
-                  <div className='flex size-8 shrink-0 items-center justify-center rounded-lg bg-teal-100'>
-                    <feature.icon className='size-4 text-teal-600' />
+                  <div className='flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-600/20'>
+                    <feature.icon className='size-4 text-blue-400' />
                   </div>
                   <div>
-                    <h4 className='mb-1 text-sm font-medium text-gray-900 sm:text-base'>
+                    <h4 className='mb-1 text-sm font-medium text-white sm:text-base'>
                       {feature.title}
                     </h4>
-                    <p className='text-xs text-gray-600 sm:text-sm'>
+                    <p className='text-xs text-slate-400 sm:text-sm'>
                       {feature.description}
                     </p>
                   </div>
@@ -342,7 +387,7 @@ export default function PrivacyPage() {
         <Card className='mb-8 sm:mb-12'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-              <Lock className='size-5 text-teal-600' />
+              <Lock className='size-5 text-blue-400' />
               Security Measures
             </CardTitle>
           </CardHeader>
@@ -354,14 +399,14 @@ export default function PrivacyPage() {
             <div className='grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2'>
               {securityMeasures.map(measure => (
                 <div key={measure.title} className='flex items-start gap-3'>
-                  <div className='flex size-8 shrink-0 items-center justify-center rounded-lg bg-teal-100'>
-                    <measure.icon className='size-4 text-teal-600' />
+                  <div className='flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-600/20'>
+                    <measure.icon className='size-4 text-blue-400' />
                   </div>
                   <div>
-                    <h4 className='mb-1 text-sm font-medium text-gray-900 sm:text-base'>
+                    <h4 className='mb-1 text-sm font-medium text-white sm:text-base'>
                       {measure.title}
                     </h4>
-                    <p className='text-xs text-gray-600 sm:text-sm'>
+                    <p className='text-xs text-slate-400 sm:text-sm'>
                       {measure.description}
                     </p>
                   </div>
@@ -375,7 +420,7 @@ export default function PrivacyPage() {
         <Card className='mb-8 sm:mb-12'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-              <Shield className='size-5 text-teal-600' />
+              <Shield className='size-5 text-blue-400' />
               Your Rights
             </CardTitle>
           </CardHeader>
@@ -390,21 +435,21 @@ export default function PrivacyPage() {
                   key={right.title}
                   className='rounded-lg border border-gray-200 p-4'
                 >
-                  <h4 className='mb-2 text-sm font-medium text-gray-900 sm:text-base'>
+                  <h4 className='mb-2 text-sm font-medium text-white sm:text-base'>
                     {right.title}
                   </h4>
-                  <p className='text-xs text-gray-600 sm:text-sm'>
+                  <p className='text-xs text-slate-400 sm:text-sm'>
                     {right.description}
                   </p>
                 </div>
               ))}
             </div>
-            <div className='mt-6 rounded-lg bg-gray-50 p-4'>
-              <P className='text-sm text-gray-700'>
+            <div className='mt-6 rounded-lg bg-slate-900/30 p-4'>
+              <P className='text-sm text-slate-200'>
                 To exercise any of these rights, please contact us at{' '}
                 <a
                   href='mailto:roger@rcormier.dev'
-                  className='font-medium text-teal-600 hover:text-teal-700'
+                  className='font-medium text-blue-400 hover:text-blue-300'
                 >
                   roger@rcormier.dev
                 </a>
@@ -428,10 +473,10 @@ export default function PrivacyPage() {
             </P>
             <div className='space-y-3'>
               <div className='rounded-lg border border-gray-200 p-4'>
-                <h4 className='mb-2 text-sm font-medium text-gray-900 sm:text-base'>
+                <h4 className='mb-2 text-sm font-medium text-white sm:text-base'>
                   Cloudflare AI
                 </h4>
-                <p className='mb-2 text-xs text-gray-600 sm:text-sm'>
+                <p className='mb-2 text-xs text-slate-400 sm:text-sm'>
                   Used for AI message analysis and processing. Data is processed
                   according to Cloudflare's privacy policy.
                 </p>
@@ -439,16 +484,16 @@ export default function PrivacyPage() {
                   href='https://www.cloudflare.com/privacypolicy/'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='text-xs font-medium text-teal-600 hover:text-teal-700 sm:text-sm'
+                  className='text-xs font-medium text-blue-400 hover:text-blue-300 sm:text-sm'
                 >
                   View Cloudflare Privacy Policy →
                 </a>
               </div>
               <div className='rounded-lg border border-gray-200 p-4'>
-                <h4 className='mb-2 text-sm font-medium text-gray-900 sm:text-base'>
+                <h4 className='mb-2 text-sm font-medium text-white sm:text-base'>
                   Email Service Providers
                 </h4>
-                <p className='mb-2 text-xs text-gray-600 sm:text-sm'>
+                <p className='mb-2 text-xs text-slate-400 sm:text-sm'>
                   Used for sending email communications. Contact information is
                   shared only for email delivery purposes.
                 </p>
@@ -474,7 +519,7 @@ export default function PrivacyPage() {
                 <strong>Email:</strong>{' '}
                 <a
                   href='mailto:roger@rcormier.dev'
-                  className='text-teal-600 hover:text-teal-700'
+                  className='text-blue-400 hover:text-blue-300'
                 >
                   roger@rcormier.dev
                 </a>
@@ -483,7 +528,7 @@ export default function PrivacyPage() {
                 <strong>Website:</strong>{' '}
                 <a
                   href='https://rcormier.dev'
-                  className='text-teal-600 hover:text-teal-700'
+                  className='text-blue-400 hover:text-blue-300'
                 >
                   rcormier.dev
                 </a>

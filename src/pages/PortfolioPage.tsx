@@ -261,15 +261,15 @@ export default function PortfolioPage({ file }: { file: string }) {
           <div className='lg:col-span-3'>
             {/* Header with h1 title */}
             {frontmatter.title && (
-              <header className='mb-8'>
-                <H1 className='mb-4'>{frontmatter.title}</H1>
+              <header className='mb-8 border-b border-hunter-600/20 pb-8'>
+                <H1 className='mb-4 text-white'>{frontmatter.title}</H1>
                 {frontmatter.description && (
-                  <P className='text-xl leading-7 text-muted-foreground'>
+                  <P className='text-lg leading-7 text-slate-300'>
                     {frontmatter.description}
                   </P>
                 )}
                 {frontmatter.tags && (
-                  <div className='mt-4 flex flex-wrap gap-1.5'>
+                  <div className='mt-4 flex flex-wrap gap-2'>
                     {(() => {
                       // Deduplicate tags by converting to lowercase for comparison
                       const uniqueTags = [
@@ -360,8 +360,7 @@ export default function PortfolioPage({ file }: { file: string }) {
                       return uniqueTags.map((tag: string, index: number) => (
                         <Badge
                           key={`${tag}-${index}`}
-                          variant='secondary'
-                          className='h-auto px-1.5 py-0.5 text-xs'
+                          className='border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
                           title={formatTag(tag)}
                         >
                           <Tag className='mr-1 size-3' />
@@ -377,7 +376,7 @@ export default function PortfolioPage({ file }: { file: string }) {
             )}
 
             {/* Markdown Content */}
-            <article className='w-full max-w-none space-y-6'>
+            <article className='w-full max-w-none space-y-6 text-slate-300'>
               <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}
@@ -418,7 +417,7 @@ export default function PortfolioPage({ file }: { file: string }) {
                     return (
                       <h3
                         id={id}
-                        className='scroll-m-20 text-2xl font-semibold tracking-tight'
+                        className='scroll-m-20 text-2xl font-semibold tracking-tight text-white'
                         {...props}
                       >
                         {children}
@@ -582,19 +581,19 @@ export default function PortfolioPage({ file }: { file: string }) {
               </ReactMarkdown>
 
               {/* Contact Section at bottom of every page */}
-              <div className='mt-16 border-t border-gray-200 pt-8'>
+              <div className='mt-16 border-t border-hunter-600/20 pt-8'>
                 <div className='text-center'>
-                  <H2 className='mb-4 text-2xl font-semibold text-gray-900'>
+                  <H2 className='mb-4 text-2xl font-semibold text-white'>
                     Ready to discuss your next project?
                   </H2>
-                  <P className='mx-auto mb-6 max-w-2xl text-gray-600'>
+                  <P className='mx-auto mb-6 max-w-2xl text-slate-300'>
                     Whether you need enterprise integration expertise, DevOps
                     transformation, or strategic technology leadership, I'm here
                     to help bring your vision to life.
                   </P>
                   <a
                     href='/contact'
-                    className='inline-flex items-center gap-2 rounded-lg bg-teal-600 px-6 py-3 font-medium text-white transition-colors hover:bg-teal-700'
+                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-hunter-600 to-hunter-500 px-6 py-3 font-medium text-white transition-all hover:from-hunter-500 hover:to-hunter-400 hover:shadow-lg'
                   >
                     <MessageSquare className='size-4' />
                     Get in Touch
@@ -608,7 +607,7 @@ export default function PortfolioPage({ file }: { file: string }) {
           <div className='lg:col-span-1'>
             <div className='sticky top-36 space-y-6'>
               {/* Smart Related Content Sidebar */}
-              <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-gray-50 p-6 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:from-slate-900 dark:to-gray-900'>
+              <div className='rounded-xl border border-hunter-600/20 bg-slate-900/40 p-6 backdrop-blur-sm'>
                 <UnifiedRelatedContent
                   content={content}
                   title={frontmatter.title ?? ''}

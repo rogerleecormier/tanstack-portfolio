@@ -245,10 +245,10 @@ export default function AboutPage() {
     <div className='w-full'>
       {/* Header with h1 title */}
       {frontmatter.title && (
-        <header className='mb-8'>
-          <H1 className='mb-4'>{frontmatter.title}</H1>
+        <header className='mb-8 border-b border-hunter-600/20 pb-8'>
+          <H1 className='mb-4 text-white'>{frontmatter.title}</H1>
           {frontmatter.description && (
-            <P className='text-xl leading-7 text-muted-foreground'>
+            <P className='text-lg leading-7 text-slate-300'>
               {frontmatter.description}
             </P>
           )}
@@ -258,8 +258,7 @@ export default function AboutPage() {
                 (tag: string, index: number) => (
                   <Badge
                     key={`${tag}-${index}`}
-                    variant='secondary'
-                    className='border border-gray-300 bg-gray-50 text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                    className='border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
                   >
                     {tag}
                   </Badge>
@@ -273,7 +272,7 @@ export default function AboutPage() {
       {/* Main content area */}
       <div>
         {/* Markdown Content */}
-        <article className='w-full max-w-none space-y-6'>
+        <article className='w-full max-w-none space-y-6 text-slate-300'>
           <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
@@ -301,7 +300,7 @@ export default function AboutPage() {
                 const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
-                  <H3 id={id} {...props}>
+                  <H3 id={id} className='text-white' {...props}>
                     {children}
                   </H3>
                 );
@@ -310,7 +309,7 @@ export default function AboutPage() {
                 const text = typeof children === 'string' ? children : '';
                 const id = slugify(text, { lower: true, strict: true });
                 return (
-                  <H4 id={id} {...props}>
+                  <H4 id={id} className='text-white' {...props}>
                     {children}
                   </H4>
                 );
@@ -352,11 +351,12 @@ export default function AboutPage() {
                     });
 
                     if (cardComponent) {
-                      return <div className='my-6'>{cardComponent}</div>;
+                      // For about page, render all cards without wrapper padding
+                      return <>{cardComponent}</>;
                     } else {
                       return (
-                        <div className='rounded-lg border border-yellow-200 bg-yellow-50 p-4'>
-                          <p className='text-yellow-600'>
+                        <div className='rounded-lg border border-gold-200 bg-gold-50 p-4'>
+                          <p className='text-gold-600'>
                             Card component not rendered for type:{' '}
                             {String(cardData.type)}
                           </p>
@@ -881,14 +881,7 @@ export default function AboutPage() {
                   </code>
                 );
               },
-              pre: ({ children, ...props }) => (
-                <pre
-                  className='w-full overflow-x-auto rounded-lg border bg-muted p-4'
-                  {...props}
-                >
-                  {children}
-                </pre>
-              ),
+              pre: ({ children }) => <>{children}</>,
               ul: ({ children, ...props }) => (
                 <ul className='my-6 ml-6 list-disc [&>li]:mt-2' {...props}>
                   {children}
@@ -905,6 +898,15 @@ export default function AboutPage() {
                 </li>
               ),
               hr: ({ ...props }) => <Separator className='my-8' {...props} />,
+              a: ({ children, href, ...props }) => (
+                <a
+                  href={href}
+                  className='font-medium text-gold-600 underline decoration-gold-500/30 transition-colors hover:text-gold-700 hover:decoration-gold-600 dark:text-gold-400 dark:decoration-gold-400/30 dark:hover:text-gold-300 dark:hover:decoration-gold-300'
+                  {...props}
+                >
+                  {children}
+                </a>
+              ),
               table: ({ children }) => {
                 return (
                   <UnifiedTableRenderer content={children} showSorting={true} />
@@ -916,22 +918,22 @@ export default function AboutPage() {
           </ReactMarkdown>
 
           {/* Contact Section at bottom of every page */}
-          <div className='mt-16 border-t border-gray-200 pt-8'>
+          <div className='mt-16 border-t border-hunter-600/20 pt-8'>
             <div className='text-center'>
-              <H2 className='mb-4 text-2xl font-semibold text-gray-900'>
+              <H2 className='mb-4 text-2xl font-semibold text-white'>
                 Ready to discuss your next project?
               </H2>
-              <P className='mx-auto mb-6 max-w-2xl text-gray-600'>
+              <P className='mx-auto mb-6 max-w-2xl text-slate-300'>
                 Whether you need enterprise integration expertise, DevOps
                 transformation, or strategic technology leadership, I'm here to
                 help bring your vision to life.
               </P>
               <a
                 href='/contact'
-                className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-teal-800 to-blue-800 px-6 py-3 font-medium text-white shadow-lg transition-all duration-200 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
+                className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-hunter-600 to-hunter-500 px-6 py-3 font-medium text-white transition-all hover:from-hunter-500 hover:to-hunter-400 hover:shadow-lg'
               >
                 <MessageSquare className='size-4' />
-                Target Your Next Project
+                Get in Touch
               </a>
             </div>
           </div>

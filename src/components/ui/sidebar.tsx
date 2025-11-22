@@ -201,7 +201,7 @@ const Sidebar = React.forwardRef<
           <SheetContent
             data-sidebar='sidebar'
             data-mobile='true'
-            className='z-[200] w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden'
+            className='z-[200] w-[--sidebar-width] bg-white p-0 text-sidebar-foreground [&>button]:hidden dark:bg-slate-950'
             style={
               {
                 '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
@@ -214,7 +214,7 @@ const Sidebar = React.forwardRef<
               <SheetDescription>Displays the mobile sidebar.</SheetDescription>
             </SheetHeader>
             <button
-              className='absolute right-4 top-4 z-50 rounded bg-teal-600 p-2 text-white md:hidden'
+              className='absolute right-4 top-4 z-50 rounded bg-hunter-700 p-2 text-white md:hidden'
               onClick={() => setOpenMobile(false)}
               aria-label='Close sidebar'
             >
@@ -270,7 +270,7 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar='sidebar'
-            className='flex size-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow'
+            className='flex size-full flex-col bg-white group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow dark:bg-slate-950'
           >
             {children}
           </div>

@@ -537,7 +537,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
 
   if (!tableData?.headers || tableData.headers.length === 0) {
     return (
-      <div className='rounded-lg border border-teal-200 bg-teal-50 p-4 text-center text-teal-600'>
+      <div className='rounded-lg border border-hunter-600/20 bg-slate-900/40 p-4 text-center text-slate-400'>
         Invalid table data
       </div>
     );
@@ -548,7 +548,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
   return (
     <div className={`my-6 ${className}`}>
       {tableTitle && (
-        <div className='mb-4 text-center text-lg font-semibold text-teal-800'>
+        <div className='mb-4 text-center text-lg font-semibold text-white'>
           {tableTitle}
         </div>
       )}
@@ -559,7 +559,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
             {dataToRender.headers.map((header, index) => (
               <UnifiedTableHead
                 key={index}
-                className='h-14 border-r border-teal-200 bg-teal-50 px-5 text-left align-middle text-sm font-semibold tracking-wide text-teal-900 last:border-r-0'
+                className='h-14 border-r border-hunter-600/20 bg-slate-800/50 px-5 text-left align-middle text-sm font-semibold tracking-wide text-white last:border-r-0'
               >
                 <div className='flex items-center justify-between'>
                   <span>{header}</span>
@@ -568,7 +568,7 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
                       variant='ghost'
                       size='sm'
                       onClick={() => requestSort(index)}
-                      className='ml-2 size-6 p-0 hover:bg-teal-200'
+                      className='ml-2 size-6 p-0 hover:bg-slate-700'
                     >
                       {getSortIcon(index)}
                     </Button>
@@ -582,14 +582,14 @@ const UnifiedTableRenderer: React.FC<UnifiedTableRendererProps> = ({
           {dataToRender.rows.map((row, rowIndex) => (
             <UnifiedTableRow
               key={rowIndex}
-              className={`border-b border-teal-100 transition-all duration-200 ease-in-out last:border-b-0 hover:bg-teal-50 hover:shadow-sm ${
-                rowIndex % 2 === 0 ? 'bg-white' : 'bg-teal-50'
+              className={`border-b border-hunter-600/20 transition-all duration-200 ease-in-out last:border-b-0 hover:bg-slate-700/50 hover:shadow-sm ${
+                rowIndex % 2 === 0 ? 'bg-slate-900/40' : 'bg-slate-800/30'
               }`}
             >
               {dataToRender.headers.map((_, colIndex) => (
                 <UnifiedTableCell
                   key={colIndex}
-                  className='min-w-[120px] border-r border-teal-100 px-5 py-4 align-middle text-sm leading-relaxed text-teal-700 last:border-r-0'
+                  className='min-w-[120px] border-r border-hunter-600/20 px-5 py-4 align-middle text-sm leading-relaxed text-slate-300 last:border-r-0'
                 >
                   {row[colIndex] ?? ''}
                 </UnifiedTableCell>

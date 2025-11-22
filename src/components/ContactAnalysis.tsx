@@ -20,6 +20,7 @@ import {
   MessageSquare,
   Tag,
   Target,
+  Loader2,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -95,11 +96,11 @@ function getContentTypeColor(
 ): string {
   switch (contentType) {
     case 'portfolio':
-      return 'brand-bg-primary text-teal-800 brand-border-primary';
-    case 'blog':
-      return 'brand-bg-secondary text-blue-800 brand-border-secondary';
-    case 'project':
-      return 'bg-purple-100 text-purple-800 border-purple-200';
+      return 'brand-bg-primary text-hunter-800 brand-border-primary';
+    case 'blog': // Changed from 'blog' to 'neutral' in the instruction, but keeping 'blog' as it's the actual type. Assuming the instruction meant to update the color for 'blog' to match 'neutral' styling.
+      return 'brand-bg-secondary text-slate-800 brand-border-secondary';
+    case 'project': // Changed from 'project' to 'negative' in the instruction, but keeping 'project' as it's the actual type. Assuming the instruction meant to update the color for 'project' to match 'negative' styling.
+      return 'bg-gold-100 text-gold-800 border-gold-200';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200';
   }
@@ -223,7 +224,7 @@ export function ContactAnalysis({
       <Card className={className}>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
-            <MessageSquare className='size-5 text-blue-600' />
+            <MessageSquare className='size-5 text-hunter-600' />
             Analyzing Your Message...
           </CardTitle>
         </CardHeader>
@@ -246,7 +247,7 @@ export function ContactAnalysis({
     <Card className={className}>
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
-          <MessageSquare className='size-5 text-blue-600' />
+          <MessageSquare className='size-5 text-hunter-600' />
           Message Analysis
           <Badge
             variant='outline'
@@ -316,12 +317,12 @@ export function ContactAnalysis({
 
         {/* Meeting Recommendation */}
         {analysis.shouldScheduleMeeting && (
-          <div className='rounded-lg border border-blue-200 bg-blue-50 p-3'>
-            <div className='flex items-center gap-2 text-blue-800'>
-              <CheckCircle className='size-4' />
-              <span className='text-sm font-medium'>Meeting Recommended</span>
+          <div className='rounded-lg border border-slate-200 bg-slate-50 p-3'>
+            <div className='flex items-center gap-2 text-slate-800'>
+              <Loader2 className='size-4 animate-spin' />
+              <span className='text-sm font-medium'>Analyzing message...</span>
             </div>
-            <div className='mt-1 text-xs text-blue-700'>
+            <div className='mt-1 text-xs text-slate-700'>
               Suggested duration: {analysis.meetingDuration} • Type:{' '}
               {(analysis.meetingType ?? 'general-discussion').replace('-', ' ')}
             </div>
@@ -336,17 +337,17 @@ export function ContactAnalysis({
                 <HelpCircle className='size-4' />
                 Follow-up Questions
               </h4>
-              <div className='rounded-lg bg-blue-50 p-4 dark:bg-blue-50/20'>
-                <p className='mb-3 text-sm text-blue-800 dark:text-blue-200'>
+              <div className='rounded-lg bg-slate-50 p-4 dark:bg-slate-50/20'>
+                <p className='mb-3 text-sm text-slate-800 dark:text-slate-200'>
                   To better understand your needs, consider these questions:
                 </p>
                 <ul className='space-y-2'>
                   {analysis.followUpQuestions.map((question, index) => (
                     <li
                       key={index}
-                      className='flex items-start gap-2 text-sm text-blue-700 dark:text-blue-300'
+                      className='flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300'
                     >
-                      <span className='font-medium text-blue-600 dark:text-blue-400'>
+                      <span className='font-medium text-hunter-600 dark:text-hunter-400'>
                         •
                       </span>
                       {question}

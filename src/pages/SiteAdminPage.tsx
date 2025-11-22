@@ -532,14 +532,14 @@ export const SiteAdminPage: React.FC = () => {
     return (
       <div className='flex min-h-screen items-center justify-center'>
         <div className='text-center'>
-          <Loader2 className='mx-auto mb-4 size-12 animate-spin text-teal-600' />
-          <P className='text-teal-600'>
+          <Loader2 className='mx-auto mb-4 size-12 animate-spin text-hunter-600' />
+          <P className='text-hunter-600'>
             {isDevelopment
               ? 'Verifying development authentication...'
               : 'Authenticating with Cloudflare Access...'}
           </P>
           {!isDevelopment && (
-            <P className='mt-2 text-sm text-teal-500'>
+            <P className='mt-2 text-sm text-slate-500'>
               If you're not redirected to login, please refresh the page
             </P>
           )}
@@ -552,38 +552,38 @@ export const SiteAdminPage: React.FC = () => {
     return (
       <div className='container mx-auto px-4 py-8'>
         <div className='flex items-center justify-center'>
-          <Card className='w-full max-w-md border-teal-200 bg-teal-50/50 shadow-xl'>
+          <Card className='w-full max-w-md border-slate-200 bg-slate-50/50 shadow-xl'>
             <CardHeader className='space-y-3 text-center'>
-              <div className='mx-auto w-fit rounded-full border-2 border-teal-200 bg-teal-100 p-3'>
-                <Shield className='size-8 text-teal-700' />
+              <div className='mx-auto w-fit rounded-full border-2 border-slate-200 bg-slate-100 p-3'>
+                <Shield className='size-8 text-hunter-700' />
               </div>
-              <CardTitle className='text-2xl font-bold text-teal-900'>
+              <CardTitle className='text-2xl font-bold text-hunter-900'>
                 Portfolio Access Required
               </CardTitle>
-              <CardDescription className='text-teal-700'>
+              <CardDescription className='text-slate-700'>
                 Authentication needed to view administration area
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-4 text-center'>
-              <div className='rounded-lg border border-teal-200 bg-teal-100 p-4 text-left'>
+              <div className='rounded-lg border border-slate-200 bg-slate-100 p-4 text-left'>
                 <div className='mb-2 flex items-center space-x-2'>
                   {isDevelopment ? (
                     <>
-                      <UserCheck className='size-4 text-teal-600' />
-                      <span className='font-semibold text-teal-800'>
+                      <UserCheck className='size-4 text-hunter-600' />
+                      <span className='font-semibold text-hunter-800'>
                         Development Environment
                       </span>
                     </>
                   ) : (
                     <>
-                      <Shield className='size-4 text-teal-600' />
-                      <span className='font-semibold text-teal-800'>
+                      <Shield className='size-4 text-hunter-600' />
+                      <span className='font-semibold text-hunter-800'>
                         Production Security
                       </span>
                     </>
                   )}
                 </div>
-                <P className='text-sm text-teal-700'>
+                <P className='text-sm text-slate-700'>
                   {isDevelopment
                     ? 'This content is protected in development mode. Use the development authentication system to simulate authentication.'
                     : 'This content is protected by Cloudflare Access. Please authenticate to access the administration area.'}
@@ -592,7 +592,7 @@ export const SiteAdminPage: React.FC = () => {
 
               <Button
                 onClick={() => (window.location.href = '/')}
-                className='flex w-full items-center justify-center space-x-2 bg-teal-600 transition-all duration-200 hover:bg-teal-700 focus:ring-2 focus:ring-teal-500 focus:ring-offset-2'
+                className='flex w-full items-center justify-center space-x-2 bg-hunter-600 transition-all duration-200 hover:bg-hunter-700 focus:ring-2 focus:ring-hunter-500 focus:ring-offset-2'
               >
                 <span>Return to Portfolio</span>
                 <ArrowRight className='size-4' />
@@ -605,29 +605,63 @@ export const SiteAdminPage: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100'>
-      <div className='container mx-auto max-w-7xl px-4 py-8'>
-        {/* Modern Header */}
-        <div className='mb-12 text-center'>
-          <div className='mb-4 inline-flex size-16 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600'>
-            <Shield className='size-8 text-white' />
-          </div>
-          <h1 className='mb-3 text-4xl font-bold text-gray-900'>
-            Site Administration
-          </h1>
-          <p className='mx-auto max-w-2xl text-lg text-gray-600'>
-            Monitor system health, manage services, and access protected
-            resources
-          </p>
-          <div className='mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/80 px-4 py-2 backdrop-blur-sm'>
-            <div className='size-2 rounded-full bg-green-500'></div>
-            <span className='text-sm font-medium text-gray-700'>
-              {isDevelopment
-                ? 'Development Environment'
-                : 'Production Environment'}
-            </span>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-red-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+      {/* Header with Administrative Theme - System Management Focused */}
+      <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
+        <div className='absolute inset-0 bg-gradient-to-r from-red-600/3 via-slate-600/3 to-red-600/3 dark:from-red-400/8 dark:via-slate-400/8 dark:to-red-400/8'></div>
+
+        <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
+          <div className='mx-auto max-w-4xl text-center'>
+            {/* Icon and Title with Administrative Theme */}
+            <div className='mb-4 flex items-center justify-center gap-4'>
+              <div className='relative'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-slate-600 shadow-lg'>
+                  <Shield className='size-7 text-white' />
+                </div>
+                {/* Admin indicator dots */}
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-red-600'>
+                  <div className='size-2 rounded-full bg-white'></div>
+                </div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-red-400 to-slate-500'>
+                  <div className='size-1.5 rounded-full bg-white'></div>
+                </div>
+              </div>
+              <div>
+                <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-red-600 to-red-500 dark:from-red-400 dark:to-red-300 bg-clip-text text-transparent'>
+                    Site Administration
+                  </span>
+                </h1>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-red-500 to-slate-500'></div>
+              </div>
+            </div>
+
+            {/* Description with Admin Language */}
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+              Monitor system health, manage services, and oversee
+              <span className='font-medium text-red-600 dark:text-red-400'>
+                {' '}\n              protected resources{' '}
+              </span>
+              with comprehensive administration controls.
+            </p>
+
+            {/* Environment Badge */}
+            <div className='mt-6'>
+              <div className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50/50 px-4 py-2 backdrop-blur-sm dark:border-red-900/50 dark:bg-red-950/30'>
+                <div className={`size-2 rounded-full ${isDevelopment ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
+                <span className='text-sm font-medium text-red-900 dark:text-red-200'>
+                  {isDevelopment
+                    ? 'Development Environment'
+                    : 'Production Environment'}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className='container mx-auto max-w-7xl px-4 py-8'>
         {/* Main Content Grid */}
         <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
           {/* Left Column - User Profile & System Info */}
@@ -636,8 +670,8 @@ export const SiteAdminPage: React.FC = () => {
             <Card className='border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-3'>
-                    <Users className='size-6 text-blue-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-slate-100 to-slate-200 p-3'>
+                    <Users className='size-6 text-slate-600' />
                   </div>
                   <div>
                     <CardTitle className='text-xl font-semibold text-gray-900'>
@@ -724,8 +758,8 @@ export const SiteAdminPage: React.FC = () => {
                       Security Level
                     </span>
                     <div className='flex items-center gap-2'>
-                      <Shield className='size-4 text-blue-600' />
-                      <span className='text-sm font-medium text-blue-600'>
+                      <Shield className='size-4 text-slate-600' />
+                      <span className='text-sm font-medium text-slate-600'>
                         {isDevelopment
                           ? 'Development Mode'
                           : 'Production Security'}
@@ -761,8 +795,8 @@ export const SiteAdminPage: React.FC = () => {
                   className='group flex items-center justify-between rounded-lg bg-gray-50 p-4 transition-colors duration-200 hover:bg-gray-100'
                 >
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-blue-100 p-2 transition-colors group-hover:bg-blue-200'>
-                      <Settings className='size-4 text-blue-600' />
+                    <div className='rounded-lg bg-slate-100 p-2 transition-colors group-hover:bg-slate-200'>
+                      <Settings className='size-4 text-slate-600' />
                     </div>
                     <span className='font-medium text-gray-900'>
                       Site Administration
@@ -791,8 +825,8 @@ export const SiteAdminPage: React.FC = () => {
                   className='group flex items-center justify-between rounded-lg bg-gray-50 p-4 transition-colors duration-200 hover:bg-gray-100'
                 >
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-teal-100 p-2 transition-colors group-hover:bg-teal-200'>
-                      <Settings className='size-4 text-teal-600' />
+                    <div className='rounded-lg bg-slate-100 p-2 transition-colors group-hover:bg-slate-200'>
+                      <Settings className='size-4 text-slate-600' />
                     </div>
                     <span className='font-medium text-gray-900'>Settings</span>
                   </div>
@@ -845,8 +879,8 @@ export const SiteAdminPage: React.FC = () => {
                 {/* AI Contact Analyzer */}
                 <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-blue-100 p-2'>
-                      <Code className='size-4 text-blue-600' />
+                    <div className='rounded-lg bg-slate-100 p-2'>
+                      <Code className='size-4 text-slate-600' />
                     </div>
                     <div>
                       <div className='font-medium text-gray-900'>
@@ -1005,8 +1039,8 @@ export const SiteAdminPage: React.FC = () => {
                 {/* Health Bridge API */}
                 <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-teal-100 p-2'>
-                      <Globe className='size-4 text-teal-600' />
+                    <div className='rounded-lg bg-slate-100 p-2'>
+                      <Globe className='size-4 text-hunter-600' />
                     </div>
                     <div>
                       <div className='font-medium text-gray-900'>

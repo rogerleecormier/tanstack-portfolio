@@ -73,8 +73,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return (
       <div className='flex min-h-screen items-center justify-center'>
         <div className='text-center'>
-          <Loader2 className='mx-auto mb-4 size-12 animate-spin text-teal-600' />
-          <p className='text-teal-600'>
+          <Loader2 className='mx-auto mb-4 size-12 animate-spin text-hunter-600' />
+          <p className='text-hunter-600'>
             {isDevelopment
               ? 'Verifying development authentication...'
               : 'Authenticating with Cloudflare Access...'}
@@ -91,15 +91,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
     return (
       <div className='flex min-h-screen items-center justify-center p-4'>
-        <Card className='w-full max-w-md border-teal-200 bg-teal-50/50 shadow-lg'>
+        <Card className='w-full max-w-md border-hunter-200 bg-hunter-50/50 shadow-lg'>
           <CardHeader className='text-center'>
-            <div className='mx-auto mb-4 w-fit rounded-full border-2 border-teal-200 bg-teal-100 p-3'>
-              <Shield className='size-8 text-teal-700' />
+            <div className='mx-auto mb-4 w-fit rounded-full border-2 border-hunter-200 bg-hunter-100 p-3'>
+              <Shield className='size-8 text-hunter-700' />
             </div>
-            <CardTitle className='text-xl text-teal-900'>
+            <CardTitle className='text-xl text-hunter-900'>
               Portfolio Access Required
             </CardTitle>
-            <CardDescription className='text-teal-700'>
+            <CardDescription className='text-slate-600'>
               {isDevelopment
                 ? 'This content requires development authentication'
                 : 'This content requires Cloudflare Access authentication'}
@@ -108,10 +108,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
           <CardContent className='space-y-4 text-center'>
             {/* Security Status Display */}
             {isDevelopment && (
-              <div className='rounded-lg border border-teal-200 bg-teal-100 p-4 text-left'>
+              <div className='rounded-lg border border-hunter-200 bg-hunter-100 p-4 text-left'>
                 <div className='mb-2 flex items-center space-x-2'>
-                  <Shield className='size-4 text-teal-600' />
-                  <span className='font-medium text-teal-800'>
+                  <Shield className='size-4 text-hunter-600' />
+                  <span className='font-medium text-hunter-800'>
                     Security Status
                   </span>
                 </div>
@@ -127,14 +127,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
                 )}
 
                 {/* Remaining Attempts */}
-                <div className='mb-2 text-sm text-teal-700'>
+                <div className='mb-2 text-sm text-hunter-700'>
                   <span className='font-medium'>Login Attempts Remaining:</span>{' '}
                   {remainingAttempts}
                 </div>
 
                 {/* Session Timeout Info */}
                 {sessionTimeRemaining > 0 && (
-                  <div className='flex items-center space-x-2 text-sm text-teal-600'>
+                  <div className='flex items-center space-x-2 text-sm text-hunter-600'>
                     <Clock className='size-4' />
                     <span>
                       Session Timeout: {Math.ceil(sessionTimeRemaining / 60000)}{' '}
@@ -158,25 +158,25 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
               </div>
             )}
 
-            <div className='rounded-lg border border-teal-200 bg-teal-100 p-4 text-left'>
+            <div className='rounded-lg border border-hunter-200 bg-hunter-100 p-4 text-left'>
               <div className='mb-2 flex items-center space-x-2'>
                 {isDevelopment ? (
                   <>
-                    <UserCheck className='size-4 text-teal-600' />
-                    <span className='font-medium text-teal-800'>
+                    <UserCheck className='size-4 text-hunter-600' />
+                    <span className='font-medium text-hunter-800'>
                       Development Environment
                     </span>
                   </>
                 ) : (
                   <>
-                    <Lock className='size-4 text-teal-600' />
-                    <span className='font-medium text-teal-800'>
+                    <Lock className='size-4 text-hunter-600' />
+                    <span className='font-medium text-hunter-800'>
                       Production Security
                     </span>
                   </>
                 )}
               </div>
-              <p className='text-sm text-teal-700'>
+              <p className='text-sm text-hunter-700'>
                 {isDevelopment
                   ? 'You are running in development mode. Click the button below to simulate authentication and access the administration area.'
                   : "This page is protected by Cloudflare Access. You'll need to authenticate using your Google SSO credentials to access the administration area."}
@@ -193,17 +193,17 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
                   if (isMobile && isEdge) {
                     return (
-                      <div className='mt-3 rounded-lg border border-blue-200 bg-blue-50 p-3'>
+                      <div className='mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3'>
                         <div className='mb-2 flex items-center space-x-2'>
-                          <Info className='size-4 text-blue-600' />
-                          <span className='font-medium text-blue-800'>
+                          <Info className='size-4 text-slate-600' />
+                          <span className='font-medium text-slate-800'>
                             Mobile Edge Browser
                           </span>
                         </div>
-                        <p className='text-xs text-blue-700'>
+                        <p className='text-xs text-slate-700'>
                           If the authentication doesn't work, try:
                         </p>
-                        <ul className='mt-1 list-inside list-disc space-y-1 text-xs text-blue-700'>
+                        <ul className='mt-1 list-inside list-disc space-y-1 text-xs text-slate-700'>
                           <li>Allow popups for this site</li>
                           <li>Try refreshing the page</li>
                           <li>Check if you're already logged into Google</li>
@@ -219,7 +219,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             <Button
               onClick={login}
               disabled={isLockedOut}
-              className='flex w-full items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+              className='flex w-full items-center justify-center space-x-2 bg-hunter-600 hover:bg-hunter-700 focus:ring-2 focus:ring-hunter-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
             >
               <span>
                 {isDevelopment
@@ -232,7 +232,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             </Button>
 
             {isDevelopment && (
-              <div className='text-xs text-teal-600'>
+              <div className='text-xs text-hunter-600'>
                 {isLockedOut
                   ? 'Too many failed attempts. Please wait before trying again.'
                   : 'This simulates authentication for development purposes only.'}

@@ -79,18 +79,18 @@ export function AIMeetingScheduler({
   // Show error state
   if (error && !selectedDate && !selectedTime) {
     return (
-      <Card className={`border-l-4 border-l-teal-500 ${className}`}>
+      <Card className={`border-l-4 border-l-hunter-500 ${className}`}>
         <CardContent className='pt-6'>
           <div className='py-6 text-center'>
-            <AlertCircle className='mx-auto mb-4 size-16 text-teal-500' />
-            <h3 className='mb-2 text-xl font-semibold text-teal-900'>
+            <AlertCircle className='mx-auto mb-4 size-16 text-hunter-500' />
+            <h3 className='mb-2 text-xl font-semibold text-hunter-900'>
               Scheduler Error
             </h3>
-            <p className='mb-4 text-teal-600'>{error}</p>
+            <p className='mb-4 text-hunter-600'>{error}</p>
             <Button
               onClick={() => window.location.reload()}
               variant='outline'
-              className='border-teal-200 text-teal-700 hover:bg-teal-50'
+              className='border-hunter-200 text-hunter-700 hover:bg-hunter-50'
             >
               Reload Page
             </Button>
@@ -101,10 +101,10 @@ export function AIMeetingScheduler({
   }
 
   return (
-    <Card className={`border-l-4 border-l-teal-500 ${className}`}>
+    <Card className={`border-l-4 border-l-hunter-500 ${className}`}>
       <CardHeader className='pb-3'>
         <CardTitle className='flex items-center gap-2 text-lg'>
-          <div className='flex size-8 items-center justify-center rounded-full bg-teal-100'>
+          <div className='flex size-8 items-center justify-center rounded-full bg-hunter-100'>
             📅
           </div>
           Recommended Meeting
@@ -116,8 +116,8 @@ export function AIMeetingScheduler({
 
       <CardContent className='space-y-4'>
         {/* Meeting Recommendation */}
-        <div className='rounded-lg border border-teal-200 bg-teal-50 p-3'>
-          <p className='text-sm text-teal-800'>
+        <div className='rounded-lg border border-hunter-200 bg-hunter-50 p-3'>
+          <p className='text-sm text-hunter-800'>
             <strong>Recommendation:</strong> Based on your inquiry, I recommend
             scheduling a <strong>{analysis.meetingDuration}</strong>{' '}
             {(analysis.meetingType ?? 'general-discussion').replace('-', ' ')}{' '}
@@ -141,7 +141,7 @@ export function AIMeetingScheduler({
                 setSelectedDate(date);
               }}
               min={format(new Date(), 'yyyy-MM-dd')}
-              className='w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500'
+              className='w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-hunter-500'
             />
           </div>
 
@@ -152,7 +152,7 @@ export function AIMeetingScheduler({
             <select
               value={selectedTime}
               onChange={e => setSelectedTime(e.target.value)}
-              className='w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500'
+              className='w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-hunter-500'
             >
               {generateTimeSlots().map(slot => (
                 <option key={slot} value={slot}>
@@ -214,8 +214,8 @@ export function AIMeetingScheduler({
         </div>
 
         {/* Instructions */}
-        <div className='rounded-lg border border-teal-200 bg-teal-50 p-3 text-center'>
-          <p className='mb-2 text-sm text-teal-800'>
+        <div className='rounded-lg border border-hunter-200 bg-hunter-50 p-3 text-center'>
+          <p className='mb-2 text-sm text-hunter-800'>
             <strong>Use the meeting scheduler above</strong> to select your
             preferred date and time, then use the button below to schedule your
             meeting.

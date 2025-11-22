@@ -149,10 +149,10 @@ export function TableOfContents() {
             <li key={entry.slug}>
               <a
                 href={`#${entry.slug}`}
-                className={`block rounded-lg px-3 py-2 text-sm transition-all duration-200 ${
+                className={`block rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
                   activeId === entry.slug
-                    ? 'border-l-[3px] border-teal-600 bg-gradient-to-r from-teal-50 to-blue-50 font-semibold text-slate-900 dark:from-teal-900/30 dark:to-blue-900/30 dark:text-slate-100'
-                    : 'text-slate-600 hover:bg-teal-100/80 hover:text-teal-800 dark:text-slate-400 dark:hover:bg-teal-800/30 dark:hover:text-teal-200'
+                    ? 'bg-gold-600/12 dark:bg-gold-600/12 border-l-2 border-gold-500 font-semibold text-white dark:border-gold-400 dark:text-white'
+                    : 'hover:bg-gold-600/12 dark:hover:bg-gold-600/12 text-white dark:text-white'
                 }`}
                 onClick={e => {
                   e.preventDefault();

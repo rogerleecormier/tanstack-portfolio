@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { H1, H2, H3, P } from '@/components/ui/typography';
+import { H2, H3, P } from '@/components/ui/typography';
 import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { useNavigate } from '@tanstack/react-router';
@@ -201,7 +201,7 @@ export default function ProjectsListPage() {
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
         <div className='container mx-auto px-4 py-8'>
           {/* Hero Skeleton */}
           <div className='mb-12 text-center'>
@@ -247,58 +247,55 @@ export default function ProjectsListPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Header with Targeting Theme - More Compact */}
-      <div className='relative overflow-hidden border-b border-teal-200 dark:border-teal-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
+      <div className='relative overflow-hidden border-b border-hunter-200 dark:border-hunter-800'>
+        <div className='absolute inset-0 bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Targeting Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-500 to-slate-600 shadow-lg'>
                   <Briefcase className='size-7 text-white' />
                 </div>
                 {/* Targeting indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-purple-600'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
-                <H1
-                  className='text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl'
-                  style={{ fontWeight: 700 }}
-                >
-                  <span className='bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent'>
+                <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
                     Projects & Case Studies
                   </span>
-                </H1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
+                </h1>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-slate-500'></div>
               </div>
             </div>
 
             {/* Description with Targeting Language */}
-            <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-gray-300'>
-              Strategic insights, technical deep-dives, and leadership
-              perspectives on enterprise technology transformation.
-              <span className='font-medium text-teal-700 dark:text-teal-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
+              Real-world projects and case studies showcasing delivered impact
+              across enterprise transformation and technology modernization.
+              <span className='font-medium text-gold-300'>
                 {' '}
-                Target your knowledge{' '}
+                Target your challenges{' '}
               </span>
-              with expertly curated content and on-point analysis.
-            </P>
+              with proven solutions and measurable business outcomes.
+            </p>
 
             {/* Quick Stats with Targeting Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-teal-500'></div>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>Strategic Targeting</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
+              <div className='flex items-center gap-2 text-sm text-slate-400'>
                 <div className='size-2 rounded-full bg-blue-500'></div>
                 <span>On-Point Analysis</span>
               </div>
@@ -311,21 +308,21 @@ export default function ProjectsListPage() {
             <div className='mt-6 flex flex-wrap justify-center gap-3'>
               <Badge
                 variant='secondary'
-                className='bg-teal-100 px-3 py-1.5 text-sm text-teal-800 dark:bg-teal-900 dark:text-teal-200'
+                className='bg-hunter-100 px-3 py-1.5 text-sm text-hunter-800 dark:bg-hunter-900 dark:text-hunter-200'
               >
                 <BarChart3 className='mr-1.5 size-4' />
                 Data Analysis
               </Badge>
               <Badge
                 variant='secondary'
-                className='bg-blue-200 px-3 py-1.5 text-sm text-blue-900 dark:bg-blue-800 dark:text-blue-100'
+                className='bg-slate-200 px-3 py-1.5 text-sm text-slate-900 dark:bg-slate-800 dark:text-slate-100'
               >
                 <Briefcase className='mr-1.5 size-4' />
                 Project Management
               </Badge>
               <Badge
                 variant='secondary'
-                className='bg-teal-100 px-3 py-1.5 text-sm text-teal-800 dark:bg-teal-900 dark:text-teal-200'
+                className='bg-hunter-100 px-3 py-1.5 text-sm text-hunter-800 dark:bg-hunter-900 dark:text-hunter-200'
               >
                 <User className='mr-1.5 size-4' />
                 Digital Transformation
@@ -384,7 +381,7 @@ export default function ProjectsListPage() {
                   <Badge
                     key={tag}
                     variant='default'
-                    className='cursor-pointer border-0 bg-gradient-to-r from-blue-600 to-teal-600 text-white hover:from-blue-700 hover:to-teal-700'
+                    className='btn-hunter cursor-pointer border-0'
                     onClick={() => toggleTag(tag)}
                   >
                     <Tag className='mr-1 size-3' />
@@ -417,8 +414,8 @@ export default function ProjectsListPage() {
                     onClick={() => toggleTag(tag)}
                     className={`h-auto justify-start px-3 py-2 text-left ${
                       selectedTags.includes(tag)
-                        ? 'border-0 bg-gradient-to-r from-blue-600 to-teal-600 text-white hover:from-blue-700 hover:to-teal-700'
-                        : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-blue-950/20'
+                        ? 'btn-hunter border-0'
+                        : 'border-gray-200 hover:border-hunter-300 hover:bg-hunter-50 dark:border-gray-700 dark:hover:bg-hunter-950/20'
                     }`}
                   >
                     <Tag className='mr-2 size-3 shrink-0' />
@@ -447,7 +444,7 @@ export default function ProjectsListPage() {
                 </Button>
                 <Button
                   onClick={() => setIsTagFilterOpen(false)}
-                  className='bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700'
+                  className='btn-hunter'
                 >
                   Apply Filters ({selectedTags.length})
                 </Button>
@@ -521,7 +518,7 @@ export default function ProjectsListPage() {
                         <div className='mb-2 flex items-center justify-between'>
                           <Badge
                             variant='outline'
-                            className='border-teal-200 text-xs text-teal-700 dark:border-teal-700 dark:text-teal-300'
+                            className='border-hunter-200 text-xs text-hunter-700 dark:border-hunter-700 dark:text-hunter-300'
                           >
                             {categoryIcon}
                             {project.category}
@@ -532,7 +529,7 @@ export default function ProjectsListPage() {
                             </span>
                           )}
                         </div>
-                        <CardTitle className='text-xl font-bold text-gray-900 transition-colors group-hover:text-teal-600 dark:text-white dark:group-hover:text-teal-400'>
+                        <CardTitle className='text-xl font-bold text-gray-900 transition-colors group-hover:text-hunter-600 dark:text-white dark:group-hover:text-hunter-400'>
                           {project.title}
                         </CardTitle>
                         <CardDescription className='text-sm leading-relaxed text-gray-600 dark:text-gray-300'>
@@ -546,7 +543,7 @@ export default function ProjectsListPage() {
                             <Badge
                               key={index}
                               variant='secondary'
-                              className='bg-teal-50 px-2 py-0.5 text-xs text-teal-700 dark:bg-teal-900/50 dark:text-teal-300'
+                              className='bg-hunter-50 px-2 py-0.5 text-xs text-hunter-700 dark:bg-hunter-900/50 dark:text-hunter-300'
                             >
                               {tag}
                             </Badge>
@@ -578,7 +575,7 @@ export default function ProjectsListPage() {
                           </div>
                           <Button
                             onClick={() => handleProjectClick(project.id)}
-                            className='w-full border-0 bg-gradient-to-r from-teal-600 to-blue-600 py-2 text-sm text-white transition-all duration-300 hover:from-teal-700 hover:to-blue-700 group-hover:shadow-lg'
+                            className='btn-hunter w-full border-0 py-2 text-sm text-white'
                           >
                             View Project
                             <ArrowRight className='ml-1.5 size-3 transition-transform group-hover:translate-x-1' />
@@ -617,7 +614,7 @@ export default function ProjectsListPage() {
         )}
 
         {/* Methodology Section - More Compact */}
-        <div className='mb-12 rounded-xl bg-gradient-to-r from-teal-50 to-blue-50 p-6 dark:from-teal-950/50 dark:to-blue-950/50'>
+        <div className='mb-12 rounded-xl bg-gradient-to-r from-hunter-50 to-slate-50 p-6 dark:from-hunter-950/50 dark:to-slate-950/50'>
           <div className='mb-6 text-center'>
             <h3 className='mb-3 text-xl font-bold text-gray-900 dark:text-white'>
               Analytical Approach
@@ -631,7 +628,7 @@ export default function ProjectsListPage() {
 
           <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
             <div className='text-center'>
-              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-600'>
+              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-500 to-hunter-600'>
                 <BarChart3 className='size-6 text-white' />
               </div>
               <h4 className='mb-1.5 text-sm font-semibold text-gray-900 dark:text-white'>
@@ -657,7 +654,7 @@ export default function ProjectsListPage() {
             </div>
 
             <div className='text-center'>
-              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-blue-600'>
+              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-500 to-slate-600'>
                 <User className='size-6 text-white' />
               </div>
               <h4 className='mb-1.5 text-sm font-semibold text-gray-900 dark:text-white'>
@@ -673,11 +670,11 @@ export default function ProjectsListPage() {
 
         {/* CTA Section - More Compact */}
         <div className='text-center'>
-          <div className='rounded-xl bg-gradient-to-r from-teal-600 to-blue-600 p-6 text-white'>
+          <div className='rounded-xl bg-gradient-to-r from-hunter-600 to-slate-600 p-6 text-white'>
             <h3 className='mb-3 text-xl font-bold'>
               Ready to Transform Your Projects?
             </h3>
-            <p className='mx-auto mb-4 max-w-2xl text-base text-teal-100'>
+            <p className='mx-auto mb-4 max-w-2xl text-base text-hunter-100'>
               Let's discuss how data-driven project management and strategic
               analysis can drive success in your organization.
             </p>
@@ -686,7 +683,7 @@ export default function ProjectsListPage() {
                 onClick={() => void navigate({ to: '/contact' })}
                 variant='secondary'
                 size='default'
-                className='border-0 bg-white text-teal-600 hover:bg-gray-100'
+                className='border-0 bg-white text-hunter-600 hover:bg-gray-100'
               >
                 Get in Touch
               </Button>
@@ -694,7 +691,7 @@ export default function ProjectsListPage() {
                 onClick={() => void navigate({ to: '/portfolio' })}
                 variant='secondary'
                 size='default'
-                className='border border-white/30 bg-white/20 text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-teal-600'
+                className='border border-white/30 bg-white/20 text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-hunter-600'
               >
                 View Portfolio
               </Button>
