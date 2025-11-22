@@ -29,7 +29,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
             </div>
             <div>
               <h3
-                className='text-lg font-semibold bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent'
+                className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-lg font-semibold text-transparent dark:from-indigo-400 dark:to-indigo-300'
                 style={{ fontWeight: 700 }}
               >
                 Front Matter
@@ -38,7 +38,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
             </div>
           </CardTitle>
           <button
-            className='flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-xs text-white shadow-sm hover:bg-indigo-700 transition-all duration-200'
+            className='flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-xs text-white shadow-sm transition-all duration-200 hover:bg-indigo-700'
             onClick={onEdit}
           >
             <Edit3 className='size-3' />

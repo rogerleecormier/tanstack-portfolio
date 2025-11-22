@@ -292,7 +292,7 @@ export default function SettingsPage() {
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-purple-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - Settings Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-purple-600/3 via-slate-600/3 to-purple-600/3 dark:from-purple-400/8 dark:via-slate-400/8 dark:to-purple-400/8'></div>
+        <div className='from-purple-600/3 via-slate-600/3 to-purple-600/3 dark:from-purple-400/8 dark:via-slate-400/8 dark:to-purple-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
@@ -312,7 +312,7 @@ export default function SettingsPage() {
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-purple-600 to-purple-500 dark:from-purple-400 dark:to-purple-300 bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-purple-600 to-purple-500 bg-clip-text text-transparent dark:from-purple-400 dark:to-purple-300'>
                     Settings
                   </span>
                 </h1>
@@ -322,7 +322,8 @@ export default function SettingsPage() {
 
             {/* Description with Settings Language */}
             <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
-              Manage your profile, preferences, and personal information in one central location
+              Manage your profile, preferences, and personal information in one
+              central location
             </p>
           </div>
         </div>
@@ -330,7 +331,6 @@ export default function SettingsPage() {
 
       {/* Main Content Area */}
       <div className='container mx-auto max-w-5xl px-4 py-8'>
-
         {/* User Profile Section */}
         <Card className='mb-8 border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
           <CardHeader className='pb-6'>

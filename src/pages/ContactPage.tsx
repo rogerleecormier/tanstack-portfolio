@@ -641,7 +641,7 @@ This meeting request was generated based on AI analysis of their contact form su
       <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-teal-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
         {/* Hero Section - Administrative Theme with Communication Focus */}
         <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-          <div className='absolute inset-0 bg-gradient-to-r from-teal-600/3 via-slate-600/3 to-teal-600/3 dark:from-teal-400/8 dark:via-slate-400/8 dark:to-teal-400/8'></div>
+          <div className='from-teal-600/3 via-slate-600/3 to-teal-600/3 dark:from-teal-400/8 dark:via-slate-400/8 dark:to-teal-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
           <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
             <div className='mx-auto max-w-4xl text-center'>
@@ -661,7 +661,7 @@ This meeting request was generated based on AI analysis of their contact form su
                 </div>
                 <div>
                   <H1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                    <span className='bg-gradient-to-r from-teal-600 to-teal-500 dark:from-teal-400 dark:to-teal-300 bg-clip-text text-transparent'>
+                    <span className='bg-gradient-to-r from-teal-600 to-teal-500 bg-clip-text text-transparent dark:from-teal-400 dark:to-teal-300'>
                       Let's Connect
                     </span>
                   </H1>
@@ -673,7 +673,8 @@ This meeting request was generated based on AI analysis of their contact form su
               <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
                 Ready to discuss your next project or initiative?
                 <span className='font-medium text-teal-600 dark:text-teal-400'>
-                  {' '}Start a conversation{' '}
+                  {' '}
+                  Start a conversation{' '}
                 </span>
                 with expert consultation and personalized guidance.
               </P>

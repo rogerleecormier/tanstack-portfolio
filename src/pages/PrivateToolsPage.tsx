@@ -135,7 +135,7 @@ const PrivateToolsPage: React.FC = () => {
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-cyan-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - Tools Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-cyan-600/3 via-slate-600/3 to-cyan-600/3 dark:from-cyan-400/8 dark:via-slate-400/8 dark:to-cyan-400/8'></div>
+        <div className='from-cyan-600/3 via-slate-600/3 to-cyan-600/3 dark:from-cyan-400/8 dark:via-slate-400/8 dark:to-cyan-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
@@ -155,7 +155,7 @@ const PrivateToolsPage: React.FC = () => {
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-cyan-600 to-cyan-500 dark:from-cyan-400 dark:to-cyan-300 bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-cyan-600 to-cyan-500 bg-clip-text text-transparent dark:from-cyan-400 dark:to-cyan-300'>
                     Private Tools
                   </span>
                 </h1>
@@ -165,9 +165,11 @@ const PrivateToolsPage: React.FC = () => {
 
             {/* Description with Tools Language */}
             <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
-              Access your private toolkit with utilities currently in development and beta testing.
+              Access your private toolkit with utilities currently in
+              development and beta testing.
               <span className='font-medium text-cyan-600 dark:text-cyan-400'>
-                {' '}Exclusive access{' '}
+                {' '}
+                Exclusive access{' '}
               </span>
               to cutting-edge features and experimental tools.
             </p>
@@ -202,7 +204,7 @@ const PrivateToolsPage: React.FC = () => {
             >
               {/* Subtle gradient overlay on hover */}
               <div className='absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-cyan-500/0 transition-all duration-300 group-hover:from-cyan-500/5 group-hover:to-cyan-500/10'></div>
-              
+
               <CardHeader className='relative pb-3'>
                 <div className='flex items-start justify-between'>
                   <div className='flex items-center gap-3'>

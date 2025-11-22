@@ -65,7 +65,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
               <div className='size-1.5 rounded-full bg-white'></div>
             </div>
           </div>
-          <CardTitle className='bg-gradient-to-r from-hunter-600 to-hunter-700 dark:from-hunter-500 dark:to-hunter-600 bg-clip-text text-2xl font-semibold text-transparent'>
+          <CardTitle className='bg-gradient-to-r from-hunter-600 to-hunter-700 bg-clip-text text-2xl font-semibold text-transparent dark:from-hunter-500 dark:to-hunter-600'>
             Roger Lee Cormier
           </CardTitle>
           <CardDescription className='text-slate-700 dark:text-slate-300'>

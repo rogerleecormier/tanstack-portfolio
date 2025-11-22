@@ -608,7 +608,7 @@ export const SiteAdminPage: React.FC = () => {
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-red-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - System Management Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-red-600/3 via-slate-600/3 to-red-600/3 dark:from-red-400/8 dark:via-slate-400/8 dark:to-red-400/8'></div>
+        <div className='from-red-600/3 via-slate-600/3 to-red-600/3 dark:from-red-400/8 dark:via-slate-400/8 dark:to-red-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
@@ -628,7 +628,7 @@ export const SiteAdminPage: React.FC = () => {
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-red-600 to-red-500 dark:from-red-400 dark:to-red-300 bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent dark:from-red-400 dark:to-red-300'>
                     Site Administration
                   </span>
                 </h1>
@@ -640,7 +640,8 @@ export const SiteAdminPage: React.FC = () => {
             <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
               Monitor system health, manage services, and oversee
               <span className='font-medium text-red-600 dark:text-red-400'>
-                {' '}\n              protected resources{' '}
+                {' '}
+                \n protected resources{' '}
               </span>
               with comprehensive administration controls.
             </p>
@@ -648,7 +649,9 @@ export const SiteAdminPage: React.FC = () => {
             {/* Environment Badge */}
             <div className='mt-6'>
               <div className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50/50 px-4 py-2 backdrop-blur-sm dark:border-red-900/50 dark:bg-red-950/30'>
-                <div className={`size-2 rounded-full ${isDevelopment ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
+                <div
+                  className={`size-2 rounded-full ${isDevelopment ? 'bg-yellow-500' : 'bg-green-500'}`}
+                ></div>
                 <span className='text-sm font-medium text-red-900 dark:text-red-200'>
                   {isDevelopment
                     ? 'Development Environment'

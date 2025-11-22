@@ -470,7 +470,7 @@ export function CreationStudioPage() {
     <div className='flex h-full min-h-0 flex-col bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950'>
       {/* Administrative Header with Content Creation Focus */}
       <div className='relative border-b border-slate-200 bg-white/80 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
-        <div className='absolute inset-0 bg-gradient-to-r from-indigo-600/3 via-slate-600/3 to-indigo-600/3 dark:from-indigo-400/8 dark:via-slate-400/8 dark:to-indigo-400/8'></div>
+        <div className='from-indigo-600/3 via-slate-600/3 to-indigo-600/3 dark:from-indigo-400/8 dark:via-slate-400/8 dark:to-indigo-400/8 absolute inset-0 bg-gradient-to-r'></div>
         <div className='relative px-4 py-6 sm:px-6 lg:px-8'>
           <div className='max-w-7xl'>
             {/* Enhanced Title with Administrative Theme */}
@@ -489,7 +489,7 @@ export function CreationStudioPage() {
               </div>
               <div>
                 <h1 className='text-3xl font-bold tracking-tight text-slate-900 dark:text-white'>
-                  <span className='bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent dark:from-indigo-400 dark:to-indigo-300'>
                     Content Studio
                   </span>
                 </h1>
@@ -502,8 +502,7 @@ export function CreationStudioPage() {
                 <>
                   <div className='size-1.5 rounded-full bg-indigo-500'></div>
                   <p className='text-sm text-slate-600 dark:text-slate-400'>
-                    <span className='font-medium'>Editing:</span>{' '}
-                    {currentFile}{' '}
+                    <span className='font-medium'>Editing:</span> {currentFile}{' '}
                     {isDirty && (
                       <span className='font-medium text-indigo-600 dark:text-indigo-400'>
                         • Unsaved
@@ -717,8 +716,8 @@ export function CreationStudioPage() {
               <div className='text-center'>
                 <div className='font-medium'>Rebuild Cache Manually</div>
                 <div className='mt-1 text-xs text-slate-500'>
-                  Force refresh of search and navigation cache using
-                  production KV
+                  Force refresh of search and navigation cache using production
+                  KV
                 </div>
                 <div className='mt-1 text-xs text-hunter-500'>
                   Works in: Localhost, Preview & Production
@@ -767,137 +766,142 @@ export function CreationStudioPage() {
           </Tooltip>
         </div>
       </div>
-      <div className='min-h-[70vh] flex-1 px-4 py-6 sm:px-6 lg:px-8' data-content-area>
+      <div
+        className='min-h-[70vh] flex-1 px-4 py-6 sm:px-6 lg:px-8'
+        data-content-area
+      >
         <div className='max-w-7xl'>
-        <div className='grid grid-cols-12 items-start gap-6'>
-          {/* Left Panel - Content Browser & Frontmatter */}
-          <div
-            ref={leftColRef}
-            className='col-span-12 flex min-h-0 flex-col gap-6 lg:col-span-4'
-          >
-            <div className='overflow-hidden'>
-              <R2Browser
-                refreshSignal={browserNonce}
-                onFileSelect={file => void handleFileSelect(file)}
-                onFileDownload={file => void handleFileDownload(file)}
-              />
-            </div>
-            <div className='overflow-hidden'>
-              <FrontMatterPanel
-                markdown={assemble(frontmatter, markdown)}
-                onFrontMatterChange={handleFrontMatterChange}
-                onEdit={() => setIsFrontmatterModalOpen(true)}
-              />
-            </div>
-          </div>
-          {/* Right Panel - Main Editor (dynamically scales to match left panel height) */}
-          <div
-            className='col-span-12 flex min-h-0 flex-col lg:col-span-8'
-            style={{ height: leftHeight ? `${leftHeight}px` : 'auto' }}
-          >
-            {/* Editor Header */}
+          <div className='grid grid-cols-12 items-start gap-6'>
+            {/* Left Panel - Content Browser & Frontmatter */}
             <div
-              ref={editorHeaderRef}
-              className='rounded-t-xl border border-indigo-200/50 bg-gradient-to-r from-white/95 to-indigo-50/95 backdrop-blur-sm dark:border-indigo-800/50 dark:bg-gradient-to-r dark:from-slate-900/95 dark:to-indigo-950/95'
+              ref={leftColRef}
+              className='col-span-12 flex min-h-0 flex-col gap-6 lg:col-span-4'
             >
-              <div className='flex items-center justify-between gap-3 border-b border-indigo-200/50 p-4 dark:border-indigo-800/50'>
-                <div className='flex items-center gap-3'>
-                  <div className='rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 p-2 shadow-md'>
-                    <FileText className='size-5 text-white' />
-                  </div>
-                  <div>
-                    <h3
-                      className='text-lg font-bold bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent'
-                      style={{ fontWeight: 700 }}
-                    >
-                      Content Editor
-                    </h3>
-                    <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-slate-500'></div>
-                  </div>
-                </div>
-                {/* Delete Button Group */}
-                <div className='flex items-center gap-2'>
-                  {currentFile ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant='destructive'
-                          size='sm'
-                          onClick={() =>
-                            void (() => {
-                              setConfirm({
-                                open: true,
-                                message: `Move to trash?\n${currentFile}`,
-                                onConfirm: () => {
-                                  void (async () => {
-                                    setConfirm({ open: false, message: '' });
-                                    const res =
-                                      await apiClient.deleteContentSoft(currentFile);
-                                    if (res.success) {
-                                      setMarkdown('');
-                                      setFrontmatter({});
-                                      setCurrentFile('');
-                                      setCurrentEtag('');
-                                      setIsDirty(false);
-                                      setBrowserNonce(n => n + 1);
-                                    }
-                                  })();
-                                },
-                              });
-                            })()
-                          }
-                          className='border-0 bg-red-600 shadow-lg transition-all duration-200 hover:bg-red-700 hover:shadow-xl'
-                        >
-                          <Trash2 className='size-4' />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Delete File</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          disabled
-                          className='cursor-not-allowed border-red-200 text-red-400 opacity-50'
-                        >
-                          <Trash2 className='size-4' />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>No file selected</TooltipContent>
-                    </Tooltip>
-                  )}
-                </div>
+              <div className='overflow-hidden'>
+                <R2Browser
+                  refreshSignal={browserNonce}
+                  onFileSelect={file => void handleFileSelect(file)}
+                  onFileDownload={file => void handleFileDownload(file)}
+                />
+              </div>
+              <div className='overflow-hidden'>
+                <FrontMatterPanel
+                  markdown={assemble(frontmatter, markdown)}
+                  onFrontMatterChange={handleFrontMatterChange}
+                  onEdit={() => setIsFrontmatterModalOpen(true)}
+                />
               </div>
             </div>
-            {/* Editor Content (dynamically scales to fill available space) */}
+            {/* Right Panel - Main Editor (dynamically scales to match left panel height) */}
             <div
-              ref={editorWrapperRef}
-              className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-indigo-200/50 bg-gradient-to-br from-white/95 to-slate-50/95 backdrop-blur-sm shadow-lg dark:border-indigo-800/50 dark:bg-gradient-to-br dark:from-slate-900/95 dark:to-slate-950/95'
-              style={{
-                minHeight: '200px',
-              }}
+              className='col-span-12 flex min-h-0 flex-col lg:col-span-8'
+              style={{ height: leftHeight ? `${leftHeight}px` : 'auto' }}
             >
-              {hydrating ? (
-                <div className='space-y-3 p-4'>
-                  <Skeleton className='h-8 w-1/3' />
-                  <Skeleton className='h-4 w-full' />
-                  <Skeleton className='h-4 w-5/6' />
-                  <Skeleton className='h-4 w-2/3' />
-                  <Skeleton className='h-64 w-full' />
+              {/* Editor Header */}
+              <div
+                ref={editorHeaderRef}
+                className='rounded-t-xl border border-indigo-200/50 bg-gradient-to-r from-white/95 to-indigo-50/95 backdrop-blur-sm dark:border-indigo-800/50 dark:bg-gradient-to-r dark:from-slate-900/95 dark:to-indigo-950/95'
+              >
+                <div className='flex items-center justify-between gap-3 border-b border-indigo-200/50 p-4 dark:border-indigo-800/50'>
+                  <div className='flex items-center gap-3'>
+                    <div className='rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 p-2 shadow-md'>
+                      <FileText className='size-5 text-white' />
+                    </div>
+                    <div>
+                      <h3
+                        className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-lg font-bold text-transparent dark:from-indigo-400 dark:to-indigo-300'
+                        style={{ fontWeight: 700 }}
+                      >
+                        Content Editor
+                      </h3>
+                      <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-slate-500'></div>
+                    </div>
+                  </div>
+                  {/* Delete Button Group */}
+                  <div className='flex items-center gap-2'>
+                    {currentFile ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant='destructive'
+                            size='sm'
+                            onClick={() =>
+                              void (() => {
+                                setConfirm({
+                                  open: true,
+                                  message: `Move to trash?\n${currentFile}`,
+                                  onConfirm: () => {
+                                    void (async () => {
+                                      setConfirm({ open: false, message: '' });
+                                      const res =
+                                        await apiClient.deleteContentSoft(
+                                          currentFile
+                                        );
+                                      if (res.success) {
+                                        setMarkdown('');
+                                        setFrontmatter({});
+                                        setCurrentFile('');
+                                        setCurrentEtag('');
+                                        setIsDirty(false);
+                                        setBrowserNonce(n => n + 1);
+                                      }
+                                    })();
+                                  },
+                                });
+                              })()
+                            }
+                            className='border-0 bg-red-600 shadow-lg transition-all duration-200 hover:bg-red-700 hover:shadow-xl'
+                          >
+                            <Trash2 className='size-4' />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Delete File</TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant='outline'
+                            size='sm'
+                            disabled
+                            className='cursor-not-allowed border-red-200 text-red-400 opacity-50'
+                          >
+                            <Trash2 className='size-4' />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>No file selected</TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <div className='h-full overflow-auto'>
-                  <MarkdownHtmlEditor
-                    initialMarkdown={markdown}
-                    onChange={handleMarkdownChange}
-                  />
-                </div>
-              )}
+              </div>
+              {/* Editor Content (dynamically scales to fill available space) */}
+              <div
+                ref={editorWrapperRef}
+                className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-indigo-200/50 bg-gradient-to-br from-white/95 to-slate-50/95 shadow-lg backdrop-blur-sm dark:border-indigo-800/50 dark:bg-gradient-to-br dark:from-slate-900/95 dark:to-slate-950/95'
+                style={{
+                  minHeight: '200px',
+                }}
+              >
+                {hydrating ? (
+                  <div className='space-y-3 p-4'>
+                    <Skeleton className='h-8 w-1/3' />
+                    <Skeleton className='h-4 w-full' />
+                    <Skeleton className='h-4 w-5/6' />
+                    <Skeleton className='h-4 w-2/3' />
+                    <Skeleton className='h-64 w-full' />
+                  </div>
+                ) : (
+                  <div className='h-full overflow-auto'>
+                    <MarkdownHtmlEditor
+                      initialMarkdown={markdown}
+                      onChange={handleMarkdownChange}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
       <FrontMatterModal
@@ -979,7 +983,7 @@ export function CreationStudioPage() {
                 </div>
                 <div>
                   <h2
-                    className='text-2xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent'
+                    className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-2xl font-bold tracking-tight text-transparent dark:from-indigo-400 dark:to-indigo-300'
                     style={{ fontWeight: 700 }}
                   >
                     Fullscreen Editor

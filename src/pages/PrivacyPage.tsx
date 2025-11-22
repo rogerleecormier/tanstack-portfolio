@@ -167,7 +167,7 @@ export default function PrivacyPage() {
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-blue-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - Shield & Trust Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-blue-600/3 via-slate-600/3 to-blue-600/3 dark:from-blue-400/8 dark:via-slate-400/8 dark:to-blue-400/8'></div>
+        <div className='from-blue-600/3 via-slate-600/3 to-blue-600/3 dark:from-blue-400/8 dark:via-slate-400/8 dark:to-blue-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
@@ -187,7 +187,7 @@ export default function PrivacyPage() {
               </div>
               <div>
                 <H1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-blue-300'>
                     Privacy Policy
                   </span>
                 </H1>
@@ -199,7 +199,8 @@ export default function PrivacyPage() {
             <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
               Complete transparency on data protection and
               <span className='font-medium text-blue-600 dark:text-blue-400'>
-                {' '}responsible AI practices
+                {' '}
+                responsible AI practices
               </span>
               . Your privacy and security are our top priorities.
             </P>
@@ -227,7 +228,6 @@ export default function PrivacyPage() {
 
       {/* Main Content Area */}
       <div className='mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8'>
-
         {/* Overview Card */}
         <Card className='mb-8 border-l-4 border-l-blue-500 sm:mb-12'>
           <CardHeader>

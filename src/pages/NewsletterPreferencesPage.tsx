@@ -203,7 +203,7 @@ const NewsletterPreferencesPage = () => {
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-amber-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - Newsletter Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-amber-600/3 via-slate-600/3 to-amber-600/3 dark:from-amber-400/8 dark:via-slate-400/8 dark:to-amber-400/8'></div>
+        <div className='from-amber-600/3 via-slate-600/3 to-amber-600/3 dark:from-amber-400/8 dark:via-slate-400/8 dark:to-amber-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
@@ -223,7 +223,7 @@ const NewsletterPreferencesPage = () => {
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-amber-600 to-amber-500 dark:from-amber-400 dark:to-amber-300 bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-amber-600 to-amber-500 bg-clip-text text-transparent dark:from-amber-400 dark:to-amber-300'>
                     Newsletter Preferences
                   </span>
                 </h1>
@@ -233,7 +233,8 @@ const NewsletterPreferencesPage = () => {
 
             {/* Description with Preferences Language */}
             <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
-              Manage your subscription, update communication preferences, and control what content you receive
+              Manage your subscription, update communication preferences, and
+              control what content you receive
             </p>
           </div>
         </div>
@@ -242,7 +243,6 @@ const NewsletterPreferencesPage = () => {
       {/* Main Content Area */}
       <div className='container mx-auto px-4 py-8'>
         <div className='mx-auto max-w-4xl'>
-
           {/* Main Content - Two Column Layout */}
           <div className='grid gap-6 md:grid-cols-2'>
             {/* Left Column - Manage Subscription */}
