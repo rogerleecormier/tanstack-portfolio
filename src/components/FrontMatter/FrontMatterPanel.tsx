@@ -24,21 +24,21 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
       <CardHeader className='relative shrink-0 border-b border-indigo-200/60 dark:border-indigo-800/60'>
         <div className='flex w-full items-center justify-between'>
           <CardTitle className='flex items-center gap-3'>
-            <div className='rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 p-2 shadow-md'>
+            <div className='rounded-lg bg-gradient-to-br from-gold-600 to-gold-800 p-2 shadow-md'>
               <Settings className='size-5 text-white' />
             </div>
             <div>
               <h3
-                className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-lg font-semibold text-transparent dark:from-indigo-400 dark:to-indigo-300'
+                className='bg-gradient-to-r from-gold-600 to-indigo-500 bg-clip-text text-lg font-semibold text-transparent dark:from-gold-400 dark:to-indigo-300'
                 style={{ fontWeight: 700 }}
               >
                 Front Matter
               </h3>
-              <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-slate-500'></div>
+              <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
             </div>
           </CardTitle>
           <button
-            className='flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-xs text-white shadow-sm transition-all duration-200 hover:bg-indigo-700'
+            className='flex items-center gap-1.5 rounded-md bg-gold-600 px-3 py-1.5 text-xs text-white shadow-sm transition-all duration-200 hover:bg-gold-700'
             onClick={onEdit}
           >
             <Edit3 className='size-3' />
@@ -49,9 +49,9 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
       <CardContent className='space-y-4 p-4'>
         <div className='space-y-4'>
           {/* Title Section */}
-          <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-indigo-800/30'>
+          <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-gold-800/30'>
             <div className='mb-2 flex items-center gap-2'>
-              <div className='size-1.5 rounded-full bg-indigo-600'></div>
+              <div className='size-1.5 rounded-full bg-gold-600'></div>
               <span className='text-xs font-semibold uppercase text-indigo-700 dark:text-indigo-300'>
                 Title
               </span>
@@ -62,7 +62,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
           </div>
 
           {/* Description Section */}
-          <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-indigo-800/30'>
+          <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-gold-800/30'>
             <div className='mb-2 flex items-center gap-2'>
               <div className='size-1.5 rounded-full bg-slate-600'></div>
               <span className='text-xs font-semibold uppercase text-slate-700 dark:text-slate-300'>
@@ -76,9 +76,9 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
 
           {/* Date & Layout Grid */}
           <div className='grid grid-cols-2 gap-3'>
-            <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-indigo-800/30'>
+            <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-gold-800/30'>
               <div className='mb-1 flex items-center gap-2'>
-                <div className='size-1.5 rounded-full bg-indigo-600'></div>
+                <div className='size-1.5 rounded-full bg-gold-600'></div>
                 <span className='text-xs font-semibold uppercase text-indigo-700 dark:text-indigo-300'>
                   Date
                 </span>
@@ -99,9 +99,9 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
               </div>
             </div>
 
-            <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-indigo-800/30'>
+            <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-gold-800/30'>
               <div className='mb-1 flex items-center gap-2'>
-                <div className='size-1.5 rounded-full bg-indigo-600'></div>
+                <div className='size-1.5 rounded-full bg-gold-600'></div>
                 <span className='text-xs font-semibold uppercase text-indigo-700 dark:text-indigo-300'>
                   Layout
                 </span>
@@ -113,9 +113,9 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
           </div>
 
           {/* Tags Section */}
-          <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-indigo-800/30'>
+          <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-gold-800/30'>
             <div className='mb-2 flex items-center gap-2'>
-              <div className='size-1.5 rounded-full bg-indigo-600'></div>
+              <div className='size-1.5 rounded-full bg-gold-600'></div>
               <span className='text-xs font-semibold uppercase text-indigo-700 dark:text-indigo-300'>
                 Tags
               </span>
@@ -139,10 +139,10 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
           </div>
 
           {/* Draft Status */}
-          <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-indigo-800/30'>
+          <div className='rounded-lg border border-indigo-200/60 bg-gradient-to-r from-indigo-50/50 to-indigo-100/50 p-3 dark:border-indigo-800/60 dark:from-indigo-900/30 dark:to-gold-800/30'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-2'>
-                <div className='size-1.5 rounded-full bg-indigo-600'></div>
+                <div className='size-1.5 rounded-full bg-gold-600'></div>
                 <span className='text-xs font-semibold uppercase text-indigo-700 dark:text-indigo-300'>
                   Draft Status
                 </span>
@@ -163,7 +163,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
         {/* Footer Message */}
         <div className='border-t border-indigo-200/60 pt-3 dark:border-indigo-800/60'>
           <div className='flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400'>
-            <div className='size-1 rounded-full bg-indigo-400'></div>
+            <div className='size-1 rounded-full bg-gold-400'></div>
             <span>Use "Edit" button above to modify front matter</span>
           </div>
         </div>

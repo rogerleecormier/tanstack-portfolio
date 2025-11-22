@@ -467,44 +467,44 @@ export function CreationStudioPage() {
   }, [anyModalOpen, scrollbarWidth]);
 
   return (
-    <div className='flex h-full min-h-0 flex-col bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950'>
+    <div className='flex h-full min-h-0 flex-col bg-gradient-to-br from-slate-950 via-hunter-950 to-slate-900 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Administrative Header with Content Creation Focus */}
-      <div className='relative border-b border-slate-200 bg-white/80 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
-        <div className='from-indigo-600/3 via-slate-600/3 to-indigo-600/3 dark:from-indigo-400/8 dark:via-slate-400/8 dark:to-indigo-400/8 absolute inset-0 bg-gradient-to-r'></div>
+      <div className='relative border-b border-slate-200 bg-slate-900/60 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+        <div className='from-gold-600/3 via-slate-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-slate-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
         <div className='relative px-4 py-6 sm:px-6 lg:px-8'>
           <div className='max-w-7xl'>
             {/* Enhanced Title with Administrative Theme */}
             <div className='flex items-center gap-4'>
               <div className='relative'>
-                <div className='flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-slate-600 shadow-lg'>
+                <div className='flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-500 to-slate-600 shadow-lg'>
                   <FileText className='size-6 text-white' />
                 </div>
                 {/* Content indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-indigo-600'>
+                <div className='absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-gold-600'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-2.5 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-slate-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-2.5 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-slate-500'>
                   <div className='size-1 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
-                <h1 className='text-3xl font-bold tracking-tight text-slate-900 dark:text-white'>
-                  <span className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent dark:from-indigo-400 dark:to-indigo-300'>
+                <h1 className='text-3xl font-bold tracking-tight text-slate-100 dark:text-white'>
+                  <span className='bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent dark:from-gold-400 dark:to-indigo-300'>
                     Content Studio
                   </span>
                 </h1>
-                <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-slate-500'></div>
+                <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
               </div>
             </div>
             {/* File Status Line */}
             <div className='mt-3 flex min-h-[20px] items-center gap-2'>
               {currentFile ? (
                 <>
-                  <div className='size-1.5 rounded-full bg-indigo-500'></div>
-                  <p className='text-sm text-slate-600 dark:text-slate-400'>
+                  <div className='size-1.5 rounded-full bg-gold-500'></div>
+                  <p className='text-sm text-slate-300 dark:text-slate-400'>
                     <span className='font-medium'>Editing:</span> {currentFile}{' '}
                     {isDirty && (
-                      <span className='font-medium text-indigo-600 dark:text-indigo-400'>
+                      <span className='font-medium text-gold-600 dark:text-gold-400'>
                         • Unsaved
                       </span>
                     )}
@@ -513,7 +513,7 @@ export function CreationStudioPage() {
               ) : (
                 <>
                   <div className='size-1.5 rounded-full bg-slate-300 dark:bg-slate-600'></div>
-                  <p className='text-sm text-slate-500 dark:text-slate-400'>
+                  <p className='text-sm text-slate-400 dark:text-slate-400'>
                     Ready to create or open a file
                   </p>
                 </>
@@ -523,7 +523,7 @@ export function CreationStudioPage() {
         </div>
 
         {/* Header Actions */}
-        <div className='flex items-center justify-end gap-1 border-t border-slate-200 bg-slate-50/50 p-4 dark:border-slate-700 dark:bg-slate-900/50'>
+        <div className='flex items-center justify-end gap-1 border-t border-slate-200 bg-slate-900/50 p-4 dark:border-slate-700 dark:bg-slate-900/50'>
           {/* File Operations Group */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -553,7 +553,7 @@ export function CreationStudioPage() {
                     setIsDirty(true);
                   }
                 }}
-                className='border-slate-600 text-slate-600 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                className='border-slate-600 text-slate-300 transition-all duration-200 hover:bg-slate-900 dark:hover:bg-slate-800'
               >
                 <Plus className='size-4' />
               </Button>
@@ -614,7 +614,7 @@ export function CreationStudioPage() {
           {/* Cache Controls */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className='flex h-9 items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 dark:border-slate-700 dark:bg-slate-800'>
+              <div className='flex h-9 items-center gap-1 rounded-md border border-slate-200 bg-slate-900 px-2 py-1 dark:border-slate-700 dark:bg-slate-800'>
                 <Checkbox
                   id='rebuild-cache'
                   checked={shouldRebuildCache}
@@ -623,7 +623,7 @@ export function CreationStudioPage() {
                   }
                   className='size-3 data-[state=checked]:border-hunter-600 data-[state=checked]:bg-hunter-600'
                 />
-                <Database className='size-3 text-slate-600 dark:text-slate-400' />
+                <Database className='size-3 text-slate-300 dark:text-slate-400' />
                 {cacheRebuildStatus !== 'idle' && (
                   <RefreshCw
                     className={`size-3 ${
@@ -715,7 +715,7 @@ export function CreationStudioPage() {
             <TooltipContent>
               <div className='text-center'>
                 <div className='font-medium'>Rebuild Cache Manually</div>
-                <div className='mt-1 text-xs text-slate-500'>
+                <div className='mt-1 text-xs text-slate-400'>
                   Force refresh of search and navigation cache using production
                   KV
                 </div>
@@ -732,7 +732,7 @@ export function CreationStudioPage() {
                       {new Date(cacheStatus.lastUpdated).toLocaleTimeString()}
                     </div>
                     {cacheStatus.trigger && (
-                      <div className='mt-1 text-slate-500'>
+                      <div className='mt-1 text-slate-400'>
                         Trigger: {cacheStatus.trigger}
                       </div>
                     )}
@@ -800,21 +800,21 @@ export function CreationStudioPage() {
               {/* Editor Header */}
               <div
                 ref={editorHeaderRef}
-                className='rounded-t-xl border border-indigo-200/50 bg-gradient-to-r from-white/95 to-indigo-50/95 backdrop-blur-sm dark:border-indigo-800/50 dark:bg-gradient-to-r dark:from-slate-900/95 dark:to-indigo-950/95'
+                className='rounded-t-xl border border-gold-200/50 bg-gradient-to-r from-white/95 to-indigo-50/95 backdrop-blur-sm dark:border-gold-800/50 dark:bg-gradient-to-r dark:from-slate-900/95 dark:to-indigo-950/95'
               >
-                <div className='flex items-center justify-between gap-3 border-b border-indigo-200/50 p-4 dark:border-indigo-800/50'>
+                <div className='flex items-center justify-between gap-3 border-b border-gold-200/50 p-4 dark:border-gold-800/50'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 p-2 shadow-md'>
+                    <div className='rounded-lg bg-gradient-to-br from-gold-600 to-gold-800 p-2 shadow-md'>
                       <FileText className='size-5 text-white' />
                     </div>
                     <div>
                       <h3
-                        className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-lg font-bold text-transparent dark:from-indigo-400 dark:to-indigo-300'
+                        className='bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-lg font-bold text-transparent dark:from-gold-400 dark:to-indigo-300'
                         style={{ fontWeight: 700 }}
                       >
                         Content Editor
                       </h3>
-                      <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-slate-500'></div>
+                      <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
                     </div>
                   </div>
                   {/* Delete Button Group */}
@@ -878,7 +878,7 @@ export function CreationStudioPage() {
               {/* Editor Content (dynamically scales to fill available space) */}
               <div
                 ref={editorWrapperRef}
-                className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-indigo-200/50 bg-gradient-to-br from-white/95 to-slate-50/95 shadow-lg backdrop-blur-sm dark:border-indigo-800/50 dark:bg-gradient-to-br dark:from-slate-900/95 dark:to-slate-950/95'
+                className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-gold-200/50 bg-gradient-to-br from-white/95 to-slate-50/95 shadow-lg backdrop-blur-sm dark:border-gold-800/50 dark:bg-gradient-to-br dark:from-slate-900/95 dark:to-slate-950/95'
                 style={{
                   minHeight: '200px',
                 }}
@@ -975,15 +975,15 @@ export function CreationStudioPage() {
         <DialogContent className='size-full max-h-[95vh] max-w-[95vw] bg-gradient-to-br from-slate-50 via-indigo-50 to-slate-50 p-0 dark:from-slate-950 dark:via-indigo-950 dark:to-slate-950'>
           <div className='flex h-full flex-col'>
             {/* Enhanced Header with Indigo Theme */}
-            <div className='relative flex items-center justify-between border-b border-indigo-200 bg-white/90 p-6 backdrop-blur-sm dark:border-indigo-800 dark:bg-slate-900/90'>
-              <div className='absolute inset-0 bg-gradient-to-r from-indigo-600/5 via-slate-600/5 to-indigo-600/5 dark:from-indigo-400/10 dark:via-slate-400/10 dark:to-indigo-400/10'></div>
+            <div className='relative flex items-center justify-between border-b border-gold-200 bg-white/90 p-6 backdrop-blur-sm dark:border-gold-800 dark:bg-slate-900/90'>
+              <div className='absolute inset-0 bg-gradient-to-r from-gold-600/5 via-slate-600/5 to-gold-600/5 dark:from-gold-400/10 dark:via-slate-400/10 dark:to-gold-400/10'></div>
               <div className='relative flex items-center gap-4'>
-                <div className='rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 p-3 shadow-lg'>
+                <div className='rounded-xl bg-gradient-to-br from-gold-600 to-gold-800 p-3 shadow-lg'>
                   <FileText className='size-6 text-white' />
                 </div>
                 <div>
                   <h2
-                    className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-2xl font-bold tracking-tight text-transparent dark:from-indigo-400 dark:to-indigo-300'
+                    className='bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-2xl font-bold tracking-tight text-transparent dark:from-gold-400 dark:to-indigo-300'
                     style={{ fontWeight: 700 }}
                   >
                     Fullscreen Editor
@@ -991,11 +991,11 @@ export function CreationStudioPage() {
                   <div className='mt-1 flex min-h-[20px] items-center gap-2'>
                     {currentFile ? (
                       <>
-                        <div className='size-1.5 rounded-full bg-indigo-500'></div>
-                        <p className='text-sm text-slate-600 dark:text-slate-400'>
+                        <div className='size-1.5 rounded-full bg-gold-500'></div>
+                        <p className='text-sm text-slate-300 dark:text-slate-400'>
                           {currentFile}{' '}
                           {isDirty && (
-                            <span className='font-medium text-indigo-600 dark:text-indigo-400'>
+                            <span className='font-medium text-gold-600 dark:text-gold-400'>
                               • Unsaved changes
                             </span>
                           )}
@@ -1011,7 +1011,7 @@ export function CreationStudioPage() {
                 variant='outline'
                 size='sm'
                 onClick={() => setIsFullscreen(false)}
-                className='relative z-10 gap-2 border-indigo-600 text-indigo-600 shadow-md transition-all duration-200 hover:bg-indigo-50 hover:shadow-lg dark:hover:bg-indigo-950'
+                className='relative z-10 gap-2 border-gold-600 text-gold-600 shadow-md transition-all duration-200 hover:bg-gold-50 hover:shadow-lg dark:hover:bg-gold-950'
               >
                 <Minimize className='size-4' />
                 Return to Studio
@@ -1019,7 +1019,7 @@ export function CreationStudioPage() {
             </div>
             {/* Enhanced Editor Content */}
             <div className='flex-1 overflow-hidden p-2'>
-              <div className='h-full rounded-xl border border-indigo-200/50 bg-gradient-to-br from-white/95 to-slate-50/95 shadow-lg backdrop-blur-sm dark:border-indigo-800/50 dark:bg-gradient-to-br dark:from-slate-900/95 dark:to-slate-950/95'>
+              <div className='h-full rounded-xl border border-gold-200/50 bg-gradient-to-br from-white/95 to-slate-50/95 shadow-lg backdrop-blur-sm dark:border-gold-800/50 dark:bg-gradient-to-br dark:from-slate-900/95 dark:to-slate-950/95'>
                 <MarkdownHtmlEditor
                   initialMarkdown={markdown}
                   onChange={handleMarkdownChange}

@@ -218,7 +218,7 @@ const ToolsListPage: React.FC = () => {
                 <span>Workflow Tools</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-blue-500'></div>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>Productivity Boost</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-slate-400'>

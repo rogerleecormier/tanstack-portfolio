@@ -576,8 +576,8 @@ This meeting request was generated based on AI analysis of their contact form su
               <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
                 <CardHeader className='pb-4'>
                   <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                    <div className='flex size-8 items-center justify-center rounded-lg bg-blue-100'>
-                      <Building className='size-5 text-blue-600' />
+                    <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-100'>
+                      <Building className='size-5 text-hunter-600' />
                     </div>
                     Areas of Expertise
                   </CardTitle>
@@ -638,7 +638,7 @@ This meeting request was generated based on AI analysis of their contact form su
   // Choice Selection Screen
   if (contactMode === 'choice') {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-teal-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
         {/* Hero Section - Administrative Theme with Communication Focus */}
         <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
           <div className='from-teal-600/3 via-slate-600/3 to-teal-600/3 dark:from-teal-400/8 dark:via-slate-400/8 dark:to-teal-400/8 absolute inset-0 bg-gradient-to-r'></div>
@@ -837,7 +837,7 @@ This meeting request was generated based on AI analysis of their contact form su
                           )}
                         {formData.message.length >= 20 && isAnalyzing && (
                           <div className='mt-2 flex items-center gap-2 text-sm text-hunter-400'>
-                            <div className='size-4 animate-spin rounded-full border-b-2 border-blue-600'></div>
+                            <div className='size-4 animate-spin rounded-full border-b-2 border-hunter-600'></div>
                             Analyzing your message...
                           </div>
                         )}
@@ -999,8 +999,8 @@ This meeting request was generated based on AI analysis of their contact form su
                 <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
                   <CardHeader className='pb-4'>
                     <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                      <div className='flex size-8 items-center justify-center rounded-lg bg-blue-100'>
-                        <Building className='size-5 text-blue-600' />
+                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-100'>
+                        <Building className='size-5 text-hunter-600' />
                       </div>
                       Areas of Expertise
                     </CardTitle>

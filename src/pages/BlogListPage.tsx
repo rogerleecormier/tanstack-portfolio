@@ -203,7 +203,7 @@ export default function BlogListPage() {
                 <span>Strategic Targeting</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-blue-500'></div>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>Precision Analysis</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
@@ -226,13 +226,13 @@ export default function BlogListPage() {
                 placeholder='Search insights and articles...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className='h-11 border-gray-200 pl-12 focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-700'
+                className='h-11 border-gray-200 pl-12 focus:border-hunter-500 focus:ring-hunter-500/20 dark:border-gray-700'
               />
             </div>
             <Button
               variant='outline'
               onClick={() => setIsTagFilterOpen(true)}
-              className='flex h-11 items-center gap-2 border-gray-200 px-6 hover:border-blue-300 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-blue-950/20'
+              className='flex h-11 items-center gap-2 border-gray-200 px-6 hover:border-hunter-300 hover:bg-hunter-50 dark:border-gray-700 dark:hover:bg-hunter-950/20'
             >
               <Filter className='size-4' />
               Topics {selectedTags.length > 0 && `(${selectedTags.length})`}
@@ -262,7 +262,7 @@ export default function BlogListPage() {
                   <Badge
                     key={tag}
                     variant='default'
-                    className='cursor-pointer border-0 bg-gradient-to-r from-blue-600 to-teal-600 text-white hover:from-blue-700 hover:to-teal-700'
+                    className='cursor-pointer border-0 bg-gradient-to-r from-hunter-600 to-teal-600 text-white hover:from-hunter-700 hover:to-teal-700'
                     onClick={() => toggleTag(tag)}
                   >
                     <Tag className='mr-1 size-3' />
@@ -307,8 +307,8 @@ export default function BlogListPage() {
                     variant={selectedTags.includes(tag) ? 'default' : 'outline'}
                     className={`cursor-pointer transition-colors ${
                       selectedTags.includes(tag)
-                        ? 'border-0 bg-gradient-to-r from-blue-600 to-teal-600 text-white hover:from-blue-700 hover:to-teal-700'
-                        : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-blue-950/20'
+                        ? 'border-0 bg-gradient-to-r from-hunter-600 to-teal-600 text-white hover:from-hunter-700 hover:to-teal-700'
+                        : 'border-gray-200 hover:border-hunter-300 hover:bg-hunter-50 dark:border-gray-700 dark:hover:bg-hunter-950/20'
                     }`}
                     onClick={() => toggleTag(tag)}
                   >
@@ -336,7 +336,7 @@ export default function BlogListPage() {
                 </Button>
                 <Button
                   onClick={closeTagFilter}
-                  className='border-0 bg-gradient-to-r from-blue-600 to-teal-600 text-white hover:from-blue-700 hover:to-teal-700'
+                  className='border-0 bg-gradient-to-r from-hunter-600 to-teal-600 text-white hover:from-hunter-700 hover:to-teal-700'
                 >
                   Apply Filters
                 </Button>
@@ -376,7 +376,7 @@ export default function BlogListPage() {
         ) : filteredPosts.length === 0 ? (
           <Card className='border-gray-200 py-16 text-center dark:border-gray-700'>
             <CardContent>
-              <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50'>
+              <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-hunter-100 to-teal-100 dark:from-hunter-900/50 dark:to-teal-900/50'>
                 <BookOpen className='size-8 text-blue-600 dark:text-blue-400' />
               </div>
               <H3 className='mb-3 text-gray-800 dark:text-gray-200'>
@@ -408,7 +408,7 @@ export default function BlogListPage() {
             {displayedPosts.length < filteredPosts.length && (
               <div ref={loadingRef} className='py-12 text-center'>
                 <div className='inline-flex items-center gap-3 text-gray-500 dark:text-gray-400'>
-                  <div className='size-6 animate-spin rounded-full border-b-2 border-blue-600'></div>
+                  <div className='size-6 animate-spin rounded-full border-b-2 border-hunter-600'></div>
                   <span className='font-medium'>Loading more articles...</span>
                 </div>
               </div>

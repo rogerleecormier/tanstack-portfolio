@@ -73,22 +73,22 @@ export function FrontMatterModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-w-2xl bg-gradient-to-br from-slate-50 via-teal-50 to-blue-50 dark:from-slate-950 dark:via-teal-950 dark:to-blue-950'>
+      <DialogContent className='max-w-2xl bg-gradient-to-br from-slate-50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
         {/* Enhanced Header with Brand Theme */}
-        <div className='relative rounded-t-lg border-b border-hunter-200 bg-white/80 backdrop-blur-sm dark:border-hunter-800 dark:bg-slate-900/80'>
-          <div className='absolute inset-0 rounded-t-lg bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
+        <div className='relative rounded-t-lg border-b border-hunter-200 bg-slate-900/60 backdrop-blur-sm dark:border-gold-800 dark:bg-slate-900/80'>
+          <div className='absolute inset-0 rounded-t-lg bg-gradient-to-r from-gold-600/5 via-slate-600/5 to-gold-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
           <div className='relative flex items-center gap-4 p-6'>
-            <div className='rounded-xl bg-gradient-to-br from-hunter-600 to-hunter-800 p-3 shadow-lg'>
+            <div className='rounded-xl bg-gradient-to-br from-gold-600 to-gold-800 p-3 shadow-lg'>
               <FileText className='size-6 text-white' />
             </div>
             <div>
               <DialogTitle
-                className='text-2xl font-bold tracking-tight text-slate-900 dark:text-white'
+                className='text-2xl font-bold tracking-tight text-slate-100 dark:text-white'
                 style={{ fontWeight: 700 }}
               >
                 Edit Front Matter
               </DialogTitle>
-              <div className='mt-1 h-1 w-32 rounded-full bg-gradient-to-r from-gold-500 via-hunter-600 to-hunter-800'></div>
+              <div className='mt-1 h-1 w-32 rounded-full bg-gradient-to-r from-gold-500 via-gold-600 to-gold-800'></div>
             </div>
           </div>
           <DialogDescription className='sr-only'>
@@ -207,7 +207,7 @@ export function FrontMatterModal({
         {/* AI Usage Note */}
         <div className='bg-white/90 px-6 pb-4 backdrop-blur-sm dark:bg-slate-900/90'>
           <div className='flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950/50'>
-            <AlertCircle className='size-4 shrink-0 text-slate-600 dark:text-slate-400' />
+            <AlertCircle className='size-4 shrink-0 text-slate-300 dark:text-slate-400' />
             <p className='text-xs text-slate-700 dark:text-slate-300'>
               <strong>AI-Generated Content:</strong> Front matter fields can be
               auto-generated using AI. Review and edit generated content before
@@ -217,14 +217,14 @@ export function FrontMatterModal({
         </div>
 
         {/* Enhanced Footer with Brand Theme */}
-        <div className='relative rounded-b-lg border-t border-hunter-200 bg-white/80 backdrop-blur-sm dark:border-hunter-800 dark:bg-slate-900/80'>
-          <div className='absolute inset-0 rounded-b-lg bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
+        <div className='relative rounded-b-lg border-t border-hunter-200 bg-slate-900/60 backdrop-blur-sm dark:border-gold-800 dark:bg-slate-900/80'>
+          <div className='absolute inset-0 rounded-b-lg bg-gradient-to-r from-gold-600/5 via-slate-600/5 to-gold-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
           <DialogFooter className='relative flex items-center justify-between gap-2 p-6'>
             <Button
               type='button'
               variant='outline'
               onClick={onCancel}
-              className='border-slate-600 text-slate-600 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+              className='border-slate-600 text-slate-300 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800'
             >
               Cancel
             </Button>

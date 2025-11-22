@@ -20,12 +20,12 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible='icon'
-      className='border-r border-slate-200/50 bg-gradient-to-b from-slate-50/95 to-slate-100/95 backdrop-blur-md dark:border-slate-700/50 dark:bg-gradient-to-b dark:from-slate-900/95 dark:to-slate-800/95'
+      className='border-r border-hunter-700/40 bg-gradient-to-b from-hunter-950 to-hunter-900 backdrop-blur-md dark:border-hunter-600/50'
     >
       <SidebarContent className='gap-1 pt-16'>
         {/* Main Navigation Group */}
         <SidebarGroup>
-          <SidebarGroupLabel className='px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400'>
+          <SidebarGroupLabel className='px-3 py-2 text-xs font-semibold uppercase tracking-wider text-hunter-300 dark:text-hunter-400'>
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -39,10 +39,10 @@ export function AppSidebar() {
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
-                      className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:border-l-2 hover:border-gold-500/50 hover:bg-gold-500/10 data-[active]:border-l-2 data-[active]:border-gold-500 data-[active]:bg-gold-500/10 data-[active]:font-semibold dark:text-white dark:hover:border-gold-500/50 dark:hover:bg-gold-500/10 dark:data-[active]:border-gold-500 dark:data-[active]:bg-gold-500/10'
+                      className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-hunter-100 transition-all duration-200 hover:border-l-2 hover:border-gold-500/50 hover:bg-gold-500/10 data-[active]:border-l-2 data-[active]:border-gold-500 data-[active]:bg-gold-500/10 data-[active]:font-semibold dark:text-hunter-100 dark:hover:border-gold-500/50 dark:hover:bg-gold-500/10 dark:data-[active]:border-gold-500 dark:data-[active]:bg-gold-500/10'
                     >
                       {item.icon && (
-                        <item.icon className='size-4 shrink-0 text-slate-400 transition-colors duration-200 group-hover:text-gold-400 group-data-[active]:text-gold-400 dark:text-slate-400 dark:group-hover:text-gold-400 dark:group-data-[active]:text-gold-400' />
+                        <item.icon className='size-4 shrink-0 text-hunter-400 transition-colors duration-200 group-hover:text-gold-400 group-data-[active]:text-gold-400 dark:text-hunter-400 dark:group-hover:text-gold-400 dark:group-data-[active]:text-gold-400' />
                       )}
                       <span className='truncate'>{item.title}</span>
                     </Link>

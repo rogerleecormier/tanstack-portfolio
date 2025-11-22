@@ -69,7 +69,7 @@ class MainContentErrorBoundary extends Component<
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className='rounded bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700'
+                className='rounded bg-hunter-600 px-4 py-2 text-white transition-colors hover:bg-hunter-700'
               >
                 Reload Page
               </button>
@@ -148,7 +148,7 @@ export default function AppLayout() {
   return (
     <SidebarProvider defaultOpen={true}>
       <Header />
-      <div className='flex min-h-screen bg-gradient-to-br from-slate-950 via-slate-900/40 to-slate-950 pt-48 md:pt-44'>
+      <div className='flex min-h-screen bg-gradient-to-br from-hunter-950 via-hunter-900/40 to-hunter-950 pt-48 md:pt-44'>
         <AppSidebar />
         {/* Main content area - Header is now fixed at top */}
         <div className='min-w-0 flex-1'>

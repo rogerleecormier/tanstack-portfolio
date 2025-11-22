@@ -164,41 +164,41 @@ export default function PrivacyPage() {
   ];
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-blue-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-hunter-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - Shield & Trust Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='from-blue-600/3 via-slate-600/3 to-blue-600/3 dark:from-blue-400/8 dark:via-slate-400/8 dark:to-blue-400/8 absolute inset-0 bg-gradient-to-r'></div>
+        <div className='from-hunter-600/3 via-slate-600/3 to-hunter-600/3 dark:from-hunter-400/8 dark:via-slate-400/8 dark:to-hunter-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Administrative Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-slate-600 shadow-lg'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-500 to-slate-600 shadow-lg'>
                   <Shield className='size-7 text-white' />
                 </div>
                 {/* Security indicator dots */}
                 <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-blue-600'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-slate-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
                 <H1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-blue-300'>
+                  <span className='bg-gradient-to-r from-hunter-600 to-hunter-500 bg-clip-text text-transparent dark:from-hunter-400 dark:to-hunter-300'>
                     Privacy Policy
                   </span>
                 </H1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-blue-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-slate-500'></div>
               </div>
             </div>
 
             {/* Description with Compliance Language */}
             <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
               Complete transparency on data protection and
-              <span className='font-medium text-blue-600 dark:text-blue-400'>
+              <span className='font-medium text-hunter-600 dark:text-hunter-400'>
                 {' '}
                 responsible AI practices
               </span>
@@ -208,7 +208,7 @@ export default function PrivacyPage() {
             {/* Quick Stats with Administrative Focus */}
             <div className='mt-6 flex justify-center gap-6'>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
-                <div className='size-2 rounded-full bg-blue-500'></div>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>GDPR Compliant</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
@@ -216,7 +216,7 @@ export default function PrivacyPage() {
                 <span>Transparent AI</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
-                <div className='size-2 rounded-full bg-blue-400'></div>
+                <div className='size-2 rounded-full bg-hunter-400'></div>
                 <Badge variant='outline' className='ml-1 text-xs'>
                   {lastUpdated}
                 </Badge>
@@ -229,10 +229,10 @@ export default function PrivacyPage() {
       {/* Main Content Area */}
       <div className='mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8'>
         {/* Overview Card */}
-        <Card className='mb-8 border-l-4 border-l-blue-500 sm:mb-12'>
+        <Card className='mb-8 border-l-4 border-l-hunter-500 sm:mb-12'>
           <CardHeader>
             <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-              <Info className='size-5 text-blue-400' />
+              <Info className='size-5 text-hunter-400' />
               Overview
             </CardTitle>
           </CardHeader>
@@ -243,14 +243,14 @@ export default function PrivacyPage() {
               when you use our AI-enhanced contact form and website services. We
               are committed to transparency and responsible AI use.
             </P>
-            <div className='rounded-lg border border-blue-200 bg-blue-50 p-4'>
+            <div className='rounded-lg border border-hunter-200 bg-hunter-50 p-4'>
               <div className='flex items-start gap-3'>
-                <AlertTriangle className='mt-0.5 size-5 shrink-0 text-blue-600' />
+                <AlertTriangle className='mt-0.5 size-5 shrink-0 text-hunter-600' />
                 <div>
-                  <h4 className='mb-1 text-sm font-medium text-blue-900 sm:text-base'>
+                  <h4 className='mb-1 text-sm font-medium text-hunter-900 sm:text-base'>
                     AI-Enhanced Services Notice
                   </h4>
-                  <p className='text-xs text-blue-800 sm:text-sm'>
+                  <p className='text-xs text-hunter-800 sm:text-sm'>
                     Our contact form uses artificial intelligence to analyze
                     your messages and provide personalized recommendations. This
                     processing is optional and requires your explicit consent.
@@ -277,7 +277,7 @@ export default function PrivacyPage() {
                   className='rounded-lg border border-slate-700/50 bg-slate-900/30 p-4'
                 >
                   <div className='mb-3 flex items-center gap-3'>
-                    <div className='flex size-10 items-center justify-center rounded-lg bg-blue-600/20'>
+                    <div className='flex size-10 items-center justify-center rounded-lg bg-hunter-600/20'>
                       <category.icon className='size-5 text-blue-400' />
                     </div>
                     <h3 className='text-sm font-semibold text-white sm:text-base'>
@@ -399,8 +399,8 @@ export default function PrivacyPage() {
             <div className='grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2'>
               {securityMeasures.map(measure => (
                 <div key={measure.title} className='flex items-start gap-3'>
-                  <div className='flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-600/20'>
-                    <measure.icon className='size-4 text-blue-400' />
+                  <div className='flex size-8 shrink-0 items-center justify-center rounded-lg bg-hunter-600/20'>
+                    <measure.icon className='size-4 text-hunter-400' />
                   </div>
                   <div>
                     <h4 className='mb-1 text-sm font-medium text-white sm:text-base'>

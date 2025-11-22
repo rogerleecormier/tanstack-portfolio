@@ -211,7 +211,7 @@ export default function IndexPage() {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-slate-900/40 to-slate-950'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-hunter-900/40 to-slate-950'>
       {/* Hero Section - Premium Design */}
       <div className='relative overflow-hidden border-b border-hunter-600/20 bg-gradient-to-br from-slate-950 via-slate-900/50 to-slate-950 px-4 py-24 sm:px-6 lg:px-8'>
         <div className='absolute inset-0 bg-gradient-to-r from-gold-600/5 via-hunter-600/5 to-gold-600/5 opacity-40'></div>

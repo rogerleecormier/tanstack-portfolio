@@ -3370,7 +3370,7 @@ export default function HealthBridgeEnhancedPage() {
   }, []);
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-teal-50 via-blue-50 to-teal-100 dark:from-teal-950 dark:via-blue-950 dark:to-teal-900'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Hero Section - Compact with Targeting Theme */}
       <div className='relative overflow-hidden border-b border-teal-200 dark:border-teal-800'>
         <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
@@ -3419,7 +3419,7 @@ export default function HealthBridgeEnhancedPage() {
                 <span>Precision Analytics</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-blue-500'></div>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>AI Projections</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-slate-400'>

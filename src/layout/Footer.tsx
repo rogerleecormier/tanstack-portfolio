@@ -6,11 +6,11 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 export default function Footer() {
   return (
-    <footer className='relative border-t border-hunter-600/20 bg-slate-950/90 backdrop-blur-sm'>
+    <footer className='relative border-t border-hunter-700/30 bg-hunter-950/90 backdrop-blur-sm'>
       <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
         {/* Newsletter Section - Prominent */}
         <div className='py-12'>
-          <div className='rounded-lg border border-gold-500/40 bg-gradient-to-r from-gold-600/15 via-slate-900/60 to-hunter-600/15 p-6 sm:p-8'>
+          <div className='rounded-lg border border-gold-500/40 bg-gradient-to-r from-gold-600/15 via-hunter-950/60 to-hunter-700/15 p-6 sm:p-8'>
             <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8'>
               <div>
                 <H4 className='!mt-0 mb-2 text-base font-semibold text-white'>
@@ -32,7 +32,7 @@ export default function Footer() {
         </div>
 
         {/* Main Footer - Clean & Simple */}
-        <div className='border-t border-slate-800 py-8'>
+        <div className='border-t border-hunter-700/30 py-8'>
           <div className='grid grid-cols-2 gap-8 sm:grid-cols-4'>
             {/* Brand */}
             <div className='col-span-2 sm:col-span-1'>
@@ -133,7 +133,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar - Minimal */}
-        <div className='flex items-center justify-between border-t border-slate-800 py-4 text-xs text-slate-500'>
+        <div className='flex items-center justify-between border-t border-hunter-700/30 py-4 text-xs text-hunter-500'>
           <span>© 2025 Roger Lee Cormier</span>
           <a href='/privacy' className='transition-colors hover:text-gold-400'>
             Privacy

@@ -103,7 +103,7 @@ const PrivateToolsPage: React.FC = () => {
         return (
           <Badge
             variant='secondary'
-            className='border-blue-500/50 bg-blue-500/10 text-blue-400'
+            className='border-hunter-500/50 bg-hunter-500/10 text-hunter-400'
           >
             Beta Testing
           </Badge>
@@ -132,34 +132,34 @@ const PrivateToolsPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-cyan-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-hunter-950 to-slate-900 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - Tools Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='from-cyan-600/3 via-slate-600/3 to-cyan-600/3 dark:from-cyan-400/8 dark:via-slate-400/8 dark:to-cyan-400/8 absolute inset-0 bg-gradient-to-r'></div>
+        <div className='from-hunter-600/3 via-slate-600/3 to-hunter-600/3 dark:from-hunter-400/8 dark:via-slate-400/8 dark:to-hunter-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Administrative Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-slate-600 shadow-lg'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-500 to-slate-600 shadow-lg'>
                   <Wrench className='size-7 text-white' />
                 </div>
                 {/* Tools indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-cyan-600'>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-hunter-600'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-slate-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-cyan-600 to-cyan-500 bg-clip-text text-transparent dark:from-cyan-400 dark:to-cyan-300'>
+                  <span className='bg-gradient-to-r from-hunter-600 to-hunter-500 bg-clip-text text-transparent dark:from-hunter-400 dark:to-hunter-300'>
                     Private Tools
                   </span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-cyan-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-slate-500'></div>
               </div>
             </div>
 
@@ -167,7 +167,7 @@ const PrivateToolsPage: React.FC = () => {
             <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
               Access your private toolkit with utilities currently in
               development and beta testing.
-              <span className='font-medium text-cyan-600 dark:text-cyan-400'>
+              <span className='font-medium text-hunter-600 dark:text-hunter-400'>
                 {' '}
                 Exclusive access{' '}
               </span>
@@ -177,7 +177,7 @@ const PrivateToolsPage: React.FC = () => {
             {/* Quick Stats with Administrative Focus */}
             <div className='mt-6 flex justify-center gap-6'>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
-                <div className='size-2 rounded-full bg-cyan-500'></div>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>Development & Beta</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
@@ -185,7 +185,7 @@ const PrivateToolsPage: React.FC = () => {
                 <span>Experimental Features</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
-                <div className='size-2 rounded-full bg-cyan-400'></div>
+                <div className='size-2 rounded-full bg-hunter-400'></div>
                 <span>Exclusive Access</span>
               </div>
             </div>
@@ -200,19 +200,19 @@ const PrivateToolsPage: React.FC = () => {
           {privateTools.map(tool => (
             <Card
               key={tool.id}
-              className='group relative overflow-hidden border border-slate-700 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 transition-all duration-300 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 dark:border-slate-700'
+              className='group relative overflow-hidden border border-slate-700 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 transition-all duration-300 hover:border-hunter-500/50 hover:shadow-lg hover:shadow-hunter-500/20 dark:border-slate-700'
             >
               {/* Subtle gradient overlay on hover */}
-              <div className='absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-cyan-500/0 transition-all duration-300 group-hover:from-cyan-500/5 group-hover:to-cyan-500/10'></div>
+              <div className='absolute inset-0 bg-gradient-to-br from-hunter-500/0 to-hunter-500/0 transition-all duration-300 group-hover:from-hunter-500/5 group-hover:to-hunter-500/10'></div>
 
               <CardHeader className='relative pb-3'>
                 <div className='flex items-start justify-between'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 p-2 transition-all duration-300 group-hover:from-cyan-500/30 group-hover:to-cyan-600/30'>
-                      <tool.icon className='size-6 text-cyan-400' />
+                    <div className='rounded-lg bg-gradient-to-br from-hunter-500/20 to-hunter-600/20 p-2 transition-all duration-300 group-hover:from-hunter-500/30 group-hover:to-hunter-600/30'>
+                      <tool.icon className='size-6 text-hunter-400' />
                     </div>
                     <div>
-                      <CardTitle className='text-xl font-semibold text-slate-100 transition-colors group-hover:text-cyan-300'>
+                      <CardTitle className='text-xl font-semibold text-slate-100 transition-colors group-hover:text-hunter-300'>
                         {tool.title}
                       </CardTitle>
                       <div className='mt-1 flex items-center gap-2'>
@@ -267,7 +267,7 @@ const PrivateToolsPage: React.FC = () => {
                     <Button
                       asChild
                       size='sm'
-                      className='bg-gradient-to-r from-cyan-600 to-cyan-500 text-white transition-all duration-300 hover:from-cyan-500 hover:to-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30'
+                      className='bg-gradient-to-r from-hunter-600 to-hunter-500 text-white transition-all duration-300 hover:from-hunter-500 hover:to-hunter-400 hover:shadow-lg hover:shadow-hunter-500/30'
                     >
                       <Link to={tool.url}>
                         Try Beta
@@ -295,7 +295,7 @@ const PrivateToolsPage: React.FC = () => {
 
         {/* Coming Soon Section */}
         <div className='text-center'>
-          <Card className='border-cyan-500/30 bg-gradient-to-r from-slate-800 via-slate-800 to-slate-900'>
+            <Card className='border-hunter-500/30 bg-gradient-to-r from-slate-800 via-slate-800 to-slate-900'>
             <CardContent className='p-8'>
               <div className='mb-4 flex items-center justify-center'>
                 <div className='flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/20'>

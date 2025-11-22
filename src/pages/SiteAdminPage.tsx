@@ -605,41 +605,41 @@ export const SiteAdminPage: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-red-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-hunter-950 to-slate-900 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - System Management Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='from-red-600/3 via-slate-600/3 to-red-600/3 dark:from-red-400/8 dark:via-slate-400/8 dark:to-red-400/8 absolute inset-0 bg-gradient-to-r'></div>
+        <div className='from-gold-600/3 via-slate-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-slate-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Administrative Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-slate-600 shadow-lg'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-500 to-slate-600 shadow-lg'>
                   <Shield className='size-7 text-white' />
                 </div>
                 {/* Admin indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-red-600'>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-gold-600'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-red-400 to-slate-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
-                <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent dark:from-red-400 dark:to-red-300'>
+                <h1 className='text-4xl font-bold tracking-tight text-slate-100 dark:text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent dark:from-gold-400 dark:to-red-300'>
                     Site Administration
                   </span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-red-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
               </div>
             </div>
 
             {/* Description with Admin Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300 dark:text-slate-300'>
               Monitor system health, manage services, and oversee
-              <span className='font-medium text-red-600 dark:text-red-400'>
+              <span className='font-medium text-gold-600 dark:text-gold-400'>
                 {' '}
                 \n protected resources{' '}
               </span>
@@ -648,11 +648,11 @@ export const SiteAdminPage: React.FC = () => {
 
             {/* Environment Badge */}
             <div className='mt-6'>
-              <div className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50/50 px-4 py-2 backdrop-blur-sm dark:border-red-900/50 dark:bg-red-950/30'>
+              <div className='inline-flex items-center gap-2 rounded-full border border-gold-200 bg-gold-50/50 px-4 py-2 backdrop-blur-sm dark:border-gold-900/50 dark:bg-gold-950/30'>
                 <div
                   className={`size-2 rounded-full ${isDevelopment ? 'bg-yellow-500' : 'bg-green-500'}`}
                 ></div>
-                <span className='text-sm font-medium text-red-900 dark:text-red-200'>
+                <span className='text-sm font-medium text-gold-900 dark:text-gold-200'>
                   {isDevelopment
                     ? 'Development Environment'
                     : 'Production Environment'}
@@ -670,17 +670,17 @@ export const SiteAdminPage: React.FC = () => {
           {/* Left Column - User Profile & System Info */}
           <div className='space-y-6'>
             {/* User Profile Card */}
-            <Card className='border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
+            <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-slate-100 to-slate-200 p-3'>
-                    <Users className='size-6 text-slate-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
+                    <Users className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-gray-900'>
+                    <CardTitle className='text-xl font-semibold text-slate-100'>
                       User Profile
                     </CardTitle>
-                    <CardDescription className='text-gray-600'>
+                    <CardDescription className='text-slate-300'>
                       Current authentication details
                     </CardDescription>
                   </div>
@@ -688,35 +688,35 @@ export const SiteAdminPage: React.FC = () => {
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='grid grid-cols-1 gap-4'>
-                  <div className='rounded-lg bg-gray-50 p-4'>
-                    <div className='mb-1 text-sm font-medium text-gray-500'>
+                  <div className='rounded-lg bg-slate-800 p-4'>
+                    <div className='mb-1 text-sm font-medium text-slate-400'>
                       Email
                     </div>
-                    <div className='truncate font-medium text-gray-900'>
+                    <div className='truncate font-medium text-slate-100'>
                       {user?.email}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-gray-50 p-4'>
-                    <div className='mb-1 text-sm font-medium text-gray-500'>
+                  <div className='rounded-lg bg-slate-800 p-4'>
+                    <div className='mb-1 text-sm font-medium text-slate-400'>
                       Name
                     </div>
-                    <div className='font-medium text-gray-900'>
+                    <div className='font-medium text-slate-100'>
                       {user?.name ?? 'Not provided'}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-gray-50 p-4'>
-                    <div className='mb-1 text-sm font-medium text-gray-500'>
+                  <div className='rounded-lg bg-slate-800 p-4'>
+                    <div className='mb-1 text-sm font-medium text-slate-400'>
                       Authentication
                     </div>
-                    <div className='font-medium text-gray-900'>
+                    <div className='font-medium text-slate-100'>
                       {isDevelopment ? 'Development' : 'Cloudflare Access'}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-gray-50 p-4'>
-                    <div className='mb-1 text-sm font-medium text-gray-500'>
+                  <div className='rounded-lg bg-slate-800 p-4'>
+                    <div className='mb-1 text-sm font-medium text-slate-400'>
                       Environment
                     </div>
-                    <div className='font-medium text-gray-900'>
+                    <div className='font-medium text-slate-100'>
                       {isDevelopment ? 'Development' : 'Production'}
                     </div>
                   </div>
@@ -725,39 +725,39 @@ export const SiteAdminPage: React.FC = () => {
             </Card>
 
             {/* System Information */}
-            <Card className='border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
+            <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-green-100 to-emerald-100 p-3'>
-                    <Settings className='size-6 text-green-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
+                    <Settings className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-gray-900'>
+                    <CardTitle className='text-xl font-semibold text-slate-100'>
                       System Status
                     </CardTitle>
-                    <CardDescription className='text-gray-600'>
+                    <CardDescription className='text-slate-300'>
                       Current system health and security
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className='space-y-4'>
-                <div className='rounded-lg bg-gray-50 p-4'>
+                <div className='rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center justify-between'>
-                    <span className='font-medium text-gray-900'>
+                    <span className='font-medium text-slate-100'>
                       Authentication Status
                     </span>
                     <div className='flex items-center gap-2'>
-                      <CheckCircle className='size-4 text-green-600' />
-                      <span className='text-sm font-medium text-green-600'>
+                      <CheckCircle className='size-4 text-gold-600' />
+                      <span className='text-sm font-medium text-gold-600'>
                         Active
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className='rounded-lg bg-gray-50 p-4'>
+                <div className='rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center justify-between'>
-                    <span className='font-medium text-gray-900'>
+                    <span className='font-medium text-slate-100'>
                       Security Level
                     </span>
                     <div className='flex items-center gap-2'>
@@ -776,17 +776,17 @@ export const SiteAdminPage: React.FC = () => {
 
           {/* Middle Column - Protected Pages Navigation */}
           <div className='space-y-6'>
-            <Card className='border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
+            <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-purple-100 to-pink-100 p-3'>
-                    <Briefcase className='size-6 text-purple-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
+                    <Briefcase className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-gray-900'>
+                    <CardTitle className='text-xl font-semibold text-slate-100'>
                       Protected Pages
                     </CardTitle>
-                    <CardDescription className='text-gray-600'>
+                    <CardDescription className='text-slate-300'>
                       Access administrative tools and settings
                     </CardDescription>
                   </div>
@@ -795,45 +795,45 @@ export const SiteAdminPage: React.FC = () => {
               <CardContent className='space-y-3'>
                 <a
                   href='/protected/site-admin'
-                  className='group flex items-center justify-between rounded-lg bg-gray-50 p-4 transition-colors duration-200 hover:bg-gray-100'
+                  className='group flex items-center justify-between rounded-lg bg-slate-800 p-4 transition-colors duration-200 hover:bg-slate-800'
                 >
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-slate-100 p-2 transition-colors group-hover:bg-slate-200'>
                       <Settings className='size-4 text-slate-600' />
                     </div>
-                    <span className='font-medium text-gray-900'>
+                    <span className='font-medium text-slate-100'>
                       Site Administration
                     </span>
                   </div>
-                  <ArrowRight className='size-4 text-gray-400 transition-colors group-hover:text-gray-600' />
+                  <ArrowRight className='size-4 text-gray-400 transition-colors group-hover:text-slate-300' />
                 </a>
 
                 <a
                   href='/protected/content-studio'
-                  className='group flex items-center justify-between rounded-lg bg-gray-50 p-4 transition-colors duration-200 hover:bg-gray-100'
+                  className='group flex items-center justify-between rounded-lg bg-slate-800 p-4 transition-colors duration-200 hover:bg-slate-800'
                 >
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-purple-100 p-2 transition-colors group-hover:bg-purple-200'>
-                      <FileText className='size-4 text-purple-600' />
+                      <FileText className='size-4 text-gold-600' />
                     </div>
-                    <span className='font-medium text-gray-900'>
+                    <span className='font-medium text-slate-100'>
                       Content Studio
                     </span>
                   </div>
-                  <ArrowRight className='size-4 text-gray-400 transition-colors group-hover:text-gray-600' />
+                  <ArrowRight className='size-4 text-gray-400 transition-colors group-hover:text-slate-300' />
                 </a>
 
                 <a
                   href='/protected/settings'
-                  className='group flex items-center justify-between rounded-lg bg-gray-50 p-4 transition-colors duration-200 hover:bg-gray-100'
+                  className='group flex items-center justify-between rounded-lg bg-slate-800 p-4 transition-colors duration-200 hover:bg-slate-800'
                 >
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-slate-100 p-2 transition-colors group-hover:bg-slate-200'>
                       <Settings className='size-4 text-slate-600' />
                     </div>
-                    <span className='font-medium text-gray-900'>Settings</span>
+                    <span className='font-medium text-slate-100'>Settings</span>
                   </div>
-                  <ArrowRight className='size-4 text-gray-400 transition-colors group-hover:text-gray-600' />
+                  <ArrowRight className='size-4 text-gray-400 transition-colors group-hover:text-slate-300' />
                 </a>
               </CardContent>
             </Card>
@@ -842,17 +842,17 @@ export const SiteAdminPage: React.FC = () => {
           {/* Right Column - API Health Monitoring */}
           <div className='space-y-6'>
             {/* API Health Dashboard */}
-            <Card className='border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
+            <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-orange-100 to-red-100 p-3'>
-                    <Activity className='size-6 text-orange-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
+                    <Activity className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-gray-900'>
+                    <CardTitle className='text-xl font-semibold text-slate-100'>
                       API Health Monitoring
                     </CardTitle>
-                    <CardDescription className='text-gray-600'>
+                    <CardDescription className='text-slate-300'>
                       Monitor service connectivity and status
                     </CardDescription>
                   </div>
@@ -880,16 +880,16 @@ export const SiteAdminPage: React.FC = () => {
                   </Button>
                 </div>
                 {/* AI Contact Analyzer */}
-                <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
+                <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-slate-100 p-2'>
                       <Code className='size-4 text-slate-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-gray-900'>
+                      <div className='font-medium text-slate-100'>
                         AI Contact Analyzer
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <div className='text-sm text-slate-300'>
                         AI-powered contact analysis
                       </div>
                     </div>
@@ -899,20 +899,20 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.ai === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-orange-600' />
+                      <Loader2 className='size-4 animate-spin text-gold-600' />
                     )}
                     {apiStatus.ai === 'success' && (
-                      <CheckCircle className='size-4 text-green-600' />
+                      <CheckCircle className='size-4 text-gold-600' />
                     )}
                     {apiStatus.ai === 'error' && (
-                      <XCircle className='size-4 text-red-600' />
+                      <XCircle className='size-4 text-gold-600' />
                     )}
                     <Button
                       size='sm'
                       variant='outline'
                       onClick={() => void testAIWorkerConnectivity()}
                       disabled={apiStatus.ai === 'testing'}
-                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
+                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-slate-800'
                     >
                       Test
                     </Button>
@@ -920,16 +920,16 @@ export const SiteAdminPage: React.FC = () => {
                 </div>
 
                 {/* Email Worker */}
-                <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
+                <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-green-100 p-2'>
-                      <Mail className='size-4 text-green-600' />
+                      <Mail className='size-4 text-gold-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-gray-900'>
+                      <div className='font-medium text-slate-100'>
                         Email Service
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <div className='text-sm text-slate-300'>
                         Contact form processing
                       </div>
                     </div>
@@ -939,20 +939,20 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.email === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-orange-600' />
+                      <Loader2 className='size-4 animate-spin text-gold-600' />
                     )}
                     {apiStatus.email === 'success' && (
-                      <CheckCircle className='size-4 text-green-600' />
+                      <CheckCircle className='size-4 text-gold-600' />
                     )}
                     {apiStatus.email === 'error' && (
-                      <XCircle className='size-4 text-red-600' />
+                      <XCircle className='size-4 text-gold-600' />
                     )}
                     <Button
                       size='sm'
                       variant='outline'
                       onClick={() => void testEmailWorkerConnectivity()}
                       disabled={apiStatus.email === 'testing'}
-                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
+                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-slate-800'
                     >
                       Test
                     </Button>
@@ -960,16 +960,16 @@ export const SiteAdminPage: React.FC = () => {
                 </div>
 
                 {/* Newsletter Worker */}
-                <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
+                <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-purple-100 p-2'>
-                      <BarChart3 className='size-4 text-purple-600' />
+                      <BarChart3 className='size-4 text-gold-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-gray-900'>
+                      <div className='font-medium text-slate-100'>
                         Newsletter Service
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <div className='text-sm text-slate-300'>
                         Blog subscription management
                       </div>
                     </div>
@@ -979,20 +979,20 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.newsletter === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-orange-600' />
+                      <Loader2 className='size-4 animate-spin text-gold-600' />
                     )}
                     {apiStatus.newsletter === 'success' && (
-                      <CheckCircle className='size-4 text-green-600' />
+                      <CheckCircle className='size-4 text-gold-600' />
                     )}
                     {apiStatus.newsletter === 'error' && (
-                      <XCircle className='size-4 text-red-600' />
+                      <XCircle className='size-4 text-gold-600' />
                     )}
                     <Button
                       size='sm'
                       variant='outline'
                       onClick={() => void testNewsletterWorkerConnectivity()}
                       disabled={apiStatus.newsletter === 'testing'}
-                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
+                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-slate-800'
                     >
                       Test
                     </Button>
@@ -1000,16 +1000,16 @@ export const SiteAdminPage: React.FC = () => {
                 </div>
 
                 {/* Content Search */}
-                <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
+                <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-indigo-100 p-2'>
                       <Database className='size-4 text-indigo-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-gray-900'>
+                      <div className='font-medium text-slate-100'>
                         Content Search
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <div className='text-sm text-slate-300'>
                         Semantic content discovery
                       </div>
                     </div>
@@ -1019,20 +1019,20 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.contentSearch === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-orange-600' />
+                      <Loader2 className='size-4 animate-spin text-gold-600' />
                     )}
                     {apiStatus.contentSearch === 'success' && (
-                      <CheckCircle className='size-4 text-green-600' />
+                      <CheckCircle className='size-4 text-gold-600' />
                     )}
                     {apiStatus.contentSearch === 'error' && (
-                      <XCircle className='size-4 text-red-600' />
+                      <XCircle className='size-4 text-gold-600' />
                     )}
                     <Button
                       size='sm'
                       variant='outline'
                       onClick={() => void testContentSearchWorkerConnectivity()}
                       disabled={apiStatus.contentSearch === 'testing'}
-                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
+                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-slate-800'
                     >
                       Test
                     </Button>
@@ -1040,16 +1040,16 @@ export const SiteAdminPage: React.FC = () => {
                 </div>
 
                 {/* Health Bridge API */}
-                <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
+                <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-slate-100 p-2'>
                       <Globe className='size-4 text-hunter-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-gray-900'>
+                      <div className='font-medium text-slate-100'>
                         Health Bridge API
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <div className='text-sm text-slate-300'>
                         External health data service
                       </div>
                     </div>
@@ -1059,20 +1059,20 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.healthBridge === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-orange-600' />
+                      <Loader2 className='size-4 animate-spin text-gold-600' />
                     )}
                     {apiStatus.healthBridge === 'success' && (
-                      <CheckCircle className='size-4 text-green-600' />
+                      <CheckCircle className='size-4 text-gold-600' />
                     )}
                     {apiStatus.healthBridge === 'error' && (
-                      <XCircle className='size-4 text-red-600' />
+                      <XCircle className='size-4 text-gold-600' />
                     )}
                     <Button
                       size='sm'
                       variant='outline'
                       onClick={() => void testHealthBridgeAPI()}
                       disabled={apiStatus.healthBridge === 'testing'}
-                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
+                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-slate-800'
                     >
                       Test
                     </Button>
@@ -1080,16 +1080,16 @@ export const SiteAdminPage: React.FC = () => {
                 </div>
 
                 {/* Smart Recommendations */}
-                <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
+                <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-pink-100 p-2'>
                       <BarChart3 className='size-4 text-pink-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-gray-900'>
+                      <div className='font-medium text-slate-100'>
                         Smart Recommendations
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <div className='text-sm text-slate-300'>
                         AI content suggestions
                       </div>
                     </div>
@@ -1099,20 +1099,20 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.smartRecommendations === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-orange-600' />
+                      <Loader2 className='size-4 animate-spin text-gold-600' />
                     )}
                     {apiStatus.smartRecommendations === 'success' && (
-                      <CheckCircle className='size-4 text-green-600' />
+                      <CheckCircle className='size-4 text-gold-600' />
                     )}
                     {apiStatus.smartRecommendations === 'error' && (
-                      <XCircle className='size-4 text-red-600' />
+                      <XCircle className='size-4 text-gold-600' />
                     )}
                     <Button
                       size='sm'
                       variant='outline'
                       onClick={() => void testSmartRecommendationsAPI()}
                       disabled={apiStatus.smartRecommendations === 'testing'}
-                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
+                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-slate-800'
                     >
                       Test
                     </Button>
@@ -1120,14 +1120,14 @@ export const SiteAdminPage: React.FC = () => {
                 </div>
 
                 {/* R2 Bucket */}
-                <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
+                <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-cyan-100 p-2'>
                       <Database className='size-4 text-cyan-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-gray-900'>R2 Bucket</div>
-                      <div className='text-sm text-gray-600'>
+                      <div className='font-medium text-slate-100'>R2 Bucket</div>
+                      <div className='text-sm text-slate-300'>
                         files.rcormier.dev connectivity
                       </div>
                     </div>
@@ -1137,20 +1137,20 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.r2Bucket === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-orange-600' />
+                      <Loader2 className='size-4 animate-spin text-gold-600' />
                     )}
                     {apiStatus.r2Bucket === 'success' && (
-                      <CheckCircle className='size-4 text-green-600' />
+                      <CheckCircle className='size-4 text-gold-600' />
                     )}
                     {apiStatus.r2Bucket === 'error' && (
-                      <XCircle className='size-4 text-red-600' />
+                      <XCircle className='size-4 text-gold-600' />
                     )}
                     <Button
                       size='sm'
                       variant='outline'
                       onClick={() => void testR2BucketConnectivity()}
                       disabled={apiStatus.r2Bucket === 'testing'}
-                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
+                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-slate-800'
                     >
                       Test
                     </Button>
@@ -1158,16 +1158,16 @@ export const SiteAdminPage: React.FC = () => {
                 </div>
 
                 {/* Cloudflare Access */}
-                <div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
+                <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-red-100 p-2'>
-                      <Shield className='size-4 text-red-600' />
+                    <div className='rounded-lg bg-gold-100 p-2'>
+                      <Shield className='size-4 text-gold-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-gray-900'>
+                      <div className='font-medium text-slate-100'>
                         Cloudflare Access
                       </div>
-                      <div className='text-sm text-gray-600'>
+                      <div className='text-sm text-slate-300'>
                         Authentication & identity verification
                       </div>
                     </div>
@@ -1177,20 +1177,20 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.cloudflareAccess === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-orange-600' />
+                      <Loader2 className='size-4 animate-spin text-gold-600' />
                     )}
                     {apiStatus.cloudflareAccess === 'success' && (
-                      <CheckCircle className='size-4 text-green-600' />
+                      <CheckCircle className='size-4 text-gold-600' />
                     )}
                     {apiStatus.cloudflareAccess === 'error' && (
-                      <XCircle className='size-4 text-red-600' />
+                      <XCircle className='size-4 text-gold-600' />
                     )}
                     <Button
                       size='sm'
                       variant='outline'
                       onClick={() => void testCloudflareAccess()}
                       disabled={apiStatus.cloudflareAccess === 'testing'}
-                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-gray-100'
+                      className='rounded-lg border-gray-300 text-xs text-gray-700 hover:bg-slate-800'
                     >
                       Test
                     </Button>
@@ -1208,17 +1208,17 @@ export const SiteAdminPage: React.FC = () => {
               apiResults.smartRecommendations ??
               apiResults.r2Bucket ??
               apiResults.cloudflareAccess) && (
-              <Card className='border-0 bg-white/80 shadow-lg backdrop-blur-sm'>
+              <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
                 <CardHeader className='pb-6'>
                   <div className='flex items-center gap-4'>
-                    <div className='rounded-xl bg-gradient-to-r from-emerald-100 to-green-100 p-3'>
+                    <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
                       <Activity className='size-6 text-emerald-600' />
                     </div>
                     <div>
-                      <CardTitle className='text-xl font-semibold text-gray-900'>
+                      <CardTitle className='text-xl font-semibold text-slate-100'>
                         Test Results Summary
                       </CardTitle>
-                      <CardDescription className='text-gray-600'>
+                      <CardDescription className='text-slate-300'>
                         Latest service connectivity results
                       </CardDescription>
                     </div>
@@ -1227,18 +1227,18 @@ export const SiteAdminPage: React.FC = () => {
                 <CardContent>
                   <div className='space-y-3'>
                     {apiResults.ai && (
-                      <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
-                        <span className='font-medium text-gray-900'>
+                      <div className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                        <span className='font-medium text-slate-100'>
                           AI Worker
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.ai.success ? (
-                            <CheckCircle className='size-4 text-green-600' />
+                            <CheckCircle className='size-4 text-gold-600' />
                           ) : (
-                            <XCircle className='size-4 text-red-600' />
+                            <XCircle className='size-4 text-gold-600' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.ai.success ? 'text-green-600' : 'text-red-600'}`}
+                            className={`text-sm font-medium ${apiResults.ai.success ? 'text-gold-600' : 'text-gold-600'}`}
                           >
                             {apiResults.ai.success ? 'Connected' : 'Failed'}
                           </span>
@@ -1246,18 +1246,18 @@ export const SiteAdminPage: React.FC = () => {
                       </div>
                     )}
                     {apiResults.email && (
-                      <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
-                        <span className='font-medium text-gray-900'>
+                      <div className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                        <span className='font-medium text-slate-100'>
                           Email Service
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.email.success ? (
-                            <CheckCircle className='size-4 text-green-600' />
+                            <CheckCircle className='size-4 text-gold-600' />
                           ) : (
-                            <XCircle className='size-4 text-red-600' />
+                            <XCircle className='size-4 text-gold-600' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.email.success ? 'text-green-600' : 'text-red-600'}`}
+                            className={`text-sm font-medium ${apiResults.email.success ? 'text-gold-600' : 'text-gold-600'}`}
                           >
                             {apiResults.email.success ? 'Connected' : 'Failed'}
                           </span>
@@ -1265,18 +1265,18 @@ export const SiteAdminPage: React.FC = () => {
                       </div>
                     )}
                     {apiResults.newsletter && (
-                      <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
-                        <span className='font-medium text-gray-900'>
+                      <div className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                        <span className='font-medium text-slate-100'>
                           Newsletter Service
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.newsletter.success ? (
-                            <CheckCircle className='size-4 text-green-600' />
+                            <CheckCircle className='size-4 text-gold-600' />
                           ) : (
-                            <XCircle className='size-4 text-red-600' />
+                            <XCircle className='size-4 text-gold-600' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.newsletter.success ? 'text-green-600' : 'text-red-600'}`}
+                            className={`text-sm font-medium ${apiResults.newsletter.success ? 'text-gold-600' : 'text-gold-600'}`}
                           >
                             {apiResults.newsletter.success
                               ? 'Connected'
@@ -1286,18 +1286,18 @@ export const SiteAdminPage: React.FC = () => {
                       </div>
                     )}
                     {apiResults.contentSearch && (
-                      <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
-                        <span className='font-medium text-gray-900'>
+                      <div className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                        <span className='font-medium text-slate-100'>
                           Content Search
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.contentSearch.success ? (
-                            <CheckCircle className='size-4 text-green-600' />
+                            <CheckCircle className='size-4 text-gold-600' />
                           ) : (
-                            <XCircle className='size-4 text-red-600' />
+                            <XCircle className='size-4 text-gold-600' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.contentSearch.success ? 'text-green-600' : 'text-red-600'}`}
+                            className={`text-sm font-medium ${apiResults.contentSearch.success ? 'text-gold-600' : 'text-gold-600'}`}
                           >
                             {apiResults.contentSearch.success
                               ? 'Connected'
@@ -1307,18 +1307,18 @@ export const SiteAdminPage: React.FC = () => {
                       </div>
                     )}
                     {apiResults.healthBridge && (
-                      <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
-                        <span className='font-medium text-gray-900'>
+                      <div className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                        <span className='font-medium text-slate-100'>
                           Health Bridge API
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.healthBridge.success ? (
-                            <CheckCircle className='size-4 text-green-600' />
+                            <CheckCircle className='size-4 text-gold-600' />
                           ) : (
-                            <XCircle className='size-4 text-red-600' />
+                            <XCircle className='size-4 text-gold-600' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.healthBridge.success ? 'text-green-600' : 'text-red-600'}`}
+                            className={`text-sm font-medium ${apiResults.healthBridge.success ? 'text-gold-600' : 'text-gold-600'}`}
                           >
                             {apiResults.healthBridge.success
                               ? 'Connected'
@@ -1328,18 +1328,18 @@ export const SiteAdminPage: React.FC = () => {
                       </div>
                     )}
                     {apiResults.smartRecommendations && (
-                      <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
-                        <span className='font-medium text-gray-900'>
+                      <div className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                        <span className='font-medium text-slate-100'>
                           Smart Recommendations
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.smartRecommendations.success ? (
-                            <CheckCircle className='size-4 text-green-600' />
+                            <CheckCircle className='size-4 text-gold-600' />
                           ) : (
-                            <XCircle className='size-4 text-red-600' />
+                            <XCircle className='size-4 text-gold-600' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.smartRecommendations.success ? 'text-green-600' : 'text-red-600'}`}
+                            className={`text-sm font-medium ${apiResults.smartRecommendations.success ? 'text-gold-600' : 'text-gold-600'}`}
                           >
                             {apiResults.smartRecommendations.success
                               ? 'Connected'
@@ -1349,18 +1349,18 @@ export const SiteAdminPage: React.FC = () => {
                       </div>
                     )}
                     {apiResults.r2Bucket && (
-                      <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
-                        <span className='font-medium text-gray-900'>
+                      <div className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                        <span className='font-medium text-slate-100'>
                           R2 Bucket
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.r2Bucket.success ? (
-                            <CheckCircle className='size-4 text-green-600' />
+                            <CheckCircle className='size-4 text-gold-600' />
                           ) : (
-                            <XCircle className='size-4 text-red-600' />
+                            <XCircle className='size-4 text-gold-600' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.r2Bucket.success ? 'text-green-600' : 'text-red-600'}`}
+                            className={`text-sm font-medium ${apiResults.r2Bucket.success ? 'text-gold-600' : 'text-gold-600'}`}
                           >
                             {apiResults.r2Bucket.success
                               ? 'Connected'
@@ -1372,18 +1372,18 @@ export const SiteAdminPage: React.FC = () => {
 
                     {apiResults.cloudflareAccess && (
                       <div className='space-y-3'>
-                        <div className='flex items-center justify-between rounded-lg bg-gray-50 p-3'>
-                          <span className='font-medium text-gray-900'>
+                        <div className='flex items-center justify-between rounded-lg bg-slate-800 p-3'>
+                          <span className='font-medium text-slate-100'>
                             Cloudflare Access
                           </span>
                           <div className='flex items-center gap-2'>
                             {apiResults.cloudflareAccess.success ? (
-                              <CheckCircle className='size-4 text-green-600' />
+                              <CheckCircle className='size-4 text-gold-600' />
                             ) : (
-                              <XCircle className='size-4 text-red-600' />
+                              <XCircle className='size-4 text-gold-600' />
                             )}
                             <span
-                              className={`text-sm font-medium ${apiResults.cloudflareAccess.success ? 'text-green-600' : 'text-red-600'}`}
+                              className={`text-sm font-medium ${apiResults.cloudflareAccess.success ? 'text-gold-600' : 'text-gold-600'}`}
                             >
                               {apiResults.cloudflareAccess.success
                                 ? 'Authenticated'
@@ -1393,13 +1393,13 @@ export const SiteAdminPage: React.FC = () => {
                         </div>
 
                         {/* Detailed Cloudflare Access Info */}
-                        <div className='space-y-3 rounded-lg bg-gray-50 p-4 text-sm'>
+                        <div className='space-y-3 rounded-lg bg-slate-800 p-4 text-sm'>
                           <div className='grid grid-cols-2 gap-3'>
                             <div>
                               <span className='font-medium text-gray-700'>
                                 Status:
                               </span>
-                              <span className='ml-2 text-gray-600'>
+                              <span className='ml-2 text-slate-300'>
                                 {apiResults.cloudflareAccess.status}{' '}
                                 {apiResults.cloudflareAccess.statusText}
                               </span>
@@ -1408,7 +1408,7 @@ export const SiteAdminPage: React.FC = () => {
                               <span className='font-medium text-gray-700'>
                                 Cookies:
                               </span>
-                              <span className='ml-2 text-gray-600'>
+                              <span className='ml-2 text-slate-300'>
                                 {apiResults.cloudflareAccess.cookies?.length ??
                                   0}{' '}
                                 found
@@ -1418,7 +1418,7 @@ export const SiteAdminPage: React.FC = () => {
 
                           {apiResults.cloudflareAccess.identity && (
                             <div className='rounded-lg border border-gray-200 bg-white p-3'>
-                              <div className='mb-2 font-medium text-gray-900'>
+                              <div className='mb-2 font-medium text-slate-100'>
                                 Identity:
                               </div>
                               <div className='space-y-1 text-gray-700'>
@@ -1452,7 +1452,7 @@ export const SiteAdminPage: React.FC = () => {
                           )}
 
                           {apiResults.cloudflareAccess.error && (
-                            <div className='rounded-lg border border-red-200 bg-red-50 p-3'>
+                            <div className='rounded-lg border border-gold-200 bg-gold-50 p-3'>
                               <div className='mb-1 font-medium text-red-800'>
                                 Error:
                               </div>
@@ -1476,7 +1476,7 @@ export const SiteAdminPage: React.FC = () => {
           <Button
             onClick={() => logout()}
             variant='outline'
-            className='flex items-center gap-2 rounded-lg border-gray-300 px-8 text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-800'
+            className='flex items-center gap-2 rounded-lg border-gray-300 px-8 text-gray-700 transition-colors duration-200 hover:bg-slate-800 hover:text-gray-800'
           >
             <span>Sign Out</span>
             <ArrowRight className='size-4' />

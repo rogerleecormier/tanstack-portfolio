@@ -168,17 +168,17 @@ export function R2Browser({
     <Card className='flex flex-col border border-indigo-200/60 bg-gradient-to-br from-white/70 to-indigo-50/70 shadow-sm backdrop-blur dark:border-indigo-800/60 dark:bg-gradient-to-br dark:from-slate-900/70 dark:to-indigo-950/70'>
       <CardHeader className='relative shrink-0 border-b border-indigo-200/60 dark:border-indigo-800/60'>
         <CardTitle className='flex items-center gap-3'>
-          <div className='rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 p-2 shadow-md'>
+          <div className='rounded-lg bg-gradient-to-br from-gold-600 to-gold-800 p-2 shadow-md'>
             <FileText className='size-5 text-white' />
           </div>
           <div>
             <h3
-              className='bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-lg font-semibold text-transparent dark:from-indigo-400 dark:to-indigo-300'
+              className='bg-gradient-to-r from-gold-600 to-indigo-500 bg-clip-text text-lg font-semibold text-transparent dark:from-gold-400 dark:to-indigo-300'
               style={{ fontWeight: 700 }}
             >
               Content Browser
             </h3>
-            <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-slate-500'></div>
+            <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
           </div>
         </CardTitle>
         <div className='mt-4 flex gap-3'>
@@ -194,7 +194,7 @@ export function R2Browser({
           <Button
             onClick={() => void loadListing(true)}
             disabled={loading}
-            className='border-0 bg-indigo-600 text-white shadow-md transition-all duration-200 hover:bg-indigo-700'
+            className='border-0 bg-gold-600 text-white shadow-md transition-all duration-200 hover:bg-gold-700'
           >
             {loading ? 'Loading...' : 'Refresh'}
           </Button>
@@ -211,13 +211,13 @@ export function R2Browser({
                 parts.pop();
                 setCurrentPrefix(parts.length ? parts.join('/') + '/' : '');
               }}
-              className='border-indigo-600 text-indigo-600 transition-all duration-200 hover:bg-indigo-50 dark:hover:bg-indigo-950'
+              className='border-indigo-600 text-gold-600 transition-all duration-200 hover:bg-indigo-50 dark:hover:bg-indigo-950'
             >
               <ArrowLeft className='mr-1 size-4' /> Up
             </Button>
           )}
           <div className='flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400'>
-            <div className='size-1.5 rounded-full bg-indigo-500'></div>
+            <div className='size-1.5 rounded-full bg-gold-500'></div>
             <span className='font-medium'>{currentPrefix || 'root'}</span>
           </div>
         </div>
@@ -234,7 +234,7 @@ export function R2Browser({
                 onClick={() => setCurrentPrefix(p)}
               >
                 <div className='flex min-w-0 flex-1 items-center gap-3'>
-                  <div className='rounded-md bg-gradient-to-br from-indigo-700 to-indigo-800 p-1.5 dark:from-indigo-600 dark:to-indigo-700'>
+                  <div className='rounded-md bg-gradient-to-br from-gold-700 to-gold-800 p-1.5 dark:from-gold-600 dark:to-gold-700'>
                     <Folder className='size-3.5 text-white' />
                   </div>
                   <div className='truncate text-sm font-medium text-slate-800 dark:text-slate-200'>
@@ -258,9 +258,9 @@ export function R2Browser({
               <div className='min-w-0 flex-1'>
                 <div className='flex items-center gap-2 truncate text-sm font-medium text-slate-800 dark:text-slate-200'>
                   {loadingFile === obj.key && (
-                    <Loader className='size-3 animate-spin text-indigo-600' />
+                    <Loader className='size-3 animate-spin text-gold-600' />
                   )}
-                  <div className='rounded bg-gradient-to-br from-indigo-600 to-indigo-700 p-1'>
+                  <div className='rounded bg-gradient-to-br from-gold-600 to-gold-700 p-1'>
                     <FileText className='size-2.5 text-white' />
                   </div>
                   {obj.key.replace(currentPrefix, '')}

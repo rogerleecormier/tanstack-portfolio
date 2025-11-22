@@ -296,7 +296,7 @@ export default function ProjectsListPage() {
                 <span>Strategic Targeting</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-blue-500'></div>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>On-Point Analysis</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
@@ -343,14 +343,14 @@ export default function ProjectsListPage() {
                 placeholder='Search projects and case studies...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className='h-11 border-gray-200 pl-12 focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-700'
+                className='h-11 border-gray-200 pl-12 focus:border-hunter-500 focus:ring-hunter-500/20 dark:border-gray-700'
               />
             </div>
             {allTags.length > 0 && (
               <Button
                 variant='outline'
                 onClick={() => setIsTagFilterOpen(true)}
-                className='flex h-11 items-center gap-2 border-gray-200 px-6 hover:border-blue-300 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-blue-950/20'
+                className='flex h-11 items-center gap-2 border-gray-200 px-6 hover:border-hunter-300 hover:bg-hunter-50 dark:border-gray-700 dark:hover:bg-hunter-950/20'
               >
                 <Filter className='size-4' />
                 Topics {selectedTags.length > 0 && `(${selectedTags.length})`}
@@ -484,7 +484,7 @@ export default function ProjectsListPage() {
         ) : filteredProjects.length === 0 ? (
           <Card className='border-0 bg-white/70 py-16 text-center shadow-xl backdrop-blur-sm dark:bg-slate-900/70'>
             <CardContent>
-              <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50'>
+              <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-hunter-100 to-teal-100 dark:from-hunter-900/50 dark:to-teal-900/50'>
                 <Briefcase className='size-8 text-blue-600 dark:text-blue-400' />
               </div>
               <H3 className='mb-3 text-gray-800 dark:text-gray-200'>
@@ -592,7 +592,7 @@ export default function ProjectsListPage() {
             {displayedProjects.length < filteredProjects.length && (
               <div ref={loadingRef} className='py-12 text-center'>
                 <div className='inline-flex items-center gap-3 text-gray-500 dark:text-gray-400'>
-                  <div className='size-6 animate-spin rounded-full border-b-2 border-blue-600'></div>
+                  <div className='size-6 animate-spin rounded-full border-b-2 border-hunter-600'></div>
                   <span className='font-medium'>Loading more projects...</span>
                 </div>
               </div>
@@ -602,7 +602,7 @@ export default function ProjectsListPage() {
             {displayedProjects.length === filteredProjects.length &&
               filteredProjects.length > 0 && (
                 <div className='py-12 text-center'>
-                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/50 dark:to-teal-900/50'>
+                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-100 to-teal-100 dark:from-hunter-900/50 dark:to-teal-900/50'>
                     <Briefcase className='size-6 text-blue-600 dark:text-blue-400' />
                   </div>
                   <p className='font-medium text-gray-500 dark:text-gray-400'>
@@ -641,7 +641,7 @@ export default function ProjectsListPage() {
             </div>
 
             <div className='text-center'>
-              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600'>
+              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-500 to-hunter-600'>
                 <TrendingUp className='size-6 text-white' />
               </div>
               <h4 className='mb-1.5 text-sm font-semibold text-gray-900 dark:text-white'>

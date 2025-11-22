@@ -176,9 +176,9 @@ const categoryConfig = {
   },
   'Data & Analytics': {
     icon: TrendingUp,
-    color: 'from-blue-500 to-blue-600',
-    bgColor: 'bg-blue-50 dark:bg-blue-950/20',
-    borderColor: 'border-blue-200 dark:border-blue-800',
+    color: 'from-hunter-500 to-hunter-600',
+    bgColor: 'bg-hunter-50 dark:bg-hunter-950/20',
+    borderColor: 'border-hunter-200 dark:border-hunter-800',
   },
   'Risk & Compliance': {
     icon: Shield,
@@ -310,7 +310,7 @@ export default function PortfolioListPage() {
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 dark:from-slate-950 dark:via-blue-950/20 dark:to-teal-950/20'>
+      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
         <div className='container mx-auto px-4 py-8'>
           {/* Header Skeleton */}
           <div className='mb-12 text-center'>
@@ -406,7 +406,7 @@ export default function PortfolioListPage() {
                 <span>{portfolioItems.length} Portfolio Items</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-blue-500'></div>
+                <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>
                   {portfolioSearch?.getCategories().length ?? 0} Categories
                 </span>

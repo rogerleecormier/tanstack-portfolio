@@ -26,7 +26,7 @@ const Header: React.FC = () => {
   return (
     <>
       {/* Fixed Header - Always visible */}
-      <div className='fixed inset-x-0 top-0 z-50 border-b border-hunter-600/30 bg-gradient-to-br from-slate-950 via-slate-900/80 to-slate-950 shadow-glass backdrop-blur-md dark:border-hunter-500/30'>
+      <div className='fixed inset-x-0 top-0 z-50 border-b border-hunter-700/40 bg-gradient-to-br from-hunter-900 via-hunter-950/90 to-hunter-900 shadow-glass backdrop-blur-md dark:border-hunter-600/50'>
         {/* Main Header Row */}
         <div className='flex items-center justify-between px-4 py-3'>
           {/* Left Section: Hamburger + Logo + Name */}
@@ -79,13 +79,8 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Search Bar Row (Mobile) */}
-        <div className='border-t border-hunter-600/20 bg-slate-900/40 px-4 py-3 backdrop-blur-sm lg:hidden'>
-          <RedesignedSearch />
-        </div>
-
         {/* Breadcrumbs Row - Updated styling */}
-        <div className='flex h-12 items-center border-t border-hunter-600/20 bg-slate-950/60 px-4 backdrop-blur-sm dark:border-hunter-500/20'>
+        <div className='flex h-12 items-center border-t border-hunter-700/30 bg-hunter-950/40 px-4 backdrop-blur-sm dark:border-hunter-600/30'>
           <div className='w-full'>
             <Breadcrumbs />
           </div>

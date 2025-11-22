@@ -200,7 +200,7 @@ const NewsletterPreferencesPage = () => {
   }, []);
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-amber-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-hunter-950 to-slate-900 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - Newsletter Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
         <div className='from-amber-600/3 via-slate-600/3 to-amber-600/3 dark:from-amber-400/8 dark:via-slate-400/8 dark:to-amber-400/8 absolute inset-0 bg-gradient-to-r'></div>
