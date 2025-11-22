@@ -284,7 +284,7 @@ const RedesignedSearch: React.FC = () => {
       {/* Search Dialog */}
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className='flex max-h-[85vh] max-w-4xl flex-col border-0 border-t border-hunter-600/20 bg-slate-900/95 p-0 shadow-2xl backdrop-blur-md'>
-          <DialogHeader className='via-slate-850 shrink-0 border-b border-hunter-600/20 bg-gradient-to-r from-slate-900 to-slate-900 px-6 py-4'>
+          <DialogHeader className='shrink-0 border-b border-hunter-600/20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-6 py-4'>
             <DialogTitle className='flex items-center gap-3'>
               <div className='flex items-center gap-3'>
                 <div className='relative'>

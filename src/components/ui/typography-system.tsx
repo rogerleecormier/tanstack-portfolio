@@ -234,7 +234,7 @@ export function Heading({ level = 2, ...props }: HeadingProps) {
 
   return (
     <Tag
-      {...(props as any)}
+      {...(props as React.ComponentProps<typeof Tag>)}
       className={[
         levelClasses[level],
         'text-hunter dark:text-hunter-300',

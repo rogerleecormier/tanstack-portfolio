@@ -259,7 +259,7 @@ export const ExperienceCard = React.forwardRef<
       {badges.length > 0 && (
         <div className='flex flex-wrap gap-2 pt-2'>
           {badges.map((badge, idx) => (
-            <CardBadge key={idx} variant={badge.variant || 'slate'}>
+            <CardBadge key={idx} variant={badge.variant ?? 'slate'}>
               {badge.text}
             </CardBadge>
           ))}

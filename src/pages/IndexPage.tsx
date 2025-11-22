@@ -14,7 +14,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import { H1, H2, H3, P, Lead } from '@/components/ui/typography-system';
+import { H2, H3, P, Lead } from '@/components/ui/typography-system';
 
 import { cachedContentService } from '@/api/cachedContentService';
 import { Logo } from '@/components/Logo';
@@ -213,52 +213,59 @@ export default function IndexPage() {
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-950 via-slate-900/40 to-slate-950'>
       {/* Hero Section - Premium Design */}
-      <div className='relative overflow-hidden border-b border-hunter-600/20 bg-gradient-to-br from-slate-950 via-slate-900/50 to-slate-950 px-4 py-20 sm:px-6 lg:px-8'>
+      <div className='relative overflow-hidden border-b border-hunter-600/20 bg-gradient-to-br from-slate-950 via-slate-900/50 to-slate-950 px-4 py-24 sm:px-6 lg:px-8'>
         <div className='absolute inset-0 bg-gradient-to-r from-gold-600/5 via-hunter-600/5 to-gold-600/5 opacity-40'></div>
 
-        <div className='relative mx-auto max-w-4xl text-center'>
-          {/* Logo and Title with Targeting Theme */}
-          <div className='mb-8 flex items-center justify-center gap-6'>
-            <div className='rounded-2xl border border-hunter-600/30 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 p-4 shadow-lg backdrop-blur-sm dark:border-hunter-600/30'>
+        <div className='relative mx-auto max-w-5xl'>
+          {/* Logo and Title Stack */}
+          <div className='mb-12 flex flex-col items-center gap-8'>
+            <div className='flex-shrink-0 rounded-2xl border border-hunter-600/30 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 p-4 shadow-lg backdrop-blur-sm'>
               <Logo size='xl' showTargetingDots={true} />
             </div>
-            <div>
-              <H1 className='!m-0 bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
-                Roger Lee Cormier
-              </H1>
-              <div className='mx-auto mt-3 h-1 w-32 rounded-full bg-gradient-to-r from-gold-600 via-hunter-500 to-gold-500'></div>
+            <div className='flex-1 text-center'>
+              <h1 className='text-5xl font-bold leading-tight tracking-tight sm:text-6xl lg:text-7xl'>
+                <span className='bg-gradient-to-r from-hunter-300 via-gold-300 to-hunter-300 bg-clip-text text-transparent'>
+                  Roger Lee Cormier
+                </span>
+              </h1>
+              <div className='mt-4 flex justify-center'>
+                <div className='h-1.5 w-24 rounded-full bg-gradient-to-r from-gold-600 via-hunter-500 to-gold-500'></div>
+              </div>
+              <p className='mt-6 text-xl font-semibold uppercase tracking-wider text-gold-400'>
+                Precision. Results. Delivered.
+              </p>
             </div>
           </div>
 
-          {/* Professional Title and Description */}
-          <P className='!m-0 mb-6 text-base uppercase tracking-wider text-gold-400'>
-            Technical Project Manager
-          </P>
+          {/* Professional Identity */}
+          <div className='mb-10'>
+            <p className='mx-auto max-w-2xl text-lg leading-relaxed text-slate-200'>
+              Digital transformation specialist driving organizational success through strategic technology implementation, enterprise system integration, and AI-powered automation.
+            </p>
+          </div>
 
-          <Lead className='!m-0 mx-auto mb-8 max-w-3xl text-slate-300'>
-            Specializing in{' '}
-            <span className='text-gold-400'>
-              targeting digital transformation
-            </span>{' '}
-            through ERP integration, AI automation, and strategic technology
-            implementation. PMP-certified leader driving organizational
-            excellence with{' '}
-            <span className='text-hunter-400'>laser-focused precision</span>.
-          </Lead>
-
-          {/* Quick Stats with Targeting Theme */}
-          <div className='mb-8 flex flex-wrap justify-center gap-6 text-sm'>
-            <div className='flex items-center gap-2 text-slate-300'>
-              <div className='size-2 rounded-full bg-hunter-500'></div>
-              <span>ERP Integration</span>
+          {/* Core Focus Areas */}
+          <div className='mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3'>
+            <div className='flex items-start gap-3 rounded-lg border border-hunter-600/20 bg-hunter-600/5 p-4 backdrop-blur-sm'>
+              <div className='mt-1 size-2 flex-shrink-0 rounded-full bg-hunter-400'></div>
+              <div>
+                <p className='font-semibold text-hunter-300'>ERP & SaaS Integration</p>
+                <p className='text-sm text-slate-400'>NetSuite, Ramp, Cloudflare</p>
+              </div>
             </div>
-            <div className='flex items-center gap-2 text-slate-300'>
-              <div className='size-2 rounded-full bg-hunter-400'></div>
-              <span>AI Automation</span>
+            <div className='flex items-start gap-3 rounded-lg border border-hunter-600/20 bg-hunter-600/5 p-4 backdrop-blur-sm'>
+              <div className='mt-1 size-2 flex-shrink-0 rounded-full bg-gold-400'></div>
+              <div>
+                <p className='font-semibold text-gold-300'>AI & Automation</p>
+                <p className='text-sm text-slate-400'>Workflow optimization</p>
+              </div>
             </div>
-            <div className='flex items-center gap-2 text-slate-300'>
-              <div className='size-2 rounded-full bg-gold-500'></div>
-              <span>Precision Targeting</span>
+            <div className='flex items-start gap-3 rounded-lg border border-hunter-600/20 bg-hunter-600/5 p-4 backdrop-blur-sm'>
+              <div className='mt-1 size-2 flex-shrink-0 rounded-full bg-slate-400'></div>
+              <div>
+                <p className='font-semibold text-slate-300'>Project Leadership</p>
+                <p className='text-sm text-slate-400'>PMP-certified delivery</p>
+              </div>
             </div>
           </div>
 
