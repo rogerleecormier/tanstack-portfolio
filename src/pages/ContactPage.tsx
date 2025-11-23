@@ -621,6 +621,7 @@ This meeting request was generated based on AI analysis of their contact form su
                     href='https://github.com/rogerleecormier'
                     target='_blank'
                     rel='noopener noreferrer'
+                    // eslint-disable-next-line tailwindcss/no-custom-classname
                     className='brand-button-primary flex w-full items-center justify-center gap-3 rounded-lg px-4 py-3 text-sm font-medium shadow-md transition-colors hover:shadow-lg'
                   >
                     <Github className='size-4' />
@@ -1032,6 +1033,7 @@ This meeting request was generated based on AI analysis of their contact form su
                       href='https://github.com/rogerleecormier'
                       target='_blank'
                       rel='noopener noreferrer'
+                      // eslint-disable-next-line tailwindcss/no-custom-classname
                       className='brand-button-primary flex w-full items-center justify-center gap-3 rounded-lg px-4 py-3 text-sm font-medium shadow-md transition-colors hover:shadow-lg'
                     >
                       <Github className='size-4' />

@@ -292,6 +292,7 @@ export default function SettingsPage() {
     <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
       {/* Header with Administrative Theme - Settings Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
+        {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
         <div className='from-gold-600/3 via-slate-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-slate-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>

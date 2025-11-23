@@ -167,6 +167,7 @@ export default function PrivacyPage() {
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-hunter-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900'>
       {/* Header with Administrative Theme - Shield & Trust Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
+        {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
         <div className='from-hunter-600/3 via-slate-600/3 to-hunter-600/3 dark:from-hunter-400/8 dark:via-slate-400/8 dark:to-hunter-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>

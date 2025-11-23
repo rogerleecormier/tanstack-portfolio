@@ -22,6 +22,7 @@ export default function NotFound() {
         <div className='flex flex-col justify-center gap-4 sm:flex-row'>
           <Button
             asChild
+            // eslint-disable-next-line tailwindcss/no-custom-classname
             className='brand-button-primary inline-flex items-center gap-2'
           >
             <Link to='/'>
