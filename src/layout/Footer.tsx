@@ -16,10 +16,10 @@ export default function Footer() {
                 <H4 className='!mt-0 mb-2 text-base font-semibold text-white'>
                   Strategic Insights Delivered
                 </H4>
-                              <p className='!mt-0 text-sm text-grey-300'>
+                <p className='!mt-0 text-sm text-grey-300'>
                   Exclusive insights on digital transformation, technology
                   leadership, and execution excellence.
-                </P>
+                </p>
               </div>
               <NewsletterSignup
                 variant='compact'
