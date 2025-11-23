@@ -200,7 +200,7 @@ const NewsletterPreferencesPage = () => {
   }, []);
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
+    <div className='min-h-screen bg-gradient-to-br from-surface-deep via-surface-base to-surface-deep dark:from-surface-deep dark:via-surface-base dark:to-surface-deep'>
       {/* Header with Administrative Theme - Newsletter Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
         {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
@@ -247,9 +247,9 @@ const NewsletterPreferencesPage = () => {
           {/* Main Content - Two Column Layout */}
           <div className='grid gap-6 md:grid-cols-2'>
             {/* Left Column - Manage Subscription */}
-            <Card className='h-full border-hunter-600/20 bg-slate-900/40 backdrop-blur-sm'>
+            <Card className='h-full border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-sm'>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2 text-hunter-300'>
+                <CardTitle className='flex items-center gap-2 text-strategy-gold'>
                   <Settings className='size-5' />
                   Manage Subscription
                 </CardTitle>
@@ -272,7 +272,7 @@ const NewsletterPreferencesPage = () => {
                     placeholder='Enter your email address'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className='border-hunter-600/30 bg-slate-800 text-white placeholder:text-slate-500 focus:border-hunter-600/60 focus:ring-hunter-600/30'
+                    className='border-strategy-gold/30 bg-surface-elevated text-white placeholder:text-slate-500 focus:border-strategy-gold/60 focus:ring-strategy-gold/30'
                   />
                 </div>
 
@@ -293,7 +293,7 @@ const NewsletterPreferencesPage = () => {
                               weeklyDigest: e.target.checked,
                             }))
                           }
-                          className='rounded border-hunter-600/30 bg-slate-800 text-hunter-600 accent-hunter-600'
+                          className='rounded border-strategy-gold/30 bg-surface-elevated text-strategy-gold accent-strategy-gold'
                         />
                         <span className='text-sm text-slate-300'>
                           Weekly Digest
@@ -309,7 +309,7 @@ const NewsletterPreferencesPage = () => {
                               newPosts: e.target.checked,
                             }))
                           }
-                          className='rounded border-hunter-600/30 bg-slate-800 text-hunter-600 accent-hunter-600'
+                          className='rounded border-strategy-gold/30 bg-surface-elevated text-strategy-gold accent-strategy-gold'
                         />
                         <span className='text-sm text-slate-300'>
                           New Blog Posts
@@ -325,7 +325,7 @@ const NewsletterPreferencesPage = () => {
                               specialOffers: e.target.checked,
                             }))
                           }
-                          className='rounded border-hunter-600/30 bg-slate-800 text-hunter-600 accent-hunter-600'
+                          className='rounded border-strategy-gold/30 bg-surface-elevated text-strategy-gold accent-strategy-gold'
                         />
                         <span className='text-sm text-slate-300'>
                           Special Offers
@@ -339,7 +339,7 @@ const NewsletterPreferencesPage = () => {
                   <Button
                     onClick={handleCheckStatus}
                     disabled={loading || !email}
-                    className='min-w-[120px] flex-1 border-hunter-600/40 bg-transparent text-hunter-400 hover:border-hunter-600/60 hover:bg-hunter-600/10'
+                    className='min-w-[120px] flex-1 border-strategy-gold/40 bg-transparent text-strategy-gold hover:border-strategy-gold/60 hover:bg-strategy-gold/10'
                   >
                     <UserCheck className='mr-2 size-4' />
                     Check Status
@@ -348,7 +348,7 @@ const NewsletterPreferencesPage = () => {
                     <Button
                       onClick={handleUpdatePreferences}
                       disabled={loading || !email}
-                      className='min-w-[120px] flex-1 border-hunter-600/40 bg-transparent text-hunter-400 hover:border-hunter-600/60 hover:bg-hunter-600/10'
+                      className='min-w-[120px] flex-1 border-strategy-gold/40 bg-transparent text-strategy-gold hover:border-strategy-gold/60 hover:bg-strategy-gold/10'
                     >
                       <Settings className='mr-2 size-4' />
                       Update Preferences
@@ -356,7 +356,7 @@ const NewsletterPreferencesPage = () => {
                   )}
                 </div>
 
-                <Separator className='bg-hunter-600/20' />
+                <Separator className='bg-strategy-gold/20' />
 
                 <div className='space-y-2'>
                   {/* Show Unsubscribe button only if subscribed */}
@@ -376,7 +376,7 @@ const NewsletterPreferencesPage = () => {
                     <Button
                       onClick={handleResubscribe}
                       disabled={loading || !email}
-                      className='w-full bg-gradient-to-r from-hunter-600 to-hunter-500 text-white hover:from-hunter-500 hover:to-hunter-400'
+                      className='w-full bg-gradient-to-r from-strategy-gold to-strategy-gold text-surface-deep hover:from-strategy-gold/90 hover:to-strategy-gold/80'
                     >
                       <CheckCircle className='mr-2 size-4' />
                       Resubscribe
@@ -387,9 +387,9 @@ const NewsletterPreferencesPage = () => {
             </Card>
 
             {/* Right Column - About Our Newsletter */}
-            <Card className='h-full border-hunter-600/20 bg-slate-900/40 backdrop-blur-sm'>
+            <Card className='h-full border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-sm'>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2 text-hunter-300'>
+                <CardTitle className='flex items-center gap-2 text-strategy-gold'>
                   <Mail className='size-5' />
                   About Our Newsletter
                 </CardTitle>
@@ -401,27 +401,27 @@ const NewsletterPreferencesPage = () => {
                   </h4>
                   <ul className='space-y-2 text-sm text-slate-300'>
                     <li className='flex items-start gap-2'>
-                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-hunter-500'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-strategy-gold'></div>
                       <span>Weekly insights on technology leadership</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-hunter-500'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-strategy-gold'></div>
                       <span>Notifications for new blog posts</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-hunter-500'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-strategy-gold'></div>
                       <span>Practical DevOps and strategy tips</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-hunter-500'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-strategy-gold'></div>
                       <span>Industry trends and analysis</span>
                     </li>
                   </ul>
                 </div>
 
-                <Separator className='bg-hunter-600/20' />
+                <Separator className='bg-strategy-gold/20' />
 
-                <div className='rounded-lg bg-hunter-600/10 p-3 text-sm text-slate-300'>
+                <div className='rounded-lg bg-strategy-gold/10 p-3 text-sm text-slate-300'>
                   <p>
                     You can manage your preferences anytime or unsubscribe at
                     any time. We respect your inbox and only send valuable,
@@ -435,23 +435,23 @@ const NewsletterPreferencesPage = () => {
           {/* Current Status - Full Width Below, Only Shows After Interaction */}
           {subscriptionStatus && (
             <div className='mt-6'>
-              <Card className='border-hunter-600/20 bg-slate-900/40 backdrop-blur-sm'>
+              <Card className='border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-sm'>
                 <CardHeader>
-                  <CardTitle className='flex items-center gap-2 text-hunter-300'>
+                  <CardTitle className='flex items-center gap-2 text-strategy-gold'>
                     <UserCheck className='size-5' />
                     Current Status
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-                    <div className='flex items-center justify-between rounded-lg bg-hunter-600/10 p-3'>
+                    <div className='flex items-center justify-between rounded-lg bg-strategy-gold/10 p-3'>
                       <span className='text-sm font-medium text-slate-300'>
                         Status:
                       </span>
                       <Badge
                         className={
                           subscriptionStatus.isActive
-                            ? 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
+                            ? 'border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold'
                             : 'border-red-600/40 bg-red-600/15 text-red-300'
                         }
                       >
@@ -460,7 +460,7 @@ const NewsletterPreferencesPage = () => {
                     </div>
 
                     {subscriptionStatus.subscribedAt && (
-                      <div className='flex items-center justify-between rounded-lg bg-hunter-600/10 p-3'>
+                      <div className='flex items-center justify-between rounded-lg bg-strategy-gold/10 p-3'>
                         <span className='text-sm font-medium text-slate-300'>
                           Subscribed:
                         </span>
@@ -473,7 +473,7 @@ const NewsletterPreferencesPage = () => {
                     )}
 
                     {subscriptionStatus.preferences && (
-                      <div className='rounded-lg bg-hunter-600/10 p-3 md:col-span-2 lg:col-span-1'>
+                      <div className='rounded-lg bg-strategy-gold/10 p-3 md:col-span-2 lg:col-span-1'>
                         <span className='mb-3 block text-sm font-medium text-slate-300'>
                           Preferences:
                         </span>
@@ -485,7 +485,7 @@ const NewsletterPreferencesPage = () => {
                             <Badge
                               className={
                                 subscriptionStatus.preferences.weeklyDigest
-                                  ? 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
+                                  ? 'border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold'
                                   : 'border-red-600/40 bg-red-600/15 text-red-300'
                               }
                             >
@@ -501,7 +501,7 @@ const NewsletterPreferencesPage = () => {
                             <Badge
                               className={
                                 subscriptionStatus.preferences.newPosts
-                                  ? 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
+                                  ? 'border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold'
                                   : 'border-red-600/40 bg-red-600/15 text-red-300'
                               }
                             >
@@ -517,7 +517,7 @@ const NewsletterPreferencesPage = () => {
                             <Badge
                               className={
                                 subscriptionStatus.preferences.specialOffers
-                                  ? 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
+                                  ? 'border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold'
                                   : 'border-red-600/40 bg-red-600/15 text-red-300'
                               }
                             >
@@ -541,18 +541,18 @@ const NewsletterPreferencesPage = () => {
               <Alert
                 className={
                   result.success
-                    ? 'border-hunter-600/20 bg-hunter-600/10'
+                    ? 'border-strategy-gold/20 bg-strategy-gold/10'
                     : 'border-red-600/20 bg-red-600/10'
                 }
               >
                 {result.success ? (
-                  <CheckCircle className='size-4 text-hunter-400' />
+                  <CheckCircle className='size-4 text-strategy-gold' />
                 ) : (
                   <AlertTriangle className='size-4 text-red-400' />
                 )}
                 <AlertDescription
                   className={
-                    result.success ? 'text-hunter-300' : 'text-red-300'
+                    result.success ? 'text-strategy-gold' : 'text-red-300'
                   }
                 >
                   {result.message}
@@ -565,7 +565,7 @@ const NewsletterPreferencesPage = () => {
           {loading && (
             <div className='mt-6 text-center'>
               <div className='inline-flex items-center gap-2 text-slate-400'>
-                <div className='size-4 animate-spin rounded-full border-b-2 border-hunter-600'></div>
+                <div className='size-4 animate-spin rounded-full border-b-2 border-strategy-gold'></div>
                 Processing...
               </div>
             </div>

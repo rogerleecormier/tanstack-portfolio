@@ -467,23 +467,27 @@ export function CreationStudioPage() {
   }, [anyModalOpen, scrollbarWidth]);
 
   return (
-    <div className='flex h-full min-h-0 flex-col bg-hunter-950'>
-      {/* Administrative Header with Glassmorphic Design */}
-      <div className='relative border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:border-grey-800 dark:bg-hunter-950/30'>
+    <div className='flex h-full min-h-0 flex-col bg-surface-deep'>
+      {/* Administrative Header with Enhanced Glassmorphic Design */}
+      <div className='relative border-b border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
+        {/* Glassmorphic background gradient */}
+        <div className='from-strategy-gold/8 via-strategy-gold/5 to-strategy-gold/8 absolute inset-0 bg-gradient-to-r'></div>
+        {/* Glow effect */}
+        <div className='absolute -top-1/2 -right-1/2 h-96 w-96 rounded-full bg-strategy-gold/5 blur-3xl'></div>
         <div className='relative px-4 py-6 sm:px-6 lg:px-8'>
           <div className='max-w-7xl'>
             {/* Enhanced Title with Modern Styling */}
             <div className='flex items-center gap-4'>
               <div className='relative'>
-                <div className='flex size-12 items-center justify-center rounded-2xl bg-hunter-900/60 shadow-lg ring-1 ring-gold-500/20 backdrop-blur-md'>
-                  <FileText className='size-6 text-gold-400' />
+                <div className='flex size-12 items-center justify-center rounded-2xl bg-surface-elevated/60 shadow-lg ring-1 ring-strategy-gold/40 backdrop-blur-lg transition-all duration-300 hover:ring-strategy-gold/60'>
+                  <FileText className='size-6 text-strategy-gold' />
                 </div>
                 {/* Content indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full bg-hunter-800/80 backdrop-blur-sm'>
-                  <div className='size-1.5 rounded-full bg-gold-400'></div>
+                <div className='absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full bg-surface-base/80 backdrop-blur-sm'>
+                  <div className='size-1.5 rounded-full bg-strategy-gold'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-2.5 items-center justify-center rounded-full bg-grey-700/60 backdrop-blur-sm'>
-                  <div className='size-1 rounded-full bg-gold-300'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-2.5 items-center justify-center rounded-full bg-strategy-gold/40 backdrop-blur-sm'>
+                  <div className='size-1 rounded-full bg-strategy-gold'></div>
                 </div>
               </div>
               <div>
@@ -519,8 +523,8 @@ export function CreationStudioPage() {
           </div>
         </div>
 
-        {/* Header Actions */}
-        <div className='flex items-center justify-end gap-1 border-t border-hunter-900/30 bg-hunter-950/20 p-4 backdrop-blur-md dark:border-grey-800'>
+        {/* Header Actions with Enhanced Glassmorphism */}
+        <div className='flex items-center justify-end gap-1 border-t border-strategy-gold/20 bg-surface-elevated/30 p-4 backdrop-blur-xl dark:border-strategy-gold/20'>
           {/* File Operations Group */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -550,7 +554,7 @@ export function CreationStudioPage() {
                     setIsDirty(true);
                   }
                 }}
-                className='border-gold-600/30 text-gold-300 transition-all duration-200 hover:bg-hunter-900/40 dark:hover:bg-hunter-900/30'
+                className='border-strategy-gold/30 text-strategy-gold transition-all duration-200 hover:bg-surface-elevated/40 dark:hover:bg-surface-elevated/30'
               >
                 <Plus className='size-4' />
               </Button>
@@ -564,7 +568,7 @@ export function CreationStudioPage() {
                 variant='outline'
                 size='sm'
                 onClick={handleDownload}
-                className='border-hunter-600 text-hunter-600 transition-all duration-200 hover:bg-hunter-50 dark:hover:bg-hunter-950'
+                className='border-strategy-gold text-strategy-gold transition-all duration-200 hover:bg-surface-elevated dark:hover:bg-surface-deep'
               >
                 <Download className='size-4' />
               </Button>
@@ -580,7 +584,7 @@ export function CreationStudioPage() {
               <Button
                 onClick={() => void handleSave()}
                 size='sm'
-                className='border-0 bg-hunter-600 px-3 text-white shadow-lg transition-all duration-200 hover:bg-hunter-700 hover:shadow-xl'
+                className='border-0 bg-strategy-gold px-3 text-white shadow-lg transition-all duration-200 hover:brightness-110 hover:shadow-xl'
               >
                 <Save className='size-4' />
               </Button>
@@ -600,7 +604,7 @@ export function CreationStudioPage() {
                 variant='outline'
                 size='sm'
                 onClick={() => setIsSaveAsOpen(true)}
-                className='border-hunter-600 text-hunter-600 transition-all duration-200 hover:bg-hunter-50 dark:hover:bg-hunter-950'
+                className='border-strategy-gold text-strategy-gold transition-all duration-200 hover:bg-surface-elevated dark:hover:bg-surface-deep'
               >
                 <SaveIcon className='size-4' />
               </Button>
@@ -611,14 +615,14 @@ export function CreationStudioPage() {
           {/* Cache Controls */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className='flex h-9 items-center gap-1 rounded-md border border-gold-500/30 bg-hunter-900/40 px-2 py-1 dark:border-gold-500/30 dark:bg-hunter-900/30'>
+              <div className='flex h-9 items-center gap-1 rounded-md border border-gold-500/30 bg-surface-elevated/40 px-2 py-1 dark:border-gold-500/30 dark:bg-surface-elevated/30'>
                 <Checkbox
                   id='rebuild-cache'
                   checked={shouldRebuildCache}
                   onCheckedChange={(checked: boolean | 'indeterminate') =>
                     setShouldRebuildCache(checked === true)
                   }
-                  className='size-3 data-[state=checked]:border-hunter-600 data-[state=checked]:bg-hunter-600'
+                  className='size-3 data-[state=checked]:border-strategy-gold data-[state=checked]:bg-strategy-gold'
                 />
                 <Database className='size-3 text-grey-300 dark:text-grey-400' />
                 {cacheRebuildStatus !== 'idle' && (
@@ -640,7 +644,7 @@ export function CreationStudioPage() {
                 <div className='mt-1 text-xs opacity-80'>
                   Updates search and navigation cache using production KV
                 </div>
-                <div className='mt-1 text-xs text-hunter-500'>
+                <div className='mt-1 text-xs text-text-muted'>
                   Works in: Localhost, Preview & Production
                 </div>
                 {cacheStatus && (
@@ -702,7 +706,7 @@ export function CreationStudioPage() {
                   })()
                 }
                 disabled={cacheRebuildStatus === 'rebuilding'}
-                className='size-8 p-0 hover:bg-hunter-900/40 dark:hover:bg-hunter-900/30'
+                className='size-8 p-0 hover:bg-surface-elevated/40 dark:hover:bg-surface-elevated/30'
               >
                 <RefreshCw
                   className={`size-4 ${cacheRebuildStatus === 'rebuilding' ? 'animate-spin' : ''}`}
@@ -716,7 +720,7 @@ export function CreationStudioPage() {
                   Force refresh of search and navigation cache using production
                   KV
                 </div>
-                <div className='mt-1 text-xs text-hunter-500'>
+                <div className='mt-1 text-xs text-text-muted'>
                   Works in: Localhost, Preview & Production
                 </div>
                 {cacheStatus && (
@@ -850,11 +854,11 @@ export function CreationStudioPage() {
               {/* Editor Header */}
               <div
                 ref={editorHeaderRef}
-                className='rounded-t-xl border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'
+                className='rounded-t-xl border border-gold-500/20 bg-surface-elevated/30 backdrop-blur-xl dark:border-gold-500/20 dark:bg-surface-elevated/30'
               >
                 <div className='flex items-center justify-between gap-3 border-b border-gold-500/10 p-4 dark:border-gold-500/10'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-hunter-900/60 p-2 shadow-md ring-1 ring-gold-500/20 backdrop-blur-md'>
+                    <div className='rounded-lg bg-surface-elevated/60 p-2 shadow-md ring-1 ring-strategy-gold/20 backdrop-blur-md'>
                       <FileText className='size-5 text-gold-400' />
                     </div>
                     <div>
@@ -872,7 +876,7 @@ export function CreationStudioPage() {
               {/* Editor Content (dynamically scales to fill available space) */}
               <div
                 ref={editorWrapperRef}
-                className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-gold-500/20 bg-hunter-900/30 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'
+                className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-gold-500/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-surface-elevated/30'
                 style={{
                   minHeight: '200px',
                 }}
@@ -966,12 +970,12 @@ export function CreationStudioPage() {
       </Dialog>
       {/* Fullscreen Editor Modal */}
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-        <DialogContent className='size-full max-h-[95vh] max-w-[95vw] bg-hunter-950 p-0 dark:bg-hunter-950'>
+        <DialogContent className='size-full max-h-[95vh] max-w-[95vw] bg-surface-deep p-0 dark:bg-surface-deep'>
           <div className='flex h-full flex-col'>
             {/* Enhanced Header */}
-            <div className='flex items-center justify-between border-b border-gold-500/10 bg-hunter-950/40 p-6 backdrop-blur-xl dark:border-gold-500/10'>
+            <div className='flex items-center justify-between border-b border-gold-500/10 bg-surface-deep/40 p-6 backdrop-blur-xl dark:border-gold-500/10'>
               <div className='flex items-center gap-4'>
-                <div className='rounded-xl bg-hunter-900/60 p-3 shadow-lg ring-1 ring-gold-500/20 backdrop-blur-md'>
+                <div className='rounded-xl bg-surface-elevated/60 p-3 shadow-lg ring-1 ring-strategy-gold/20 backdrop-blur-md'>
                   <FileText className='size-6 text-gold-400' />
                 </div>
                 <div>
@@ -1004,7 +1008,7 @@ export function CreationStudioPage() {
                 variant='outline'
                 size='sm'
                 onClick={() => setIsFullscreen(false)}
-                className='gap-2 border-gold-500/20 text-gold-400 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg dark:hover:bg-hunter-900/40'
+                className='gap-2 border-gold-500/20 text-gold-400 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-gold-500/40 hover:bg-surface-elevated/40 hover:shadow-lg dark:hover:bg-surface-elevated/40'
               >
                 <Minimize className='size-4' />
                 Return to Studio
@@ -1012,7 +1016,7 @@ export function CreationStudioPage() {
             </div>
             {/* Enhanced Editor Content */}
             <div className='flex-1 overflow-hidden p-2'>
-              <div className='h-full rounded-xl border border-gold-500/20 bg-hunter-900/30 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
+              <div className='h-full rounded-xl border border-gold-500/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-surface-elevated/30'>
                 <MarkdownHtmlEditor
                   initialMarkdown={markdown}
                   onChange={handleMarkdownChange}

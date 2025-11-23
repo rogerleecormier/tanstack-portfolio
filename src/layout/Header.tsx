@@ -1,15 +1,19 @@
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import {
+  Dialog,
+  DialogContent,
+} from '@/components/ui/dialog';
 import { Link } from '@tanstack/react-router';
 import React, { useState } from 'react';
 import RedesignedSearch from '@/components/RedesignedSearch';
 import { LoginPage } from '@/components/LoginPage';
-import { LogOut } from 'lucide-react';
+import ProfileDropdown from '@/components/ProfileDropdown';
 import { useAuth } from '@/hooks/useAuth';
 
 const Header: React.FC = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -73,15 +77,7 @@ const Header: React.FC = () => {
 
             {/* Login/Logout Button */}
             {user ? (
-              <Button
-                onClick={() => logout()}
-                variant='outline'
-                size='sm'
-                className='flex items-center gap-2 border-strategy-gold text-strategy-gold hover:bg-strategy-gold/10'
-              >
-                <LogOut className='h-4 w-4' />
-                <span className='hidden sm:inline'>Logout</span>
-              </Button>
+              <ProfileDropdown user={user} />
             ) : (
               <Button
                 onClick={() => setShowLoginModal(true)}
@@ -97,11 +93,11 @@ const Header: React.FC = () => {
       </div>
 
       {/* Login Modal */}
-      {showLoginModal && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
+      <Dialog open={showLoginModal} onOpenChange={setShowLoginModal}>
+        <DialogContent className='border-strategy-gold/20 bg-surface-deep/95 backdrop-blur-xl'>
           <LoginPage onClose={() => setShowLoginModal(false)} />
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </header>
   );
 };

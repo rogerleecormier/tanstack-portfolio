@@ -532,8 +532,8 @@ export const SiteAdminPage: React.FC = () => {
     return (
       <div className='flex min-h-screen items-center justify-center'>
         <div className='text-center'>
-          <Loader2 className='mx-auto mb-4 size-12 animate-spin text-gold-600' />
-          <P className='text-gold-600'>
+          <Loader2 className='mx-auto mb-4 size-12 animate-spin text-strategy-gold' />
+          <P className='text-strategy-gold'>
             {isDevelopment
               ? 'Verifying development authentication...'
               : 'Authenticating with Cloudflare Access...'}
@@ -555,9 +555,9 @@ export const SiteAdminPage: React.FC = () => {
           <Card className='w-full max-w-md border-slate-200 bg-slate-50/50 shadow-xl'>
             <CardHeader className='space-y-3 text-center'>
               <div className='mx-auto w-fit rounded-full border-2 border-slate-200 bg-slate-100 p-3'>
-                <Shield className='size-8 text-hunter-700' />
+                <Shield className='size-8 text-strategy-gold' />
               </div>
-              <CardTitle className='text-2xl font-bold text-hunter-900'>
+              <CardTitle className='text-2xl font-bold text-strategy-gold'>
                 Portfolio Access Required
               </CardTitle>
               <CardDescription className='text-slate-700'>
@@ -569,15 +569,15 @@ export const SiteAdminPage: React.FC = () => {
                 <div className='mb-2 flex items-center space-x-2'>
                   {isDevelopment ? (
                     <>
-                      <UserCheck className='size-4 text-hunter-600' />
-                      <span className='font-semibold text-hunter-800'>
+                      <UserCheck className='size-4 text-strategy-gold' />
+                      <span className='font-semibold text-strategy-gold'>
                         Development Environment
                       </span>
                     </>
                   ) : (
                     <>
-                      <Shield className='size-4 text-hunter-600' />
-                      <span className='font-semibold text-hunter-800'>
+                      <Shield className='size-4 text-strategy-gold' />
+                      <span className='font-semibold text-strategy-gold'>
                         Production Security
                       </span>
                     </>
@@ -592,7 +592,7 @@ export const SiteAdminPage: React.FC = () => {
 
               <Button
                 onClick={() => (window.location.href = '/')}
-                className='flex w-full items-center justify-center space-x-2 bg-gold-600 transition-all duration-200 hover:bg-gold-700 focus:ring-2 focus:ring-gold-500 focus:ring-offset-2'
+                className='flex w-full items-center justify-center space-x-2 bg-strategy-gold transition-all duration-200 hover:brightness-110 focus:ring-2 focus:ring-strategy-gold focus:ring-offset-2'
               >
                 <span>Return to Portfolio</span>
                 <ArrowRight className='size-4' />
@@ -605,55 +605,57 @@ export const SiteAdminPage: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
-      {/* Header with Administrative Theme - System Management Focused */}
-      <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
-        <div className='from-gold-600/3 via-gold-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-gold-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
+    <div className='min-h-screen bg-gradient-to-br from-surface-deep via-surface-base to-surface-deep dark:from-surface-deep dark:via-surface-base dark:to-surface-deep'>
+      {/* Header with Administrative Theme - Glassmorphic Design */}
+      <div className='relative overflow-hidden border-b border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
+        {/* Glassmorphic background gradient */}
+        <div className='from-strategy-gold/8 via-strategy-gold/5 to-strategy-gold/8 absolute inset-0 bg-gradient-to-r'></div>
+        {/* Subtle glow effect */}
+        <div className='absolute -top-1/2 -right-1/2 h-96 w-96 rounded-full bg-strategy-gold/5 blur-3xl'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Administrative Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-500 to-slate-600 shadow-lg'>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-strategy-gold to-slate-600 shadow-lg'>
                   <Shield className='size-7 text-white' />
                 </div>
                 {/* Admin indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-gold-600'>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-strategy-gold'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-slate-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-strategy-gold to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-slate-100 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent dark:from-gold-400 dark:to-red-300'>
+                  <span className='bg-gradient-to-r from-strategy-gold to-strategy-gold bg-clip-text text-transparent dark:from-strategy-gold dark:to-strategy-gold'>
                     Site Administration
                   </span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-strategy-gold to-slate-500'></div>
               </div>
             </div>
 
             {/* Description with Admin Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300 dark:text-grey-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-text-muted-foreground dark:text-text-muted-foreground'>
               Monitor system health, manage services, and oversee
-              <span className='font-medium text-gold-600 dark:text-gold-400'>
+              <span className='font-medium text-strategy-gold dark:text-strategy-gold'>
                 {' '}
                 \n protected resources{' '}
               </span>
               with comprehensive administration controls.
             </p>
 
-            {/* Environment Badge */}
+            {/* Environment Badge with Glassmorphism */}
             <div className='mt-6'>
-              <div className='inline-flex items-center gap-2 rounded-full border border-gold-200 bg-gold-50/50 px-4 py-2 backdrop-blur-sm dark:border-gold-900/50 dark:bg-gold-950/30'>
+              <div className='inline-flex items-center gap-2 rounded-full border border-strategy-gold/40 bg-surface-elevated/40 px-4 py-2 backdrop-blur-lg dark:bg-surface-elevated/30'>
                 <div
                   className={`size-2 rounded-full ${isDevelopment ? 'bg-yellow-500' : 'bg-green-500'}`}
                 ></div>
-                <span className='text-sm font-medium text-gold-900 dark:text-gold-200'>
+                <span className='text-sm font-medium text-strategy-gold dark:text-strategy-gold'>
                   {isDevelopment
                     ? 'Development Environment'
                     : 'Production Environment'}
@@ -670,18 +672,18 @@ export const SiteAdminPage: React.FC = () => {
         <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
           {/* Left Column - User Profile & System Info */}
           <div className='space-y-6'>
-            {/* User Profile Card */}
-            <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
+            {/* User Profile Card - Glassmorphic */}
+            <Card className='group border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                    <Users className='size-6 text-gold-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
+                    <Users className='size-6 text-strategy-gold' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-grey-100'>
+                    <CardTitle className='text-xl font-semibold text-text-foreground'>
                       User Profile
                     </CardTitle>
-                    <CardDescription className='text-grey-300'>
+                    <CardDescription className='text-text-muted-foreground'>
                       Current authentication details
                     </CardDescription>
                   </div>
@@ -689,35 +691,35 @@ export const SiteAdminPage: React.FC = () => {
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='grid grid-cols-1 gap-4'>
-                  <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-grey-400'>
+                  <div className='rounded-lg bg-surface-base p-4'>
+                    <div className='mb-1 text-sm font-medium text-text-muted'>
                       Email
                     </div>
-                    <div className='truncate font-medium text-grey-100'>
+                    <div className='truncate font-medium text-text-foreground'>
                       {user?.email}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-grey-400'>
+                  <div className='rounded-lg bg-surface-base p-4'>
+                    <div className='mb-1 text-sm font-medium text-text-muted'>
                       Name
                     </div>
-                    <div className='font-medium text-grey-100'>
+                    <div className='font-medium text-text-foreground'>
                       {user?.name ?? 'Not provided'}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-grey-400'>
+                  <div className='rounded-lg bg-surface-base p-4'>
+                    <div className='mb-1 text-sm font-medium text-text-muted'>
                       Authentication
                     </div>
-                    <div className='font-medium text-grey-100'>
+                    <div className='font-medium text-text-foreground'>
                       {isDevelopment ? 'Development' : 'Cloudflare Access'}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-grey-400'>
+                  <div className='rounded-lg bg-surface-base p-4'>
+                    <div className='mb-1 text-sm font-medium text-text-muted'>
                       Environment
                     </div>
-                    <div className='font-medium text-grey-100'>
+                    <div className='font-medium text-text-foreground'>
                       {isDevelopment ? 'Development' : 'Production'}
                     </div>
                   </div>
@@ -726,31 +728,31 @@ export const SiteAdminPage: React.FC = () => {
             </Card>
 
             {/* System Information */}
-            <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='group border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                    <Settings className='size-6 text-gold-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
+                    <Settings className='size-6 text-strategy-gold' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-grey-100'>
+                    <CardTitle className='text-xl font-semibold text-text-foreground'>
                       System Status
                     </CardTitle>
-                    <CardDescription className='text-grey-300'>
+                    <CardDescription className='text-text-muted-foreground'>
                       Current system health and security
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className='space-y-4'>
-                <div className='rounded-lg bg-hunter-800 p-4'>
+                <div className='rounded-lg bg-surface-base p-4'>
                   <div className='flex items-center justify-between'>
-                    <span className='font-medium text-grey-100'>
+                    <span className='font-medium text-text-foreground'>
                       Authentication Status
                     </span>
                     <div className='flex items-center gap-2'>
-                      <CheckCircle className='size-4 text-gold-600' />
-                      <span className='text-sm font-medium text-gold-600'>
+                      <CheckCircle className='size-4 text-strategy-gold' />
+                      <span className='text-sm font-medium text-strategy-gold'>
                         Active
                       </span>
                     </div>
@@ -777,11 +779,11 @@ export const SiteAdminPage: React.FC = () => {
 
           {/* Middle Column - Protected Pages Navigation */}
           <div className='space-y-6'>
-            <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='group border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                    <Briefcase className='size-6 text-gold-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
+                    <Briefcase className='size-6 text-strategy-gold' />
                   </div>
                   <div>
                     <CardTitle className='text-xl font-semibold text-slate-100'>
@@ -815,7 +817,7 @@ export const SiteAdminPage: React.FC = () => {
                 >
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-purple-100 p-2 transition-colors group-hover:bg-purple-200'>
-                      <FileText className='size-4 text-gold-600' />
+                      <FileText className='size-4 text-strategy-gold' />
                     </div>
                     <span className='font-medium text-slate-100'>
                       Content Studio
@@ -843,11 +845,11 @@ export const SiteAdminPage: React.FC = () => {
           {/* Right Column - API Health Monitoring */}
           <div className='space-y-6'>
             {/* API Health Dashboard */}
-            <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='group border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
-                  <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                    <Activity className='size-6 text-gold-600' />
+                  <div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
+                    <Activity className='size-6 text-strategy-gold' />
                   </div>
                   <div>
                     <CardTitle className='text-xl font-semibold text-slate-100'>
@@ -900,13 +902,13 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.ai === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-gold-600' />
+                      <Loader2 className='size-4 animate-spin text-strategy-gold' />
                     )}
                     {apiStatus.ai === 'success' && (
-                      <CheckCircle className='size-4 text-gold-600' />
+                      <CheckCircle className='size-4 text-strategy-gold' />
                     )}
                     {apiStatus.ai === 'error' && (
-                      <XCircle className='size-4 text-gold-600' />
+                      <XCircle className='size-4 text-strategy-gold' />
                     )}
                     <Button
                       size='sm'
@@ -924,7 +926,7 @@ export const SiteAdminPage: React.FC = () => {
                 <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-green-100 p-2'>
-                      <Mail className='size-4 text-gold-600' />
+                      <Mail className='size-4 text-strategy-gold' />
                     </div>
                     <div>
                       <div className='font-medium text-slate-100'>
@@ -940,13 +942,13 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.email === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-gold-600' />
+                      <Loader2 className='size-4 animate-spin text-strategy-gold' />
                     )}
                     {apiStatus.email === 'success' && (
-                      <CheckCircle className='size-4 text-gold-600' />
+                      <CheckCircle className='size-4 text-strategy-gold' />
                     )}
                     {apiStatus.email === 'error' && (
-                      <XCircle className='size-4 text-gold-600' />
+                      <XCircle className='size-4 text-strategy-gold' />
                     )}
                     <Button
                       size='sm'
@@ -964,7 +966,7 @@ export const SiteAdminPage: React.FC = () => {
                 <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-purple-100 p-2'>
-                      <BarChart3 className='size-4 text-gold-600' />
+                      <BarChart3 className='size-4 text-strategy-gold' />
                     </div>
                     <div>
                       <div className='font-medium text-slate-100'>
@@ -980,13 +982,13 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.newsletter === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-gold-600' />
+                      <Loader2 className='size-4 animate-spin text-strategy-gold' />
                     )}
                     {apiStatus.newsletter === 'success' && (
-                      <CheckCircle className='size-4 text-gold-600' />
+                      <CheckCircle className='size-4 text-strategy-gold' />
                     )}
                     {apiStatus.newsletter === 'error' && (
-                      <XCircle className='size-4 text-gold-600' />
+                      <XCircle className='size-4 text-strategy-gold' />
                     )}
                     <Button
                       size='sm'
@@ -1020,13 +1022,13 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.contentSearch === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-gold-600' />
+                      <Loader2 className='size-4 animate-spin text-strategy-gold' />
                     )}
                     {apiStatus.contentSearch === 'success' && (
-                      <CheckCircle className='size-4 text-gold-600' />
+                      <CheckCircle className='size-4 text-strategy-gold' />
                     )}
                     {apiStatus.contentSearch === 'error' && (
-                      <XCircle className='size-4 text-gold-600' />
+                      <XCircle className='size-4 text-strategy-gold' />
                     )}
                     <Button
                       size='sm'
@@ -1044,7 +1046,7 @@ export const SiteAdminPage: React.FC = () => {
                 <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-slate-100 p-2'>
-                      <Globe className='size-4 text-hunter-600' />
+                      <Globe className='size-4 text-strategy-gold' />
                     </div>
                     <div>
                       <div className='font-medium text-slate-100'>
@@ -1060,13 +1062,13 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.healthBridge === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-gold-600' />
+                      <Loader2 className='size-4 animate-spin text-strategy-gold' />
                     )}
                     {apiStatus.healthBridge === 'success' && (
-                      <CheckCircle className='size-4 text-gold-600' />
+                      <CheckCircle className='size-4 text-strategy-gold' />
                     )}
                     {apiStatus.healthBridge === 'error' && (
-                      <XCircle className='size-4 text-gold-600' />
+                      <XCircle className='size-4 text-strategy-gold' />
                     )}
                     <Button
                       size='sm'
@@ -1100,13 +1102,13 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.smartRecommendations === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-gold-600' />
+                      <Loader2 className='size-4 animate-spin text-strategy-gold' />
                     )}
                     {apiStatus.smartRecommendations === 'success' && (
-                      <CheckCircle className='size-4 text-gold-600' />
+                      <CheckCircle className='size-4 text-strategy-gold' />
                     )}
                     {apiStatus.smartRecommendations === 'error' && (
-                      <XCircle className='size-4 text-gold-600' />
+                      <XCircle className='size-4 text-strategy-gold' />
                     )}
                     <Button
                       size='sm'
@@ -1123,8 +1125,8 @@ export const SiteAdminPage: React.FC = () => {
                 {/* R2 Bucket */}
                 <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-cyan-100 p-2'>
-                      <Database className='size-4 text-cyan-600' />
+                    <div className='rounded-lg bg-strategy-gold/20 p-2'>
+                      <Database className='size-4 text-strategy-gold' />
                     </div>
                     <div>
                       <div className='font-medium text-slate-100'>
@@ -1140,13 +1142,13 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.r2Bucket === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-gold-600' />
+                      <Loader2 className='size-4 animate-spin text-strategy-gold' />
                     )}
                     {apiStatus.r2Bucket === 'success' && (
-                      <CheckCircle className='size-4 text-gold-600' />
+                      <CheckCircle className='size-4 text-strategy-gold' />
                     )}
                     {apiStatus.r2Bucket === 'error' && (
-                      <XCircle className='size-4 text-gold-600' />
+                      <XCircle className='size-4 text-strategy-gold' />
                     )}
                     <Button
                       size='sm'
@@ -1163,8 +1165,8 @@ export const SiteAdminPage: React.FC = () => {
                 {/* Cloudflare Access */}
                 <div className='flex items-center justify-between rounded-lg bg-slate-800 p-4'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-gold-100 p-2'>
-                      <Shield className='size-4 text-gold-600' />
+                    <div className='rounded-lg bg-strategy-gold/20 p-2'>
+                      <Shield className='size-4 text-strategy-gold' />
                     </div>
                     <div>
                       <div className='font-medium text-slate-100'>
@@ -1180,13 +1182,13 @@ export const SiteAdminPage: React.FC = () => {
                       <div className='size-3 rounded-full bg-gray-300' />
                     )}
                     {apiStatus.cloudflareAccess === 'testing' && (
-                      <Loader2 className='size-4 animate-spin text-gold-600' />
+                      <Loader2 className='size-4 animate-spin text-strategy-gold' />
                     )}
                     {apiStatus.cloudflareAccess === 'success' && (
-                      <CheckCircle className='size-4 text-gold-600' />
+                      <CheckCircle className='size-4 text-strategy-gold' />
                     )}
                     {apiStatus.cloudflareAccess === 'error' && (
-                      <XCircle className='size-4 text-gold-600' />
+                      <XCircle className='size-4 text-strategy-gold' />
                     )}
                     <Button
                       size='sm'
@@ -1211,10 +1213,10 @@ export const SiteAdminPage: React.FC = () => {
               apiResults.smartRecommendations ??
               apiResults.r2Bucket ??
               apiResults.cloudflareAccess) && (
-              <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
+              <Card className='group border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
                 <CardHeader className='pb-6'>
                   <div className='flex items-center gap-4'>
-                    <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
+                    <div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
                       <Activity className='size-6 text-emerald-600' />
                     </div>
                     <div>
@@ -1236,12 +1238,12 @@ export const SiteAdminPage: React.FC = () => {
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.ai.success ? (
-                            <CheckCircle className='size-4 text-gold-600' />
+                            <CheckCircle className='size-4 text-strategy-gold' />
                           ) : (
-                            <XCircle className='size-4 text-gold-600' />
+                            <XCircle className='size-4 text-strategy-gold' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.ai.success ? 'text-gold-600' : 'text-gold-600'}`}
+                            className={`text-sm font-medium ${apiResults.ai.success ? 'text-strategy-gold' : 'text-strategy-gold'}`}
                           >
                             {apiResults.ai.success ? 'Connected' : 'Failed'}
                           </span>
@@ -1255,12 +1257,12 @@ export const SiteAdminPage: React.FC = () => {
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.email.success ? (
-                            <CheckCircle className='size-4 text-gold-600' />
+                            <CheckCircle className='size-4 text-strategy-gold' />
                           ) : (
-                            <XCircle className='size-4 text-gold-600' />
+                            <XCircle className='size-4 text-strategy-gold' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.email.success ? 'text-gold-600' : 'text-gold-600'}`}
+                            className={`text-sm font-medium ${apiResults.email.success ? 'text-strategy-gold' : 'text-strategy-gold'}`}
                           >
                             {apiResults.email.success ? 'Connected' : 'Failed'}
                           </span>
@@ -1274,12 +1276,12 @@ export const SiteAdminPage: React.FC = () => {
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.newsletter.success ? (
-                            <CheckCircle className='size-4 text-gold-600' />
+                            <CheckCircle className='size-4 text-strategy-gold' />
                           ) : (
-                            <XCircle className='size-4 text-gold-600' />
+                            <XCircle className='size-4 text-strategy-gold' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.newsletter.success ? 'text-gold-600' : 'text-gold-600'}`}
+                            className={`text-sm font-medium ${apiResults.newsletter.success ? 'text-strategy-gold' : 'text-strategy-gold'}`}
                           >
                             {apiResults.newsletter.success
                               ? 'Connected'
@@ -1295,12 +1297,12 @@ export const SiteAdminPage: React.FC = () => {
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.contentSearch.success ? (
-                            <CheckCircle className='size-4 text-gold-600' />
+                            <CheckCircle className='size-4 text-strategy-gold' />
                           ) : (
-                            <XCircle className='size-4 text-gold-600' />
+                            <XCircle className='size-4 text-strategy-gold' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.contentSearch.success ? 'text-gold-600' : 'text-gold-600'}`}
+                            className={`text-sm font-medium ${apiResults.contentSearch.success ? 'text-strategy-gold' : 'text-strategy-gold'}`}
                           >
                             {apiResults.contentSearch.success
                               ? 'Connected'
@@ -1316,12 +1318,12 @@ export const SiteAdminPage: React.FC = () => {
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.healthBridge.success ? (
-                            <CheckCircle className='size-4 text-gold-600' />
+                            <CheckCircle className='size-4 text-strategy-gold' />
                           ) : (
-                            <XCircle className='size-4 text-gold-600' />
+                            <XCircle className='size-4 text-strategy-gold' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.healthBridge.success ? 'text-gold-600' : 'text-gold-600'}`}
+                            className={`text-sm font-medium ${apiResults.healthBridge.success ? 'text-strategy-gold' : 'text-strategy-gold'}`}
                           >
                             {apiResults.healthBridge.success
                               ? 'Connected'
@@ -1337,12 +1339,12 @@ export const SiteAdminPage: React.FC = () => {
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.smartRecommendations.success ? (
-                            <CheckCircle className='size-4 text-gold-600' />
+                            <CheckCircle className='size-4 text-strategy-gold' />
                           ) : (
-                            <XCircle className='size-4 text-gold-600' />
+                            <XCircle className='size-4 text-strategy-gold' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.smartRecommendations.success ? 'text-gold-600' : 'text-gold-600'}`}
+                            className={`text-sm font-medium ${apiResults.smartRecommendations.success ? 'text-strategy-gold' : 'text-strategy-gold'}`}
                           >
                             {apiResults.smartRecommendations.success
                               ? 'Connected'
@@ -1358,12 +1360,12 @@ export const SiteAdminPage: React.FC = () => {
                         </span>
                         <div className='flex items-center gap-2'>
                           {apiResults.r2Bucket.success ? (
-                            <CheckCircle className='size-4 text-gold-600' />
+                            <CheckCircle className='size-4 text-strategy-gold' />
                           ) : (
-                            <XCircle className='size-4 text-gold-600' />
+                            <XCircle className='size-4 text-strategy-gold' />
                           )}
                           <span
-                            className={`text-sm font-medium ${apiResults.r2Bucket.success ? 'text-gold-600' : 'text-gold-600'}`}
+                            className={`text-sm font-medium ${apiResults.r2Bucket.success ? 'text-strategy-gold' : 'text-strategy-gold'}`}
                           >
                             {apiResults.r2Bucket.success
                               ? 'Connected'
@@ -1381,12 +1383,12 @@ export const SiteAdminPage: React.FC = () => {
                           </span>
                           <div className='flex items-center gap-2'>
                             {apiResults.cloudflareAccess.success ? (
-                              <CheckCircle className='size-4 text-gold-600' />
+                              <CheckCircle className='size-4 text-strategy-gold' />
                             ) : (
-                              <XCircle className='size-4 text-gold-600' />
+                              <XCircle className='size-4 text-strategy-gold' />
                             )}
                             <span
-                              className={`text-sm font-medium ${apiResults.cloudflareAccess.success ? 'text-gold-600' : 'text-gold-600'}`}
+                              className={`text-sm font-medium ${apiResults.cloudflareAccess.success ? 'text-strategy-gold' : 'text-strategy-gold'}`}
                             >
                               {apiResults.cloudflareAccess.success
                                 ? 'Authenticated'
@@ -1455,7 +1457,7 @@ export const SiteAdminPage: React.FC = () => {
                           )}
 
                           {apiResults.cloudflareAccess.error && (
-                            <div className='rounded-lg border border-gold-200 bg-gold-50 p-3'>
+                            <div className='rounded-lg border border-strategy-gold bg-surface-elevated p-3'>
                               <div className='mb-1 font-medium text-red-800'>
                                 Error:
                               </div>

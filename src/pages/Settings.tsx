@@ -212,8 +212,8 @@ export default function SettingsPage() {
       <div className='container mx-auto px-4 py-8'>
         <div className='flex h-64 items-center justify-center'>
           <div className='text-center'>
-            <Settings className='mx-auto mb-4 size-8 animate-spin text-gold-600' />
-            <p className='text-gray-600'>Loading authentication...</p>
+            <Settings className='mx-auto mb-4 size-8 animate-spin text-strategy-gold' />
+            <p className='text-text-muted-foreground'>Loading authentication...</p>
           </div>
         </div>
       </div>
@@ -247,8 +247,8 @@ export default function SettingsPage() {
       <div className='container mx-auto px-4 py-8'>
         <div className='flex h-64 items-center justify-center'>
           <div className='text-center'>
-            <Settings className='mx-auto mb-4 size-8 animate-spin text-gold-600' />
-            <p className='text-gray-600'>Loading profile...</p>
+            <Settings className='mx-auto mb-4 size-8 animate-spin text-strategy-gold' />
+            <p className='text-text-muted-foreground'>Loading profile...</p>
           </div>
         </div>
       </div>
@@ -268,7 +268,7 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-2 text-left'>
-              <ul className='list-inside list-disc space-y-1 text-sm text-gray-600'>
+              <ul className='list-inside list-disc space-y-1 text-sm text-text-muted-foreground'>
                 <li>The backend API is not yet deployed</li>
                 <li>You need to create your initial profile</li>
                 <li>There was a temporary connection issue</li>
@@ -289,40 +289,42 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
-      {/* Header with Administrative Theme - Settings Focused */}
-      <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
-        <div className='from-gold-600/3 via-slate-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-slate-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
+    <div className='min-h-screen bg-gradient-to-br from-surface-deep via-surface-base to-surface-deep'>
+      {/* Header with Administrative Theme - Glassmorphic Design */}
+      <div className='relative overflow-hidden border-b border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
+        {/* Glassmorphic background gradient */}
+        <div className='from-strategy-gold/8 via-strategy-gold/5 to-strategy-gold/8 absolute inset-0 bg-gradient-to-r'></div>
+        {/* Subtle glow effect */}
+        <div className='absolute -top-1/2 -right-1/2 h-96 w-96 rounded-full bg-strategy-gold/5 blur-3xl'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Administrative Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-500 to-slate-600 shadow-lg'>
-                  <Settings className='size-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-strategy-gold to-slate-600 shadow-lg'>
+                  <Settings className='size-7 text-text-foreground' />
                 </div>
                 {/* Settings indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-gold-600'>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-strategy-gold'>
                   <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-slate-500'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-strategy-gold to-slate-500'>
                   <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
-                <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent dark:from-gold-400 dark:to-gold-300'>
+                <h1 className='text-4xl font-bold tracking-tight text-text-foreground sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-strategy-gold to-strategy-gold bg-clip-text text-transparent dark:from-strategy-gold dark:to-strategy-gold'>
                     Settings
                   </span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-strategy-gold to-slate-500'></div>
               </div>
             </div>
 
             {/* Description with Settings Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-text-muted-foreground dark:text-text-muted-foreground'>
               Manage your profile, preferences, and personal information in one
               central location
             </p>
@@ -333,18 +335,18 @@ export default function SettingsPage() {
       {/* Main Content Area */}
       <div className='container mx-auto max-w-5xl px-4 py-8'>
         {/* User Profile Section */}
-        <Card className='mb-8 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+        <Card className='mb-8 border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                  <User className='size-6 text-gold-600' />
+                <div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
+                  <User className='size-6 text-strategy-gold' />
                 </div>
                 <div>
-                  <CardTitle className='text-xl font-semibold text-slate-100'>
+                  <CardTitle className='text-xl font-semibold text-text-foreground'>
                     Profile Information
                   </CardTitle>
-                  <CardDescription className='text-slate-300'>
+                  <CardDescription className='text-text-muted-foreground'>
                     Your personal information and activity level
                   </CardDescription>
                 </div>
@@ -352,7 +354,7 @@ export default function SettingsPage() {
               {!isEditing && (
                 <Button
                   onClick={() => setIsEditing(true)}
-                  className='rounded-lg border-0 bg-gold-600 px-6 text-white hover:bg-gold-700'
+                  className='rounded-lg border-0 bg-strategy-gold px-6 text-text-foreground hover:brightness-110'
                 >
                   Edit Profile
                 </Button>
@@ -514,14 +516,14 @@ export default function SettingsPage() {
                   <Button
                     onClick={() => void handleProfileSave()}
                     disabled={profileMutation.isPending}
-                    className='rounded-lg border-0 bg-gold-600 px-8 text-white hover:bg-gold-700'
+                    className='rounded-lg border-0 bg-strategy-gold px-8 text-text-foreground hover:brightness-110'
                   >
                     {profileMutation.isPending ? 'Saving...' : 'Save Profile'}
                   </Button>
                   <Button
                     onClick={handleProfileCancel}
                     variant='outline'
-                    className='rounded-lg border border-slate-600 px-8 text-slate-300 hover:bg-slate-700'
+                    className='rounded-lg border border-strategy-gold/20 px-8 text-text-muted-foreground hover:bg-surface-elevated'
                   >
                     Cancel
                   </Button>
@@ -542,22 +544,22 @@ export default function SettingsPage() {
             ) : (
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Name
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {profile.name}
                   </p>
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Age
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {profile.age} years old
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-muted-foreground'>
                     {profile.birthdate
                       ? `Born ${formatDateInTimezone(profile.birthdate, profile.timezone || 'America/New_York')}`
                       : `${profile.age} years old`}
@@ -565,22 +567,22 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Gender
                   </Label>
-                  <p className='text-lg font-medium capitalize text-slate-100'>
+                  <p className='text-lg font-medium capitalize text-text-foreground'>
                     {profile.gender}
                   </p>
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Height
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {profile.height_ft}' {profile.height_in}"
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-muted-foreground'>
                     {Math.round(
                       (profile.height_ft * 12 + profile.height_in) * 2.54
                     )}{' '}
@@ -589,14 +591,14 @@ export default function SettingsPage() {
                 </div>
 
                 <div className='md:col-span-2'>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Activity Level
                   </Label>
                   <div className='flex items-center gap-2'>
                     <Badge variant='secondary' className='capitalize'>
                       {profile.activity_level.replace('_', ' ')}
                     </Badge>
-                    <span className='text-sm text-slate-400'>
+                    <span className='text-sm text-text-muted-foreground'>
                       Multiplier:{' '}
                       {profile.activity_level === 'sedentary'
                         ? '1.2'
@@ -614,14 +616,14 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Timezone
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {TIMEZONES.find(tz => tz.value === profile.timezone)
                       ?.label ?? profile.timezone}
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-muted-foreground'>
                     All dates are displayed in your local timezone
                   </p>
                 </div>
@@ -631,18 +633,18 @@ export default function SettingsPage() {
         </Card>
 
         {/* Weight Goals Section */}
-        <Card className='mb-8 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+        <Card className='mb-8 border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                  <TrendingUp className='size-6 text-gold-600' />
+                <div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
+                  <TrendingUp className='size-6 text-strategy-gold' />
                 </div>
                 <div>
-                  <CardTitle className='text-xl font-semibold text-slate-100'>
+                  <CardTitle className='text-xl font-semibold text-text-foreground'>
                     Weight Loss Goals
                   </CardTitle>
-                  <CardDescription className='text-slate-300'>
+                  <CardDescription className='text-text-muted-foreground'>
                     Set and track your weight loss objectives
                   </CardDescription>
                 </div>
@@ -650,7 +652,7 @@ export default function SettingsPage() {
               {!isEditingGoal && (
                 <Button
                   onClick={() => setIsEditingGoal(true)}
-                  className='rounded-lg border-0 bg-gold-600 px-6 text-white hover:bg-gold-700'
+                  className='rounded-lg border-0 bg-strategy-gold px-6 text-text-foreground hover:brightness-110'
                 >
                   Edit Goals
                 </Button>
@@ -752,14 +754,14 @@ export default function SettingsPage() {
                   <Button
                     onClick={() => void handleGoalSave()}
                     disabled={goalMutation.isPending}
-                    className='rounded-lg border-0 bg-gold-600 px-8 text-white hover:bg-gold-700'
+                    className='rounded-lg border-0 bg-strategy-gold px-8 text-text-foreground hover:brightness-110'
                   >
                     {goalMutation.isPending ? 'Saving...' : 'Save Goals'}
                   </Button>
                   <Button
                     onClick={handleGoalCancel}
                     variant='outline'
-                    className='rounded-lg border border-slate-600 px-8 text-slate-300 hover:bg-slate-700'
+                    className='rounded-lg border border-strategy-gold/20 px-8 text-text-muted-foreground hover:bg-surface-elevated'
                   >
                     Cancel
                   </Button>
@@ -780,15 +782,15 @@ export default function SettingsPage() {
             ) : (
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Starting Weight
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {goal.start_weight_lbs
                       ? `${goal.start_weight_lbs} lbs`
                       : 'Not set'}
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-muted-foreground'>
                     {goal.start_weight_lbs && !isNaN(goal.start_weight_lbs)
                       ? `${Math.round(convertLbsToKg(goal.start_weight_lbs) * 10) / 10} kg`
                       : 'Not set'}
@@ -796,15 +798,15 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Target Weight
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {goal.target_weight_lbs
                       ? `${goal.target_weight_lbs} lbs`
                       : 'Not set'}
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-muted-foreground'>
                     {goal.target_weight_lbs && !isNaN(goal.target_weight_lbs)
                       ? `${Math.round(convertLbsToKg(goal.target_weight_lbs) * 10) / 10} kg`
                       : 'Not set'}
@@ -812,15 +814,15 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Weekly Goal
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {goal.weekly_goal_lbs
                       ? `${goal.weekly_goal_lbs} lbs/week`
                       : 'Not set'}
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-muted-foreground'>
                     {goal.weekly_goal_lbs && !isNaN(goal.weekly_goal_lbs)
                       ? `${Math.round(convertLbsToKg(goal.weekly_goal_lbs) * 10) / 10} kg/week`
                       : 'Not set'}
@@ -828,10 +830,10 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Target Date
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {goal.target_date
                       ? formatDateInTimezone(
                           goal.target_date,
@@ -842,7 +844,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className='md:col-span-2'>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-muted-foreground'>
                     Total Weight to Lose
                   </Label>
                   {goal.start_weight_lbs &&
@@ -856,7 +858,7 @@ export default function SettingsPage() {
                         ) / 10}{' '}
                         lbs
                       </p>
-                      <p className='text-sm text-slate-400'>
+                      <p className='text-sm text-text-muted-foreground'>
                         {Math.round(
                           convertLbsToKg(
                             goal.start_weight_lbs - goal.target_weight_lbs
@@ -877,18 +879,18 @@ export default function SettingsPage() {
         </Card>
 
         {/* Medication Tracking Section */}
-        <Card className='mb-8 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+        <Card className='mb-8 border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                  <Activity className='size-6 text-gold-600' />
+                <div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
+                  <Activity className='size-6 text-strategy-gold' />
                 </div>
                 <div>
-                  <CardTitle className='text-xl font-semibold text-slate-100'>
+                  <CardTitle className='text-xl font-semibold text-text-foreground'>
                     Medication Tracking
                   </CardTitle>
-                  <CardDescription className='text-slate-300'>
+                  <CardDescription className='text-text-muted-foreground'>
                     Track weight loss medications and their impact on your goals
                   </CardDescription>
                 </div>
@@ -896,7 +898,7 @@ export default function SettingsPage() {
               {!isEditingMedication && (
                 <Button
                   onClick={handleAddMedication}
-                  className='rounded-lg border-0 bg-gold-600 px-6 text-white hover:bg-gold-700'
+                  className='rounded-lg border-0 bg-strategy-gold px-6 text-text-foreground hover:brightness-110'
                   disabled={medicationsLoading || medicationTypesLoading}
                 >
                   {medicationTypesLoading ? (
@@ -1011,9 +1013,9 @@ export default function SettingsPage() {
                             align='start'
                           >
                             {medicationTypesLoading ? (
-                              <div className='p-2 text-center text-sm text-slate-400'>
+                              <div className='p-2 text-center text-sm text-text-muted-foreground'>
                                 <div className='flex items-center justify-center gap-2'>
-                                  <div className='size-4 animate-spin rounded-full border-2 border-gold-600 border-t-transparent'></div>
+                                  <div className='size-4 animate-spin rounded-full border-2 border-strategy-gold border-t-transparent'></div>
                                   Loading medications...
                                 </div>
                               </div>
@@ -1042,7 +1044,7 @@ export default function SettingsPage() {
                                         efficacy
                                       </Badge>
                                     </div>
-                                    <span className='text-xs text-slate-400'>
+                                    <span className='text-xs text-text-muted-foreground'>
                                       {type.generic_name}
                                     </span>
                                     <span className='line-clamp-2 text-xs leading-tight text-gray-400'>
@@ -1177,7 +1179,7 @@ export default function SettingsPage() {
                           medicationMutation.isPending ||
                           deleteMedicationMutation.isPending
                         }
-                        className='flex-1 rounded-lg border-0 bg-gold-600 text-white hover:bg-gold-700'
+                        className='flex-1 rounded-lg border-0 bg-strategy-gold text-text-foreground hover:brightness-110'
                       >
                         {medicationMutation.isPending ? (
                           <div className='flex items-center gap-2'>
@@ -1191,7 +1193,7 @@ export default function SettingsPage() {
                       <Button
                         onClick={handleMedicationCancel}
                         variant='outline'
-                        className='flex-1 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700'
+                        className='flex-1 rounded-lg border border-strategy-gold/20 text-text-muted-foreground hover:bg-surface-elevated'
                         disabled={
                           medicationMutation.isPending ||
                           deleteMedicationMutation.isPending
@@ -1248,15 +1250,15 @@ export default function SettingsPage() {
                       return (
                         <Card
                           key={medication.id}
-                          className='border border-gold-600/30 bg-slate-900/60 shadow-sm transition-shadow hover:border-gold-600/50 hover:shadow-md'
+                          className='border border-strategy-gold/30 bg-slate-900/60 shadow-sm transition-shadow hover:border-strategy-gold/50 hover:shadow-md'
                         >
                           <CardHeader className='pb-3'>
                             <div className='flex items-center justify-between'>
                               <div>
-                                <h4 className='font-semibold text-slate-100'>
+                                <h4 className='font-semibold text-text-foreground'>
                                   {medicationType?.name ?? 'Unknown Medication'}
                                 </h4>
-                                <p className='text-sm text-slate-400'>
+                                <p className='text-sm text-text-muted-foreground'>
                                   {medicationType?.generic_name ?? 'Unknown'}
                                 </p>
                               </div>
@@ -1272,10 +1274,10 @@ export default function SettingsPage() {
                           <CardContent className='pt-0'>
                             <div className='space-y-3 text-sm'>
                               <div className='flex justify-between'>
-                                <span className='font-medium text-slate-400'>
+                                <span className='font-medium text-text-muted-foreground'>
                                   Started:
                                 </span>
-                                <span className='text-slate-100'>
+                                <span className='text-text-foreground'>
                                   {formatDateInTimezone(
                                     medication.start_date,
                                     profile?.timezone || 'America/New_York'
@@ -1284,19 +1286,19 @@ export default function SettingsPage() {
                               </div>
                               {medication.dosage_mg && (
                                 <div className='flex justify-between'>
-                                  <span className='font-medium text-slate-400'>
+                                  <span className='font-medium text-text-muted-foreground'>
                                     Dosage:
                                   </span>
-                                  <span className='text-slate-100'>
+                                  <span className='text-text-foreground'>
                                     {medication.dosage_mg} mg
                                   </span>
                                 </div>
                               )}
                               <div className='flex justify-between'>
-                                <span className='font-medium text-slate-400'>
+                                <span className='font-medium text-text-muted-foreground'>
                                   Frequency:
                                 </span>
-                                <span className='text-slate-100'>
+                                <span className='text-text-foreground'>
                                   {formatMedicationFrequency(
                                     medication.frequency
                                   )}
@@ -1304,10 +1306,10 @@ export default function SettingsPage() {
                               </div>
                               {medication.notes && (
                                 <div className='flex justify-between'>
-                                  <span className='font-medium text-slate-400'>
+                                  <span className='font-medium text-text-muted-foreground'>
                                     Notes:
                                   </span>
-                                  <span className='text-slate-100'>
+                                  <span className='text-text-foreground'>
                                     {medication.notes}
                                   </span>
                                 </div>
@@ -1320,7 +1322,7 @@ export default function SettingsPage() {
                                   setIsEditingMedication(true);
                                 }}
                                 size='sm'
-                                className='flex-1 bg-gold-600 text-white hover:bg-gold-700'
+                                className='flex-1 bg-strategy-gold text-text-foreground hover:brightness-110'
                                 disabled={
                                   medicationMutation.isPending ||
                                   deleteMedicationMutation.isPending
@@ -1357,7 +1359,7 @@ export default function SettingsPage() {
                     })}
                   </div>
                 ) : (
-                  <div className='py-8 text-center text-slate-400'>
+                  <div className='py-8 text-center text-text-muted-foreground'>
                     <Activity className='mx-auto mb-4 size-12 text-gray-300' />
                     <p>No medications added yet</p>
                     <p className='text-sm'>
