@@ -89,7 +89,7 @@ export default {
         'text-muted': '#7F8699',
 
         // Border Colors
-        'border-subtle': 'rgba(255, 255, 255, 0.08)',
+        'border-subtle': '#2A3852',
 
         // Legacy color system - Professional Hunter Green, Slate, Gold
         hunter: {

@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 interface NewsletterSignupProps {
   className?: string;
-  variant?: 'default' | 'compact' | 'inline';
+  variant?: 'default' | 'compact' | 'inline' | 'footer';
   title?: string;
   description?: string;
   placeholder?: string;
@@ -95,6 +95,56 @@ export default function NewsletterSignup({
         return 'text-text-tertiary';
     }
   };
+
+  // Footer variant - vertical layout for sidebar placement
+  if (variant === 'footer') {
+    return (
+      <form
+        onSubmit={handleSubmit}
+        className={cn('flex flex-col gap-3', className)}
+      >
+        <div>
+          <h3 className='mb-2 text-sm font-semibold text-text-foreground'>
+            {title}
+          </h3>
+          <p className='text-xs text-text-secondary'>{description}</p>
+        </div>
+        <div className='flex flex-col gap-2'>
+          <Input
+            type='email'
+            placeholder={placeholder}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className='border-border-subtle bg-surface-base text-xs text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/40 focus:ring-strategy-gold/30'
+            disabled={isSubmitting}
+            required
+          />
+          <Button
+            type='submit'
+            disabled={isSubmitting}
+            size='sm'
+            className='bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className='mr-2 size-3 animate-spin' />
+              </>
+            ) : (
+              buttonText
+            )}
+          </Button>
+        </div>
+        {message && (
+          <div
+            className={cn('flex items-center gap-1 text-xs', getStatusColor())}
+          >
+            {getStatusIcon()}
+            <span>{message}</span>
+          </div>
+        )}
+      </form>
+    );
+  }
 
   if (variant === 'compact') {
     return (

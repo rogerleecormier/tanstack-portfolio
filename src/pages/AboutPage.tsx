@@ -916,7 +916,7 @@ export default function AboutPage() {
           </ReactMarkdown>
 
           {/* Contact Section at bottom of every page */}
-          <div className='mt-16 border-t border-gray-200 pt-8'>
+          <div className='mt-16 pt-8'>
             <div className='text-center'>
               <H2 className='mb-4 text-2xl font-semibold text-gray-900'>
                 Ready to discuss your next project?
@@ -928,7 +928,7 @@ export default function AboutPage() {
               </P>
               <a
                 href='/contact'
-                className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-teal-800 to-blue-800 px-6 py-3 font-medium text-white shadow-lg transition-all duration-200 hover:from-teal-900 hover:to-blue-900 hover:shadow-xl'
+                className='inline-flex items-center gap-2 rounded-lg bg-strategy-gold px-6 py-3 font-medium text-precision-charcoal shadow-lg transition-all duration-200 hover:bg-strategy-gold/90 hover:shadow-xl'
               >
                 <MessageSquare className='size-4' />
                 Target Your Next Project

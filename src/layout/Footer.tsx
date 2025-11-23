@@ -1,102 +1,107 @@
 import { Link } from '@tanstack/react-router';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import NewsletterSignup from '@/components/NewsletterSignup';
 
 export default function Footer() {
-  const footerSections = [
-    {
-      title: 'Navigation',
-      links: [
-        { label: 'Home', href: '/' },
-        { label: 'About', href: '/about' },
-        { label: 'Portfolio', href: '/portfolio' },
-      ],
-    },
-    {
-      title: 'Work',
-      links: [
-        { label: 'Projects', href: '/projects' },
-        { label: 'Blog & Insights', href: '/blog' },
-        { label: 'Contact', href: '/contact' },
-      ],
-    },
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/portfolio', label: 'Portfolio' },
+    { href: '/projects', label: 'Projects' },
+    { href: '/blog', label: 'Blog' },
+    { href: '/contact', label: 'Contact' },
   ];
 
-  const socialLinks = [
-    {
-      label: 'GitHub',
-      href: 'https://github.com/rogerleecormier',
-      icon: FaGithub,
-    },
-    {
-      label: 'LinkedIn',
-      href: 'https://linkedin.com/in/rogerleecormier',
-      icon: FaLinkedin,
-    },
-    {
-      label: 'Twitter',
-      href: 'https://twitter.com',
-      icon: FaTwitter,
-    },
-  ];
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className='border-t border-border-subtle bg-surface-elevated'>
       <div className='mx-auto max-w-7xl px-4 py-16 md:px-8'>
-        {/* Newsletter Section */}
-        <div className='mb-16'>
-          <NewsletterSignup
-            variant='inline'
-            title='Stay Updated'
-            description='Get notified when new articles and projects are shared'
-            placeholder='Enter your email'
-            buttonText='Subscribe'
-          />
-        </div>
-
-        {/* Footer Grid - 2 content columns + social column */}
-        <div className='mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'>
-          {footerSections.map(section => (
-            <div key={section.title}>
-              <h3 className='mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground'>
-                {section.title}
-              </h3>
-              <div className='space-y-3'>
-                {section.links.map(link => (
-                  <Link
-                    key={link.href}
-                    to={link.href as any}
-                    className='block text-sm text-text-secondary transition-colors hover:text-strategy-gold'
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+        {/* Footer Grid - 4 columns */}
+        <div className='mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4'>
+          {/* Column 1: Brand & Tagline */}
+          <div className='space-y-4'>
+            <Link to='/' className='flex items-center gap-2'>
+              <img
+                src='/header-logo.svg'
+                alt='Roger Lee Cormier Logo'
+                className='h-8 w-8'
+              />
+              <div>
+                <h2 className='text-sm font-bold leading-tight text-text-foreground'>
+                  Roger Lee Cormier
+                </h2>
+                <p className='text-xs font-semibold uppercase tracking-widest text-strategy-gold'>
+                  Technical Strategist
+                </p>
               </div>
-            </div>
-          ))}
+            </Link>
+            <p className='text-xs leading-relaxed text-text-secondary'>
+              Designing and building enterprise solutions with precision.
+              Specializing in full-stack architecture, digital transformation,
+              and technical leadership.
+            </p>
+          </div>
 
-          {/* Social Links Column */}
+          {/* Column 2: Navigation Links */}
           <div>
             <h3 className='mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground'>
-              Connect
+              Navigation
             </h3>
             <div className='space-y-3'>
-              {socialLinks.map(link => {
-                const Icon = link.icon;
-                return (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='flex items-center gap-2 text-sm text-text-secondary transition-colors hover:text-strategy-gold'
-                  >
-                    <Icon size={14} />
-                    {link.label}
-                  </a>
-                );
-              })}
+              {navLinks.map(link => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className='block text-xs text-text-secondary transition-colors hover:text-strategy-gold'
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
+          </div>
+
+          {/* Column 3: Additional Links */}
+          <div>
+            <h3 className='mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground'>
+              Resources
+            </h3>
+            <div className='space-y-3'>
+              <Link
+                to='/privacy'
+                className='block text-xs text-text-secondary transition-colors hover:text-strategy-gold'
+              >
+                Privacy Policy
+              </Link>
+              <a
+                href='https://github.com/rogerleecormier'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='block text-xs text-text-secondary transition-colors hover:text-strategy-gold'
+              >
+                GitHub
+              </a>
+              <a
+                href='https://linkedin.com/in/rogerleecormier'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='block text-xs text-text-secondary transition-colors hover:text-strategy-gold'
+              >
+                LinkedIn
+              </a>
+            </div>
+          </div>
+
+          {/* Column 4: Newsletter Signup */}
+          <div>
+            <h3 className='mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground'>
+              Stay Updated
+            </h3>
+            <NewsletterSignup
+              variant='inline'
+              placeholder='your@email.com'
+              buttonText='Subscribe'
+              className='flex-col sm:flex-col'
+            />
           </div>
         </div>
 
@@ -106,7 +111,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className='text-center'>
           <p className='text-xs text-text-tertiary'>
-            © 2025 Roger Lee Cormier. Technical Strategist & Digital Innovator.
+            © {currentYear} Roger Lee Cormier. All rights reserved.
           </p>
         </div>
       </div>

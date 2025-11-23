@@ -115,7 +115,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           ),
           blockquote: ({ children, ...props }) => (
             <blockquote
-              className='mb-3 break-words border-l-4 border-hunter-200 pl-4 italic text-gray-600 dark:border-hunter-700 dark:text-gray-400'
+              className='mb-3 break-words border-l-4 border-strategy-gold/30 pl-4 italic text-gray-600 dark:border-strategy-gold/50 dark:text-gray-400'
               {...props}
             >
               {children}
@@ -148,7 +148,7 @@ const CardMarkdownContent: React.FC<{ content: React.ReactNode }> = ({
           a: ({ children, href, ...props }) => (
             <a
               href={href}
-              className='break-words text-hunter-600 underline hover:text-hunter-700 dark:text-hunter-400 dark:hover:text-hunter-300'
+              className='break-words text-strategy-gold underline hover:text-strategy-gold/80 dark:text-strategy-gold dark:hover:text-strategy-gold/80'
               target='_blank'
               rel='noopener noreferrer'
               {...props}
@@ -192,8 +192,8 @@ export const InfoCard: React.FC<BaseCardProps> = ({
         className
       )}
     >
-      {/* Teal accent line */}
-      <div className='h-1 bg-gradient-to-r from-hunter-800 to-hunter-900'></div>
+      {/* Gold accent line */}
+      <div className='h-1 bg-gradient-to-r from-strategy-gold/80 to-strategy-gold/60'></div>
 
       {title && (
         <CardHeader className='pb-4'>
@@ -201,7 +201,7 @@ export const InfoCard: React.FC<BaseCardProps> = ({
             {title}
           </CardTitle>
           {description && (
-            <CardDescription className='overflow-wrap-break-word whitespace-normal break-words font-sans text-lg font-medium text-hunter-600 dark:text-hunter-400'>
+            <CardDescription className='overflow-wrap-break-word whitespace-normal break-words font-sans text-lg font-medium text-strategy-gold dark:text-strategy-gold'>
               {description}
             </CardDescription>
           )}
@@ -211,7 +211,7 @@ export const InfoCard: React.FC<BaseCardProps> = ({
                 <Badge
                   key={index}
                   variant='outline'
-                  className='border-hunter-200 text-xs text-hunter-700 dark:text-hunter-300'
+                  className='border-strategy-gold/30 text-xs text-strategy-gold dark:text-strategy-gold'
                 >
                   {badge}
                 </Badge>
@@ -277,12 +277,12 @@ export const FeatureCard: React.FC<
         className
       )}
     >
-      {/* Teal accent line */}
-      <div className='h-1 bg-gradient-to-r from-hunter-800 to-hunter-900'></div>
+      {/* Gold accent line */}
+      <div className='h-1 bg-gradient-to-r from-strategy-gold/80 to-strategy-gold/60'></div>
 
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-4'>
-          <div className='shrink-0 rounded-xl bg-gradient-to-br from-slate-100 to-hunter-100 p-3 text-hunter-800 shadow-sm dark:from-slate-800/50 dark:to-hunter-800/50 dark:text-hunter-300'>
+          <div className='shrink-0 rounded-xl bg-gradient-to-br from-strategy-gold/15 to-strategy-gold/10 p-3 text-strategy-gold shadow-sm dark:from-strategy-gold/20 dark:to-strategy-gold/10 dark:text-strategy-gold'>
             {getIcon(icon)}
           </div>
           <div className='min-w-0 flex-1'>
@@ -292,7 +292,7 @@ export const FeatureCard: React.FC<
               </CardTitle>
             )}
             {description && (
-              <CardDescription className='overflow-wrap-break-word mb-3 whitespace-normal break-words font-sans text-lg font-medium text-hunter-600 dark:text-hunter-400'>
+              <CardDescription className='overflow-wrap-break-word mb-3 whitespace-normal break-words font-sans text-lg font-medium text-strategy-gold dark:text-strategy-gold'>
                 {description}
               </CardDescription>
             )}
@@ -302,7 +302,7 @@ export const FeatureCard: React.FC<
                   <Badge
                     key={index}
                     variant='outline'
-                    className='border-hunter-200 text-xs text-hunter-700 dark:text-hunter-300'
+                    className='border-strategy-gold/30 text-xs text-strategy-gold dark:text-strategy-gold'
                   >
                     {badge}
                   </Badge>
@@ -375,8 +375,8 @@ export const ProfileCard: React.FC<
         className
       )}
     >
-      {/* Teal accent line */}
-      <div className='h-1 bg-gradient-to-r from-hunter-800 to-hunter-900'></div>
+      {/* Gold accent line */}
+      <div className='h-1 bg-gradient-to-r from-strategy-gold/80 to-strategy-gold/60'></div>
 
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-6'>
@@ -385,7 +385,7 @@ export const ProfileCard: React.FC<
               <img
                 src={image}
                 alt={imageAlt ?? name ?? title ?? 'Profile image'}
-                className='size-20 rounded-full border-2 border-hunter-200 object-cover shadow-md'
+                className='size-20 rounded-full border-2 border-strategy-gold/30 object-cover shadow-md'
               />
             </div>
           )}
@@ -393,7 +393,7 @@ export const ProfileCard: React.FC<
             <h2 className='mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100'>
               {name ?? title}
             </h2>
-            <p className='mb-3 break-words font-sans text-lg font-medium text-hunter-600 dark:text-hunter-400'>
+            <p className='mb-3 break-words font-sans text-lg font-medium text-strategy-gold dark:text-strategy-gold'>
               {role ?? description}
             </p>
             {badgeArray.length > 0 && (
@@ -402,7 +402,7 @@ export const ProfileCard: React.FC<
                   <Badge
                     key={index}
                     variant='outline'
-                    className='border-hunter-200 text-xs text-hunter-700 dark:text-hunter-300'
+                    className='border-strategy-gold/30 text-xs text-strategy-gold dark:text-strategy-gold'
                   >
                     {badge}
                   </Badge>
@@ -425,7 +425,7 @@ export const ProfileCard: React.FC<
             {contact.email && (
               <a
                 href={`mailto:${contact.email}`}
-                className='flex items-center gap-1 hover:text-hunter-600'
+                className='flex items-center gap-1 hover:text-strategy-gold'
               >
                 <Mail className='size-4' />
                 {contact.email}
@@ -434,7 +434,7 @@ export const ProfileCard: React.FC<
             {contact.phone && (
               <a
                 href={`tel:${contact.phone}`}
-                className='flex items-center gap-1 hover:text-hunter-600'
+                className='flex items-center gap-1 hover:text-strategy-gold'
               >
                 <Phone className='size-4' />
                 {contact.phone}
@@ -445,7 +445,7 @@ export const ProfileCard: React.FC<
                 href={contact.github}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='flex items-center gap-1 hover:text-hunter-600'
+                className='flex items-center gap-1 hover:text-strategy-gold'
               >
                 <Github className='size-4' />
                 GitHub
@@ -456,7 +456,7 @@ export const ProfileCard: React.FC<
                 href={contact.website}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='flex items-center gap-1 hover:text-hunter-600'
+                className='flex items-center gap-1 hover:text-strategy-gold'
               >
                 <ExternalLink className='size-4' />
                 Website
@@ -492,8 +492,8 @@ export const StatsCard: React.FC<
         className
       )}
     >
-      {/* Teal accent line */}
-      <div className='h-1 bg-gradient-to-r from-hunter-800 to-hunter-900'></div>
+      {/* Gold accent line */}
+      <div className='h-1 bg-gradient-to-r from-strategy-gold/80 to-strategy-gold/60'></div>
 
       {(title ?? description) && (
         <CardHeader className='pb-4'>
@@ -503,7 +503,7 @@ export const StatsCard: React.FC<
             </CardTitle>
           )}
           {description && (
-            <CardDescription className='break-words font-sans text-lg font-medium text-hunter-600 dark:text-hunter-400'>
+            <CardDescription className='break-words font-sans text-lg font-medium text-strategy-gold dark:text-strategy-gold'>
               {description}
             </CardDescription>
           )}
@@ -521,9 +521,9 @@ export const StatsCard: React.FC<
               return (
                 <div
                   key={index}
-                  className='rounded-lg border border-slate-200 bg-gradient-to-br from-slate-50 to-hunter-50 p-4 text-center dark:border-slate-600 dark:from-slate-800/20 dark:to-hunter-800/20'
+                  className='rounded-lg border border-strategy-gold/20 bg-gradient-to-br from-strategy-gold/5 to-strategy-gold/10 p-4 text-center dark:border-strategy-gold/30 dark:from-strategy-gold/10 dark:to-strategy-gold/5'
                 >
-                  <div className='text-2xl font-bold text-hunter-600 dark:text-hunter-400'>
+                  <div className='text-2xl font-bold text-strategy-gold dark:text-strategy-gold'>
                     {value}
                   </div>
                   <div className='mt-1 text-sm text-gray-600 dark:text-gray-300'>
@@ -562,8 +562,8 @@ export const TimelineCard: React.FC<
         className
       )}
     >
-      {/* Teal accent line */}
-      <div className='h-1 bg-gradient-to-r from-hunter-800 to-hunter-900'></div>
+      {/* Gold accent line */}
+      <div className='h-1 bg-gradient-to-r from-strategy-gold/80 to-strategy-gold/60'></div>
 
       {(title ?? description) && (
         <CardHeader className='pb-4'>
@@ -573,7 +573,7 @@ export const TimelineCard: React.FC<
             </CardTitle>
           )}
           {description && (
-            <CardDescription className='break-words font-sans text-lg font-medium text-hunter-600 dark:text-hunter-400'>
+            <CardDescription className='break-words font-sans text-lg font-medium text-strategy-gold dark:text-strategy-gold'>
               {description}
             </CardDescription>
           )}
@@ -586,16 +586,16 @@ export const TimelineCard: React.FC<
           <div className='mb-6 space-y-4'>
             {items.map((item, index) => (
               <div key={index} className='flex gap-4'>
-                <div className='mt-2 size-2 shrink-0 rounded-full bg-hunter-500'></div>
+                <div className='mt-2 size-2 shrink-0 rounded-full bg-strategy-gold'></div>
                 <div className='min-w-0 flex-1'>
                   <div className='mb-1 flex items-center gap-2'>
-                    <span className='text-sm font-medium text-hunter-600 dark:text-hunter-400'>
+                    <span className='text-sm font-medium text-strategy-gold dark:text-strategy-gold'>
                       {item.date}
                     </span>
                     {item.badge && (
                       <Badge
                         variant='outline'
-                        className='border-hunter-200 text-xs text-hunter-700 dark:text-hunter-300'
+                        className='border-strategy-gold/30 text-xs text-strategy-gold dark:text-strategy-gold'
                       >
                         {item.badge}
                       </Badge>
@@ -671,8 +671,8 @@ export const HeroCard: React.FC<
         className
       )}
     >
-      {/* Teal accent line */}
-      <div className='h-1 bg-gradient-to-r from-hunter-800 to-hunter-900'></div>
+      {/* Gold accent line */}
+      <div className='h-1 bg-gradient-to-r from-strategy-gold/80 to-strategy-gold/60'></div>
 
       <CardHeader className={cn('pb-4', sizes[size])}>
         <div className='flex items-start gap-6'>
@@ -681,7 +681,7 @@ export const HeroCard: React.FC<
               <img
                 src={image}
                 alt={imageAlt ?? title ?? 'Hero image'}
-                className='size-16 rounded-lg border-2 border-hunter-200 object-cover shadow-md'
+                className='size-16 rounded-lg border-2 border-strategy-gold/30 object-cover shadow-md'
               />
             </div>
           )}
@@ -703,7 +703,7 @@ export const HeroCard: React.FC<
             {description && (
               <CardDescription
                 className={cn(
-                  'mb-4 break-words font-sans font-medium text-hunter-600 dark:text-hunter-400',
+                  'mb-4 break-words font-sans font-medium text-strategy-gold dark:text-strategy-gold',
                   size === 'lg' ? 'text-lg' : 'text-base'
                 )}
               >
@@ -716,7 +716,7 @@ export const HeroCard: React.FC<
                   <Badge
                     key={index}
                     variant='outline'
-                    className='border-hunter-200 text-hunter-700 dark:text-hunter-300'
+                    className='border-strategy-gold/30 text-strategy-gold dark:text-strategy-gold'
                   >
                     {badge}
                   </Badge>
@@ -791,11 +791,11 @@ export const SuccessCard: React.FC<
       )}
     >
       {/* Green accent line */}
-      <div className='h-1 bg-gradient-to-r from-hunter-600 to-hunter-800'></div>
+      <div className='h-1 bg-gradient-to-r from-green-600 to-green-800'></div>
 
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-4'>
-          <div className='shrink-0 rounded-xl bg-gradient-to-br from-hunter-100 to-hunter-200 p-3 text-hunter-700 shadow-sm dark:from-hunter-900/50 dark:to-hunter-800/50 dark:text-hunter-400'>
+          <div className='shrink-0 rounded-xl bg-gradient-to-br from-green-100 to-green-200 p-3 text-green-700 shadow-sm dark:from-green-900/50 dark:to-green-800/50 dark:text-green-400'>
             {getIcon(icon)}
           </div>
           <div className='min-w-0 flex-1'>
@@ -964,11 +964,11 @@ export const TechCard: React.FC<
       )}
     >
       {/* Blue accent line */}
-      <div className='h-1 bg-gradient-to-r from-hunter-700 to-hunter-900'></div>
+      <div className='h-1 bg-gradient-to-r from-blue-600 to-blue-800'></div>
 
       <CardHeader className='pb-4'>
         <div className='flex items-start gap-4'>
-          <div className='shrink-0 rounded-xl bg-gradient-to-br from-hunter-100 to-hunter-200 p-3 text-hunter-600 shadow-sm dark:from-hunter-900/50 dark:to-hunter-800/50 dark:text-hunter-400'>
+          <div className='shrink-0 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 p-3 text-blue-600 shadow-sm dark:from-blue-900/50 dark:to-blue-800/50 dark:text-blue-400'>
             {getIcon(icon)}
           </div>
           <div className='min-w-0 flex-1'>
@@ -978,7 +978,7 @@ export const TechCard: React.FC<
               </CardTitle>
             )}
             {description && (
-              <CardDescription className='overflow-wrap-break-word mb-3 whitespace-normal break-words font-sans text-lg font-medium text-hunter-600 dark:text-hunter-400'>
+              <CardDescription className='overflow-wrap-break-word mb-3 whitespace-normal break-words font-sans text-lg font-medium text-blue-600 dark:text-blue-400'>
                 {description}
               </CardDescription>
             )}
@@ -988,7 +988,7 @@ export const TechCard: React.FC<
                   <Badge
                     key={index}
                     variant='outline'
-                    className='border-hunter-200 text-xs text-hunter-700 dark:text-hunter-300'
+                    className='border-blue-200 text-xs text-blue-700 dark:text-blue-300'
                   >
                     {badge}
                   </Badge>
@@ -1044,36 +1044,36 @@ export const HeroProfileCard: React.FC<
     <div className={cn('hero-profile-card-wrapper relative', className)}>
       <Card
         className={cn(
-          'hero-profile-card via-slate-900/98 relative overflow-hidden rounded-2xl border border-gold-500/20 bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl'
+          'hero-profile-card via-slate-900/98 relative overflow-hidden rounded-2xl border border-strategy-gold/20 bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl'
         )}
       >
         {/* Top accent gradient bar */}
-        <div className='h-1 bg-gradient-to-r from-transparent via-gold-500 to-transparent'></div>
+        <div className='h-1 bg-gradient-to-r from-transparent via-strategy-gold to-transparent'></div>
 
         <CardHeader className='py-8'>
           <div className='flex items-start gap-8'>
             {image && (
               <div className='relative shrink-0'>
                 {/* Glow effect behind image */}
-                <div className='absolute -inset-4 -z-10 rounded-2xl bg-gradient-to-br from-gold-600/20 to-hunter-600/20 opacity-60 blur-2xl'></div>
+                <div className='absolute -inset-4 -z-10 rounded-2xl bg-gradient-to-br from-strategy-gold/20 to-blue-600/20 opacity-60 blur-2xl'></div>
                 <img
                   src={image}
                   alt={imageAlt ?? name ?? title ?? 'Profile image'}
-                  className='size-40 rounded-2xl border-2 border-gold-500/40 object-cover shadow-2xl ring-2 ring-gold-400/20'
+                  className='size-40 rounded-2xl border-2 border-strategy-gold/40 object-cover shadow-2xl ring-2 ring-strategy-gold/20'
                 />
               </div>
             )}
             <div className='min-w-0 flex-1'>
               {/* Name with premium styling */}
               <div className='mb-2'>
-                <h2 className='bg-gradient-to-r from-white via-slate-100 to-gold-300 bg-clip-text text-4xl font-bold text-transparent'>
+                <h2 className='bg-gradient-to-r from-white via-slate-100 to-strategy-gold bg-clip-text text-4xl font-bold text-transparent'>
                   {name ?? title}
                 </h2>
               </div>
 
-              {/* Professional title in gold */}
+              {/* Professional title in strategy-gold */}
               {title && (
-                <p className='mb-3 text-base font-semibold text-gold-400'>
+                <p className='mb-3 text-base font-semibold text-strategy-gold'>
                   {title}
                 </p>
               )}
@@ -1104,9 +1104,9 @@ export const HeroProfileCard: React.FC<
                         variant='outline'
                         className={`px-3 py-1.5 text-xs font-semibold transition-all ${
                           variant === 'gold'
-                            ? 'border-gold-500/60 bg-gold-500/15 text-gold-300 shadow-lg shadow-gold-500/10 hover:border-gold-400/80 hover:bg-gold-500/25'
+                            ? 'border-strategy-gold/60 bg-strategy-gold/15 text-strategy-gold shadow-lg shadow-strategy-gold/10 hover:border-strategy-gold/80 hover:bg-strategy-gold/25'
                             : variant === 'hunter'
-                              ? 'border-hunter-500/60 bg-hunter-600/15 text-hunter-300 shadow-lg shadow-hunter-500/10 hover:border-hunter-400/80 hover:bg-hunter-600/25'
+                              ? 'border-blue-500/60 bg-blue-600/15 text-blue-300 shadow-lg shadow-blue-500/10 hover:border-blue-400/80 hover:bg-blue-600/25'
                               : 'border-slate-600/60 bg-slate-800/50 text-slate-200 shadow-lg shadow-slate-600/10 hover:border-slate-500/80 hover:bg-slate-700/70'
                         }`}
                       >
@@ -1129,7 +1129,7 @@ export const HeroProfileCard: React.FC<
         )}
 
         {/* Bottom accent glow */}
-        <div className='absolute bottom-0 right-0 -z-10 size-64 rounded-full bg-gradient-to-tl from-gold-600/15 via-hunter-600/10 to-transparent blur-3xl'></div>
+        <div className='absolute bottom-0 right-0 -z-10 size-64 rounded-full bg-gradient-to-tl from-strategy-gold/15 via-blue-600/10 to-transparent blur-3xl'></div>
       </Card>
     </div>
   );
