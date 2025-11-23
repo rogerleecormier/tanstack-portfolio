@@ -1,106 +1,101 @@
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Menu } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Link } from '@tanstack/react-router';
 import React, { useState } from 'react';
-import Breadcrumbs from '../components/Breadcrumbs';
-import { LoginPage } from '../components/LoginPage';
-import { Logo } from '../components/Logo';
-import ProfileDropdown from '../components/ProfileDropdown';
-import RedesignedSearch from '../components/RedesignedSearch';
-import { useAuth } from '../hooks/useAuth';
+import RedesignedSearch from '@/components/RedesignedSearch';
+import { LoginPage } from '@/components/LoginPage';
+import ProfileDropdown from '@/components/ProfileDropdown';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header: React.FC = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { user } = useAuth();
 
-  const handleLoginClick = () => setShowLogin(true);
-  const handleCloseLogin = () => setShowLogin(false);
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/portfolio', label: 'Portfolio' },
+    { href: '/projects', label: 'Projects' },
+    { href: '/blog', label: 'Blog' },
+    { href: '/contact', label: 'Contact' },
+  ];
 
   return (
-    <>
-      {/* Fixed Header - Always visible */}
-      <div className='fixed inset-x-0 top-0 z-50 border-b border-hunter-700/40 bg-gradient-to-br from-hunter-900 via-hunter-950/90 to-hunter-900 shadow-glass backdrop-blur-md dark:border-hunter-600/50'>
-        {/* Main Header Row */}
-        <div className='flex items-center justify-between px-4 py-3'>
-          {/* Left Section: Hamburger + Logo + Name */}
-          <div className='flex items-center gap-4'>
-            {/* Hamburger Menu */}
-            <SidebarTrigger className='flex size-10 items-center justify-center rounded-lg border border-gold-500/40 bg-gold-600/15 text-gold-400 transition-all duration-200 hover:border-gold-500/70 hover:bg-gold-600/25 hover:text-gold-300 dark:text-gold-400 dark:hover:text-gold-300'>
-              <Menu className='size-5' />
-              <span className='sr-only'>Toggle navigation menu</span>
-            </SidebarTrigger>
+    <header className='sticky top-0 z-50 border-b border-border-subtle bg-gradient-to-r from-surface-deep to-precision-charcoal backdrop-blur-md'>
+      <div className='mx-auto max-w-7xl px-4 py-4 md:px-8'>
+        <div className='flex items-center justify-between gap-4'>
+          {/* Left Section: Hamburger + Logo + Brand */}
+          <div className='flex items-center gap-3'>
+            {/* Mobile Menu Trigger */}
+            <SidebarTrigger className='flex lg:hidden' />
 
-            {/* Enhanced Logo with targeting theme */}
-            <Logo size='md' showTargetingDots={true} />
-
-            {/* Name and Tagline Container */}
-            <div className='hidden md:block'>
-              {/* Name with enhanced styling */}
-              <h1 className='header-name text-xl font-bold text-white'>
-                Roger Lee Cormier
-              </h1>
-              {/* Enhanced tagline with targeting theme */}
-              <p className='text-xs font-semibold uppercase tracking-wider text-gold-400'>
-                Precision. Results. Delivered.
-              </p>
-            </div>
+            {/* Logo & Brand */}
+            <Link to='/' className='flex shrink-0 items-center gap-2'>
+              <img
+                src='/header-logo.svg'
+                alt='Logo'
+                className='h-8 w-8 md:h-10 md:w-10'
+              />
+              <div className='hidden sm:block'>
+                <h1 className='text-base font-bold leading-tight text-text-foreground md:text-lg'>
+                  Roger Lee Cormier
+                </h1>
+                <p className='text-xs font-semibold uppercase leading-tight tracking-widest text-strategy-gold'>
+                  Technical Strategist
+                </p>
+              </div>
+            </Link>
           </div>
 
-          {/* Right Section: Search + Login/Logout */}
-          <div className='flex shrink-0 items-center gap-4'>
-            {/* Search Bar - Right justified on desktop */}
-            <div className='hidden lg:block'>
+          {/* Center Section: Desktop Navigation */}
+          <nav className='hidden flex-1 items-center gap-6 lg:flex xl:gap-8'>
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className='text-sm font-medium text-text-secondary transition-colors hover:text-strategy-gold'
+                activeProps={{
+                  className:
+                    'text-strategy-gold border-b-2 border-strategy-gold pb-1',
+                }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right Section: Search + Login + Logout */}
+          <div className='flex items-center gap-2 md:gap-3'>
+            {/* Search Component - responsive */}
+            <div className='hidden max-w-sm flex-1 md:block'>
               <RedesignedSearch />
             </div>
 
-            {/* Login/Profile Section */}
-            <div className='flex shrink-0 items-center gap-3'>
-              {isAuthenticated && user ? (
-                <ProfileDropdown user={user} />
-              ) : (
-                <Button
-                  variant='secondary'
-                  size='sm'
-                  onClick={handleLoginClick}
-                  disabled={isLoading}
-                  className='btn-accent rounded-lg border-0 text-xs font-medium'
-                >
-                  {isLoading ? 'Loading...' : 'Login'}
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Breadcrumbs Row - Updated styling */}
-        <div className='flex h-12 items-center border-t border-hunter-700/30 bg-hunter-950/40 px-4 backdrop-blur-sm dark:border-hunter-600/30'>
-          <div className='w-full'>
-            <Breadcrumbs />
+            {/* Login/Logout Button */}
+            {user ? (
+              <ProfileDropdown user={user} />
+            ) : (
+              <Button
+                onClick={() => setShowLoginModal(true)}
+                size='sm'
+                className='bg-strategy-gold text-precision-charcoal transition-all hover:brightness-110'
+              >
+                <span className='hidden sm:inline'>Login</span>
+                <span className='sm:hidden'>Sign In</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Login Dialog */}
-      <Dialog open={showLogin} onOpenChange={setShowLogin}>
-        <DialogContent className='max-w-md'>
-          <DialogHeader>
-            <DialogTitle>Login to Your Account</DialogTitle>
-            <DialogDescription>
-              Enter your credentials to access your account and manage your
-              content.
-            </DialogDescription>
-          </DialogHeader>
-          <LoginPage onClose={handleCloseLogin} />
+      {/* Login Modal */}
+      <Dialog open={showLoginModal} onOpenChange={setShowLoginModal}>
+        <DialogContent className='border-strategy-gold/20 bg-surface-deep/95 backdrop-blur-xl'>
+          <LoginPage onClose={() => setShowLoginModal(false)} />
         </DialogContent>
       </Dialog>
-    </>
+    </header>
   );
 };
 

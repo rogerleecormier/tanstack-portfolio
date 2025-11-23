@@ -117,14 +117,14 @@ const GanttChartBuilderPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50 py-8'>
+    <div className='min-h-screen bg-surface-base py-8'>
       <div className='mx-auto max-w-6xl px-4'>
-        <Card>
+        <Card className='border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
           <CardHeader>
-            <CardTitle className='text-2xl font-bold'>
+            <CardTitle className='text-2xl font-bold text-strategy-gold'>
               Gantt Chart Builder
             </CardTitle>
-            <p className='text-gray-600'>
+            <p className='text-text-secondary'>
               Create project timelines with tasks, start and end dates.
               Visualize with Gantt chart and export to XLSX. Ready for AI
               optimization.
@@ -133,50 +133,56 @@ const GanttChartBuilderPage: React.FC = () => {
           <CardContent>
             <form onSubmit={void handleSubmit(onSubmit)} className='space-y-6'>
               <div>
-                <Label htmlFor='projectName'>Project Name</Label>
-                <Input id='projectName' {...register('projectName')} />
+                <Label htmlFor='projectName' className='text-text-foreground'>Project Name</Label>
+                <Input 
+                  id='projectName' 
+                  {...register('projectName')}
+                  className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground'
+                />
                 {errors.projectName && (
-                  <p className='text-sm text-red-500'>
+                  <p className='text-sm text-strategy-rose'>
                     {errors.projectName.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <h3 className='mb-2 text-lg font-semibold'>Tasks</h3>
+                <h3 className='mb-2 text-lg font-semibold text-text-foreground'>Tasks</h3>
                 {fields.map((field, index) => (
-                  <div key={field.id} className='mb-4 rounded border p-4'>
+                  <div key={field.id} className='mb-4 rounded border border-strategy-gold/20 bg-surface-deep/30 p-4'>
                     <Input
                       placeholder='Task Name'
                       {...register(`tasks.${index}.name` as const)}
-                      className='mb-2'
+                      className='mb-2 border-strategy-gold/20 bg-surface-deep/50 text-text-foreground'
                     />
                     {errors.tasks?.[index]?.name && (
-                      <p className='text-sm text-red-500'>
+                      <p className='text-sm text-strategy-rose'>
                         {errors.tasks[index]?.name?.message}
                       </p>
                     )}
                     <div className='mb-2 grid grid-cols-2 gap-2'>
                       <div>
-                        <Label>Start Date</Label>
+                        <Label className='text-text-foreground'>Start Date</Label>
                         <Input
                           type='date'
                           {...register(`tasks.${index}.startDate` as const)}
+                          className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground'
                         />
                         {errors.tasks?.[index]?.startDate && (
-                          <p className='text-sm text-red-500'>
+                          <p className='text-sm text-strategy-rose'>
                             {errors.tasks[index]?.startDate?.message}
                           </p>
                         )}
                       </div>
                       <div>
-                        <Label>End Date</Label>
+                        <Label className='text-text-foreground'>End Date</Label>
                         <Input
                           type='date'
                           {...register(`tasks.${index}.endDate` as const)}
+                          className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground'
                         />
                         {errors.tasks?.[index]?.endDate && (
-                          <p className='text-sm text-red-500'>
+                          <p className='text-sm text-strategy-rose'>
                             {errors.tasks[index]?.endDate?.message}
                           </p>
                         )}
@@ -186,7 +192,7 @@ const GanttChartBuilderPage: React.FC = () => {
                       type='button'
                       variant='outline'
                       onClick={() => remove(index)}
-                      className='mt-2'
+                      className='mt-2 border-strategy-rose/40 text-strategy-rose hover:bg-strategy-rose/10'
                     >
                       <Trash2 className='mr-2 size-4' /> Remove Task
                     </Button>
@@ -197,17 +203,24 @@ const GanttChartBuilderPage: React.FC = () => {
                   onClick={() =>
                     append({ name: '', startDate: '', endDate: '' })
                   }
+                  className='border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
                 >
                   <Plus className='mr-2 size-4' /> Add Task
                 </Button>
               </div>
 
               <div className='flex gap-2'>
-                <Button type='submit'>Generate Gantt Chart</Button>
+                <Button 
+                  type='submit'
+                  className='border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
+                >
+                  Generate Gantt Chart
+                </Button>
                 <Button
                   type='button'
                   variant='outline'
                   onClick={handleAISuggest}
+                  className='border-strategy-gold/20 bg-surface-deep/30 text-strategy-gold hover:bg-surface-elevated/50'
                 >
                   AI Suggest Schedule
                 </Button>
@@ -216,27 +229,33 @@ const GanttChartBuilderPage: React.FC = () => {
 
             {ganttData.length > 0 && (
               <div className='mt-8'>
-                <h3 className='mb-2 text-lg font-semibold'>
+                <h3 className='mb-2 text-lg font-semibold text-text-foreground'>
                   Gantt Chart Visualization
                 </h3>
-                <ResponsiveContainer width='100%' height={400}>
-                  <BarChart
-                    data={ganttData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray='3 3' />
-                    <XAxis dataKey='name' />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar
-                      dataKey='duration'
-                      fill='#8884d8'
-                      name='Duration (days)'
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-                <Button onClick={() => void handleExport()} className='mt-4'>
+                <div className='rounded-lg border border-strategy-gold/20 bg-surface-deep/30 p-4'>
+                  <ResponsiveContainer width='100%' height={400}>
+                    <BarChart
+                      data={ganttData}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <XAxis dataKey='name' />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar
+                        dataKey='duration'
+                        fill='#FFD700'
+                        name='Duration (days)'
+                        className='fill-strategy-gold'
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <Button 
+                  onClick={() => void handleExport()} 
+                  className='mt-4 border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
+                >
                   <Download className='mr-2 size-4' /> Export to XLSX
                 </Button>
               </div>

@@ -4,7 +4,6 @@ import {
   type CachedContentItem,
 } from '@/api/cachedContentService';
 import SiteAssistant from '@/components/AIPortfolioAssistant';
-import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Outlet } from '@tanstack/react-router';
 import {
@@ -61,15 +60,15 @@ class MainContentErrorBoundary extends Component<
         <div className='min-w-0 flex-1 p-4 sm:p-6 lg:p-8'>
           <div className='mx-auto w-full max-w-7xl'>
             <div className='py-12 text-center'>
-              <h2 className='mb-2 text-xl font-semibold text-gray-900'>
+              <h2 className='mb-2 text-xl font-semibold text-text-foreground'>
                 Something went wrong
               </h2>
-              <p className='mb-4 text-gray-600'>
+              <p className='mb-4 text-text-secondary'>
                 We're sorry, but there was an error loading this content.
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className='rounded bg-gold-600 px-4 py-2 text-white transition-colors hover:bg-gold-700'
+                className='rounded bg-strategy-gold px-4 py-2 text-precision-charcoal transition-colors hover:brightness-110'
               >
                 Reload Page
               </button>
@@ -89,10 +88,10 @@ function MainContentLoading() {
     <div className='min-w-0 flex-1 p-4 sm:p-6 lg:p-8'>
       <div className='mx-auto w-full max-w-7xl'>
         <div className='animate-pulse'>
-          <div className='mb-4 h-8 w-1/4 rounded bg-gray-200'></div>
-          <div className='mb-2 h-4 w-3/4 rounded bg-gray-200'></div>
-          <div className='mb-2 h-4 w-1/2 rounded bg-gray-200'></div>
-          <div className='h-4 w-2/3 rounded bg-gray-200'></div>
+          <div className='mb-4 h-8 w-1/4 rounded bg-surface-elevated'></div>
+          <div className='mb-2 h-4 w-3/4 rounded bg-surface-elevated'></div>
+          <div className='mb-2 h-4 w-1/2 rounded bg-surface-elevated'></div>
+          <div className='h-4 w-2/3 rounded bg-surface-elevated'></div>
         </div>
       </div>
     </div>
@@ -146,12 +145,11 @@ export default function AppLayout() {
   }, [loadItems]);
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <Header />
-      <div className='flex min-h-screen bg-gradient-to-br from-hunter-950 via-hunter-900/40 to-hunter-950 pt-48 md:pt-44'>
-        <AppSidebar />
+      <div className='flex min-h-screen flex-col bg-surface-base'>
         {/* Main content area - Header is now fixed at top */}
-        <div className='min-w-0 flex-1'>
+        <div className='min-w-0 flex-1 pt-32 md:pt-28'>
           <div className='flex min-h-screen flex-col'>
             <MainContentErrorBoundary>
               <Suspense fallback={<MainContentLoading />}>

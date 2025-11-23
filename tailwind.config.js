@@ -68,7 +68,30 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
-        // Brand color system - Professional Hunter Green, Slate, Gold
+        // Precision Strategy Design System
+        'strategy-gold': '#FFD700',
+        'strategy-gold-dark': '#FFA500',
+        'strategy-emerald': '#66CC99',
+        'strategy-rose': '#E85D5D',
+        'precision-charcoal': '#121729',
+        'precision-charcoal-light': '#2B2F46',
+
+        // Surface Colors
+        'surface-base': '#0F172A',
+        'surface-elevated': '#1E2847',
+        'surface-deep': '#0B0F1F',
+
+        // Text Colors
+        'text-foreground': '#FAFBFC',
+        'text-secondary': '#B3B9C7',
+        'text-tertiary': '#7F8699',
+        'text-muted-foreground': '#B3B9C7',
+        'text-muted': '#7F8699',
+
+        // Border Colors
+        'border-subtle': '#2A3852',
+
+        // Legacy color system - Professional Hunter Green, Slate, Gold
         hunter: {
           50: '#f0faf7',
           100: '#d4f1eb',

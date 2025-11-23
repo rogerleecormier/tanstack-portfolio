@@ -861,59 +861,57 @@ const RACIBuilderPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
-      {/* Targeting Theme Header */}
-      <div className='relative overflow-hidden border-b border-teal-200 dark:border-teal-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
-
+    <div className='min-h-screen bg-surface-base'>
+      {/* Header with Glassmorphism */}
+      <div className='relative overflow-hidden border-b border-surface-elevated/50 bg-surface-base/40 backdrop-blur-xl'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
-            {/* Icon and Title with Targeting Theme */}
+            {/* Icon and Title */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
-                  <Users className='size-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-surface-elevated/60 shadow-lg ring-1 ring-strategy-gold/20 backdrop-blur-md'>
+                  <Users className='size-7 text-strategy-gold' />
                 </div>
                 {/* Targeting indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
-                  <div className='size-2 rounded-full bg-white'></div>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-surface-deep/80 backdrop-blur-sm'>
+                  <div className='size-2 rounded-full bg-strategy-gold'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
-                  <div className='size-1.5 rounded-full bg-white'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-text-tertiary/60 backdrop-blur-sm'>
+                  <div className='size-1.5 rounded-full bg-strategy-gold'></div>
                 </div>
               </div>
               <div>
-                <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
+                <h1 className='text-4xl font-bold tracking-tight text-text-foreground sm:text-5xl lg:text-6xl'>
+                  <span className='text-strategy-gold'>
                     RACI Chart Builder
                   </span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-strategy-gold/50'></div>
               </div>
             </div>
 
-            {/* Description with Targeting Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
+            {/* Description */}
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-text-secondary'>
               Strategic team alignment using RACI methodology.
-              <span className='font-medium text-gold-300'>
+              <span className='font-medium text-strategy-gold'>
                 {' '}
                 Target responsibilities{' '}
               </span>
               with precision role assignments for project success.
             </p>
 
-            {/* Quick Stats with Targeting Theme */}
-            <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
+            {/* Quick Stats */}
+            <div className='mt-6 flex flex-wrap justify-center gap-6'>
+              <div className='flex items-center gap-2 text-sm text-text-secondary'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>Role Clarity</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
+              <div className='flex items-center gap-2 text-sm text-text-secondary'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>Accountability</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-purple-500'></div>
+              <div className='flex items-center gap-2 text-sm text-text-secondary'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>Team Alignment</span>
               </div>
             </div>
@@ -923,15 +921,15 @@ const RACIBuilderPage: React.FC = () => {
 
       {/* Main Content */}
       <div className='mx-auto max-w-4xl px-4 py-8'>
-        <Card className='border border-teal-200/50 bg-white/80 shadow-xl backdrop-blur-sm dark:border-teal-800/50 dark:bg-slate-900/80'>
+        <Card className='border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
           <CardContent className='space-y-8 p-8'>
             {/* Validation Errors Summary */}
             {Object.keys(errors).length > 0 && (
-              <div className='mb-6 rounded-lg border border-red-200 bg-red-50 p-4'>
-                <h3 className='mb-2 text-lg font-semibold text-red-800'>
+              <div className='mb-6 rounded-lg border border-strategy-rose/30 bg-strategy-rose/10 p-4'>
+                <h3 className='mb-2 text-lg font-semibold text-strategy-rose'>
                   Validation Errors
                 </h3>
-                <div className='space-y-1 text-sm text-red-700'>
+                <div className='space-y-1 text-sm text-text-secondary'>
                   {errors.projectName && (
                     <p>• Project name: {errors.projectName.message}</p>
                   )}
@@ -1025,21 +1023,21 @@ const RACIBuilderPage: React.FC = () => {
             >
               {/* Project Name Section */}
               <div className='space-y-3'>
-                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
+                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-precision-charcoal'>
                   <div className='size-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
                   Project Details
                 </H3>
                 <div className='space-y-2'>
                   <Label
                     htmlFor='projectName'
-                    className='text-sm font-medium text-teal-700 dark:text-teal-300'
+                    className='text-sm font-medium text-text-foreground dark:text-strategy-gold'
                   >
                     Project Name
                   </Label>
                   <Input
                     id='projectName'
                     {...register('projectName')}
-                    className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'
+                    className='border-strategy-gold/20 focus:border-strategy-gold/50 focus:ring-strategy-gold/20 dark:border-strategy-gold/30'
                     placeholder='Enter your project name'
                   />
                   {errors.projectName && (
@@ -1052,7 +1050,7 @@ const RACIBuilderPage: React.FC = () => {
 
               {/* Roles Section */}
               <div className='space-y-3'>
-                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
+                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-precision-charcoal'>
                   <div className='size-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500'></div>
                   Team Roles
                 </H3>
@@ -1060,13 +1058,13 @@ const RACIBuilderPage: React.FC = () => {
                   {roleFields.map((field, index) => (
                     <div
                       key={field.id}
-                      className='rounded-xl border border-teal-200/50 bg-gradient-to-r from-slate-50 to-teal-50 p-6 shadow-sm dark:border-teal-700/50 dark:from-slate-800 dark:to-teal-900/30'
+                      className='rounded-xl border border-strategy-gold/20/50 bg-gradient-to-r from-slate-50 to-teal-50 p-6 shadow-sm dark:border-strategy-gold/30/50 dark:from-slate-800 dark:to-teal-900/30'
                     >
                       <div className='flex items-center gap-2'>
                         <Input
                           placeholder='e.g. Developer, Project Manager, Product Owner'
                           {...register(`roles.${index}.name` as const)}
-                          className='flex-1 border-teal-200 text-gray-600 placeholder:text-teal-500 focus:border-teal-500 focus:ring-teal-500/20 focus:placeholder:text-transparent dark:border-teal-700 dark:text-gray-300'
+                          className='flex-1 border-strategy-gold/20 text-gray-600 placeholder:text-teal-500 focus:border-strategy-gold/50 focus:ring-strategy-gold/20 focus:placeholder:text-transparent dark:border-strategy-gold/30 dark:text-gray-300'
                           onFocus={e => {
                             if (e.target.placeholder && !e.target.value) {
                               e.target.placeholder = '';
@@ -1085,7 +1083,7 @@ const RACIBuilderPage: React.FC = () => {
                           variant='outline'
                           onClick={() => customRoleRemove(index)}
                           size='sm'
-                          className='border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20'
+                          className='border-strategy-rose/30 text-strategy-rose hover:border-strategy-rose/50 hover:bg-strategy-rose/10 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20'
                         >
                           <Trash2 className='size-4' />
                         </Button>
@@ -1102,14 +1100,14 @@ const RACIBuilderPage: React.FC = () => {
                     addDebugLog('🔘 Add Role button clicked');
                     customRoleAppend({ name: '' });
                   }}
-                  className='w-full border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg transition-all duration-200 hover:from-teal-600 hover:to-blue-700 hover:shadow-xl'
+                  className='w-full border-0 bg-strategy-gold text-precision-charcoal shadow-lg transition-all duration-200 hover:bg-strategy-gold/90 hover:shadow-xl'
                 >
                   <Plus className='mr-2 size-4' /> Add Team Role
                 </Button>
               </div>
 
               <div>
-                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
+                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-precision-charcoal'>
                   <div className='size-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500'></div>
                   Project Tasks
                 </H3>
@@ -1117,20 +1115,20 @@ const RACIBuilderPage: React.FC = () => {
                   {taskFields.map((field, index) => (
                     <div
                       key={field.id}
-                      className='rounded-xl border border-teal-200/50 bg-gradient-to-r from-white to-slate-50 p-6 shadow-sm dark:border-teal-700/50 dark:from-slate-800 dark:to-slate-700/50'
+                      className='rounded-xl border border-strategy-gold/20/50 bg-gradient-to-r from-white to-slate-50 p-6 shadow-sm dark:border-strategy-gold/30/50 dark:from-slate-800 dark:to-slate-700/50'
                     >
                       <div className='mb-4 flex items-center gap-2'>
                         <Input
                           placeholder='Task Name'
                           {...register(`tasks.${index}.name` as const)}
-                          className='flex-1 border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'
+                          className='flex-1 border-strategy-gold/20 focus:border-strategy-gold/50 focus:ring-strategy-gold/20 dark:border-strategy-gold/30'
                         />
                         <Button
                           type='button'
                           variant='outline'
                           onClick={() => taskRemove(index)}
                           size='sm'
-                          className='border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20'
+                          className='border-strategy-rose/30 text-strategy-rose hover:border-strategy-rose/50 hover:bg-strategy-rose/10 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20'
                         >
                           <Trash2 className='size-4' />
                         </Button>
@@ -1146,7 +1144,7 @@ const RACIBuilderPage: React.FC = () => {
                         </p>
                       )}
                       <div className='space-y-2'>
-                        <div className='mb-2 rounded border border-teal-200 bg-teal-50 p-2 text-xs text-gray-600 dark:border-teal-700 dark:bg-teal-900/20'>
+                        <div className='mb-2 rounded border border-strategy-gold/20 bg-teal-50 p-2 text-xs text-gray-600 dark:border-strategy-gold/30 dark:bg-teal-900/20'>
                           💡{' '}
                           <strong className='text-primary'>RACI Rule:</strong>{' '}
                           Select only ONE category per role (R/A/C/I)
@@ -1319,7 +1317,7 @@ const RACIBuilderPage: React.FC = () => {
                     taskAppend({ name: '', raci: newRaci });
                     // Sync after add task if needed, but since new task has fresh raci, no need
                   }}
-                  className='w-full border-0 bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg transition-all duration-200 hover:from-purple-600 hover:to-pink-700 hover:shadow-xl'
+                  className='w-full border-0 bg-gradient-to-r from-purple-500 to-pink-600 text-precision-charcoal shadow-lg transition-all duration-200 hover:from-purple-600 hover:to-pink-700 hover:shadow-xl'
                 >
                   <Plus className='mr-2 size-4' /> Add Project Task
                 </Button>
@@ -1328,7 +1326,7 @@ const RACIBuilderPage: React.FC = () => {
               <div className='flex justify-center pt-4'>
                 <Button
                   type='submit'
-                  className='bg-gradient-to-r from-teal-600 to-blue-700 px-8 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-teal-700 hover:to-blue-800 hover:shadow-xl'
+                  className='bg-strategy-gold px-8 py-3 text-lg font-semibold text-precision-charcoal shadow-lg transition-all duration-200 hover:scale-105 hover:bg-strategy-gold/90 hover:shadow-xl'
                 >
                   <Target className='mr-2 size-5' />
                   Generate RACI Chart
@@ -1337,9 +1335,9 @@ const RACIBuilderPage: React.FC = () => {
             </form>
 
             {(matrixData ?? mermaidSvg) && (
-              <div className='mt-12 border-t border-teal-200/50 pt-8 dark:border-teal-700/50'>
+              <div className='mt-12 border-t border-strategy-gold/20/50 pt-8 dark:border-strategy-gold/30/50'>
                 <div className='mb-8 text-center'>
-                  <H3 className='mb-2 flex items-center justify-center gap-2 text-xl font-semibold text-gray-900 dark:text-white'>
+                  <H3 className='mb-2 flex items-center justify-center gap-2 text-xl font-semibold text-gray-900 dark:text-precision-charcoal'>
                     <div className='size-3 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
                     Strategic RACI Matrix
                   </H3>
@@ -1355,15 +1353,15 @@ const RACIBuilderPage: React.FC = () => {
                 )}
                 {mermaidSvg && (
                   <div className='mb-8'>
-                    <H3 className='mb-4 text-lg font-semibold text-gray-900 dark:text-white'>
+                    <H3 className='mb-4 text-lg font-semibold text-gray-900 dark:text-precision-charcoal'>
                       Relationship Flowchart
                     </H3>
                     <div
                       ref={mermaidRef}
                       dangerouslySetInnerHTML={{ __html: mermaidSvg }}
-                      className='rounded border border-teal-200 bg-white p-4 dark:border-teal-700 dark:bg-slate-800'
+                      className='rounded border border-strategy-gold/20 bg-white p-4 dark:border-strategy-gold/30 dark:bg-slate-800'
                     />
-                    <pre className='mt-4 overflow-auto rounded border border-teal-200 bg-teal-50 p-4 text-sm text-gray-600 dark:border-teal-700 dark:bg-slate-800/50 dark:text-gray-300'>
+                    <pre className='mt-4 overflow-auto rounded border border-strategy-gold/20 bg-teal-50 p-4 text-sm text-gray-600 dark:border-strategy-gold/30 dark:bg-slate-800/50 dark:text-gray-300'>
                       {mermaidCode}
                     </pre>
                   </div>
@@ -1374,13 +1372,13 @@ const RACIBuilderPage: React.FC = () => {
                       <Button
                         onClick={() => void handleRawXLSXExport()}
                         variant='outline'
-                        className='border-teal-200 text-teal-700 hover:border-teal-300 hover:bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:hover:bg-teal-900/20'
+                        className='border-strategy-gold/20 text-text-foreground hover:border-teal-300 hover:bg-teal-50 dark:border-strategy-gold/30 dark:text-strategy-gold dark:hover:bg-teal-900/20'
                       >
                         <Download className='mr-2 size-4' /> Export Raw XLSX
                       </Button>
                       <Button
                         onClick={() => void handleXLSXExport()}
-                        className='border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg transition-all duration-200 hover:from-teal-600 hover:to-blue-700 hover:shadow-xl'
+                        className='border-0 bg-strategy-gold text-precision-charcoal shadow-lg transition-all duration-200 hover:bg-strategy-gold/90 hover:shadow-xl'
                       >
                         <Download className='mr-2 size-4' /> Export Matrix XLSX
                       </Button>

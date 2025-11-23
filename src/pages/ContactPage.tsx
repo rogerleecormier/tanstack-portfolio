@@ -56,7 +56,7 @@ function DynamicActionButton({
       <Button
         type='button'
         disabled
-        className='w-full cursor-not-allowed bg-gray-400 py-2 text-sm text-white sm:py-3 sm:text-base'
+        className='w-full cursor-not-allowed bg-gray-400 py-2 text-sm text-text-foreground sm:py-3 sm:text-base'
       >
         <div className='mr-2 size-3 animate-spin rounded-full border-b-2 border-white sm:size-4' />
         Analyzing your message...
@@ -71,7 +71,7 @@ function DynamicActionButton({
         type='button'
         disabled={isSubmitting}
         onClick={onScheduleMeeting}
-        className='w-full bg-hunter-700 py-2 text-sm text-white hover:bg-hunter-600 sm:py-3 sm:text-base'
+        className='w-full bg-gradient-to-r from-strategy-gold to-strategy-gold py-2 text-sm text-surface-deep hover:from-strategy-gold/90 hover:to-strategy-gold/80 sm:py-3 sm:text-base'
       >
         {isSubmitting ? (
           <>
@@ -94,7 +94,7 @@ function DynamicActionButton({
       <Button
         type='submit'
         disabled={isSubmitting}
-        className='w-full bg-hunter-700 py-2 text-sm text-white hover:bg-hunter-600 sm:py-3 sm:text-base'
+        className='w-full bg-gradient-to-r from-strategy-gold to-strategy-gold py-2 text-sm text-surface-deep hover:from-strategy-gold/90 hover:to-strategy-gold/80 sm:py-3 sm:text-base'
       >
         {isSubmitting ? (
           <>
@@ -117,7 +117,7 @@ function DynamicActionButton({
       <Button
         type='button'
         disabled
-        className='w-full cursor-not-allowed bg-gray-400 py-2 text-sm text-white sm:py-3 sm:text-base'
+        className='w-full cursor-not-allowed bg-gray-400 py-2 text-sm text-text-foreground sm:py-3 sm:text-base'
       >
         <Send className='mr-2 size-3 sm:size-4' />
         {isAnalyzing ? 'AI analysis in progress...' : 'Send Message'}
@@ -129,7 +129,7 @@ function DynamicActionButton({
     <Button
       type='submit'
       disabled={isSubmitting}
-      className='w-full bg-hunter-700 py-2 text-sm text-white hover:bg-hunter-600 sm:py-3 sm:text-base'
+      className='w-full bg-gradient-to-r from-strategy-gold to-strategy-gold py-2 text-sm text-surface-deep hover:from-strategy-gold/90 hover:to-strategy-gold/80 sm:py-3 sm:text-base'
     >
       {isSubmitting ? (
         <>
@@ -470,7 +470,7 @@ This meeting request was generated based on AI analysis of their contact form su
               <div className='flex size-12 items-center justify-center rounded-xl bg-green-100'>
                 <CheckCircle className='size-6 text-green-600' />
               </div>
-              <H1 className='text-2xl font-bold text-white lg:text-3xl'>
+              <H1 className='text-2xl font-bold text-text-foreground lg:text-3xl'>
                 {isSubmitted
                   ? 'Message Sent Successfully!'
                   : 'Meeting Scheduled Successfully!'}
@@ -493,7 +493,7 @@ This meeting request was generated based on AI analysis of their contact form su
                 <CardContent className='px-6 py-8'>
                   <div className='py-8 text-center'>
                     <CheckCircle className='mx-auto mb-6 size-16 text-green-500' />
-                    <H2 className='mb-4 text-2xl font-semibold text-white'>
+                    <H2 className='mb-4 text-2xl font-semibold text-text-foreground'>
                       {isSubmitted
                         ? 'Message Sent Successfully!'
                         : 'Meeting Scheduled Successfully!'}
@@ -518,7 +518,7 @@ This meeting request was generated based on AI analysis of their contact form su
                     <Button
                       onClick={resetToChoice}
                       variant='outline'
-                      className='border-hunter-600/50 bg-hunter-600/15 text-base text-hunter-300 hover:bg-hunter-600/25'
+                      className='border-strategy-gold/50 bg-strategy-gold/15 text-base text-strategy-gold hover:bg-strategy-gold/25'
                     >
                       Send Another Message
                     </Button>
@@ -530,11 +530,11 @@ This meeting request was generated based on AI analysis of their contact form su
             {/* Right Side - Supporting Information */}
             <div className='order-1 space-y-6 lg:order-2'>
               {/* Contact Methods */}
-              <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
+              <Card className='border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
                 <CardHeader className='pb-4'>
-                  <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                    <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-600/15'>
-                      <User className='size-5 text-hunter-400' />
+                  <CardTitle className='flex items-center gap-3 text-xl font-semibold text-text-foreground'>
+                    <div className='flex size-8 items-center justify-center rounded-lg bg-strategy-gold/15'>
+                      <User className='size-5 text-strategy-gold' />
                     </div>
                     Contact Methods
                   </CardTitle>
@@ -543,10 +543,10 @@ This meeting request was generated based on AI analysis of their contact form su
                   {contactMethods.map(method => (
                     <div key={method.title} className='flex items-start gap-3'>
                       <div className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm'>
-                        <method.icon className='size-5 text-hunter-400' />
+                        <method.icon className='size-5 text-strategy-gold' />
                       </div>
                       <div className='min-w-0 flex-1'>
-                        <h4 className='text-sm font-medium text-white'>
+                        <h4 className='text-sm font-medium text-text-foreground'>
                           {method.title}
                         </h4>
                         {method.href ? (
@@ -554,7 +554,7 @@ This meeting request was generated based on AI analysis of their contact form su
                             href={method.href}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='block break-all text-sm font-medium text-gold-400 hover:text-gold-300'
+                            className='block break-all text-sm font-medium text-strategy-gold hover:text-strategy-gold'
                           >
                             {method.value}
                           </a>
@@ -573,11 +573,11 @@ This meeting request was generated based on AI analysis of their contact form su
               </Card>
 
               {/* Areas of Expertise */}
-              <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
+              <Card className='border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
                 <CardHeader className='pb-4'>
-                  <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                    <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-100'>
-                      <Building className='size-5 text-hunter-600' />
+                  <CardTitle className='flex items-center gap-3 text-xl font-semibold text-text-foreground'>
+                    <div className='flex size-8 items-center justify-center rounded-lg bg-strategy-gold/10'>
+                      <Building className='size-5 text-strategy-gold' />
                     </div>
                     Areas of Expertise
                   </CardTitle>
@@ -588,7 +588,7 @@ This meeting request was generated based on AI analysis of their contact form su
                       <Badge
                         key={area}
                         variant='secondary'
-                        className='border-hunter-600/30 bg-hunter-600/15 text-xs text-hunter-300 hover:bg-hunter-600/25'
+                        className='border-strategy-gold/30 bg-strategy-gold/15 text-xs text-strategy-gold hover:bg-strategy-gold/25'
                       >
                         {area}
                       </Badge>
@@ -598,9 +598,9 @@ This meeting request was generated based on AI analysis of their contact form su
               </Card>
 
               {/* Connect & Follow */}
-              <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
+              <Card className='border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
                 <CardHeader className='pb-4'>
-                  <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
+                  <CardTitle className='flex items-center gap-3 text-xl font-semibold text-text-foreground'>
                     <div className='flex size-8 items-center justify-center rounded-lg bg-indigo-100'>
                       <Linkedin className='size-5 text-indigo-600' />
                     </div>
@@ -612,7 +612,7 @@ This meeting request was generated based on AI analysis of their contact form su
                     href='https://linkedin.com/in/rogerleecormier'
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='flex w-full items-center justify-center gap-3 rounded-lg bg-[#0077B5] px-4 py-3 text-sm font-medium text-white shadow-md transition-colors hover:bg-[#006399] hover:shadow-lg'
+                    className='flex w-full items-center justify-center gap-3 rounded-lg bg-[#0077B5] px-4 py-3 text-sm font-medium text-text-foreground shadow-md transition-colors hover:bg-[#006399] hover:shadow-lg'
                   >
                     <FaLinkedin className='size-4' />
                     LinkedIn
@@ -639,30 +639,30 @@ This meeting request was generated based on AI analysis of their contact form su
   // Choice Selection Screen
   if (contactMode === 'choice') {
     return (
-      <div className='min-h-screen bg-hunter-950'>
+      <div className='min-h-screen bg-surface-deep'>
         {/* Hero Section - Administrative Theme with Communication Focus */}
-        <div className='relative overflow-hidden border-b border-gold-500/20 bg-hunter-950/40 backdrop-blur-xl'>
+        <div className='relative overflow-hidden border-b border-strategy-gold/20 bg-surface-deep/40 backdrop-blur-xl'>
           <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
             <div className='mx-auto max-w-4xl text-center'>
               {/* Icon and Title with Administrative Theme */}
               <div className='mb-4 flex items-center justify-center gap-4'>
                 <div className='relative'>
-                  <div className='flex size-14 items-center justify-center rounded-2xl bg-hunter-900/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
-                    <MessageSquare className='size-7 text-gold-400' />
+                  <div className='flex size-14 items-center justify-center rounded-2xl bg-surface-elevated/60 ring-1 ring-strategy-gold/20 backdrop-blur-md'>
+                    <MessageSquare className='size-7 text-strategy-gold' />
                   </div>
                 </div>
                 <div>
-                  <H1 className='text-4xl font-bold tracking-tight text-gold-400 sm:text-5xl lg:text-6xl'>
+                  <H1 className='text-4xl font-bold tracking-tight text-strategy-gold sm:text-5xl lg:text-6xl'>
                     Let's Connect
                   </H1>
-                  <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gold-500/40'></div>
+                  <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-strategy-gold/40'></div>
                 </div>
               </div>
 
               {/* Description with Communication Language */}
               <P className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
                 Ready to discuss your next project or initiative?
-                <span className='font-medium text-gold-400'>
+                <span className='font-medium text-strategy-gold'>
                   {' '}
                   Start a conversation{' '}
                 </span>
@@ -672,15 +672,15 @@ This meeting request was generated based on AI analysis of their contact form su
               {/* Quick Stats with Administrative Focus */}
               <div className='mt-6 flex justify-center gap-6'>
                 <div className='flex items-center gap-2 text-sm text-grey-400'>
-                  <div className='size-2 rounded-full bg-gold-500/50'></div>
+                  <div className='size-2 rounded-full bg-strategy-gold/50'></div>
                   <span>AI-Enhanced</span>
                 </div>
                 <div className='flex items-center gap-2 text-sm text-grey-400'>
-                  <div className='size-2 rounded-full bg-gold-500/50'></div>
+                  <div className='size-2 rounded-full bg-strategy-gold/50'></div>
                   <span>24hr Response</span>
                 </div>
                 <div className='flex items-center gap-2 text-sm text-grey-400'>
-                  <div className='size-2 rounded-full bg-gold-500/50'></div>
+                  <div className='size-2 rounded-full bg-strategy-gold/50'></div>
                   <span>Secure & Private</span>
                 </div>
               </div>
@@ -695,11 +695,11 @@ This meeting request was generated based on AI analysis of their contact form su
             <div className='grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12'>
               {/* Left Side - Contact Form */}
               <div className='order-2 lg:order-1'>
-                <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
+                <Card className='border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
                   <CardHeader className='pb-6'>
-                    <CardTitle className='flex items-center gap-3 text-2xl font-bold text-white'>
-                      <div className='flex size-10 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                        <MessageSquare className='size-6 text-gold-400' />
+                    <CardTitle className='flex items-center gap-3 text-2xl font-bold text-text-foreground'>
+                      <div className='flex size-10 items-center justify-center rounded-lg bg-surface-elevated/60 ring-1 ring-strategy-gold/20'>
+                        <MessageSquare className='size-6 text-strategy-gold' />
                       </div>
                       Send a Message
                     </CardTitle>
@@ -719,7 +719,7 @@ This meeting request was generated based on AI analysis of their contact form su
                         <div>
                           <label
                             htmlFor='name'
-                            className='mb-2 block text-sm font-medium text-gold-300'
+                            className='mb-2 block text-sm font-medium text-strategy-gold'
                           >
                             Full Name *
                           </label>
@@ -731,13 +731,13 @@ This meeting request was generated based on AI analysis of their contact form su
                             value={formData.name}
                             onChange={handleInputChange}
                             placeholder='Your full name'
-                            className='border-gold-500/20 bg-hunter-900/40 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
+                            className='border-strategy-gold/20 bg-surface-elevated/40 text-text-foreground placeholder:text-text-muted-foreground focus:border-strategy-gold/50 focus:ring-strategy-gold/50'
                           />
                         </div>
                         <div>
                           <label
                             htmlFor='email'
-                            className='mb-2 block text-sm font-medium text-gold-300'
+                            className='mb-2 block text-sm font-medium text-strategy-gold'
                           >
                             Email Address *
                           </label>
@@ -749,7 +749,7 @@ This meeting request was generated based on AI analysis of their contact form su
                             value={formData.email}
                             onChange={handleInputChange}
                             placeholder='your.email@company.com'
-                            className='border-gold-500/20 bg-hunter-900/40 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
+                            className='border-strategy-gold/20 bg-surface-elevated/40 text-text-foreground placeholder:text-text-muted-foreground focus:border-strategy-gold/50 focus:ring-strategy-gold/50'
                           />
                         </div>
                       </div>
@@ -758,7 +758,7 @@ This meeting request was generated based on AI analysis of their contact form su
                         <div>
                           <label
                             htmlFor='company'
-                            className='mb-2 block text-sm font-medium text-gold-300'
+                            className='mb-2 block text-sm font-medium text-strategy-gold'
                           >
                             Company / Organization
                           </label>
@@ -769,13 +769,13 @@ This meeting request was generated based on AI analysis of their contact form su
                             value={formData.company}
                             onChange={handleInputChange}
                             placeholder='Your company name'
-                            className='border-gold-500/20 bg-hunter-900/40 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
+                            className='border-strategy-gold/20 bg-surface-elevated/40 text-text-foreground placeholder:text-text-muted-foreground focus:border-strategy-gold/50 focus:ring-strategy-gold/50'
                           />
                         </div>
                         <div>
                           <label
                             htmlFor='subject'
-                            className='mb-2 block text-sm font-medium text-gold-300'
+                            className='mb-2 block text-sm font-medium text-strategy-gold'
                           >
                             Subject *
                           </label>
@@ -787,7 +787,7 @@ This meeting request was generated based on AI analysis of their contact form su
                             value={formData.subject}
                             onChange={handleInputChange}
                             placeholder='What can I help you with?'
-                            className='border-gold-500/20 bg-hunter-900/40 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
+                            className='border-strategy-gold/20 bg-surface-elevated/40 text-text-foreground placeholder:text-text-muted-foreground focus:border-strategy-gold/50 focus:ring-strategy-gold/50'
                           />
                         </div>
                       </div>
@@ -795,7 +795,7 @@ This meeting request was generated based on AI analysis of their contact form su
                       <div>
                         <label
                           htmlFor='message'
-                          className='mb-2 block text-sm font-medium text-gold-300'
+                          className='mb-2 block text-sm font-medium text-strategy-gold'
                         >
                           Message *
                         </label>
@@ -807,7 +807,7 @@ This meeting request was generated based on AI analysis of their contact form su
                           value={formData.message}
                           onChange={handleInputChange}
                           placeholder='Tell me about your project, challenge, or opportunity...'
-                          className='resize-none border-gold-500/20 bg-hunter-900/40 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
+                          className='resize-none border-strategy-gold/20 bg-surface-elevated/40 text-text-foreground placeholder:text-text-muted-foreground focus:border-strategy-gold/50 focus:ring-strategy-gold/50'
                         />
                         {formData.message.length > 0 &&
                           formData.message.length < 20 && (
@@ -819,14 +819,14 @@ This meeting request was generated based on AI analysis of their contact form su
                         {formData.message.length >= 20 &&
                           !aiAnalysis &&
                           !isAnalyzing && (
-                            <p className='mt-2 text-sm text-gold-400'>
+                            <p className='mt-2 text-sm text-strategy-gold'>
                               ✨ Analysis will start in 1.5 seconds after you
                               stop typing...
                             </p>
                           )}
                         {formData.message.length >= 20 && isAnalyzing && (
-                          <div className='mt-2 flex items-center gap-2 text-sm text-gold-400'>
-                            <div className='size-4 animate-spin rounded-full border-b-2 border-gold-600'></div>
+                          <div className='mt-2 flex items-center gap-2 text-sm text-strategy-gold'>
+                            <div className='size-4 animate-spin rounded-full border-b-2 border-strategy-gold'></div>
                             Analyzing your message...
                           </div>
                         )}
@@ -853,7 +853,7 @@ This meeting request was generated based on AI analysis of their contact form su
                               consent: e.target.checked,
                             }))
                           }
-                          className='mt-1 size-4 rounded border-gold-500/20 bg-hunter-900/40 text-gold-600 focus:ring-gold-500'
+                          className='mt-1 size-4 rounded border-strategy-gold/20 bg-surface-elevated/40 text-strategy-gold focus:ring-strategy-gold'
                           required
                         />
                         <label
@@ -884,11 +884,11 @@ This meeting request was generated based on AI analysis of their contact form su
                       {((aiAnalysis ?? false) ||
                         isAnalyzing ||
                         formData.message.length >= 20) && (
-                        <div className='border-t border-gold-500/20 pt-4'>
+                        <div className='border-t border-strategy-gold/20 pt-4'>
                           <ContactAnalysis
                             analysis={aiAnalysis}
                             isLoading={isAnalyzing}
-                            className='border-l-4 border-l-gold-500'
+                            className='border-l-4 border-l-strategy-gold'
                           />
                         </div>
                       )}
@@ -897,16 +897,16 @@ This meeting request was generated based on AI analysis of their contact form su
                       {aiAnalysis &&
                         aiAnalysis.shouldScheduleMeeting &&
                         !meetingScheduled && (
-                          <div className='border-t border-gold-500/20 pt-4'>
+                          <div className='border-t border-strategy-gold/20 pt-4'>
                             <AIMeetingScheduler
                               analysis={aiAnalysis}
-                              className='border-l-4 border-l-gold-500'
+                              className='border-l-4 border-l-strategy-gold'
                             />
                           </div>
                         )}
 
                       {/* Dynamic Action Button - Always at the bottom */}
-                      <div className='border-t border-gold-500/20 pt-4'>
+                      <div className='border-t border-strategy-gold/20 pt-4'>
                         <DynamicActionButton
                           aiAnalysis={aiAnalysis}
                           isAnalyzing={isAnalyzing}
@@ -923,7 +923,7 @@ This meeting request was generated based on AI analysis of their contact form su
                             <div className='mt-3 text-center'>
                               <button
                                 onClick={handleSendMessageInstead}
-                                className='inline-flex items-center gap-2 text-sm text-gold-400 transition-colors hover:text-gold-300 hover:underline'
+                                className='inline-flex items-center gap-2 text-sm text-strategy-gold transition-colors hover:text-strategy-gold hover:underline'
                               >
                                 <MessageSquare className='size-4' />
                                 <span>Or just send a message instead</span>
@@ -939,11 +939,11 @@ This meeting request was generated based on AI analysis of their contact form su
               {/* Right Side - Supporting Information */}
               <div className='order-1 space-y-6 lg:order-2'>
                 {/* Contact Methods */}
-                <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
+                <Card className='border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
                   <CardHeader className='pb-4'>
-                    <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                        <User className='size-5 text-gold-400' />
+                    <CardTitle className='flex items-center gap-3 text-xl font-semibold text-text-foreground'>
+                      <div className='flex size-8 items-center justify-center rounded-lg bg-surface-elevated/60 ring-1 ring-strategy-gold/20'>
+                        <User className='size-5 text-strategy-gold' />
                       </div>
                       Contact Methods
                     </CardTitle>
@@ -954,11 +954,11 @@ This meeting request was generated based on AI analysis of their contact form su
                         key={method.title}
                         className='flex items-start gap-3'
                       >
-                        <div className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                          <method.icon className='size-5 text-gold-400' />
+                        <div className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface-elevated/60 ring-1 ring-strategy-gold/20'>
+                          <method.icon className='size-5 text-strategy-gold' />
                         </div>
                         <div className='min-w-0 flex-1'>
-                          <h4 className='text-sm font-medium text-white'>
+                          <h4 className='text-sm font-medium text-text-foreground'>
                             {method.title}
                           </h4>
                           {method.href ? (
@@ -966,7 +966,7 @@ This meeting request was generated based on AI analysis of their contact form su
                               href={method.href}
                               target='_blank'
                               rel='noopener noreferrer'
-                              className='block break-all text-sm font-medium text-gold-400 hover:text-gold-300'
+                              className='block break-all text-sm font-medium text-strategy-gold hover:text-strategy-gold'
                             >
                               {method.value}
                             </a>
@@ -985,11 +985,11 @@ This meeting request was generated based on AI analysis of their contact form su
                 </Card>
 
                 {/* Areas of Expertise */}
-                <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
+                <Card className='border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
                   <CardHeader className='pb-4'>
-                    <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                        <Building className='size-5 text-gold-400' />
+                    <CardTitle className='flex items-center gap-3 text-xl font-semibold text-text-foreground'>
+                      <div className='flex size-8 items-center justify-center rounded-lg bg-surface-elevated/60 ring-1 ring-strategy-gold/20'>
+                        <Building className='size-5 text-strategy-gold' />
                       </div>
                       Areas of Expertise
                     </CardTitle>
@@ -1000,7 +1000,7 @@ This meeting request was generated based on AI analysis of their contact form su
                         <Badge
                           key={area}
                           variant='secondary'
-                          className='border-gold-500/30 bg-gold-500/20 text-xs text-gold-300 hover:bg-gold-500/30'
+                          className='border-strategy-gold/30 bg-strategy-gold/20 text-xs text-strategy-gold hover:bg-strategy-gold/30'
                         >
                           {area}
                         </Badge>
@@ -1010,11 +1010,11 @@ This meeting request was generated based on AI analysis of their contact form su
                 </Card>
 
                 {/* Connect & Follow */}
-                <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
+                <Card className='border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
                   <CardHeader className='pb-4'>
-                    <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                        <Linkedin className='size-5 text-gold-400' />
+                    <CardTitle className='flex items-center gap-3 text-xl font-semibold text-text-foreground'>
+                      <div className='flex size-8 items-center justify-center rounded-lg bg-surface-elevated/60 ring-1 ring-strategy-gold/20'>
+                        <Linkedin className='size-5 text-strategy-gold' />
                       </div>
                       Connect & Follow
                     </CardTitle>
@@ -1024,7 +1024,7 @@ This meeting request was generated based on AI analysis of their contact form su
                       href='https://linkedin.com/in/rogerleecormier'
                       target='_blank'
                       rel='noopener noreferrer'
-                      className='flex w-full items-center justify-center gap-3 rounded-lg bg-[#0077B5] px-4 py-3 text-sm font-medium text-white shadow-md transition-colors hover:bg-[#006399] hover:shadow-lg'
+                      className='flex w-full items-center justify-center gap-3 rounded-lg bg-[#0077B5] px-4 py-3 text-sm font-medium text-text-foreground shadow-md transition-colors hover:bg-[#006399] hover:shadow-lg'
                     >
                       <FaLinkedin className='size-4' />
                       LinkedIn
@@ -1062,7 +1062,7 @@ This meeting request was generated based on AI analysis of their contact form su
               stored.
               <a
                 href='/privacy'
-                className='ml-1 text-gold-400 hover:text-gold-300'
+                className='ml-1 text-strategy-gold hover:text-strategy-gold'
               >
                 Privacy Policy
               </a>
