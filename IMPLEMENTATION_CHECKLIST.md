@@ -1,6 +1,7 @@
 # Implementation Checklist: Design System Overhaul
 
 ## 📋 Quick Navigation
+
 - **PR Document**: `/PULL_REQUEST_DESIGN_OVERHAUL.md`
 - **Design Docs**: `/docs/design/` (7 comprehensive files)
 - **Quick Reference**: `/docs/design/QUICK_REFERENCE.md`
@@ -11,6 +12,7 @@
 ## Phase 1: Foundation (Week 1)
 
 ### Configuration Files
+
 - [ ] Update `tailwind.config.js`
   - [ ] Add Precision Strategy colors (strategy-gold, strategy-gold-dark, secondary)
   - [ ] Add surface colors (surface-base, surface-elevated, surface-deep)
@@ -24,9 +26,11 @@
   - **Reference**: `/docs/design/COMPONENT_IMPLEMENTATION_GUIDE.md`
 
 ### Header Component (`src/layout/Header.tsx`)
+
 **Goal**: Sticky navigation with logo integration and modern styling
 
 - [ ] Replace Target icon with header-logo.svg
+
   ```tsx
   <img src='/header-logo.svg' alt='RC' className='h-12 w-auto' />
   ```
@@ -52,6 +56,7 @@
   - [ ] Responsive width
 
 **Testing**:
+
 - [ ] Mobile: Logo and hamburger visible
 - [ ] Tablet: Full header with search
 - [ ] Desktop: Complete navigation bar
@@ -60,6 +65,7 @@
 **Reference**: `/docs/design/PAGE_SPECIFICATIONS.md` → Header section
 
 ### Footer Component (`src/layout/Footer.tsx`)
+
 **Goal**: 4-column footer with newsletter and social links
 
 - [ ] Newsletter section:
@@ -98,6 +104,7 @@
   - [ ] Centered alignment
 
 **Testing**:
+
 - [ ] Mobile: Single column stacks properly
 - [ ] Tablet: 2 columns, good spacing
 - [ ] Desktop: 4 columns, professional appearance
@@ -107,6 +114,7 @@
 **Reference**: `/docs/design/PAGE_SPECIFICATIONS.md` → Footer section
 
 ### New Components: SectionHeader
+
 **File**: `src/components/sections/SectionHeader.tsx`
 
 ```tsx
@@ -129,6 +137,7 @@ interface SectionHeaderProps {
 **Reference**: `/docs/design/COMPONENT_IMPLEMENTATION_GUIDE.md` → SectionHeader
 
 ### New Components: HeroSection
+
 **File**: `src/components/sections/HeroSection.tsx`
 
 ```tsx
@@ -152,11 +161,13 @@ interface HeroSectionProps {
 **Reference**: `/docs/design/COMPONENT_IMPLEMENTATION_GUIDE.md` → HeroSection
 
 ### AppSidebar Update (`src/components/AppSidebar.tsx`)
+
 - [ ] Update logo to use header-logo.svg
 - [ ] Verify color system integration
 - [ ] Test responsive behavior
 
 ### Phase 1 Testing
+
 - [ ] Responsive design at all breakpoints (320px, 480px, 768px, 1024px, 1920px)
 - [ ] Header sticky and responsive ✓
 - [ ] Footer 4-column layout ✓
@@ -201,11 +212,13 @@ interface HeroSectionProps {
   - [ ] Gold accent styling
 
 **Styling Changes**:
+
 - Remove all inline color definitions
 - Use design system classes throughout
 - Ensure consistent spacing (p-8, gap-8, mb-12)
 
 **Testing**:
+
 - [ ] All sections render without errors
 - [ ] Responsive at all breakpoints
 - [ ] Images load
@@ -248,12 +261,14 @@ interface HeroSectionProps {
   - [ ] Links where applicable
 
 **Styling Changes**:
+
 - Timeline component with vertical line + nodes
 - Skill badges with consistent styling
 - Card layouts for education
 - Gold accents on highlights
 
 **Testing**:
+
 - [ ] Timeline displays chronologically
 - [ ] Skills organized logically
 - [ ] Responsive at all breakpoints
@@ -290,12 +305,14 @@ interface HeroSectionProps {
   - [ ] Page indicators (optional)
 
 **Styling Changes**:
+
 - Update ProjectCard component
 - Gold borders on hover
 - Consistent badge styling
 - Responsive grid patterns
 
 **Testing**:
+
 - [ ] Search/filter works
 - [ ] Grid responsive
 - [ ] Cards have proper spacing
@@ -340,12 +357,14 @@ interface HeroSectionProps {
   - [ ] Optional: description/benefits
 
 **Styling Changes**:
+
 - BlogCard component updates
 - Featured post prominence
 - Consistent image handling
 - Responsive grid
 
 **Testing**:
+
 - [ ] Featured post displays correctly
 - [ ] Grid responsive
 - [ ] Filters work properly
@@ -382,12 +401,14 @@ interface HeroSectionProps {
   - [ ] Social media links
 
 **Styling Changes**:
+
 - 2-column layout (desktop) / 1-column (mobile)
 - Form inputs with consistent styling
 - Buttons with proper colors
 - Proper spacing/alignment
 
 **Testing**:
+
 - [ ] 2-column desktop, 1-column mobile
 - [ ] Form submits correctly
 - [ ] AI analysis works
@@ -399,6 +420,7 @@ interface HeroSectionProps {
 ## Phase 3: Polish & Optimization (Week 4)
 
 ### Animations & Transitions
+
 - [ ] Hover states on all interactive elements
 - [ ] Page transitions (fade-in)
 - [ ] Scroll animations (fade-in on scroll)
@@ -406,6 +428,7 @@ interface HeroSectionProps {
 - [ ] Border transitions (hover to gold)
 
 ### Accessibility Audit
+
 - [ ] Run axe DevTools - fix all violations
 - [ ] Keyboard navigation through all pages
 - [ ] Tab order logical and correct
@@ -417,6 +440,7 @@ interface HeroSectionProps {
 - [ ] Links have descriptive text
 
 ### Performance Optimization
+
 - [ ] Image optimization (WebP, responsive sizing)
 - [ ] Lazy load images
 - [ ] Code splitting review
@@ -432,6 +456,7 @@ interface HeroSectionProps {
   - [ ] CLS < 0.1
 
 ### Mobile Testing (Real Devices)
+
 - [ ] iPhone 12/13/14 (Safari)
 - [ ] Android phone (Chrome)
 - [ ] Test landscape orientation
@@ -441,6 +466,7 @@ interface HeroSectionProps {
 - [ ] Safe area insets (notched devices)
 
 ### Visual Consistency Check
+
 - [ ] Gold accents consistent across pages
 - [ ] Spacing (p-8, gap-8, mb-12) applied uniformly
 - [ ] Typography scales consistent
@@ -453,35 +479,39 @@ interface HeroSectionProps {
 ## Testing Matrix
 
 ### Browsers
+
 | Browser | Version | Mobile | Desktop | Tested? |
-|---------|---------|--------|---------|---------|
-| Chrome | 90+ | ✓ | ✓ | [ ] |
-| Firefox | 88+ | - | ✓ | [ ] |
-| Safari | 14+ | ✓ | ✓ | [ ] |
-| Edge | 90+ | - | ✓ | [ ] |
+| ------- | ------- | ------ | ------- | ------- |
+| Chrome  | 90+     | ✓      | ✓       | [ ]     |
+| Firefox | 88+     | -      | ✓       | [ ]     |
+| Safari  | 14+     | ✓      | ✓       | [ ]     |
+| Edge    | 90+     | -      | ✓       | [ ]     |
 
 ### Devices
-| Device | Size | Tested? |
-|--------|------|---------|
-| iPhone 12 | 390px | [ ] |
-| iPad | 768px | [ ] |
-| Laptop | 1920px | [ ] |
-| Desktop | 2560px+ | [ ] |
+
+| Device    | Size    | Tested? |
+| --------- | ------- | ------- |
+| iPhone 12 | 390px   | [ ]     |
+| iPad      | 768px   | [ ]     |
+| Laptop    | 1920px  | [ ]     |
+| Desktop   | 2560px+ | [ ]     |
 
 ### Breakpoints
-| Breakpoint | Size | Tested? |
-|------------|------|---------|
-| Mobile | 320px | [ ] |
-| Mobile | 480px | [ ] |
-| Tablet | 768px | [ ] |
-| Desktop | 1024px | [ ] |
-| Wide | 1920px+ | [ ] |
+
+| Breakpoint | Size    | Tested? |
+| ---------- | ------- | ------- |
+| Mobile     | 320px   | [ ]     |
+| Mobile     | 480px   | [ ]     |
+| Tablet     | 768px   | [ ]     |
+| Desktop    | 1024px  | [ ]     |
+| Wide       | 1920px+ | [ ]     |
 
 ---
 
 ## QA Checklist
 
 ### Functionality
+
 - [ ] All pages load without errors
 - [ ] Forms submit correctly
 - [ ] Search/filter functionality works
@@ -493,6 +523,7 @@ interface HeroSectionProps {
 - [ ] API calls successful (if applicable)
 
 ### Visual
+
 - [ ] Colors match design system
 - [ ] Typography scales correctly
 - [ ] Spacing consistent
@@ -504,6 +535,7 @@ interface HeroSectionProps {
 - [ ] Icons render correctly
 
 ### Responsive
+
 - [ ] Mobile view (320px): readable, no overflow
 - [ ] Tablet view (768px): proper 2-column layouts
 - [ ] Desktop view (1024px+): full 3+ column layouts
@@ -511,6 +543,7 @@ interface HeroSectionProps {
 - [ ] Touch targets ≥ 44px
 
 ### Accessibility
+
 - [ ] Keyboard navigation works
 - [ ] Tab order logical
 - [ ] Focus indicators visible
@@ -521,6 +554,7 @@ interface HeroSectionProps {
 - [ ] Links have descriptive text
 
 ### Performance
+
 - [ ] Lighthouse Performance > 80
 - [ ] Lighthouse Accessibility > 90
 - [ ] Lighthouse Best Practices > 90
@@ -535,20 +569,21 @@ interface HeroSectionProps {
 
 ## Sign-Off
 
-**Implementation Lead**: ___________________  
-**Date Started**: ___________________  
-**Date Completed**: ___________________  
+**Implementation Lead**: ********\_\_\_********  
+**Date Started**: ********\_\_\_********  
+**Date Completed**: ********\_\_\_********  
 **Code Review**: [ ] Approved  
 **QA Testing**: [ ] Passed  
 **Design Review**: [ ] Approved  
 **Lighthouse Audit**: [ ] Passed (All > 80)  
-**Accessibility Audit**: [ ] Passed (WCAG AA)  
+**Accessibility Audit**: [ ] Passed (WCAG AA)
 
 ---
 
 ## Documentation References
 
 **All Implementation Details**:
+
 1. `/docs/design/SITE_DESIGN_IMPLEMENTATION_GUIDE.md` - Architecture
 2. `/docs/design/PAGE_SPECIFICATIONS.md` - Page details
 3. `/docs/design/COMPONENT_IMPLEMENTATION_GUIDE.md` - React code
