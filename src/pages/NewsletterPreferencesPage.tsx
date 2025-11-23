@@ -200,40 +200,37 @@ const NewsletterPreferencesPage = () => {
   }, []);
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
-      {/* Header with Administrative Theme - Newsletter Focused */}
-      <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
-        <div className='from-amber-600/3 via-slate-600/3 to-amber-600/3 dark:from-amber-400/8 dark:via-slate-400/8 dark:to-amber-400/8 absolute inset-0 bg-gradient-to-r'></div>
-
+    <div className='min-h-screen bg-surface-base'>
+      {/* Header with Glassmorphism */}
+      <div className='relative overflow-hidden border-b border-surface-elevated/50 bg-surface-base/40 backdrop-blur-xl'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
-            {/* Icon and Title with Administrative Theme */}
+            {/* Icon and Title */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-slate-600 shadow-lg'>
-                  <Mail className='size-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-surface-elevated/60 shadow-lg ring-1 ring-strategy-gold/20 backdrop-blur-md'>
+                  <Mail className='size-7 text-strategy-gold' />
                 </div>
                 {/* Newsletter indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-amber-600'>
-                  <div className='size-2 rounded-full bg-white'></div>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-surface-deep/80 backdrop-blur-sm'>
+                  <div className='size-2 rounded-full bg-strategy-gold'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-slate-500'>
-                  <div className='size-1.5 rounded-full bg-white'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-text-tertiary/60 backdrop-blur-sm'>
+                  <div className='size-1.5 rounded-full bg-strategy-gold'></div>
                 </div>
               </div>
               <div>
-                <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-amber-600 to-amber-500 bg-clip-text text-transparent dark:from-amber-400 dark:to-amber-300'>
+                <h1 className='text-4xl font-bold tracking-tight text-text-foreground sm:text-5xl lg:text-6xl'>
+                  <span className='text-strategy-gold'>
                     Newsletter Preferences
                   </span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-amber-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-strategy-gold/50'></div>
               </div>
             </div>
 
-            {/* Description with Preferences Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+            {/* Description */}
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-text-secondary'>
               Manage your subscription, update communication preferences, and
               control what content you receive
             </p>
@@ -247,13 +244,13 @@ const NewsletterPreferencesPage = () => {
           {/* Main Content - Two Column Layout */}
           <div className='grid gap-6 md:grid-cols-2'>
             {/* Left Column - Manage Subscription */}
-            <Card className='h-full border-hunter-600/20 bg-slate-900/40 backdrop-blur-sm'>
+            <Card className='h-full border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2 text-hunter-300'>
+                <CardTitle className='flex items-center gap-2 text-strategy-gold'>
                   <Settings className='size-5' />
                   Manage Subscription
                 </CardTitle>
-                <CardDescription className='text-slate-400'>
+                <CardDescription className='text-text-secondary'>
                   Enter your email address to check your current status and
                   manage preferences.
                 </CardDescription>
@@ -262,7 +259,7 @@ const NewsletterPreferencesPage = () => {
                 <div>
                   <label
                     htmlFor='email'
-                    className='mb-2 block text-sm font-medium text-slate-300'
+                    className='mb-2 block text-sm font-medium text-text-foreground'
                   >
                     Email Address
                   </label>
@@ -272,14 +269,14 @@ const NewsletterPreferencesPage = () => {
                     placeholder='Enter your email address'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className='border-hunter-600/30 bg-slate-800 text-white placeholder:text-slate-500 focus:border-hunter-600/60 focus:ring-hunter-600/30'
+                    className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/50 focus:ring-strategy-gold/20'
                   />
                 </div>
 
                 {/* Preferences Section - Only show if subscribed or if no status checked yet */}
                 {subscriptionStatus?.isActive && (
                   <div className='space-y-3'>
-                    <h4 className='text-sm font-medium text-slate-300'>
+                    <h4 className='text-sm font-medium text-text-foreground'>
                       Newsletter Preferences:
                     </h4>
                     <div className='space-y-2'>
@@ -293,9 +290,9 @@ const NewsletterPreferencesPage = () => {
                               weeklyDigest: e.target.checked,
                             }))
                           }
-                          className='rounded border-hunter-600/30 bg-slate-800 text-hunter-600 accent-hunter-600'
+                          className='rounded border-strategy-gold/30 bg-surface-deep text-strategy-gold accent-strategy-gold'
                         />
-                        <span className='text-sm text-slate-300'>
+                        <span className='text-sm text-text-secondary'>
                           Weekly Digest
                         </span>
                       </label>
@@ -309,9 +306,9 @@ const NewsletterPreferencesPage = () => {
                               newPosts: e.target.checked,
                             }))
                           }
-                          className='rounded border-hunter-600/30 bg-slate-800 text-hunter-600 accent-hunter-600'
+                          className='rounded border-strategy-gold/30 bg-surface-deep text-strategy-gold accent-strategy-gold'
                         />
-                        <span className='text-sm text-slate-300'>
+                        <span className='text-sm text-text-secondary'>
                           New Blog Posts
                         </span>
                       </label>
@@ -325,9 +322,9 @@ const NewsletterPreferencesPage = () => {
                               specialOffers: e.target.checked,
                             }))
                           }
-                          className='rounded border-hunter-600/30 bg-slate-800 text-hunter-600 accent-hunter-600'
+                          className='rounded border-strategy-gold/30 bg-surface-deep text-strategy-gold accent-strategy-gold'
                         />
-                        <span className='text-sm text-slate-300'>
+                        <span className='text-sm text-text-secondary'>
                           Special Offers
                         </span>
                       </label>
@@ -339,7 +336,8 @@ const NewsletterPreferencesPage = () => {
                   <Button
                     onClick={handleCheckStatus}
                     disabled={loading || !email}
-                    className='min-w-[120px] flex-1 border-hunter-600/40 bg-transparent text-hunter-400 hover:border-hunter-600/60 hover:bg-hunter-600/10'
+                    variant='outline'
+                    className='min-w-[120px] flex-1 border-strategy-gold/20 bg-surface-deep/30 text-strategy-gold hover:border-strategy-gold/50 hover:bg-surface-elevated/50'
                   >
                     <UserCheck className='mr-2 size-4' />
                     Check Status
@@ -348,7 +346,8 @@ const NewsletterPreferencesPage = () => {
                     <Button
                       onClick={handleUpdatePreferences}
                       disabled={loading || !email}
-                      className='min-w-[120px] flex-1 border-hunter-600/40 bg-transparent text-hunter-400 hover:border-hunter-600/60 hover:bg-hunter-600/10'
+                      variant='outline'
+                      className='min-w-[120px] flex-1 border-strategy-gold/20 bg-surface-deep/30 text-strategy-gold hover:border-strategy-gold/50 hover:bg-surface-elevated/50'
                     >
                       <Settings className='mr-2 size-4' />
                       Update Preferences
@@ -356,7 +355,7 @@ const NewsletterPreferencesPage = () => {
                   )}
                 </div>
 
-                <Separator className='bg-hunter-600/20' />
+                <Separator className='bg-strategy-gold/20' />
 
                 <div className='space-y-2'>
                   {/* Show Unsubscribe button only if subscribed */}
@@ -364,7 +363,8 @@ const NewsletterPreferencesPage = () => {
                     <Button
                       onClick={handleUnsubscribe}
                       disabled={loading || !email}
-                      className='w-full border-red-600/40 bg-transparent text-red-400 hover:border-red-600/60 hover:bg-red-600/10'
+                      variant='outline'
+                      className='w-full border-strategy-rose/40 bg-transparent text-strategy-rose hover:border-strategy-rose/60 hover:bg-strategy-rose/10'
                     >
                       <XCircle className='mr-2 size-4' />
                       Unsubscribe
@@ -376,7 +376,7 @@ const NewsletterPreferencesPage = () => {
                     <Button
                       onClick={handleResubscribe}
                       disabled={loading || !email}
-                      className='w-full bg-gradient-to-r from-hunter-600 to-hunter-500 text-white hover:from-hunter-500 hover:to-hunter-400'
+                      className='w-full border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
                     >
                       <CheckCircle className='mr-2 size-4' />
                       Resubscribe
@@ -387,41 +387,41 @@ const NewsletterPreferencesPage = () => {
             </Card>
 
             {/* Right Column - About Our Newsletter */}
-            <Card className='h-full border-hunter-600/20 bg-slate-900/40 backdrop-blur-sm'>
+            <Card className='h-full border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2 text-hunter-300'>
+                <CardTitle className='flex items-center gap-2 text-strategy-gold'>
                   <Mail className='size-5' />
                   About Our Newsletter
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='space-y-3'>
-                  <h4 className='font-medium text-white'>
+                  <h4 className='font-medium text-text-foreground'>
                     What You'll Receive:
                   </h4>
-                  <ul className='space-y-2 text-sm text-slate-300'>
+                  <ul className='space-y-2 text-sm text-text-secondary'>
                     <li className='flex items-start gap-2'>
-                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-hunter-500'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-strategy-gold'></div>
                       <span>Weekly insights on technology leadership</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-hunter-500'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-strategy-gold'></div>
                       <span>Notifications for new blog posts</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-hunter-500'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-strategy-gold'></div>
                       <span>Practical DevOps and strategy tips</span>
                     </li>
                     <li className='flex items-start gap-2'>
-                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-hunter-500'></div>
+                      <div className='mt-2 size-1.5 shrink-0 rounded-full bg-strategy-gold'></div>
                       <span>Industry trends and analysis</span>
                     </li>
                   </ul>
                 </div>
 
-                <Separator className='bg-hunter-600/20' />
+                <Separator className='bg-strategy-gold/20' />
 
-                <div className='rounded-lg bg-hunter-600/10 p-3 text-sm text-slate-300'>
+                <div className='rounded-lg border border-strategy-gold/20 bg-strategy-gold/10 p-3 text-sm text-text-secondary'>
                   <p>
                     You can manage your preferences anytime or unsubscribe at
                     any time. We respect your inbox and only send valuable,
@@ -435,24 +435,24 @@ const NewsletterPreferencesPage = () => {
           {/* Current Status - Full Width Below, Only Shows After Interaction */}
           {subscriptionStatus && (
             <div className='mt-6'>
-              <Card className='border-hunter-600/20 bg-slate-900/40 backdrop-blur-sm'>
+              <Card className='border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
                 <CardHeader>
-                  <CardTitle className='flex items-center gap-2 text-hunter-300'>
+                  <CardTitle className='flex items-center gap-2 text-strategy-gold'>
                     <UserCheck className='size-5' />
                     Current Status
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-                    <div className='flex items-center justify-between rounded-lg bg-hunter-600/10 p-3'>
-                      <span className='text-sm font-medium text-slate-300'>
+                    <div className='flex items-center justify-between rounded-lg border border-strategy-gold/20 bg-strategy-gold/10 p-3'>
+                      <span className='text-sm font-medium text-text-foreground'>
                         Status:
                       </span>
                       <Badge
                         className={
                           subscriptionStatus.isActive
-                            ? 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
-                            : 'border-red-600/40 bg-red-600/15 text-red-300'
+                            ? 'border-strategy-gold/40 bg-strategy-gold/20 text-strategy-gold'
+                            : 'border-strategy-rose/40 bg-strategy-rose/20 text-strategy-rose'
                         }
                       >
                         {subscriptionStatus.isActive ? 'Active' : 'Inactive'}
@@ -460,11 +460,11 @@ const NewsletterPreferencesPage = () => {
                     </div>
 
                     {subscriptionStatus.subscribedAt && (
-                      <div className='flex items-center justify-between rounded-lg bg-hunter-600/10 p-3'>
-                        <span className='text-sm font-medium text-slate-300'>
+                      <div className='flex items-center justify-between rounded-lg border border-strategy-gold/20 bg-strategy-gold/10 p-3'>
+                        <span className='text-sm font-medium text-text-foreground'>
                           Subscribed:
                         </span>
-                        <span className='text-sm text-slate-400'>
+                        <span className='text-sm text-text-secondary'>
                           {new Date(
                             subscriptionStatus.subscribedAt
                           ).toLocaleDateString()}
@@ -473,20 +473,20 @@ const NewsletterPreferencesPage = () => {
                     )}
 
                     {subscriptionStatus.preferences && (
-                      <div className='rounded-lg bg-hunter-600/10 p-3 md:col-span-2 lg:col-span-1'>
-                        <span className='mb-3 block text-sm font-medium text-slate-300'>
+                      <div className='rounded-lg border border-strategy-gold/20 bg-strategy-gold/10 p-3 md:col-span-2 lg:col-span-1'>
+                        <span className='mb-3 block text-sm font-medium text-text-foreground'>
                           Preferences:
                         </span>
                         <div className='space-y-2'>
                           <div className='flex items-center justify-between'>
-                            <span className='text-sm text-slate-400'>
+                            <span className='text-sm text-text-secondary'>
                               Weekly Digest
                             </span>
                             <Badge
                               className={
                                 subscriptionStatus.preferences.weeklyDigest
-                                  ? 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
-                                  : 'border-red-600/40 bg-red-600/15 text-red-300'
+                                  ? 'border-strategy-gold/40 bg-strategy-gold/20 text-strategy-gold'
+                                  : 'border-strategy-rose/40 bg-strategy-rose/20 text-strategy-rose'
                               }
                             >
                               {subscriptionStatus.preferences.weeklyDigest
@@ -495,14 +495,14 @@ const NewsletterPreferencesPage = () => {
                             </Badge>
                           </div>
                           <div className='flex items-center justify-between'>
-                            <span className='text-sm text-slate-400'>
+                            <span className='text-sm text-text-secondary'>
                               New Posts
                             </span>
                             <Badge
                               className={
                                 subscriptionStatus.preferences.newPosts
-                                  ? 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
-                                  : 'border-red-600/40 bg-red-600/15 text-red-300'
+                                  ? 'border-strategy-gold/40 bg-strategy-gold/20 text-strategy-gold'
+                                  : 'border-strategy-rose/40 bg-strategy-rose/20 text-strategy-rose'
                               }
                             >
                               {subscriptionStatus.preferences.newPosts
@@ -511,14 +511,14 @@ const NewsletterPreferencesPage = () => {
                             </Badge>
                           </div>
                           <div className='flex items-center justify-between'>
-                            <span className='text-sm text-slate-400'>
+                            <span className='text-sm text-text-secondary'>
                               Special Offers
                             </span>
                             <Badge
                               className={
                                 subscriptionStatus.preferences.specialOffers
-                                  ? 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
-                                  : 'border-red-600/40 bg-red-600/15 text-red-300'
+                                  ? 'border-strategy-gold/40 bg-strategy-gold/20 text-strategy-gold'
+                                  : 'border-strategy-rose/40 bg-strategy-rose/20 text-strategy-rose'
                               }
                             >
                               {subscriptionStatus.preferences.specialOffers
@@ -541,18 +541,18 @@ const NewsletterPreferencesPage = () => {
               <Alert
                 className={
                   result.success
-                    ? 'border-hunter-600/20 bg-hunter-600/10'
-                    : 'border-red-600/20 bg-red-600/10'
+                    ? 'border-strategy-gold/20 bg-strategy-gold/10'
+                    : 'border-strategy-rose/20 bg-strategy-rose/10'
                 }
               >
                 {result.success ? (
-                  <CheckCircle className='size-4 text-hunter-400' />
+                  <CheckCircle className='size-4 text-strategy-gold' />
                 ) : (
-                  <AlertTriangle className='size-4 text-red-400' />
+                  <AlertTriangle className='size-4 text-strategy-rose' />
                 )}
                 <AlertDescription
                   className={
-                    result.success ? 'text-hunter-300' : 'text-red-300'
+                    result.success ? 'text-strategy-gold' : 'text-strategy-rose'
                   }
                 >
                   {result.message}
@@ -564,8 +564,8 @@ const NewsletterPreferencesPage = () => {
           {/* Loading State */}
           {loading && (
             <div className='mt-6 text-center'>
-              <div className='inline-flex items-center gap-2 text-slate-400'>
-                <div className='size-4 animate-spin rounded-full border-b-2 border-hunter-600'></div>
+              <div className='inline-flex items-center gap-2 text-text-secondary'>
+                <div className='size-4 animate-spin rounded-full border-b-2 border-strategy-gold'></div>
                 Processing...
               </div>
             </div>

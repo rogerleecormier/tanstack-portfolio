@@ -27,24 +27,29 @@ export function MarkdownOnlyPage() {
   };
 
   return (
-    <div className='flex h-screen flex-col'>
-      <div className='flex items-center justify-between border-b p-4'>
+    <div className='flex h-screen flex-col bg-surface-base'>
+      {/* Header with Glassmorphism */}
+      <div className='flex items-center justify-between border-b border-surface-elevated/50 bg-surface-base/40 p-4 backdrop-blur-xl'>
         <div>
-          <h1 className='text-2xl font-bold'>Markdown Editor</h1>
+          <h1 className='text-2xl font-bold text-strategy-gold'>Markdown Editor</h1>
           {isDirty && (
-            <p className='text-sm text-muted-foreground'>Unsaved changes</p>
+            <p className='text-sm text-text-tertiary'>Unsaved changes</p>
           )}
         </div>
         <div className='flex gap-2'>
-          <Button onClick={handleDownload}>
+          <Button 
+            onClick={handleDownload}
+            className='border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
+          >
             <Download className='mr-2 size-4' />
             Download
           </Button>
         </div>
       </div>
 
+      {/* Editor Area with Glassmorphism */}
       <div className='flex-1 overflow-hidden p-4'>
-        <div className='h-full max-h-[calc(100vh-200px)]'>
+        <div className='h-full max-h-[calc(100vh-200px)] rounded-lg border border-strategy-gold/20 bg-surface-elevated/30 p-4 shadow-lg backdrop-blur-xl'>
           <MarkdownHtmlEditor
             initialMarkdown={markdown}
             onChange={handleMarkdownChange}

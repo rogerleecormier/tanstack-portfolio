@@ -331,10 +331,10 @@ function EnhancedWeightEntry() {
             </div>
           </div>
 
-          {error && <div className='text-sm text-red-500'>{error}</div>}
+          {error && <div className='text-sm text-strategy-rose'>{error}</div>}
 
           {success && (
-            <div className='text-sm text-green-500'>
+            <div className='text-sm text-strategy-emerald'>
               Weight measurement added successfully!
             </div>
           )}
@@ -847,7 +847,7 @@ function WeightProjections() {
     return (
       <Card className='w-full'>
         <CardContent className='pt-6'>
-          <div className='text-center text-red-500'>
+          <div className='text-center text-strategy-rose'>
             Failed to load required data. Please check your connection and try
             again.
           </div>
@@ -861,7 +861,7 @@ function WeightProjections() {
     return (
       <Card className='w-full'>
         <CardContent className='pt-6'>
-          <div className='text-center text-amber-600'>
+          <div className='text-center text-strategy-gold-dark'>
             No weight data available. Please enter your weight first to see
             projections.
           </div>
@@ -885,15 +885,15 @@ function WeightProjections() {
         </CardHeader>
         <CardContent>
           <div className='grid grid-cols-1 gap-6 md:grid-cols-4'>
-            <div className='rounded-lg bg-blue-50 p-4 text-center'>
-              <div className='mb-2 text-sm font-medium text-blue-600'>
+            <div className='rounded-lg bg-surface-elevated/30 p-4 text-center'>
+              <div className='mb-2 text-sm font-medium text-text-foreground'>
                 Current Weight
               </div>
-              <div className='text-3xl font-bold text-blue-700'>
+              <div className='text-3xl font-bold text-text-foreground'>
                 {currentWeight?.toFixed(1) || 'N/A'} lbs
               </div>
               {weightData && weightData.length > 0 && (
-                <div className='mt-1 text-xs text-blue-500'>
+                <div className='mt-1 text-xs text-strategy-gold'>
                   {new Date(
                     weightData[0]?.timestamp ?? ''
                   ).toLocaleDateString()}
@@ -901,23 +901,23 @@ function WeightProjections() {
               )}
             </div>
 
-            <div className='rounded-lg bg-green-50 p-4 text-center'>
-              <div className='mb-2 text-sm font-medium text-green-600'>
+            <div className='rounded-lg bg-surface-elevated/30 p-4 text-center'>
+              <div className='mb-2 text-sm font-medium text-strategy-emerald'>
                 Target Weight
               </div>
-              <div className='text-3xl font-bold text-green-700'>
+              <div className='text-3xl font-bold text-strategy-emerald'>
                 {targetWeight?.toFixed(1) || 'N/A'} lbs
               </div>
               {weightGoal && (
-                <div className='mt-1 text-xs text-green-500'>From settings</div>
+                <div className='mt-1 text-xs text-strategy-emerald'>From settings</div>
               )}
             </div>
 
-            <div className='rounded-lg bg-purple-50 p-4 text-center'>
-              <div className='mb-2 text-sm font-medium text-purple-600'>
+            <div className='rounded-lg bg-surface-elevated/30 p-4 text-center'>
+              <div className='mb-2 text-sm font-medium text-strategy-gold'>
                 Target Date
               </div>
-              <div className='text-3xl font-bold text-purple-700'>
+              <div className='text-3xl font-bold text-text-foreground'>
                 {targetDate
                   ? targetDate.toLocaleDateString('en-US', {
                       timeZone: 'America/New_York',
@@ -988,19 +988,19 @@ function WeightProjections() {
                           </p>
                           <div className='mt-2 flex gap-4 text-sm'>
                             {medication.dosage_mg && (
-                              <span className='text-blue-600'>
+                              <span className='text-text-foreground'>
                                 <strong>Dosage:</strong> {medication.dosage_mg}
                                 mg
                               </span>
                             )}
                             {medication.frequency && (
-                              <span className='text-green-600'>
+                              <span className='text-strategy-emerald'>
                                 <strong>Frequency:</strong>{' '}
                                 {medication.frequency}
                               </span>
                             )}
                             {medication.start_date && (
-                              <span className='text-purple-600'>
+                              <span className='text-strategy-gold'>
                                 <strong>Started:</strong>{' '}
                                 {new Date(
                                   medication.start_date.includes('T')
@@ -1176,7 +1176,7 @@ function WeightProjections() {
                               dosageMultiplier *
                               frequencyMultiplier;
                             return (
-                              <div className='text-lg font-bold text-green-600'>
+                              <div className='text-lg font-bold text-strategy-emerald'>
                                 +{(actualEfficacy * 100).toFixed(0)}%
                               </div>
                             );
@@ -1249,7 +1249,7 @@ function WeightProjections() {
 
             <div className='space-y-2'>
               <Label>Current Trajectory</Label>
-              <div className='text-2xl font-bold text-blue-600'>
+              <div className='text-2xl font-bold text-text-foreground'>
                 {projections?.daily_rate
                   ? Math.abs(projections.daily_rate * 7).toFixed(2)
                   : 'N/A'}{' '}
@@ -1262,7 +1262,7 @@ function WeightProjections() {
 
             <div className='space-y-2'>
               <Label>Medication Impact</Label>
-              <div className='text-2xl font-bold text-green-600'>
+              <div className='text-2xl font-bold text-strategy-emerald'>
                 {medicationMultiplier > 0
                   ? `+${(medicationMultiplier * 100).toFixed(0)}%`
                   : 'None'}
@@ -1276,7 +1276,7 @@ function WeightProjections() {
 
             <div className='space-y-2'>
               <Label>Activity Level Impact</Label>
-              <div className='text-2xl font-bold text-teal-600'>
+              <div className='text-2xl font-bold text-strategy-gold'>
                 {projections?.activity_level
                   ? projections.activity_level.replace('_', ' ').toUpperCase()
                   : 'MODERATE'}
@@ -1353,7 +1353,7 @@ function WeightProjections() {
               {projectionDays} days
             </span>
             <br />
-            <span className='text-sm font-medium text-amber-600'>
+            <span className='text-sm font-medium text-strategy-gold-dark'>
               Orange line shows your current profile projection (unchangeable).
               Teal line shows scenario projection based on your selected
               settings above.
@@ -1382,7 +1382,7 @@ function WeightProjections() {
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='size-4 rounded-full bg-teal-500'></div>
+              <div className='size-4 rounded-full bg-surface-elevated/30'></div>
               <span className='text-sm text-muted-foreground'>
                 Scenario (
                 {medicationMode === 'with'
@@ -1392,7 +1392,7 @@ function WeightProjections() {
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='size-4 rounded-full bg-purple-500'></div>
+              <div className='size-4 rounded-full bg-surface-elevated/30'></div>
               <span className='text-sm text-muted-foreground'>
                 Target Weight
               </span>
@@ -1508,7 +1508,7 @@ function WeightProjections() {
 
           {/* Medical Disclaimer Tooltip */}
           <div className='mt-4 flex justify-center'>
-            <div className='group relative inline-flex cursor-help items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700'>
+            <div className='group relative inline-flex cursor-help items-center gap-2 rounded-lg border border-amber-200 bg-surface-elevated/30 px-3 py-2 text-sm text-strategy-gold-dark'>
               <svg className='size-4' fill='currentColor' viewBox='0 0 20 20'>
                 <path
                   fillRule='evenodd'
@@ -1521,7 +1521,7 @@ function WeightProjections() {
               {/* Tooltip */}
               <div className='invisible absolute bottom-full left-1/2 z-50 mb-2 w-96 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-4 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100'>
                 <div className='text-sm text-gray-800'>
-                  <h4 className='mb-2 font-semibold text-amber-700'>
+                  <h4 className='mb-2 font-semibold text-strategy-gold-dark'>
                     Important Medical Disclaimer
                   </h4>
                   <div className='space-y-2'>
@@ -2020,7 +2020,7 @@ function AnalyticsDashboard() {
     return (
       <Card className='w-full'>
         <CardContent className='pt-6'>
-          <div className='text-center text-red-500'>
+          <div className='text-center text-strategy-rose'>
             Failed to load analytics. Please try again.
           </div>
         </CardContent>
@@ -2052,7 +2052,7 @@ function AnalyticsDashboard() {
           <div className='grid grid-cols-2 gap-4 md:grid-cols-5'>
             {trendData.map(item => (
               <div key={item.metric} className='text-center'>
-                <div className='text-2xl font-bold text-blue-600'>
+                <div className='text-2xl font-bold text-text-foreground'>
                   {item.value.toFixed(1)}
                 </div>
                 <div className='text-sm text-muted-foreground'>
@@ -2647,12 +2647,12 @@ function AnalyticsDashboard() {
           {/* Key Metrics */}
           <div className='grid grid-cols-1 gap-4 text-center md:grid-cols-4'>
             <div className='rounded-lg bg-muted p-4'>
-              <div className='text-2xl font-bold text-blue-600'>
+              <div className='text-2xl font-bold text-text-foreground'>
                 {hasWeights ? totalLostLbs.toFixed(1) : '0.0'} lbs
               </div>
               <div className='text-sm text-muted-foreground'>Total Lost</div>
               {hasWeights ? (
-                <div className='mt-1 text-xs text-blue-500'>
+                <div className='mt-1 text-xs text-strategy-gold'>
                   {totalLostPct.toFixed(1)}% of starting weight
                 </div>
               ) : null}
@@ -2666,7 +2666,7 @@ function AnalyticsDashboard() {
               </div>
             </div>
             <div className='rounded-lg bg-muted p-4'>
-              <div className='text-2xl font-bold text-green-600'>
+              <div className='text-2xl font-bold text-strategy-emerald'>
                 {weeksToTargetWithMed} weeks
               </div>
               <div className='text-sm text-muted-foreground'>
@@ -2674,7 +2674,7 @@ function AnalyticsDashboard() {
               </div>
             </div>
             <div className='rounded-lg bg-muted p-4'>
-              <div className='text-2xl font-bold text-purple-600'>
+              <div className='text-2xl font-bold text-strategy-gold'>
                 {medicationBenefit} weeks
               </div>
               <div className='text-sm text-muted-foreground'>Time Saved</div>
@@ -2903,7 +2903,7 @@ function WeightDataTable() {
     return (
       <Card className='w-full'>
         <CardContent className='pt-6'>
-          <div className='text-center text-red-500'>
+          <div className='text-center text-strategy-rose'>
             Failed to load weight data. Please try again.
           </div>
         </CardContent>
@@ -3132,7 +3132,7 @@ function WeightDataTable() {
               <span className='text-sm text-muted-foreground'>Trend Line</span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='size-4 rounded-full bg-green-500'></div>
+              <div className='size-4 rounded-full bg-surface-elevated/30'></div>
               <span className='text-sm text-muted-foreground'>
                 {showMovingAverage
                   ? `${movingAveragePeriod}-day Moving Average`
@@ -3372,7 +3372,7 @@ export default function HealthBridgeEnhancedPage() {
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
       {/* Hero Section - Compact with Targeting Theme */}
-      <div className='relative overflow-hidden border-b border-teal-200 dark:border-teal-800'>
+      <div className='relative overflow-hidden border-b border-strategy-gold/20 dark:border-strategy-gold/30'>
         <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
@@ -3414,16 +3414,16 @@ export default function HealthBridgeEnhancedPage() {
 
             {/* Quick Stats with Targeting Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
+              <div className='flex items-center gap-2 text-sm text-text-tertiary'>
                 <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>Precision Analytics</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
+              <div className='flex items-center gap-2 text-sm text-text-tertiary'>
                 <div className='size-2 rounded-full bg-hunter-500'></div>
                 <span>AI Projections</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-purple-500'></div>
+              <div className='flex items-center gap-2 text-sm text-text-tertiary'>
+                <div className='size-2 rounded-full bg-surface-elevated/30'></div>
                 <span>Goal Targeting</span>
               </div>
             </div>
@@ -3433,7 +3433,7 @@ export default function HealthBridgeEnhancedPage() {
                 💡 Weight goals are managed in your{' '}
                 <a
                   href='/protected/settings'
-                  className='text-blue-600 hover:underline'
+                  className='text-text-foreground hover:underline'
                 >
                   Settings page
                 </a>
@@ -3458,23 +3458,23 @@ export default function HealthBridgeEnhancedPage() {
             </p>
             <div className='grid grid-cols-1 gap-4 text-sm md:grid-cols-3'>
               <div className='rounded-lg bg-white/60 p-3 text-center'>
-                <TrendingUp className='mx-auto mb-2 size-6 text-blue-600' />
+                <TrendingUp className='mx-auto mb-2 size-6 text-text-foreground' />
                 <strong>Weight Projections</strong>
-                <p className='text-blue-700'>
+                <p className='text-text-foreground'>
                   AI-powered predictions with medication analysis
                 </p>
               </div>
               <div className='rounded-lg bg-white/60 p-3 text-center'>
-                <BarChart3 className='mx-auto mb-2 size-6 text-teal-600' />
+                <BarChart3 className='mx-auto mb-2 size-6 text-strategy-gold' />
                 <strong>Advanced Analytics</strong>
-                <p className='text-teal-700'>
+                <p className='text-strategy-gold'>
                   Comprehensive health metrics and trends
                 </p>
               </div>
               <div className='rounded-lg bg-white/60 p-3 text-center'>
-                <Pill className='mx-auto mb-2 size-6 text-blue-600' />
+                <Pill className='mx-auto mb-2 size-6 text-text-foreground' />
                 <strong>Medication Tracking</strong>
-                <p className='text-blue-700'>
+                <p className='text-text-foreground'>
                   Monitor medication effects on weight loss
                 </p>
               </div>
@@ -3484,7 +3484,7 @@ export default function HealthBridgeEnhancedPage() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
           <TabsList
-            className={`grid w-full ${isAuthenticated ? 'grid-cols-4' : 'grid-cols-3'} border border-teal-200 bg-white/80 backdrop-blur-sm dark:border-teal-800 dark:bg-gray-900/80`}
+            className={`grid w-full ${isAuthenticated ? 'grid-cols-4' : 'grid-cols-3'} border border-strategy-gold/20 bg-white/80 backdrop-blur-sm dark:border-strategy-gold/30 dark:bg-gray-900/80`}
           >
             {isAuthenticated && (
               <TabsTrigger
@@ -3520,12 +3520,12 @@ export default function HealthBridgeEnhancedPage() {
 
           <TabsContent value='overview' className='space-y-6'>
             {!isAuthenticated ? (
-              <Card className='mx-auto max-w-md border-teal-200 bg-white/80 backdrop-blur-sm dark:border-teal-800 dark:bg-gray-900/80'>
+              <Card className='mx-auto max-w-md border-strategy-gold/20 bg-white/80 backdrop-blur-sm dark:border-strategy-gold/30 dark:bg-gray-900/80'>
                 <CardHeader>
                   <CardTitle className='text-teal-900 dark:text-teal-100'>
                     Authentication Required
                   </CardTitle>
-                  <CardDescription className='text-teal-700 dark:text-teal-300'>
+                  <CardDescription className='text-strategy-gold dark:text-strategy-gold'>
                     Please sign in to enter weight data and access personalized
                     features.
                   </CardDescription>
@@ -3548,8 +3548,8 @@ export default function HealthBridgeEnhancedPage() {
 
           <TabsContent value='data' className='space-y-6'>
             {!isAuthenticated && (
-              <div className='mb-4 rounded-lg border border-teal-200 bg-teal-50 p-3 dark:border-teal-800 dark:bg-teal-950/50'>
-                <p className='text-sm text-teal-700 dark:text-teal-300'>
+              <div className='mb-4 rounded-lg border border-strategy-gold/20 bg-surface-elevated/30 p-3 dark:border-strategy-gold/30 dark:bg-surface-base/50'>
+                <p className='text-sm text-strategy-gold dark:text-strategy-gold'>
                   💡 <strong>Demo Mode:</strong> Showing sample data to
                   demonstrate the dashboard features
                 </p>
@@ -3560,8 +3560,8 @@ export default function HealthBridgeEnhancedPage() {
 
           <TabsContent value='projections' className='space-y-6'>
             {!isAuthenticated && (
-              <div className='mb-4 rounded-lg border border-teal-200 bg-teal-50 p-3 dark:border-teal-800 dark:bg-teal-950/50'>
-                <p className='text-sm text-teal-700 dark:text-teal-300'>
+              <div className='mb-4 rounded-lg border border-strategy-gold/20 bg-surface-elevated/30 p-3 dark:border-strategy-gold/30 dark:bg-surface-base/50'>
+                <p className='text-sm text-strategy-gold dark:text-strategy-gold'>
                   💡 <strong>Demo Mode:</strong> Showing sample projections to
                   demonstrate the dashboard features
                 </p>
@@ -3572,8 +3572,8 @@ export default function HealthBridgeEnhancedPage() {
 
           <TabsContent value='analytics' className='space-y-6'>
             {!isAuthenticated && (
-              <div className='mb-4 rounded-lg border border-teal-200 bg-teal-50 p-3 dark:border-teal-800 dark:bg-teal-950/50'>
-                <p className='text-sm text-teal-700 dark:text-teal-300'>
+              <div className='mb-4 rounded-lg border border-strategy-gold/20 bg-surface-elevated/30 p-3 dark:border-strategy-gold/30 dark:bg-surface-base/50'>
+                <p className='text-sm text-strategy-gold dark:text-strategy-gold'>
                   💡 <strong>Demo Mode:</strong> Showing sample analytics to
                   demonstrate the dashboard features
                 </p>

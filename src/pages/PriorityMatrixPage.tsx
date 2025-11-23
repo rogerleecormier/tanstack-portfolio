@@ -928,60 +928,58 @@ const PriorityMatrixPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
-      {/* Targeting Theme Header */}
-      <div className='relative overflow-hidden border-b border-teal-200 dark:border-teal-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
-
+    <div className='min-h-screen bg-surface-base'>
+      {/* Header with Glassmorphism */}
+      <div className='relative overflow-hidden border-b border-surface-elevated/50 bg-surface-base/40 backdrop-blur-xl'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
-            {/* Icon and Title with Targeting Theme */}
+            {/* Icon and Title */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg'>
-                  <Target className='size-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-surface-elevated/60 shadow-lg ring-1 ring-strategy-gold/20 backdrop-blur-md'>
+                  <Target className='size-7 text-strategy-gold' />
                 </div>
                 {/* Targeting indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600'>
-                  <div className='size-2 rounded-full bg-white'></div>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-surface-deep/80 backdrop-blur-sm'>
+                  <div className='size-2 rounded-full bg-strategy-gold'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500'>
-                  <div className='size-1.5 rounded-full bg-white'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-text-tertiary/60 backdrop-blur-sm'>
+                  <div className='size-1.5 rounded-full bg-strategy-gold'></div>
                 </div>
               </div>
               <div>
-                <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
+                <h1 className='text-4xl font-bold tracking-tight text-text-foreground sm:text-5xl lg:text-6xl'>
+                  <span className='text-strategy-gold'>
                     Priority Matrix Generator
                   </span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-strategy-gold/50'></div>
               </div>
             </div>
 
-            {/* Description with Targeting Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
+            {/* Description */}
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-text-secondary'>
               Strategic task prioritization using the Eisenhower Matrix
               methodology.
-              <span className='font-medium text-gold-300'>
+              <span className='font-medium text-strategy-gold'>
                 {' '}
                 Target your priorities{' '}
               </span>
               with precision scoring for importance and urgency.
             </p>
 
-            {/* Quick Stats with Targeting Theme */}
-            <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
+            {/* Quick Stats */}
+            <div className='mt-6 flex flex-wrap justify-center gap-6'>
+              <div className='flex items-center gap-2 text-sm text-text-secondary'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>Strategic Focus</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-blue-500'></div>
+              <div className='flex items-center gap-2 text-sm text-text-secondary'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>Priority Analysis</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-purple-500'></div>
+              <div className='flex items-center gap-2 text-sm text-text-secondary'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>Action Targeting</span>
               </div>
             </div>
@@ -991,7 +989,7 @@ const PriorityMatrixPage: React.FC = () => {
 
       {/* Main Content */}
       <div className='mx-auto max-w-4xl px-4 py-8'>
-        <Card className='border border-teal-200/50 bg-white/80 shadow-xl backdrop-blur-sm dark:border-teal-800/50 dark:bg-slate-900/80'>
+        <Card className='border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
           <CardContent className='p-8'>
             <form
               onSubmit={e => void handleSubmit(onSubmit)(e)}
@@ -999,25 +997,25 @@ const PriorityMatrixPage: React.FC = () => {
             >
               {/* Project Name Section */}
               <div className='space-y-3'>
-                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
-                  <div className='size-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
+                <H3 className='flex items-center gap-2 text-lg font-semibold text-text-foreground'>
+                  <div className='size-2 rounded-full bg-strategy-gold'></div>
                   Project Details
                 </H3>
                 <div className='space-y-2'>
                   <Label
                     htmlFor='projectName'
-                    className='text-sm font-medium text-teal-700 dark:text-teal-300'
+                    className='text-sm font-medium text-text-foreground'
                   >
                     Project Name
                   </Label>
                   <Input
                     id='projectName'
                     {...register('projectName')}
-                    className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'
+                    className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/50 focus:ring-strategy-gold/20'
                     placeholder='Enter your project name'
                   />
                   {errors.projectName && (
-                    <p className='mt-1 text-sm text-red-500'>
+                    <p className='mt-1 text-sm text-strategy-rose'>
                       {errors.projectName.message}
                     </p>
                   )}
@@ -1026,11 +1024,11 @@ const PriorityMatrixPage: React.FC = () => {
 
               {/* Tasks Section */}
               <div className='space-y-3'>
-                <H3 className='flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white'>
-                  <div className='size-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500'></div>
+                <H3 className='flex items-center gap-2 text-lg font-semibold text-text-foreground'>
+                  <div className='size-2 rounded-full bg-strategy-gold'></div>
                   Priority Tasks
                 </H3>
-                <P className='text-sm text-gray-600 dark:text-gray-400'>
+                <P className='text-sm text-text-secondary'>
                   Add tasks with importance (1-5) and urgency (1-5) scores to
                   generate your priority matrix.
                 </P>
@@ -1039,20 +1037,20 @@ const PriorityMatrixPage: React.FC = () => {
                   {fields.map((field, index) => (
                     <div
                       key={field.id}
-                      className='rounded-xl border border-teal-200/50 bg-gradient-to-r from-slate-50 to-teal-50 p-6 shadow-sm dark:border-teal-700/50 dark:from-slate-800 dark:to-teal-900/30'
+                      className='rounded-xl border border-strategy-gold/20 bg-surface-deep/30 p-6 shadow-sm'
                     >
                       <div className='space-y-4'>
                         <div className='space-y-2'>
-                          <Label className='text-sm font-medium text-teal-700 dark:text-teal-300'>
+                          <Label className='text-sm font-medium text-text-foreground'>
                             Task Description
                           </Label>
                           <Input
                             placeholder='Enter task description'
                             {...register(`tasks.${index}.name` as const)}
-                            className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'
+                            className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/50 focus:ring-strategy-gold/20'
                           />
                           {errors.tasks?.[index]?.name && (
-                            <p className='text-sm text-red-500'>
+                            <p className='text-sm text-strategy-rose'>
                               {errors.tasks[index]?.name?.message}
                             </p>
                           )}
@@ -1060,7 +1058,7 @@ const PriorityMatrixPage: React.FC = () => {
 
                         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
                           <div className='space-y-2'>
-                            <Label className='flex items-center gap-1 text-sm font-medium text-blue-700 dark:text-blue-300'>
+                            <Label className='flex items-center gap-1 text-sm font-medium text-text-foreground'>
                               <TrendingUp className='size-3' />
                               Importance (1-5)
                             </Label>
@@ -1072,7 +1070,7 @@ const PriorityMatrixPage: React.FC = () => {
                                   onValueChange={field.onChange}
                                   value={field.value}
                                 >
-                                  <SelectTrigger className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'>
+                                  <SelectTrigger className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground focus:border-strategy-gold/50 focus:ring-strategy-gold/20'>
                                     <SelectValue placeholder='Select importance' />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -1086,7 +1084,7 @@ const PriorityMatrixPage: React.FC = () => {
                                       >
                                         <div className='flex items-center gap-2'>
                                           <div
-                                            className={`size-2 rounded-full ${num >= 4 ? 'bg-red-500' : num >= 3 ? 'bg-yellow-500' : 'bg-green-500'}`}
+                                            className={`size-2 rounded-full ${num >= 4 ? 'bg-strategy-rose' : num >= 3 ? 'bg-strategy-gold-dark' : 'bg-strategy-emerald'}`}
                                           ></div>
                                           {num} -{' '}
                                           {num >= 4
@@ -1106,7 +1104,7 @@ const PriorityMatrixPage: React.FC = () => {
                           </div>
 
                           <div className='space-y-2'>
-                            <Label className='flex items-center gap-1 text-sm font-medium text-purple-700 dark:text-purple-300'>
+                            <Label className='flex items-center gap-1 text-sm font-medium text-text-foreground'>
                               <Target className='size-3' />
                               Urgency (1-5)
                             </Label>
@@ -1118,7 +1116,7 @@ const PriorityMatrixPage: React.FC = () => {
                                   onValueChange={field.onChange}
                                   value={field.value}
                                 >
-                                  <SelectTrigger className='border-teal-200 focus:border-teal-500 focus:ring-teal-500/20 dark:border-teal-700'>
+                                  <SelectTrigger className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground focus:border-strategy-gold/50 focus:ring-strategy-gold/20'>
                                     <SelectValue placeholder='Select urgency' />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -1132,7 +1130,7 @@ const PriorityMatrixPage: React.FC = () => {
                                       >
                                         <div className='flex items-center gap-2'>
                                           <div
-                                            className={`size-2 rounded-full ${num >= 4 ? 'bg-red-500' : num >= 3 ? 'bg-orange-500' : 'bg-blue-500'}`}
+                                            className={`size-2 rounded-full ${num >= 4 ? 'bg-strategy-rose' : num >= 3 ? 'bg-strategy-gold-dark' : 'bg-strategy-emerald'}`}
                                           ></div>
                                           {num} -{' '}
                                           {num >= 4
@@ -1156,7 +1154,7 @@ const PriorityMatrixPage: React.FC = () => {
                           type='button'
                           variant='outline'
                           onClick={() => remove(index)}
-                          className='w-full border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 sm:w-auto'
+                          className='w-full border-strategy-rose/40 text-strategy-rose hover:border-strategy-rose/60 hover:bg-strategy-rose/10 sm:w-auto'
                         >
                           <Trash2 className='mr-2 size-4' /> Remove Task
                         </Button>
@@ -1168,7 +1166,7 @@ const PriorityMatrixPage: React.FC = () => {
                     onClick={() =>
                       append({ name: '', importance: '3', urgency: '3' })
                     }
-                    className='w-full border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg transition-all duration-200 hover:from-teal-600 hover:to-blue-700 hover:shadow-xl'
+                    className='w-full border-0 bg-strategy-gold text-precision-charcoal shadow-lg transition-all duration-200 hover:bg-strategy-gold/90 hover:shadow-xl'
                   >
                     <Plus className='mr-2 size-4' /> Add Priority Task
                   </Button>
@@ -1178,7 +1176,7 @@ const PriorityMatrixPage: React.FC = () => {
               <div className='flex justify-center pt-4'>
                 <Button
                   type='submit'
-                  className='bg-gradient-to-r from-teal-600 to-blue-700 px-8 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-teal-700 hover:to-blue-800 hover:shadow-xl'
+                  className='border-0 bg-strategy-gold px-8 py-3 text-lg font-semibold text-precision-charcoal shadow-lg transition-all duration-200 hover:scale-105 hover:bg-strategy-gold/90 hover:shadow-xl'
                 >
                   <Target className='mr-2 size-5' />
                   Generate Priority Matrix
@@ -1187,13 +1185,13 @@ const PriorityMatrixPage: React.FC = () => {
             </form>
 
             {matrixData.length > 0 && (
-              <div className='mt-12 border-t border-teal-200/50 pt-8 dark:border-teal-700/50'>
+              <div className='mt-12 border-t border-strategy-gold/20 pt-8'>
                 <div className='mb-8 text-center'>
-                  <H3 className='mb-2 flex items-center justify-center gap-2 text-xl font-semibold text-gray-900 dark:text-white'>
-                    <div className='size-3 rounded-full bg-gradient-to-r from-teal-500 to-blue-500'></div>
+                  <H3 className='mb-2 flex items-center justify-center gap-2 text-xl font-semibold text-text-foreground'>
+                    <div className='size-3 rounded-full bg-strategy-gold'></div>
                     Strategic Priority Matrix
                   </H3>
-                  <P className='text-sm text-gray-600 dark:text-gray-400'>
+                  <P className='text-sm text-text-secondary'>
                     Eisenhower Matrix visualization with targeted action
                     quadrants
                   </P>
@@ -1332,20 +1330,20 @@ const PriorityMatrixPage: React.FC = () => {
                   <Button
                     onClick={() => void handleExport('raw')}
                     variant='outline'
-                    className='border-teal-200 text-teal-700 hover:border-teal-300 hover:bg-teal-50 dark:border-teal-700 dark:text-teal-300 dark:hover:bg-teal-900/20'
+                    className='border-strategy-gold/20 bg-surface-deep/30 text-strategy-gold hover:border-strategy-gold/50 hover:bg-surface-elevated/50'
                   >
                     <Download className='mr-2 size-4' /> Export Raw XLSX
                   </Button>
                   <Button
                     onClick={() => void handleExport('formatted-xlsx')}
-                    className='border-0 bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg transition-all duration-200 hover:from-teal-600 hover:to-blue-700 hover:shadow-xl'
+                    className='border-0 bg-strategy-gold text-precision-charcoal shadow-lg transition-all duration-200 hover:bg-strategy-gold/90 hover:shadow-xl'
                   >
                     <Download className='mr-2 size-4' /> Export Matrix XLSX
                   </Button>
                   <Button
                     onClick={() => void handleExport('formatted-pdf')}
                     variant='outline'
-                    className='border-purple-200 text-purple-700 hover:border-purple-300 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/20'
+                    className='border-strategy-gold/20 bg-surface-deep/30 text-strategy-gold hover:border-strategy-gold/50 hover:bg-surface-elevated/50'
                   >
                     <Download className='mr-2 size-4' /> Export Matrix PDF
                   </Button>
