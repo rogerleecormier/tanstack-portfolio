@@ -165,30 +165,30 @@ export function R2Browser({
   }, []);
 
   return (
-    <Card className='flex flex-col border border-indigo-200/60 bg-gradient-to-br from-white/70 to-indigo-50/70 shadow-sm backdrop-blur dark:border-indigo-800/60 dark:bg-gradient-to-br dark:from-slate-900/70 dark:to-indigo-950/70'>
-      <CardHeader className='relative shrink-0 border-b border-indigo-200/60 dark:border-indigo-800/60'>
+    <Card className='flex flex-col border border-gold-500/20 bg-hunter-900/30 shadow-sm backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
+      <CardHeader className='relative shrink-0 border-b border-gold-500/10 dark:border-gold-500/10'>
         <CardTitle className='flex items-center gap-3'>
-          <div className='rounded-lg bg-gradient-to-br from-gold-600 to-gold-800 p-2 shadow-md'>
-            <FileText className='size-5 text-white' />
+          <div className='rounded-lg bg-hunter-900/60 p-2 shadow-md ring-1 ring-gold-500/20 backdrop-blur-md'>
+            <FileText className='size-5 text-gold-400' />
           </div>
           <div>
             <h3
-              className='bg-gradient-to-r from-gold-600 to-indigo-500 bg-clip-text text-lg font-semibold text-transparent dark:from-gold-400 dark:to-indigo-300'
+              className='text-lg font-semibold text-white dark:text-gold-400'
               style={{ fontWeight: 700 }}
             >
               Content Browser
             </h3>
-            <div className='mt-1 h-0.5 w-16 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
+            <div className='mt-1 h-0.5 w-16 rounded-full bg-gold-500/60'></div>
           </div>
         </CardTitle>
         <div className='mt-4 flex gap-3'>
           <div className='relative flex-1'>
-            <Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400' />
+            <Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-grey-400' />
             <Input
               placeholder='Search files...'
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className='border-indigo-200/60 pl-9 focus:border-indigo-500 dark:border-indigo-800/60 dark:focus:border-indigo-400'
+              className='border-gold-500/20 pl-9 focus:border-gold-500/50 dark:border-gold-500/20 dark:focus:border-gold-500/50'
             />
           </div>
           <Button
@@ -201,7 +201,7 @@ export function R2Browser({
         </div>
 
         {/* Enhanced Navigation */}
-        <div className='mt-3 flex items-center gap-3 border-t border-indigo-200/60 pt-3 dark:border-indigo-800/60'>
+        <div className='mt-3 flex items-center gap-3 border-t border-gold-500/10 pt-3 dark:border-gold-500/10'>
           {currentPrefix && (
             <Button
               variant='outline'
@@ -211,13 +211,13 @@ export function R2Browser({
                 parts.pop();
                 setCurrentPrefix(parts.length ? parts.join('/') + '/' : '');
               }}
-              className='border-indigo-600 text-gold-600 transition-all duration-200 hover:bg-indigo-50 dark:hover:bg-indigo-950'
+              className='border-gold-600/30 text-gold-600 transition-all duration-200 hover:bg-hunter-900/40 dark:hover:bg-hunter-900/30'
             >
               <ArrowLeft className='mr-1 size-4' /> Up
             </Button>
           )}
-          <div className='flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400'>
-            <div className='size-1.5 rounded-full bg-gold-500'></div>
+          <div className='flex items-center gap-2 text-sm text-grey-600 dark:text-grey-400'>
+            <div className='size-1.5 rounded-full bg-gold-500/60'></div>
             <span className='font-medium'>{currentPrefix || 'root'}</span>
           </div>
         </div>
@@ -230,14 +230,14 @@ export function R2Browser({
             return (
               <div
                 key={p}
-                className='flex cursor-pointer items-center justify-between rounded-lg border border-indigo-200/60 px-3 py-2.5 shadow-sm transition-all duration-200 hover:border-indigo-400 hover:bg-indigo-50/50 hover:shadow-md dark:border-indigo-800/60 dark:hover:border-indigo-600 dark:hover:bg-indigo-900/30'
+                className='flex cursor-pointer items-center justify-between rounded-lg border border-gold-500/20 px-3 py-2.5 shadow-sm transition-all duration-200 hover:border-gold-500/50 hover:bg-hunter-900/40 hover:shadow-md dark:border-gold-500/20 dark:hover:border-gold-500/50 dark:hover:bg-hunter-900/30'
                 onClick={() => setCurrentPrefix(p)}
               >
                 <div className='flex min-w-0 flex-1 items-center gap-3'>
-                  <div className='rounded-md bg-gradient-to-br from-gold-700 to-gold-800 p-1.5 dark:from-gold-600 dark:to-gold-700'>
-                    <Folder className='size-3.5 text-white' />
+                  <div className='rounded-md bg-hunter-900/60 p-1.5 ring-1 ring-gold-500/20 backdrop-blur-md'>
+                    <Folder className='size-3.5 text-gold-400' />
                   </div>
-                  <div className='truncate text-sm font-medium text-slate-800 dark:text-slate-200'>
+                  <div className='truncate text-sm font-medium text-grey-200 dark:text-grey-300'>
                     {name}
                   </div>
                 </div>
@@ -248,24 +248,24 @@ export function R2Browser({
           {filteredObjects.map(obj => (
             <div
               key={obj.key}
-              className={`flex cursor-pointer items-center justify-between rounded-lg border px-3 py-2.5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-indigo-800/60 ${
+              className={`flex cursor-pointer items-center justify-between rounded-lg border px-3 py-2.5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-gold-500/20 ${
                 loadingFile === obj.key
-                  ? 'border-indigo-300 bg-indigo-50 dark:border-indigo-600 dark:bg-indigo-900/30'
-                  : 'border-indigo-200/60 hover:border-indigo-300 hover:bg-indigo-50/50 dark:hover:border-indigo-600 dark:hover:bg-indigo-900/20'
+                  ? 'border-gold-500/50 bg-hunter-900/40 dark:border-gold-500/50 dark:bg-hunter-900/30'
+                  : 'border-gold-500/20 hover:border-gold-500/50 hover:bg-hunter-900/40 dark:hover:border-gold-500/50 dark:hover:bg-hunter-900/20'
               }`}
               onClick={() => void handleFileClick(obj.key)}
             >
               <div className='min-w-0 flex-1'>
-                <div className='flex items-center gap-2 truncate text-sm font-medium text-slate-800 dark:text-slate-200'>
+                <div className='flex items-center gap-2 truncate text-sm font-medium text-grey-200 dark:text-grey-300'>
                   {loadingFile === obj.key && (
                     <Loader className='size-3 animate-spin text-gold-600' />
                   )}
-                  <div className='rounded bg-gradient-to-br from-gold-600 to-gold-700 p-1'>
-                    <FileText className='size-2.5 text-white' />
+                  <div className='rounded bg-hunter-900/60 p-1 ring-1 ring-gold-500/20 backdrop-blur-md'>
+                    <FileText className='size-2.5 text-gold-400' />
                   </div>
                   {obj.key.replace(currentPrefix, '')}
                 </div>
-                <div className='mt-0.5 text-xs text-slate-500 dark:text-slate-400'>
+                <div className='mt-0.5 text-xs text-grey-500 dark:text-grey-400'>
                   {formatFileSize(obj.size)} • {formatDate(obj.uploaded)}
                 </div>
               </div>
@@ -273,7 +273,7 @@ export function R2Browser({
                 <Button
                   variant='ghost'
                   size='sm'
-                  className='size-7 p-0 hover:bg-indigo-100 dark:hover:bg-indigo-900/30'
+                  className='size-7 p-0 hover:bg-hunter-900/40 dark:hover:bg-hunter-900/30'
                   onClick={e => {
                     e.stopPropagation();
                     onFileDownload(obj.key);
@@ -304,12 +304,12 @@ export function R2Browser({
           {prefixes.length === 0 &&
             filteredObjects.length === 0 &&
             !loading && (
-              <div className='py-8 text-center text-slate-500 dark:text-slate-400'>
-                <div className='mx-auto mb-3 w-fit rounded-full bg-gradient-to-br from-slate-100 to-slate-200 p-3 dark:from-slate-800 dark:to-slate-700'>
-                  <FileText className='size-6 text-slate-400' />
+              <div className='py-8 text-center text-grey-500 dark:text-grey-400'>
+                <div className='mx-auto mb-3 w-fit rounded-full bg-hunter-900/40 p-3 backdrop-blur-md'>
+                  <FileText className='size-6 text-gold-400' />
                 </div>
                 <p className='text-sm font-medium'>No items found</p>
-                <p className='mt-1 text-xs text-slate-400 dark:text-slate-500'>
+                <p className='mt-1 text-xs text-grey-400 dark:text-grey-500'>
                   Try adjusting your search or navigate to a different folder
                 </p>
               </div>
@@ -346,7 +346,7 @@ export function R2Browser({
               Are you sure you want to delete this file? This action cannot be
               undone.
               <br />
-              <strong className='text-slate-700 dark:text-slate-300'>
+              <strong className='text-grey-300 dark:text-grey-200'>
                 {fileToDelete.replace(currentPrefix, '')}
               </strong>
             </AlertDialogDescription>

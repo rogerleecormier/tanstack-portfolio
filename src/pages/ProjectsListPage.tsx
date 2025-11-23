@@ -201,7 +201,7 @@ export default function ProjectsListPage() {
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
+      <div className='min-h-screen bg-hunter-950'>
         <div className='container mx-auto px-4 py-8'>
           {/* Hero Skeleton */}
           <div className='mb-12 text-center'>
@@ -222,7 +222,7 @@ export default function ProjectsListPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
-                className='h-80 border-0 bg-white/50 shadow-xl backdrop-blur-sm dark:bg-slate-900/50'
+                className='h-80 border-gold-500/20 bg-hunter-900/30 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'
               >
                 <CardHeader className='pb-3'>
                   <Skeleton className='mb-2 h-6 w-3/4' />
@@ -247,82 +247,78 @@ export default function ProjectsListPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
-      {/* Header with Targeting Theme - More Compact */}
-      <div className='relative overflow-hidden border-b border-hunter-200 dark:border-hunter-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
-
+    <div className='min-h-screen bg-hunter-950'>
+      {/* Header with Glassmorphism Theme */}
+      <div className='dark:border-grey-800 relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:bg-hunter-950/30'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
-            {/* Icon and Title with Targeting Theme */}
+            {/* Icon and Title with Glassmorphism Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-500 to-slate-600 shadow-lg'>
-                  <Briefcase className='size-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-hunter-900/60 shadow-lg ring-1 ring-gold-500/20 backdrop-blur-md'>
+                  <Briefcase className='size-7 text-gold-400' />
                 </div>
-                {/* Targeting indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-purple-600'>
-                  <div className='size-2 rounded-full bg-white'></div>
+                {/* Content indicator dots */}
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-hunter-800/80 backdrop-blur-sm'>
+                  <div className='size-2 rounded-full bg-gold-400'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-slate-500'>
-                  <div className='size-1.5 rounded-full bg-white'></div>
+                <div className='bg-grey-700/60 absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full backdrop-blur-sm'>
+                  <div className='size-1.5 rounded-full bg-gold-300'></div>
                 </div>
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
-                    Projects & Case Studies
-                  </span>
+                  <span className='text-gold-400'>Projects & Case Studies</span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gold-500/50'></div>
               </div>
             </div>
 
-            {/* Description with Targeting Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
+            {/* Description with Glassmorphism Theme */}
+            <p className='text-grey-300 mx-auto max-w-3xl text-lg leading-7'>
               Real-world projects and case studies showcasing delivered impact
               across enterprise transformation and technology modernization.
               <span className='font-medium text-gold-300'>
                 {' '}
-                Target your challenges{' '}
+                Proven solutions{' '}
               </span>
-              with proven solutions and measurable business outcomes.
+              with measurable business outcomes and expert execution.
             </p>
 
-            {/* Quick Stats with Targeting Theme */}
+            {/* Quick Stats with Glassmorphism Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
-                <span>Strategic Targeting</span>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+                <div className='size-2 rounded-full bg-gold-500/60'></div>
+                <span>Strategic Insights</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
-                <span>On-Point Analysis</span>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+                <div className='size-2 rounded-full bg-gold-500/60'></div>
+                <span>Proven Delivery</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-purple-500'></div>
-                <span>Expert Execution</span>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+                <div className='size-2 rounded-full bg-gold-500/60'></div>
+                <span>Business Impact</span>
               </div>
             </div>
 
             <div className='mt-6 flex flex-wrap justify-center gap-3'>
               <Badge
                 variant='secondary'
-                className='bg-hunter-100 px-3 py-1.5 text-sm text-hunter-800 dark:bg-hunter-900 dark:text-hunter-200'
+                className='border-gold-500/30 bg-gold-600/20 px-3 py-1.5 text-sm text-gold-300 dark:border-gold-500/30 dark:bg-gold-600/20 dark:text-gold-300'
               >
                 <BarChart3 className='mr-1.5 size-4' />
                 Data Analysis
               </Badge>
               <Badge
                 variant='secondary'
-                className='bg-slate-200 px-3 py-1.5 text-sm text-slate-900 dark:bg-slate-800 dark:text-slate-100'
+                className='border-gold-500/30 bg-gold-600/20 px-3 py-1.5 text-sm text-gold-300 dark:border-gold-500/30 dark:bg-gold-600/20 dark:text-gold-300'
               >
                 <Briefcase className='mr-1.5 size-4' />
                 Project Management
               </Badge>
               <Badge
                 variant='secondary'
-                className='bg-hunter-100 px-3 py-1.5 text-sm text-hunter-800 dark:bg-hunter-900 dark:text-hunter-200'
+                className='border-gold-500/30 bg-gold-600/20 px-3 py-1.5 text-sm text-gold-300 dark:border-gold-500/30 dark:bg-gold-600/20 dark:text-gold-300'
               >
                 <User className='mr-1.5 size-4' />
                 Digital Transformation
@@ -334,23 +330,23 @@ export default function ProjectsListPage() {
 
       {/* Main Content Area */}
       <div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
-        {/* Search and Filters with Blue Accent */}
-        <div className='mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900'>
+        {/* Search and Filters with Glassmorphism */}
+        <div className='mb-8 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-6 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
           <div className='flex flex-col gap-4 sm:flex-row'>
             <div className='relative flex-1'>
-              <Search className='absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400' />
+              <Search className='absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gold-400' />
               <Input
                 placeholder='Search projects and case studies...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className='h-11 border-gray-200 pl-12 focus:border-hunter-500 focus:ring-hunter-500/20 dark:border-gray-700'
+                className='placeholder-grey-500 h-11 border-gold-500/20 bg-hunter-800/50 pl-12 text-white focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
               />
             </div>
             {allTags.length > 0 && (
               <Button
                 variant='outline'
                 onClick={() => setIsTagFilterOpen(true)}
-                className='flex h-11 items-center gap-2 border-gray-200 px-6 hover:border-hunter-300 hover:bg-hunter-50 dark:border-gray-700 dark:hover:bg-hunter-950/20'
+                className='flex h-11 items-center gap-2 border-gold-500/20 bg-hunter-800/30 px-6 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
               >
                 <Filter className='size-4' />
                 Topics {selectedTags.length > 0 && `(${selectedTags.length})`}
@@ -360,7 +356,7 @@ export default function ProjectsListPage() {
               <Button
                 variant='outline'
                 onClick={clearFilters}
-                className='flex h-11 items-center gap-2 border-gray-200 px-6 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
+                className='flex h-11 items-center gap-2 border-gold-500/20 bg-hunter-800/30 px-6 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
               >
                 <X className='size-4' />
                 Clear
@@ -370,9 +366,9 @@ export default function ProjectsListPage() {
 
           {/* Selected Tags Display */}
           {selectedTags.length > 0 && (
-            <div className='mt-4 border-t border-gray-200 pt-4 dark:border-gray-700'>
+            <div className='mt-4 border-t border-gold-500/20 pt-4 dark:border-gold-500/20'>
               <div className='mb-3 flex items-center gap-2'>
-                <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+                <span className='text-sm font-medium text-gold-400 dark:text-gold-400'>
                   Active filters:
                 </span>
               </div>
@@ -381,7 +377,7 @@ export default function ProjectsListPage() {
                   <Badge
                     key={tag}
                     variant='default'
-                    className='btn-hunter cursor-pointer border-0'
+                    className='cursor-pointer border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
                     onClick={() => toggleTag(tag)}
                   >
                     <Tag className='mr-1 size-3' />
@@ -396,10 +392,12 @@ export default function ProjectsListPage() {
 
         {/* Tag Filter Dialog */}
         <Dialog open={isTagFilterOpen} onOpenChange={setIsTagFilterOpen}>
-          <DialogContent className='sm:max-w-md'>
+          <DialogContent className='z-[200] border-gold-500/20 bg-hunter-900/50 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30 sm:max-w-md'>
             <DialogHeader>
-              <DialogTitle>Filter by Topics</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className='text-gold-400'>
+                Filter by Topics
+              </DialogTitle>
+              <DialogDescription className='text-grey-300'>
                 Select topics to filter projects. Choose multiple topics to see
                 projects that match any of them.
               </DialogDescription>
@@ -414,8 +412,8 @@ export default function ProjectsListPage() {
                     onClick={() => toggleTag(tag)}
                     className={`h-auto justify-start px-3 py-2 text-left ${
                       selectedTags.includes(tag)
-                        ? 'btn-hunter border-0'
-                        : 'border-gray-200 hover:border-hunter-300 hover:bg-hunter-50 dark:border-gray-700 dark:hover:bg-hunter-950/20'
+                        ? 'border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
+                        : 'border-gold-500/30 text-gold-400 hover:border-gold-500/60 hover:bg-hunter-800/50 dark:border-gold-500/30 dark:text-gold-400 dark:hover:bg-hunter-800/70'
                     }`}
                   >
                     <Tag className='mr-2 size-3 shrink-0' />
@@ -424,14 +422,14 @@ export default function ProjectsListPage() {
                 ))}
               </div>
             </div>
-            <div className='flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-700'>
+            <div className='flex items-center justify-between border-t border-gold-500/20 pt-4 dark:border-gold-500/20'>
               <Button
                 variant='outline'
                 onClick={() => {
                   setSelectedTags([]);
                   setIsTagFilterOpen(false);
                 }}
-                className='text-gray-600 dark:text-gray-400'
+                className='border-gold-500/20 bg-hunter-800/30 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
               >
                 Clear All
               </Button>
@@ -439,12 +437,13 @@ export default function ProjectsListPage() {
                 <Button
                   variant='outline'
                   onClick={() => setIsTagFilterOpen(false)}
+                  className='border-gold-500/20 bg-hunter-800/30 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={() => setIsTagFilterOpen(false)}
-                  className='btn-hunter'
+                  className='border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
                 >
                   Apply Filters ({selectedTags.length})
                 </Button>
@@ -459,7 +458,7 @@ export default function ProjectsListPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
-                className='h-full border-gray-200 dark:border-gray-700'
+                className='h-full border-gold-500/20 bg-hunter-900/30 dark:border-gold-500/20 dark:bg-hunter-900/30'
               >
                 <CardHeader>
                   <Skeleton className='mb-2 h-6 w-3/4' />
@@ -482,15 +481,13 @@ export default function ProjectsListPage() {
             ))}
           </div>
         ) : filteredProjects.length === 0 ? (
-          <Card className='border-0 bg-white/70 py-16 text-center shadow-xl backdrop-blur-sm dark:bg-slate-900/70'>
+          <Card className='border-gold-500/20 bg-hunter-900/30 py-16 text-center dark:border-gold-500/20 dark:bg-hunter-900/30'>
             <CardContent>
-              <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-hunter-100 to-teal-100 dark:from-hunter-900/50 dark:to-teal-900/50'>
-                <Briefcase className='size-8 text-blue-600 dark:text-blue-400' />
+              <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-hunter-800/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
+                <Briefcase className='size-8 text-gold-400' />
               </div>
-              <H3 className='mb-3 text-gray-800 dark:text-gray-200'>
-                No projects found
-              </H3>
-              <P className='mx-auto max-w-md text-gray-500 dark:text-gray-400'>
+              <H3 className='text-grey-100 mb-3'>No projects found</H3>
+              <P className='text-grey-400 mx-auto max-w-md'>
                 {searchQuery || selectedTags.length > 0
                   ? 'Try adjusting your search or filters'
                   : 'No projects have been published yet'}
@@ -501,9 +498,7 @@ export default function ProjectsListPage() {
           <>
             {/* All Projects Grid */}
             <div className='mb-8'>
-              <H2 className='mb-6 text-gray-800 dark:text-gray-200'>
-                Projects & Case Studies
-              </H2>
+              <H2 className='mb-6 text-gold-400'>Projects & Case Studies</H2>
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
                 {displayedProjects.map(project => {
                   const categoryIcon = categoryIcons[project.category] ?? (
@@ -512,27 +507,27 @@ export default function ProjectsListPage() {
                   return (
                     <Card
                       key={project.id}
-                      className='group flex h-full flex-col border-0 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:shadow-xl dark:bg-gray-900/80 dark:hover:bg-gray-900'
+                      className='group flex h-full flex-col border-gold-500/20 bg-hunter-900/30 transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-800/40 dark:border-gold-500/20 dark:bg-hunter-900/30'
                     >
                       <CardHeader className='shrink-0 pb-3'>
                         <div className='mb-2 flex items-center justify-between'>
                           <Badge
                             variant='outline'
-                            className='border-hunter-200 text-xs text-hunter-700 dark:border-hunter-700 dark:text-hunter-300'
+                            className='border-gold-500/30 text-xs text-gold-300 dark:border-gold-500/30 dark:text-gold-300'
                           >
                             {categoryIcon}
                             {project.category}
                           </Badge>
                           {project.date && (
-                            <span className='text-xs text-gray-500 dark:text-gray-400'>
+                            <span className='text-grey-500 dark:text-grey-500 text-xs'>
                               {new Date(project.date).getFullYear()}
                             </span>
                           )}
                         </div>
-                        <CardTitle className='text-xl font-bold text-gray-900 transition-colors group-hover:text-hunter-600 dark:text-white dark:group-hover:text-hunter-400'>
+                        <CardTitle className='text-xl font-bold text-white transition-colors group-hover:text-gold-400 dark:text-white dark:group-hover:text-gold-400'>
                           {project.title}
                         </CardTitle>
-                        <CardDescription className='text-sm leading-relaxed text-gray-600 dark:text-gray-300'>
+                        <CardDescription className='text-grey-300 text-sm leading-relaxed'>
                           {project.description}
                         </CardDescription>
                       </CardHeader>
@@ -543,7 +538,7 @@ export default function ProjectsListPage() {
                             <Badge
                               key={index}
                               variant='secondary'
-                              className='bg-hunter-50 px-2 py-0.5 text-xs text-hunter-700 dark:bg-hunter-900/50 dark:text-hunter-300'
+                              className='border-gold-500/30 bg-gold-600/20 px-2 py-0.5 text-xs text-gold-300 dark:border-gold-500/30 dark:bg-gold-600/20 dark:text-gold-300'
                             >
                               {tag}
                             </Badge>
@@ -551,7 +546,7 @@ export default function ProjectsListPage() {
                           {project.tags.length > 3 && (
                             <Badge
                               variant='secondary'
-                              className='bg-gray-100 px-2 py-0.5 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                              className='border-grey-600/30 bg-grey-700/50 text-grey-300 dark:border-grey-600/30 dark:bg-grey-700/50 dark:text-grey-300 px-2 py-0.5 text-xs'
                             >
                               +{project.tags.length - 3} more
                             </Badge>
@@ -559,7 +554,7 @@ export default function ProjectsListPage() {
                         </div>
 
                         <div className='mt-auto'>
-                          <div className='mb-2 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400'>
+                          <div className='text-grey-500 dark:text-grey-500 mb-2 flex items-center justify-between text-xs'>
                             <div className='flex items-center'>
                               <Calendar className='mr-1 size-3' />
                               <span>
@@ -575,7 +570,7 @@ export default function ProjectsListPage() {
                           </div>
                           <Button
                             onClick={() => handleProjectClick(project.id)}
-                            className='btn-hunter w-full border-0 py-2 text-sm text-white'
+                            className='w-full border-0 bg-gold-600/70 py-2 text-sm text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
                           >
                             View Project
                             <ArrowRight className='ml-1.5 size-3 transition-transform group-hover:translate-x-1' />
@@ -591,8 +586,8 @@ export default function ProjectsListPage() {
             {/* Loading indicator for infinite scroll */}
             {displayedProjects.length < filteredProjects.length && (
               <div ref={loadingRef} className='py-12 text-center'>
-                <div className='inline-flex items-center gap-3 text-gray-500 dark:text-gray-400'>
-                  <div className='size-6 animate-spin rounded-full border-b-2 border-hunter-600'></div>
+                <div className='text-grey-400 dark:text-grey-400 inline-flex items-center gap-3'>
+                  <div className='size-6 animate-spin rounded-full border-b-2 border-gold-500'></div>
                   <span className='font-medium'>Loading more projects...</span>
                 </div>
               </div>
@@ -602,10 +597,10 @@ export default function ProjectsListPage() {
             {displayedProjects.length === filteredProjects.length &&
               filteredProjects.length > 0 && (
                 <div className='py-12 text-center'>
-                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-100 to-teal-100 dark:from-hunter-900/50 dark:to-teal-900/50'>
-                    <Briefcase className='size-6 text-blue-600 dark:text-blue-400' />
+                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gold-500/20'>
+                    <Briefcase className='size-6 text-gold-400' />
                   </div>
-                  <p className='font-medium text-gray-500 dark:text-gray-400'>
+                  <p className='font-medium text-gold-400/60'>
                     You've reached the end of all projects
                   </p>
                 </div>
@@ -613,13 +608,13 @@ export default function ProjectsListPage() {
           </>
         )}
 
-        {/* Methodology Section - More Compact */}
-        <div className='mb-12 rounded-xl bg-gradient-to-r from-hunter-50 to-slate-50 p-6 dark:from-hunter-950/50 dark:to-slate-950/50'>
+        {/* Methodology Section - Glassmorphism */}
+        <div className='mb-12 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-6 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
           <div className='mb-6 text-center'>
-            <h3 className='mb-3 text-xl font-bold text-gray-900 dark:text-white'>
+            <h3 className='mb-3 text-xl font-bold text-gold-400'>
               Analytical Approach
             </h3>
-            <p className='mx-auto max-w-3xl text-base text-gray-600 dark:text-gray-300'>
+            <p className='text-grey-300 mx-auto max-w-3xl text-base'>
               My projects follow a structured methodology combining quantitative
               analysis, industry best practices, and practical implementation
               strategies.
@@ -628,26 +623,26 @@ export default function ProjectsListPage() {
 
           <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
             <div className='text-center'>
-              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-500 to-hunter-600'>
-                <BarChart3 className='size-6 text-white' />
+              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-lg bg-gold-500/20'>
+                <BarChart3 className='size-6 text-gold-400' />
               </div>
-              <h4 className='mb-1.5 text-sm font-semibold text-gray-900 dark:text-white'>
+              <h4 className='mb-1.5 text-sm font-semibold text-gold-300'>
                 Data-Driven Insights
               </h4>
-              <p className='text-xs text-gray-600 dark:text-gray-300'>
+              <p className='text-grey-400 text-xs'>
                 Comprehensive data analysis using statistical methods and
                 visualization techniques
               </p>
             </div>
 
             <div className='text-center'>
-              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-500 to-hunter-600'>
-                <TrendingUp className='size-6 text-white' />
+              <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-lg bg-gold-500/20'>
+                <TrendingUp className='size-6 text-gold-400' />
               </div>
-              <h4 className='mb-1.5 text-sm font-semibold text-gray-900 dark:text-white'>
+              <h4 className='mb-1.5 text-sm font-semibold text-gold-300'>
                 Strategic Recommendations
               </h4>
-              <p className='text-xs text-gray-600 dark:text-gray-300'>
+              <p className='text-grey-400 text-xs'>
                 Actionable insights and implementation roadmaps for business
                 impact
               </p>

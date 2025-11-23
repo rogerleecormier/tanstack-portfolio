@@ -532,8 +532,8 @@ export const SiteAdminPage: React.FC = () => {
     return (
       <div className='flex min-h-screen items-center justify-center'>
         <div className='text-center'>
-          <Loader2 className='mx-auto mb-4 size-12 animate-spin text-hunter-600' />
-          <P className='text-hunter-600'>
+          <Loader2 className='mx-auto mb-4 size-12 animate-spin text-gold-600' />
+          <P className='text-gold-600'>
             {isDevelopment
               ? 'Verifying development authentication...'
               : 'Authenticating with Cloudflare Access...'}
@@ -592,7 +592,7 @@ export const SiteAdminPage: React.FC = () => {
 
               <Button
                 onClick={() => (window.location.href = '/')}
-                className='flex w-full items-center justify-center space-x-2 bg-hunter-600 transition-all duration-200 hover:bg-hunter-700 focus:ring-2 focus:ring-hunter-500 focus:ring-offset-2'
+                className='flex w-full items-center justify-center space-x-2 bg-gold-600 transition-all duration-200 hover:bg-gold-700 focus:ring-2 focus:ring-gold-500 focus:ring-offset-2'
               >
                 <span>Return to Portfolio</span>
                 <ArrowRight className='size-4' />
@@ -605,10 +605,10 @@ export const SiteAdminPage: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-hunter-950 to-slate-900 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
       {/* Header with Administrative Theme - System Management Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        <div className='from-gold-600/3 via-slate-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-slate-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
+        <div className='from-gold-600/3 via-gold-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-gold-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
@@ -637,7 +637,7 @@ export const SiteAdminPage: React.FC = () => {
             </div>
 
             {/* Description with Admin Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300 dark:text-slate-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300 dark:text-grey-300'>
               Monitor system health, manage services, and oversee
               <span className='font-medium text-gold-600 dark:text-gold-400'>
                 {' '}
@@ -670,17 +670,17 @@ export const SiteAdminPage: React.FC = () => {
           {/* Left Column - User Profile & System Info */}
           <div className='space-y-6'>
             {/* User Profile Card */}
-            <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='border border-0 border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
                   <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
                     <Users className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-slate-100'>
+                    <CardTitle className='text-xl font-semibold text-grey-100'>
                       User Profile
                     </CardTitle>
-                    <CardDescription className='text-slate-300'>
+                    <CardDescription className='text-grey-300'>
                       Current authentication details
                     </CardDescription>
                   </div>
@@ -688,35 +688,35 @@ export const SiteAdminPage: React.FC = () => {
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='grid grid-cols-1 gap-4'>
-                  <div className='rounded-lg bg-slate-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-slate-400'>
+                  <div className='rounded-lg bg-hunter-800 p-4'>
+                    <div className='mb-1 text-sm font-medium text-grey-400'>
                       Email
                     </div>
-                    <div className='truncate font-medium text-slate-100'>
+                    <div className='truncate font-medium text-grey-100'>
                       {user?.email}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-slate-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-slate-400'>
+                  <div className='rounded-lg bg-hunter-800 p-4'>
+                    <div className='mb-1 text-sm font-medium text-grey-400'>
                       Name
                     </div>
-                    <div className='font-medium text-slate-100'>
+                    <div className='font-medium text-grey-100'>
                       {user?.name ?? 'Not provided'}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-slate-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-slate-400'>
+                  <div className='rounded-lg bg-hunter-800 p-4'>
+                    <div className='mb-1 text-sm font-medium text-grey-400'>
                       Authentication
                     </div>
-                    <div className='font-medium text-slate-100'>
+                    <div className='font-medium text-grey-100'>
                       {isDevelopment ? 'Development' : 'Cloudflare Access'}
                     </div>
                   </div>
-                  <div className='rounded-lg bg-slate-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-slate-400'>
+                  <div className='rounded-lg bg-hunter-800 p-4'>
+                    <div className='mb-1 text-sm font-medium text-grey-400'>
                       Environment
                     </div>
-                    <div className='font-medium text-slate-100'>
+                    <div className='font-medium text-grey-100'>
                       {isDevelopment ? 'Development' : 'Production'}
                     </div>
                   </div>
@@ -725,26 +725,26 @@ export const SiteAdminPage: React.FC = () => {
             </Card>
 
             {/* System Information */}
-            <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='border border-0 border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
                   <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
                     <Settings className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-slate-100'>
+                    <CardTitle className='text-xl font-semibold text-grey-100'>
                       System Status
                     </CardTitle>
-                    <CardDescription className='text-slate-300'>
+                    <CardDescription className='text-grey-300'>
                       Current system health and security
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className='space-y-4'>
-                <div className='rounded-lg bg-slate-800 p-4'>
+                <div className='rounded-lg bg-hunter-800 p-4'>
                   <div className='flex items-center justify-between'>
-                    <span className='font-medium text-slate-100'>
+                    <span className='font-medium text-grey-100'>
                       Authentication Status
                     </span>
                     <div className='flex items-center gap-2'>
@@ -776,7 +776,7 @@ export const SiteAdminPage: React.FC = () => {
 
           {/* Middle Column - Protected Pages Navigation */}
           <div className='space-y-6'>
-            <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='border border-0 border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
                   <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
@@ -842,7 +842,7 @@ export const SiteAdminPage: React.FC = () => {
           {/* Right Column - API Health Monitoring */}
           <div className='space-y-6'>
             {/* API Health Dashboard */}
-            <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='border border-0 border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
                   <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
@@ -1126,7 +1126,9 @@ export const SiteAdminPage: React.FC = () => {
                       <Database className='size-4 text-cyan-600' />
                     </div>
                     <div>
-                      <div className='font-medium text-slate-100'>R2 Bucket</div>
+                      <div className='font-medium text-slate-100'>
+                        R2 Bucket
+                      </div>
                       <div className='text-sm text-slate-300'>
                         files.rcormier.dev connectivity
                       </div>
@@ -1208,7 +1210,7 @@ export const SiteAdminPage: React.FC = () => {
               apiResults.smartRecommendations ??
               apiResults.r2Bucket ??
               apiResults.cloudflareAccess) && (
-              <Card className='border-0 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+              <Card className='border border-0 border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
                 <CardHeader className='pb-6'>
                   <div className='flex items-center gap-4'>
                     <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>

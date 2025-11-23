@@ -132,7 +132,7 @@ const PrivateToolsPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-hunter-950 to-slate-900 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
       {/* Header with Administrative Theme - Tools Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
         <div className='from-hunter-600/3 via-slate-600/3 to-hunter-600/3 dark:from-hunter-400/8 dark:via-slate-400/8 dark:to-hunter-400/8 absolute inset-0 bg-gradient-to-r'></div>
@@ -295,7 +295,7 @@ const PrivateToolsPage: React.FC = () => {
 
         {/* Coming Soon Section */}
         <div className='text-center'>
-            <Card className='border-hunter-500/30 bg-gradient-to-r from-slate-800 via-slate-800 to-slate-900'>
+          <Card className='border-hunter-500/30 bg-gradient-to-r from-slate-800 via-slate-800 to-slate-900'>
             <CardContent className='p-8'>
               <div className='mb-4 flex items-center justify-center'>
                 <div className='flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/20'>

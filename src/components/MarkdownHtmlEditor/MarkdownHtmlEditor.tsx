@@ -55,10 +55,10 @@ export function MarkdownHtmlEditor({
   return (
     <div
       ref={editorRef}
-      className='flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200/60 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-slate-700/60 dark:bg-slate-900/70'
+      className='flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl supports-[backdrop-filter]:bg-hunter-900/30 dark:border-gold-500/20 dark:bg-hunter-900/30'
     >
       {/* Toolbar */}
-      <div className='shrink-0 border-b border-slate-200/60 dark:border-slate-700/60'>
+      <div className='shrink-0 border-b border-gold-500/10 dark:border-gold-500/10'>
         <div className='px-4 py-3'>
           <div className='flex items-center justify-between gap-3'>
             <div className='flex items-center gap-4'>
@@ -67,10 +67,10 @@ export function MarkdownHtmlEditor({
                 value={activeTab}
                 onValueChange={value => setActiveTab(value as typeof activeTab)}
               >
-                <TabsList className='border border-slate-200/60 bg-white/80 dark:border-slate-700/60 dark:bg-slate-800/80'>
+                <TabsList className='border border-gold-500/20 bg-hunter-900/40 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
                   <TabsTrigger
                     value='wysiwyg'
-                    className='transition-colors data-[state=active]:bg-hunter-600 data-[state=active]:text-white'
+                    className='transition-colors data-[state=active]:bg-gold-500/30 data-[state=active]:text-gold-300 data-[state=active]:ring-1 data-[state=active]:ring-gold-500/30'
                   >
                     WYSIWYG
                   </TabsTrigger>
@@ -124,7 +124,7 @@ export function MarkdownHtmlEditor({
                     variant='outline'
                     size='sm'
                     onClick={() => setShowPreview(v => !v)}
-                    className='rounded-md border-slate-600 text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-950'
+                    className='rounded-md border-gold-600/30 text-gold-600 hover:bg-gold-500/10 dark:hover:bg-gold-500/10'
                   >
                     {showPreview ? (
                       <EyeOff className='size-4' />
@@ -154,18 +154,18 @@ export function MarkdownHtmlEditor({
         >
           <div className='flex min-h-0 min-w-0 flex-col'>
             {/* Editor Container with Enhanced Styling */}
-            <div className='flex-1 overflow-hidden rounded-xl border border-slate-200/60 bg-white/70 backdrop-blur dark:border-slate-700/60 dark:bg-slate-900/70'>
+            <div className='flex-1 overflow-hidden rounded-xl border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
               {/* Editor Mode Indicator */}
-              <div className='flex items-center justify-between border-b border-slate-200/60 px-4 py-2 dark:border-slate-700/60'>
+              <div className='flex items-center justify-between border-b border-gold-500/10 px-4 py-2 dark:border-gold-500/10'>
                 <div className='flex items-center gap-2'>
-                  <div className='size-2 rounded-full bg-hunter-600'></div>
-                  <span className='text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300'>
+                  <div className='size-2 rounded-full bg-gold-500/60'></div>
+                  <span className='text-xs font-medium uppercase tracking-wide text-gold-300 dark:text-gold-300'>
                     {activeTab === 'wysiwyg'
                       ? 'Rich Text Editor'
                       : 'Markdown Editor'}
                   </span>
                 </div>
-                <div className='text-xs text-muted-foreground'>
+                <div className='text-xs text-grey-400'>
                   {markdown.length} characters
                 </div>
               </div>
@@ -190,12 +190,12 @@ export function MarkdownHtmlEditor({
           {showPreview && (
             <div className='flex min-h-0 min-w-0 flex-col'>
               {/* Preview Container with Enhanced Styling */}
-              <div className='flex-1 overflow-hidden rounded-xl border border-slate-200/60 bg-white/70 backdrop-blur dark:border-slate-700/60 dark:bg-slate-900/70'>
+              <div className='flex-1 overflow-hidden rounded-xl border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
                 {/* Preview Header */}
-                <div className='flex items-center justify-between border-b border-slate-200/60 px-4 py-2 dark:border-slate-700/60'>
+                <div className='flex items-center justify-between border-b border-gold-500/10 px-4 py-2 dark:border-gold-500/10'>
                   <div className='flex items-center gap-2'>
-                    <div className='size-2 rounded-full bg-slate-600'></div>
-                    <span className='text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300'>
+                    <div className='size-2 rounded-full bg-gold-500/60'></div>
+                    <span className='text-xs font-medium uppercase tracking-wide text-gold-300 dark:text-gold-300'>
                       Live Preview
                     </span>
                   </div>

@@ -170,41 +170,31 @@ const ToolsListPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-hunter-950'>
       {/* Header Section */}
-      <div className='relative overflow-hidden border-b border-hunter-600/20'>
-        <div className='absolute inset-0 bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
+      <div className='relative overflow-hidden border-b border-gold-500/20 bg-hunter-950/40 backdrop-blur-xl'>
 
         <div className='relative px-4 py-12 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             <div className='mb-6 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-500 to-slate-600 shadow-lg'>
-                  <Wrench className='size-7 text-white' />
-                </div>
-                {/* Targeting indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-purple-600'>
-                  <div className='size-2 rounded-full bg-white'></div>
-                </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-slate-500'>
-                  <div className='size-1.5 rounded-full bg-white'></div>
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-hunter-900/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
+                  <Wrench className='size-7 text-gold-400' />
                 </div>
               </div>
               <div>
-                <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
-                    Tools & Resources
-                  </span>
+                <h1 className='text-4xl font-bold tracking-tight text-gold-400 sm:text-5xl lg:text-6xl'>
+                  Tools & Resources
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gold-500/40'></div>
               </div>
             </div>
 
             {/* Description with Targeting Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
               Strategic utilities and professional tools to enhance your
               workflow and productivity.
-              <span className='font-medium text-gold-300'>
+              <span className='font-medium text-gold-400'>
                 {' '}
                 Target your efficiency{' '}
               </span>
@@ -213,16 +203,16 @@ const ToolsListPage: React.FC = () => {
 
             {/* Quick Stats */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
+                <div className='size-2 rounded-full bg-gold-500/50'></div>
                 <span>Workflow Tools</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
+                <div className='size-2 rounded-full bg-gold-500/50'></div>
                 <span>Productivity Boost</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-purple-500'></div>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
+                <div className='size-2 rounded-full bg-gold-500/50'></div>
                 <span>Strategic Automation</span>
               </div>
             </div>
@@ -237,7 +227,7 @@ const ToolsListPage: React.FC = () => {
           {tools.map(tool => (
             <Card
               key={tool.id}
-              className='group border border-gray-200 transition-all duration-200 hover:border-gray-300 hover:shadow-lg'
+              className='group border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl transition-all duration-200 hover:border-gold-500/40 hover:bg-hunter-900/40'
             >
               <CardHeader className='pb-3'>
                 <div className='flex items-start justify-between'>
@@ -275,7 +265,7 @@ const ToolsListPage: React.FC = () => {
                       <Badge
                         key={index}
                         variant='secondary'
-                        className='border-slate-600/30 bg-slate-700/50 text-xs text-slate-300'
+                        className='border-gold-500/30 bg-gold-500/20 text-xs text-gold-300'
                       >
                         {feature}
                       </Badge>
@@ -283,8 +273,10 @@ const ToolsListPage: React.FC = () => {
                   </div>
                 </div>
 
+
+
                 <div className='flex items-center justify-between'>
-                  <div className='text-sm text-slate-400'>
+                  <div className='text-sm text-grey-400'>
                     {tool.status === 'active'
                       ? 'Ready to use'
                       : tool.status === 'beta'
@@ -296,7 +288,7 @@ const ToolsListPage: React.FC = () => {
                     <Button
                       asChild
                       size='sm'
-                      className='border-0 bg-gradient-to-r from-hunter-600 to-hunter-500 text-white transition-all hover:from-hunter-500 hover:to-hunter-400 hover:shadow-lg'
+                      className='border-0 bg-gold-600 text-hunter-950 transition-all hover:bg-gold-500 hover:shadow-lg'
                     >
                       <Link to={tool.url}>
                         Open Tool
@@ -312,7 +304,7 @@ const ToolsListPage: React.FC = () => {
                       disabled
                       size='sm'
                       variant='outline'
-                      className='cursor-not-allowed border-slate-600/30 bg-slate-800/30 text-slate-500'
+                      className='cursor-not-allowed border-grey-600/30 bg-grey-800/30 text-grey-500'
                     >
                       Coming Soon
                     </Button>
@@ -325,17 +317,17 @@ const ToolsListPage: React.FC = () => {
 
         {/* More Tools Coming Soon */}
         <div className='text-center'>
-          <Card className='border-hunter-600/20 bg-slate-900/40 backdrop-blur-sm'>
+          <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
             <CardContent className='p-8'>
               <div className='mb-4 flex items-center justify-center'>
-                <div className='flex size-12 items-center justify-center rounded-xl bg-hunter-600/15'>
-                  <Wrench className='size-6 text-hunter-400' />
+                <div className='flex size-12 items-center justify-center rounded-xl bg-hunter-900/60 ring-1 ring-gold-500/20'>
+                  <Wrench className='size-6 text-gold-400' />
                 </div>
               </div>
               <H2 className='mb-2 text-2xl font-bold text-white'>
                 Need a Custom Tool?
               </H2>
-              <P className='mx-auto mb-4 max-w-2xl text-slate-300'>
+              <P className='mx-auto mb-4 max-w-2xl text-grey-300'>
                 I build automation tools and utilities tailored to specific
                 workflows. Let me know what would be most helpful for your
                 needs.
@@ -343,7 +335,7 @@ const ToolsListPage: React.FC = () => {
               <Button
                 asChild
                 variant='outline'
-                className='border-hunter-600/40 text-hunter-400 hover:border-hunter-600/60 hover:bg-hunter-600/10'
+                className='border-gold-500/30 text-gold-400 hover:border-gold-500/50 hover:bg-gold-500/10'
               >
                 <Link to='/contact'>
                   Suggest a Tool

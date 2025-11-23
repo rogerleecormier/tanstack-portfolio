@@ -289,7 +289,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-hunter-950 to-slate-900 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
       {/* Header with Administrative Theme - Settings Focused */}
       <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
         <div className='from-gold-600/3 via-slate-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-slate-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
@@ -335,7 +335,7 @@ export default function SettingsPage() {
         <Card className='mb-8 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
-                            <div className='flex items-center gap-4'>
+              <div className='flex items-center gap-4'>
                 <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
                   <User className='size-6 text-gold-600' />
                 </div>
@@ -544,14 +544,18 @@ export default function SettingsPage() {
                   <Label className='text-sm font-medium text-slate-400'>
                     Name
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>{profile.name}</p>
+                  <p className='text-lg font-medium text-slate-100'>
+                    {profile.name}
+                  </p>
                 </div>
 
                 <div>
                   <Label className='text-sm font-medium text-slate-400'>
                     Age
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>{profile.age} years old</p>
+                  <p className='text-lg font-medium text-slate-100'>
+                    {profile.age} years old
+                  </p>
                   <p className='text-sm text-slate-400'>
                     {profile.birthdate
                       ? `Born ${formatDateInTimezone(profile.birthdate, profile.timezone || 'America/New_York')}`
@@ -629,7 +633,7 @@ export default function SettingsPage() {
         <Card className='mb-8 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
-                            <div className='flex items-center gap-4'>
+              <div className='flex items-center gap-4'>
                 <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
                   <TrendingUp className='size-6 text-gold-600' />
                 </div>
@@ -1243,7 +1247,7 @@ export default function SettingsPage() {
                       return (
                         <Card
                           key={medication.id}
-                          className='border border-gold-600/30 bg-slate-900/60 shadow-sm transition-shadow hover:shadow-md hover:border-gold-600/50'
+                          className='border border-gold-600/30 bg-slate-900/60 shadow-sm transition-shadow hover:border-gold-600/50 hover:shadow-md'
                         >
                           <CardHeader className='pb-3'>
                             <div className='flex items-center justify-between'>

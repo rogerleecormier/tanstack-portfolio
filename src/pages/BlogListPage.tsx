@@ -154,61 +154,57 @@ export default function BlogListPage() {
   );
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
-      {/* Header with Targeting Theme - More Compact */}
-      <div className='relative overflow-hidden border-b border-hunter-200 dark:border-hunter-800'>
-        <div className='absolute inset-0 bg-gradient-to-r from-hunter-600/5 via-slate-600/5 to-hunter-600/5 dark:from-hunter-400/10 dark:via-slate-400/10 dark:to-hunter-400/10'></div>
-
+    <div className='min-h-screen bg-hunter-950'>
+      {/* Header with Glassmorphism Theme */}
+      <div className='dark:border-grey-800 relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:bg-hunter-950/30'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
-            {/* Icon and Title with Targeting Theme */}
+            {/* Icon and Title with Glassmorphism Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-hunter-500 to-slate-600 shadow-lg'>
-                  <BookOpen className='size-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-hunter-900/60 shadow-lg ring-1 ring-gold-500/20 backdrop-blur-md'>
+                  <BookOpen className='size-7 text-gold-400' />
                 </div>
-                {/* Targeting indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-purple-600'>
-                  <div className='size-2 rounded-full bg-white'></div>
+                {/* Content indicator dots */}
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-hunter-800/80 backdrop-blur-sm'>
+                  <div className='size-2 rounded-full bg-gold-400'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-hunter-400 to-slate-500'>
-                  <div className='size-1.5 rounded-full bg-white'></div>
+                <div className='bg-grey-700/60 absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full backdrop-blur-sm'>
+                  <div className='size-1.5 rounded-full bg-gold-300'></div>
                 </div>
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
-                    Insights & Articles
-                  </span>
+                  <span className='text-gold-400'>Insights & Articles</span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gold-500/50'></div>
               </div>
             </div>
 
-            {/* Description with Targeting Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
+            {/* Description with Glassmorphism Theme */}
+            <p className='text-grey-300 mx-auto max-w-3xl text-lg leading-7'>
               Thought leadership, technical insights, and strategic analysis on
               modern enterprise challenges and technology trends.
               <span className='font-medium text-gold-300'>
                 {' '}
-                Target your thinking{' '}
+                Precision insights{' '}
               </span>
-              with expert perspectives and actionable industry insights.
+              with expert perspectives and actionable industry analysis.
             </p>
 
-            {/* Quick Stats with Targeting Theme */}
+            {/* Quick Stats with Glassmorphism Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
-                <span>Strategic Targeting</span>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+                <div className='size-2 rounded-full bg-gold-500/60'></div>
+                <span>Strategic Content</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-slate-400'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
-                <span>Precision Analysis</span>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+                <div className='size-2 rounded-full bg-gold-500/60'></div>
+                <span>Deep Analysis</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                <div className='size-2 rounded-full bg-purple-500'></div>
-                <span>On-Point Insights</span>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+                <div className='size-2 rounded-full bg-gold-500/60'></div>
+                <span>Expert Perspectives</span>
               </div>
             </div>
           </div>
@@ -217,22 +213,22 @@ export default function BlogListPage() {
 
       {/* Main Content Area */}
       <div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
-        {/* Search and Filters with Blue Accent */}
-        <div className='mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900'>
+        {/* Search and Filters with Glassmorphism */}
+        <div className='mb-8 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-6 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
           <div className='flex flex-col gap-4 sm:flex-row'>
             <div className='relative flex-1'>
-              <Search className='absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400' />
+              <Search className='absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gold-400' />
               <Input
                 placeholder='Search insights and articles...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className='h-11 border-gray-200 pl-12 focus:border-hunter-500 focus:ring-hunter-500/20 dark:border-gray-700'
+                className='placeholder-grey-500 h-11 border-gold-500/20 bg-hunter-800/50 pl-12 text-white focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
               />
             </div>
             <Button
               variant='outline'
               onClick={() => setIsTagFilterOpen(true)}
-              className='flex h-11 items-center gap-2 border-gray-200 px-6 hover:border-hunter-300 hover:bg-hunter-50 dark:border-gray-700 dark:hover:bg-hunter-950/20'
+              className='flex h-11 items-center gap-2 border-gold-500/20 bg-hunter-800/30 px-6 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
             >
               <Filter className='size-4' />
               Topics {selectedTags.length > 0 && `(${selectedTags.length})`}
@@ -241,7 +237,7 @@ export default function BlogListPage() {
               <Button
                 variant='outline'
                 onClick={clearFilters}
-                className='flex h-11 items-center gap-2 border-gray-200 px-6 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
+                className='flex h-11 items-center gap-2 border-gold-500/20 bg-hunter-800/30 px-6 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
               >
                 <X className='size-4' />
                 Clear
@@ -251,9 +247,9 @@ export default function BlogListPage() {
 
           {/* Selected Tags Display */}
           {selectedTags.length > 0 && (
-            <div className='mt-4 border-t border-gray-200 pt-4 dark:border-gray-700'>
+            <div className='mt-4 border-t border-gold-500/20 pt-4 dark:border-gold-500/20'>
               <div className='mb-3 flex items-center gap-2'>
-                <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+                <span className='text-sm font-medium text-gold-400 dark:text-gold-400'>
                   Active filters:
                 </span>
               </div>
@@ -262,7 +258,7 @@ export default function BlogListPage() {
                   <Badge
                     key={tag}
                     variant='default'
-                    className='cursor-pointer border-0 bg-gradient-to-r from-hunter-600 to-teal-600 text-white hover:from-hunter-700 hover:to-teal-700'
+                    className='cursor-pointer border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
                     onClick={() => toggleTag(tag)}
                   >
                     <Tag className='mr-1 size-3' />
@@ -278,7 +274,7 @@ export default function BlogListPage() {
         {/* Results Count */}
         <div className='mb-6'>
           <div className='flex items-center justify-between'>
-            <p className='font-medium text-gray-600 dark:text-gray-400'>
+            <p className='font-medium text-gold-400 dark:text-gold-400'>
               Showing {displayedPosts.length} of {filteredPosts.length} articles
             </p>
           </div>
@@ -286,18 +282,18 @@ export default function BlogListPage() {
 
         {/* Tag Filter Dialog */}
         <Dialog open={isTagFilterOpen} onOpenChange={setIsTagFilterOpen}>
-          <DialogContent className='z-[200] flex max-h-[85vh] max-w-2xl flex-col'>
+          <DialogContent className='z-[200] flex max-h-[85vh] max-w-2xl flex-col border-gold-500/20 bg-hunter-900/50 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
             <DialogHeader>
-              <DialogTitle className='flex items-center gap-2'>
-                <Filter className='size-5 text-blue-600' />
+              <DialogTitle className='flex items-center gap-2 text-gold-400'>
+                <Filter className='size-5' />
                 Filter by Topics
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className='text-grey-300'>
                 Select topics to filter articles by specific themes and subjects
               </DialogDescription>
             </DialogHeader>
 
-            <Separator />
+            <Separator className='bg-gold-500/20' />
 
             <div className='flex-1 overflow-y-auto p-6'>
               <div className='flex flex-wrap gap-2'>
@@ -307,8 +303,8 @@ export default function BlogListPage() {
                     variant={selectedTags.includes(tag) ? 'default' : 'outline'}
                     className={`cursor-pointer transition-colors ${
                       selectedTags.includes(tag)
-                        ? 'border-0 bg-gradient-to-r from-hunter-600 to-teal-600 text-white hover:from-hunter-700 hover:to-teal-700'
-                        : 'border-gray-200 hover:border-hunter-300 hover:bg-hunter-50 dark:border-gray-700 dark:hover:bg-hunter-950/20'
+                        ? 'border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
+                        : 'border-gold-500/30 text-gold-400 hover:border-gold-500/60 hover:bg-hunter-800/50 dark:border-gold-500/30 dark:text-gold-400 dark:hover:bg-hunter-800/70'
                     }`}
                     onClick={() => toggleTag(tag)}
                   >
@@ -319,10 +315,10 @@ export default function BlogListPage() {
               </div>
             </div>
 
-            <Separator />
+            <Separator className='bg-gold-500/20' />
 
             <div className='flex items-center justify-between p-6'>
-              <div className='text-sm text-gray-500 dark:text-gray-400'>
+              <div className='text-grey-400 dark:text-grey-400 text-sm'>
                 {selectedTags.length} tag{selectedTags.length !== 1 ? 's' : ''}{' '}
                 selected
               </div>
@@ -330,13 +326,13 @@ export default function BlogListPage() {
                 <Button
                   variant='outline'
                   onClick={clearFilters}
-                  className='border-gray-200 dark:border-gray-700'
+                  className='border-gold-500/20 bg-hunter-800/30 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
                 >
                   Clear All
                 </Button>
                 <Button
                   onClick={closeTagFilter}
-                  className='border-0 bg-gradient-to-r from-hunter-600 to-teal-600 text-white hover:from-hunter-700 hover:to-teal-700'
+                  className='border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
                 >
                   Apply Filters
                 </Button>
@@ -351,7 +347,7 @@ export default function BlogListPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
-                className='h-full border-gray-200 dark:border-gray-700'
+                className='h-full border-gold-500/20 bg-hunter-900/30 dark:border-gold-500/20 dark:bg-hunter-900/30'
               >
                 <CardHeader>
                   <Skeleton className='mb-2 h-6 w-3/4' />
@@ -374,15 +370,13 @@ export default function BlogListPage() {
             ))}
           </div>
         ) : filteredPosts.length === 0 ? (
-          <Card className='border-gray-200 py-16 text-center dark:border-gray-700'>
+          <Card className='border-gold-500/20 bg-hunter-900/30 py-16 text-center dark:border-gold-500/20 dark:bg-hunter-900/30'>
             <CardContent>
-              <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-hunter-100 to-teal-100 dark:from-hunter-900/50 dark:to-teal-900/50'>
-                <BookOpen className='size-8 text-blue-600 dark:text-blue-400' />
+              <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-hunter-800/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
+                <BookOpen className='size-8 text-gold-400' />
               </div>
-              <H3 className='mb-3 text-gray-800 dark:text-gray-200'>
-                No articles found
-              </H3>
-              <P className='mx-auto max-w-md text-gray-500 dark:text-gray-400'>
+              <H3 className='text-grey-100 mb-3'>No articles found</H3>
+              <P className='text-grey-400 mx-auto max-w-md'>
                 {searchQuery || selectedTags.length > 0
                   ? 'Try adjusting your search or filters'
                   : 'No blog posts have been published yet'}
@@ -393,9 +387,7 @@ export default function BlogListPage() {
           <>
             {/* All Articles Grid */}
             <div className='mb-8'>
-              <H2 className='mb-3 text-gray-800 dark:text-gray-200'>
-                Articles
-              </H2>
+              <H2 className='mb-3 text-gold-400'>Articles</H2>
 
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
                 {displayedPosts.map(post => (
@@ -407,8 +399,8 @@ export default function BlogListPage() {
             {/* Loading indicator for infinite scroll */}
             {displayedPosts.length < filteredPosts.length && (
               <div ref={loadingRef} className='py-12 text-center'>
-                <div className='inline-flex items-center gap-3 text-gray-500 dark:text-gray-400'>
-                  <div className='size-6 animate-spin rounded-full border-b-2 border-hunter-600'></div>
+                <div className='text-grey-400 dark:text-grey-400 inline-flex items-center gap-3'>
+                  <div className='size-6 animate-spin rounded-full border-b-2 border-gold-500'></div>
                   <span className='font-medium'>Loading more articles...</span>
                 </div>
               </div>
@@ -418,10 +410,10 @@ export default function BlogListPage() {
             {displayedPosts.length === filteredPosts.length &&
               filteredPosts.length > 0 && (
                 <div className='py-12 text-center'>
-                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-hunter-600/15 to-slate-600/15'>
-                    <BookOpen className='size-6 text-hunter-400' />
+                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gold-500/20'>
+                    <BookOpen className='size-6 text-gold-400' />
                   </div>
-                  <p className='font-medium text-slate-400'>
+                  <p className='font-medium text-gold-400/60'>
                     You've reached the end of all articles
                   </p>
                 </div>
@@ -430,8 +422,8 @@ export default function BlogListPage() {
         )}
       </div>
 
-      {/* Newsletter Signup with Hunter Accent */}
-      <div className='border-t border-hunter-600/20 bg-gradient-to-b from-hunter-600/5 via-slate-900 to-slate-950'>
+      {/* Newsletter Signup with Glassmorphism */}
+      <div className='border-t border-gold-500/20 bg-hunter-900/20 backdrop-blur-xl'>
         <div className='mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8'>
           <NewsletterSignup />
         </div>
@@ -450,30 +442,30 @@ interface BlogPostCardProps {
 
 const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
   return (
-    <Card className='group flex h-full flex-col overflow-hidden border-hunter-600/20 bg-slate-900/40 transition-all duration-200 hover:shadow-lg hover:shadow-hunter-600/20 dark:border-hunter-600/20 dark:bg-slate-900/40'>
-      {/* Hunter green top accent */}
-      <div className='h-1 bg-gradient-to-r from-hunter-600 to-hunter-400'></div>
+    <Card className='group flex h-full flex-col overflow-hidden border-gold-500/20 bg-hunter-900/30 transition-all duration-200 hover:border-gold-500/40 hover:bg-hunter-800/40 hover:shadow-lg dark:border-gold-500/20 dark:bg-hunter-900/30'>
+      {/* Gold top accent with glassmorphism */}
+      <div className='h-1 bg-gold-500/60'></div>
 
       <CardHeader className='pb-4'>
-        <CardTitle className='line-clamp-2 text-lg leading-tight text-white transition-colors group-hover:text-hunter-300'>
+        <CardTitle className='line-clamp-2 text-lg leading-tight text-white transition-colors group-hover:text-gold-400'>
           <Link to={`/blog/${post.slug}`} className='hover:no-underline'>
             {post.title}
           </Link>
         </CardTitle>
-        <CardDescription className='line-clamp-3 leading-relaxed text-slate-300'>
+        <CardDescription className='text-grey-300 line-clamp-3 leading-relaxed'>
           {post.description}
         </CardDescription>
       </CardHeader>
 
       <CardContent className='flex flex-1 flex-col'>
-        {/* Tags with Hunter Accent */}
+        {/* Tags with Gold Accent */}
         {post.tags.length > 0 && (
           <div className='mb-5 flex flex-wrap gap-2'>
             {post.tags.slice(0, 3).map((tag: string, index: number) => (
               <Badge
                 key={index}
                 variant='secondary'
-                className='h-auto border-hunter-600/30 bg-hunter-600/15 px-2 py-1 text-xs text-hunter-300'
+                className='h-auto border-gold-500/30 bg-gold-600/20 px-2 py-1 text-xs text-gold-300'
               >
                 <Tag className='mr-1 size-3' />
                 <span className='whitespace-nowrap'>{tag}</span>
@@ -482,7 +474,7 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
             {post.tags.length > 3 && (
               <Badge
                 variant='secondary'
-                className='border-slate-600/30 bg-slate-700/50 text-xs text-slate-300'
+                className='border-grey-600/30 bg-grey-700/50 text-grey-300 text-xs'
               >
                 +{post.tags.length - 3} more
               </Badge>
@@ -490,38 +482,38 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
           </div>
         )}
 
-        {/* Meta Info with Hunter Accent */}
-        <div className='mb-5 flex items-center justify-between text-sm text-slate-400'>
+        {/* Meta Info with Gold Accent */}
+        <div className='text-grey-400 mb-5 flex items-center justify-between text-sm'>
           <div className='flex items-center gap-2'>
-            <div className='flex size-6 items-center justify-center rounded-full bg-hunter-600/15'>
-              <Calendar className='size-3 text-hunter-400' />
+            <div className='flex size-6 items-center justify-center rounded-full bg-gold-500/20'>
+              <Calendar className='size-3 text-gold-400' />
             </div>
-            <span className='font-medium text-hunter-300'>
+            <span className='font-medium text-gold-300'>
               {formatDate(post.date)}
             </span>
           </div>
           <div className='flex items-center gap-2'>
-            <div className='flex size-6 items-center justify-center rounded-full bg-slate-700/50'>
-              <Clock className='size-3 text-slate-400' />
+            <div className='bg-grey-700/50 flex size-6 items-center justify-center rounded-full'>
+              <Clock className='text-grey-400 size-3' />
             </div>
-            <span className='font-medium text-slate-300'>
+            <span className='text-grey-300 font-medium'>
               {post.readTime} min read
             </span>
           </div>
         </div>
 
-        {/* Author with Hunter Accent */}
-        <div className='mb-6 flex items-center gap-2 text-sm text-slate-400'>
-          <div className='flex size-6 items-center justify-center rounded-full bg-hunter-600/15'>
-            <User className='size-3 text-hunter-400' />
+        {/* Author with Gold Accent */}
+        <div className='text-grey-400 mb-6 flex items-center gap-2 text-sm'>
+          <div className='flex size-6 items-center justify-center rounded-full bg-gold-500/20'>
+            <User className='size-3 text-gold-400' />
           </div>
-          <span className='font-medium text-hunter-300'>{post.author}</span>
+          <span className='font-medium text-gold-300'>{post.author}</span>
         </div>
 
-        {/* Action Button with Hunter Gradient */}
+        {/* Action Button with Gold Gradient */}
         <div className='mt-auto'>
           <Button
-            className='w-full border-0 bg-gradient-to-r from-hunter-600 to-hunter-500 font-medium text-white transition-all duration-200 hover:from-hunter-700 hover:to-hunter-600 group-hover:scale-[1.01]'
+            className='w-full border-0 bg-gold-600/70 font-medium text-hunter-900 transition-all duration-200 hover:bg-gold-500 group-hover:scale-[1.01] dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
             asChild
           >
             <Link to={`/blog/${post.slug}`}>

@@ -45,10 +45,10 @@ const ToolbarButton = React.memo<ToolbarButtonProps>(
       variant='ghost'
       size='sm'
       onClick={onClick}
-      className={`rounded-lg border border-slate-200/30 bg-white/40 transition-all duration-200 hover:border-slate-300/60 hover:bg-white/60 dark:border-slate-700/30 dark:bg-slate-800/40 dark:hover:border-slate-600/60 dark:hover:bg-slate-700/60 ${
+      className={`rounded-lg border border-gold-500/20 bg-hunter-900/30 transition-all duration-200 hover:border-gold-500/50 hover:bg-hunter-900/40 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/30 dark:hover:border-gold-500/50 dark:hover:bg-hunter-900/40 ${
         isActive
-          ? 'border-hunter-600 bg-hunter-600 text-white dark:border-hunter-500'
-          : 'hover:bg-slate-100/80 hover:text-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-slate-300'
+          ? 'border-gold-500/60 bg-gold-500/30 text-gold-300 dark:border-gold-500/60 ring-1 ring-gold-500/30'
+          : 'hover:bg-hunter-900/40 hover:text-gold-300 dark:hover:bg-hunter-900/40 dark:hover:text-gold-300'
       } ${className}`}
     >
       {children}
@@ -198,9 +198,9 @@ export function TipTapEditor({
   }
 
   return (
-    <div className='flex h-full flex-col bg-white/70 backdrop-blur dark:bg-slate-900/70'>
+    <div className='flex h-full flex-col bg-hunter-950 backdrop-blur-xl dark:bg-hunter-950'>
       {/* Enhanced Toolbar with Brand Theme */}
-      <div className='flex shrink-0 flex-wrap gap-2 border-b border-slate-200/60 bg-white/70 p-4 backdrop-blur dark:border-slate-700/60 dark:bg-slate-900/70'>
+      <div className='flex shrink-0 flex-wrap gap-2 border-b border-gold-500/10 bg-hunter-950/40 p-4 backdrop-blur-xl dark:border-gold-500/10 dark:bg-hunter-950/40'>
         <ToolbarButton
           onClick={() =>
             editor?.chain().focus().toggleHeading({ level: 1 }).run()
@@ -296,11 +296,11 @@ export function TipTapEditor({
         </ToolbarButton>
       </div>
       {/* Editor Content Area */}
-      <div className='flex-1 overflow-hidden bg-white/70 dark:bg-slate-900/70'>
+      <div className='flex-1 overflow-hidden bg-hunter-900/30 dark:bg-hunter-900/30 backdrop-blur-xl'>
         {editor && (
           <EditorContent
             editor={editor}
-            className='prose prose-slate h-full max-w-none cursor-text overflow-auto rounded-b-xl p-6 dark:prose-invert focus-within:outline-none focus-within:ring-2 focus-within:ring-hunter-500/30'
+            className='prose prose-invert h-full max-w-none cursor-text overflow-auto rounded-b-xl p-6 dark:prose-invert focus-within:outline-none focus-within:ring-2 focus-within:ring-gold-500/30'
           />
         )}
       </div>

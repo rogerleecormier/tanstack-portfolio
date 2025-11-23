@@ -638,41 +638,30 @@ This meeting request was generated based on AI analysis of their contact form su
   // Choice Selection Screen
   if (contactMode === 'choice') {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
+      <div className='min-h-screen bg-hunter-950'>
         {/* Hero Section - Administrative Theme with Communication Focus */}
-        <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-          <div className='from-teal-600/3 via-slate-600/3 to-teal-600/3 dark:from-teal-400/8 dark:via-slate-400/8 dark:to-teal-400/8 absolute inset-0 bg-gradient-to-r'></div>
-
+        <div className='relative overflow-hidden border-b border-gold-500/20 bg-hunter-950/40 backdrop-blur-xl'>
           <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
             <div className='mx-auto max-w-4xl text-center'>
               {/* Icon and Title with Administrative Theme */}
               <div className='mb-4 flex items-center justify-center gap-4'>
                 <div className='relative'>
-                  <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-slate-600 shadow-lg'>
-                    <MessageSquare className='size-7 text-white' />
-                  </div>
-                  {/* Communication indicator dots */}
-                  <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-teal-600'>
-                    <div className='size-2 rounded-full bg-white'></div>
-                  </div>
-                  <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-slate-500'>
-                    <div className='size-1.5 rounded-full bg-white'></div>
+                  <div className='flex size-14 items-center justify-center rounded-2xl bg-hunter-900/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
+                    <MessageSquare className='size-7 text-gold-400' />
                   </div>
                 </div>
                 <div>
-                  <H1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                    <span className='bg-gradient-to-r from-teal-600 to-teal-500 bg-clip-text text-transparent dark:from-teal-400 dark:to-teal-300'>
-                      Let's Connect
-                    </span>
+                  <H1 className='text-4xl font-bold tracking-tight text-gold-400 sm:text-5xl lg:text-6xl'>
+                    Let's Connect
                   </H1>
-                  <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-slate-500'></div>
+                  <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gold-500/40'></div>
                 </div>
               </div>
 
               {/* Description with Communication Language */}
-              <P className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+              <P className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
                 Ready to discuss your next project or initiative?
-                <span className='font-medium text-teal-600 dark:text-teal-400'>
+                <span className='font-medium text-gold-400'>
                   {' '}
                   Start a conversation{' '}
                 </span>
@@ -681,16 +670,16 @@ This meeting request was generated based on AI analysis of their contact form su
 
               {/* Quick Stats with Administrative Focus */}
               <div className='mt-6 flex justify-center gap-6'>
-                <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
-                  <div className='size-2 rounded-full bg-teal-500'></div>
+                <div className='flex items-center gap-2 text-sm text-grey-400'>
+                  <div className='size-2 rounded-full bg-gold-500/50'></div>
                   <span>AI-Enhanced</span>
                 </div>
-                <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
-                  <div className='size-2 rounded-full bg-slate-500'></div>
+                <div className='flex items-center gap-2 text-sm text-grey-400'>
+                  <div className='size-2 rounded-full bg-gold-500/50'></div>
                   <span>24hr Response</span>
                 </div>
-                <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400'>
-                  <div className='size-2 rounded-full bg-teal-400'></div>
+                <div className='flex items-center gap-2 text-sm text-grey-400'>
+                  <div className='size-2 rounded-full bg-gold-500/50'></div>
                   <span>Secure & Private</span>
                 </div>
               </div>
@@ -705,16 +694,15 @@ This meeting request was generated based on AI analysis of their contact form su
             <div className='grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12'>
               {/* Left Side - Contact Form */}
               <div className='order-2 lg:order-1'>
-                <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
+                <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
                   <CardHeader className='pb-6'>
                     <CardTitle className='flex items-center gap-3 text-2xl font-bold text-white'>
-                      {' '}
-                      <div className='flex size-10 items-center justify-center rounded-lg bg-hunter-600/15'>
-                        <MessageSquare className='size-6 text-hunter-400' />
+                      <div className='flex size-10 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
+                        <MessageSquare className='size-6 text-gold-400' />
                       </div>
                       Send a Message
                     </CardTitle>
-                    <P className='text-base text-slate-300'>
+                    <P className='text-base text-grey-300'>
                       Have a question or want to discuss a project? I'll analyze
                       your message and recommend the best way to proceed.
                     </P>
@@ -730,7 +718,7 @@ This meeting request was generated based on AI analysis of their contact form su
                         <div>
                           <label
                             htmlFor='name'
-                            className='mb-2 block text-sm font-medium text-slate-300'
+                            className='mb-2 block text-sm font-medium text-gold-300'
                           >
                             Full Name *
                           </label>
@@ -742,13 +730,13 @@ This meeting request was generated based on AI analysis of their contact form su
                             value={formData.name}
                             onChange={handleInputChange}
                             placeholder='Your full name'
-                            className='border-slate-600/30 bg-slate-800/50 text-white placeholder-slate-500 focus:border-hunter-500 focus:ring-hunter-500'
+                            className='border-gold-500/20 bg-hunter-900/40 text-white placeholder-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
                           />
                         </div>
                         <div>
                           <label
                             htmlFor='email'
-                            className='mb-2 block text-sm font-medium text-slate-300'
+                            className='mb-2 block text-sm font-medium text-gold-300'
                           >
                             Email Address *
                           </label>
@@ -760,7 +748,7 @@ This meeting request was generated based on AI analysis of their contact form su
                             value={formData.email}
                             onChange={handleInputChange}
                             placeholder='your.email@company.com'
-                            className='border-slate-600/30 bg-slate-800/50 text-white placeholder-slate-500 focus:border-hunter-500 focus:ring-hunter-500'
+                            className='border-gold-500/20 bg-hunter-900/40 text-white placeholder-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
                           />
                         </div>
                       </div>
@@ -769,7 +757,7 @@ This meeting request was generated based on AI analysis of their contact form su
                         <div>
                           <label
                             htmlFor='company'
-                            className='mb-2 block text-sm font-medium text-slate-300'
+                            className='mb-2 block text-sm font-medium text-gold-300'
                           >
                             Company / Organization
                           </label>
@@ -780,13 +768,13 @@ This meeting request was generated based on AI analysis of their contact form su
                             value={formData.company}
                             onChange={handleInputChange}
                             placeholder='Your company name'
-                            className='border-slate-600/30 bg-slate-800/50 text-white placeholder-slate-500 focus:border-hunter-500 focus:ring-hunter-500'
+                            className='border-gold-500/20 bg-hunter-900/40 text-white placeholder-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
                           />
                         </div>
                         <div>
                           <label
                             htmlFor='subject'
-                            className='mb-2 block text-sm font-medium text-slate-300'
+                            className='mb-2 block text-sm font-medium text-gold-300'
                           >
                             Subject *
                           </label>
@@ -798,7 +786,7 @@ This meeting request was generated based on AI analysis of their contact form su
                             value={formData.subject}
                             onChange={handleInputChange}
                             placeholder='What can I help you with?'
-                            className='border-slate-600/30 bg-slate-800/50 text-white placeholder-slate-500 focus:border-hunter-500 focus:ring-hunter-500'
+                            className='border-gold-500/20 bg-hunter-900/40 text-white placeholder-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
                           />
                         </div>
                       </div>
@@ -806,7 +794,7 @@ This meeting request was generated based on AI analysis of their contact form su
                       <div>
                         <label
                           htmlFor='message'
-                          className='mb-2 block text-sm font-medium text-slate-300'
+                          className='mb-2 block text-sm font-medium text-gold-300'
                         >
                           Message *
                         </label>
@@ -818,11 +806,11 @@ This meeting request was generated based on AI analysis of their contact form su
                           value={formData.message}
                           onChange={handleInputChange}
                           placeholder='Tell me about your project, challenge, or opportunity...'
-                          className='resize-none border-slate-600/30 bg-slate-800/50 text-white placeholder-slate-500 focus:border-hunter-500 focus:ring-hunter-500'
+                          className='resize-none border-gold-500/20 bg-hunter-900/40 text-white placeholder-grey-500 focus:border-gold-500/50 focus:ring-gold-500/50'
                         />
                         {formData.message.length > 0 &&
                           formData.message.length < 20 && (
-                            <p className='mt-2 text-sm text-slate-400'>
+                            <p className='mt-2 text-sm text-grey-400'>
                               Type {20 - formData.message.length} more
                               characters to enable AI analysis
                             </p>
@@ -830,14 +818,14 @@ This meeting request was generated based on AI analysis of their contact form su
                         {formData.message.length >= 20 &&
                           !aiAnalysis &&
                           !isAnalyzing && (
-                            <p className='mt-2 text-sm text-hunter-400'>
+                            <p className='mt-2 text-sm text-gold-400'>
                               ✨ Analysis will start in 1.5 seconds after you
                               stop typing...
                             </p>
                           )}
                         {formData.message.length >= 20 && isAnalyzing && (
-                          <div className='mt-2 flex items-center gap-2 text-sm text-hunter-400'>
-                            <div className='size-4 animate-spin rounded-full border-b-2 border-hunter-600'></div>
+                          <div className='mt-2 flex items-center gap-2 text-sm text-gold-400'>
+                            <div className='size-4 animate-spin rounded-full border-b-2 border-gold-600'></div>
                             Analyzing your message...
                           </div>
                         )}
@@ -864,12 +852,12 @@ This meeting request was generated based on AI analysis of their contact form su
                               consent: e.target.checked,
                             }))
                           }
-                          className='mt-1 size-4 rounded border-slate-600 bg-slate-800/50 text-hunter-600 focus:ring-hunter-500'
+                          className='mt-1 size-4 rounded border-gold-500/20 bg-hunter-900/40 text-gold-600 focus:ring-gold-500'
                           required
                         />
                         <label
                           htmlFor='consent'
-                          className='text-sm text-slate-300'
+                          className='text-sm text-grey-300'
                         >
                           I consent to AI analysis of my message to receive
                           personalized recommendations and meeting scheduling
@@ -895,11 +883,11 @@ This meeting request was generated based on AI analysis of their contact form su
                       {((aiAnalysis ?? false) ||
                         isAnalyzing ||
                         formData.message.length >= 20) && (
-                        <div className='border-t border-slate-700/50 pt-4'>
+                        <div className='border-t border-gold-500/20 pt-4'>
                           <ContactAnalysis
                             analysis={aiAnalysis}
                             isLoading={isAnalyzing}
-                            className='border-l-4 border-l-hunter-500'
+                            className='border-l-4 border-l-gold-500'
                           />
                         </div>
                       )}
@@ -908,16 +896,16 @@ This meeting request was generated based on AI analysis of their contact form su
                       {aiAnalysis &&
                         aiAnalysis.shouldScheduleMeeting &&
                         !meetingScheduled && (
-                          <div className='border-t border-slate-700/50 pt-4'>
+                          <div className='border-t border-gold-500/20 pt-4'>
                             <AIMeetingScheduler
                               analysis={aiAnalysis}
-                              className='border-l-4 border-l-hunter-500'
+                              className='border-l-4 border-l-gold-500'
                             />
                           </div>
                         )}
 
                       {/* Dynamic Action Button - Always at the bottom */}
-                      <div className='border-t border-slate-700/50 pt-4'>
+                      <div className='border-t border-gold-500/20 pt-4'>
                         <DynamicActionButton
                           aiAnalysis={aiAnalysis}
                           isAnalyzing={isAnalyzing}
@@ -934,7 +922,7 @@ This meeting request was generated based on AI analysis of their contact form su
                             <div className='mt-3 text-center'>
                               <button
                                 onClick={handleSendMessageInstead}
-                                className='inline-flex items-center gap-2 text-sm text-hunter-400 transition-colors hover:text-hunter-300 hover:underline'
+                                className='inline-flex items-center gap-2 text-sm text-gold-400 transition-colors hover:text-gold-300 hover:underline'
                               >
                                 <MessageSquare className='size-4' />
                                 <span>Or just send a message instead</span>
@@ -950,11 +938,11 @@ This meeting request was generated based on AI analysis of their contact form su
               {/* Right Side - Supporting Information */}
               <div className='order-1 space-y-6 lg:order-2'>
                 {/* Contact Methods */}
-                <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
+                <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
                   <CardHeader className='pb-4'>
                     <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-600/15'>
-                        <User className='size-5 text-hunter-400' />
+                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
+                        <User className='size-5 text-gold-400' />
                       </div>
                       Contact Methods
                     </CardTitle>
@@ -965,8 +953,8 @@ This meeting request was generated based on AI analysis of their contact form su
                         key={method.title}
                         className='flex items-start gap-3'
                       >
-                        <div className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-hunter-600/15'>
-                          <method.icon className='size-5 text-hunter-400' />
+                        <div className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
+                          <method.icon className='size-5 text-gold-400' />
                         </div>
                         <div className='min-w-0 flex-1'>
                           <h4 className='text-sm font-medium text-white'>
@@ -977,16 +965,16 @@ This meeting request was generated based on AI analysis of their contact form su
                               href={method.href}
                               target='_blank'
                               rel='noopener noreferrer'
-                              className='block break-all text-sm font-medium text-hunter-400 hover:text-hunter-300'
+                              className='block break-all text-sm font-medium text-gold-400 hover:text-gold-300'
                             >
                               {method.value}
                             </a>
                           ) : (
-                            <p className='text-sm font-medium text-slate-300'>
+                            <p className='text-sm font-medium text-grey-300'>
                               {method.value}
                             </p>
                           )}
-                          <p className='mt-1 text-xs text-slate-400'>
+                          <p className='mt-1 text-xs text-grey-400'>
                             {method.description}
                           </p>
                         </div>
@@ -996,11 +984,11 @@ This meeting request was generated based on AI analysis of their contact form su
                 </Card>
 
                 {/* Areas of Expertise */}
-                <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
+                <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
                   <CardHeader className='pb-4'>
                     <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-100'>
-                        <Building className='size-5 text-hunter-600' />
+                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
+                        <Building className='size-5 text-gold-400' />
                       </div>
                       Areas of Expertise
                     </CardTitle>
@@ -1011,7 +999,7 @@ This meeting request was generated based on AI analysis of their contact form su
                         <Badge
                           key={area}
                           variant='secondary'
-                          className='border-hunter-600/30 bg-hunter-600/15 text-xs text-hunter-300 hover:bg-hunter-600/25'
+                          className='border-gold-500/30 bg-gold-500/20 text-xs text-gold-300 hover:bg-gold-500/30'
                         >
                           {area}
                         </Badge>
@@ -1021,11 +1009,11 @@ This meeting request was generated based on AI analysis of their contact form su
                 </Card>
 
                 {/* Connect & Follow */}
-                <Card className='border-hunter-600/20 bg-gradient-to-br from-slate-900/50 via-slate-800/40 to-slate-900/50 shadow-lg'>
+                <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
                   <CardHeader className='pb-4'>
                     <CardTitle className='flex items-center gap-3 text-xl font-semibold text-white'>
-                      <div className='flex size-8 items-center justify-center rounded-lg bg-indigo-100'>
-                        <Linkedin className='size-5 text-indigo-600' />
+                      <div className='flex size-8 items-center justify-center rounded-lg bg-hunter-900/60 ring-1 ring-gold-500/20'>
+                        <Linkedin className='size-5 text-gold-400' />
                       </div>
                       Connect & Follow
                     </CardTitle>
@@ -1066,13 +1054,13 @@ This meeting request was generated based on AI analysis of their contact form su
 
           {/* AI Disclosure */}
           <div className='mt-12 text-center'>
-            <p className='text-xs text-slate-400'>
+            <p className='text-xs text-grey-400'>
               This site uses AI to analyze messages and provide personalized
               recommendations. Message content is processed securely and not
               stored.
               <a
                 href='/privacy'
-                className='ml-1 text-hunter-400 hover:text-hunter-300'
+                className='ml-1 text-gold-400 hover:text-gold-300'
               >
                 Privacy Policy
               </a>

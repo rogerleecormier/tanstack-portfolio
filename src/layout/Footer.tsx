@@ -16,7 +16,7 @@ export default function Footer() {
                 <H4 className='!mt-0 mb-2 text-base font-semibold text-white'>
                   Strategic Insights Delivered
                 </H4>
-                <P className='!mt-0 text-sm text-slate-300'>
+                              <p className='!mt-0 text-sm text-grey-300'>
                   Exclusive insights on digital transformation, technology
                   leadership, and execution excellence.
                 </P>
@@ -47,14 +47,14 @@ export default function Footer() {
                   </p>
                 </div>
               </div>
-              <p className='text-xs text-slate-400'>
+              <p className='text-xs text-grey-400'>
                 Strategic execution. Measurable outcomes.
               </p>
             </div>
 
             {/* Pages */}
             <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-slate-300'>
+              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
                 Pages
               </p>
               <div className='space-y-2'>
@@ -66,7 +66,7 @@ export default function Footer() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className='block text-xs text-slate-400 transition-colors hover:text-gold-300'
+                    className='block text-xs text-grey-400 transition-colors hover:text-gold-300'
                   >
                     {link.label}
                   </a>
@@ -76,7 +76,7 @@ export default function Footer() {
 
             {/* Resources */}
             <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-slate-300'>
+              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
                 Resources
               </p>
               <div className='space-y-2'>
@@ -88,7 +88,7 @@ export default function Footer() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className='block text-xs text-slate-400 transition-colors hover:text-gold-300'
+                    className='block text-xs text-grey-400 transition-colors hover:text-gold-300'
                   >
                     {link.label}
                   </a>
@@ -98,13 +98,13 @@ export default function Footer() {
 
             {/* Contact */}
             <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-slate-300'>
+              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
                 Connect
               </p>
               <div className='space-y-2'>
                 <a
                   href='https://linkedin.com/in/rogerleecormier'
-                  className='flex items-center gap-1.5 text-xs text-slate-400 transition-colors hover:text-gold-300'
+                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
@@ -113,7 +113,7 @@ export default function Footer() {
                 </a>
                 <a
                   href='https://github.com/rogerleecormier'
-                  className='flex items-center gap-1.5 text-xs text-slate-400 transition-colors hover:text-gold-300'
+                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
@@ -122,7 +122,7 @@ export default function Footer() {
                 </a>
                 <a
                   href='mailto:roger@rcormier.dev'
-                  className='flex items-center gap-1.5 text-xs text-slate-400 transition-colors hover:text-gold-300'
+                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
                 >
                   <Mail size={12} />
                   Email
@@ -133,7 +133,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar - Minimal */}
-        <div className='flex items-center justify-between border-t border-hunter-700/30 py-4 text-xs text-hunter-500'>
+        <div className='flex items-center justify-between border-t border-gold-500/20 py-4 text-xs text-grey-500'>
           <span>© 2025 Roger Lee Cormier</span>
           <a href='/privacy' className='transition-colors hover:text-gold-400'>
             Privacy

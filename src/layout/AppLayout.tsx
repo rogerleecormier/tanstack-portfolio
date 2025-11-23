@@ -69,7 +69,7 @@ class MainContentErrorBoundary extends Component<
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className='rounded bg-hunter-600 px-4 py-2 text-white transition-colors hover:bg-hunter-700'
+                className='rounded bg-gold-600 px-4 py-2 text-white transition-colors hover:bg-gold-700'
               >
                 Reload Page
               </button>
