@@ -469,20 +469,20 @@ export function CreationStudioPage() {
   return (
     <div className='flex h-full min-h-0 flex-col bg-hunter-950'>
       {/* Administrative Header with Glassmorphic Design */}
-      <div className='relative border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:border-grey-800 dark:bg-hunter-950/30'>
+      <div className='dark:border-grey-800 relative border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:bg-hunter-950/30'>
         <div className='relative px-4 py-6 sm:px-6 lg:px-8'>
           <div className='max-w-7xl'>
             {/* Enhanced Title with Modern Styling */}
             <div className='flex items-center gap-4'>
               <div className='relative'>
-                <div className='flex size-12 items-center justify-center rounded-2xl bg-hunter-900/60 backdrop-blur-md shadow-lg ring-1 ring-gold-500/20'>
+                <div className='flex size-12 items-center justify-center rounded-2xl bg-hunter-900/60 shadow-lg ring-1 ring-gold-500/20 backdrop-blur-md'>
                   <FileText className='size-6 text-gold-400' />
                 </div>
                 {/* Content indicator dots */}
                 <div className='absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full bg-hunter-800/80 backdrop-blur-sm'>
                   <div className='size-1.5 rounded-full bg-gold-400'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-2.5 items-center justify-center rounded-full bg-grey-700/60 backdrop-blur-sm'>
+                <div className='bg-grey-700/60 absolute -bottom-1 -left-1 flex size-2.5 items-center justify-center rounded-full backdrop-blur-sm'>
                   <div className='size-1 rounded-full bg-gold-300'></div>
                 </div>
               </div>
@@ -498,7 +498,7 @@ export function CreationStudioPage() {
               {currentFile ? (
                 <>
                   <div className='size-1.5 rounded-full bg-gold-500/60'></div>
-                  <p className='text-sm text-grey-300 dark:text-grey-300'>
+                  <p className='text-grey-300 dark:text-grey-300 text-sm'>
                     <span className='font-medium'>Editing:</span> {currentFile}{' '}
                     {isDirty && (
                       <span className='font-medium text-gold-400 dark:text-gold-400'>
@@ -509,8 +509,8 @@ export function CreationStudioPage() {
                 </>
               ) : (
                 <>
-                  <div className='size-1.5 rounded-full bg-grey-600/60'></div>
-                  <p className='text-sm text-grey-400 dark:text-grey-400'>
+                  <div className='bg-grey-600/60 size-1.5 rounded-full'></div>
+                  <p className='text-grey-400 dark:text-grey-400 text-sm'>
                     Ready to create or open a file
                   </p>
                 </>
@@ -520,7 +520,7 @@ export function CreationStudioPage() {
         </div>
 
         {/* Header Actions */}
-        <div className='flex items-center justify-end gap-1 border-t border-hunter-900/30 bg-hunter-950/20 p-4 backdrop-blur-md dark:border-grey-800'>
+        <div className='dark:border-grey-800 flex items-center justify-end gap-1 border-t border-hunter-900/30 bg-hunter-950/20 p-4 backdrop-blur-md'>
           {/* File Operations Group */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -620,7 +620,7 @@ export function CreationStudioPage() {
                   }
                   className='size-3 data-[state=checked]:border-hunter-600 data-[state=checked]:bg-hunter-600'
                 />
-                <Database className='size-3 text-grey-300 dark:text-grey-400' />
+                <Database className='text-grey-300 dark:text-grey-400 size-3' />
                 {cacheRebuildStatus !== 'idle' && (
                   <RefreshCw
                     className={`size-3 ${
@@ -644,7 +644,7 @@ export function CreationStudioPage() {
                   Works in: Localhost, Preview & Production
                 </div>
                 {cacheStatus && (
-                  <div className='mt-1 border-t pt-1 text-xs text-grey-400'>
+                  <div className='text-grey-400 mt-1 border-t pt-1 text-xs'>
                     Current: {cacheStatus.totalItems} items •{' '}
                     {getRelativeTimeString(cacheStatus.lastUpdated)}
                   </div>
@@ -712,7 +712,7 @@ export function CreationStudioPage() {
             <TooltipContent>
               <div className='text-center'>
                 <div className='font-medium'>Rebuild Cache Manually</div>
-                <div className='mt-1 text-xs text-grey-400'>
+                <div className='text-grey-400 mt-1 text-xs'>
                   Force refresh of search and navigation cache using production
                   KV
                 </div>
@@ -720,7 +720,7 @@ export function CreationStudioPage() {
                   Works in: Localhost, Preview & Production
                 </div>
                 {cacheStatus && (
-                  <div className='mt-1 border-t pt-1 text-xs text-grey-400'>
+                  <div className='text-grey-400 mt-1 border-t pt-1 text-xs'>
                     <div>{cacheStatus.totalItems} items</div>
                     <div>
                       Updated{' '}
@@ -729,7 +729,7 @@ export function CreationStudioPage() {
                       {new Date(cacheStatus.lastUpdated).toLocaleTimeString()}
                     </div>
                     {cacheStatus.trigger && (
-                      <div className='mt-1 text-grey-400'>
+                      <div className='text-grey-400 mt-1'>
                         Trigger: {cacheStatus.trigger}
                       </div>
                     )}
@@ -778,9 +778,7 @@ export function CreationStudioPage() {
                           void (async () => {
                             setConfirm({ open: false, message: '' });
                             const res =
-                              await apiClient.deleteContentSoft(
-                                currentFile
-                              );
+                              await apiClient.deleteContentSoft(currentFile);
                             if (res.success) {
                               setMarkdown('');
                               setFrontmatter({});
@@ -987,7 +985,7 @@ export function CreationStudioPage() {
                     {currentFile ? (
                       <>
                         <div className='size-1.5 rounded-full bg-gold-500/60'></div>
-                        <p className='text-sm text-grey-300 dark:text-grey-400'>
+                        <p className='text-grey-300 dark:text-grey-400 text-sm'>
                           {currentFile}{' '}
                           {isDirty && (
                             <span className='font-medium text-gold-400 dark:text-gold-400'>
@@ -997,7 +995,7 @@ export function CreationStudioPage() {
                         </p>
                       </>
                     ) : (
-                      <div className='size-1.5 rounded-full bg-grey-600/60'></div>
+                      <div className='bg-grey-600/60 size-1.5 rounded-full'></div>
                     )}
                   </div>
                 </div>
@@ -1006,7 +1004,7 @@ export function CreationStudioPage() {
                 variant='outline'
                 size='sm'
                 onClick={() => setIsFullscreen(false)}
-                className='gap-2 border-gold-500/20 text-gold-400 shadow-md transition-all duration-200 hover:bg-hunter-900/40 hover:border-gold-500/40 hover:shadow-lg backdrop-blur-sm dark:hover:bg-hunter-900/40'
+                className='gap-2 border-gold-500/20 text-gold-400 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg dark:hover:bg-hunter-900/40'
               >
                 <Minimize className='size-4' />
                 Return to Studio

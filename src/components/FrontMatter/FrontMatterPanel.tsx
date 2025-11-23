@@ -49,41 +49,41 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
       <CardContent className='space-y-4 p-4'>
         <div className='space-y-4'>
           {/* Title Section */}
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 dark:border-gold-500/20 dark:bg-hunter-900/40 backdrop-blur-md'>
+          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
             <div className='mb-2 flex items-center gap-2'>
               <div className='size-1.5 rounded-full bg-gold-600'></div>
               <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
                 Title
               </span>
             </div>
-            <div className='truncate font-medium text-grey-200 dark:text-grey-300'>
+            <div className='text-grey-200 dark:text-grey-300 truncate font-medium'>
               {frontmatter.title ?? 'No title set'}
             </div>
           </div>
 
           {/* Description Section */}
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 dark:border-gold-500/20 dark:bg-hunter-900/40 backdrop-blur-md'>
+          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
             <div className='mb-2 flex items-center gap-2'>
               <div className='size-1.5 rounded-full bg-slate-600'></div>
               <span className='text-xs font-semibold uppercase text-slate-700 dark:text-slate-300'>
                 Description
               </span>
             </div>
-            <div className='line-clamp-3 text-sm text-grey-400 dark:text-grey-400'>
+            <div className='text-grey-400 dark:text-grey-400 line-clamp-3 text-sm'>
               {frontmatter.description ?? 'No description set'}
             </div>
           </div>
 
           {/* Date & Layout Grid */}
           <div className='grid grid-cols-2 gap-3'>
-            <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 dark:border-gold-500/20 dark:bg-hunter-900/40 backdrop-blur-md'>
+            <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
               <div className='mb-1 flex items-center gap-2'>
                 <div className='size-1.5 rounded-full bg-gold-600'></div>
                 <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
                   Date
                 </span>
               </div>
-              <div className='text-sm text-grey-200 dark:text-grey-300'>
+              <div className='text-grey-200 dark:text-grey-300 text-sm'>
                 {(() => {
                   const date = frontmatter.date;
                   if (!date) return 'Not set';
@@ -99,21 +99,21 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
               </div>
             </div>
 
-            <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 dark:border-gold-500/20 dark:bg-hunter-900/40 backdrop-blur-md'>
+            <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
               <div className='mb-1 flex items-center gap-2'>
                 <div className='size-1.5 rounded-full bg-gold-600'></div>
                 <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
                   Layout
                 </span>
               </div>
-              <div className='text-sm text-grey-200 dark:text-grey-300'>
+              <div className='text-grey-200 dark:text-grey-300 text-sm'>
                 {frontmatter.layout ?? 'Default'}
               </div>
             </div>
           </div>
 
           {/* Tags Section */}
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 dark:border-gold-500/20 dark:bg-hunter-900/40 backdrop-blur-md'>
+          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
             <div className='mb-2 flex items-center gap-2'>
               <div className='size-1.5 rounded-full bg-gold-600'></div>
               <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
@@ -131,7 +131,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                   </Badge>
                 ))
               ) : (
-                <span className='text-sm italic text-grey-400 dark:text-grey-500'>
+                <span className='text-grey-400 dark:text-grey-500 text-sm italic'>
                   No tags set
                 </span>
               )}
@@ -139,7 +139,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
           </div>
 
           {/* Draft Status */}
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 dark:border-gold-500/20 dark:bg-hunter-900/40 backdrop-blur-md'>
+          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-2'>
                 <div className='size-1.5 rounded-full bg-gold-600'></div>
@@ -162,7 +162,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
 
         {/* Footer Message */}
         <div className='border-t border-indigo-200/60 pt-3 dark:border-indigo-800/60'>
-          <div className='flex items-center gap-2 text-xs text-grey-400 dark:text-grey-500'>
+          <div className='text-grey-400 dark:text-grey-500 flex items-center gap-2 text-xs'>
             <div className='size-1 rounded-full bg-gold-400'></div>
             <span>Use "Edit" button above to modify front matter</span>
           </div>

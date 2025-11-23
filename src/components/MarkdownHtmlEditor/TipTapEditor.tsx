@@ -45,9 +45,9 @@ const ToolbarButton = React.memo<ToolbarButtonProps>(
       variant='ghost'
       size='sm'
       onClick={onClick}
-      className={`rounded-lg border border-gold-500/20 bg-hunter-900/30 transition-all duration-200 hover:border-gold-500/50 hover:bg-hunter-900/40 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/30 dark:hover:border-gold-500/50 dark:hover:bg-hunter-900/40 ${
+      className={`rounded-lg border border-gold-500/20 bg-hunter-900/30 backdrop-blur-md transition-all duration-200 hover:border-gold-500/50 hover:bg-hunter-900/40 dark:border-gold-500/20 dark:bg-hunter-900/30 dark:hover:border-gold-500/50 dark:hover:bg-hunter-900/40 ${
         isActive
-          ? 'border-gold-500/60 bg-gold-500/30 text-gold-300 dark:border-gold-500/60 ring-1 ring-gold-500/30'
+          ? 'border-gold-500/60 bg-gold-500/30 text-gold-300 ring-1 ring-gold-500/30 dark:border-gold-500/60'
           : 'hover:bg-hunter-900/40 hover:text-gold-300 dark:hover:bg-hunter-900/40 dark:hover:text-gold-300'
       } ${className}`}
     >
@@ -296,7 +296,7 @@ export function TipTapEditor({
         </ToolbarButton>
       </div>
       {/* Editor Content Area */}
-      <div className='flex-1 overflow-hidden bg-hunter-900/30 dark:bg-hunter-900/30 backdrop-blur-xl'>
+      <div className='flex-1 overflow-hidden bg-hunter-900/30 backdrop-blur-xl dark:bg-hunter-900/30'>
         {editor && (
           <EditorContent
             editor={editor}

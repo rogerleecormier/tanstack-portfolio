@@ -165,7 +165,7 @@ export function MarkdownHtmlEditor({
                       : 'Markdown Editor'}
                   </span>
                 </div>
-                <div className='text-xs text-grey-400'>
+                <div className='text-grey-400 text-xs'>
                   {markdown.length} characters
                 </div>
               </div>

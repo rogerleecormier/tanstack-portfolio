@@ -173,7 +173,6 @@ const ToolsListPage: React.FC = () => {
     <div className='min-h-screen bg-hunter-950'>
       {/* Header Section */}
       <div className='relative overflow-hidden border-b border-gold-500/20 bg-hunter-950/40 backdrop-blur-xl'>
-
         <div className='relative px-4 py-12 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             <div className='mb-6 flex items-center justify-center gap-4'>
@@ -191,7 +190,7 @@ const ToolsListPage: React.FC = () => {
             </div>
 
             {/* Description with Targeting Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
+            <p className='text-grey-300 mx-auto max-w-3xl text-lg leading-7'>
               Strategic utilities and professional tools to enhance your
               workflow and productivity.
               <span className='font-medium text-gold-400'>
@@ -203,15 +202,15 @@ const ToolsListPage: React.FC = () => {
 
             {/* Quick Stats */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-grey-400'>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
                 <div className='size-2 rounded-full bg-gold-500/50'></div>
                 <span>Workflow Tools</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-grey-400'>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
                 <div className='size-2 rounded-full bg-gold-500/50'></div>
                 <span>Productivity Boost</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-grey-400'>
+              <div className='text-grey-400 flex items-center gap-2 text-sm'>
                 <div className='size-2 rounded-full bg-gold-500/50'></div>
                 <span>Strategic Automation</span>
               </div>
@@ -273,10 +272,8 @@ const ToolsListPage: React.FC = () => {
                   </div>
                 </div>
 
-
-
                 <div className='flex items-center justify-between'>
-                  <div className='text-sm text-grey-400'>
+                  <div className='text-grey-400 text-sm'>
                     {tool.status === 'active'
                       ? 'Ready to use'
                       : tool.status === 'beta'
@@ -304,7 +301,7 @@ const ToolsListPage: React.FC = () => {
                       disabled
                       size='sm'
                       variant='outline'
-                      className='cursor-not-allowed border-grey-600/30 bg-grey-800/30 text-grey-500'
+                      className='border-grey-600/30 bg-grey-800/30 text-grey-500 cursor-not-allowed'
                     >
                       Coming Soon
                     </Button>
@@ -327,7 +324,7 @@ const ToolsListPage: React.FC = () => {
               <H2 className='mb-2 text-2xl font-bold text-white'>
                 Need a Custom Tool?
               </H2>
-              <P className='mx-auto mb-4 max-w-2xl text-grey-300'>
+              <P className='text-grey-300 mx-auto mb-4 max-w-2xl'>
                 I build automation tools and utilities tailored to specific
                 workflows. Let me know what would be most helpful for your
                 needs.

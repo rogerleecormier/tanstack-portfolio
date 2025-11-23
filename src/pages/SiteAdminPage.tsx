@@ -637,7 +637,7 @@ export const SiteAdminPage: React.FC = () => {
             </div>
 
             {/* Description with Admin Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300 dark:text-grey-300'>
+            <p className='text-grey-300 dark:text-grey-300 mx-auto max-w-3xl text-lg leading-7'>
               Monitor system health, manage services, and oversee
               <span className='font-medium text-gold-600 dark:text-gold-400'>
                 {' '}
@@ -677,7 +677,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Users className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-grey-100'>
+                    <CardTitle className='text-grey-100 text-xl font-semibold'>
                       User Profile
                     </CardTitle>
                     <CardDescription className='text-grey-300'>
@@ -689,34 +689,34 @@ export const SiteAdminPage: React.FC = () => {
               <CardContent className='space-y-4'>
                 <div className='grid grid-cols-1 gap-4'>
                   <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-grey-400'>
+                    <div className='text-grey-400 mb-1 text-sm font-medium'>
                       Email
                     </div>
-                    <div className='truncate font-medium text-grey-100'>
+                    <div className='text-grey-100 truncate font-medium'>
                       {user?.email}
                     </div>
                   </div>
                   <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-grey-400'>
+                    <div className='text-grey-400 mb-1 text-sm font-medium'>
                       Name
                     </div>
-                    <div className='font-medium text-grey-100'>
+                    <div className='text-grey-100 font-medium'>
                       {user?.name ?? 'Not provided'}
                     </div>
                   </div>
                   <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-grey-400'>
+                    <div className='text-grey-400 mb-1 text-sm font-medium'>
                       Authentication
                     </div>
-                    <div className='font-medium text-grey-100'>
+                    <div className='text-grey-100 font-medium'>
                       {isDevelopment ? 'Development' : 'Cloudflare Access'}
                     </div>
                   </div>
                   <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='mb-1 text-sm font-medium text-grey-400'>
+                    <div className='text-grey-400 mb-1 text-sm font-medium'>
                       Environment
                     </div>
-                    <div className='font-medium text-grey-100'>
+                    <div className='text-grey-100 font-medium'>
                       {isDevelopment ? 'Development' : 'Production'}
                     </div>
                   </div>
@@ -732,7 +732,7 @@ export const SiteAdminPage: React.FC = () => {
                     <Settings className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-xl font-semibold text-grey-100'>
+                    <CardTitle className='text-grey-100 text-xl font-semibold'>
                       System Status
                     </CardTitle>
                     <CardDescription className='text-grey-300'>
@@ -744,7 +744,7 @@ export const SiteAdminPage: React.FC = () => {
               <CardContent className='space-y-4'>
                 <div className='rounded-lg bg-hunter-800 p-4'>
                   <div className='flex items-center justify-between'>
-                    <span className='font-medium text-grey-100'>
+                    <span className='text-grey-100 font-medium'>
                       Authentication Status
                     </span>
                     <div className='flex items-center gap-2'>

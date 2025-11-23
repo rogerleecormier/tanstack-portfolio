@@ -213,12 +213,11 @@ export default function IndexPage() {
   return (
     <div className='min-h-screen bg-hunter-950'>
       {/* Hero Section - Premium Design */}
-      <div className='relative overflow-hidden border-b border-gold-500/20 bg-hunter-950/40 backdrop-blur-xl px-4 py-24 sm:px-6 lg:px-8'>
-
+      <div className='relative overflow-hidden border-b border-gold-500/20 bg-hunter-950/40 px-4 py-24 backdrop-blur-xl sm:px-6 lg:px-8'>
         <div className='relative mx-auto max-w-5xl'>
           {/* Logo and Title Stack */}
           <div className='mb-12 flex flex-col items-center gap-8'>
-            <div className='flex-shrink-0 rounded-2xl border border-gold-500/20 bg-hunter-900/60 ring-1 ring-gold-500/20 p-4 backdrop-blur-md'>
+            <div className='flex-shrink-0 rounded-2xl border border-gold-500/20 bg-hunter-900/60 p-4 ring-1 ring-gold-500/20 backdrop-blur-md'>
               <Logo size='xl' showTargetingDots={true} />
             </div>
             <div className='flex-1 text-center'>
@@ -236,7 +235,7 @@ export default function IndexPage() {
 
           {/* Professional Identity */}
           <div className='mb-10'>
-            <p className='mx-auto max-w-2xl text-lg leading-relaxed text-grey-200'>
+            <p className='text-grey-200 mx-auto max-w-2xl text-lg leading-relaxed'>
               Digital transformation specialist driving organizational success
               through strategic technology implementation, enterprise system
               integration, and AI-powered automation.
@@ -245,31 +244,31 @@ export default function IndexPage() {
 
           {/* Core Focus Areas */}
           <div className='mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3'>
-            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 backdrop-blur-md p-4'>
+            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-4 backdrop-blur-md'>
               <div className='mt-1 size-2 flex-shrink-0 rounded-full bg-gold-400'></div>
               <div>
                 <p className='font-semibold text-gold-300'>
                   ERP & SaaS Integration
                 </p>
-                <p className='text-sm text-grey-400'>
+                <p className='text-grey-400 text-sm'>
                   NetSuite, Ramp, Cloudflare
                 </p>
               </div>
             </div>
-            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 backdrop-blur-md p-4'>
+            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-4 backdrop-blur-md'>
               <div className='mt-1 size-2 flex-shrink-0 rounded-full bg-gold-400'></div>
               <div>
                 <p className='font-semibold text-gold-300'>AI & Automation</p>
-                <p className='text-sm text-grey-400'>Workflow optimization</p>
+                <p className='text-grey-400 text-sm'>Workflow optimization</p>
               </div>
             </div>
-            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 backdrop-blur-md p-4'>
+            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-4 backdrop-blur-md'>
               <div className='mt-1 size-2 flex-shrink-0 rounded-full bg-gold-400'></div>
               <div>
                 <p className='font-semibold text-gold-300'>
                   Project Leadership
                 </p>
-                <p className='text-sm text-grey-400'>PMP-certified delivery</p>
+                <p className='text-grey-400 text-sm'>PMP-certified delivery</p>
               </div>
             </div>
           </div>
@@ -299,7 +298,7 @@ export default function IndexPage() {
         <div className='mx-auto max-w-7xl'>
           <div className='mb-16 text-center'>
             <H2 className='!m-0 mb-4 text-white'>Core Expertise</H2>
-            <P className='mx-auto max-w-3xl text-grey-400'>
+            <P className='text-grey-400 mx-auto max-w-3xl'>
               Specialized capabilities that drive digital transformation and
               operational excellence
             </P>
@@ -315,7 +314,7 @@ export default function IndexPage() {
                 <H3 className='!m-0 mb-2 text-lg text-white transition-colors group-hover:text-gold-400'>
                   ERP & SaaS Integration
                 </H3>
-                <P className='!m-0 text-sm text-grey-400'>
+                <P className='text-grey-400 !m-0 text-sm'>
                   NetSuite, Ramp, and enterprise system orchestration for
                   seamless operations
                 </P>
@@ -351,7 +350,7 @@ export default function IndexPage() {
                 <H3 className='!m-0 mb-2 text-lg text-white transition-colors group-hover:text-gold-400'>
                   AI & Automation
                 </H3>
-                <P className='!m-0 text-sm text-grey-400'>
+                <P className='text-grey-400 !m-0 text-sm'>
                   Intelligent workflows, copilot integration, and autonomous
                   operations
                 </P>
@@ -422,7 +421,7 @@ export default function IndexPage() {
         <div className='mx-auto max-w-7xl'>
           <div className='mb-12 text-center'>
             <H2 className='!m-0 mb-4 text-white'>Featured Projects & Tools</H2>
-            <P className='mx-auto max-w-3xl text-grey-400'>
+            <P className='text-grey-400 mx-auto max-w-3xl'>
               Technical solutions, automation tools, and strategic projects
               including HealthBridge Enhanced and other digital transformation
               initiatives
@@ -447,7 +446,7 @@ export default function IndexPage() {
                         <H3 className='!m-0 mb-2 text-lg text-white transition-colors group-hover:text-gold-400'>
                           {item.title}
                         </H3>
-                        <P className='!m-0 text-sm text-grey-400'>
+                        <P className='text-grey-400 !m-0 text-sm'>
                           {item.description}
                         </P>
                       </CardHeader>
@@ -490,7 +489,7 @@ export default function IndexPage() {
         <div className='mx-auto max-w-7xl'>
           <div className='mb-12 text-center'>
             <H2 className='!m-0 mb-4 text-white'>Recent Insights</H2>
-            <P className='mx-auto max-w-3xl text-grey-400'>
+            <P className='text-grey-400 mx-auto max-w-3xl'>
               Latest thoughts on digital transformation, technical leadership,
               and operational excellence
             </P>
@@ -507,7 +506,7 @@ export default function IndexPage() {
                     <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
                       {blog.category}
                     </Badge>
-                    <span className='text-xs text-grey-400'>
+                    <span className='text-grey-400 text-xs'>
                       {blog.date
                         ? new Date(blog.date).toLocaleDateString('en-US', {
                             month: 'short',
@@ -520,7 +519,7 @@ export default function IndexPage() {
                   <H3 className='!m-0 mb-2 text-lg text-white transition-colors group-hover:text-gold-400'>
                     {blog.title}
                   </H3>
-                  <P className='!m-0 text-sm text-grey-400'>
+                  <P className='text-grey-400 !m-0 text-sm'>
                     {blog.description}
                   </P>
                 </CardHeader>
@@ -564,7 +563,7 @@ export default function IndexPage() {
         <div className='mx-auto max-w-7xl'>
           <div className='mb-12 text-center'>
             <H2 className='!m-0 mb-4 text-white'>Explore My Work</H2>
-            <P className='mx-auto max-w-3xl text-grey-400'>
+            <P className='text-grey-400 mx-auto max-w-3xl'>
               Navigate to different areas of expertise and experience
             </P>
           </div>
@@ -576,7 +575,7 @@ export default function IndexPage() {
                   <Briefcase className='size-8 text-white' />
                 </div>
                 <H3 className='!m-0 text-lg text-white'>Portfolio</H3>
-                <P className='!m-0 text-sm text-grey-400'>
+                <P className='text-grey-400 !m-0 text-sm'>
                   Leadership & technical capabilities
                 </P>
               </CardHeader>
@@ -597,7 +596,7 @@ export default function IndexPage() {
                   <BarChart3 className='size-8 text-white' />
                 </div>
                 <H3 className='!m-0 text-lg text-white'>Projects</H3>
-                <P className='!m-0 text-sm text-grey-400'>
+                <P className='text-grey-400 !m-0 text-sm'>
                   Case studies & analysis
                 </P>
               </CardHeader>
@@ -618,7 +617,7 @@ export default function IndexPage() {
                   <Wrench className='size-8 text-white' />
                 </div>
                 <H3 className='!m-0 text-lg text-white'>Tools</H3>
-                <P className='!m-0 text-sm text-grey-400'>
+                <P className='text-grey-400 !m-0 text-sm'>
                   Utilities & resources
                 </P>
               </CardHeader>
@@ -639,7 +638,7 @@ export default function IndexPage() {
                   <MessageSquare className='size-8 text-white' />
                 </div>
                 <H3 className='!m-0 text-lg text-white'>Contact</H3>
-                <P className='!m-0 text-sm text-grey-400'>Let's connect</P>
+                <P className='text-grey-400 !m-0 text-sm'>Let's connect</P>
               </CardHeader>
               <CardContent>
                 <Button
@@ -662,7 +661,7 @@ export default function IndexPage() {
             <H2 className='!m-0 mb-4 text-white'>
               Ready to Transform Your Organization?
             </H2>
-            <Lead className='!m-0 mx-auto mb-6 max-w-2xl text-grey-300'>
+            <Lead className='text-grey-300 !m-0 mx-auto mb-6 max-w-2xl'>
               Let's discuss how strategic technology implementation, AI
               automation, and digital transformation can drive success in your
               organization.

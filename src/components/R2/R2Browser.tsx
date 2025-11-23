@@ -183,7 +183,7 @@ export function R2Browser({
         </CardTitle>
         <div className='mt-4 flex gap-3'>
           <div className='relative flex-1'>
-            <Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-grey-400' />
+            <Search className='text-grey-400 absolute left-3 top-1/2 size-4 -translate-y-1/2' />
             <Input
               placeholder='Search files...'
               value={searchTerm}
@@ -216,7 +216,7 @@ export function R2Browser({
               <ArrowLeft className='mr-1 size-4' /> Up
             </Button>
           )}
-          <div className='flex items-center gap-2 text-sm text-grey-600 dark:text-grey-400'>
+          <div className='text-grey-600 dark:text-grey-400 flex items-center gap-2 text-sm'>
             <div className='size-1.5 rounded-full bg-gold-500/60'></div>
             <span className='font-medium'>{currentPrefix || 'root'}</span>
           </div>
@@ -237,7 +237,7 @@ export function R2Browser({
                   <div className='rounded-md bg-hunter-900/60 p-1.5 ring-1 ring-gold-500/20 backdrop-blur-md'>
                     <Folder className='size-3.5 text-gold-400' />
                   </div>
-                  <div className='truncate text-sm font-medium text-grey-200 dark:text-grey-300'>
+                  <div className='text-grey-200 dark:text-grey-300 truncate text-sm font-medium'>
                     {name}
                   </div>
                 </div>
@@ -256,7 +256,7 @@ export function R2Browser({
               onClick={() => void handleFileClick(obj.key)}
             >
               <div className='min-w-0 flex-1'>
-                <div className='flex items-center gap-2 truncate text-sm font-medium text-grey-200 dark:text-grey-300'>
+                <div className='text-grey-200 dark:text-grey-300 flex items-center gap-2 truncate text-sm font-medium'>
                   {loadingFile === obj.key && (
                     <Loader className='size-3 animate-spin text-gold-600' />
                   )}
@@ -265,7 +265,7 @@ export function R2Browser({
                   </div>
                   {obj.key.replace(currentPrefix, '')}
                 </div>
-                <div className='mt-0.5 text-xs text-grey-500 dark:text-grey-400'>
+                <div className='text-grey-500 dark:text-grey-400 mt-0.5 text-xs'>
                   {formatFileSize(obj.size)} • {formatDate(obj.uploaded)}
                 </div>
               </div>
@@ -304,12 +304,12 @@ export function R2Browser({
           {prefixes.length === 0 &&
             filteredObjects.length === 0 &&
             !loading && (
-              <div className='py-8 text-center text-grey-500 dark:text-grey-400'>
+              <div className='text-grey-500 dark:text-grey-400 py-8 text-center'>
                 <div className='mx-auto mb-3 w-fit rounded-full bg-hunter-900/40 p-3 backdrop-blur-md'>
                   <FileText className='size-6 text-gold-400' />
                 </div>
                 <p className='text-sm font-medium'>No items found</p>
-                <p className='mt-1 text-xs text-grey-400 dark:text-grey-500'>
+                <p className='text-grey-400 dark:text-grey-500 mt-1 text-xs'>
                   Try adjusting your search or navigate to a different folder
                 </p>
               </div>
