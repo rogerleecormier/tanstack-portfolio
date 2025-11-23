@@ -123,14 +123,14 @@ const RiskAssessmentPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50 py-8'>
+    <div className='min-h-screen bg-surface-base py-8'>
       <div className='mx-auto max-w-4xl px-4'>
-        <Card>
+        <Card className='border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
           <CardHeader>
-            <CardTitle className='text-2xl font-bold'>
+            <CardTitle className='text-2xl font-bold text-strategy-gold'>
               Risk Assessment Tool
             </CardTitle>
-            <p className='text-gray-600'>
+            <p className='text-text-secondary'>
               Assess project risks with likelihood and impact scores. Generate
               matrix and export to XLSX. Ready for AI mitigation suggestions.
             </p>
@@ -141,36 +141,40 @@ const RiskAssessmentPage: React.FC = () => {
               className='space-y-6'
             >
               <div>
-                <Label htmlFor='projectName'>Project Name</Label>
-                <Input id='projectName' {...register('projectName')} />
+                <Label htmlFor='projectName' className='text-text-foreground'>Project Name</Label>
+                <Input 
+                  id='projectName' 
+                  {...register('projectName')}
+                  className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground'
+                />
                 {errors.projectName && (
-                  <p className='text-sm text-red-500'>
+                  <p className='text-sm text-strategy-rose'>
                     {errors.projectName.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <h3 className='mb-2 text-lg font-semibold'>Risks</h3>
+                <h3 className='mb-2 text-lg font-semibold text-text-foreground'>Risks</h3>
                 {fields.map((field, index) => (
-                  <div key={field.id} className='mb-4 rounded border p-4'>
+                  <div key={field.id} className='mb-4 rounded border border-strategy-gold/20 bg-surface-deep/30 p-4'>
                     <Input
                       placeholder='Risk Description'
                       {...register(`risks.${index}.description` as const)}
-                      className='mb-2'
+                      className='mb-2 border-strategy-gold/20 bg-surface-deep/50 text-text-foreground'
                     />
                     {errors.risks?.[index]?.description && (
-                      <p className='text-sm text-red-500'>
+                      <p className='text-sm text-strategy-rose'>
                         {errors.risks[index]?.description?.message}
                       </p>
                     )}
                     <div className='grid grid-cols-2 gap-2'>
                       <div>
-                        <Label>Likelihood (1-5)</Label>
+                        <Label className='text-text-foreground'>Likelihood (1-5)</Label>
                         <Select
                           {...register(`risks.${index}.likelihood` as const)}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground'>
                             <SelectValue placeholder='Select likelihood' />
                           </SelectTrigger>
                           <SelectContent>
@@ -185,9 +189,9 @@ const RiskAssessmentPage: React.FC = () => {
                         </Select>
                       </div>
                       <div>
-                        <Label>Impact (1-5)</Label>
+                        <Label className='text-text-foreground'>Impact (1-5)</Label>
                         <Select {...register(`risks.${index}.impact` as const)}>
-                          <SelectTrigger>
+                          <SelectTrigger className='border-strategy-gold/20 bg-surface-deep/50 text-text-foreground'>
                             <SelectValue placeholder='Select impact' />
                           </SelectTrigger>
                           <SelectContent>
@@ -206,7 +210,7 @@ const RiskAssessmentPage: React.FC = () => {
                       type='button'
                       variant='outline'
                       onClick={() => remove(index)}
-                      className='mt-2'
+                      className='mt-2 border-strategy-rose/40 text-strategy-rose hover:bg-strategy-rose/10'
                     >
                       <Trash2 className='mr-2 size-4' /> Remove Risk
                     </Button>
@@ -217,17 +221,24 @@ const RiskAssessmentPage: React.FC = () => {
                   onClick={() =>
                     append({ description: '', likelihood: '3', impact: '3' })
                   }
+                  className='border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
                 >
                   <Plus className='mr-2 size-4' /> Add Risk
                 </Button>
               </div>
 
               <div className='flex gap-2'>
-                <Button type='submit'>Generate Risk Matrix</Button>
+                <Button 
+                  type='submit'
+                  className='border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
+                >
+                  Generate Risk Matrix
+                </Button>
                 <Button
                   type='button'
                   variant='outline'
                   onClick={handleAIMitigate}
+                  className='border-strategy-gold/20 bg-surface-deep/30 text-strategy-gold hover:bg-surface-elevated/50'
                 >
                   AI Suggest Mitigations
                 </Button>
@@ -236,11 +247,14 @@ const RiskAssessmentPage: React.FC = () => {
 
             {matrixData && (
               <div className='mt-8'>
-                <h3 className='mb-2 text-lg font-semibold'>
+                <h3 className='mb-2 text-lg font-semibold text-text-foreground'>
                   Risk Matrix Table
                 </h3>
                 <SortableTable data={matrixData} />
-                <Button onClick={() => void handleExport()} className='mt-4'>
+                <Button 
+                  onClick={() => void handleExport()} 
+                  className='mt-4 border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
+                >
                   <Download className='mr-2 size-4' /> Export to XLSX
                 </Button>
               </div>
