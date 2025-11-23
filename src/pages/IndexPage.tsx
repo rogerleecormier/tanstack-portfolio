@@ -14,10 +14,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import { H2, H3, P, Lead } from '@/components/ui/typography-system';
 
 import { cachedContentService } from '@/api/cachedContentService';
-import { Logo } from '@/components/Logo';
+import { HeroSection } from '@/components/sections/HeroSection';
+import { SectionHeader } from '@/components/sections/SectionHeader';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { useNavigate } from '@tanstack/react-router';
@@ -211,251 +211,68 @@ export default function IndexPage() {
   };
 
   return (
-    <div className='min-h-screen bg-hunter-950'>
-      {/* Hero Section - Premium Design */}
-      <div className='relative overflow-hidden border-b border-gold-500/20 bg-hunter-950/40 px-4 py-24 backdrop-blur-xl sm:px-6 lg:px-8'>
-        <div className='relative mx-auto max-w-5xl'>
-          {/* Logo and Title Stack */}
-          <div className='mb-12 flex flex-col items-center gap-8'>
-            <div className='shrink-0 rounded-2xl border border-gold-500/20 bg-hunter-900/60 p-4 ring-1 ring-gold-500/20 backdrop-blur-md'>
-              <Logo size='xl' showTargetingDots={true} />
-            </div>
-            <div className='flex-1 text-center'>
-              <h1 className='text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl lg:text-7xl'>
-                Roger Lee Cormier
-              </h1>
-              <div className='mt-4 flex justify-center'>
-                <div className='h-1.5 w-24 rounded-full bg-gold-500/40'></div>
-              </div>
-              <p className='mt-6 text-xl font-semibold uppercase tracking-wider text-gold-400'>
-                Precision. Results. Delivered.
-              </p>
-            </div>
-          </div>
-
-          {/* Professional Identity */}
-          <div className='mb-10'>
-            <p className='mx-auto max-w-2xl text-lg leading-relaxed text-grey-200'>
-              Digital transformation specialist driving organizational success
-              through strategic technology implementation, enterprise system
-              integration, and AI-powered automation.
-            </p>
-          </div>
-
-          {/* Core Focus Areas */}
-          <div className='mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3'>
-            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-4 backdrop-blur-md'>
-              <div className='mt-1 size-2 shrink-0 rounded-full bg-gold-400'></div>
-              <div>
-                <p className='font-semibold text-gold-300'>
-                  ERP & SaaS Integration
-                </p>
-                <p className='text-sm text-grey-400'>
-                  NetSuite, Ramp, Cloudflare
-                </p>
-              </div>
-            </div>
-            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-4 backdrop-blur-md'>
-              <div className='mt-1 size-2 shrink-0 rounded-full bg-gold-400'></div>
-              <div>
-                <p className='font-semibold text-gold-300'>AI & Automation</p>
-                <p className='text-sm text-grey-400'>Workflow optimization</p>
-              </div>
-            </div>
-            <div className='flex items-start gap-3 rounded-lg border border-gold-500/20 bg-hunter-900/30 p-4 backdrop-blur-md'>
-              <div className='mt-1 size-2 shrink-0 rounded-full bg-gold-400'></div>
-              <div>
-                <p className='font-semibold text-gold-300'>
-                  Project Leadership
-                </p>
-                <p className='text-sm text-grey-400'>PMP-certified delivery</p>
-              </div>
-            </div>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className='flex flex-col justify-center gap-4 sm:flex-row'>
-            <Button
-              onClick={() => handleNavigation('/portfolio')}
-              className='btn-primary bg-gold-600 px-8 py-3 text-lg font-semibold text-hunter-950 shadow-lg transition-all duration-300 hover:bg-gold-500 hover:shadow-xl'
-            >
-              View Portfolio
-              <ArrowRight className='ml-2 size-5' />
-            </Button>
-            <Button
-              onClick={() => handleNavigation('/contact')}
-              className='btn-accent border border-gold-500/30 bg-gold-500/10 px-8 py-3 text-lg font-semibold text-gold-400 shadow-md transition-all duration-300 hover:border-gold-500/50 hover:bg-gold-500/20 hover:shadow-lg'
-            >
-              Get in Touch
-              <MessageSquare className='ml-2 size-5' />
-            </Button>
-          </div>
+    <div className="min-h-screen bg-surface-base">
+      {/* Hero Section - Precision Strategy Design */}
+      <div className="px-4 py-12 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <HeroSection
+            profile={{
+              name: 'Roger Lee Cormier',
+              role: 'Technical Strategist',
+              image: '/images/IMG_1242.JPG',
+            }}
+            title="Building Enterprise Solutions with Precision"
+            subtitle="Technical Strategist"
+            description="Technical strategist and digital innovator specializing in scalable architecture, digital transformation, and strategic technology implementation. Helping organizations achieve measurable business impact through precision execution."
+            stats={[
+              { number: '15+', label: 'Years Experience' },
+              { number: '150+', label: 'Projects Shipped' },
+              { number: '∞', label: 'Learning' },
+            ]}
+            ctas={[
+              { label: 'View Work', href: '/portfolio', variant: 'primary' },
+              { label: 'Learn More', variant: 'secondary' },
+            ]}
+          />
         </div>
       </div>
 
-      {/* Core Expertise Section */}
-      <div className='px-4 py-16 sm:px-6 lg:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <div className='mb-16 text-center'>
-            <H2 className='!m-0 mb-4 text-white'>Core Expertise</H2>
-            <P className='mx-auto max-w-3xl text-grey-400'>
-              Specialized capabilities that drive digital transformation and
-              operational excellence
-            </P>
-          </div>
-
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'>
-            {/* ERP & SaaS Integration */}
-            <Card className='group flex flex-col border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'>
-              <CardHeader className='pb-4'>
-                <div className='mb-4 flex size-12 items-center justify-center rounded-xl bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                  <Database className='size-6 text-gold-400' />
-                </div>
-                <H3 className='!m-0 mb-2 text-lg text-white transition-colors group-hover:text-gold-400'>
-                  ERP & SaaS Integration
-                </H3>
-                <P className='!m-0 text-sm text-grey-400'>
-                  NetSuite, Ramp, and enterprise system orchestration for
-                  seamless operations
-                </P>
-              </CardHeader>
-              <CardContent className='flex grow flex-col justify-between'>
-                <div className='mb-4 flex flex-wrap gap-2'>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    NetSuite
-                  </Badge>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    Ramp
-                  </Badge>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    API Integration
-                  </Badge>
-                </div>
-                <Button
-                  onClick={() => handleNavigation('/portfolio/analytics')}
-                  className='w-full border border-gold-500/30 bg-transparent text-gold-400 hover:border-gold-500/50 hover:bg-gold-500/10'
-                >
-                  Learn More
-                  <ArrowRight className='ml-2 size-4' />
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* AI & Automation */}
-            <Card className='group flex flex-col border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'>
-              <CardHeader className='pb-4'>
-                <div className='mb-4 flex size-12 items-center justify-center rounded-xl bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                  <Brain className='size-6 text-gold-400' />
-                </div>
-                <H3 className='!m-0 mb-2 text-lg text-white transition-colors group-hover:text-gold-400'>
-                  AI & Automation
-                </H3>
-                <P className='!m-0 text-sm text-grey-400'>
-                  Intelligent workflows, copilot integration, and autonomous
-                  operations
-                </P>
-              </CardHeader>
-              <CardContent className='flex grow flex-col justify-between'>
-                <div className='mb-4 flex flex-wrap gap-2'>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    AI Copilots
-                  </Badge>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    Workflow Automation
-                  </Badge>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    Cloudflare AI
-                  </Badge>
-                </div>
-                <Button
-                  onClick={() => handleNavigation('/portfolio/ai-automation')}
-                  className='w-full border border-gold-500/30 bg-transparent text-gold-400 hover:border-gold-500/50 hover:bg-gold-500/10'
-                >
-                  Learn More
-                  <ArrowRight className='ml-2 size-4' />
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Digital Transformation */}
-            <Card className='group flex flex-col border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'>
-              <CardHeader className='pb-4'>
-                <div className='mb-4 flex size-12 items-center justify-center rounded-xl bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                  <Globe className='size-6 text-gold-400' />
-                </div>
-                <CardTitle className='text-xl font-bold text-white transition-colors group-hover:text-gold-400'>
-                  Digital Transformation
-                </CardTitle>
-                <CardDescription className='text-grey-300'>
-                  Strategic technology implementation and organizational change
-                  management
-                </CardDescription>
-              </CardHeader>
-              <CardContent className='flex grow flex-col justify-between'>
-                <div className='mb-4 flex flex-wrap gap-2'>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    Strategy
-                  </Badge>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    Change Management
-                  </Badge>
-                  <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
-                    PMP Certified
-                  </Badge>
-                </div>
-                <Button
-                  onClick={() => handleNavigation('/portfolio/leadership')}
-                  className='w-full border border-gold-500/30 bg-transparent text-gold-400 hover:border-gold-500/50 hover:bg-gold-500/10'
-                >
-                  Learn More
-                  <ArrowRight className='ml-2 size-4' />
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-
-      {/* Featured Projects & Tools Carousel */}
-      <div className='border-y border-gold-500/20 bg-hunter-950 px-4 py-16 sm:px-6 lg:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <div className='mb-12 text-center'>
-            <H2 className='!m-0 mb-4 text-white'>Featured Projects & Tools</H2>
-            <P className='mx-auto max-w-3xl text-grey-400'>
-              Technical solutions, automation tools, and strategic projects
-              including HealthBridge Enhanced and other digital transformation
-              initiatives
-            </P>
-          </div>
+      {/* Featured Work Section */}
+      <div className="px-4 py-16 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            title="Featured Work"
+            subtitle="Selected projects demonstrating technical expertise and strategic impact"
+          />
 
           {featuredWork.length > 0 ? (
-            <Carousel className='mx-auto w-full max-w-6xl'>
+            <Carousel className="mx-auto w-full">
               <CarouselContent>
                 {featuredWork.map(item => (
                   <CarouselItem
                     key={item.id}
-                    className='md:basis-1/2 lg:basis-1/3'
+                    className="md:basis-1/2 lg:basis-1/3"
                   >
-                    <Card className='group flex h-full flex-col border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'>
-                      <CardHeader className='shrink-0 pb-4'>
-                        <div className='mb-3 flex items-center justify-between'>
-                          <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
+                    <Card className="group flex h-full flex-col border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold hover:shadow-lg">
+                      <CardHeader className="shrink-0 pb-4">
+                        <div className="mb-3 flex items-center justify-between">
+                          <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
                             {item.category}
                           </Badge>
                         </div>
-                        <H3 className='!m-0 mb-2 text-lg text-white transition-colors group-hover:text-gold-400'>
+                        <CardTitle className="mb-2 text-lg text-text-foreground transition-colors group-hover:text-strategy-gold">
                           {item.title}
-                        </H3>
-                        <P className='!m-0 text-sm text-grey-400'>
+                        </CardTitle>
+                        <CardDescription className="text-sm text-text-secondary">
                           {item.description}
-                        </P>
+                        </CardDescription>
                       </CardHeader>
-                      <CardContent className='flex grow flex-col pt-0'>
-                        <div className='mb-4 flex flex-wrap gap-1.5'>
+                      <CardContent className="flex grow flex-col pt-0">
+                        <div className="mb-4 flex flex-wrap gap-1.5">
                           {item.tags.slice(0, 3).map((tag, index) => (
                             <Badge
                               key={index}
-                              className='border-gold-600/40 bg-gold-600/15 text-xs text-gold-300'
+                              className="border-strategy-gold/20 bg-strategy-gold/10 text-xs text-strategy-gold"
                             >
                               {tag}
                             </Badge>
@@ -463,10 +280,10 @@ export default function IndexPage() {
                         </div>
                         <Button
                           onClick={() => handleNavigation(item.url)}
-                          className='mt-auto w-full bg-gradient-to-r from-hunter-600 to-hunter-500 text-white hover:from-hunter-500 hover:to-hunter-400'
+                          className="mt-auto w-full bg-strategy-gold text-precision-charcoal hover:brightness-110"
                         >
                           View Details
-                          <ArrowRight className='ml-2 size-4' />
+                          <ArrowRight className="ml-2 size-4" />
                         </Button>
                       </CardContent>
                     </Card>
@@ -477,36 +294,153 @@ export default function IndexPage() {
               <CarouselNext />
             </Carousel>
           ) : (
-            <div className='py-12 text-center'>
-              <P className='text-slate-500'>Loading featured work...</P>
+            <div className="py-12 text-center">
+              <p className="text-text-muted">Loading featured work...</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Recent Blog Posts */}
-      <div className='px-4 py-16 sm:px-6 lg:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <div className='mb-12 text-center'>
-            <H2 className='!m-0 mb-4 text-white'>Recent Insights</H2>
-            <P className='mx-auto max-w-3xl text-grey-400'>
-              Latest thoughts on digital transformation, technical leadership,
-              and operational excellence
-            </P>
-          </div>
+      {/* Core Expertise Section */}
+      <div className="px-4 py-16 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            title="Core Expertise"
+            subtitle="Specialized capabilities that drive digital transformation and operational excellence"
+          />
 
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {/* ERP & SaaS Integration */}
+            <Card className="group flex flex-col border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold hover:shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-strategy-gold/10 ring-1 ring-strategy-gold/20">
+                  <Database className="size-6 text-strategy-gold" />
+                </div>
+                <CardTitle className="mb-2 text-lg text-text-foreground transition-colors group-hover:text-strategy-gold">
+                  ERP & SaaS Integration
+                </CardTitle>
+                <CardDescription className="text-sm text-text-secondary">
+                  NetSuite, Ramp, and enterprise system orchestration for
+                  seamless operations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex grow flex-col justify-between">
+                <div className="mb-4 flex flex-wrap gap-2">
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    NetSuite
+                  </Badge>
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    Ramp
+                  </Badge>
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    API Integration
+                  </Badge>
+                </div>
+                <Button
+                  onClick={() => handleNavigation('/portfolio/analytics')}
+                  className="w-full border border-strategy-gold/30 bg-transparent text-strategy-gold hover:border-strategy-gold/50 hover:bg-strategy-gold/10"
+                >
+                  Learn More
+                  <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* AI & Automation */}
+            <Card className="group flex flex-col border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold hover:shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-strategy-gold/10 ring-1 ring-strategy-gold/20">
+                  <Brain className="size-6 text-strategy-gold" />
+                </div>
+                <CardTitle className="mb-2 text-lg text-text-foreground transition-colors group-hover:text-strategy-gold">
+                  AI & Automation
+                </CardTitle>
+                <CardDescription className="text-sm text-text-secondary">
+                  Intelligent workflows, copilot integration, and autonomous
+                  operations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex grow flex-col justify-between">
+                <div className="mb-4 flex flex-wrap gap-2">
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    AI Copilots
+                  </Badge>
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    Workflow Automation
+                  </Badge>
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    Cloudflare AI
+                  </Badge>
+                </div>
+                <Button
+                  onClick={() => handleNavigation('/portfolio/ai-automation')}
+                  className="w-full border border-strategy-gold/30 bg-transparent text-strategy-gold hover:border-strategy-gold/50 hover:bg-strategy-gold/10"
+                >
+                  Learn More
+                  <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Digital Transformation */}
+            <Card className="group flex flex-col border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold hover:shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-strategy-gold/10 ring-1 ring-strategy-gold/20">
+                  <Globe className="size-6 text-strategy-gold" />
+                </div>
+                <CardTitle className="mb-2 text-lg text-text-foreground transition-colors group-hover:text-strategy-gold">
+                  Digital Transformation
+                </CardTitle>
+                <CardDescription className="text-sm text-text-secondary">
+                  Strategic technology implementation and organizational change
+                  management
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex grow flex-col justify-between">
+                <div className="mb-4 flex flex-wrap gap-2">
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    Strategy
+                  </Badge>
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    Change Management
+                  </Badge>
+                  <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
+                    PMP Certified
+                  </Badge>
+                </div>
+                <Button
+                  onClick={() => handleNavigation('/portfolio/leadership')}
+                  className="w-full border border-strategy-gold/30 bg-transparent text-strategy-gold hover:border-strategy-gold/50 hover:bg-strategy-gold/10"
+                >
+                  Learn More
+                  <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Blog Posts */}
+      <div className="px-4 py-16 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            title="Recent Insights"
+            subtitle="Latest thoughts on digital transformation, technical leadership, and operational excellence"
+          />
+
+          <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {recentBlogs.map(blog => (
               <Card
                 key={blog.id}
-                className='group flex h-full flex-col border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'
+                className="group flex h-full flex-col border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold hover:shadow-lg"
               >
-                <CardHeader className='shrink-0 pb-4'>
-                  <div className='mb-3 flex items-center justify-between'>
-                    <Badge className='border-gold-500/30 bg-gold-500/20 text-gold-300'>
+                <CardHeader className="shrink-0 pb-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <Badge className="border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold">
                       {blog.category}
                     </Badge>
-                    <span className='text-xs text-grey-400'>
+                    <span className="text-xs text-text-tertiary">
                       {blog.date
                         ? new Date(blog.date).toLocaleDateString('en-US', {
                             month: 'short',
@@ -516,19 +450,19 @@ export default function IndexPage() {
                         : 'No date'}
                     </span>
                   </div>
-                  <H3 className='!m-0 mb-2 text-lg text-white transition-colors group-hover:text-gold-400'>
+                  <CardTitle className="mb-2 text-lg text-text-foreground transition-colors group-hover:text-strategy-gold">
                     {blog.title}
-                  </H3>
-                  <P className='!m-0 text-sm text-grey-400'>
+                  </CardTitle>
+                  <CardDescription className="text-sm text-text-secondary">
                     {blog.description}
-                  </P>
+                  </CardDescription>
                 </CardHeader>
-                <CardContent className='flex grow flex-col pt-0'>
-                  <div className='mb-4 flex flex-wrap gap-1.5'>
+                <CardContent className="flex grow flex-col pt-0">
+                  <div className="mb-4 flex flex-wrap gap-1.5">
                     {blog.tags.slice(0, 3).map((tag, index) => (
                       <Badge
                         key={index}
-                        className='border-gold-600/40 bg-gold-600/15 text-xs text-gold-300'
+                        className="border-strategy-gold/20 bg-strategy-gold/10 text-xs text-strategy-gold"
                       >
                         {tag}
                       </Badge>
@@ -536,117 +470,122 @@ export default function IndexPage() {
                   </div>
                   <Button
                     onClick={() => handleNavigation(blog.url)}
-                    className='mt-auto w-full border border-gold-500/30 bg-transparent text-gold-400 hover:border-gold-500/50 hover:bg-gold-500/10'
+                    className="mt-auto w-full border border-strategy-gold/30 bg-transparent text-strategy-gold hover:border-strategy-gold/50 hover:bg-strategy-gold/10"
                   >
                     Read Article
-                    <ArrowRight className='ml-2 size-4' />
+                    <ArrowRight className="ml-2 size-4" />
                   </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className='mt-12 text-center'>
+          <div className="text-center">
             <Button
               onClick={() => handleNavigation('/blog')}
-              className='border border-gold-500/50 bg-gold-600/15 px-8 py-3 text-lg font-semibold text-gold-400 transition-all duration-300 hover:border-gold-500 hover:bg-gold-600/25 hover:shadow-lg'
+              className="border border-strategy-gold/50 bg-strategy-gold/15 px-8 py-3 text-lg font-semibold text-strategy-gold transition-all duration-300 hover:border-strategy-gold hover:bg-strategy-gold/25"
             >
               View All Articles
-              <BookOpen className='ml-2 size-5' />
+              <BookOpen className="ml-2 size-5" />
             </Button>
           </div>
         </div>
       </div>
 
       {/* Quick Navigation Section */}
-      <div className='border-y border-gold-500/20 bg-gradient-to-br from-hunter-900/50 via-hunter-900/30 to-hunter-950 px-4 py-16 sm:px-6 lg:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <div className='mb-12 text-center'>
-            <H2 className='!m-0 mb-4 text-white'>Explore My Work</H2>
-            <P className='mx-auto max-w-3xl text-grey-400'>
-              Navigate to different areas of expertise and experience
-            </P>
-          </div>
+      <div className="border-t border-border-subtle bg-surface-elevated px-4 py-16 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader title="Explore My Work" divider={false} />
 
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
-            <Card className='group border border-gold-500/20 bg-hunter-900/30 text-center backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="group border border-border-subtle bg-surface-base text-center transition-all duration-300 hover:border-strategy-gold hover:shadow-lg">
               <CardHeader>
-                <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-600 to-gold-500'>
-                  <Briefcase className='size-8 text-white' />
+                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-lg bg-strategy-gold/10">
+                  <Briefcase className="size-8 text-strategy-gold" />
                 </div>
-                <H3 className='!m-0 text-lg text-white'>Portfolio</H3>
-                <P className='!m-0 text-sm text-grey-400'>
+                <CardTitle className="text-lg text-text-foreground">
+                  Portfolio
+                </CardTitle>
+                <CardDescription className="text-sm text-text-secondary">
                   Leadership & technical capabilities
-                </P>
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button
                   onClick={() => handleNavigation('/portfolio')}
-                  className='w-full bg-gradient-to-r from-gold-600 to-gold-500 text-white hover:from-gold-500 hover:to-gold-400'
+                  className="w-full bg-strategy-gold text-precision-charcoal hover:brightness-110"
                 >
                   Explore
-                  <ArrowRight className='ml-2 size-4' />
+                  <ArrowRight className="ml-2 size-4" />
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className='group border border-gold-500/20 bg-hunter-900/30 text-center backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'>
+            <Card className="group border border-border-subtle bg-surface-base text-center transition-all duration-300 hover:border-strategy-gold hover:shadow-lg">
               <CardHeader>
-                <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-500 to-gold-400'>
-                  <BarChart3 className='size-8 text-white' />
+                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-lg bg-strategy-gold/10">
+                  <BarChart3 className="size-8 text-strategy-gold" />
                 </div>
-                <H3 className='!m-0 text-lg text-white'>Projects</H3>
-                <P className='!m-0 text-sm text-grey-400'>
+                <CardTitle className="text-lg text-text-foreground">
+                  Projects
+                </CardTitle>
+                <CardDescription className="text-sm text-text-secondary">
                   Case studies & analysis
-                </P>
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button
                   onClick={() => handleNavigation('/projects')}
-                  className='w-full bg-gradient-to-r from-gold-600 to-gold-500 text-white hover:from-gold-500 hover:to-gold-400'
+                  className="w-full bg-strategy-gold text-precision-charcoal hover:brightness-110"
                 >
                   Explore
-                  <ArrowRight className='ml-2 size-4' />
+                  <ArrowRight className="ml-2 size-4" />
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className='group border border-gold-500/20 bg-hunter-900/30 text-center backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'>
+            <Card className="group border border-border-subtle bg-surface-base text-center transition-all duration-300 hover:border-strategy-gold hover:shadow-lg">
               <CardHeader>
-                <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-600 to-gold-500'>
-                  <Wrench className='size-8 text-white' />
+                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-lg bg-strategy-gold/10">
+                  <Wrench className="size-8 text-strategy-gold" />
                 </div>
-                <H3 className='!m-0 text-lg text-white'>Tools</H3>
-                <P className='!m-0 text-sm text-grey-400'>
+                <CardTitle className="text-lg text-text-foreground">
+                  Tools
+                </CardTitle>
+                <CardDescription className="text-sm text-text-secondary">
                   Utilities & resources
-                </P>
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button
                   onClick={() => handleNavigation('/tools')}
-                  className='w-full bg-gradient-to-r from-gold-600 to-gold-500 text-white hover:from-gold-500 hover:to-gold-400'
+                  className="w-full bg-strategy-gold text-precision-charcoal hover:brightness-110"
                 >
                   Explore
-                  <ArrowRight className='ml-2 size-4' />
+                  <ArrowRight className="ml-2 size-4" />
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className='group border border-gold-500/20 bg-hunter-900/30 text-center backdrop-blur-xl transition-all duration-300 hover:border-gold-500/40 hover:bg-hunter-900/40 hover:shadow-lg'>
+            <Card className="group border border-border-subtle bg-surface-base text-center transition-all duration-300 hover:border-strategy-gold hover:shadow-lg">
               <CardHeader>
-                <div className='mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-600 to-gold-500'>
-                  <MessageSquare className='size-8 text-white' />
+                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-lg bg-strategy-gold/10">
+                  <MessageSquare className="size-8 text-strategy-gold" />
                 </div>
-                <H3 className='!m-0 text-lg text-white'>Contact</H3>
-                <P className='!m-0 text-sm text-grey-400'>Let's connect</P>
+                <CardTitle className="text-lg text-text-foreground">
+                  Contact
+                </CardTitle>
+                <CardDescription className="text-sm text-text-secondary">
+                  Let's connect
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button
                   onClick={() => handleNavigation('/contact')}
-                  className='w-full bg-gradient-to-r from-gold-600 to-gold-500 text-white hover:from-gold-500 hover:to-gold-400'
+                  className="w-full bg-strategy-gold text-precision-charcoal hover:brightness-110"
                 >
                   Connect
-                  <ArrowRight className='ml-2 size-4' />
+                  <ArrowRight className="ml-2 size-4" />
                 </Button>
               </CardContent>
             </Card>
@@ -655,31 +594,31 @@ export default function IndexPage() {
       </div>
 
       {/* Final CTA Section */}
-      <div className='border-y border-gold-500/20 bg-gradient-to-r from-hunter-900/20 to-gold-600/20 px-4 py-16 sm:px-6 lg:px-8'>
-        <div className='mx-auto max-w-4xl text-center'>
-          <div className='rounded-2xl border border-gold-500/30 bg-gradient-to-br from-hunter-900/60 via-hunter-900/40 to-hunter-950/60 p-8 backdrop-blur-xl'>
-            <H2 className='!m-0 mb-4 text-white'>
+      <div className="border-t border-border-subtle px-4 py-16 md:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="rounded-lg border border-border-subtle bg-gradient-to-b from-surface-elevated to-surface-base p-12">
+            <h2 className="mb-4 text-3xl font-bold text-text-foreground md:text-4xl">
               Ready to Transform Your Organization?
-            </H2>
-            <Lead className='!m-0 mx-auto mb-6 max-w-2xl text-grey-300'>
+            </h2>
+            <p className="mx-auto mb-8 max-w-2xl text-lg text-text-secondary">
               Let's discuss how strategic technology implementation, AI
               automation, and digital transformation can drive success in your
               organization.
-            </Lead>
-            <div className='flex flex-col justify-center gap-4 sm:flex-row'>
+            </p>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Button
                 onClick={() => handleNavigation('/contact')}
-                className='bg-gradient-to-r from-gold-600 to-gold-500 px-8 py-3 text-lg font-semibold text-white hover:from-gold-500 hover:to-gold-400'
+                className="bg-strategy-gold px-8 py-3 text-lg font-semibold text-precision-charcoal hover:brightness-110"
               >
                 Start a Conversation
-                <MessageSquare className='ml-2 size-5' />
+                <MessageSquare className="ml-2 size-5" />
               </Button>
               <Button
-                onClick={() => handleNavigation('/about')}
-                className='border border-gold-500/50 bg-gold-500/10 px-8 py-3 text-lg font-semibold text-gold-400 hover:border-gold-500 hover:bg-gold-500/20'
+                onClick={() => handleNavigation('/portfolio')}
+                className="border border-strategy-gold/50 bg-strategy-gold/10 px-8 py-3 text-lg font-semibold text-strategy-gold hover:border-strategy-gold hover:bg-strategy-gold/20"
               >
                 Learn More About Me
-                <User className='ml-2 size-5' />
+                <User className="ml-2 size-5" />
               </Button>
             </div>
           </div>

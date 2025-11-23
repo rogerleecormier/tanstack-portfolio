@@ -77,9 +77,9 @@ export default function NewsletterSignup({
   const getStatusIcon = () => {
     switch (status) {
       case 'success':
-        return <CheckCircle className='size-4 text-green-600' />;
+        return <CheckCircle className='size-4 text-strategy-emerald' />;
       case 'error':
-        return <AlertCircle className='size-4 text-red-600' />;
+        return <AlertCircle className='size-4 text-red-500' />;
       default:
         return null;
     }
@@ -88,22 +88,22 @@ export default function NewsletterSignup({
   const getStatusColor = () => {
     switch (status) {
       case 'success':
-        return 'text-green-600';
+        return 'text-strategy-emerald';
       case 'error':
-        return 'text-red-600';
+        return 'text-red-500';
       default:
-        return 'text-gray-600';
+        return 'text-text-tertiary';
     }
   };
 
   if (variant === 'compact') {
     return (
-      <div className={cn('mt-8 border-t border-gray-200 pt-6', className)}>
+      <div className={cn('mt-8 border-t border-border-subtle pt-6', className)}>
         <div className='mb-6 text-center'>
-          <h3 className='mb-2 text-xl font-semibold text-gray-900 dark:text-white'>
+          <h3 className='mb-2 text-xl font-semibold text-text-foreground'>
             {title}
           </h3>
-          <p className='text-sm text-gray-600 dark:text-gray-400'>
+          <p className='text-sm text-text-secondary'>
             {description}
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function NewsletterSignup({
               placeholder='Your name (optional)'
               value={name}
               onChange={e => setName(e.target.value)}
-              className='flex-1'
+              className='flex-1 border-border-subtle bg-surface-base text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/40 focus:ring-strategy-gold/30'
               disabled={isSubmitting}
             />
             <Input
@@ -123,7 +123,7 @@ export default function NewsletterSignup({
               placeholder={placeholder}
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className='flex-1'
+              className='flex-1 border-border-subtle bg-surface-base text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/40 focus:ring-strategy-gold/30'
               disabled={isSubmitting}
               required
             />
@@ -131,7 +131,7 @@ export default function NewsletterSignup({
           <Button
             type='submit'
             disabled={isSubmitting}
-            className='w-full bg-hunter-600 text-white hover:bg-hunter-700 sm:w-auto'
+            className='w-full bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90 sm:w-auto'
           >
             {isSubmitting ? (
               <>
@@ -175,13 +175,13 @@ export default function NewsletterSignup({
           placeholder={placeholder}
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className='flex-1'
+          className='flex-1 border-border-subtle bg-surface-base text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/40 focus:ring-strategy-gold/30'
           disabled={isSubmitting}
         />
         <Button
           type='submit'
           disabled={isSubmitting}
-          className='whitespace-nowrap bg-hunter-600 text-white hover:bg-hunter-700'
+          className='whitespace-nowrap bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
         >
           {isSubmitting ? (
             <>
@@ -197,14 +197,14 @@ export default function NewsletterSignup({
   }
 
   return (
-    <div className={cn('mt-16 border-t border-gray-200 pt-8', className)}>
-      <Card className='text-center'>
+    <div className={cn('mt-16 border-t border-border-subtle pt-8', className)}>
+      <Card className='border-border-subtle bg-surface-elevated text-center'>
         <CardContent className='py-8'>
-          <BookOpen className='mx-auto mb-4 size-12 text-hunter-600' />
-          <h3 className='mb-2 text-2xl font-semibold text-gray-900 dark:text-white'>
+          <BookOpen className='mx-auto mb-4 size-12 text-strategy-gold' />
+          <h3 className='mb-2 text-2xl font-semibold text-text-foreground'>
             {title}
           </h3>
-          <p className='mx-auto mb-6 max-w-md text-gray-600 dark:text-gray-400'>
+          <p className='mx-auto mb-6 max-w-md text-text-secondary'>
             {description}
           </p>
 
@@ -215,7 +215,7 @@ export default function NewsletterSignup({
                 placeholder='Your name (optional)'
                 value={name}
                 onChange={e => setName(e.target.value)}
-                className='flex-1'
+                className='flex-1 border-border-subtle bg-surface-base text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/40 focus:ring-strategy-gold/30'
                 disabled={isSubmitting}
               />
               <Input
@@ -223,7 +223,7 @@ export default function NewsletterSignup({
                 placeholder={placeholder}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className='flex-1'
+                className='flex-1 border-border-subtle bg-surface-base text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/40 focus:ring-strategy-gold/30'
                 disabled={isSubmitting}
                 required
               />
@@ -231,7 +231,7 @@ export default function NewsletterSignup({
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='w-full bg-hunter-600 text-white hover:bg-hunter-700 sm:w-auto'
+              className='w-full bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90 sm:w-auto'
             >
               {isSubmitting ? (
                 <>
@@ -256,7 +256,7 @@ export default function NewsletterSignup({
             </div>
           )}
 
-          <p className='mt-4 text-xs text-gray-500'>
+          <p className='mt-4 text-xs text-text-tertiary'>
             By subscribing, you agree to receive email updates. You can
             unsubscribe at any time.
           </p>

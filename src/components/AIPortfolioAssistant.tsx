@@ -371,47 +371,47 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'solution':
-        return 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300';
+        return 'border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold';
       case 'blog':
-        return 'border-gold-600/40 bg-gold-600/15 text-gold-300';
+        return 'border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold';
       case 'trend':
-        return 'border-purple-600/40 bg-purple-600/15 text-purple-300';
+        return 'border-strategy-gold/30 bg-strategy-gold/10 text-strategy-gold';
       case 'insight':
-        return 'border-slate-600/40 bg-slate-600/15 text-slate-300';
+        return 'border-text-secondary/40 bg-text-secondary/15 text-text-secondary';
       case 'content':
-        return 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300';
+        return 'border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold';
       default:
-        return 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300';
+        return 'border-border-subtle/40 bg-border-subtle/15 text-text-secondary';
     }
   };
 
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 0.9)
-      return 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300';
+      return 'border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold';
     if (confidence >= 0.75)
-      return 'border-gold-600/40 bg-gold-600/15 text-gold-300';
-    return 'border-slate-600/40 bg-slate-600/15 text-slate-300';
+      return 'border-strategy-gold/30 bg-strategy-gold/10 text-strategy-gold';
+    return 'border-text-secondary/40 bg-text-secondary/15 text-text-secondary';
   };
 
   if (!showAssistant) {
     return (
       <Button
         onClick={() => setShowAssistant(true)}
-        className='fixed bottom-6 right-6 z-50 size-14 rounded-full bg-gradient-to-r from-hunter-500 to-hunter-600 shadow-lg hover:from-hunter-600 hover:to-hunter-700'
+        className='fixed bottom-6 right-6 z-50 size-14 rounded-full bg-strategy-gold shadow-lg hover:bg-strategy-gold/90'
       >
-        <Brain className='size-6 text-white' />
+        <Brain className='size-6 text-precision-charcoal' />
       </Button>
     );
   }
 
   return (
     <div className='fixed bottom-6 right-6 z-50 max-h-[600px] w-96 overflow-hidden'>
-      <Card className='border-hunter-600/20 bg-slate-900/95 shadow-2xl backdrop-blur-md'>
+      <Card className='border-border-subtle bg-surface-base/95 shadow-2xl backdrop-blur-md'>
         <CardHeader className='pb-3'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
-              <Brain className='size-5 text-hunter-400' />
-              <CardTitle className='text-lg text-white'>
+              <Brain className='size-5 text-strategy-gold' />
+              <CardTitle className='text-lg text-text-foreground'>
                 Site Assistant
               </CardTitle>
             </div>
@@ -419,12 +419,12 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
               variant='ghost'
               size='sm'
               onClick={() => setShowAssistant(false)}
-              className='size-8 p-0 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+              className='size-8 p-0 text-text-tertiary hover:bg-surface-elevated hover:text-text-secondary'
             >
               <X className='size-4' />
             </Button>
           </div>
-          <CardDescription className='text-slate-400'>
+          <CardDescription className='text-text-secondary'>
             Ask me about solutions, blog posts, or get personalized
             recommendations
           </CardDescription>
@@ -437,16 +437,16 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
               placeholder='What can I help you with today?'
               value={userQuery}
               onChange={e => setUserQuery(e.target.value)}
-              className='min-h-[80px] resize-none border-hunter-600/30 bg-slate-800 text-white placeholder:text-slate-500 focus:border-hunter-600/60'
+              className='min-h-[80px] resize-none border-border-subtle bg-surface-elevated text-text-foreground placeholder:text-text-tertiary focus:border-strategy-gold/40 focus:ring-strategy-gold/30'
             />
             <Button
               onClick={() => void handleQuerySubmit()}
               disabled={isAnalyzing || !userQuery.trim()}
-              className='w-full bg-gradient-to-r from-hunter-600 to-hunter-500 text-white hover:from-hunter-500 hover:to-hunter-400'
+              className='w-full bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
             >
               {isAnalyzing ? (
                 <>
-                  <div className='mr-2 size-4 animate-spin rounded-full border-b-2 border-white'></div>
+                  <div className='mr-2 size-4 animate-spin rounded-full border-b-2 border-precision-charcoal'></div>
                   Analyzing...
                 </>
               ) : (
@@ -461,7 +461,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
           {/* Recommendations */}
           {recommendations.length > 0 && (
             <div className='space-y-3'>
-              <h4 className='text-sm font-medium text-slate-300'>
+              <h4 className='text-sm font-medium text-text-secondary'>
                 Recommendations
               </h4>
               {recommendations.map((rec, index) => {
@@ -469,13 +469,13 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 return (
                   <div
                     key={index}
-                    className={`rounded-lg border bg-slate-800/50 p-3 ${getTypeColor(rec.type)}`}
+                    className={`rounded-lg border bg-surface-elevated/50 p-3 ${getTypeColor(rec.type)}`}
                   >
                     <div className='flex items-start gap-3'>
-                      <IconComponent className='mt-0.5 size-5 text-hunter-400' />
+                      <IconComponent className='mt-0.5 size-5 text-strategy-gold' />
                       <div className='flex-1'>
                         <div className='mb-2 flex items-center gap-2'>
-                          <h5 className='text-sm font-medium text-white'>
+                          <h5 className='text-sm font-medium text-text-foreground'>
                             {rec.title}
                           </h5>
                           <Badge
@@ -489,7 +489,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                             {rec.type}
                           </Badge>
                         </div>
-                        <p className='mb-3 text-xs text-slate-400'>
+                        <p className='mb-3 text-xs text-text-secondary'>
                           {rec.description}
                         </p>
                         <div className='flex flex-wrap gap-1'>
@@ -498,7 +498,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                               variant='outline'
                               size='sm'
                               onClick={() => handleItemSelect('', rec)}
-                              className='h-6 border-hunter-600/40 px-2 text-xs text-hunter-400 hover:border-hunter-600/60 hover:bg-hunter-600/10'
+                              className='h-6 border-strategy-gold/40 px-2 text-xs text-strategy-gold hover:border-strategy-gold/60 hover:bg-strategy-gold/10'
                             >
                               {rec.contentType === 'blog'
                                 ? 'Read Article'
@@ -516,7 +516,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                                 variant='outline'
                                 size='sm'
                                 onClick={() => handleItemSelect(itemSlug)}
-                                className='h-6 border-hunter-600/40 px-2 text-xs text-hunter-400 hover:border-hunter-600/60 hover:bg-hunter-600/10'
+                                className='h-6 border-strategy-gold/40 px-2 text-xs text-strategy-gold hover:border-strategy-gold/60 hover:bg-strategy-gold/10'
                               >
                                 {itemSlug === 'blog'
                                   ? 'Read Blog'
@@ -543,8 +543,8 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
           )}
 
           {/* Quick Actions */}
-          <div className='border-t border-slate-700 pt-2'>
-            <h4 className='mb-2 text-sm font-medium text-slate-300'>
+          <div className='border-t border-border-subtle pt-2'>
+            <h4 className='mb-2 text-sm font-medium text-text-secondary'>
               Quick Actions
             </h4>
             <div className='grid grid-cols-2 gap-2'>
@@ -554,7 +554,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 onClick={() =>
                   setUserQuery('I need help with DevOps and automation')
                 }
-                className='h-8 border-slate-700 text-xs text-slate-300 hover:border-slate-600 hover:bg-slate-800'
+                className='h-8 border-border-subtle text-xs text-text-secondary hover:border-border-subtle hover:bg-surface-elevated'
               >
                 DevOps Help
               </Button>
@@ -564,7 +564,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 onClick={() =>
                   setUserQuery('Show me your blog posts about automation')
                 }
-                className='h-8 border-slate-700 text-xs text-slate-300 hover:border-slate-600 hover:bg-slate-800'
+                className='h-8 border-border-subtle text-xs text-text-secondary hover:border-border-subtle hover:bg-surface-elevated'
               >
                 Read Blog
               </Button>
@@ -574,7 +574,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 onClick={() =>
                   setUserQuery('Tell me about your leadership experience')
                 }
-                className='h-8 border-slate-700 text-xs text-slate-300 hover:border-slate-600 hover:bg-slate-800'
+                className='h-8 border-border-subtle text-xs text-text-secondary hover:border-border-subtle hover:bg-surface-elevated'
               >
                 Leadership
               </Button>
@@ -582,7 +582,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
                 variant='outline'
                 size='sm'
                 onClick={() => setUserQuery('How can I contact you?')}
-                className='h-8 border-slate-700 text-xs text-slate-300 hover:border-slate-600 hover:bg-slate-800'
+                className='h-8 border-border-subtle text-xs text-text-secondary hover:border-border-subtle hover:bg-surface-elevated'
               >
                 Contact
               </Button>

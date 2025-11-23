@@ -1,143 +1,113 @@
-import { Logo } from '@/components/Logo';
+import { Link } from '@tanstack/react-router';
+import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import NewsletterSignup from '@/components/NewsletterSignup';
-import { H4 } from '@/components/ui/typography';
-import { Mail } from 'lucide-react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 export default function Footer() {
+  const footerSections = [
+    {
+      title: 'Navigation',
+      links: [
+        { label: 'Home', href: '/' },
+        { label: 'About', href: '/about' },
+        { label: 'Portfolio', href: '/portfolio' },
+      ],
+    },
+    {
+      title: 'Work',
+      links: [
+        { label: 'Projects', href: '/projects' },
+        { label: 'Blog & Insights', href: '/blog' },
+        { label: 'Contact', href: '/contact' },
+      ],
+    },
+  ];
+
+  const socialLinks = [
+    {
+      label: 'GitHub',
+      href: 'https://github.com/rogerleecormier',
+      icon: FaGithub,
+    },
+    {
+      label: 'LinkedIn',
+      href: 'https://linkedin.com/in/rogerleecormier',
+      icon: FaLinkedin,
+    },
+    {
+      label: 'Twitter',
+      href: 'https://twitter.com',
+      icon: FaTwitter,
+    },
+  ];
+
   return (
-    <footer className='relative border-t border-hunter-700/30 bg-hunter-950/90 backdrop-blur-sm'>
-      <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-        {/* Newsletter Section - Prominent */}
-        <div className='py-12'>
-          <div className='rounded-lg border border-gold-500/40 bg-gradient-to-r from-gold-600/15 via-hunter-950/60 to-hunter-700/15 p-6 sm:p-8'>
-            <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8'>
-              <div>
-                <H4 className='!mt-0 mb-2 text-base font-semibold text-white'>
-                  Strategic Insights Delivered
-                </H4>
-                <p className='!mt-0 text-sm text-grey-300'>
-                  Exclusive insights on digital transformation, technology
-                  leadership, and execution excellence.
-                </p>
+    <footer className="border-t border-border-subtle bg-surface-elevated">
+      <div className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+        {/* Newsletter Section */}
+        <div className="mb-16">
+          <NewsletterSignup
+            variant="inline"
+            title="Stay Updated"
+            description="Get notified when new articles and projects are shared"
+            placeholder="Enter your email"
+            buttonText="Subscribe"
+          />
+        </div>
+
+        {/* Footer Grid - 2 content columns + social column */}
+        <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {footerSections.map(section => (
+            <div key={section.title}>
+              <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground">
+                {section.title}
+              </h3>
+              <div className="space-y-3">
+                {section.links.map(link => (
+                  <Link
+                    key={link.href}
+                    to={link.href as any}
+                    className="block text-sm text-text-secondary transition-colors hover:text-strategy-gold"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </div>
-              <NewsletterSignup
-                variant='compact'
-                title=''
-                description=''
-                className='!mt-0 !border-t-0 !pt-0'
-              />
+            </div>
+          ))}
+
+          {/* Social Links Column */}
+          <div>
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground">
+              Connect
+            </h3>
+            <div className="space-y-3">
+              {socialLinks.map(link => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm text-text-secondary transition-colors hover:text-strategy-gold"
+                  >
+                    <Icon size={14} />
+                    {link.label}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Main Footer - Clean & Simple */}
-        <div className='border-t border-hunter-700/30 py-8'>
-          <div className='grid grid-cols-2 gap-8 sm:grid-cols-4'>
-            {/* Brand */}
-            <div className='col-span-2 sm:col-span-1'>
-              <div className='mb-3 flex items-center gap-2'>
-                <Logo size='sm' showTargetingDots={true} />
-                <div>
-                  <p className='text-sm font-bold text-white'>
-                    Roger Lee Cormier
-                  </p>
-                  <p className='text-xs font-medium uppercase text-gold-400'>
-                    Precision. Results. Delivered.
-                  </p>
-                </div>
-              </div>
-              <p className='text-xs text-grey-400'>
-                Strategic execution. Measurable outcomes.
-              </p>
-            </div>
+        {/* Divider */}
+        <div className="mb-8 h-px bg-border-subtle" />
 
-            {/* Pages */}
-            <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
-                Pages
-              </p>
-              <div className='space-y-2'>
-                {[
-                  { href: '/portfolio', label: 'Portfolio' },
-                  { href: '/blog', label: 'Blog' },
-                  { href: '/projects', label: 'Projects' },
-                ].map(link => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className='block text-xs text-grey-400 transition-colors hover:text-gold-300'
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
-                Resources
-              </p>
-              <div className='space-y-2'>
-                {[
-                  { href: '/tools', label: 'Tools' },
-                  { href: '/about', label: 'About' },
-                  { href: '/contact', label: 'Contact' },
-                ].map(link => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className='block text-xs text-grey-400 transition-colors hover:text-gold-300'
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
-                Connect
-              </p>
-              <div className='space-y-2'>
-                <a
-                  href='https://linkedin.com/in/rogerleecormier'
-                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  <FaLinkedin size={12} />
-                  LinkedIn
-                </a>
-                <a
-                  href='https://github.com/rogerleecormier'
-                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  <FaGithub size={12} />
-                  GitHub
-                </a>
-                <a
-                  href='mailto:roger@rcormier.dev'
-                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
-                >
-                  <Mail size={12} />
-                  Email
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Bar - Minimal */}
-        <div className='flex items-center justify-between border-t border-gold-500/20 py-4 text-xs text-grey-500'>
-          <span>© 2025 Roger Lee Cormier</span>
-          <a href='/privacy' className='transition-colors hover:text-gold-400'>
-            Privacy
-          </a>
+        {/* Copyright */}
+        <div className="text-center">
+          <p className="text-xs text-text-tertiary">
+            © 2025 Roger Lee Cormier. Technical Strategist & Digital Innovator.
+          </p>
         </div>
       </div>
     </footer>
