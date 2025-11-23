@@ -373,7 +373,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
       case 'solution':
         return 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300';
       case 'blog':
-        return 'border-gold-600/40 bg-gold-600/15 text-gold-300';
+        return 'border-gold-600/40 bg-gold-600/15 text-strategy-gold';
       case 'trend':
         return 'border-purple-600/40 bg-purple-600/15 text-purple-300';
       case 'insight':
@@ -389,7 +389,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
     if (confidence >= 0.9)
       return 'border-hunter-600/40 bg-hunter-600/15 text-hunter-300';
     if (confidence >= 0.75)
-      return 'border-gold-600/40 bg-gold-600/15 text-gold-300';
+      return 'border-gold-600/40 bg-gold-600/15 text-strategy-gold';
     return 'border-slate-600/40 bg-slate-600/15 text-slate-300';
   };
 

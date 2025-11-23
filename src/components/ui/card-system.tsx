@@ -75,7 +75,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
         {...props}
       >
         {icon && (
-          <div className='shrink-0 text-gold-600 dark:text-gold-400'>
+          <div className='shrink-0 text-gold-600 dark:text-strategy-gold'>
             {icon}
           </div>
         )}
@@ -289,7 +289,7 @@ export const SkillCard = React.forwardRef<HTMLDivElement, SkillCardProps>(
       {...props}
     >
       {icon && (
-        <div className='mb-3 flex justify-center text-2xl text-gold-600 dark:text-gold-400'>
+        <div className='mb-3 flex justify-center text-2xl text-gold-600 dark:text-strategy-gold'>
           {icon}
         </div>
       )}
@@ -339,7 +339,7 @@ export const FeatureCard = React.forwardRef<HTMLDivElement, FeatureCardProps>(
         <div
           className={cn(
             'flex justify-center text-4xl',
-            highlight === 'gold' && 'text-gold-600 dark:text-gold-400',
+            highlight === 'gold' && 'text-gold-600 dark:text-strategy-gold',
             highlight === 'hunter' && 'text-hunter-600 dark:text-hunter-400'
           )}
         >
@@ -425,7 +425,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(
         {link && (
           <button
             onClick={onLinkClick}
-            className='ml-auto text-sm font-medium text-gold-600 hover:text-gold-700 dark:text-gold-400 dark:hover:text-gold-300'
+            className='ml-auto text-sm font-medium text-gold-600 hover:text-gold-700 dark:text-strategy-gold dark:hover:text-strategy-gold'
           >
             View →
           </button>

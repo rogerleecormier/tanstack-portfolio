@@ -24,7 +24,7 @@ const getCellClass = (color: string | undefined): string => {
     case 'R':
       return 'bg-hunter-600/15 text-hunter-300 border-hunter-600/40';
     case 'A':
-      return 'bg-gold-600/15 text-gold-300 border-gold-600/40';
+      return 'bg-gold-600/15 text-strategy-gold border-gold-600/40';
     case 'C':
       return 'bg-slate-600/15 text-slate-300 border-slate-600/40';
     case 'I':

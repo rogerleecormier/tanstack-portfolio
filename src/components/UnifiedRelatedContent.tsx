@@ -280,11 +280,11 @@ export function UnifiedRelatedContent({
       case 'blog':
         return 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800';
       case 'portfolio':
-        return 'bg-hunter-50 text-hunter-700 border-hunter-200 dark:bg-hunter-950 dark:text-hunter-300 dark:border-hunter-800';
+        return 'bg-hunter-50 text-hunter-700 border-hunter-200 dark:bg-surface-deep dark:text-hunter-300 dark:border-hunter-800';
       case 'project':
-        return 'bg-gold-50 text-gold-700 border-gold-200 dark:bg-gold-950 dark:text-gold-300 dark:border-gold-800';
+        return 'bg-gold-50 text-gold-700 border-gold-200 dark:bg-gold-950 dark:text-strategy-gold dark:border-gold-800';
       default:
-        return 'bg-hunter-50 text-hunter-700 border-hunter-200 dark:bg-hunter-950 dark:text-hunter-300 dark:border-hunter-800';
+        return 'bg-hunter-50 text-hunter-700 border-hunter-200 dark:bg-surface-deep dark:text-hunter-300 dark:border-hunter-800';
     }
   };
 
@@ -324,7 +324,7 @@ export function UnifiedRelatedContent({
                   </div>
                   <a
                     href={item.url}
-                    className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-hunter-50 hover:text-hunter-600 dark:hover:bg-hunter-950 dark:hover:text-hunter-400'
+                    className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-hunter-50 hover:text-hunter-600 dark:hover:bg-surface-deep dark:hover:text-hunter-400'
                     aria-label={`Read ${parseContentForSearch(item.title)}`}
                   >
                     <ArrowRight className='size-4' />
@@ -443,7 +443,7 @@ export function UnifiedRelatedContent({
                 </CardTitle>
                 <a
                   href={item.url}
-                  className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-hunter-50 hover:text-hunter-600 dark:hover:bg-hunter-950 dark:hover:text-hunter-400'
+                  className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-hunter-50 hover:text-hunter-600 dark:hover:bg-surface-deep dark:hover:text-hunter-400'
                   aria-label={`Read ${parseContentForSearch(item.title)}`}
                 >
                   <ArrowRight className='size-5' />

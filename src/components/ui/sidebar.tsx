@@ -201,7 +201,7 @@ const Sidebar = React.forwardRef<
           <SheetContent
             data-sidebar='sidebar'
             data-mobile='true'
-            className='z-[200] w-[--sidebar-width] bg-white p-0 text-sidebar-foreground dark:bg-hunter-950 [&>button]:hidden'
+            className='z-[200] w-[--sidebar-width] bg-white p-0 text-sidebar-foreground dark:bg-surface-deep [&>button]:hidden'
             style={
               {
                 '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
@@ -270,7 +270,7 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar='sidebar'
-            className='flex size-full flex-col bg-white group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow dark:bg-hunter-950'
+            className='flex size-full flex-col bg-white group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow dark:bg-surface-deep'
           >
             {children}
           </div>

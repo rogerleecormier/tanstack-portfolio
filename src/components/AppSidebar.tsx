@@ -39,10 +39,10 @@ export function AppSidebar() {
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
-                      className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-hunter-100 transition-all duration-200 hover:border-l-2 hover:border-gold-500/50 hover:bg-gold-500/10 data-[active]:border-l-2 data-[active]:border-gold-500 data-[active]:bg-gold-500/10 data-[active]:font-semibold dark:text-hunter-100 dark:hover:border-gold-500/50 dark:hover:bg-gold-500/10 dark:data-[active]:border-gold-500 dark:data-[active]:bg-gold-500/10'
+                      className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-hunter-100 transition-all duration-200 hover:border-l-2 hover:border-strategy-gold/50 hover:bg-strategy-gold/10 data-[active]:border-l-2 data-[active]:border-strategy-gold data-[active]:bg-strategy-gold/10 data-[active]:font-semibold dark:text-hunter-100 dark:hover:border-strategy-gold/50 dark:hover:bg-strategy-gold/10 dark:data-[active]:border-strategy-gold dark:data-[active]:bg-strategy-gold/10'
                     >
                       {item.icon && (
-                        <item.icon className='size-4 shrink-0 text-hunter-400 transition-colors duration-200 group-hover:text-gold-400 group-data-[active]:text-gold-400 dark:text-hunter-400 dark:group-hover:text-gold-400 dark:group-data-[active]:text-gold-400' />
+                        <item.icon className='size-4 shrink-0 text-hunter-400 transition-colors duration-200 group-hover:text-strategy-gold group-data-[active]:text-strategy-gold dark:text-hunter-400 dark:group-hover:text-strategy-gold dark:group-data-[active]:text-strategy-gold' />
                       )}
                       <span className='truncate'>{item.title}</span>
                     </Link>

@@ -1044,7 +1044,7 @@ export const HeroProfileCard: React.FC<
     <div className={cn('hero-profile-card-wrapper relative', className)}>
       <Card
         className={cn(
-          'hero-profile-card via-slate-900/98 relative overflow-hidden rounded-2xl border border-gold-500/20 bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl'
+          'hero-profile-card via-slate-900/98 relative overflow-hidden rounded-2xl border border-strategy-gold/20 bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl'
         )}
       >
         {/* Top accent gradient bar */}
@@ -1059,7 +1059,7 @@ export const HeroProfileCard: React.FC<
                 <img
                   src={image}
                   alt={imageAlt ?? name ?? title ?? 'Profile image'}
-                  className='size-40 rounded-2xl border-2 border-gold-500/40 object-cover shadow-2xl ring-2 ring-gold-400/20'
+                  className='size-40 rounded-2xl border-2 border-strategy-gold/40 object-cover shadow-2xl ring-2 ring-gold-400/20'
                 />
               </div>
             )}
@@ -1073,7 +1073,7 @@ export const HeroProfileCard: React.FC<
 
               {/* Professional title in gold */}
               {title && (
-                <p className='mb-3 text-base font-semibold text-gold-400'>
+                <p className='mb-3 text-base font-semibold text-strategy-gold'>
                   {title}
                 </p>
               )}
@@ -1104,7 +1104,7 @@ export const HeroProfileCard: React.FC<
                         variant='outline'
                         className={`px-3 py-1.5 text-xs font-semibold transition-all ${
                           variant === 'gold'
-                            ? 'border-gold-500/60 bg-gold-500/15 text-gold-300 shadow-lg shadow-gold-500/10 hover:border-gold-400/80 hover:bg-gold-500/25'
+                            ? 'border-strategy-gold/60 bg-strategy-gold/15 text-strategy-gold shadow-lg shadow-gold-500/10 hover:border-gold-400/80 hover:bg-strategy-gold/25'
                             : variant === 'hunter'
                               ? 'border-hunter-500/60 bg-hunter-600/15 text-hunter-300 shadow-lg shadow-hunter-500/10 hover:border-hunter-400/80 hover:bg-hunter-600/25'
                               : 'border-slate-600/60 bg-slate-800/50 text-slate-200 shadow-lg shadow-slate-600/10 hover:border-slate-500/80 hover:bg-slate-700/70'

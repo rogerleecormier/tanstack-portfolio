@@ -80,7 +80,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
             </P>
 
             {/* Authentication Notice */}
-            <div className='rounded-lg border border-hunter-300 bg-hunter-50 p-4 dark:border-hunter-700 dark:bg-hunter-950/50'>
+            <div className='rounded-lg border border-hunter-300 bg-hunter-50 p-4 dark:border-hunter-700 dark:bg-surface-deep/50'>
               <div className='text-sm text-hunter-800 dark:text-hunter-100'>
                 <strong className='font-semibold'>🔒 Secure Access:</strong>{' '}
                 {isDevMode
@@ -115,7 +115,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onClose }) => {
           </div>
 
           {/* Simplified Information */}
-          <div className='rounded-lg border border-hunter-300 bg-hunter-50 p-4 dark:border-hunter-700 dark:bg-hunter-950/50'>
+          <div className='rounded-lg border border-hunter-300 bg-hunter-50 p-4 dark:border-hunter-700 dark:bg-surface-deep/50'>
             <P className='text-xs text-hunter-800 dark:text-hunter-100'>
               <strong className='font-semibold'>What happens next:</strong>{' '}
               {isDevMode

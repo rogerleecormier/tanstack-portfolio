@@ -165,7 +165,7 @@ const categoryConfig = {
   'Technology & Operations': {
     icon: Zap,
     color: 'from-hunter-500 to-hunter-600',
-    bgColor: 'bg-hunter-50 dark:bg-hunter-950/20',
+    bgColor: 'bg-hunter-50 dark:bg-surface-deep/20',
     borderColor: 'border-hunter-200 dark:border-hunter-800',
   },
   'AI & Automation': {
@@ -177,7 +177,7 @@ const categoryConfig = {
   'Data & Analytics': {
     icon: TrendingUp,
     color: 'from-hunter-500 to-hunter-600',
-    bgColor: 'bg-hunter-50 dark:bg-hunter-950/20',
+    bgColor: 'bg-hunter-50 dark:bg-surface-deep/20',
     borderColor: 'border-hunter-200 dark:border-hunter-800',
   },
   'Risk & Compliance': {
@@ -310,7 +310,7 @@ export default function PortfolioListPage() {
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-hunter-950'>
+      <div className='min-h-screen bg-surface-deep'>
         <div className='container mx-auto px-4 py-8'>
           {/* Header Skeleton */}
           <div className='mb-12 text-center'>
@@ -332,7 +332,7 @@ export default function PortfolioListPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
-                className='h-80 border-gold-500/20 bg-hunter-900/30 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'
+                className='h-80 border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl dark:border-strategy-gold/20 dark:bg-surface-elevated/30'
               >
                 <CardHeader className='pb-3'>
                   <Skeleton className='mb-2 h-6 w-3/4' />
@@ -357,16 +357,16 @@ export default function PortfolioListPage() {
   }
 
   return (
-    <div className='min-h-screen bg-hunter-950'>
+    <div className='min-h-screen bg-surface-deep'>
       {/* Hero Section - Glassmorphism Theme */}
-      <div className='relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:border-grey-800 dark:bg-hunter-950/30'>
+      <div className='relative overflow-hidden border-b border-hunter-900/50 bg-surface-deep/40 backdrop-blur-xl dark:border-grey-800 dark:bg-surface-deep/30'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Glassmorphism Theme */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-hunter-900/60 shadow-lg ring-1 ring-gold-500/20 backdrop-blur-md'>
-                  <Briefcase className='size-7 text-gold-400' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-surface-elevated/60 shadow-lg ring-1 ring-gold-500/20 backdrop-blur-md'>
+                  <Briefcase className='size-7 text-strategy-gold' />
                 </div>
                 {/* Content indicator dots */}
                 <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-hunter-800/80 backdrop-blur-sm'>
@@ -378,17 +378,17 @@ export default function PortfolioListPage() {
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
-                  <span className='text-gold-400'>Portfolio & Expertise</span>
+                  <span className='text-strategy-gold'>Portfolio & Expertise</span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gold-500/50'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-strategy-gold/50'></div>
               </div>
             </div>
 
             {/* Description with Glassmorphism Theme */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-300'>
               Strategic technology leadership, enterprise modernization, and
               operational excellence across complex business environments.
-              <span className='font-medium text-gold-300'>
+              <span className='font-medium text-strategy-gold'>
                 {' '}
                 Transform with expertise{' '}
               </span>
@@ -397,18 +397,18 @@ export default function PortfolioListPage() {
 
             {/* Quick Stats with Glassmorphism Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='flex items-center gap-2 text-sm text-grey-400'>
-                <div className='size-2 rounded-full bg-gold-500/60'></div>
+              <div className='flex items-center gap-2 text-sm text-gray-400'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>{portfolioItems.length} Portfolio Items</span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-grey-400'>
-                <div className='size-2 rounded-full bg-gold-500/60'></div>
+              <div className='flex items-center gap-2 text-sm text-gray-400'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>
                   {portfolioSearch?.getCategories().length ?? 0} Categories
                 </span>
               </div>
-              <div className='flex items-center gap-2 text-sm text-grey-400'>
-                <div className='size-2 rounded-full bg-gold-500/60'></div>
+              <div className='flex items-center gap-2 text-sm text-gray-400'>
+                <div className='size-2 rounded-full bg-strategy-gold/60'></div>
                 <span>{portfolioSearch?.getTags().length ?? 0} Topics</span>
               </div>
             </div>
@@ -420,16 +420,16 @@ export default function PortfolioListPage() {
       <div className='mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8'>
         {/* Search and Filters */}
         <div className='mx-auto mb-8 max-w-4xl'>
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/30 p-6 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
+          <div className='rounded-lg border border-strategy-gold/20 bg-surface-elevated/30 p-6 shadow-lg backdrop-blur-xl dark:border-strategy-gold/20 dark:bg-surface-elevated/30'>
             <div className='flex flex-col gap-4 sm:flex-row'>
               {/* Search Input */}
               <div className='relative flex-1'>
-                <Search className='absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gold-400' />
+                <Search className='absolute left-4 top-1/2 size-5 -translate-y-1/2 text-strategy-gold' />
                 <Input
                   placeholder='Search portfolio and expertise...'
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className='h-12 rounded-lg border-gold-500/20 bg-hunter-800/50 pl-12 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
+                  className='h-12 rounded-lg border-strategy-gold/20 bg-hunter-800/50 pl-12 text-white placeholder:text-grey-500 focus:border-strategy-gold/50 focus:ring-gold-500/20 dark:border-strategy-gold/20 dark:bg-hunter-800/50'
                 />
               </div>
 
@@ -438,7 +438,7 @@ export default function PortfolioListPage() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant='outline'
-                    className='h-12 rounded-lg border-gold-500/20 bg-hunter-800/30 px-6 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
+                    className='h-12 rounded-lg border-strategy-gold/20 bg-hunter-800/30 px-6 text-strategy-gold hover:border-strategy-gold/50 hover:bg-hunter-700/50 dark:border-strategy-gold/20 dark:bg-hunter-800/30'
                   >
                     <span className='mr-2'>
                       {selectedCategory === 'all'
@@ -448,10 +448,10 @@ export default function PortfolioListPage() {
                     <ChevronDown className='size-4 opacity-50' />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className='max-h-60 w-full overflow-y-auto rounded-lg border-gold-500/20 bg-hunter-900/90 shadow-xl backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/90 sm:w-64'>
+                <DropdownMenuContent className='max-h-60 w-full overflow-y-auto rounded-lg border-strategy-gold/20 bg-surface-elevated/90 shadow-xl backdrop-blur-xl dark:border-strategy-gold/20 dark:bg-surface-elevated/90 sm:w-64'>
                   <DropdownMenuItem
                     onClick={() => setSelectedCategory('all')}
-                    className='mx-2 my-1 rounded-lg text-gold-300 hover:bg-hunter-800/50 dark:hover:bg-hunter-800/50'
+                    className='mx-2 my-1 rounded-lg text-strategy-gold hover:bg-hunter-800/50 dark:hover:bg-hunter-800/50'
                   >
                     All Categories
                   </DropdownMenuItem>
@@ -459,7 +459,7 @@ export default function PortfolioListPage() {
                     <DropdownMenuItem
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className='mx-2 my-1 rounded-lg text-gold-300 hover:bg-hunter-800/50 dark:hover:bg-hunter-800/50'
+                      className='mx-2 my-1 rounded-lg text-strategy-gold hover:bg-hunter-800/50 dark:hover:bg-hunter-800/50'
                     >
                       {category}
                     </DropdownMenuItem>
@@ -471,14 +471,14 @@ export default function PortfolioListPage() {
               <Button
                 variant='outline'
                 onClick={() => setIsTagFilterOpen(true)}
-                className='h-12 rounded-lg border-gold-500/20 bg-hunter-800/30 px-6 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
+                className='h-12 rounded-lg border-strategy-gold/20 bg-hunter-800/30 px-6 text-strategy-gold hover:border-strategy-gold/50 hover:bg-hunter-700/50 dark:border-strategy-gold/20 dark:bg-hunter-800/30'
               >
                 <Filter className='mr-2 size-4' />
                 Tags{' '}
                 {selectedTags.length > 0 && (
                   <Badge
                     variant='secondary'
-                    className='ml-2 bg-gold-600/70 text-hunter-900 dark:bg-gold-500 dark:text-hunter-950'
+                    className='ml-2 bg-gold-600/70 text-hunter-900 dark:bg-strategy-gold dark:text-hunter-950'
                   >
                     {selectedTags.length}
                   </Badge>
@@ -492,7 +492,7 @@ export default function PortfolioListPage() {
                 <Button
                   variant='outline'
                   onClick={clearFilters}
-                  className='h-12 rounded-lg border-gold-500/20 bg-hunter-800/30 px-6 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
+                  className='h-12 rounded-lg border-strategy-gold/20 bg-hunter-800/30 px-6 text-strategy-gold hover:border-strategy-gold/50 hover:bg-hunter-700/50 dark:border-strategy-gold/20 dark:bg-hunter-800/30'
                 >
                   <X className='mr-2 size-4' />
                   Clear
@@ -502,9 +502,9 @@ export default function PortfolioListPage() {
 
             {/* Selected Tags Display */}
             {selectedTags.length > 0 && (
-              <div className='mt-4 border-t border-gold-500/20 pt-4 dark:border-gold-500/20'>
+              <div className='mt-4 border-t border-strategy-gold/20 pt-4 dark:border-strategy-gold/20'>
                 <div className='mb-3 flex items-center gap-2'>
-                  <span className='text-sm font-medium text-gold-400 dark:text-gold-400'>
+                  <span className='text-sm font-medium text-strategy-gold dark:text-strategy-gold'>
                     Active filters:
                   </span>
                 </div>
@@ -513,7 +513,7 @@ export default function PortfolioListPage() {
                     <Badge
                       key={tag}
                       variant='default'
-                      className='cursor-pointer border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
+                      className='cursor-pointer border-0 bg-gold-600/70 text-hunter-900 hover:bg-strategy-gold dark:bg-strategy-gold dark:text-hunter-950 dark:hover:bg-gold-400'
                       onClick={() => toggleTag(tag)}
                     >
                       <Tag className='mr-1 size-3' />
@@ -530,7 +530,7 @@ export default function PortfolioListPage() {
         {/* Results Count */}
         <div className='mx-auto mb-8 max-w-4xl'>
           <div className='flex items-center justify-between'>
-            <p className='font-medium text-gold-400 dark:text-gold-400'>
+            <p className='font-medium text-strategy-gold dark:text-strategy-gold'>
               Showing {displayedItems.length} of {filteredItems.length} items
             </p>
           </div>
@@ -539,19 +539,19 @@ export default function PortfolioListPage() {
         {/* Portfolio Grid */}
         {filteredItems.length === 0 ? (
           <div className='mx-auto max-w-2xl'>
-            <Card className='border-gold-500/20 bg-hunter-900/30 py-16 text-center dark:border-gold-500/20 dark:bg-hunter-900/30'>
+            <Card className='border-strategy-gold/20 bg-surface-elevated/30 py-16 text-center dark:border-strategy-gold/20 dark:bg-surface-elevated/30'>
               <CardContent>
                 <div className='mx-auto mb-6 flex size-20 items-center justify-center rounded-full bg-hunter-800/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
-                  <Briefcase className='size-10 text-gold-400' />
+                  <Briefcase className='size-10 text-strategy-gold' />
                 </div>
                 <H3 className='mb-3 text-grey-100'>No portfolio items found</H3>
-                <P className='mb-6 text-grey-400'>
+                <P className='mb-6 text-gray-400'>
                   Try adjusting your search criteria or filters to find what
                   you're looking for
                 </P>
                 <Button
                   onClick={clearFilters}
-                  className='border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
+                  className='border-0 bg-gold-600/70 text-hunter-900 hover:bg-strategy-gold dark:bg-strategy-gold dark:text-hunter-950 dark:hover:bg-gold-400'
                 >
                   Clear all filters
                 </Button>
@@ -561,7 +561,7 @@ export default function PortfolioListPage() {
         ) : (
           <>
             <div className='mx-auto mb-8 max-w-7xl'>
-              <H2 className='mb-3 text-gold-400'>Portfolio Items</H2>
+              <H2 className='mb-3 text-strategy-gold'>Portfolio Items</H2>
 
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
                 {displayedItems.map(item => {
@@ -578,17 +578,17 @@ export default function PortfolioListPage() {
                   return (
                     <div
                       key={item.id}
-                      className='group relative flex h-full flex-col overflow-hidden rounded-lg border border-gold-500/20 bg-hunter-900/30 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-gold-500/40 hover:bg-hunter-800/40 hover:shadow-xl dark:border-gold-500/20 dark:bg-hunter-900/30'
+                      className='group relative flex h-full flex-col overflow-hidden rounded-lg border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-strategy-gold/40 hover:bg-hunter-800/40 hover:shadow-xl dark:border-strategy-gold/20 dark:bg-surface-elevated/30'
                     >
                       {/* Gold accent on top */}
-                      <div className='absolute inset-x-0 top-0 h-1 bg-gold-500/60'></div>
+                      <div className='absolute inset-x-0 top-0 h-1 bg-strategy-gold/60'></div>
 
                       <div className='relative flex flex-1 flex-col p-6'>
                         {/* Category Badge */}
                         <div className='mb-4 flex items-start justify-between'>
                           <Badge
                             variant='secondary'
-                            className='border-gold-500/30 bg-gold-600/20 text-gold-300 shadow-sm'
+                            className='border-strategy-gold/30 bg-gold-600/20 text-strategy-gold shadow-sm'
                           >
                             <CategoryIcon className='mr-1 size-3' />
                             {item.category}
@@ -596,7 +596,7 @@ export default function PortfolioListPage() {
                         </div>
 
                         {/* Title */}
-                        <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-gold-400'>
+                        <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-strategy-gold'>
                           <Link
                             to={`/${item.url}`}
                             className='decoration-2 underline-offset-4 hover:underline'
@@ -606,7 +606,7 @@ export default function PortfolioListPage() {
                         </h3>
 
                         {/* Description */}
-                        <p className='mb-4 line-clamp-3 flex-1 leading-relaxed text-grey-300'>
+                        <p className='mb-4 line-clamp-3 flex-1 leading-relaxed text-gray-300'>
                           {item.description}
                         </p>
 
@@ -622,7 +622,7 @@ export default function PortfolioListPage() {
                                   <Badge
                                     key={tag}
                                     variant='secondary'
-                                    className='h-auto border-gold-500/30 bg-gold-600/20 px-2 py-1 text-xs text-gold-300'
+                                    className='h-auto border-strategy-gold/30 bg-gold-600/20 px-2 py-1 text-xs text-strategy-gold'
                                   >
                                     <Tag className='mr-1 size-3' />
                                     <span className='whitespace-nowrap'>
@@ -633,7 +633,7 @@ export default function PortfolioListPage() {
                                 {cleanTags.length > 3 && (
                                   <Badge
                                     variant='secondary'
-                                    className='border-grey-600/30 bg-grey-700/50 px-2 py-1 text-xs text-grey-300'
+                                    className='border-grey-600/30 bg-grey-700/50 px-2 py-1 text-xs text-gray-300'
                                   >
                                     +{cleanTags.length - 3}
                                   </Badge>
@@ -646,7 +646,7 @@ export default function PortfolioListPage() {
                         {/* Prominent View Details Button */}
                         <Link
                           to={`/${item.url}`}
-                          className='mt-auto inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gold-600/70 px-4 py-3 font-semibold text-hunter-900 transition-all duration-200 hover:bg-gold-500 hover:shadow-lg dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
+                          className='mt-auto inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gold-600/70 px-4 py-3 font-semibold text-hunter-900 transition-all duration-200 hover:bg-strategy-gold hover:shadow-lg dark:bg-strategy-gold dark:text-hunter-950 dark:hover:bg-gold-400'
                         >
                           View Details
                           <ArrowRight className='size-4 transition-transform group-hover:translate-x-1' />
@@ -661,8 +661,8 @@ export default function PortfolioListPage() {
             {/* Loading indicator for infinite scroll */}
             {displayedItems.length < filteredItems.length && (
               <div ref={loadingRef} className='py-12 text-center'>
-                <div className='inline-flex items-center gap-3 text-grey-400 dark:text-grey-400'>
-                  <div className='size-6 animate-spin rounded-full border-b-2 border-gold-500'></div>
+                <div className='inline-flex items-center gap-3 text-gray-400 dark:text-gray-400'>
+                  <div className='size-6 animate-spin rounded-full border-b-2 border-strategy-gold'></div>
                   <span className='font-medium'>Loading more items...</span>
                 </div>
               </div>
@@ -672,10 +672,10 @@ export default function PortfolioListPage() {
             {displayedItems.length === filteredItems.length &&
               filteredItems.length > 0 && (
                 <div className='py-12 text-center'>
-                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-gold-500/20'>
-                    <Briefcase className='size-6 text-gold-400' />
+                  <div className='mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-strategy-gold/20'>
+                    <Briefcase className='size-6 text-strategy-gold' />
                   </div>
-                  <p className='font-medium text-gold-400/60'>
+                  <p className='font-medium text-strategy-gold/60'>
                     You've reached the end of all portfolio items
                   </p>
                 </div>
@@ -685,21 +685,21 @@ export default function PortfolioListPage() {
 
         {/* Tag Filter Dialog */}
         <Dialog open={isTagFilterOpen} onOpenChange={setIsTagFilterOpen}>
-          <DialogContent className='z-[200] flex max-h-[85vh] max-w-3xl flex-col border-gold-500/20 bg-hunter-900/50 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
+          <DialogContent className='z-[200] flex max-h-[85vh] max-w-3xl flex-col border-strategy-gold/20 bg-surface-elevated/50 backdrop-blur-xl dark:border-strategy-gold/20 dark:bg-surface-elevated/30'>
             <DialogHeader className='pb-4'>
-              <DialogTitle className='flex items-center gap-3 text-xl text-gold-400'>
+              <DialogTitle className='flex items-center gap-3 text-xl text-strategy-gold'>
                 <div className='flex size-10 items-center justify-center rounded-lg bg-hunter-800/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
-                  <Filter className='size-5 text-gold-400' />
+                  <Filter className='size-5 text-strategy-gold' />
                 </div>
                 Filter by Topics
               </DialogTitle>
-              <DialogDescription className='text-grey-300'>
+              <DialogDescription className='text-gray-300'>
                 Select topics to filter portfolio items by specific themes and
                 subjects
               </DialogDescription>
             </DialogHeader>
 
-            <Separator className='bg-gold-500/20' />
+            <Separator className='bg-strategy-gold/20' />
 
             <div className='flex-1 overflow-y-auto p-6'>
               <div className='flex flex-wrap gap-3'>
@@ -715,8 +715,8 @@ export default function PortfolioListPage() {
                       }
                       className={`cursor-pointer px-3 py-2 text-sm transition-all duration-200 ${
                         selectedTags.includes(tag)
-                          ? 'border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
-                          : 'border-gold-500/30 text-gold-400 hover:border-gold-500/60 hover:bg-hunter-800/50 dark:border-gold-500/30 dark:text-gold-400 dark:hover:bg-hunter-800/70'
+                          ? 'border-0 bg-gold-600/70 text-hunter-900 hover:bg-strategy-gold dark:bg-strategy-gold dark:text-hunter-950 dark:hover:bg-gold-400'
+                          : 'border-strategy-gold/30 text-strategy-gold hover:border-strategy-gold/60 hover:bg-hunter-800/50 dark:border-strategy-gold/30 dark:text-strategy-gold dark:hover:bg-hunter-800/70'
                       }`}
                       onClick={() => toggleTag(tag)}
                     >
@@ -727,10 +727,10 @@ export default function PortfolioListPage() {
               </div>
             </div>
 
-            <Separator className='bg-gold-500/20' />
+            <Separator className='bg-strategy-gold/20' />
 
             <div className='flex items-center justify-between p-6'>
-              <div className='text-sm text-grey-400 dark:text-grey-400'>
+              <div className='text-sm text-gray-400 dark:text-gray-400'>
                 {selectedTags.length} tag{selectedTags.length !== 1 ? 's' : ''}{' '}
                 selected
               </div>
@@ -738,13 +738,13 @@ export default function PortfolioListPage() {
                 <Button
                   variant='outline'
                   onClick={clearFilters}
-                  className='border-gold-500/20 bg-hunter-800/30 text-gold-400 hover:border-gold-500/50 hover:bg-hunter-700/50 dark:border-gold-500/20 dark:bg-hunter-800/30'
+                  className='border-strategy-gold/20 bg-hunter-800/30 text-strategy-gold hover:border-strategy-gold/50 hover:bg-hunter-700/50 dark:border-strategy-gold/20 dark:bg-hunter-800/30'
                 >
                   Clear All
                 </Button>
                 <Button
                   onClick={closeTagFilter}
-                  className='border-0 bg-gold-600/70 text-hunter-900 hover:bg-gold-500 dark:bg-gold-500 dark:text-hunter-950 dark:hover:bg-gold-400'
+                  className='border-0 bg-gold-600/70 text-hunter-900 hover:bg-strategy-gold dark:bg-strategy-gold dark:text-hunter-950 dark:hover:bg-gold-400'
                 >
                   Apply Filters
                 </Button>

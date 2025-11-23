@@ -45,10 +45,10 @@ const ToolbarButton = React.memo<ToolbarButtonProps>(
       variant='ghost'
       size='sm'
       onClick={onClick}
-      className={`rounded-lg border border-gold-500/20 bg-hunter-900/30 backdrop-blur-md transition-all duration-200 hover:border-gold-500/50 hover:bg-hunter-900/40 dark:border-gold-500/20 dark:bg-hunter-900/30 dark:hover:border-gold-500/50 dark:hover:bg-hunter-900/40 ${
+      className={`rounded-lg border border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-md transition-all duration-200 hover:border-strategy-gold/50 hover:bg-surface-elevated/40 dark:border-strategy-gold/20 dark:bg-surface-elevated/30 dark:hover:border-strategy-gold/50 dark:hover:bg-surface-elevated/40 ${
         isActive
-          ? 'border-gold-500/60 bg-gold-500/30 text-gold-300 ring-1 ring-gold-500/30 dark:border-gold-500/60'
-          : 'hover:bg-hunter-900/40 hover:text-gold-300 dark:hover:bg-hunter-900/40 dark:hover:text-gold-300'
+          ? 'border-strategy-gold/60 bg-strategy-gold/30 text-strategy-gold ring-1 ring-gold-500/30 dark:border-strategy-gold/60'
+          : 'hover:bg-surface-elevated/40 hover:text-strategy-gold dark:hover:bg-surface-elevated/40 dark:hover:text-strategy-gold'
       } ${className}`}
     >
       {children}
@@ -198,9 +198,9 @@ export function TipTapEditor({
   }
 
   return (
-    <div className='flex h-full flex-col bg-hunter-950 backdrop-blur-xl dark:bg-hunter-950'>
+    <div className='flex h-full flex-col bg-surface-deep backdrop-blur-xl dark:bg-surface-deep'>
       {/* Enhanced Toolbar with Brand Theme */}
-      <div className='flex shrink-0 flex-wrap gap-2 border-b border-gold-500/10 bg-hunter-950/40 p-4 backdrop-blur-xl dark:border-gold-500/10 dark:bg-hunter-950/40'>
+      <div className='flex shrink-0 flex-wrap gap-2 border-b border-strategy-gold/10 bg-surface-deep/40 p-4 backdrop-blur-xl dark:border-strategy-gold/10 dark:bg-surface-deep/40'>
         <ToolbarButton
           onClick={() =>
             editor?.chain().focus().toggleHeading({ level: 1 }).run()
@@ -296,7 +296,7 @@ export function TipTapEditor({
         </ToolbarButton>
       </div>
       {/* Editor Content Area */}
-      <div className='flex-1 overflow-hidden bg-hunter-900/30 backdrop-blur-xl dark:bg-hunter-900/30'>
+      <div className='flex-1 overflow-hidden bg-surface-elevated/30 backdrop-blur-xl dark:bg-surface-elevated/30'>
         {editor && (
           <EditorContent
             editor={editor}
