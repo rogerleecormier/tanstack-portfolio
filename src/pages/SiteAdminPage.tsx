@@ -609,9 +609,9 @@ export const SiteAdminPage: React.FC = () => {
       {/* Header with Administrative Theme - Glassmorphic Design */}
       <div className='relative overflow-hidden border-b border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
         {/* Glassmorphic background gradient */}
-        <div className='from-strategy-gold/8 via-strategy-gold/5 to-strategy-gold/8 absolute inset-0 bg-gradient-to-r'></div>
+        <div className='from-strategy-gold/8 to-strategy-gold/8 absolute inset-0 bg-gradient-to-r via-strategy-gold/5'></div>
         {/* Subtle glow effect */}
-        <div className='absolute -top-1/2 -right-1/2 h-96 w-96 rounded-full bg-strategy-gold/5 blur-3xl'></div>
+        <div className='absolute -right-1/2 -top-1/2 h-96 w-96 rounded-full bg-strategy-gold/5 blur-3xl'></div>
 
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>

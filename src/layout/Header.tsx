@@ -1,9 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import {
-  Dialog,
-  DialogContent,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Link } from '@tanstack/react-router';
 import React, { useState } from 'react';
 import RedesignedSearch from '@/components/RedesignedSearch';
