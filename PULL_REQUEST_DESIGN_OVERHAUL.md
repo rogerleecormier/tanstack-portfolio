@@ -30,6 +30,7 @@ This is a **comprehensive, site-wide redesign** that implements the complete des
 This PR implements the complete design system as documented in the following files:
 
 ### Primary References
+
 - **`/docs/design/SITE_DESIGN_IMPLEMENTATION_GUIDE.md`** - Overall architecture and integration strategy
 - **`/docs/design/PAGE_SPECIFICATIONS.md`** - Detailed specifications for each page (Home, Portfolio, Projects, Blog, Contact)
 - **`/docs/design/COMPONENT_IMPLEMENTATION_GUIDE.md`** - React patterns and code examples for all components
@@ -37,6 +38,7 @@ This PR implements the complete design system as documented in the following fil
 - **`/docs/design/IMPLEMENTATION_SUMMARY.md`** - Complete implementation roadmap with 3 phases
 
 ### Supporting References
+
 - **`/docs/design/site_design_system_aligned.html`** - Interactive visual mockup (open in browser)
 - **`/docs/design/QUICK_REFERENCE.md`** - One-page cheat sheet for developers
 - **`/docs/design/DELIVERY_SUMMARY.md`** - Delivery checklist and success metrics
@@ -46,6 +48,7 @@ This PR implements the complete design system as documented in the following fil
 ## 🎨 Design System Standards
 
 ### Color Palette (from Precision Strategy)
+
 All colors moved to `tailwind.config.js` and referenced via design system classes:
 
 ```
@@ -63,12 +66,14 @@ Legacy Hunter/Slate: Phased deprecation (kept for backward compatibility)
 ```
 
 ### Spacing System
+
 - `p-8` = padding 2rem (component interior)
 - `gap-8` = gap 2rem (between items)
 - `mb-12` = margin-bottom 3rem (section spacing)
 - Use consistent `space-*` utilities
 
 ### Typography
+
 - `text-3xl` = page titles
 - `text-2xl` = section titles
 - `text-lg` = body large
@@ -77,6 +82,7 @@ Legacy Hunter/Slate: Phased deprecation (kept for backward compatibility)
 - Use `tracking-wider` for labels/badges
 
 ### Responsive Breakpoints
+
 ```
 Mobile:  < 768px   (no prefix or sm:)
 Tablet:  768-1024px (md: prefix)
@@ -92,18 +98,21 @@ Pattern: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
 ### Changes to Logo Components
 
 **Before:**
+
 ```tsx
 // Header.tsx
 <Logo size='md' showTargetingDots={true} />
 ```
 
 **After:**
+
 ```tsx
 // Header.tsx - Uses header-logo.svg directly
 <img src='/header-logo.svg' alt='RC' className='h-12 w-auto' />
 ```
 
 ### Files Updated
+
 - ✅ `src/layout/Header.tsx` - Replace Target icon with header-logo.svg
 - ✅ `src/layout/Footer.tsx` - Replace Target icon with header-logo.svg
 - ✅ `src/components/Logo.tsx` - Update to support header-logo.svg as primary variant
@@ -114,6 +123,7 @@ Pattern: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
 ## 🔄 Implementation Phases
 
 ### Phase 1: Foundation (Week 1)
+
 **Focus**: Core layout components that all pages depend on
 
 - [ ] Update `tailwind.config.js` with Precision Strategy color system
@@ -136,6 +146,7 @@ Pattern: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
 - [ ] **Update `src/components/AppSidebar.tsx`** to use new logo
 
 ### Phase 2: Pages (Week 2-3)
+
 **Focus**: Update all 5 main pages with new design
 
 - [ ] **Home Page (`src/pages/IndexPage.tsx`)**
@@ -144,27 +155,23 @@ Pattern: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
   - Expertise cards (emerald accents)
   - Blog preview carousel
   - Newsletter CTA
-  
 - [ ] **Portfolio Page (`src/pages/PortfolioListPage.tsx`)**
   - Professional summary section
   - Experience timeline
   - Skills grid (tech stack badges)
   - Education section
   - Awards & recognitions
-  
 - [ ] **Projects Page (`src/pages/ProjectsListPage.tsx`)**
   - Enhanced project cards with gold hover borders
   - Search + Filter + Sort functionality
   - 3-column grid (desktop) with pagination
   - Related content cards
-  
 - [ ] **Blog Page (`src/pages/BlogListPage.tsx`)**
   - Featured blog post section
   - Blog grid with metadata
   - Search + Tag filter
   - Newsletter signup
   - Load more pagination
-  
 - [ ] **Contact Page (`src/pages/ContactPage.tsx`)**
   - Clean contact info display (left column)
   - AI-powered form analysis (right column)
@@ -172,25 +179,23 @@ Pattern: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
   - Contact alternatives (email, LinkedIn, GitHub)
 
 ### Phase 3: Polish & Optimization (Week 4)
+
 **Focus**: Enhancement, accessibility, performance
 
 - [ ] **Animations & Transitions**
   - Hover effects (borders, shadows, color shifts)
   - Page transitions
   - Scroll animations (fade-in, slide-up)
-  
 - [ ] **Accessibility Audit**
   - WCAG AA compliance
   - Keyboard navigation
   - Screen reader testing
   - Color contrast verification (especially gold on dark backgrounds)
-  
 - [ ] **Performance Optimization**
   - Image optimization (WebP, responsive sizing)
   - Lighthouse audit (target > 80 on all metrics)
   - Code splitting optimization
   - Remove unused CSS classes
-  
 - [ ] **Mobile Testing**
   - Test on real devices (iOS Safari, Android Chrome)
   - Touch target sizes (minimum 44px)
@@ -202,6 +207,7 @@ Pattern: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
 ## 🗂️ File Changes Summary
 
 ### Layout Files
+
 ```
 src/layout/
 ├── Header.tsx          ← UPDATE: Use header-logo.svg, navigation styling
@@ -210,6 +216,7 @@ src/layout/
 ```
 
 ### Component Files
+
 ```
 src/components/
 ├── Logo.tsx            ← UPDATE: Support header-logo.svg as primary
@@ -224,6 +231,7 @@ src/components/
 ```
 
 ### Page Files
+
 ```
 src/pages/
 ├── IndexPage.tsx       ← UPDATE: New hero + sections
@@ -234,6 +242,7 @@ src/pages/
 ```
 
 ### Configuration Files
+
 ```
 ├── tailwind.config.js  ← UPDATE: Add Precision Strategy colors
 ├── src/index.css       ← UPDATE: Design system classes
@@ -245,6 +254,7 @@ src/pages/
 ## ✨ Key Changes & Removals
 
 ### Inline Styles Removed
+
 All inline `style={{}}` props and hardcoded color values replaced with design system classes:
 
 ```tsx
@@ -256,7 +266,9 @@ All inline `style={{}}` props and hardcoded color values replaced with design sy
 ```
 
 ### Color Deprecations (Phased Out)
+
 The following legacy colors are gradually phased out in favor of Precision Strategy:
+
 - `hunter-*` colors → replaced with `strategy-gold` or surface colors as context-appropriate
 - `slate-*` colors → replaced with muted/secondary where applicable
 - `gold-*` colors → normalized to `strategy-gold` system
@@ -265,6 +277,7 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 ### Component API Changes
 
 **Logo Component:**
+
 ```tsx
 // NEW: Primary usage
 <img src='/header-logo.svg' alt='RC' className='h-12 w-auto' />
@@ -278,12 +291,14 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 ## 🧪 Testing Checklist
 
 ### Responsive Design
+
 - [ ] Mobile (320px - 480px): All text readable, no overflow, touch targets 44px+
 - [ ] Tablet (768px - 1024px): 2-column layouts work, spacing correct
 - [ ] Desktop (1024px+): Full 3+ column layouts, max-width containers (max-w-7xl)
 - [ ] Ultra-wide (2560px+): Content centered, no awkward stretching
 
 ### Accessibility (WCAG AA)
+
 - [ ] Keyboard navigation: Tab through all interactive elements
 - [ ] Screen readers: Headings, labels, alt text all present
 - [ ] Color contrast: Minimum 4.5:1 for normal text, 3:1 for large text
@@ -291,6 +306,7 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 - [ ] Form labels: All inputs have associated labels
 
 ### Browser Compatibility
+
 - [ ] Chrome/Edge 90+
 - [ ] Firefox 88+
 - [ ] Safari 14+
@@ -298,6 +314,7 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 - [ ] Chrome Mobile (Android)
 
 ### Visual Verification
+
 - [ ] Gold accents visible and consistent
 - [ ] Dark surfaces have correct opacity/layering
 - [ ] Borders render crisply (no fuzzy edges)
@@ -306,6 +323,7 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 - [ ] No layout shifts on interaction
 
 ### Performance (Lighthouse)
+
 - [ ] Performance > 80
 - [ ] Accessibility > 90
 - [ ] Best Practices > 90
@@ -313,6 +331,7 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 - [ ] Core Web Vitals: LCP < 2.5s, FID < 100ms, CLS < 0.1
 
 ### Content
+
 - [ ] All pages load without errors
 - [ ] Images display correctly
 - [ ] No console errors or warnings
@@ -324,6 +343,7 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 ## 🚀 Deployment Notes
 
 ### Pre-Deployment
+
 1. **Review Changes**: Run `git diff` to verify all changes align with design specifications
 2. **Test Locally**: `npm run dev` and manually verify all changes across breakpoints
 3. **Build Check**: `npm run build` - verify no build errors
@@ -331,6 +351,7 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 5. **Accessibility**: Run axe DevTools or similar - verify no violations
 
 ### Post-Deployment
+
 1. **Monitor Console**: Watch for JavaScript errors in production
 2. **Analytics**: Track page load performance, layout shifts
 3. **User Feedback**: Gather feedback on new design
@@ -341,6 +362,7 @@ The following legacy colors are gradually phased out in favor of Precision Strat
 ## 📋 Files Modified
 
 ### New Files Created
+
 ```
 src/components/sections/SectionHeader.tsx
 src/components/sections/HeroSection.tsx
@@ -349,6 +371,7 @@ src/components/cards/BlogCard.tsx (refactored)
 ```
 
 ### Files Updated
+
 ```
 src/layout/Header.tsx
 src/layout/Footer.tsx
@@ -366,6 +389,7 @@ tsconfig.json (if needed)
 ```
 
 ### Files Reviewed (No Changes)
+
 ```
 All other component files in src/components/
 All utility functions in src/utils/
@@ -381,6 +405,7 @@ Router configuration in src/router.tsx
 ### Quick Style Reference
 
 **Spacing**
+
 ```
 p-4 p-6 p-8 (padding)
 m-4 m-6 m-8 (margin)
@@ -389,6 +414,7 @@ space-y-2 space-y-4 (vertical stacking)
 ```
 
 **Colors**
+
 ```
 text-strategy-gold (primary accent - #FFD700)
 bg-surface-elevated (card backgrounds - #1E2847)
@@ -397,6 +423,7 @@ text-secondary (emerald accents - #66CC99)
 ```
 
 **Typography**
+
 ```
 text-4xl font-bold (page titles)
 text-2xl font-semibold (section titles)
@@ -405,11 +432,13 @@ font-semibold uppercase tracking-wider (labels)
 ```
 
 **Responsive Grid**
+
 ```
 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
 ```
 
 ### Detailed References
+
 - See `/docs/design/VISUAL_CODE_REFERENCE.md` for color swatches, font scales, and component patterns
 - See `/docs/design/COMPONENT_IMPLEMENTATION_GUIDE.md` for full React code examples
 - See `/docs/design/site_design_system_aligned.html` for visual mockup
@@ -436,12 +465,14 @@ This PR is complete when:
 ## 📞 Questions & Support
 
 For questions about the design system, refer to:
+
 - **Overall Structure**: `/docs/design/SITE_DESIGN_IMPLEMENTATION_GUIDE.md`
 - **Page-Specific Details**: `/docs/design/PAGE_SPECIFICATIONS.md`
 - **Component Patterns**: `/docs/design/COMPONENT_IMPLEMENTATION_GUIDE.md`
 - **Quick Reference**: `/docs/design/QUICK_REFERENCE.md`
 
 All documentation is comprehensive and includes:
+
 - Architecture diagrams (ASCII)
 - Code examples (React + Tailwind)
 - Color reference swatches
@@ -454,6 +485,7 @@ All documentation is comprehensive and includes:
 ## 🎊 Design System Vision
 
 **Goal**: Create a cohesive, professional portfolio website that:
+
 - Emphasizes precision and results (Precision Strategy brand)
 - Maintains consistent visual language across all pages
 - Scales responsively from mobile to ultra-wide displays
