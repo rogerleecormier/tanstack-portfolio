@@ -1382,7 +1382,7 @@ function WeightProjections() {
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='size-4 rounded-full bg-surface-elevated/300'></div>
+              <div className='size-4 rounded-full bg-surface-elevated/30'></div>
               <span className='text-sm text-muted-foreground'>
                 Scenario (
                 {medicationMode === 'with'
@@ -1392,7 +1392,7 @@ function WeightProjections() {
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='size-4 rounded-full bg-surface-elevated/300'></div>
+              <div className='size-4 rounded-full bg-surface-elevated/30'></div>
               <span className='text-sm text-muted-foreground'>
                 Target Weight
               </span>
@@ -3132,7 +3132,7 @@ function WeightDataTable() {
               <span className='text-sm text-muted-foreground'>Trend Line</span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='size-4 rounded-full bg-surface-elevated/300'></div>
+              <div className='size-4 rounded-full bg-surface-elevated/30'></div>
               <span className='text-sm text-muted-foreground'>
                 {showMovingAverage
                   ? `${movingAveragePeriod}-day Moving Average`
@@ -3423,7 +3423,7 @@ export default function HealthBridgeEnhancedPage() {
                 <span>AI Projections</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-text-tertiary'>
-                <div className='size-2 rounded-full bg-surface-elevated/300'></div>
+                <div className='size-2 rounded-full bg-surface-elevated/30'></div>
                 <span>Goal Targeting</span>
               </div>
             </div>
