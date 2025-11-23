@@ -6,17 +6,17 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 export default function Footer() {
   return (
-    <footer className='relative border-t border-hunter-700/30 bg-hunter-950/90 backdrop-blur-sm'>
+    <footer className='relative border-t border-strategy-gold/20 bg-surface-base backdrop-blur-sm'>
       <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
         {/* Newsletter Section - Prominent */}
         <div className='py-12'>
-          <div className='rounded-lg border border-gold-500/40 bg-gradient-to-r from-gold-600/15 via-hunter-950/60 to-hunter-700/15 p-6 sm:p-8'>
+          <div className='rounded-lg border border-strategy-gold/40 bg-gradient-to-r from-strategy-gold/10 via-surface-elevated to-surface-deep p-6 sm:p-8'>
             <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8'>
               <div>
                 <H4 className='!mt-0 mb-2 text-base font-semibold text-white'>
                   Strategic Insights Delivered
                 </H4>
-                <p className='!mt-0 text-sm text-grey-300'>
+                <p className='!mt-0 text-sm text-secondary'>
                   Exclusive insights on digital transformation, technology
                   leadership, and execution excellence.
                 </p>
@@ -32,7 +32,7 @@ export default function Footer() {
         </div>
 
         {/* Main Footer - Clean & Simple */}
-        <div className='border-t border-hunter-700/30 py-8'>
+        <div className='border-t border-strategy-gold/10 py-8'>
           <div className='grid grid-cols-2 gap-8 sm:grid-cols-4'>
             {/* Brand */}
             <div className='col-span-2 sm:col-span-1'>
@@ -42,19 +42,19 @@ export default function Footer() {
                   <p className='text-sm font-bold text-white'>
                     Roger Lee Cormier
                   </p>
-                  <p className='text-xs font-medium uppercase text-gold-400'>
+                  <p className='text-xs font-medium uppercase text-strategy-gold'>
                     Precision. Results. Delivered.
                   </p>
                 </div>
               </div>
-              <p className='text-xs text-grey-400'>
+              <p className='text-xs text-gray-400'>
                 Strategic execution. Measurable outcomes.
               </p>
             </div>
 
             {/* Pages */}
             <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
+              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-gray-300'>
                 Pages
               </p>
               <div className='space-y-2'>
@@ -66,7 +66,7 @@ export default function Footer() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className='block text-xs text-grey-400 transition-colors hover:text-gold-300'
+                    className='block text-xs text-gray-400 transition-colors hover:text-strategy-gold'
                   >
                     {link.label}
                   </a>
@@ -76,7 +76,7 @@ export default function Footer() {
 
             {/* Resources */}
             <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
+              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-gray-300'>
                 Resources
               </p>
               <div className='space-y-2'>
@@ -88,7 +88,7 @@ export default function Footer() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className='block text-xs text-grey-400 transition-colors hover:text-gold-300'
+                    className='block text-xs text-gray-400 transition-colors hover:text-strategy-gold'
                   >
                     {link.label}
                   </a>
@@ -98,13 +98,13 @@ export default function Footer() {
 
             {/* Contact */}
             <div>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-grey-300'>
+              <p className='mb-3 text-xs font-semibold uppercase tracking-wider text-gray-300'>
                 Connect
               </p>
               <div className='space-y-2'>
                 <a
                   href='https://linkedin.com/in/rogerleecormier'
-                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
+                  className='flex items-center gap-1.5 text-xs text-gray-400 transition-colors hover:text-strategy-gold'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
@@ -113,7 +113,7 @@ export default function Footer() {
                 </a>
                 <a
                   href='https://github.com/rogerleecormier'
-                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
+                  className='flex items-center gap-1.5 text-xs text-gray-400 transition-colors hover:text-strategy-gold'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
@@ -122,7 +122,7 @@ export default function Footer() {
                 </a>
                 <a
                   href='mailto:roger@rcormier.dev'
-                  className='flex items-center gap-1.5 text-xs text-grey-400 transition-colors hover:text-gold-300'
+                  className='flex items-center gap-1.5 text-xs text-gray-400 transition-colors hover:text-strategy-gold'
                 >
                   <Mail size={12} />
                   Email
@@ -133,9 +133,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar - Minimal */}
-        <div className='flex items-center justify-between border-t border-gold-500/20 py-4 text-xs text-grey-500'>
+        <div className='flex items-center justify-between border-t border-strategy-gold/20 py-4 text-xs text-gray-500'>
           <span>© 2025 Roger Lee Cormier</span>
-          <a href='/privacy' className='transition-colors hover:text-gold-400'>
+          <a href='/privacy' className='transition-colors hover:text-strategy-gold'>
             Privacy
           </a>
         </div>

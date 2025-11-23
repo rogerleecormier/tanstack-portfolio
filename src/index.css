@@ -254,6 +254,38 @@
     @apply border-l-4 border-gold-600/40 pl-4 text-lg italic text-foreground/85 dark:border-gold-400/40;
   }
 
+  /* ========== PRECISION STRATEGY DESIGN SYSTEM ========== */
+  /* Precision Strategy Buttons */
+  .btn-strategy-primary {
+    @apply rounded-lg bg-strategy-gold px-6 py-3 font-semibold text-surface-deep transition-all duration-200 hover:bg-strategy-gold-dark focus:outline-none focus:ring-2 focus:ring-strategy-gold focus:ring-offset-2;
+  }
+
+  .btn-strategy-secondary {
+    @apply rounded-lg border-2 border-strategy-gold bg-transparent px-6 py-3 font-semibold text-strategy-gold transition-all duration-200 hover:bg-strategy-gold hover:text-surface-deep focus:outline-none focus:ring-2 focus:ring-strategy-gold focus:ring-offset-2;
+  }
+
+  /* Precision Strategy Cards */
+  .card-strategy {
+    @apply rounded-xl border border-strategy-gold/20 bg-surface-elevated p-6 transition-all duration-300 hover:border-strategy-gold/40 hover:shadow-lg hover:shadow-strategy-gold/10;
+  }
+
+  /* Precision Strategy Sections */
+  .section-strategy {
+    @apply space-y-8 py-12 md:py-16 lg:py-20;
+  }
+
+  .section-header-strategy {
+    @apply mb-8 text-center;
+  }
+
+  .section-title-strategy {
+    @apply mb-4 text-4xl font-bold text-strategy-gold md:text-5xl lg:text-6xl;
+  }
+
+  .section-subtitle-strategy {
+    @apply text-lg text-secondary md:text-xl;
+  }
+
   /* ========== BRAND TEXT & ACCENTS ========== */
   .text-hunter {
     @apply text-hunter-900 dark:text-hunter-300;

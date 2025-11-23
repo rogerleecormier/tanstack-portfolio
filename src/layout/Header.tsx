@@ -26,13 +26,13 @@ const Header: React.FC = () => {
   return (
     <>
       {/* Fixed Header - Always visible */}
-      <div className='fixed inset-x-0 top-0 z-50 border-b border-hunter-700/40 bg-gradient-to-br from-hunter-900 via-hunter-950/90 to-hunter-900 shadow-glass backdrop-blur-md dark:border-hunter-600/50'>
+      <div className='fixed inset-x-0 top-0 z-50 border-b border-strategy-gold/20 bg-surface-base shadow-lg backdrop-blur-md'>
         {/* Main Header Row */}
         <div className='flex items-center justify-between px-4 py-3'>
           {/* Left Section: Hamburger + Logo + Name */}
           <div className='flex items-center gap-4'>
             {/* Hamburger Menu */}
-            <SidebarTrigger className='flex size-10 items-center justify-center rounded-lg border border-gold-500/40 bg-gold-600/15 text-gold-400 transition-all duration-200 hover:border-gold-500/70 hover:bg-gold-600/25 hover:text-gold-300 dark:text-gold-400 dark:hover:text-gold-300'>
+            <SidebarTrigger className='flex size-10 items-center justify-center rounded-lg border border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold transition-all duration-200 hover:border-strategy-gold/70 hover:bg-strategy-gold/25'>
               <Menu className='size-5' />
               <span className='sr-only'>Toggle navigation menu</span>
             </SidebarTrigger>
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
                 Roger Lee Cormier
               </h1>
               {/* Enhanced tagline with targeting theme */}
-              <p className='text-xs font-semibold uppercase tracking-wider text-gold-400'>
+              <p className='text-xs font-semibold uppercase tracking-wider text-strategy-gold'>
                 Precision. Results. Delivered.
               </p>
             </div>
@@ -80,7 +80,7 @@ const Header: React.FC = () => {
         </div>
 
         {/* Breadcrumbs Row - Updated styling */}
-        <div className='flex h-12 items-center border-t border-hunter-700/30 bg-hunter-950/40 px-4 backdrop-blur-sm dark:border-hunter-600/30'>
+        <div className='flex h-12 items-center border-t border-strategy-gold/10 bg-surface-elevated px-4 backdrop-blur-sm'>
           <div className='w-full'>
             <Breadcrumbs />
           </div>

@@ -51,6 +51,22 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        // Precision Strategy Design System
+        'strategy-gold': {
+          DEFAULT: '#FFD700',
+          dark: '#FFA500',
+          light: '#FFED4E',
+        },
+        'secondary': {
+          DEFAULT: '#66CC99',
+          light: '#80D9AE',
+          dark: '#52B885',
+        },
+        'surface': {
+          base: '#0F172A',
+          elevated: '#1E2847',
+          deep: '#0B0F1F',
+        },
         chart: {
           1: 'hsl(var(--chart-1))',
           2: 'hsl(var(--chart-2))',
