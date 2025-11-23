@@ -24,7 +24,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   return (
     <div className={`section-header-strategy ${alignmentClasses[align]} ${className}`}>
       {subtitle && (
-        <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-secondary">
+        <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-emerald-400">
           {subtitle}
         </p>
       )}

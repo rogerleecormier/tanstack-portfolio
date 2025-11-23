@@ -283,7 +283,7 @@
   }
 
   .section-subtitle-strategy {
-    @apply text-lg text-secondary md:text-xl;
+    @apply text-lg text-emerald-400 md:text-xl;
   }
 
   /* ========== BRAND TEXT & ACCENTS ========== */
