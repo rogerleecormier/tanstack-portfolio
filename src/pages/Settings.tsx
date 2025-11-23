@@ -212,7 +212,7 @@ export default function SettingsPage() {
       <div className='container mx-auto px-4 py-8'>
         <div className='flex h-64 items-center justify-center'>
           <div className='text-center'>
-            <Settings className='mx-auto mb-4 size-8 animate-spin text-gold-600' />
+            <Settings className='mx-auto mb-4 size-8 animate-spin text-strategy-gold' />
             <p className='text-gray-600'>Loading authentication...</p>
           </div>
         </div>
@@ -247,7 +247,7 @@ export default function SettingsPage() {
       <div className='container mx-auto px-4 py-8'>
         <div className='flex h-64 items-center justify-center'>
           <div className='text-center'>
-            <Settings className='mx-auto mb-4 size-8 animate-spin text-gold-600' />
+            <Settings className='mx-auto mb-4 size-8 animate-spin text-strategy-gold' />
             <p className='text-gray-600'>Loading profile...</p>
           </div>
         </div>
@@ -289,40 +289,37 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-hunter-950 via-slate-950 to-hunter-950 dark:from-hunter-950 dark:via-slate-950 dark:to-hunter-950'>
-      {/* Header with Administrative Theme - Settings Focused */}
-      <div className='relative overflow-hidden border-b border-slate-200 dark:border-slate-800'>
-        {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
-        <div className='from-gold-600/3 via-slate-600/3 to-gold-600/3 dark:from-gold-400/8 dark:via-slate-400/8 dark:to-gold-400/8 absolute inset-0 bg-gradient-to-r'></div>
-
+    <div className='min-h-screen bg-surface-base'>
+      {/* Header with Glassmorphism */}
+      <div className='relative overflow-hidden border-b border-surface-elevated/50 bg-surface-base/40 backdrop-blur-xl'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
-            {/* Icon and Title with Administrative Theme */}
+            {/* Icon and Title */}
             <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-500 to-slate-600 shadow-lg'>
-                  <Settings className='size-7 text-white' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-surface-elevated/60 shadow-lg ring-1 ring-strategy-gold/20 backdrop-blur-md'>
+                  <Settings className='size-7 text-strategy-gold' />
                 </div>
                 {/* Settings indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-gold-600'>
-                  <div className='size-2 rounded-full bg-white'></div>
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-surface-deep/80 backdrop-blur-sm'>
+                  <div className='size-2 rounded-full bg-strategy-gold'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-slate-500'>
-                  <div className='size-1.5 rounded-full bg-white'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-text-tertiary/60 backdrop-blur-sm'>
+                  <div className='size-1.5 rounded-full bg-strategy-gold'></div>
                 </div>
               </div>
               <div>
-                <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent dark:from-gold-400 dark:to-gold-300'>
+                <h1 className='text-4xl font-bold tracking-tight text-text-foreground sm:text-5xl lg:text-6xl'>
+                  <span className='text-strategy-gold'>
                     Settings
                   </span>
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-gold-500 to-slate-500'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-strategy-gold/50'></div>
               </div>
             </div>
 
-            {/* Description with Settings Language */}
-            <p className='mx-auto max-w-3xl text-lg leading-7 text-gray-600 dark:text-slate-300'>
+            {/* Description */}
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-text-secondary'>
               Manage your profile, preferences, and personal information in one
               central location
             </p>
@@ -333,18 +330,18 @@ export default function SettingsPage() {
       {/* Main Content Area */}
       <div className='container mx-auto max-w-5xl px-4 py-8'>
         {/* User Profile Section */}
-        <Card className='mb-8 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+        <Card className='mb-8 border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                  <User className='size-6 text-gold-600' />
+                <div className='rounded-xl bg-strategy-gold/20 p-3'>
+                  <User className='size-6 text-strategy-gold' />
                 </div>
                 <div>
-                  <CardTitle className='text-xl font-semibold text-slate-100'>
+                  <CardTitle className='text-xl font-semibold text-text-foreground'>
                     Profile Information
                   </CardTitle>
-                  <CardDescription className='text-slate-300'>
+                  <CardDescription className='text-text-secondary'>
                     Your personal information and activity level
                   </CardDescription>
                 </div>
@@ -352,7 +349,7 @@ export default function SettingsPage() {
               {!isEditing && (
                 <Button
                   onClick={() => setIsEditing(true)}
-                  className='rounded-lg border-0 bg-gold-600 px-6 text-white hover:bg-gold-700'
+                  className='rounded-lg border-0 bg-strategy-gold px-6 text-precision-charcoal hover:bg-strategy-gold/90'
                 >
                   Edit Profile
                 </Button>
@@ -514,14 +511,14 @@ export default function SettingsPage() {
                   <Button
                     onClick={() => void handleProfileSave()}
                     disabled={profileMutation.isPending}
-                    className='rounded-lg border-0 bg-gold-600 px-8 text-white hover:bg-gold-700'
+                    className='rounded-lg border-0 bg-strategy-gold px-8 text-precision-charcoal hover:bg-strategy-gold/90'
                   >
                     {profileMutation.isPending ? 'Saving...' : 'Save Profile'}
                   </Button>
                   <Button
                     onClick={handleProfileCancel}
                     variant='outline'
-                    className='rounded-lg border border-slate-600 px-8 text-slate-300 hover:bg-slate-700'
+                    className='rounded-lg border border-slate-600 px-8 text-text-secondary hover:bg-slate-700'
                   >
                     Cancel
                   </Button>
@@ -542,22 +539,22 @@ export default function SettingsPage() {
             ) : (
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Name
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {profile.name}
                   </p>
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Age
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {profile.age} years old
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-tertiary'>
                     {profile.birthdate
                       ? `Born ${formatDateInTimezone(profile.birthdate, profile.timezone || 'America/New_York')}`
                       : `${profile.age} years old`}
@@ -565,22 +562,22 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Gender
                   </Label>
-                  <p className='text-lg font-medium capitalize text-slate-100'>
+                  <p className='text-lg font-medium capitalize text-text-foreground'>
                     {profile.gender}
                   </p>
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Height
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {profile.height_ft}' {profile.height_in}"
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-tertiary'>
                     {Math.round(
                       (profile.height_ft * 12 + profile.height_in) * 2.54
                     )}{' '}
@@ -589,14 +586,14 @@ export default function SettingsPage() {
                 </div>
 
                 <div className='md:col-span-2'>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Activity Level
                   </Label>
                   <div className='flex items-center gap-2'>
                     <Badge variant='secondary' className='capitalize'>
                       {profile.activity_level.replace('_', ' ')}
                     </Badge>
-                    <span className='text-sm text-slate-400'>
+                    <span className='text-sm text-text-tertiary'>
                       Multiplier:{' '}
                       {profile.activity_level === 'sedentary'
                         ? '1.2'
@@ -614,14 +611,14 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Timezone
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {TIMEZONES.find(tz => tz.value === profile.timezone)
                       ?.label ?? profile.timezone}
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-tertiary'>
                     All dates are displayed in your local timezone
                   </p>
                 </div>
@@ -631,18 +628,18 @@ export default function SettingsPage() {
         </Card>
 
         {/* Weight Goals Section */}
-        <Card className='mb-8 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+        <Card className='mb-8 border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-sm'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                  <TrendingUp className='size-6 text-gold-600' />
+                <div className='rounded-xl bg-strategy-gold/20 p-3'>
+                  <TrendingUp className='size-6 text-strategy-gold' />
                 </div>
                 <div>
-                  <CardTitle className='text-xl font-semibold text-slate-100'>
+                  <CardTitle className='text-xl font-semibold text-text-foreground'>
                     Weight Loss Goals
                   </CardTitle>
-                  <CardDescription className='text-slate-300'>
+                  <CardDescription className='text-text-secondary'>
                     Set and track your weight loss objectives
                   </CardDescription>
                 </div>
@@ -650,7 +647,7 @@ export default function SettingsPage() {
               {!isEditingGoal && (
                 <Button
                   onClick={() => setIsEditingGoal(true)}
-                  className='rounded-lg border-0 bg-gold-600 px-6 text-white hover:bg-gold-700'
+                  className='rounded-lg border-0 bg-strategy-gold px-6 text-precision-charcoal hover:bg-strategy-gold/90'
                 >
                   Edit Goals
                 </Button>
@@ -752,14 +749,14 @@ export default function SettingsPage() {
                   <Button
                     onClick={() => void handleGoalSave()}
                     disabled={goalMutation.isPending}
-                    className='rounded-lg border-0 bg-gold-600 px-8 text-white hover:bg-gold-700'
+                    className='rounded-lg border-0 bg-strategy-gold px-8 text-precision-charcoal hover:bg-strategy-gold/90'
                   >
                     {goalMutation.isPending ? 'Saving...' : 'Save Goals'}
                   </Button>
                   <Button
                     onClick={handleGoalCancel}
                     variant='outline'
-                    className='rounded-lg border border-slate-600 px-8 text-slate-300 hover:bg-slate-700'
+                    className='rounded-lg border border-slate-600 px-8 text-text-secondary hover:bg-slate-700'
                   >
                     Cancel
                   </Button>
@@ -780,15 +777,15 @@ export default function SettingsPage() {
             ) : (
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Starting Weight
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {goal.start_weight_lbs
                       ? `${goal.start_weight_lbs} lbs`
                       : 'Not set'}
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-tertiary'>
                     {goal.start_weight_lbs && !isNaN(goal.start_weight_lbs)
                       ? `${Math.round(convertLbsToKg(goal.start_weight_lbs) * 10) / 10} kg`
                       : 'Not set'}
@@ -796,15 +793,15 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Target Weight
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {goal.target_weight_lbs
                       ? `${goal.target_weight_lbs} lbs`
                       : 'Not set'}
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-tertiary'>
                     {goal.target_weight_lbs && !isNaN(goal.target_weight_lbs)
                       ? `${Math.round(convertLbsToKg(goal.target_weight_lbs) * 10) / 10} kg`
                       : 'Not set'}
@@ -812,15 +809,15 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Weekly Goal
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {goal.weekly_goal_lbs
                       ? `${goal.weekly_goal_lbs} lbs/week`
                       : 'Not set'}
                   </p>
-                  <p className='text-sm text-slate-400'>
+                  <p className='text-sm text-text-tertiary'>
                     {goal.weekly_goal_lbs && !isNaN(goal.weekly_goal_lbs)
                       ? `${Math.round(convertLbsToKg(goal.weekly_goal_lbs) * 10) / 10} kg/week`
                       : 'Not set'}
@@ -828,10 +825,10 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Target Date
                   </Label>
-                  <p className='text-lg font-medium text-slate-100'>
+                  <p className='text-lg font-medium text-text-foreground'>
                     {goal.target_date
                       ? formatDateInTimezone(
                           goal.target_date,
@@ -842,7 +839,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className='md:col-span-2'>
-                  <Label className='text-sm font-medium text-slate-400'>
+                  <Label className='text-sm font-medium text-text-tertiary'>
                     Total Weight to Lose
                   </Label>
                   {goal.start_weight_lbs &&
@@ -856,7 +853,7 @@ export default function SettingsPage() {
                         ) / 10}{' '}
                         lbs
                       </p>
-                      <p className='text-sm text-slate-400'>
+                      <p className='text-sm text-text-tertiary'>
                         {Math.round(
                           convertLbsToKg(
                             goal.start_weight_lbs - goal.target_weight_lbs
@@ -877,18 +874,18 @@ export default function SettingsPage() {
         </Card>
 
         {/* Medication Tracking Section */}
-        <Card className='mb-8 border border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+        <Card className='mb-8 border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-sm'>
           <CardHeader className='pb-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-4'>
-                <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
-                  <Activity className='size-6 text-gold-600' />
+                <div className='rounded-xl bg-strategy-gold/20 p-3'>
+                  <Activity className='size-6 text-strategy-gold' />
                 </div>
                 <div>
-                  <CardTitle className='text-xl font-semibold text-slate-100'>
+                  <CardTitle className='text-xl font-semibold text-text-foreground'>
                     Medication Tracking
                   </CardTitle>
-                  <CardDescription className='text-slate-300'>
+                  <CardDescription className='text-text-secondary'>
                     Track weight loss medications and their impact on your goals
                   </CardDescription>
                 </div>
@@ -896,7 +893,7 @@ export default function SettingsPage() {
               {!isEditingMedication && (
                 <Button
                   onClick={handleAddMedication}
-                  className='rounded-lg border-0 bg-gold-600 px-6 text-white hover:bg-gold-700'
+                  className='rounded-lg border-0 bg-strategy-gold px-6 text-precision-charcoal hover:bg-strategy-gold/90'
                   disabled={medicationsLoading || medicationTypesLoading}
                 >
                   {medicationTypesLoading ? (
@@ -1011,7 +1008,7 @@ export default function SettingsPage() {
                             align='start'
                           >
                             {medicationTypesLoading ? (
-                              <div className='p-2 text-center text-sm text-slate-400'>
+                              <div className='p-2 text-center text-sm text-text-tertiary'>
                                 <div className='flex items-center justify-center gap-2'>
                                   <div className='size-4 animate-spin rounded-full border-2 border-gold-600 border-t-transparent'></div>
                                   Loading medications...
@@ -1042,7 +1039,7 @@ export default function SettingsPage() {
                                         efficacy
                                       </Badge>
                                     </div>
-                                    <span className='text-xs text-slate-400'>
+                                    <span className='text-xs text-text-tertiary'>
                                       {type.generic_name}
                                     </span>
                                     <span className='line-clamp-2 text-xs leading-tight text-gray-400'>
@@ -1177,7 +1174,7 @@ export default function SettingsPage() {
                           medicationMutation.isPending ||
                           deleteMedicationMutation.isPending
                         }
-                        className='flex-1 rounded-lg border-0 bg-gold-600 text-white hover:bg-gold-700'
+                        className='flex-1 rounded-lg border-0 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
                       >
                         {medicationMutation.isPending ? (
                           <div className='flex items-center gap-2'>
@@ -1191,7 +1188,7 @@ export default function SettingsPage() {
                       <Button
                         onClick={handleMedicationCancel}
                         variant='outline'
-                        className='flex-1 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700'
+                        className='flex-1 rounded-lg border border-slate-600 text-text-secondary hover:bg-slate-700'
                         disabled={
                           medicationMutation.isPending ||
                           deleteMedicationMutation.isPending
@@ -1248,15 +1245,15 @@ export default function SettingsPage() {
                       return (
                         <Card
                           key={medication.id}
-                          className='border border-gold-600/30 bg-slate-900/60 shadow-sm transition-shadow hover:border-gold-600/50 hover:shadow-md'
+                          className='border border-strategy-gold/20 bg-surface-elevated/30 shadow-sm transition-shadow hover:border-gold-600/50 hover:shadow-md'
                         >
                           <CardHeader className='pb-3'>
                             <div className='flex items-center justify-between'>
                               <div>
-                                <h4 className='font-semibold text-slate-100'>
+                                <h4 className='font-semibold text-text-foreground'>
                                   {medicationType?.name ?? 'Unknown Medication'}
                                 </h4>
-                                <p className='text-sm text-slate-400'>
+                                <p className='text-sm text-text-tertiary'>
                                   {medicationType?.generic_name ?? 'Unknown'}
                                 </p>
                               </div>
@@ -1272,10 +1269,10 @@ export default function SettingsPage() {
                           <CardContent className='pt-0'>
                             <div className='space-y-3 text-sm'>
                               <div className='flex justify-between'>
-                                <span className='font-medium text-slate-400'>
+                                <span className='font-medium text-text-tertiary'>
                                   Started:
                                 </span>
-                                <span className='text-slate-100'>
+                                <span className='text-text-foreground'>
                                   {formatDateInTimezone(
                                     medication.start_date,
                                     profile?.timezone || 'America/New_York'
@@ -1284,19 +1281,19 @@ export default function SettingsPage() {
                               </div>
                               {medication.dosage_mg && (
                                 <div className='flex justify-between'>
-                                  <span className='font-medium text-slate-400'>
+                                  <span className='font-medium text-text-tertiary'>
                                     Dosage:
                                   </span>
-                                  <span className='text-slate-100'>
+                                  <span className='text-text-foreground'>
                                     {medication.dosage_mg} mg
                                   </span>
                                 </div>
                               )}
                               <div className='flex justify-between'>
-                                <span className='font-medium text-slate-400'>
+                                <span className='font-medium text-text-tertiary'>
                                   Frequency:
                                 </span>
-                                <span className='text-slate-100'>
+                                <span className='text-text-foreground'>
                                   {formatMedicationFrequency(
                                     medication.frequency
                                   )}
@@ -1304,10 +1301,10 @@ export default function SettingsPage() {
                               </div>
                               {medication.notes && (
                                 <div className='flex justify-between'>
-                                  <span className='font-medium text-slate-400'>
+                                  <span className='font-medium text-text-tertiary'>
                                     Notes:
                                   </span>
-                                  <span className='text-slate-100'>
+                                  <span className='text-text-foreground'>
                                     {medication.notes}
                                   </span>
                                 </div>
@@ -1320,7 +1317,7 @@ export default function SettingsPage() {
                                   setIsEditingMedication(true);
                                 }}
                                 size='sm'
-                                className='flex-1 bg-gold-600 text-white hover:bg-gold-700'
+                                className='flex-1 bg-strategy-gold text-precision-charcoal hover:bg-strategy-gold/90'
                                 disabled={
                                   medicationMutation.isPending ||
                                   deleteMedicationMutation.isPending
@@ -1357,7 +1354,7 @@ export default function SettingsPage() {
                     })}
                   </div>
                 ) : (
-                  <div className='py-8 text-center text-slate-400'>
+                  <div className='py-8 text-center text-text-tertiary'>
                     <Activity className='mx-auto mb-4 size-12 text-gray-300' />
                     <p>No medications added yet</p>
                     <p className='text-sm'>
