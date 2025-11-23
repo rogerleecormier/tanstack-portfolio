@@ -1050,7 +1050,7 @@ export const HeroProfileCard: React.FC<
         {/* Top accent gradient bar */}
         <div className='h-1 bg-gradient-to-r from-transparent via-gold-500 to-transparent'></div>
 
-        <CardHeader className='pb-8 pt-8'>
+        <CardHeader className='py-8'>
           <div className='flex items-start gap-8'>
             {image && (
               <div className='relative shrink-0'>
@@ -1129,7 +1129,7 @@ export const HeroProfileCard: React.FC<
         )}
 
         {/* Bottom accent glow */}
-        <div className='absolute bottom-0 right-0 -z-10 h-64 w-64 rounded-full bg-gradient-to-tl from-gold-600/15 via-hunter-600/10 to-transparent blur-3xl'></div>
+        <div className='absolute bottom-0 right-0 -z-10 size-64 rounded-full bg-gradient-to-tl from-gold-600/15 via-hunter-600/10 to-transparent blur-3xl'></div>
       </Card>
     </div>
   );

@@ -156,7 +156,7 @@ export default function BlogListPage() {
   return (
     <div className='min-h-screen bg-hunter-950'>
       {/* Header with Glassmorphism Theme */}
-      <div className='dark:border-grey-800 relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:bg-hunter-950/30'>
+      <div className='relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:border-grey-800 dark:bg-hunter-950/30'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Glassmorphism Theme */}
@@ -169,7 +169,7 @@ export default function BlogListPage() {
                 <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-hunter-800/80 backdrop-blur-sm'>
                   <div className='size-2 rounded-full bg-gold-400'></div>
                 </div>
-                <div className='bg-grey-700/60 absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full backdrop-blur-sm'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-grey-700/60 backdrop-blur-sm'>
                   <div className='size-1.5 rounded-full bg-gold-300'></div>
                 </div>
               </div>
@@ -182,7 +182,7 @@ export default function BlogListPage() {
             </div>
 
             {/* Description with Glassmorphism Theme */}
-            <p className='text-grey-300 mx-auto max-w-3xl text-lg leading-7'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
               Thought leadership, technical insights, and strategic analysis on
               modern enterprise challenges and technology trends.
               <span className='font-medium text-gold-300'>
@@ -194,15 +194,15 @@ export default function BlogListPage() {
 
             {/* Quick Stats with Glassmorphism Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>Strategic Content</span>
               </div>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>Deep Analysis</span>
               </div>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>Expert Perspectives</span>
               </div>
@@ -222,7 +222,7 @@ export default function BlogListPage() {
                 placeholder='Search insights and articles...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className='placeholder-grey-500 h-11 border-gold-500/20 bg-hunter-800/50 pl-12 text-white focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
+                className='h-11 border-gold-500/20 bg-hunter-800/50 pl-12 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
               />
             </div>
             <Button
@@ -318,7 +318,7 @@ export default function BlogListPage() {
             <Separator className='bg-gold-500/20' />
 
             <div className='flex items-center justify-between p-6'>
-              <div className='text-grey-400 dark:text-grey-400 text-sm'>
+              <div className='text-sm text-grey-400 dark:text-grey-400'>
                 {selectedTags.length} tag{selectedTags.length !== 1 ? 's' : ''}{' '}
                 selected
               </div>
@@ -375,8 +375,8 @@ export default function BlogListPage() {
               <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-hunter-800/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
                 <BookOpen className='size-8 text-gold-400' />
               </div>
-              <H3 className='text-grey-100 mb-3'>No articles found</H3>
-              <P className='text-grey-400 mx-auto max-w-md'>
+              <H3 className='mb-3 text-grey-100'>No articles found</H3>
+              <P className='mx-auto max-w-md text-grey-400'>
                 {searchQuery || selectedTags.length > 0
                   ? 'Try adjusting your search or filters'
                   : 'No blog posts have been published yet'}
@@ -399,7 +399,7 @@ export default function BlogListPage() {
             {/* Loading indicator for infinite scroll */}
             {displayedPosts.length < filteredPosts.length && (
               <div ref={loadingRef} className='py-12 text-center'>
-                <div className='text-grey-400 dark:text-grey-400 inline-flex items-center gap-3'>
+                <div className='inline-flex items-center gap-3 text-grey-400 dark:text-grey-400'>
                   <div className='size-6 animate-spin rounded-full border-b-2 border-gold-500'></div>
                   <span className='font-medium'>Loading more articles...</span>
                 </div>
@@ -452,7 +452,7 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
             {post.title}
           </Link>
         </CardTitle>
-        <CardDescription className='text-grey-300 line-clamp-3 leading-relaxed'>
+        <CardDescription className='line-clamp-3 leading-relaxed text-grey-300'>
           {post.description}
         </CardDescription>
       </CardHeader>
@@ -474,7 +474,7 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
             {post.tags.length > 3 && (
               <Badge
                 variant='secondary'
-                className='border-grey-600/30 bg-grey-700/50 text-grey-300 text-xs'
+                className='border-grey-600/30 bg-grey-700/50 text-xs text-grey-300'
               >
                 +{post.tags.length - 3} more
               </Badge>
@@ -483,7 +483,7 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
         )}
 
         {/* Meta Info with Gold Accent */}
-        <div className='text-grey-400 mb-5 flex items-center justify-between text-sm'>
+        <div className='mb-5 flex items-center justify-between text-sm text-grey-400'>
           <div className='flex items-center gap-2'>
             <div className='flex size-6 items-center justify-center rounded-full bg-gold-500/20'>
               <Calendar className='size-3 text-gold-400' />
@@ -493,17 +493,17 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
             </span>
           </div>
           <div className='flex items-center gap-2'>
-            <div className='bg-grey-700/50 flex size-6 items-center justify-center rounded-full'>
-              <Clock className='text-grey-400 size-3' />
+            <div className='flex size-6 items-center justify-center rounded-full bg-grey-700/50'>
+              <Clock className='size-3 text-grey-400' />
             </div>
-            <span className='text-grey-300 font-medium'>
+            <span className='font-medium text-grey-300'>
               {post.readTime} min read
             </span>
           </div>
         </div>
 
         {/* Author with Gold Accent */}
-        <div className='text-grey-400 mb-6 flex items-center gap-2 text-sm'>
+        <div className='mb-6 flex items-center gap-2 text-sm text-grey-400'>
           <div className='flex size-6 items-center justify-center rounded-full bg-gold-500/20'>
             <User className='size-3 text-gold-400' />
           </div>

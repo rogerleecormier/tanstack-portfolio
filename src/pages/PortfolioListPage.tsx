@@ -359,7 +359,7 @@ export default function PortfolioListPage() {
   return (
     <div className='min-h-screen bg-hunter-950'>
       {/* Hero Section - Glassmorphism Theme */}
-      <div className='dark:border-grey-800 relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:bg-hunter-950/30'>
+      <div className='relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:border-grey-800 dark:bg-hunter-950/30'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Glassmorphism Theme */}
@@ -372,7 +372,7 @@ export default function PortfolioListPage() {
                 <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-hunter-800/80 backdrop-blur-sm'>
                   <div className='size-2 rounded-full bg-gold-400'></div>
                 </div>
-                <div className='bg-grey-700/60 absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full backdrop-blur-sm'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-grey-700/60 backdrop-blur-sm'>
                   <div className='size-1.5 rounded-full bg-gold-300'></div>
                 </div>
               </div>
@@ -385,7 +385,7 @@ export default function PortfolioListPage() {
             </div>
 
             {/* Description with Glassmorphism Theme */}
-            <p className='text-grey-300 mx-auto max-w-3xl text-lg leading-7'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
               Strategic technology leadership, enterprise modernization, and
               operational excellence across complex business environments.
               <span className='font-medium text-gold-300'>
@@ -397,17 +397,17 @@ export default function PortfolioListPage() {
 
             {/* Quick Stats with Glassmorphism Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>{portfolioItems.length} Portfolio Items</span>
               </div>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>
                   {portfolioSearch?.getCategories().length ?? 0} Categories
                 </span>
               </div>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>{portfolioSearch?.getTags().length ?? 0} Topics</span>
               </div>
@@ -429,7 +429,7 @@ export default function PortfolioListPage() {
                   placeholder='Search portfolio and expertise...'
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className='placeholder-grey-500 h-12 rounded-lg border-gold-500/20 bg-hunter-800/50 pl-12 text-white focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
+                  className='h-12 rounded-lg border-gold-500/20 bg-hunter-800/50 pl-12 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
                 />
               </div>
 
@@ -544,8 +544,8 @@ export default function PortfolioListPage() {
                 <div className='mx-auto mb-6 flex size-20 items-center justify-center rounded-full bg-hunter-800/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
                   <Briefcase className='size-10 text-gold-400' />
                 </div>
-                <H3 className='text-grey-100 mb-3'>No portfolio items found</H3>
-                <P className='text-grey-400 mb-6'>
+                <H3 className='mb-3 text-grey-100'>No portfolio items found</H3>
+                <P className='mb-6 text-grey-400'>
                   Try adjusting your search criteria or filters to find what
                   you're looking for
                 </P>
@@ -606,7 +606,7 @@ export default function PortfolioListPage() {
                         </h3>
 
                         {/* Description */}
-                        <p className='text-grey-300 mb-4 line-clamp-3 flex-1 leading-relaxed'>
+                        <p className='mb-4 line-clamp-3 flex-1 leading-relaxed text-grey-300'>
                           {item.description}
                         </p>
 
@@ -633,7 +633,7 @@ export default function PortfolioListPage() {
                                 {cleanTags.length > 3 && (
                                   <Badge
                                     variant='secondary'
-                                    className='border-grey-600/30 bg-grey-700/50 text-grey-300 px-2 py-1 text-xs'
+                                    className='border-grey-600/30 bg-grey-700/50 px-2 py-1 text-xs text-grey-300'
                                   >
                                     +{cleanTags.length - 3}
                                   </Badge>
@@ -661,7 +661,7 @@ export default function PortfolioListPage() {
             {/* Loading indicator for infinite scroll */}
             {displayedItems.length < filteredItems.length && (
               <div ref={loadingRef} className='py-12 text-center'>
-                <div className='text-grey-400 dark:text-grey-400 inline-flex items-center gap-3'>
+                <div className='inline-flex items-center gap-3 text-grey-400 dark:text-grey-400'>
                   <div className='size-6 animate-spin rounded-full border-b-2 border-gold-500'></div>
                   <span className='font-medium'>Loading more items...</span>
                 </div>
@@ -730,7 +730,7 @@ export default function PortfolioListPage() {
             <Separator className='bg-gold-500/20' />
 
             <div className='flex items-center justify-between p-6'>
-              <div className='text-grey-400 dark:text-grey-400 text-sm'>
+              <div className='text-sm text-grey-400 dark:text-grey-400'>
                 {selectedTags.length} tag{selectedTags.length !== 1 ? 's' : ''}{' '}
                 selected
               </div>

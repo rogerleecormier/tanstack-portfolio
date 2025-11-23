@@ -207,7 +207,7 @@ export function FrontMatterModal({
         <div className='bg-hunter-900/30 px-6 pb-4 backdrop-blur-xl dark:bg-hunter-900/30'>
           <div className='flex items-center gap-2 rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 ring-1 ring-gold-500/10 dark:border-gold-500/20 dark:bg-hunter-900/40'>
             <AlertCircle className='size-4 shrink-0 text-gold-300 dark:text-gold-300' />
-            <p className='text-grey-300 dark:text-grey-300 text-xs'>
+            <p className='text-xs text-grey-300 dark:text-grey-300'>
               <strong>AI-Generated Content:</strong> Front matter fields can be
               auto-generated using AI. Review and edit generated content before
               saving.

@@ -60,10 +60,10 @@ const solidCardVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-card border-border shadow-sm',
+        default: 'border-border bg-card shadow-sm',
         hunter: 'bg-brand-hunter border-brand-hunter',
         slate: 'bg-brand-slate border-brand-slate',
-        elevated: 'bg-card border-border shadow-lg',
+        elevated: 'border-border bg-card shadow-lg',
       },
       padding: {
         default: 'p-6',
@@ -108,7 +108,7 @@ const interactiveCardVariants = cva(
     variants: {
       variant: {
         glass: 'glass-card hover:scale-105 hover:shadow-xl',
-        solid: 'bg-card border-border shadow-sm hover:scale-105 hover:shadow-xl',
+        solid: 'border-border bg-card shadow-sm hover:scale-105 hover:shadow-xl',
         hunter: 'bg-brand-hunter border-brand-hunter hover:scale-105 hover:shadow-xl',
       },
       padding: {

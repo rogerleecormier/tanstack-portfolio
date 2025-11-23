@@ -56,7 +56,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                 Title
               </span>
             </div>
-            <div className='text-grey-200 dark:text-grey-300 truncate font-medium'>
+            <div className='truncate font-medium text-grey-200 dark:text-grey-300'>
               {frontmatter.title ?? 'No title set'}
             </div>
           </div>
@@ -69,7 +69,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                 Description
               </span>
             </div>
-            <div className='text-grey-400 dark:text-grey-400 line-clamp-3 text-sm'>
+            <div className='line-clamp-3 text-sm text-grey-400 dark:text-grey-400'>
               {frontmatter.description ?? 'No description set'}
             </div>
           </div>
@@ -83,7 +83,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                   Date
                 </span>
               </div>
-              <div className='text-grey-200 dark:text-grey-300 text-sm'>
+              <div className='text-sm text-grey-200 dark:text-grey-300'>
                 {(() => {
                   const date = frontmatter.date;
                   if (!date) return 'Not set';
@@ -106,7 +106,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                   Layout
                 </span>
               </div>
-              <div className='text-grey-200 dark:text-grey-300 text-sm'>
+              <div className='text-sm text-grey-200 dark:text-grey-300'>
                 {frontmatter.layout ?? 'Default'}
               </div>
             </div>
@@ -131,7 +131,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                   </Badge>
                 ))
               ) : (
-                <span className='text-grey-400 dark:text-grey-500 text-sm italic'>
+                <span className='text-sm italic text-grey-400 dark:text-grey-500'>
                   No tags set
                 </span>
               )}
@@ -162,7 +162,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
 
         {/* Footer Message */}
         <div className='border-t border-indigo-200/60 pt-3 dark:border-indigo-800/60'>
-          <div className='text-grey-400 dark:text-grey-500 flex items-center gap-2 text-xs'>
+          <div className='flex items-center gap-2 text-xs text-grey-400 dark:text-grey-500'>
             <div className='size-1 rounded-full bg-gold-400'></div>
             <span>Use "Edit" button above to modify front matter</span>
           </div>

@@ -249,7 +249,7 @@ export default function ProjectsListPage() {
   return (
     <div className='min-h-screen bg-hunter-950'>
       {/* Header with Glassmorphism Theme */}
-      <div className='dark:border-grey-800 relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:bg-hunter-950/30'>
+      <div className='relative overflow-hidden border-b border-hunter-900/50 bg-hunter-950/40 backdrop-blur-xl dark:border-grey-800 dark:bg-hunter-950/30'>
         <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             {/* Icon and Title with Glassmorphism Theme */}
@@ -262,7 +262,7 @@ export default function ProjectsListPage() {
                 <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-hunter-800/80 backdrop-blur-sm'>
                   <div className='size-2 rounded-full bg-gold-400'></div>
                 </div>
-                <div className='bg-grey-700/60 absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full backdrop-blur-sm'>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-grey-700/60 backdrop-blur-sm'>
                   <div className='size-1.5 rounded-full bg-gold-300'></div>
                 </div>
               </div>
@@ -275,7 +275,7 @@ export default function ProjectsListPage() {
             </div>
 
             {/* Description with Glassmorphism Theme */}
-            <p className='text-grey-300 mx-auto max-w-3xl text-lg leading-7'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
               Real-world projects and case studies showcasing delivered impact
               across enterprise transformation and technology modernization.
               <span className='font-medium text-gold-300'>
@@ -287,15 +287,15 @@ export default function ProjectsListPage() {
 
             {/* Quick Stats with Glassmorphism Theme */}
             <div className='mt-6 flex justify-center gap-6'>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>Strategic Insights</span>
               </div>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>Proven Delivery</span>
               </div>
-              <div className='text-grey-400 flex items-center gap-2 text-sm'>
+              <div className='flex items-center gap-2 text-sm text-grey-400'>
                 <div className='size-2 rounded-full bg-gold-500/60'></div>
                 <span>Business Impact</span>
               </div>
@@ -339,7 +339,7 @@ export default function ProjectsListPage() {
                 placeholder='Search projects and case studies...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className='placeholder-grey-500 h-11 border-gold-500/20 bg-hunter-800/50 pl-12 text-white focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
+                className='h-11 border-gold-500/20 bg-hunter-800/50 pl-12 text-white placeholder:text-grey-500 focus:border-gold-500/50 focus:ring-gold-500/20 dark:border-gold-500/20 dark:bg-hunter-800/50'
               />
             </div>
             {allTags.length > 0 && (
@@ -486,8 +486,8 @@ export default function ProjectsListPage() {
               <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-hunter-800/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
                 <Briefcase className='size-8 text-gold-400' />
               </div>
-              <H3 className='text-grey-100 mb-3'>No projects found</H3>
-              <P className='text-grey-400 mx-auto max-w-md'>
+              <H3 className='mb-3 text-grey-100'>No projects found</H3>
+              <P className='mx-auto max-w-md text-grey-400'>
                 {searchQuery || selectedTags.length > 0
                   ? 'Try adjusting your search or filters'
                   : 'No projects have been published yet'}
@@ -519,7 +519,7 @@ export default function ProjectsListPage() {
                             {project.category}
                           </Badge>
                           {project.date && (
-                            <span className='text-grey-500 dark:text-grey-500 text-xs'>
+                            <span className='text-xs text-grey-500 dark:text-grey-500'>
                               {new Date(project.date).getFullYear()}
                             </span>
                           )}
@@ -527,7 +527,7 @@ export default function ProjectsListPage() {
                         <CardTitle className='text-xl font-bold text-white transition-colors group-hover:text-gold-400 dark:text-white dark:group-hover:text-gold-400'>
                           {project.title}
                         </CardTitle>
-                        <CardDescription className='text-grey-300 text-sm leading-relaxed'>
+                        <CardDescription className='text-sm leading-relaxed text-grey-300'>
                           {project.description}
                         </CardDescription>
                       </CardHeader>
@@ -546,7 +546,7 @@ export default function ProjectsListPage() {
                           {project.tags.length > 3 && (
                             <Badge
                               variant='secondary'
-                              className='border-grey-600/30 bg-grey-700/50 text-grey-300 dark:border-grey-600/30 dark:bg-grey-700/50 dark:text-grey-300 px-2 py-0.5 text-xs'
+                              className='border-grey-600/30 bg-grey-700/50 px-2 py-0.5 text-xs text-grey-300 dark:border-grey-600/30 dark:bg-grey-700/50 dark:text-grey-300'
                             >
                               +{project.tags.length - 3} more
                             </Badge>
@@ -554,7 +554,7 @@ export default function ProjectsListPage() {
                         </div>
 
                         <div className='mt-auto'>
-                          <div className='text-grey-500 dark:text-grey-500 mb-2 flex items-center justify-between text-xs'>
+                          <div className='mb-2 flex items-center justify-between text-xs text-grey-500 dark:text-grey-500'>
                             <div className='flex items-center'>
                               <Calendar className='mr-1 size-3' />
                               <span>
@@ -586,7 +586,7 @@ export default function ProjectsListPage() {
             {/* Loading indicator for infinite scroll */}
             {displayedProjects.length < filteredProjects.length && (
               <div ref={loadingRef} className='py-12 text-center'>
-                <div className='text-grey-400 dark:text-grey-400 inline-flex items-center gap-3'>
+                <div className='inline-flex items-center gap-3 text-grey-400 dark:text-grey-400'>
                   <div className='size-6 animate-spin rounded-full border-b-2 border-gold-500'></div>
                   <span className='font-medium'>Loading more projects...</span>
                 </div>
@@ -614,7 +614,7 @@ export default function ProjectsListPage() {
             <h3 className='mb-3 text-xl font-bold text-gold-400'>
               Analytical Approach
             </h3>
-            <p className='text-grey-300 mx-auto max-w-3xl text-base'>
+            <p className='mx-auto max-w-3xl text-base text-grey-300'>
               My projects follow a structured methodology combining quantitative
               analysis, industry best practices, and practical implementation
               strategies.
@@ -629,7 +629,7 @@ export default function ProjectsListPage() {
               <h4 className='mb-1.5 text-sm font-semibold text-gold-300'>
                 Data-Driven Insights
               </h4>
-              <p className='text-grey-400 text-xs'>
+              <p className='text-xs text-grey-400'>
                 Comprehensive data analysis using statistical methods and
                 visualization techniques
               </p>
@@ -642,7 +642,7 @@ export default function ProjectsListPage() {
               <h4 className='mb-1.5 text-sm font-semibold text-gold-300'>
                 Strategic Recommendations
               </h4>
-              <p className='text-grey-400 text-xs'>
+              <p className='text-xs text-grey-400'>
                 Actionable insights and implementation roadmaps for business
                 impact
               </p>

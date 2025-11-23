@@ -75,7 +75,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
         {...props}
       >
         {icon && (
-          <div className='flex-shrink-0 text-gold-600 dark:text-gold-400'>
+          <div className='shrink-0 text-gold-600 dark:text-gold-400'>
             {icon}
           </div>
         )}
@@ -400,7 +400,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(
     >
       {image && (
         <div className='h-40 w-full overflow-hidden bg-gradient-to-br from-hunter-600 to-hunter-800'>
-          <img src={image} alt={title} className='h-full w-full object-cover' />
+          <img src={image} alt={title} className='size-full object-cover' />
         </div>
       )}
       <CardHeader accent={status === 'featured' ? 'gold' : 'hunter'}>

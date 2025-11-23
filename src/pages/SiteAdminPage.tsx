@@ -637,7 +637,7 @@ export const SiteAdminPage: React.FC = () => {
             </div>
 
             {/* Description with Admin Language */}
-            <p className='text-grey-300 dark:text-grey-300 mx-auto max-w-3xl text-lg leading-7'>
+            <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300 dark:text-grey-300'>
               Monitor system health, manage services, and oversee
               <span className='font-medium text-gold-600 dark:text-gold-400'>
                 {' '}
@@ -670,14 +670,14 @@ export const SiteAdminPage: React.FC = () => {
           {/* Left Column - User Profile & System Info */}
           <div className='space-y-6'>
             {/* User Profile Card */}
-            <Card className='border border-0 border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
                   <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
                     <Users className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-grey-100 text-xl font-semibold'>
+                    <CardTitle className='text-xl font-semibold text-grey-100'>
                       User Profile
                     </CardTitle>
                     <CardDescription className='text-grey-300'>
@@ -689,34 +689,34 @@ export const SiteAdminPage: React.FC = () => {
               <CardContent className='space-y-4'>
                 <div className='grid grid-cols-1 gap-4'>
                   <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='text-grey-400 mb-1 text-sm font-medium'>
+                    <div className='mb-1 text-sm font-medium text-grey-400'>
                       Email
                     </div>
-                    <div className='text-grey-100 truncate font-medium'>
+                    <div className='truncate font-medium text-grey-100'>
                       {user?.email}
                     </div>
                   </div>
                   <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='text-grey-400 mb-1 text-sm font-medium'>
+                    <div className='mb-1 text-sm font-medium text-grey-400'>
                       Name
                     </div>
-                    <div className='text-grey-100 font-medium'>
+                    <div className='font-medium text-grey-100'>
                       {user?.name ?? 'Not provided'}
                     </div>
                   </div>
                   <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='text-grey-400 mb-1 text-sm font-medium'>
+                    <div className='mb-1 text-sm font-medium text-grey-400'>
                       Authentication
                     </div>
-                    <div className='text-grey-100 font-medium'>
+                    <div className='font-medium text-grey-100'>
                       {isDevelopment ? 'Development' : 'Cloudflare Access'}
                     </div>
                   </div>
                   <div className='rounded-lg bg-hunter-800 p-4'>
-                    <div className='text-grey-400 mb-1 text-sm font-medium'>
+                    <div className='mb-1 text-sm font-medium text-grey-400'>
                       Environment
                     </div>
-                    <div className='text-grey-100 font-medium'>
+                    <div className='font-medium text-grey-100'>
                       {isDevelopment ? 'Development' : 'Production'}
                     </div>
                   </div>
@@ -725,14 +725,14 @@ export const SiteAdminPage: React.FC = () => {
             </Card>
 
             {/* System Information */}
-            <Card className='border border-0 border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
                   <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
                     <Settings className='size-6 text-gold-600' />
                   </div>
                   <div>
-                    <CardTitle className='text-grey-100 text-xl font-semibold'>
+                    <CardTitle className='text-xl font-semibold text-grey-100'>
                       System Status
                     </CardTitle>
                     <CardDescription className='text-grey-300'>
@@ -744,7 +744,7 @@ export const SiteAdminPage: React.FC = () => {
               <CardContent className='space-y-4'>
                 <div className='rounded-lg bg-hunter-800 p-4'>
                   <div className='flex items-center justify-between'>
-                    <span className='text-grey-100 font-medium'>
+                    <span className='font-medium text-grey-100'>
                       Authentication Status
                     </span>
                     <div className='flex items-center gap-2'>
@@ -776,7 +776,7 @@ export const SiteAdminPage: React.FC = () => {
 
           {/* Middle Column - Protected Pages Navigation */}
           <div className='space-y-6'>
-            <Card className='border border-0 border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
                   <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
@@ -842,7 +842,7 @@ export const SiteAdminPage: React.FC = () => {
           {/* Right Column - API Health Monitoring */}
           <div className='space-y-6'>
             {/* API Health Dashboard */}
-            <Card className='border border-0 border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+            <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
               <CardHeader className='pb-6'>
                 <div className='flex items-center gap-4'>
                   <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>
@@ -1210,7 +1210,7 @@ export const SiteAdminPage: React.FC = () => {
               apiResults.smartRecommendations ??
               apiResults.r2Bucket ??
               apiResults.cloudflareAccess) && (
-              <Card className='border border-0 border-gold-600/30 bg-slate-900/60 shadow-lg backdrop-blur-sm'>
+              <Card className='border border-gold-600/30 bg-hunter-900/60 shadow-lg backdrop-blur-sm'>
                 <CardHeader className='pb-6'>
                   <div className='flex items-center gap-4'>
                     <div className='rounded-xl bg-gradient-to-r from-gold-100 to-gold-100 p-3'>

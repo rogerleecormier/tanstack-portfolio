@@ -437,7 +437,7 @@ export default function SiteAssistant({ portfolioItems }: SiteAssistantProps) {
               placeholder='What can I help you with today?'
               value={userQuery}
               onChange={e => setUserQuery(e.target.value)}
-              className='min-h-[80px] resize-none border-hunter-600/30 bg-slate-800 text-white placeholder-slate-500 focus:border-hunter-600/60'
+              className='min-h-[80px] resize-none border-hunter-600/30 bg-slate-800 text-white placeholder:text-slate-500 focus:border-hunter-600/60'
             />
             <Button
               onClick={() => void handleQuerySubmit()}

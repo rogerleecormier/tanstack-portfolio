@@ -271,7 +271,7 @@ const NewsletterPreferencesPage = () => {
                     placeholder='Enter your email address'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className='border-hunter-600/30 bg-slate-800 text-white placeholder-slate-500 focus:border-hunter-600/60 focus:ring-hunter-600/30'
+                    className='border-hunter-600/30 bg-slate-800 text-white placeholder:text-slate-500 focus:border-hunter-600/60 focus:ring-hunter-600/30'
                   />
                 </div>
 
