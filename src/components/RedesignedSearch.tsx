@@ -185,22 +185,26 @@ const RedesignedSearch: React.FC = () => {
       case 'portfolio':
         return {
           icon: Briefcase,
-          color: 'bg-strategy-gold/15 text-strategy-gold border-strategy-gold/40',
+          color:
+            'bg-strategy-gold/15 text-strategy-gold border-strategy-gold/40',
         };
       case 'blog':
         return {
           icon: BookOpen,
-          color: 'bg-strategy-gold/15 text-strategy-gold border-strategy-gold/40',
+          color:
+            'bg-strategy-gold/15 text-strategy-gold border-strategy-gold/40',
         };
       case 'project':
         return {
           icon: FileText,
-          color: 'bg-strategy-gold/15 text-strategy-gold border-strategy-gold/40',
+          color:
+            'bg-strategy-gold/15 text-strategy-gold border-strategy-gold/40',
         };
       default:
         return {
           icon: FileText,
-          color: 'bg-strategy-gold/15 text-strategy-gold border-strategy-gold/40',
+          color:
+            'bg-strategy-gold/15 text-strategy-gold border-strategy-gold/40',
         };
     }
   };

@@ -103,9 +103,7 @@ export default function NewsletterSignup({
           <h3 className='mb-2 text-xl font-semibold text-text-foreground'>
             {title}
           </h3>
-          <p className='text-sm text-text-secondary'>
-            {description}
-          </p>
+          <p className='text-sm text-text-secondary'>{description}</p>
         </div>
 
         <form onSubmit={handleSubmit} className='mx-auto max-w-md'>
