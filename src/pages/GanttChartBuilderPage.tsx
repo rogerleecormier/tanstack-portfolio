@@ -247,6 +247,7 @@ const GanttChartBuilderPage: React.FC = () => {
                         dataKey='duration'
                         fill='#FFD700'
                         name='Duration (days)'
+                        className='fill-strategy-gold'
                       />
                     </BarChart>
                   </ResponsiveContainer>
