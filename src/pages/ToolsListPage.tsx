@@ -130,7 +130,7 @@ const ToolsListPage: React.FC = () => {
         return (
           <Badge
             variant='default'
-            className='bg-gradient-to-r from-hunter-600 to-hunter-500 text-white hover:from-hunter-500 hover:to-hunter-400'
+            className='bg-gradient-to-r from-strategy-gold to-surface-elevated0 text-white hover:from-surface-elevated0 hover:to-strategy-gold'
           >
             Active
           </Badge>
@@ -139,7 +139,7 @@ const ToolsListPage: React.FC = () => {
         return (
           <Badge
             variant='secondary'
-            className='border-gold-600/40 bg-gold-600/15 text-gold-300 hover:bg-gold-600/25'
+            className='border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold/30 hover:bg-strategy-gold/25'
           >
             Beta
           </Badge>
@@ -170,22 +170,22 @@ const ToolsListPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-hunter-950'>
+    <div className='min-h-screen bg-surface-deep'>
       {/* Header Section */}
-      <div className='relative overflow-hidden border-b border-gold-500/20 bg-hunter-950/40 backdrop-blur-xl'>
+      <div className='relative overflow-hidden border-b border-surface-elevated0/20 bg-surface-deep/40 backdrop-blur-xl'>
         <div className='relative px-4 py-12 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-4xl text-center'>
             <div className='mb-6 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-14 items-center justify-center rounded-2xl bg-hunter-900/60 ring-1 ring-gold-500/20 backdrop-blur-md'>
-                  <Wrench className='size-7 text-gold-400' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-surface-deep/60 ring-1 ring-surface-elevated0/20 backdrop-blur-md'>
+                  <Wrench className='size-7 text-strategy-gold' />
                 </div>
               </div>
               <div>
-                <h1 className='text-4xl font-bold tracking-tight text-gold-400 sm:text-5xl lg:text-6xl'>
+                <h1 className='text-4xl font-bold tracking-tight text-strategy-gold sm:text-5xl lg:text-6xl'>
                   Tools & Resources
                 </h1>
-                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gold-500/40'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-surface-elevated0/40'></div>
               </div>
             </div>
 
@@ -193,7 +193,7 @@ const ToolsListPage: React.FC = () => {
             <p className='mx-auto max-w-3xl text-lg leading-7 text-grey-300'>
               Strategic utilities and professional tools to enhance your
               workflow and productivity.
-              <span className='font-medium text-gold-400'>
+              <span className='font-medium text-strategy-gold'>
                 {' '}
                 Target your efficiency{' '}
               </span>
@@ -203,15 +203,15 @@ const ToolsListPage: React.FC = () => {
             {/* Quick Stats */}
             <div className='mt-6 flex justify-center gap-6'>
               <div className='flex items-center gap-2 text-sm text-grey-400'>
-                <div className='size-2 rounded-full bg-gold-500/50'></div>
+                <div className='size-2 rounded-full bg-surface-elevated0/50'></div>
                 <span>Workflow Tools</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-grey-400'>
-                <div className='size-2 rounded-full bg-gold-500/50'></div>
+                <div className='size-2 rounded-full bg-surface-elevated0/50'></div>
                 <span>Productivity Boost</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-grey-400'>
-                <div className='size-2 rounded-full bg-gold-500/50'></div>
+                <div className='size-2 rounded-full bg-surface-elevated0/50'></div>
                 <span>Strategic Automation</span>
               </div>
             </div>
@@ -226,16 +226,16 @@ const ToolsListPage: React.FC = () => {
           {tools.map(tool => (
             <Card
               key={tool.id}
-              className='group border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl transition-all duration-200 hover:border-gold-500/40 hover:bg-hunter-900/40'
+              className='group border-surface-elevated0/20 bg-surface-deep/30 backdrop-blur-xl transition-all duration-200 hover:border-surface-elevated0/40 hover:bg-surface-deep/40'
             >
               <CardHeader className='pb-3'>
                 <div className='flex items-start justify-between'>
                   <div className='flex items-center gap-3'>
-                    <div className='rounded-lg bg-hunter-600/15 p-2 transition-colors group-hover:bg-hunter-600/25'>
-                      <tool.icon className='size-6 text-hunter-400' />
+                    <div className='rounded-lg bg-strategy-gold/15 p-2 transition-colors group-hover:bg-strategy-gold/25'>
+                      <tool.icon className='size-6 text-strategy-gold' />
                     </div>
                     <div>
-                      <CardTitle className='text-xl text-white transition-colors group-hover:text-hunter-400'>
+                      <CardTitle className='text-xl text-white transition-colors group-hover:text-strategy-gold'>
                         {tool.title}
                       </CardTitle>
                       <div className='mt-1 flex items-center gap-2'>
@@ -264,7 +264,7 @@ const ToolsListPage: React.FC = () => {
                       <Badge
                         key={index}
                         variant='secondary'
-                        className='border-gold-500/30 bg-gold-500/20 text-xs text-gold-300'
+                        className='border-surface-elevated0/30 bg-surface-elevated0/20 text-xs text-strategy-gold/30'
                       >
                         {feature}
                       </Badge>
@@ -285,7 +285,7 @@ const ToolsListPage: React.FC = () => {
                     <Button
                       asChild
                       size='sm'
-                      className='border-0 bg-gold-600 text-hunter-950 transition-all hover:bg-gold-500 hover:shadow-lg'
+                      className='border-0 bg-strategy-gold text-surface-deep transition-all hover:bg-surface-elevated0 hover:shadow-lg'
                     >
                       <Link to={tool.url}>
                         Open Tool
@@ -314,11 +314,11 @@ const ToolsListPage: React.FC = () => {
 
         {/* More Tools Coming Soon */}
         <div className='text-center'>
-          <Card className='border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl'>
+          <Card className='border-surface-elevated0/20 bg-surface-deep/30 backdrop-blur-xl'>
             <CardContent className='p-8'>
               <div className='mb-4 flex items-center justify-center'>
-                <div className='flex size-12 items-center justify-center rounded-xl bg-hunter-900/60 ring-1 ring-gold-500/20'>
-                  <Wrench className='size-6 text-gold-400' />
+                <div className='flex size-12 items-center justify-center rounded-xl bg-surface-deep/60 ring-1 ring-surface-elevated0/20'>
+                  <Wrench className='size-6 text-strategy-gold' />
                 </div>
               </div>
               <H2 className='mb-2 text-2xl font-bold text-white'>
@@ -332,7 +332,7 @@ const ToolsListPage: React.FC = () => {
               <Button
                 asChild
                 variant='outline'
-                className='border-gold-500/30 text-gold-400 hover:border-gold-500/50 hover:bg-gold-500/10'
+                className='border-surface-elevated0/30 text-strategy-gold hover:border-surface-elevated0/50 hover:bg-surface-elevated0/10'
               >
                 <Link to='/contact'>
                   Suggest a Tool

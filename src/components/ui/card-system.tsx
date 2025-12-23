@@ -31,7 +31,7 @@ const cardVariants = {
   border:
     'bg-transparent border border-slate-200 dark:border-slate-700 rounded-lg',
   outline:
-    'bg-transparent border-2 border-gold-600/40 dark:border-gold-400/40 rounded-lg',
+    'bg-transparent border-2 border-strategy-gold/40 dark:border-strategy-gold/40 rounded-lg',
 };
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
@@ -75,7 +75,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
         {...props}
       >
         {icon && (
-          <div className='shrink-0 text-gold-600 dark:text-gold-400'>
+          <div className='shrink-0 text-strategy-gold dark:text-strategy-gold'>
             {icon}
           </div>
         )}
@@ -94,7 +94,7 @@ export const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      'text-h4 text-hunter font-semibold dark:text-hunter-300',
+      'text-h4 text-hunter font-semibold dark:text-strategy-gold',
       accent && 'text-gold-accent',
       className
     )}
@@ -207,7 +207,7 @@ export const GoldOutlineCard = React.forwardRef<HTMLDivElement, CardProps>(
     <Card
       ref={ref}
       variant='outline'
-      className='transition-colors hover:border-gold-600/70 dark:hover:border-gold-400/70'
+      className='transition-colors hover:border-strategy-gold/70 dark:hover:border-strategy-gold/70'
       {...props}
     />
   )
@@ -289,7 +289,7 @@ export const SkillCard = React.forwardRef<HTMLDivElement, SkillCardProps>(
       {...props}
     >
       {icon && (
-        <div className='mb-3 flex justify-center text-2xl text-gold-600 dark:text-gold-400'>
+        <div className='mb-3 flex justify-center text-2xl text-strategy-gold dark:text-strategy-gold'>
           {icon}
         </div>
       )}
@@ -339,8 +339,8 @@ export const FeatureCard = React.forwardRef<HTMLDivElement, FeatureCardProps>(
         <div
           className={cn(
             'flex justify-center text-4xl',
-            highlight === 'gold' && 'text-gold-600 dark:text-gold-400',
-            highlight === 'hunter' && 'text-hunter-600 dark:text-hunter-400'
+            highlight === 'gold' && 'text-strategy-gold dark:text-strategy-gold',
+            highlight === 'hunter' && 'text-strategy-gold dark:text-strategy-gold'
           )}
         >
           {icon}
@@ -399,7 +399,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(
       {...props}
     >
       {image && (
-        <div className='h-40 w-full overflow-hidden bg-gradient-to-br from-hunter-600 to-hunter-800'>
+        <div className='h-40 w-full overflow-hidden bg-gradient-to-br from-strategy-gold to-precision-charcoal-light'>
           <img src={image} alt={title} className='size-full object-cover' />
         </div>
       )}
@@ -425,7 +425,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(
         {link && (
           <button
             onClick={onLinkClick}
-            className='ml-auto text-sm font-medium text-gold-600 hover:text-gold-700 dark:text-gold-400 dark:hover:text-gold-300'
+            className='ml-auto text-sm font-medium text-strategy-gold hover:text-strategy-gold-dark dark:text-strategy-gold dark:hover:text-strategy-gold/30'
           >
             View →
           </button>

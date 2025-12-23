@@ -83,7 +83,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
           {/* Minimalist Avatar */}
           <Avatar className='size-7 rounded-full ring-2 ring-white/30 transition-all duration-200 group-hover:ring-white/50'>
             <AvatarImage src={user.picture} alt={getUserDisplayName(user)} />
-            <AvatarFallback className='bg-hunter-600 text-xs font-medium text-white'>
+            <AvatarFallback className='bg-strategy-gold text-xs font-medium text-white'>
               {getUserInitials(user)}
             </AvatarFallback>
           </Avatar>

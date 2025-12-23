@@ -30,14 +30,14 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             <img
               src={imageUrl}
               alt={imageAlt}
-              className='size-24 rounded-full border-[3px] border-hunter-200 object-cover shadow-lg'
+              className='size-24 rounded-full border-[3px] border-border-subtle object-cover shadow-lg'
             />
           </div>
           <div className='min-w-0 flex-1'>
             <h2 className='mb-2 break-words text-2xl font-bold text-gray-900 dark:text-gray-100'>
               {name}
             </h2>
-            <p className='mb-3 break-words text-lg font-medium text-hunter-600 dark:text-hunter-400'>
+            <p className='mb-3 break-words text-lg font-medium text-strategy-gold dark:text-strategy-gold'>
               {title}
             </p>
             <div className='flex flex-wrap gap-2'>

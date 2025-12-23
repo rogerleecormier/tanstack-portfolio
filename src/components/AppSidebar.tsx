@@ -20,12 +20,12 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible='icon'
-      className='border-r border-hunter-700/40 bg-gradient-to-b from-hunter-950 to-hunter-900 backdrop-blur-md dark:border-hunter-600/50'
+      className='border-r border-strategy-gold-dark/40 bg-gradient-to-b from-surface-deep to-surface-deep backdrop-blur-md dark:border-strategy-gold/50'
     >
       <SidebarContent className='gap-1 pt-16'>
         {/* Main Navigation Group */}
         <SidebarGroup>
-          <SidebarGroupLabel className='px-3 py-2 text-xs font-semibold uppercase tracking-wider text-hunter-300 dark:text-hunter-400'>
+          <SidebarGroupLabel className='px-3 py-2 text-xs font-semibold uppercase tracking-wider text-strategy-gold dark:text-strategy-gold'>
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -39,10 +39,10 @@ export function AppSidebar() {
                       onClick={() => {
                         if (isMobile) setOpenMobile(false);
                       }}
-                      className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-hunter-100 transition-all duration-200 hover:border-l-2 hover:border-gold-500/50 hover:bg-gold-500/10 data-[active]:border-l-2 data-[active]:border-gold-500 data-[active]:bg-gold-500/10 data-[active]:font-semibold dark:text-hunter-100 dark:hover:border-gold-500/50 dark:hover:bg-gold-500/10 dark:data-[active]:border-gold-500 dark:data-[active]:bg-gold-500/10'
+                      className='group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-surface-elevated transition-all duration-200 hover:border-l-2 hover:border-surface-elevated0/50 hover:bg-surface-elevated0/10 data-[active]:border-l-2 data-[active]:border-surface-elevated0 data-[active]:bg-surface-elevated0/10 data-[active]:font-semibold dark:text-surface-elevated dark:hover:border-surface-elevated0/50 dark:hover:bg-surface-elevated0/10 dark:data-[active]:border-surface-elevated0 dark:data-[active]:bg-surface-elevated0/10'
                     >
                       {item.icon && (
-                        <item.icon className='size-4 shrink-0 text-hunter-400 transition-colors duration-200 group-hover:text-gold-400 group-data-[active]:text-gold-400 dark:text-hunter-400 dark:group-hover:text-gold-400 dark:group-data-[active]:text-gold-400' />
+                        <item.icon className='size-4 shrink-0 text-strategy-gold transition-colors duration-200 group-hover:text-strategy-gold group-data-[active]:text-strategy-gold dark:text-strategy-gold dark:group-hover:text-strategy-gold dark:group-data-[active]:text-strategy-gold' />
                       )}
                       <span className='truncate'>{item.title}</span>
                     </Link>

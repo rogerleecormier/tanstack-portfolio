@@ -137,9 +137,9 @@ export function TableOfContents() {
   }
 
   return (
-    <div className='mt-2 border-t border-hunter-700/40 pt-3 dark:border-hunter-600/50'>
+    <div className='mt-2 border-t border-strategy-gold-dark/40 pt-3 dark:border-strategy-gold/50'>
       <div className='mb-2 px-3'>
-        <h3 className='text-xs font-semibold uppercase tracking-wider text-hunter-300 dark:text-hunter-400'>
+        <h3 className='text-xs font-semibold uppercase tracking-wider text-strategy-gold dark:text-strategy-gold'>
           Table of Contents
         </h3>
       </div>
@@ -151,8 +151,8 @@ export function TableOfContents() {
                 href={`#${entry.slug}`}
                 className={`block rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
                   activeId === entry.slug
-                    ? 'border-l-2 border-gold-500 bg-gold-500/10 font-semibold text-hunter-100 dark:border-gold-400 dark:bg-gold-500/10 dark:text-hunter-100'
-                    : 'text-hunter-200 hover:bg-gold-500/10 dark:text-hunter-200 dark:hover:bg-gold-500/10'
+                    ? 'border-l-2 border-surface-elevated0 bg-surface-elevated0/10 font-semibold text-surface-elevated dark:border-strategy-gold dark:bg-surface-elevated0/10 dark:text-surface-elevated'
+                    : 'text-border-subtle hover:bg-surface-elevated0/10 dark:text-border-subtle dark:hover:bg-surface-elevated0/10'
                 }`}
                 onClick={e => {
                   e.preventDefault();

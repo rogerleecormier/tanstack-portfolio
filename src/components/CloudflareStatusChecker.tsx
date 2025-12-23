@@ -219,7 +219,7 @@ export const CloudflareStatusChecker: React.FC = () => {
       case 'error':
         return <AlertTriangle className='size-6 text-yellow-600' />;
       default:
-        return <RefreshCw className='size-6 animate-spin text-hunter-600' />;
+        return <RefreshCw className='size-6 animate-spin text-strategy-gold' />;
     }
   };
 
@@ -245,7 +245,7 @@ export const CloudflareStatusChecker: React.FC = () => {
       case 'error':
         return 'text-yellow-600';
       default:
-        return 'text-hunter-600';
+        return 'text-strategy-gold';
     }
   };
 
@@ -254,11 +254,11 @@ export const CloudflareStatusChecker: React.FC = () => {
   }
 
   return (
-    <Card className='mx-auto w-full max-w-4xl border-hunter-200 shadow-lg'>
+    <Card className='mx-auto w-full max-w-4xl border-border-subtle shadow-lg'>
       <CardHeader>
         <div className='flex items-center gap-2'>
-          <Shield className='size-6 text-hunter-600' />
-          <CardTitle className='text-xl font-bold text-hunter-900'>
+          <Shield className='size-6 text-strategy-gold' />
+          <CardTitle className='text-xl font-bold text-surface-deep'>
             System Status & Security
           </CardTitle>
         </div>
@@ -268,7 +268,7 @@ export const CloudflareStatusChecker: React.FC = () => {
       </CardHeader>
       <CardContent className='space-y-4'>
         {/* Status Display */}
-        <div className='flex items-center justify-center space-x-3 rounded-lg border border-hunter-200 bg-hunter-50 p-4'>
+        <div className='flex items-center justify-center space-x-3 rounded-lg border border-border-subtle bg-surface-elevated p-4'>
           {getStatusIcon()}
           <span className={`text-lg font-semibold ${getStatusColor()}`}>
             {getStatusText()}
@@ -280,7 +280,7 @@ export const CloudflareStatusChecker: React.FC = () => {
           <Button
             onClick={() => void checkStatus()}
             disabled={status === 'checking'}
-            className='bg-hunter-600 hover:bg-hunter-700 focus:ring-2 focus:ring-hunter-500 focus:ring-offset-2'
+            className='bg-strategy-gold hover:bg-strategy-gold-dark focus:ring-2 focus:ring-surface-elevated0 focus:ring-offset-2'
           >
             <RefreshCw
               className={`mr-2 size-4 ${status === 'checking' ? 'animate-spin' : ''}`}
@@ -290,7 +290,7 @@ export const CloudflareStatusChecker: React.FC = () => {
           <Button
             onClick={() => setIsExpanded(!isExpanded)}
             variant='outline'
-            className='border-hunter-300 text-hunter-700 hover:bg-hunter-50'
+            className='border-strategy-gold text-strategy-gold-dark hover:bg-surface-elevated'
           >
             <Info className='mr-2 size-4' />
             {isExpanded ? 'Hide Details' : 'Show Details'}

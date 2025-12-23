@@ -40,7 +40,7 @@ export function RootErrorBoundary() {
         </p>
         <button
           onClick={() => window.location.reload()}
-          className='rounded bg-hunter-600 px-4 py-2 text-white transition-colors hover:bg-hunter-700'
+          className='rounded bg-strategy-gold px-4 py-2 text-white transition-colors hover:bg-strategy-gold-dark'
         >
           Reload Page
         </button>

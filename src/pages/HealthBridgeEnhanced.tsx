@@ -3370,7 +3370,7 @@ export default function HealthBridgeEnhancedPage() {
   }, []);
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-hunter-50 to-slate-100 dark:from-slate-950 dark:via-hunter-950 dark:to-slate-900'>
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-surface-elevated to-slate-100 dark:from-slate-950 dark:via-surface-deep dark:to-slate-900'>
       {/* Hero Section - Compact with Targeting Theme */}
       <div className='relative overflow-hidden border-b border-strategy-gold/20 dark:border-strategy-gold/30'>
         <div className='absolute inset-0 bg-gradient-to-r from-teal-600/5 via-blue-600/5 to-teal-600/5 dark:from-teal-400/10 dark:via-blue-400/10 dark:to-teal-400/10'></div>
@@ -3393,7 +3393,7 @@ export default function HealthBridgeEnhancedPage() {
               </div>
               <div>
                 <h1 className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl'>
-                  <span className='bg-gradient-to-r from-hunter-400 to-hunter-300 bg-clip-text text-transparent'>
+                  <span className='bg-gradient-to-r from-strategy-gold to-strategy-gold bg-clip-text text-transparent'>
                     HealthBridge Enhanced
                   </span>
                 </h1>
@@ -3405,7 +3405,7 @@ export default function HealthBridgeEnhancedPage() {
             <p className='mx-auto max-w-3xl text-lg leading-7 text-slate-300'>
               Advanced weight loss tracking with AI-powered projections and
               comprehensive analytics.
-              <span className='font-medium text-gold-300'>
+              <span className='font-medium text-strategy-gold/30'>
                 {' '}
                 Target your health goals{' '}
               </span>
@@ -3415,11 +3415,11 @@ export default function HealthBridgeEnhancedPage() {
             {/* Quick Stats with Targeting Theme */}
             <div className='mt-6 flex justify-center gap-6'>
               <div className='flex items-center gap-2 text-sm text-text-tertiary'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
+                <div className='size-2 rounded-full bg-surface-elevated0'></div>
                 <span>Precision Analytics</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-text-tertiary'>
-                <div className='size-2 rounded-full bg-hunter-500'></div>
+                <div className='size-2 rounded-full bg-surface-elevated0'></div>
                 <span>AI Projections</span>
               </div>
               <div className='flex items-center gap-2 text-sm text-text-tertiary'>

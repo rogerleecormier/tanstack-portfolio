@@ -55,10 +55,10 @@ export function MarkdownHtmlEditor({
   return (
     <div
       ref={editorRef}
-      className='flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl supports-[backdrop-filter]:bg-hunter-900/30 dark:border-gold-500/20 dark:bg-hunter-900/30'
+      className='flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-surface-elevated0/20 bg-surface-deep/30 backdrop-blur-xl supports-[backdrop-filter]:bg-surface-deep/30 dark:border-surface-elevated0/20 dark:bg-surface-deep/30'
     >
       {/* Toolbar */}
-      <div className='shrink-0 border-b border-gold-500/10 dark:border-gold-500/10'>
+      <div className='shrink-0 border-b border-surface-elevated0/10 dark:border-surface-elevated0/10'>
         <div className='px-4 py-3'>
           <div className='flex items-center justify-between gap-3'>
             <div className='flex items-center gap-4'>
@@ -67,16 +67,16 @@ export function MarkdownHtmlEditor({
                 value={activeTab}
                 onValueChange={value => setActiveTab(value as typeof activeTab)}
               >
-                <TabsList className='border border-gold-500/20 bg-hunter-900/40 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
+                <TabsList className='border border-surface-elevated0/20 bg-surface-deep/40 backdrop-blur-md dark:border-surface-elevated0/20 dark:bg-surface-deep/40'>
                   <TabsTrigger
                     value='wysiwyg'
-                    className='transition-colors data-[state=active]:bg-gold-500/30 data-[state=active]:text-gold-300 data-[state=active]:ring-1 data-[state=active]:ring-gold-500/30'
+                    className='transition-colors data-[state=active]:bg-surface-elevated0/30 data-[state=active]:text-strategy-gold/30 data-[state=active]:ring-1 data-[state=active]:ring-surface-elevated0/30'
                   >
                     WYSIWYG
                   </TabsTrigger>
                   <TabsTrigger
                     value='markdown'
-                    className='transition-colors data-[state=active]:bg-hunter-600 data-[state=active]:text-white'
+                    className='transition-colors data-[state=active]:bg-strategy-gold data-[state=active]:text-white'
                   >
                     Markdown
                   </TabsTrigger>
@@ -92,7 +92,7 @@ export function MarkdownHtmlEditor({
                     variant='outline'
                     size='sm'
                     onClick={handleLoadExample}
-                    className='rounded-md border-hunter-600 text-hunter-600 hover:bg-hunter-50 dark:hover:bg-hunter-950'
+                    className='rounded-md border-strategy-gold text-strategy-gold hover:bg-surface-elevated dark:hover:bg-surface-deep'
                   >
                     <FileText className='size-4' />
                     <span className='ml-2 hidden sm:inline'>Example</span>
@@ -124,7 +124,7 @@ export function MarkdownHtmlEditor({
                     variant='outline'
                     size='sm'
                     onClick={() => setShowPreview(v => !v)}
-                    className='rounded-md border-gold-600/30 text-gold-600 hover:bg-gold-500/10 dark:hover:bg-gold-500/10'
+                    className='rounded-md border-strategy-gold/30 text-strategy-gold hover:bg-surface-elevated0/10 dark:hover:bg-surface-elevated0/10'
                   >
                     {showPreview ? (
                       <EyeOff className='size-4' />
@@ -154,12 +154,12 @@ export function MarkdownHtmlEditor({
         >
           <div className='flex min-h-0 min-w-0 flex-col'>
             {/* Editor Container with Enhanced Styling */}
-            <div className='flex-1 overflow-hidden rounded-xl border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
+            <div className='flex-1 overflow-hidden rounded-xl border border-surface-elevated0/20 bg-surface-deep/30 backdrop-blur-xl dark:border-surface-elevated0/20 dark:bg-surface-deep/30'>
               {/* Editor Mode Indicator */}
-              <div className='flex items-center justify-between border-b border-gold-500/10 px-4 py-2 dark:border-gold-500/10'>
+              <div className='flex items-center justify-between border-b border-surface-elevated0/10 px-4 py-2 dark:border-surface-elevated0/10'>
                 <div className='flex items-center gap-2'>
-                  <div className='size-2 rounded-full bg-gold-500/60'></div>
-                  <span className='text-xs font-medium uppercase tracking-wide text-gold-300 dark:text-gold-300'>
+                  <div className='size-2 rounded-full bg-surface-elevated0/60'></div>
+                  <span className='text-xs font-medium uppercase tracking-wide text-strategy-gold/30 dark:text-strategy-gold/30'>
                     {activeTab === 'wysiwyg'
                       ? 'Rich Text Editor'
                       : 'Markdown Editor'}
@@ -190,12 +190,12 @@ export function MarkdownHtmlEditor({
           {showPreview && (
             <div className='flex min-h-0 min-w-0 flex-col'>
               {/* Preview Container with Enhanced Styling */}
-              <div className='flex-1 overflow-hidden rounded-xl border border-gold-500/20 bg-hunter-900/30 backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
+              <div className='flex-1 overflow-hidden rounded-xl border border-surface-elevated0/20 bg-surface-deep/30 backdrop-blur-xl dark:border-surface-elevated0/20 dark:bg-surface-deep/30'>
                 {/* Preview Header */}
-                <div className='flex items-center justify-between border-b border-gold-500/10 px-4 py-2 dark:border-gold-500/10'>
+                <div className='flex items-center justify-between border-b border-surface-elevated0/10 px-4 py-2 dark:border-surface-elevated0/10'>
                   <div className='flex items-center gap-2'>
-                    <div className='size-2 rounded-full bg-gold-500/60'></div>
-                    <span className='text-xs font-medium uppercase tracking-wide text-gold-300 dark:text-gold-300'>
+                    <div className='size-2 rounded-full bg-surface-elevated0/60'></div>
+                    <span className='text-xs font-medium uppercase tracking-wide text-strategy-gold/30 dark:text-strategy-gold/30'>
                       Live Preview
                     </span>
                   </div>
@@ -209,7 +209,7 @@ export function MarkdownHtmlEditor({
 
                 {/* Preview Content */}
                 <div className='h-full overflow-auto'>
-                  <div className='prose prose-slate max-w-none p-6 dark:prose-invert prose-headings:text-slate-900 prose-a:text-hunter-600 hover:prose-a:underline prose-strong:text-slate-900 prose-code:text-gold-700 prose-pre:rounded-lg prose-pre:bg-slate-950/90 prose-pre:text-slate-100 prose-pre:ring-1 prose-pre:ring-slate-200/20 prose-li:marker:text-slate-400 dark:prose-headings:text-slate-100 dark:prose-a:text-hunter-400 dark:prose-strong:text-slate-100 dark:prose-code:text-gold-300 dark:prose-pre:bg-slate-900/70'>
+                  <div className='prose prose-slate max-w-none p-6 dark:prose-invert prose-headings:text-slate-900 prose-a:text-strategy-gold hover:prose-a:underline prose-strong:text-slate-900 prose-code:text-strategy-gold-dark prose-pre:rounded-lg prose-pre:bg-slate-950/90 prose-pre:text-slate-100 prose-pre:ring-1 prose-pre:ring-slate-200/20 prose-li:marker:text-slate-400 dark:prose-headings:text-slate-100 dark:prose-a:text-strategy-gold dark:prose-strong:text-slate-100 dark:prose-code:text-strategy-gold/30 dark:prose-pre:bg-slate-900/70'>
                     {previewContent}
                   </div>
                 </div>

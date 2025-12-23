@@ -52,7 +52,7 @@ function FencedCard({ json }: { json?: string }) {
             ? 'border-l-green-500'
             : validated.variant === 'warning'
               ? 'border-l-yellow-500'
-              : 'border-l-hunter-500'
+              : 'border-l-surface-elevated0'
         }`}
       >
         <CardHeader>

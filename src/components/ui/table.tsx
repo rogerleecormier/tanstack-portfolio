@@ -22,7 +22,7 @@ const TableHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <thead
     ref={ref}
-    className={cn('[&_tr]:border-b [&_tr]:border-hunter-600/20', className)}
+    className={cn('[&_tr]:border-b [&_tr]:border-strategy-gold/20', className)}
     {...props}
   />
 ));
@@ -47,7 +47,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={ref}
     className={cn(
-      'border-t border-hunter-600/20 bg-slate-800/50 font-medium [&>tr]:last:border-b-0',
+      'border-t border-strategy-gold/20 bg-slate-800/50 font-medium [&>tr]:last:border-b-0',
       className
     )}
     {...props}
@@ -62,7 +62,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      'border-b border-hunter-600/20 transition-colors hover:bg-slate-800/50 data-[state=selected]:bg-slate-800',
+      'border-b border-strategy-gold/20 transition-colors hover:bg-slate-800/50 data-[state=selected]:bg-slate-800',
       className
     )}
     {...props}
@@ -121,7 +121,7 @@ const UnifiedTable = React.forwardRef<
     <table
       ref={ref}
       className={cn(
-        'my-4 w-full caption-bottom border-collapse overflow-hidden rounded-xl border border-hunter-600/20 bg-slate-900/40 text-sm shadow-sm backdrop-blur-sm',
+        'my-4 w-full caption-bottom border-collapse overflow-hidden rounded-xl border border-strategy-gold/20 bg-slate-900/40 text-sm shadow-sm backdrop-blur-sm',
         className
       )}
       {...props}
@@ -153,7 +153,7 @@ const UnifiedTableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      'border-b border-hunter-600/20 transition-all duration-200 ease-in-out last:border-b-0 hover:bg-slate-700/50 hover:shadow-sm',
+      'border-b border-strategy-gold/20 transition-all duration-200 ease-in-out last:border-b-0 hover:bg-slate-700/50 hover:shadow-sm',
       className
     )}
     {...props}
@@ -168,7 +168,7 @@ const UnifiedTableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      'h-14 border-r border-hunter-600/20 bg-slate-800/50 px-5 text-left align-middle text-sm font-semibold tracking-wide text-white last:border-r-0',
+      'h-14 border-r border-strategy-gold/20 bg-slate-800/50 px-5 text-left align-middle text-sm font-semibold tracking-wide text-white last:border-r-0',
       className
     )}
     {...props}
@@ -183,7 +183,7 @@ const UnifiedTableCell = React.forwardRef<
   <td
     ref={ref}
     className={cn(
-      'min-w-[120px] border-r border-hunter-600/20 px-5 py-4 align-middle text-sm leading-relaxed text-slate-300 last:border-r-0',
+      'min-w-[120px] border-r border-strategy-gold/20 px-5 py-4 align-middle text-sm leading-relaxed text-slate-300 last:border-r-0',
       className
     )}
     {...props}

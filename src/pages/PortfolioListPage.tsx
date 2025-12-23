@@ -164,9 +164,9 @@ const categoryConfig = {
   },
   'Technology & Operations': {
     icon: Zap,
-    color: 'from-hunter-500 to-hunter-600',
-    bgColor: 'bg-hunter-50 dark:bg-hunter-950/20',
-    borderColor: 'border-hunter-200 dark:border-hunter-800',
+    color: 'from-surface-elevated0 to-strategy-gold',
+    bgColor: 'bg-surface-elevated dark:bg-surface-deep/20',
+    borderColor: 'border-border-subtle dark:border-precision-charcoal-light',
   },
   'AI & Automation': {
     icon: Sparkles,
@@ -176,9 +176,9 @@ const categoryConfig = {
   },
   'Data & Analytics': {
     icon: TrendingUp,
-    color: 'from-hunter-500 to-hunter-600',
-    bgColor: 'bg-hunter-50 dark:bg-hunter-950/20',
-    borderColor: 'border-hunter-200 dark:border-hunter-800',
+    color: 'from-surface-elevated0 to-strategy-gold',
+    bgColor: 'bg-surface-elevated dark:bg-surface-deep/20',
+    borderColor: 'border-border-subtle dark:border-precision-charcoal-light',
   },
   'Risk & Compliance': {
     icon: Shield,

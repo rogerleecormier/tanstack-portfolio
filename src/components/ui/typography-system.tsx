@@ -18,7 +18,7 @@ export function H1(props: React.HTMLAttributes<HTMLHeadingElement>) {
     <h1
       {...props}
       className={[
-        'text-h1 text-hunter dark:text-hunter-300',
+        'text-h1 text-hunter dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
@@ -31,7 +31,7 @@ export function H2(props: React.HTMLAttributes<HTMLHeadingElement>) {
     <h2
       {...props}
       className={[
-        'text-h2 text-hunter dark:text-hunter-300',
+        'text-h2 text-hunter dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
@@ -44,7 +44,7 @@ export function H3(props: React.HTMLAttributes<HTMLHeadingElement>) {
     <h3
       {...props}
       className={[
-        'text-h3 text-hunter dark:text-hunter-300',
+        'text-h3 text-hunter dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
@@ -57,7 +57,7 @@ export function H4(props: React.HTMLAttributes<HTMLHeadingElement>) {
     <h4
       {...props}
       className={[
-        'text-h4 text-hunter dark:text-hunter-300',
+        'text-h4 text-hunter dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
@@ -70,7 +70,7 @@ export function H5(props: React.HTMLAttributes<HTMLHeadingElement>) {
     <h5
       {...props}
       className={[
-        'text-h5 text-hunter dark:text-hunter-300',
+        'text-h5 text-hunter dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
@@ -83,7 +83,7 @@ export function H6(props: React.HTMLAttributes<HTMLHeadingElement>) {
     <h6
       {...props}
       className={[
-        'text-h6 text-hunter dark:text-hunter-300',
+        'text-h6 text-hunter dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
@@ -160,7 +160,7 @@ export function Strong(props: React.HTMLAttributes<HTMLElement>) {
     <strong
       {...props}
       className={[
-        'text-hunter font-bold dark:text-hunter-300',
+        'text-hunter font-bold dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
@@ -209,7 +209,7 @@ export function Label(props: React.HTMLAttributes<HTMLLabelElement>) {
     <label
       {...props}
       className={[
-        'text-hunter text-sm font-medium dark:text-hunter-300',
+        'text-hunter text-sm font-medium dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
@@ -237,7 +237,7 @@ export function Heading({ level = 2, ...props }: HeadingProps) {
       {...(props as React.ComponentProps<typeof Tag>)}
       className={[
         levelClasses[level],
-        'text-hunter dark:text-hunter-300',
+        'text-hunter dark:text-strategy-gold',
         props.className,
       ].join(' ')}
     />
