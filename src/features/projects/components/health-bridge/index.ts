@@ -4,3 +4,4 @@
 
 export { EnhancedWeightEntry } from './EnhancedWeightEntry';
 export { WeightDataTable } from './WeightDataTable';
+export { WeightProjections } from './WeightProjections';
