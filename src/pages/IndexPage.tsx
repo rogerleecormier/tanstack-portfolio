@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/carousel';
 
 import { cachedContentService } from '@/api/cachedContentService';
+import { projectTools } from '@/data/projectTools';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { SectionHeader } from '@/components/sections/SectionHeader';
 import { ScrollToTop } from '@/components/ScrollToTop';
@@ -154,31 +155,12 @@ export default function IndexPage() {
         setRecentBlogs(sortedBlogs);
 
         // Get featured work from projects only (not portfolio items)
-        const projects = allContent.filter(
+        const kvProjects = allContent.filter(
           item => item.contentType === 'project'
         );
 
-        // Create a HealthBridge project entry since it's a project, not a portfolio item
-        const healthBridgeProject = {
-          id: 'healthbridge-enhanced',
-          title: 'HealthBridge Enhanced',
-          description:
-            'Health tracking and analytics platform with weight management, medication tracking, and predictive regression analysis for goal targeting.',
-          tags: [
-            'Health Analytics',
-            'Weight Tracking',
-            'Medication Management',
-            'Regression Analysis',
-            'Predictive Modeling',
-            'Cloudflare Workers',
-            'D1 Database',
-          ],
-          category: 'Health Technology',
-          url: '/projects/healthbridge-enhanced',
-        };
-
-        // Map projects to the expected format with normalized URLs
-        const mappedProjects = projects.map(project => ({
+        // Map KV cache projects to the expected format with normalized URLs
+        const mappedKVProjects = kvProjects.map(project => ({
           id: project.id,
           title: project.title,
           description: project.description,
@@ -187,11 +169,27 @@ export default function IndexPage() {
           url: normalizeUrl(project.url, project.contentType) || `/projects/${project.id}`,
         }));
 
-        // Combine projects and add HealthBridge as a project
-        const allWork = [
-          ...mappedProjects,
-          healthBridgeProject,
-        ];
+        // Map project tools (from router) to the expected format
+        // Only include active projects (not coming-soon)
+        const mappedToolProjects = projectTools
+          .filter(tool => tool.status === 'active')
+          .map(tool => ({
+            id: tool.id,
+            title: tool.title,
+            description: tool.description,
+            tags: tool.tags,
+            category: tool.category,
+            url: tool.url,
+          }));
+
+        // Combine KV cache projects and tool projects, avoiding duplicates by id
+        const seenIds = new Set<string>();
+        const allWork = [...mappedKVProjects, ...mappedToolProjects].filter(item => {
+          if (seenIds.has(item.id)) return false;
+          seenIds.add(item.id);
+          return true;
+        });
+        
         const featured = allWork.slice(0, 6); // Get up to 6 featured items
 
         setFeaturedWork(featured);
