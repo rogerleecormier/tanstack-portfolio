@@ -153,12 +153,9 @@ export default function IndexPage() {
 
         setRecentBlogs(sortedBlogs);
 
-        // Get featured work from projects and portfolio items
+        // Get featured work from projects only (not portfolio items)
         const projects = allContent.filter(
           item => item.contentType === 'project'
-        );
-        const portfolioItems = allContent.filter(
-          item => item.contentType === 'portfolio'
         );
 
         // Create a HealthBridge project entry since it's a project, not a portfolio item
@@ -180,14 +177,7 @@ export default function IndexPage() {
           url: '/projects/healthbridge-enhanced',
         };
 
-        // Filter to get the most relevant portfolio items for featured work
-        const workPortfolio = portfolioItems.filter(item =>
-          ['ai-automation', 'analytics', 'capabilities', 'devops'].includes(
-            item.id
-          )
-        );
-
-        // Map projects and portfolio items to the expected format with normalized URLs
+        // Map projects to the expected format with normalized URLs
         const mappedProjects = projects.map(project => ({
           id: project.id,
           title: project.title,
@@ -197,20 +187,10 @@ export default function IndexPage() {
           url: normalizeUrl(project.url, project.contentType) || `/projects/${project.id}`,
         }));
 
-        const mappedPortfolio = workPortfolio.map(item => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          tags: item.tags,
-          category: item.category,
-          url: normalizeUrl(item.url, item.contentType) || `/portfolio/${item.id}`,
-        }));
-
-        // Combine projects, portfolio items, and add HealthBridge as a project
+        // Combine projects and add HealthBridge as a project
         const allWork = [
           ...mappedProjects,
           healthBridgeProject,
-          ...mappedPortfolio,
         ];
         const featured = allWork.slice(0, 6); // Get up to 6 featured items
 

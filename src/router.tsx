@@ -26,7 +26,6 @@ import ProjectsListPage from './pages/ProjectsListPage';
 import { cachedContentService } from '@/api/cachedContentService';
 
 // Dynamic imports for heavier components - loaded on demand
-const ToolsListPage = lazy(() => import('./pages/ToolsListPage'));
 const RACIBuilderPage = lazy(() => import('./pages/RACIBuilderPage'));
 const PriorityMatrixPage = lazy(() => import('./pages/PriorityMatrixPage'));
 const GanttChartBuilderPage = lazy(
@@ -224,13 +223,6 @@ const markdownOnlyRoute = createRoute({
   component: MarkdownOnlyPage,
 });
 
-// Tools list route
-const toolsListRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'tools',
-  component: ToolsListPage,
-});
-
 // RACI Builder route (now under projects)
 const raciBuilderRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -280,7 +272,6 @@ const routeTree = rootRoute.addChildren([
   contentStudioRoute,
   privateToolsRoute,
   markdownOnlyRoute,
-  toolsListRoute,
   raciBuilderRoute,
   priorityMatrixRoute,
   ganttChartBuilderRoute,
