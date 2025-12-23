@@ -5,11 +5,11 @@
 // Types
 export * from './types';
 
+// Hooks
+export * from './hooks';
+
 // Utilities (to be added)
 // export * from './utils';
-
-// Hooks (to be added)
-// export * from './hooks';
 
 // Components (to be added as they are extracted from SiteAdminPage)
 // export * from './components';
