@@ -12,5 +12,5 @@ export * from './utils';
 // Hooks
 export * from './hooks';
 
-// Components will be added as they are extracted
-// export * from './components';
+// Components
+export * from './components';
