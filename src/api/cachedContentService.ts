@@ -558,46 +558,50 @@ export class CachedContentService {
     const tagsLower = tags.map(tag => tag.toLowerCase());
 
     let score = 0;
+    const maxScore = 100;
 
-    // Title match (highest weight)
+    // Base score - every recommended item starts with some relevance
+    score += 20;
+
+    // Title match (highest weight) - boost for exact matches
     if (item.title.toLowerCase().includes(queryLower)) {
-      score += 25;
+      score += 35;
     }
 
     // Description match
     if (item.description.toLowerCase().includes(queryLower)) {
-      score += 15;
+      score += 20;
     }
 
     // Content match
     if (item.content.toLowerCase().includes(queryLower)) {
-      score += 10;
+      score += 15;
     }
 
     // Tags match (exact matches get higher weight)
     const itemTags = item.tags.map(tag => tag.toLowerCase());
     const matchingTags = tagsLower.filter(tag => itemTags.includes(tag));
-    score += matchingTags.length * 12;
+    score += Math.min(25, matchingTags.length * 15);
 
     // Keywords match
     const itemKeywords = item.keywords.map(keyword => keyword.toLowerCase());
     const matchingKeywords = tagsLower.filter(keyword =>
       itemKeywords.includes(keyword)
     );
-    score += matchingKeywords.length * 8;
+    score += Math.min(15, matchingKeywords.length * 10);
 
     // Category match
     if (item.category.toLowerCase().includes(queryLower)) {
-      score += 10;
+      score += 15;
     }
 
     // Partial word matches for better semantic understanding
     const queryWords = queryLower.split(/\s+/);
     queryWords.forEach(word => {
       if (word.length > 2) {
-        if (item.title.toLowerCase().includes(word)) score += 5;
-        if (item.description.toLowerCase().includes(word)) score += 3;
-        if (item.content.toLowerCase().includes(word)) score += 2;
+        if (item.title.toLowerCase().includes(word)) score += 8;
+        if (item.description.toLowerCase().includes(word)) score += 5;
+        if (item.content.toLowerCase().includes(word)) score += 3;
       }
     });
 
@@ -607,7 +611,7 @@ export class CachedContentService {
     if (item.keywords.length > 2) score += 2;
 
     // Normalize score to 0-100 range
-    const normalizedScore = Math.min(100, Math.max(0, Math.round(score)));
+    const normalizedScore = Math.min(maxScore, Math.max(0, Math.round(score)));
 
     // Deduplicate tags to prevent duplication in the UI
     const deduplicatedTags = [...new Set(item.tags)];

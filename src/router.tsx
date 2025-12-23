@@ -116,10 +116,14 @@ const projectsListRoute = createRoute({
   component: ProjectsListPage,
 });
 
-// Blog post route
+// Blog post route with loader (fixes content disappearing on refresh)
 const blogPostRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'blog/$slug',
+  loader: async () => {
+    await cachedContentService.whenReady();
+    return null; // Content is loaded in component via loadBlogPost()
+  },
   component: BlogPostWrapper,
 });
 
@@ -127,6 +131,10 @@ const blogPostRoute = createRoute({
 const portfolioItemRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'portfolio/$slug',
+  loader: async () => {
+    await cachedContentService.whenReady();
+    return null; // Content is loaded in component
+  },
   component: PortfolioPageWrapper,
 });
 
