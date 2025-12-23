@@ -142,6 +142,10 @@ const portfolioItemRoute = createRoute({
 const projectsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'projects/$slug',
+  loader: async () => {
+    await cachedContentService.whenReady();
+    return null; // Content is loaded in component
+  },
   component: ProjectsPageWrapper,
 });
 
