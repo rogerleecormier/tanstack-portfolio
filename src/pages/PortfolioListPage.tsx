@@ -1,8 +1,7 @@
 import {
-  cachedContentService,
   type CachedContentItem,
 } from '@/api/cachedContentService';
-import { Link } from '@tanstack/react-router';
+import { Link, useLoaderData } from '@tanstack/react-router';
 import {
   ArrowRight,
   Briefcase,
@@ -22,7 +21,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -38,9 +37,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import { H2, H3, P } from '@/components/ui/typography';
-import { logger } from '@/utils/logger';
 
 // Helper function to safely parse tags
 function parseTagsSafely(tags: unknown): string[] {
@@ -189,11 +186,14 @@ const categoryConfig = {
 };
 
 export default function PortfolioListPage() {
-  const [portfolioItems, setPortfolioItems] = useState<CachedContentItem[]>([]);
-  const [filteredItems, setFilteredItems] = useState<CachedContentItem[]>([]);
+  // Get pre-loaded data from route loader
+  const loaderData = useLoaderData({ strict: false }) as CachedContentItem[] | undefined;
+  
+  // Initialize state with loader data (no loading state needed - data is already available)
+  const [portfolioItems] = useState<CachedContentItem[]>(() => loaderData ?? []);
+  const [filteredItems, setFilteredItems] = useState<CachedContentItem[]>(() => loaderData ?? []);
   const [portfolioSearch, setPortfolioSearch] =
-    useState<PortfolioSearch | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+    useState<PortfolioSearch | null>(() => loaderData ? new PortfolioSearch(loaderData) : null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -208,36 +208,13 @@ export default function PortfolioListPage() {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
 
-  // Load portfolio items on component mount
+  // Initialize search when loader data is available
   useEffect(() => {
-    const loadItems = () => {
-      try {
-        setIsLoading(true);
-        logger.debug('🚀 Starting to load portfolio items from KV cache...');
-
-        const cachedItems = cachedContentService.getContentByType('portfolio');
-
-        const items: CachedContentItem[] = cachedItems;
-        logger.debug('✨ Portfolio items loaded from KV:', items);
-        logger.debug(
-          `📊 Discovered ${items.length} portfolio items:`,
-          items.map(item => item.id)
-        );
-        setPortfolioItems(items);
-
-        // Initialize search
-        const search = new PortfolioSearch(items);
-        setPortfolioSearch(search);
-        setFilteredItems(items);
-      } catch (error) {
-        console.error('Error loading portfolio items:', error);
-        logger.error('❌ Error loading portfolio items from KV cache:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    void loadItems();
-  }, []);
+    if (loaderData && loaderData.length > 0 && !portfolioSearch) {
+      setPortfolioSearch(new PortfolioSearch(loaderData));
+      setFilteredItems(loaderData);
+    }
+  }, [loaderData, portfolioSearch]);
 
   // Update filtered results when search criteria change
   useEffect(() => {
@@ -283,7 +260,6 @@ export default function PortfolioListPage() {
             const [entry] = entries;
             if (
               entry?.isIntersecting &&
-              !isLoading &&
               !isLoadingMore &&
               displayedItems.length < filteredItems.length
             ) {
@@ -305,56 +281,9 @@ export default function PortfolioListPage() {
       }
       return undefined;
     },
-    [isLoading, isLoadingMore, displayedItems.length, filteredItems.length]
+    [isLoadingMore, displayedItems.length, filteredItems.length]
   );
-
-  if (isLoading) {
-    return (
-      <div className='min-h-screen bg-surface-base'>
-        <div className='container mx-auto px-4 py-8'>
-          {/* Header Skeleton */}
-          <div className='mb-12 text-center'>
-            <Skeleton className='mx-auto mb-4 h-16 w-96' />
-            <Skeleton className='mx-auto h-6 w-2/3' />
-          </div>
-
-          {/* Search Skeleton */}
-          <div className='mx-auto mb-8 max-w-4xl'>
-            <div className='flex flex-col gap-4 sm:flex-row'>
-              <Skeleton className='h-12 flex-1' />
-              <Skeleton className='h-12 w-48' />
-              <Skeleton className='h-12 w-32' />
-            </div>
-          </div>
-
-          {/* Grid Skeleton */}
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Card
-                key={i}
-                className='h-80 border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'
-              >
-                <CardHeader className='pb-3'>
-                  <Skeleton className='mb-2 h-6 w-3/4' />
-                  <Skeleton className='h-4 w-1/2' />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className='mb-2 h-4 w-full' />
-                  <Skeleton className='mb-2 h-4 w-3/4' />
-                  <Skeleton className='mb-4 h-4 w-1/2' />
-                  <div className='mb-4 flex gap-2'>
-                    <Skeleton className='h-6 w-16' />
-                    <Skeleton className='h-6 w-20' />
-                  </div>
-                  <Skeleton className='h-4 w-24' />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Note: Loading skeleton removed - data is pre-loaded via route loader
 
   return (
     <div className='min-h-screen bg-surface-base'>

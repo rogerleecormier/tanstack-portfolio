@@ -1,3 +1,4 @@
+import { type CachedContentItem } from '@/api/cachedContentService';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,17 +18,15 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import { H2, H3, P } from '@/components/ui/typography';
 import {
   filterBlogPostsByTags,
   formatDate,
   getAllTags,
-  loadAllBlogPosts,
   searchBlogPosts,
   type BlogPost,
 } from '@/utils/blogUtils';
-import { Link } from '@tanstack/react-router';
+import { Link, useLoaderData } from '@tanstack/react-router';
 import {
   ArrowRight,
   BookOpen,
@@ -41,40 +40,53 @@ import {
 } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react';
 
+// Helper to convert CachedContentItem to BlogPost
+function convertToBlogPost(item: CachedContentItem): BlogPost {
+  return {
+    slug: item.id,
+    title: item.title,
+    description: item.description,
+    ...(item.date && { date: item.date }),
+    author: 'Roger Lee Cormier',
+    tags: item.tags,
+    readTime: item.readTime ?? Math.ceil(item.content.split(/\s+/).length / 200),
+    content: item.content,
+    keywords: item.keywords,
+  };
+}
+
 export default function BlogListPage() {
+  // Get pre-loaded data from route loader
+  const loaderData = useLoaderData({ strict: false }) as CachedContentItem[] | undefined;
+  
+  // Convert loader data to BlogPost format
+  const initialPosts = React.useMemo(() => 
+    loaderData?.map(convertToBlogPost) ?? [], 
+    [loaderData]
+  );
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
 
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
+  // Initialize state with loader data (no loading state needed)
+  const [blogPosts] = useState<BlogPost[]>(() => initialPosts);
+  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(() => initialPosts);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>([]);
   const [postsPerPage] = useState(6);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isTagFilterOpen, setIsTagFilterOpen] = useState(false);
 
-  // Load blog posts
+  // Initialize filtered posts when loader data arrives
   useEffect(() => {
-    try {
-      setIsLoading(true);
-
-      const posts = loadAllBlogPosts();
-
-      setBlogPosts(posts);
-      setFilteredPosts(posts);
-    } catch (error) {
-      console.error('Error loading blog posts:', error);
-      setBlogPosts([]);
-      setFilteredPosts([]);
-    } finally {
-      setIsLoading(false);
+    if (initialPosts.length > 0 && filteredPosts.length === 0) {
+      setFilteredPosts(initialPosts);
     }
-  }, []);
+  }, [initialPosts, filteredPosts.length]);
 
   // Filter posts based on search query and selected tags
   useEffect(() => {
@@ -127,7 +139,6 @@ export default function BlogListPage() {
             const [entry] = entries;
             if (
               entry?.isIntersecting &&
-              !isLoading &&
               !isLoadingMore &&
               displayedPosts.length < filteredPosts.length
             ) {
@@ -149,7 +160,7 @@ export default function BlogListPage() {
       }
       return undefined;
     },
-    [isLoading, isLoadingMore, displayedPosts.length, filteredPosts.length]
+    [isLoadingMore, displayedPosts.length, filteredPosts.length]
   );
 
   return (
@@ -343,34 +354,7 @@ export default function BlogListPage() {
         </Dialog>
 
         {/* Blog Posts Grid */}
-        {isLoading ? (
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Card
-                key={i}
-                className='h-full border-strategy-gold/20 bg-surface-elevated/30'
-              >
-                <CardHeader>
-                  <Skeleton className='mb-2 h-6 w-3/4' />
-                  <Skeleton className='h-4 w-1/2' />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className='mb-4 h-20 w-full' />
-                  <div className='mb-4 flex gap-2'>
-                    <Skeleton className='h-6 w-16' />
-                    <Skeleton className='h-6 w-20' />
-                  </div>
-                  <div className='mb-4 flex gap-2'>
-                    <Skeleton className='h-4 w-24' />
-                    <Skeleton className='h-4 w-20' />
-                  </div>
-                  <Skeleton className='mb-4 h-4 w-32' />
-                  <Skeleton className='h-10 w-full' />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : filteredPosts.length === 0 ? (
+        {filteredPosts.length === 0 ? (
           <Card className='border-strategy-gold/20 bg-surface-elevated/30 py-16 text-center'>
             <CardContent>
               <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-surface-deep/60 ring-1 ring-strategy-gold/20 backdrop-blur-md'>

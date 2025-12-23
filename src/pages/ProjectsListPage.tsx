@@ -1,5 +1,4 @@
 import {
-  cachedContentService,
   type CachedContentItem,
 } from '@/api/cachedContentService';
 import { ScrollToTop } from '@/components/ScrollToTop';
@@ -20,11 +19,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
 import { H2, H3, P } from '@/components/ui/typography';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { logger } from '@/utils/logger';
-import { useNavigate, Link } from '@tanstack/react-router';
+import { useNavigate, Link, useLoaderData } from '@tanstack/react-router';
 import {
   ArrowRight,
   BarChart3,
@@ -156,11 +153,15 @@ const tools: Tool[] = [
 
 export default function ProjectsListPage() {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState<CachedContentItem[]>([]);
+  
+  // Get pre-loaded data from route loader
+  const loaderData = useLoaderData({ strict: false }) as CachedContentItem[] | undefined;
+  
+  // Initialize state with loader data (no loading state needed - data is already available)
+  const [projects] = useState<CachedContentItem[]>(() => loaderData ?? []);
   const [filteredProjects, setFilteredProjects] = useState<CachedContentItem[]>(
-    []
+    () => loaderData ?? []
   );
-  const [isLoading, setIsLoading] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -241,48 +242,12 @@ export default function ProjectsListPage() {
     type: 'website',
   });
 
-  // Load projects from cache
+  // Initialize filtered projects when loader data is available
   useEffect(() => {
-    const loadProjects = async () => {
-      try {
-        setIsLoading(true);
-
-        // Wait for cache to be ready (max 5 seconds)
-        let allItems: CachedContentItem[] = [];
-        let attempts = 0;
-        const maxAttempts = 50; // 50 * 100ms = 5 seconds
-
-        while (allItems.length === 0 && attempts < maxAttempts) {
-          allItems = cachedContentService.getAllContent();
-          if (allItems.length === 0) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            attempts++;
-          }
-        }
-
-        logger.debug('📦 All items loaded:', allItems.length);
-
-        const loadedProjects = allItems.filter(
-          (item: CachedContentItem) => item.contentType === 'project'
-        );
-
-        logger.debug('📋 Projects filtered:', loadedProjects.length);
-        logger.debug('🎯 Project items:', loadedProjects);
-
-        setProjects(loadedProjects);
-        setFilteredProjects(loadedProjects);
-      } catch (error) {
-        console.error('Error loading projects:', error);
-        // Fallback to empty array or handle error state
-        setProjects([]);
-        setFilteredProjects([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void loadProjects();
-  }, []);
+    if (loaderData && loaderData.length > 0 && filteredProjects.length === 0) {
+      setFilteredProjects(loaderData);
+    }
+  }, [loaderData, filteredProjects.length]);
 
   // Filter projects based on search and tags
   useEffect(() => {
@@ -342,7 +307,6 @@ export default function ProjectsListPage() {
             const [entry] = entries;
             if (
               entry?.isIntersecting &&
-              !isLoading &&
               !isLoadingMore &&
               displayedProjects.length < filteredProjects.length
             ) {
@@ -365,7 +329,6 @@ export default function ProjectsListPage() {
       return undefined;
     },
     [
-      isLoading,
       isLoadingMore,
       displayedProjects.length,
       filteredProjects.length,
@@ -383,52 +346,7 @@ export default function ProjectsListPage() {
     // Add more as needed based on cache categories
   };
 
-  if (isLoading) {
-    return (
-      <div className='min-h-screen bg-surface-base'>
-        <div className='container mx-auto px-4 py-8'>
-          {/* Hero Skeleton */}
-          <div className='mb-12 text-center'>
-            <Skeleton className='mx-auto mb-4 h-16 w-96' />
-            <Skeleton className='mx-auto h-6 w-2/3' />
-          </div>
-
-          {/* Search Skeleton */}
-          <div className='mx-auto mb-8 max-w-4xl'>
-            <div className='flex flex-col gap-4 sm:flex-row'>
-              <Skeleton className='h-12 flex-1' />
-              <Skeleton className='h-12 w-48' />
-            </div>
-          </div>
-
-          {/* Grid Skeleton */}
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Card
-                key={i}
-                className='h-80 border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl'
-              >
-                <CardHeader className='pb-3'>
-                  <Skeleton className='mb-2 h-6 w-3/4' />
-                  <Skeleton className='h-4 w-1/2' />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className='mb-2 h-4 w-full' />
-                  <Skeleton className='mb-2 h-4 w-3/4' />
-                  <Skeleton className='mb-4 h-4 w-1/2' />
-                  <div className='mb-4 flex gap-2'>
-                    <Skeleton className='h-6 w-16' />
-                    <Skeleton className='h-6 w-20' />
-                  </div>
-                  <Skeleton className='h-4 w-24' />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Note: Loading skeleton removed - data is pre-loaded via route loader
 
   return (
     <div className='min-h-screen bg-surface-base'>
@@ -779,34 +697,7 @@ export default function ProjectsListPage() {
           </div>
 
           {/* Projects Grid */}
-          {isLoading ? (
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Card
-                  key={i}
-                  className='h-full border-strategy-gold/20 bg-surface-elevated/30'
-                >
-                  <CardHeader>
-                    <Skeleton className='mb-2 h-6 w-3/4' />
-                    <Skeleton className='h-4 w-1/2' />
-                  </CardHeader>
-                  <CardContent>
-                    <Skeleton className='mb-4 h-20 w-full' />
-                    <div className='mb-4 flex gap-2'>
-                      <Skeleton className='h-6 w-16' />
-                      <Skeleton className='h-6 w-20' />
-                    </div>
-                    <div className='mb-4 flex gap-2'>
-                      <Skeleton className='h-4 w-24' />
-                      <Skeleton className='h-4 w-20' />
-                    </div>
-                    <Skeleton className='mb-4 h-4 w-32' />
-                    <Skeleton className='h-10 w-full' />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : filteredProjects.length === 0 ? (
+          {filteredProjects.length === 0 ? (
             <Card className='border-strategy-gold/20 bg-surface-elevated/30 py-16 text-center'>
               <CardContent>
                 <div className='mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-surface-deep/60 ring-1 ring-strategy-gold/20 backdrop-blur-md'>

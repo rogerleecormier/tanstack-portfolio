@@ -22,6 +22,9 @@ import NotFound from './pages/NotFound';
 import PortfolioListPage from './pages/PortfolioListPage';
 import ProjectsListPage from './pages/ProjectsListPage';
 
+// Content service for route loaders
+import { cachedContentService } from '@/api/cachedContentService';
+
 // Dynamic imports for heavier components - loaded on demand
 const ToolsListPage = lazy(() => import('./pages/ToolsListPage'));
 const RACIBuilderPage = lazy(() => import('./pages/RACIBuilderPage'));
@@ -81,24 +84,36 @@ const aboutRoute = createRoute({
   component: AboutPage,
 });
 
-// Blog list route
+// Blog list route with loader
 const blogListRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'blog',
+  loader: async () => {
+    await cachedContentService.whenReady();
+    return cachedContentService.getBlogPosts();
+  },
   component: BlogListPage,
 });
 
-// Portfolio route
+// Portfolio route with loader
 const portfolioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'portfolio',
+  loader: async () => {
+    await cachedContentService.whenReady();
+    return cachedContentService.getContentByType('portfolio');
+  },
   component: PortfolioListPage,
 });
 
-// Projects list route
+// Projects list route with loader
 const projectsListRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'projects',
+  loader: async () => {
+    await cachedContentService.whenReady();
+    return cachedContentService.getContentByType('project');
+  },
   component: ProjectsListPage,
 });
 

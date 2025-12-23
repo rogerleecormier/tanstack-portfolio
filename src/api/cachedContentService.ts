@@ -88,12 +88,13 @@ export class CachedContentService {
   private allItems: CachedContentItem[] = [];
   private fuse: Fuse<CachedContentItem> | null = null;
   private isFuseInitialized = false;
+  private initPromise: Promise<void>;
 
   constructor() {
     console.log(
       '🚀 CachedContentService constructor called - starting initialization'
     );
-    void this.initializeContent();
+    this.initPromise = this.initializeContent();
     void this.initializeFuse();
 
     // If initialization failed, log the issue but don't try fallback endpoints that are failing
@@ -259,6 +260,40 @@ export class CachedContentService {
     // Initialize Fuse.js after content is loaded
     if (this.allItems.length > 0) {
       this.initializeFuse();
+    }
+  }
+
+  /**
+   * Wait for the service to be ready with content loaded
+   * Use this in route loaders to ensure data is available before rendering
+   */
+  async whenReady(): Promise<void> {
+    // If already ready, resolve immediately
+    if (this.isReady()) {
+      return Promise.resolve();
+    }
+    
+    // Wait for the initialization promise
+    await this.initPromise;
+    
+    // If still not ready after init, poll with timeout
+    if (!this.isReady()) {
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          logger.warn('⚠️ Cache initialization timeout - proceeding with empty cache');
+          resolve(); // Resolve anyway to prevent infinite loading
+        }, 10000);
+        
+        const check = () => {
+          if (this.isReady()) {
+            clearTimeout(timeout);
+            resolve();
+          } else {
+            setTimeout(check, 100);
+          }
+        };
+        check();
+      });
     }
   }
 
