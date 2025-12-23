@@ -90,6 +90,23 @@ export default function IndexPage() {
     type: 'website',
   });
 
+  // Helper to normalize URLs from cache (fixes /project/ -> /projects/ mismatch)
+  const normalizeUrl = (url: string, contentType: string) => {
+    // If URL is missing or empty, construct from contentType and id
+    if (!url || url === '') {
+      return '';
+    }
+    // Fix singular/plural route mismatch for projects
+    if (contentType === 'project' && url.startsWith('/project/')) {
+      return url.replace('/project/', '/projects/');
+    }
+    // Ensure blog URLs use /blog/ prefix
+    if (contentType === 'blog' && !url.startsWith('/blog/')) {
+      return `/blog/${url.split('/').pop()}`;
+    }
+    return url;
+  };
+
   // Load recent blog posts and featured work (projects + tools)
   useEffect(() => {
     const loadContent = async () => {
@@ -131,7 +148,7 @@ export default function IndexPage() {
             ...(blog.date && { date: blog.date }),
             tags: blog.tags,
             category: blog.category,
-            url: blog.url,
+            url: normalizeUrl(blog.url, blog.contentType) || `/blog/${blog.id}`,
           }));
 
         setRecentBlogs(sortedBlogs);
@@ -170,14 +187,14 @@ export default function IndexPage() {
           )
         );
 
-        // Map projects and portfolio items to the expected format
+        // Map projects and portfolio items to the expected format with normalized URLs
         const mappedProjects = projects.map(project => ({
           id: project.id,
           title: project.title,
           description: project.description,
           tags: project.tags,
           category: project.category,
-          url: project.url,
+          url: normalizeUrl(project.url, project.contentType) || `/projects/${project.id}`,
         }));
 
         const mappedPortfolio = workPortfolio.map(item => ({
@@ -186,7 +203,7 @@ export default function IndexPage() {
           description: item.description,
           tags: item.tags,
           category: item.category,
-          url: item.url,
+          url: normalizeUrl(item.url, item.contentType) || `/portfolio/${item.id}`,
         }));
 
         // Combine projects, portfolio items, and add HealthBridge as a project
