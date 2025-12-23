@@ -137,12 +137,12 @@ export function UnifiedRelatedContent({
         console.log('🔍 Current URL:', currentUrl);
         console.log('🔍 Effective max results:', effectiveMaxResults);
 
-        // Derive url and score for each item
+        // Derive url and use the actual relevance score from the service
         const extendedResults: ExtendedContentItem[] = response.results.map(
           (item: CachedContentItem) => ({
             ...item,
             url: `/${item.contentType}/${item.id}`,
-            relevanceScore: 85, // Default score if not provided
+            relevanceScore: item.relevanceScore ?? 0, // Use actual score from service
           })
         );
 
