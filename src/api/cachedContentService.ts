@@ -278,7 +278,7 @@ export class CachedContentService {
     
     // If still not ready after init, poll with timeout
     if (!this.isReady()) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const timeout = setTimeout(() => {
           logger.warn('⚠️ Cache initialization timeout - proceeding with empty cache');
           resolve(); // Resolve anyway to prevent infinite loading
