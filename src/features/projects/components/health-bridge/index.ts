@@ -3,3 +3,4 @@
  */
 
 export { EnhancedWeightEntry } from './EnhancedWeightEntry';
+export { WeightDataTable } from './WeightDataTable';
