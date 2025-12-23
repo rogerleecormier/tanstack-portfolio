@@ -212,7 +212,7 @@ export default function BlogPage({ slug }: { slug: string }) {
         <div className='lg:col-span-3'>
           {/* Blog Header */}
           {frontmatter.title && (
-            <header className='mb-8 border-b border-hunter-600/20 pb-8'>
+            <header className='mb-8 border-b border-strategy-gold/20 pb-8'>
               {/* Header Image */}
               {frontmatter.image && (
                 <div className='mb-6'>
@@ -343,7 +343,7 @@ export default function BlogPage({ slug }: { slug: string }) {
                     return uniqueTags.map((tag: string, index: number) => (
                       <Badge
                         key={`${frontmatter.title}-${tag}-${index}`}
-                        className='border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
+                        className='border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold'
                         title={formatTag(tag)}
                       >
                         <Tag className='mr-1 size-3' />
@@ -515,7 +515,7 @@ export default function BlogPage({ slug }: { slug: string }) {
             </ReactMarkdown>
 
             {/* Blog Footer */}
-            <div className='mt-16 border-t border-hunter-600/20 pt-8'>
+            <div className='mt-16 border-t border-strategy-gold/20 pt-8'>
               <div className='text-center'>
                 <H2 className='mb-4 text-2xl font-semibold text-white'>
                   Enjoyed this article?
@@ -528,14 +528,14 @@ export default function BlogPage({ slug }: { slug: string }) {
                 <div className='flex flex-col justify-center gap-4 sm:flex-row'>
                   <a
                     href='/contact'
-                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-hunter-600 to-hunter-500 px-6 py-3 font-medium text-white transition-all hover:from-hunter-500 hover:to-hunter-400'
+                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-strategy-gold to-surface-elevated0 px-6 py-3 font-medium text-white transition-all hover:from-surface-elevated0 hover:to-strategy-gold'
                   >
                     <MessageSquare className='size-4' />
                     <span>Get in Touch</span>
                   </a>
                   <Link
                     to='/blog'
-                    className='inline-flex items-center gap-2 rounded-lg border border-hunter-600/40 bg-transparent px-6 py-3 font-medium text-hunter-400 transition-colors hover:border-hunter-600/60 hover:bg-hunter-600/10'
+                    className='inline-flex items-center gap-2 rounded-lg border border-strategy-gold/40 bg-transparent px-6 py-3 font-medium text-strategy-gold transition-colors hover:border-strategy-gold/60 hover:bg-strategy-gold/10'
                   >
                     <Calendar className='size-4' />
                     <span>Read More Articles</span>
@@ -556,7 +556,7 @@ export default function BlogPage({ slug }: { slug: string }) {
         <div className='lg:col-span-1'>
           <div className='sticky top-36 space-y-6'>
             {/* Smart Related Content Sidebar */}
-            <div className='rounded-xl border border-hunter-600/20 bg-slate-900/40 p-6 backdrop-blur-sm'>
+            <div className='rounded-xl border border-strategy-gold/20 bg-slate-900/40 p-6 backdrop-blur-sm'>
               <UnifiedRelatedContent
                 content={content}
                 title={frontmatter.title ?? ''}
@@ -578,7 +578,7 @@ export default function BlogPage({ slug }: { slug: string }) {
               </p>
               <Link
                 to='/about'
-                className='inline-flex items-center gap-2 text-sm font-medium text-hunter-600 transition-colors hover:text-hunter-700'
+                className='inline-flex items-center gap-2 text-sm font-medium text-strategy-gold transition-colors hover:text-strategy-gold-dark'
               >
                 Learn more about Roger
                 <ArrowRight className='size-3' />

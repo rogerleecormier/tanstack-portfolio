@@ -23,6 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { H2, H3, P } from '@/components/ui/typography';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { logger } from '@/utils/logger';
 import { useNavigate, Link } from '@tanstack/react-router';
 import {
   ArrowRight,
@@ -259,14 +260,14 @@ export default function ProjectsListPage() {
           }
         }
 
-        console.log('📦 All items loaded:', allItems.length);
+        logger.debug('📦 All items loaded:', allItems.length);
 
         const loadedProjects = allItems.filter(
           (item: CachedContentItem) => item.contentType === 'project'
         );
 
-        console.log('📋 Projects filtered:', loadedProjects.length);
-        console.log('🎯 Project items:', loadedProjects);
+        logger.debug('📋 Projects filtered:', loadedProjects.length);
+        logger.debug('🎯 Project items:', loadedProjects);
 
         setProjects(loadedProjects);
         setFilteredProjects(loadedProjects);

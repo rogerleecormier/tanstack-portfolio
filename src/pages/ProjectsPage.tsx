@@ -14,6 +14,7 @@ import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent';
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { loadBlogPost } from '@/utils/blogUtils';
+import { logger } from '@/utils/logger';
 import { getPortfolioItem, getProjectItem } from '@/utils/portfolioLoader';
 import { MessageSquare, Tag } from 'lucide-react';
 
@@ -100,7 +101,7 @@ export default function ProjectsPage({ file }: { file: string }) {
       await Promise.resolve(); // Satisfy require-await rule
       setIsLoading(true);
       try {
-        console.log('Loading markdown file:', file);
+        logger.debug('Loading markdown file:', file);
 
         // Load content from API worker based on file type
         let content = '';
@@ -151,7 +152,7 @@ export default function ProjectsPage({ file }: { file: string }) {
           }
         } else {
           // Handle root level files (fallback) - TODO: implement about page loading
-          console.log('Root level file loading not yet implemented');
+          logger.debug('Root level file loading not yet implemented');
         }
 
         if (content) {
@@ -585,7 +586,7 @@ export default function ProjectsPage({ file }: { file: string }) {
               </ReactMarkdown>
 
               {/* Contact Section at bottom of every page */}
-              <div className='mt-16 border-t border-hunter-600/20 pt-8'>
+              <div className='mt-16 border-t border-strategy-gold/20 pt-8'>
                 <div className='text-center'>
                   <H2 className='mb-4 text-2xl font-semibold text-white'>
                     Ready to discuss your next project?
@@ -597,7 +598,7 @@ export default function ProjectsPage({ file }: { file: string }) {
                   </P>
                   <a
                     href='/contact'
-                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-hunter-600 to-hunter-500 px-6 py-3 font-medium text-white transition-all hover:from-hunter-500 hover:to-hunter-400 hover:shadow-lg'
+                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-strategy-gold to-surface-elevated0 px-6 py-3 font-medium text-white transition-all hover:from-surface-elevated0 hover:to-strategy-gold hover:shadow-lg'
                   >
                     <MessageSquare className='size-4' />
                     Get in Touch

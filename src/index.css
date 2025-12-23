@@ -206,11 +206,11 @@
   }
 
   .glass-input {
-    @apply glass-base focus:bg-white/8 px-4 py-2 text-foreground placeholder:text-foreground/50 focus:border-hunter-500/50 focus:outline-none;
+    @apply glass-base focus:bg-white/8 px-4 py-2 text-foreground placeholder:text-foreground/50 focus:border-surface-elevated/50 focus:outline-none;
   }
 
   .glass-button {
-    @apply rounded-lg border border-gold-600/30 bg-gold-600/10 px-4 py-2 text-gold-600 backdrop-blur-md transition-all duration-200 hover:border-gold-600/60 hover:bg-gold-600/20 dark:text-gold-400 dark:hover:text-gold-300;
+    @apply rounded-lg border border-strategy-gold/30 bg-strategy-gold/10 px-4 py-2 text-strategy-gold backdrop-blur-md transition-all duration-200 hover:border-strategy-gold/60 hover:bg-strategy-gold/20 dark:text-strategy-gold dark:hover:text-strategy-gold;
   }
 
   /* ========== TYPOGRAPHY SYSTEM ========== */
@@ -251,16 +251,16 @@
   }
 
   .text-blockquote {
-    @apply border-l-4 border-gold-600/40 pl-4 text-lg italic text-foreground/85 dark:border-gold-400/40;
+    @apply border-l-4 border-strategy-gold/40 pl-4 text-lg italic text-foreground/85 dark:border-strategy-gold/40;
   }
 
   /* ========== BRAND TEXT & ACCENTS ========== */
   .text-hunter {
-    @apply text-hunter-900 dark:text-hunter-300;
+    @apply text-precision-charcoal dark:text-strategy-emerald;
   }
 
   .text-hunter-strong {
-    @apply font-semibold text-hunter-800 dark:text-hunter-200;
+    @apply font-semibold text-precision-charcoal-light dark:text-border-subtle;
   }
 
   .text-slate {
@@ -268,28 +268,28 @@
   }
 
   .text-gold {
-    @apply font-medium text-gold-600 dark:text-gold-400;
+    @apply font-medium text-strategy-gold dark:text-strategy-gold;
   }
 
   .text-gold-accent {
-    @apply font-semibold text-gold-600 dark:text-gold-400;
+    @apply font-semibold text-strategy-gold dark:text-strategy-gold;
   }
 
   .text-gold-muted {
-    @apply text-gold-500/70 dark:text-gold-500/80;
+    @apply text-surface-elevated/70 dark:text-surface-elevated/80;
   }
 
   /* ========== BRAND BORDERS & ACCENTS ========== */
   .border-hunter {
-    @apply border-hunter-200 dark:border-hunter-800;
+    @apply border-border-subtle dark:border-precision-charcoal-light;
   }
 
   .border-gold {
-    @apply border-gold-300/40 dark:border-gold-600/30;
+    @apply border-strategy-gold/30 dark:border-strategy-gold/30;
   }
 
   .border-gold-strong {
-    @apply border-gold-500 dark:border-gold-400;
+    @apply border-surface-elevated dark:border-strategy-gold;
   }
 
   .border-slate {
@@ -297,24 +297,24 @@
   }
 
   .accent-gold-left {
-    @apply border-l-4 border-gold-600 pl-4 dark:border-gold-400;
+    @apply border-l-4 border-strategy-gold pl-4 dark:border-strategy-gold;
   }
 
   .accent-gold-top {
-    @apply border-t-4 border-gold-600 pt-2 dark:border-gold-400;
+    @apply border-t-4 border-strategy-gold pt-2 dark:border-strategy-gold;
   }
 
   .accent-hunter-left {
-    @apply border-l-4 border-hunter-600 pl-4 dark:border-hunter-400;
+    @apply border-l-4 border-strategy-gold pl-4 dark:border-strategy-emerald;
   }
 
   /* ========== BRAND BACKGROUNDS ========== */
   .bg-hunter-subtle {
-    @apply bg-hunter-50 dark:bg-hunter-950;
+    @apply bg-surface-elevated dark:bg-surface-deep;
   }
 
   .bg-hunter-subtle-hover {
-    @apply bg-hunter-100 dark:bg-hunter-900;
+    @apply bg-surface-elevated dark:bg-precision-charcoal;
   }
 
   .bg-slate-subtle {
@@ -322,16 +322,16 @@
   }
 
   .bg-gold-highlight {
-    @apply bg-gold-100/40 dark:bg-gold-900/20;
+    @apply bg-surface-elevated/40 dark:bg-precision-charcoal/20;
   }
 
   .bg-gold-subtle {
-    @apply bg-gold-50/50 dark:bg-gold-950/40;
+    @apply bg-surface-elevated/50 dark:bg-surface-deep/40;
   }
 
   /* ========== BUTTON SYSTEM ========== */
   .btn-primary {
-    @apply rounded-lg bg-hunter-600 px-4 py-2 font-medium text-white transition-colors duration-200 hover:bg-hunter-700 active:bg-hunter-800 disabled:opacity-50;
+    @apply rounded-lg bg-strategy-gold px-4 py-2 font-medium text-white transition-colors duration-200 hover:bg-strategy-gold-dark active:bg-precision-charcoal-light disabled:opacity-50;
   }
 
   .btn-secondary {
@@ -339,7 +339,7 @@
   }
 
   .btn-accent {
-    @apply rounded-lg bg-gold-600 px-4 py-2 font-medium text-slate-900 transition-colors duration-200 hover:bg-gold-700 active:bg-gold-800 disabled:opacity-50 dark:bg-gold-500 dark:text-gold-950 dark:hover:bg-gold-600;
+    @apply rounded-lg bg-strategy-gold px-4 py-2 font-medium text-slate-900 transition-colors duration-200 hover:bg-strategy-gold-dark active:bg-precision-charcoal-light disabled:opacity-50 dark:bg-surface-elevated dark:text-surface-deep dark:hover:bg-strategy-gold;
   }
 
   .btn-ghost {
@@ -347,20 +347,20 @@
   }
 
   .btn-gold-outline {
-    @apply rounded-lg border-2 border-gold-600/60 px-4 py-2 font-medium text-gold-600 transition-colors duration-200 hover:bg-gold-600/10 active:bg-gold-600/20 disabled:opacity-50 dark:border-gold-400/60 dark:text-gold-400 dark:hover:bg-gold-400/10 dark:active:bg-gold-400/20;
+    @apply rounded-lg border-2 border-strategy-gold/60 px-4 py-2 font-medium text-strategy-gold transition-colors duration-200 hover:bg-strategy-gold/10 active:bg-strategy-gold/20 disabled:opacity-50 dark:border-strategy-gold/60 dark:text-strategy-gold dark:hover:bg-strategy-gold/10 dark:active:bg-strategy-gold/20;
   }
 
   .btn-hunter-outline {
-    @apply rounded-lg border-2 border-hunter-600/60 px-4 py-2 font-medium text-hunter-600 transition-colors duration-200 hover:bg-hunter-600/10 active:bg-hunter-600/20 disabled:opacity-50 dark:border-hunter-400/60 dark:text-hunter-400 dark:hover:bg-hunter-400/10 dark:active:bg-hunter-400/20;
+    @apply rounded-lg border-2 border-strategy-gold/60 px-4 py-2 font-medium text-strategy-gold transition-colors duration-200 hover:bg-strategy-gold/10 active:bg-strategy-gold/20 disabled:opacity-50 dark:border-strategy-emerald/60 dark:text-strategy-emerald dark:hover:bg-strategy-emerald/10 dark:active:bg-strategy-emerald/20;
   }
 
   /* ========== BADGE & TAG SYSTEM ========== */
   .badge-gold {
-    @apply inline-flex items-center rounded-full bg-gold-100/60 px-3 py-1 text-xs font-medium text-gold-800 dark:bg-gold-900/40 dark:text-gold-200;
+    @apply inline-flex items-center rounded-full bg-surface-elevated/60 px-3 py-1 text-xs font-medium text-precision-charcoal-light dark:bg-precision-charcoal/40 dark:text-strategy-gold;
   }
 
   .badge-hunter {
-    @apply inline-flex items-center rounded-full bg-hunter-100/60 px-3 py-1 text-xs font-medium text-hunter-800 dark:bg-hunter-900/40 dark:text-hunter-200;
+    @apply inline-flex items-center rounded-full bg-surface-elevated/60 px-3 py-1 text-xs font-medium text-precision-charcoal-light dark:bg-precision-charcoal/40 dark:text-border-subtle;
   }
 
   .badge-slate {
@@ -369,41 +369,41 @@
 
   /* ========== HIGHLIGHT & EMPHASIS ========== */
   .highlight-gold {
-    @apply rounded bg-gold-100/40 px-1 py-0.5 text-gold-800 dark:bg-gold-900/30 dark:text-gold-200;
+    @apply rounded bg-surface-elevated/40 px-1 py-0.5 text-precision-charcoal-light dark:bg-precision-charcoal/30 dark:text-strategy-gold;
   }
 
   .highlight-hunter {
-    @apply rounded bg-hunter-100/40 px-1 py-0.5 text-hunter-800 dark:bg-hunter-900/30 dark:text-hunter-200;
+    @apply rounded bg-surface-elevated/40 px-1 py-0.5 text-precision-charcoal-light dark:bg-precision-charcoal/30 dark:text-border-subtle;
   }
 
   .text-highlight-gold {
-    @apply font-semibold text-gold-600 dark:text-gold-400;
+    @apply font-semibold text-strategy-gold dark:text-strategy-gold;
   }
 
   .text-highlight-hunter {
-    @apply font-semibold text-hunter-600 dark:text-hunter-400;
+    @apply font-semibold text-strategy-gold dark:text-strategy-emerald;
   }
 
   /* ========== LINK STYLES ========== */
   .link-gold {
-    @apply text-gold-600 underline transition-colors duration-200 hover:text-gold-700 dark:text-gold-400 dark:hover:text-gold-300;
+    @apply text-strategy-gold underline transition-colors duration-200 hover:text-strategy-gold-dark dark:text-strategy-gold dark:hover:text-strategy-gold;
   }
 
   .link-hunter {
-    @apply text-hunter-600 underline transition-colors duration-200 hover:text-hunter-700 dark:text-hunter-400 dark:hover:text-hunter-300;
+    @apply text-strategy-gold underline transition-colors duration-200 hover:text-strategy-gold-dark dark:text-strategy-emerald dark:hover:text-strategy-emerald;
   }
 
   .link-gold-no-underline {
-    @apply text-gold-600 transition-colors duration-200 hover:text-gold-700 dark:text-gold-400 dark:hover:text-gold-300;
+    @apply text-strategy-gold transition-colors duration-200 hover:text-strategy-gold-dark dark:text-strategy-gold dark:hover:text-strategy-gold;
   }
 
   /* ========== DIVIDERS & SEPARATORS ========== */
   .divider-gold {
-    @apply border-t border-gold-300/40 dark:border-gold-700/30;
+    @apply border-t border-strategy-gold/30 dark:border-strategy-gold-dark;
   }
 
   .divider-hunter {
-    @apply border-t border-hunter-300/40 dark:border-hunter-700/30;
+    @apply border-t border-strategy-emerald/40 dark:border-strategy-gold-dark;
   }
 
   /* ========== CARD STYLING ========== */
@@ -412,7 +412,7 @@
   }
 
   .card-hover {
-    @apply transition-all duration-300 hover:border-gold-300/50 hover:shadow-lg dark:hover:border-gold-700/30;
+    @apply transition-all duration-300 hover:border-strategy-gold/30 hover:shadow-lg dark:hover:border-strategy-gold-dark;
   }
 
   /* Hunter Green Component Classes */
@@ -439,7 +439,7 @@
 
   /* Brand Buttons */
   .btn-hunter {
-    @apply bg-hunter-600 text-white transition-all duration-200 hover:bg-hunter-700 focus:ring-2 focus:ring-hunter-500 focus:ring-offset-2 dark:bg-hunter-600 dark:hover:bg-hunter-700;
+    @apply bg-strategy-gold text-white transition-all duration-200 hover:bg-strategy-gold-dark focus:ring-2 focus:ring-surface-elevated focus:ring-offset-2 dark:bg-strategy-gold dark:hover:bg-strategy-gold-dark;
   }
 
   .btn-slate {
@@ -447,12 +447,12 @@
   }
 
   .btn-gold {
-    @apply bg-gold-600 text-white transition-all duration-200 hover:bg-gold-700 focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 dark:bg-gold-500 dark:hover:bg-gold-600;
+    @apply bg-strategy-gold text-white transition-all duration-200 hover:bg-strategy-gold-dark focus:ring-2 focus:ring-surface-elevated focus:ring-offset-2 dark:bg-surface-elevated dark:hover:bg-strategy-gold;
   }
 
   /* Brand Text Colors */
   .text-brand-hunter {
-    @apply text-hunter-800 dark:text-hunter-400;
+    @apply text-precision-charcoal-light dark:text-strategy-emerald;
   }
 
   .text-brand-slate {
@@ -460,12 +460,12 @@
   }
 
   .text-brand-gold {
-    @apply text-gold-600 dark:text-gold-400;
+    @apply text-strategy-gold dark:text-strategy-gold;
   }
 
   /* Brand Borders */
   .border-brand-hunter {
-    @apply border-hunter-200 dark:border-hunter-800;
+    @apply border-border-subtle dark:border-precision-charcoal-light;
   }
 
   .border-brand-slate {
@@ -474,7 +474,7 @@
 
   /* Brand Backgrounds */
   .bg-brand-hunter {
-    @apply bg-hunter-50 dark:bg-hunter-950;
+    @apply bg-surface-elevated dark:bg-surface-deep;
   }
 
   .bg-brand-slate {
@@ -888,7 +888,7 @@
   /* Specifically target badges and colored elements */
   .hero-profile-card .badge,
   .hero-profile-card [class*='badge'],
-  .hero-profile-card .bg-hunter-100,
+  .hero-profile-card .bg-surface-elevated,
   .hero-profile-card .bg-green-100,
   .hero-profile-card .bg-orange-100,
   .hero-profile-card .bg-red-100,
@@ -915,7 +915,7 @@
   /* Specifically target badges and colored elements inside pre tags */
   .hero-profile-card pre .badge,
   .hero-profile-card pre [class*='badge'],
-  .hero-profile-card pre .bg-hunter-100,
+  .hero-profile-card pre .bg-surface-elevated,
   .hero-profile-card pre .bg-green-100,
   .hero-profile-card pre .bg-orange-100,
   .hero-profile-card pre .bg-red-100,
@@ -971,7 +971,7 @@
   /* Specifically target badges in all cards */
   .badge,
   [class*='badge'],
-  .bg-hunter-100,
+  .bg-surface-elevated,
   .bg-green-100,
   .bg-orange-100,
   .bg-red-100,
@@ -1015,10 +1015,10 @@
   [data-radix-collection-item],
   [class*='border-green-200'],
   [class*='border-orange-200'],
-  [class*='border-hunter-200'],
+  [class*='border-border-subtle'],
   [class*='text-green-700'],
   [class*='text-orange-700'],
-  [class*='text-hunter-700'] {
+  [class*='text-strategy-gold-dark'] {
     @apply font-sans;
   }
 

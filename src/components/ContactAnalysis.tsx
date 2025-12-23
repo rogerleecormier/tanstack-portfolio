@@ -96,11 +96,11 @@ function getContentTypeColor(
 ): string {
   switch (contentType) {
     case 'portfolio':
-      return 'brand-bg-primary text-hunter-800 brand-border-primary';
+      return 'brand-bg-primary text-precision-charcoal-light brand-border-primary';
     case 'blog': // Changed from 'blog' to 'neutral' in the instruction, but keeping 'blog' as it's the actual type. Assuming the instruction meant to update the color for 'blog' to match 'neutral' styling.
       return 'brand-bg-secondary text-slate-800 brand-border-secondary';
     case 'project': // Changed from 'project' to 'negative' in the instruction, but keeping 'project' as it's the actual type. Assuming the instruction meant to update the color for 'project' to match 'negative' styling.
-      return 'bg-gold-100 text-gold-800 border-gold-200';
+      return 'bg-surface-elevated text-precision-charcoal-light border-strategy-gold/20';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200';
   }
@@ -224,7 +224,7 @@ export function ContactAnalysis({
       <Card className={className}>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
-            <MessageSquare className='size-5 text-hunter-600' />
+            <MessageSquare className='size-5 text-strategy-gold' />
             Analyzing Your Message...
           </CardTitle>
         </CardHeader>
@@ -247,7 +247,7 @@ export function ContactAnalysis({
     <Card className={className}>
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
-          <MessageSquare className='size-5 text-hunter-600' />
+          <MessageSquare className='size-5 text-strategy-gold' />
           Message Analysis
           <Badge
             variant='outline'
@@ -347,7 +347,7 @@ export function ContactAnalysis({
                       key={index}
                       className='flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300'
                     >
-                      <span className='font-medium text-hunter-600 dark:text-hunter-400'>
+                      <span className='font-medium text-strategy-gold dark:text-strategy-gold'>
                         •
                       </span>
                       {question}

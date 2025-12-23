@@ -13,7 +13,7 @@ import {
   SaveIcon,
   Trash2,
 } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { FrontMatterModal } from '../components/FrontMatter/FrontMatterModal';
 import { FrontMatterPanel } from '../components/FrontMatter/FrontMatterPanel';
@@ -83,8 +83,6 @@ export function CreationStudioPage() {
     options: Array<{ label: string; action: () => void }>;
   }>({ open: false, message: '', options: [] });
   const [browserNonce, setBrowserNonce] = useState(0);
-  // Start with a reasonable height to avoid initial reflow pushing the footer
-  const [leftHeight, setLeftHeight] = useState<number>(720);
   const [hydrating, setHydrating] = useState(true);
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
   const [shouldRebuildCache, setShouldRebuildCache] = useState(false);
@@ -97,41 +95,11 @@ export function CreationStudioPage() {
     totalItems: number;
     trigger?: string;
   } | null>(null);
-  const leftColRef = useRef<HTMLDivElement | null>(null);
-  const editorHeaderRef = useRef<HTMLDivElement | null>(null);
-  const editorWrapperRef = useRef<HTMLDivElement | null>(null);
-
-  const measureHeights = useCallback(() => {
-    const leftCol = leftColRef.current;
-
-    if (leftCol) {
-      // Get the actual combined height of content browser + front matter
-      const leftColHeight = leftCol.getBoundingClientRect().height;
-
-      // The editor should match the full height of the left column content
-      setLeftHeight(Math.floor(leftColHeight));
-    } else {
-      // Fallback value
-      setLeftHeight(400);
-    }
-  }, []);
 
   useEffect(() => {
-    measureHeights();
     // Allow one frame for layout, then end hydration skeleton
     requestAnimationFrame(() => setHydrating(false));
-    const onResize = () => measureHeights();
-    window.addEventListener('resize', onResize);
-    let ro: ResizeObserver | undefined;
-    if ('ResizeObserver' in window && leftColRef.current) {
-      ro = new ResizeObserver(() => measureHeights());
-      ro.observe(leftColRef.current);
-    }
-    return () => {
-      window.removeEventListener('resize', onResize);
-      ro?.disconnect();
-    };
-  }, [measureHeights]);
+  }, []);
 
   // Load cache status on mount and refresh periodically
   useEffect(() => {
@@ -159,13 +127,6 @@ export function CreationStudioPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Re-measure heights when content changes
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      void measureHeights();
-    }, 100); // Small delay to allow DOM updates
-    return () => clearTimeout(timeoutId);
-  }, [frontmatter, markdown, measureHeights]);
 
   const handleMarkdownChange = useCallback((newMarkdown: string) => {
     setMarkdown(newMarkdown);
@@ -180,42 +141,34 @@ export function CreationStudioPage() {
     []
   );
 
-  const doLoad = useCallback(
-    async (key: string) => {
-      try {
-        const response = await apiClient.readContent(key);
-        if (response.success && response.data) {
-          const { attributes, body } = extractFrontMatter(response.data.body);
+  const doLoad = useCallback(async (key: string) => {
+    try {
+      const response = await apiClient.readContent(key);
+      if (response.success && response.data) {
+        const { attributes, body } = extractFrontMatter(response.data.body);
 
-          // Convert any Date objects to strings to prevent React rendering errors
-          const processedAttributes = Object.entries(attributes).reduce(
-            (acc, [key, value]) => {
-              acc[key] =
-                value instanceof Date
-                  ? value.toISOString().split('T')[0]
-                  : value;
-              return acc;
-            },
-            {} as Record<string, unknown>
-          );
+        // Convert any Date objects to strings to prevent React rendering errors
+        const processedAttributes = Object.entries(attributes).reduce(
+          (acc, [key, value]) => {
+            acc[key] =
+              value instanceof Date
+                ? value.toISOString().split('T')[0]
+                : value;
+            return acc;
+          },
+          {} as Record<string, unknown>
+        );
 
-          setMarkdown(body);
-          setFrontmatter(processedAttributes);
-          setCurrentFile(key);
-          setCurrentEtag(response.data.etag);
-          setIsDirty(false);
-          // wait a frame to ensure layout updated, then measure
-          requestAnimationFrame(() => {
-            // A second tick to ensure fonts/layout settle
-            setTimeout(measureHeights, 0);
-          });
-        }
-      } catch (error) {
-        console.error('Failed to load file:', error);
+        setMarkdown(body);
+        setFrontmatter(processedAttributes);
+        setCurrentFile(key);
+        setCurrentEtag(response.data.etag);
+        setIsDirty(false);
       }
-    },
-    [measureHeights]
-  );
+    } catch (error) {
+      console.error('Failed to load file:', error);
+    }
+  }, []);
 
   const handleFileSelect = useCallback(
     async (key: string) => {
@@ -469,52 +422,56 @@ export function CreationStudioPage() {
   return (
     <div className='flex h-full min-h-0 flex-col bg-surface-deep'>
       {/* Administrative Header with Enhanced Glassmorphic Design */}
-      <div className='relative border-b border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
+      <div className='relative overflow-hidden border-b border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
         {/* Glassmorphic background gradient */}
-        <div className='from-strategy-gold/8 to-strategy-gold/8 absolute inset-0 bg-gradient-to-r via-strategy-gold/5'></div>
-        {/* Glow effect */}
+        <div className='absolute inset-0 bg-gradient-to-r from-strategy-gold/8 via-strategy-gold/5 to-strategy-gold/8'></div>
+        {/* Subtle glow effect */}
         <div className='absolute -right-1/2 -top-1/2 h-96 w-96 rounded-full bg-strategy-gold/5 blur-3xl'></div>
-        <div className='relative px-4 py-6 sm:px-6 lg:px-8'>
-          <div className='max-w-7xl'>
-            {/* Enhanced Title with Modern Styling */}
-            <div className='flex items-center gap-4'>
+
+        <div className='relative px-4 py-8 sm:px-6 lg:px-8'>
+          <div className='mx-auto max-w-4xl text-center'>
+            {/* Icon and Title with Administrative Theme */}
+            <div className='mb-4 flex items-center justify-center gap-4'>
               <div className='relative'>
-                <div className='flex size-12 items-center justify-center rounded-2xl bg-surface-elevated/60 shadow-lg ring-1 ring-strategy-gold/40 backdrop-blur-lg transition-all duration-300 hover:ring-strategy-gold/60'>
-                  <FileText className='size-6 text-strategy-gold' />
+                <div className='flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-strategy-gold to-slate-600 shadow-lg'>
+                  <FileText className='size-7 text-white' />
                 </div>
-                {/* Content indicator dots */}
-                <div className='absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full bg-surface-base/80 backdrop-blur-sm'>
-                  <div className='size-1.5 rounded-full bg-strategy-gold'></div>
+                {/* indicator dots */}
+                <div className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-slate-500 to-strategy-gold'>
+                  <div className='size-2 rounded-full bg-white'></div>
                 </div>
-                <div className='absolute -bottom-1 -left-1 flex size-2.5 items-center justify-center rounded-full bg-strategy-gold/40 backdrop-blur-sm'>
-                  <div className='size-1 rounded-full bg-strategy-gold'></div>
+                <div className='absolute -bottom-1 -left-1 flex size-3 items-center justify-center rounded-full bg-gradient-to-br from-strategy-gold to-slate-500'>
+                  <div className='size-1.5 rounded-full bg-white'></div>
                 </div>
               </div>
               <div>
-                <h1 className='text-3xl font-bold tracking-tight text-white'>
-                  <span className='text-gold-400'>Content Studio</span>
+                <h1 className='text-4xl font-bold tracking-tight text-slate-100 dark:text-white sm:text-5xl lg:text-6xl'>
+                  <span className='bg-gradient-to-r from-strategy-gold to-strategy-gold bg-clip-text text-transparent dark:from-strategy-gold dark:to-strategy-gold'>
+                    Content Studio
+                  </span>
                 </h1>
-                <div className='mt-1 h-0.5 w-16 rounded-full bg-gold-500/50'></div>
+                <div className='mx-auto mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-strategy-gold to-slate-500'></div>
               </div>
             </div>
-            {/* File Status Line */}
-            <div className='mt-3 flex min-h-[20px] items-center gap-2'>
+
+            {/* Status Line */}
+            <div className='mt-4 flex min-h-[20px] items-center justify-center gap-2'>
               {currentFile ? (
                 <>
-                  <div className='size-1.5 rounded-full bg-gold-500/60'></div>
-                  <p className='text-sm text-grey-300 dark:text-grey-300'>
-                    <span className='font-medium'>Editing:</span> {currentFile}{' '}
+                  <div className='size-2 rounded-full bg-strategy-gold shadow-[0_0_8px_rgba(244,196,52,0.6)] animate-pulse'></div>
+                  <p className='text-sm font-medium text-grey-300'>
+                    Editing: <span className='text-white'>{currentFile}</span>
                     {isDirty && (
-                      <span className='font-medium text-gold-400 dark:text-gold-400'>
-                        • Unsaved
+                      <span className='ml-2 text-strategy-gold'>
+                        • Unsaved Changes
                       </span>
                     )}
                   </p>
                 </>
               ) : (
                 <>
-                  <div className='size-1.5 rounded-full bg-grey-600/60'></div>
-                  <p className='text-sm text-grey-400 dark:text-grey-400'>
+                  <div className='size-2 rounded-full bg-grey-600/60'></div>
+                  <p className='text-sm text-grey-400'>
                     Ready to create or open a file
                   </p>
                 </>
@@ -522,8 +479,8 @@ export function CreationStudioPage() {
             </div>
           </div>
         </div>
-
-        {/* Header Actions with Enhanced Glassmorphism */}
+      </div>
+   {/* Header Actions with Enhanced Glassmorphism */}
         <div className='flex items-center justify-end gap-1 border-t border-strategy-gold/20 bg-surface-elevated/30 p-4 backdrop-blur-xl dark:border-strategy-gold/20'>
           {/* File Operations Group */}
           <Tooltip>
@@ -612,10 +569,9 @@ export function CreationStudioPage() {
             <TooltipContent>Save As New File</TooltipContent>
           </Tooltip>
 
-          {/* Cache Controls */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className='flex h-9 items-center gap-1 rounded-md border border-gold-500/30 bg-surface-elevated/40 px-2 py-1 dark:border-gold-500/30 dark:bg-surface-elevated/30'>
+              <div className='flex h-9 items-center gap-1 rounded-md border border-surface-elevated/30 bg-surface-elevated/40 px-2 py-1 dark:border-surface-elevated/30 dark:bg-surface-elevated/30'>
                 <Checkbox
                   id='rebuild-cache'
                   checked={shouldRebuildCache}
@@ -819,16 +775,13 @@ export function CreationStudioPage() {
             </Tooltip>
           )}
         </div>
-      </div>
       <div
         className='min-h-[70vh] flex-1 px-4 py-6 sm:px-6 lg:px-8'
         data-content-area
       >
         <div className='max-w-7xl'>
           <div className='grid grid-cols-12 items-start gap-6'>
-            {/* Left Panel - Content Browser & Frontmatter */}
             <div
-              ref={leftColRef}
               className='col-span-12 flex min-h-0 flex-col gap-6 lg:col-span-4'
             >
               <div className='overflow-hidden'>
@@ -846,37 +799,27 @@ export function CreationStudioPage() {
                 />
               </div>
             </div>
-            {/* Right Panel - Main Editor (dynamically scales to match left panel height) */}
-            <div
-              className='col-span-12 flex min-h-0 flex-col lg:col-span-8'
-              style={{ height: leftHeight ? `${leftHeight}px` : 'auto' }}
-            >
+            {/* Right Panel - Main Editor */}
+            <div className='col-span-12 flex min-h-[700px] flex-col lg:col-span-8'>
               {/* Editor Header */}
-              <div
-                ref={editorHeaderRef}
-                className='rounded-t-xl border border-gold-500/20 bg-surface-elevated/30 backdrop-blur-xl dark:border-gold-500/20 dark:bg-surface-elevated/30'
-              >
-                <div className='flex items-center justify-between gap-3 border-b border-gold-500/10 p-4 dark:border-gold-500/10'>
+              <div className='rounded-t-xl border border-surface-elevated/20 bg-surface-elevated/30 backdrop-blur-xl dark:border-surface-elevated/20 dark:bg-surface-elevated/30'>
+                <div className='flex items-center justify-between gap-3 border-b border-surface-elevated/10 p-4 dark:border-surface-elevated/10'>
                   <div className='flex items-center gap-3'>
                     <div className='rounded-lg bg-surface-elevated/60 p-2 shadow-md ring-1 ring-strategy-gold/20 backdrop-blur-md'>
-                      <FileText className='size-5 text-gold-400' />
+                      <FileText className='size-5 text-strategy-gold' />
                     </div>
                     <div>
-                      <h3
-                        className='text-lg font-bold text-white'
-                        style={{ fontWeight: 700 }}
-                      >
+                      <h3 className='text-lg font-bold text-white'>
                         Content Editor
                       </h3>
-                      <div className='mt-1 h-0.5 w-16 rounded-full bg-gold-500/50'></div>
+                      <div className='mt-1 h-0.5 w-16 rounded-full bg-surface-elevated/50'></div>
                     </div>
                   </div>
                 </div>
               </div>
-              {/* Editor Content (dynamically scales to fill available space) */}
+              {/* Editor Content */}
               <div
-                ref={editorWrapperRef}
-                className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-gold-500/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-surface-elevated/30'
+                className='relative flex-1 overflow-hidden rounded-b-xl border-x border-b border-surface-elevated/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl dark:border-surface-elevated/20 dark:bg-surface-elevated/30'
                 style={{
                   minHeight: '200px',
                 }}
@@ -973,10 +916,10 @@ export function CreationStudioPage() {
         <DialogContent className='size-full max-h-[95vh] max-w-[95vw] bg-surface-deep p-0 dark:bg-surface-deep'>
           <div className='flex h-full flex-col'>
             {/* Enhanced Header */}
-            <div className='flex items-center justify-between border-b border-gold-500/10 bg-surface-deep/40 p-6 backdrop-blur-xl dark:border-gold-500/10'>
+            <div className='flex items-center justify-between border-b border-surface-elevated/10 bg-surface-deep/40 p-6 backdrop-blur-xl dark:border-surface-elevated/10'>
               <div className='flex items-center gap-4'>
                 <div className='rounded-xl bg-surface-elevated/60 p-3 shadow-lg ring-1 ring-strategy-gold/20 backdrop-blur-md'>
-                  <FileText className='size-6 text-gold-400' />
+                  <FileText className='size-6 text-strategy-gold' />
                 </div>
                 <div>
                   <h2
@@ -988,11 +931,11 @@ export function CreationStudioPage() {
                   <div className='mt-1 flex min-h-[20px] items-center gap-2'>
                     {currentFile ? (
                       <>
-                        <div className='size-1.5 rounded-full bg-gold-500/60'></div>
+                        <div className='size-1.5 rounded-full bg-surface-elevated/60'></div>
                         <p className='text-sm text-grey-300 dark:text-grey-400'>
                           {currentFile}{' '}
                           {isDirty && (
-                            <span className='font-medium text-gold-400 dark:text-gold-400'>
+                            <span className='font-medium text-strategy-gold dark:text-strategy-gold'>
                               • Unsaved changes
                             </span>
                           )}
@@ -1008,7 +951,7 @@ export function CreationStudioPage() {
                 variant='outline'
                 size='sm'
                 onClick={() => setIsFullscreen(false)}
-                className='gap-2 border-gold-500/20 text-gold-400 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-gold-500/40 hover:bg-surface-elevated/40 hover:shadow-lg dark:hover:bg-surface-elevated/40'
+                className='gap-2 border-surface-elevated/20 text-strategy-gold shadow-md backdrop-blur-sm transition-all duration-200 hover:border-surface-elevated/40 hover:bg-surface-elevated/40 hover:shadow-lg dark:hover:bg-surface-elevated/40'
               >
                 <Minimize className='size-4' />
                 Return to Studio
@@ -1016,7 +959,7 @@ export function CreationStudioPage() {
             </div>
             {/* Enhanced Editor Content */}
             <div className='flex-1 overflow-hidden p-2'>
-              <div className='h-full rounded-xl border border-gold-500/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl dark:border-gold-500/20 dark:bg-surface-elevated/30'>
+              <div className='h-full rounded-xl border border-surface-elevated/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl dark:border-surface-elevated/20 dark:bg-surface-elevated/30'>
                 <MarkdownHtmlEditor
                   initialMarkdown={markdown}
                   onChange={handleMarkdownChange}

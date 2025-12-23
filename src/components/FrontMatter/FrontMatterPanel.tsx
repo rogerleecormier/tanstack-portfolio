@@ -20,25 +20,25 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
   }, [markdown]);
 
   return (
-    <Card className='border border-gold-500/20 bg-hunter-900/30 shadow-sm backdrop-blur-xl dark:border-gold-500/20 dark:bg-hunter-900/30'>
-      <CardHeader className='relative shrink-0 border-b border-gold-500/10 dark:border-gold-500/10'>
+    <Card className='border border-surface-elevated0/20 bg-surface-deep/30 shadow-sm backdrop-blur-xl dark:border-surface-elevated0/20 dark:bg-surface-deep/30'>
+      <CardHeader className='relative shrink-0 border-b border-surface-elevated0/10 dark:border-surface-elevated0/10'>
         <div className='flex w-full items-center justify-between'>
           <CardTitle className='flex items-center gap-3'>
-            <div className='rounded-lg bg-hunter-900/60 p-2 shadow-md ring-1 ring-gold-500/20 backdrop-blur-md'>
-              <Settings className='size-5 text-gold-400' />
+            <div className='rounded-lg bg-surface-deep/60 p-2 shadow-md ring-1 ring-surface-elevated0/20 backdrop-blur-md'>
+              <Settings className='size-5 text-strategy-gold' />
             </div>
             <div>
               <h3
-                className='text-lg font-semibold text-white dark:text-gold-400'
+                className='text-lg font-semibold text-white dark:text-strategy-gold'
                 style={{ fontWeight: 700 }}
               >
                 Front Matter
               </h3>
-              <div className='mt-1 h-0.5 w-16 rounded-full bg-gold-500/60'></div>
+              <div className='mt-1 h-0.5 w-16 rounded-full bg-surface-elevated0/60'></div>
             </div>
           </CardTitle>
           <button
-            className='flex items-center gap-1.5 rounded-md bg-gold-600 px-3 py-1.5 text-xs text-white shadow-sm transition-all duration-200 hover:bg-gold-700'
+            className='flex items-center gap-1.5 rounded-md bg-strategy-gold px-3 py-1.5 text-xs text-white shadow-sm transition-all duration-200 hover:bg-strategy-gold-dark'
             onClick={onEdit}
           >
             <Edit3 className='size-3' />
@@ -49,10 +49,10 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
       <CardContent className='space-y-4 p-4'>
         <div className='space-y-4'>
           {/* Title Section */}
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
+          <div className='rounded-lg border border-surface-elevated0/20 bg-surface-deep/40 p-3 backdrop-blur-md dark:border-surface-elevated0/20 dark:bg-surface-deep/40'>
             <div className='mb-2 flex items-center gap-2'>
-              <div className='size-1.5 rounded-full bg-gold-600'></div>
-              <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
+              <div className='size-1.5 rounded-full bg-strategy-gold'></div>
+              <span className='text-xs font-semibold uppercase text-strategy-gold/30 dark:text-strategy-gold/30'>
                 Title
               </span>
             </div>
@@ -62,7 +62,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
           </div>
 
           {/* Description Section */}
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
+          <div className='rounded-lg border border-surface-elevated0/20 bg-surface-deep/40 p-3 backdrop-blur-md dark:border-surface-elevated0/20 dark:bg-surface-deep/40'>
             <div className='mb-2 flex items-center gap-2'>
               <div className='size-1.5 rounded-full bg-slate-600'></div>
               <span className='text-xs font-semibold uppercase text-slate-700 dark:text-slate-300'>
@@ -76,10 +76,10 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
 
           {/* Date & Layout Grid */}
           <div className='grid grid-cols-2 gap-3'>
-            <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
+            <div className='rounded-lg border border-surface-elevated0/20 bg-surface-deep/40 p-3 backdrop-blur-md dark:border-surface-elevated0/20 dark:bg-surface-deep/40'>
               <div className='mb-1 flex items-center gap-2'>
-                <div className='size-1.5 rounded-full bg-gold-600'></div>
-                <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
+                <div className='size-1.5 rounded-full bg-strategy-gold'></div>
+                <span className='text-xs font-semibold uppercase text-strategy-gold/30 dark:text-strategy-gold/30'>
                   Date
                 </span>
               </div>
@@ -99,10 +99,10 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
               </div>
             </div>
 
-            <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
+            <div className='rounded-lg border border-surface-elevated0/20 bg-surface-deep/40 p-3 backdrop-blur-md dark:border-surface-elevated0/20 dark:bg-surface-deep/40'>
               <div className='mb-1 flex items-center gap-2'>
-                <div className='size-1.5 rounded-full bg-gold-600'></div>
-                <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
+                <div className='size-1.5 rounded-full bg-strategy-gold'></div>
+                <span className='text-xs font-semibold uppercase text-strategy-gold/30 dark:text-strategy-gold/30'>
                   Layout
                 </span>
               </div>
@@ -113,10 +113,10 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
           </div>
 
           {/* Tags Section */}
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
+          <div className='rounded-lg border border-surface-elevated0/20 bg-surface-deep/40 p-3 backdrop-blur-md dark:border-surface-elevated0/20 dark:bg-surface-deep/40'>
             <div className='mb-2 flex items-center gap-2'>
-              <div className='size-1.5 rounded-full bg-gold-600'></div>
-              <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
+              <div className='size-1.5 rounded-full bg-strategy-gold'></div>
+              <span className='text-xs font-semibold uppercase text-strategy-gold/30 dark:text-strategy-gold/30'>
                 Tags
               </span>
             </div>
@@ -125,7 +125,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
                 frontmatter.tags.map(tag => (
                   <Badge
                     key={tag}
-                    className='border border-gold-500/30 bg-gold-500/20 text-gold-300 dark:border-gold-500/30 dark:bg-gold-500/10 dark:text-gold-300'
+                    className='border border-surface-elevated0/30 bg-surface-elevated0/20 text-strategy-gold/30 dark:border-surface-elevated0/30 dark:bg-surface-elevated0/10 dark:text-strategy-gold/30'
                   >
                     {tag}
                   </Badge>
@@ -139,11 +139,11 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
           </div>
 
           {/* Draft Status */}
-          <div className='rounded-lg border border-gold-500/20 bg-hunter-900/40 p-3 backdrop-blur-md dark:border-gold-500/20 dark:bg-hunter-900/40'>
+          <div className='rounded-lg border border-surface-elevated0/20 bg-surface-deep/40 p-3 backdrop-blur-md dark:border-surface-elevated0/20 dark:bg-surface-deep/40'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-2'>
-                <div className='size-1.5 rounded-full bg-gold-600'></div>
-                <span className='text-xs font-semibold uppercase text-gold-300 dark:text-gold-300'>
+                <div className='size-1.5 rounded-full bg-strategy-gold'></div>
+                <span className='text-xs font-semibold uppercase text-strategy-gold/30 dark:text-strategy-gold/30'>
                   Draft Status
                 </span>
               </div>
@@ -163,7 +163,7 @@ export function FrontMatterPanel({ markdown, onEdit }: FrontMatterPanelProps) {
         {/* Footer Message */}
         <div className='border-t border-indigo-200/60 pt-3 dark:border-indigo-800/60'>
           <div className='flex items-center gap-2 text-xs text-grey-400 dark:text-grey-500'>
-            <div className='size-1 rounded-full bg-gold-400'></div>
+            <div className='size-1 rounded-full bg-strategy-gold'></div>
             <span>Use "Edit" button above to modify front matter</span>
           </div>
         </div>

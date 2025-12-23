@@ -195,7 +195,7 @@ export function UnifiedRelatedContent({
           <h3 className='mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100'>
             Related Content
           </h3>
-          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-hunter-500 to-gold-500'></div>
+          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-surface-elevated0 to-surface-elevated0'></div>
         </div>
         <div className='space-y-4'>
           {Array.from({ length: effectiveMaxResults }, (_, i) => (
@@ -242,7 +242,7 @@ export function UnifiedRelatedContent({
           <h3 className='mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100'>
             Related Content
           </h3>
-          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-hunter-500 to-gold-500'></div>
+          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-surface-elevated0 to-surface-elevated0'></div>
         </div>
         <div className='space-y-4'>
           {Array.from({ length: effectiveMaxResults }, (_, i) => (
@@ -280,11 +280,11 @@ export function UnifiedRelatedContent({
       case 'blog':
         return 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800';
       case 'portfolio':
-        return 'bg-hunter-50 text-hunter-700 border-hunter-200 dark:bg-hunter-950 dark:text-hunter-300 dark:border-hunter-800';
+        return 'bg-surface-elevated text-strategy-gold-dark border-border-subtle dark:bg-surface-deep dark:text-strategy-gold dark:border-precision-charcoal-light';
       case 'project':
-        return 'bg-gold-50 text-gold-700 border-gold-200 dark:bg-gold-950 dark:text-gold-300 dark:border-gold-800';
+        return 'bg-surface-elevated text-strategy-gold-dark border-strategy-gold/20 dark:bg-surface-deep dark:text-strategy-gold/30 dark:border-precision-charcoal-light';
       default:
-        return 'bg-hunter-50 text-hunter-700 border-hunter-200 dark:bg-hunter-950 dark:text-hunter-300 dark:border-hunter-800';
+        return 'bg-surface-elevated text-strategy-gold-dark border-border-subtle dark:bg-surface-deep dark:text-strategy-gold dark:border-precision-charcoal-light';
     }
   };
 
@@ -300,19 +300,19 @@ export function UnifiedRelatedContent({
           <h3 className='mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100'>
             Related Content
           </h3>
-          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-hunter-500 to-gold-500'></div>
+          <div className='h-1 w-16 rounded-full bg-gradient-to-r from-surface-elevated0 to-surface-elevated0'></div>
         </div>
 
         <div className='space-y-4'>
           {recommendations.map(item => (
             <Card
               key={item.id}
-              className='group overflow-hidden transition-all duration-200 hover:border-hunter-300 hover:shadow-lg dark:hover:border-hunter-600'
+              className='group overflow-hidden transition-all duration-200 hover:border-strategy-gold hover:shadow-lg dark:hover:border-strategy-gold'
             >
               <CardHeader className='pb-3'>
                 <div className='flex items-start gap-3'>
                   <div className='min-w-0 flex-1'>
-                    <CardTitle className='line-clamp-2 text-base font-semibold leading-tight text-gray-900 transition-colors group-hover:text-hunter-700 dark:text-gray-100 dark:group-hover:text-hunter-300'>
+                    <CardTitle className='line-clamp-2 text-base font-semibold leading-tight text-gray-900 transition-colors group-hover:text-strategy-gold-dark dark:text-gray-100 dark:group-hover:text-strategy-gold'>
                       {parseContentForSearch(item.title)}
                     </CardTitle>
                     {item.category && (
@@ -324,7 +324,7 @@ export function UnifiedRelatedContent({
                   </div>
                   <a
                     href={item.url}
-                    className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-hunter-50 hover:text-hunter-600 dark:hover:bg-hunter-950 dark:hover:text-hunter-400'
+                    className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-surface-elevated hover:text-strategy-gold dark:hover:bg-surface-deep dark:hover:text-strategy-gold'
                     aria-label={`Read ${parseContentForSearch(item.title)}`}
                   >
                     <ArrowRight className='size-4' />
@@ -423,7 +423,7 @@ export function UnifiedRelatedContent({
           <h2 className='mb-3 text-2xl font-bold text-gray-900 dark:text-gray-100'>
             Related Content
           </h2>
-          <div className='h-1.5 w-20 rounded-full bg-gradient-to-r from-hunter-500 to-gold-500'></div>
+          <div className='h-1.5 w-20 rounded-full bg-gradient-to-r from-surface-elevated0 to-surface-elevated0'></div>
         </div>
         <p className='text-lg text-muted-foreground'>
           Discover more insights and projects
@@ -434,16 +434,16 @@ export function UnifiedRelatedContent({
         {recommendations.map(item => (
           <Card
             key={item.id}
-            className='group h-full overflow-hidden transition-all duration-200 hover:border-hunter-300 hover:shadow-xl dark:hover:border-hunter-600'
+            className='group h-full overflow-hidden transition-all duration-200 hover:border-strategy-gold hover:shadow-xl dark:hover:border-strategy-gold'
           >
             <CardHeader className='pb-4'>
               <div className='flex items-start gap-3'>
-                <CardTitle className='line-clamp-2 flex-1 text-lg font-semibold leading-tight text-gray-900 transition-colors group-hover:text-hunter-700 dark:text-gray-100 dark:group-hover:text-hunter-300'>
+                <CardTitle className='line-clamp-2 flex-1 text-lg font-semibold leading-tight text-gray-900 transition-colors group-hover:text-strategy-gold-dark dark:text-gray-100 dark:group-hover:text-strategy-gold'>
                   {parseContentForSearch(item.title)}
                 </CardTitle>
                 <a
                   href={item.url}
-                  className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-hunter-50 hover:text-hunter-600 dark:hover:bg-hunter-950 dark:hover:text-hunter-400'
+                  className='shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-surface-elevated hover:text-strategy-gold dark:hover:bg-surface-deep dark:hover:text-strategy-gold'
                   aria-label={`Read ${parseContentForSearch(item.title)}`}
                 >
                   <ArrowRight className='size-5' />

@@ -12,6 +12,7 @@ import { UnifiedRelatedContent } from '@/components/UnifiedRelatedContent';
 import UnifiedTableRenderer from '@/components/UnifiedTableRenderer';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { loadBlogPost } from '@/utils/blogUtils';
+import { logger } from '@/utils/logger';
 import { getPortfolioItem, getProjectItem } from '@/utils/portfolioLoader';
 import { MessageSquare, Tag } from 'lucide-react';
 
@@ -97,7 +98,7 @@ export default function PortfolioPage({ file }: { file: string }) {
     const loadMarkdown = () => {
       setIsLoading(true);
       try {
-        console.log('Loading markdown file:', file);
+        logger.debug('Loading markdown file:', file);
 
         // Load content from API worker based on file type
         let content = '';
@@ -148,7 +149,7 @@ export default function PortfolioPage({ file }: { file: string }) {
           }
         } else {
           // Handle root level files (fallback) - TODO: implement about page loading
-          console.log('Root level file loading not yet implemented');
+          logger.debug('Root level file loading not yet implemented');
         }
 
         if (content) {
@@ -261,7 +262,7 @@ export default function PortfolioPage({ file }: { file: string }) {
           <div className='lg:col-span-3'>
             {/* Header with h1 title */}
             {frontmatter.title && (
-              <header className='mb-8 border-b border-hunter-600/20 pb-8'>
+              <header className='mb-8 border-b border-strategy-gold/20 pb-8'>
                 <H1 className='mb-4 text-white'>{frontmatter.title}</H1>
                 {frontmatter.description && (
                   <P className='text-lg leading-7 text-slate-300'>
@@ -360,7 +361,7 @@ export default function PortfolioPage({ file }: { file: string }) {
                       return uniqueTags.map((tag: string, index: number) => (
                         <Badge
                           key={`${tag}-${index}`}
-                          className='border-hunter-600/40 bg-hunter-600/15 text-hunter-300'
+                          className='border-strategy-gold/40 bg-strategy-gold/15 text-strategy-gold'
                           title={formatTag(tag)}
                         >
                           <Tag className='mr-1 size-3' />
@@ -581,7 +582,7 @@ export default function PortfolioPage({ file }: { file: string }) {
               </ReactMarkdown>
 
               {/* Contact Section at bottom of every page */}
-              <div className='mt-16 border-t border-hunter-600/20 pt-8'>
+              <div className='mt-16 border-t border-strategy-gold/20 pt-8'>
                 <div className='text-center'>
                   <H2 className='mb-4 text-2xl font-semibold text-white'>
                     Ready to discuss your next project?
@@ -593,7 +594,7 @@ export default function PortfolioPage({ file }: { file: string }) {
                   </P>
                   <a
                     href='/contact'
-                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-hunter-600 to-hunter-500 px-6 py-3 font-medium text-white transition-all hover:from-hunter-500 hover:to-hunter-400 hover:shadow-lg'
+                    className='inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-strategy-gold to-surface-elevated0 px-6 py-3 font-medium text-white transition-all hover:from-surface-elevated0 hover:to-strategy-gold hover:shadow-lg'
                   >
                     <MessageSquare className='size-4' />
                     Get in Touch
@@ -607,7 +608,7 @@ export default function PortfolioPage({ file }: { file: string }) {
           <div className='lg:col-span-1'>
             <div className='sticky top-36 space-y-6'>
               {/* Smart Related Content Sidebar */}
-              <div className='rounded-xl border border-hunter-600/20 bg-slate-900/40 p-6 backdrop-blur-sm'>
+              <div className='rounded-xl border border-strategy-gold/20 bg-slate-900/40 p-6 backdrop-blur-sm'>
                 <UnifiedRelatedContent
                   content={content}
                   title={frontmatter.title ?? ''}
