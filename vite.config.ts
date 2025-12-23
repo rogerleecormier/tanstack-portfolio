@@ -33,21 +33,8 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'assets/[name]-[hash].js',
           entryFileNames: 'assets/[name]-[hash].js',
           manualChunks: (id) => {
-            // React core - loaded immediately
-            if (id.includes('node_modules/react') || 
-                id.includes('node_modules/react-dom') ||
-                id.includes('node_modules/scheduler')) {
-              return 'vendor-react';
-            }
-            // TanStack libraries
-            if (id.includes('@tanstack')) {
-              return 'vendor-tanstack';
-            }
-            // Recharts and D3 (used by charts)
-            if (id.includes('recharts') || id.includes('d3-')) {
-              return 'vendor-charts';
-            }
-            // PDF rendering (heavy, loaded on demand)
+            // Only split truly independent heavy libraries that are lazy-loaded
+            // PDF rendering (heavy, loaded on demand via react-pdf pages)
             if (id.includes('react-pdf') || id.includes('pdfjs-dist')) {
               return 'vendor-pdf';
             }
@@ -55,38 +42,11 @@ export default defineConfig(({ mode }) => {
             if (id.includes('exceljs')) {
               return 'vendor-excel';
             }
-            // TipTap editor (heavy, loaded on demand)
-            if (id.includes('@tiptap') || id.includes('prosemirror')) {
-              return 'vendor-editor';
-            }
-            // Radix UI components
-            if (id.includes('@radix-ui')) {
-              return 'vendor-ui';
-            }
-            // Cytoscape (graph visualization)
+            // Cytoscape (graph visualization, used by RACI builder)
             if (id.includes('cytoscape')) {
               return 'vendor-cytoscape';
             }
-            // Icons (lucide-react)
-            if (id.includes('lucide-react')) {
-              return 'vendor-icons';
-            }
-            // Date utilities
-            if (id.includes('date-fns')) {
-              return 'vendor-date';
-            }
-            // Syntax highlighting
-            if (id.includes('highlight.js') || id.includes('lowlight')) {
-              return 'vendor-syntax';
-            }
-            // Markdown processing
-            if (id.includes('marked') || id.includes('dompurify') || id.includes('turndown')) {
-              return 'vendor-markdown';
-            }
-            // Remaining node_modules
-            if (id.includes('node_modules')) {
-              return 'vendor-misc';
-            }
+            // Let Vite handle all other chunking automatically to avoid circular deps
           },
         },
       },
