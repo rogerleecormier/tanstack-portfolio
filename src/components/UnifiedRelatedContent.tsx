@@ -137,11 +137,18 @@ export function UnifiedRelatedContent({
         console.log('🔍 Current URL:', currentUrl);
         console.log('🔍 Effective max results:', effectiveMaxResults);
 
+        // Helper to map contentType to correct route path
+        const getRoutePath = (type: string) => {
+          // Routes use 'projects' (plural) but contentType is 'project' (singular)
+          if (type === 'project') return 'projects';
+          return type; // blog, portfolio stay the same
+        };
+
         // Derive url and use the actual relevance score from the service
         const extendedResults: ExtendedContentItem[] = response.results.map(
           (item: CachedContentItem) => ({
             ...item,
-            url: `/${item.contentType}/${item.id}`,
+            url: `/${getRoutePath(item.contentType)}/${item.id}`,
             relevanceScore: item.relevanceScore ?? 0, // Use actual score from service
           })
         );
