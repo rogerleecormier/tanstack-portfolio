@@ -177,7 +177,7 @@ export default function IndexPage() {
             'D1 Database',
           ],
           category: 'Health Technology',
-          url: '/healthbridge-enhanced',
+          url: '/projects/healthbridge-enhanced',
         };
 
         // Filter to get the most relevant portfolio items for featured work

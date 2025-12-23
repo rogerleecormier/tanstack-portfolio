@@ -138,10 +138,10 @@ const projectsRoute = createRoute({
   component: ProjectsPageWrapper,
 });
 
-// Enhanced HealthBridge route - PUBLIC
+// Enhanced HealthBridge route - PUBLIC (now under projects)
 const healthBridgeEnhancedRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'tools/healthbridge-enhanced',
+  path: 'projects/healthbridge-enhanced',
   component: HealthBridgeEnhanced,
 });
 
@@ -217,10 +217,10 @@ const privateToolsRoute = createRoute({
   component: PrivateToolsPage,
 });
 
-// Markdown Editor route (under tools)
+// Markdown Editor route (now under projects)
 const markdownOnlyRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'tools/markdown',
+  path: 'projects/markdown',
   component: MarkdownOnlyPage,
 });
 
@@ -231,31 +231,31 @@ const toolsListRoute = createRoute({
   component: ToolsListPage,
 });
 
-// RACI Builder route under tools
+// RACI Builder route (now under projects)
 const raciBuilderRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'tools/raci-builder',
+  path: 'projects/raci-builder',
   component: RACIBuilderPage,
 });
 
-// Priority Matrix route under tools
+// Priority Matrix route (now under projects)
 const priorityMatrixRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'tools/priority-matrix',
+  path: 'projects/priority-matrix',
   component: PriorityMatrixPage,
 });
 
-// Gantt Chart Builder route under tools
+// Gantt Chart Builder route (now under projects)
 const ganttChartBuilderRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'tools/gantt-chart',
+  path: 'projects/gantt-chart',
   component: GanttChartBuilderPage,
 });
 
-// Risk Assessment route under tools
+// Risk Assessment route (now under projects)
 const riskAssessmentRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'tools/risk-assessment',
+  path: 'projects/risk-assessment',
   component: RiskAssessmentPage,
 });
 

@@ -58,7 +58,7 @@ const tools: Tool[] = [
       'Advanced weight loss tracking dashboard with projections and comprehensive health analytics. Features weight loss projections, trend analysis, and data visualization in pounds.',
     category: 'Health & Wellness',
     icon: Scale,
-    url: '/tools/healthbridge-enhanced',
+    url: '/projects/healthbridge-enhanced',
     features: [
       'AI Projections',
       'Medication Analysis',
@@ -74,7 +74,7 @@ const tools: Tool[] = [
       'Advanced markdown editing platform with live preview, comprehensive formatting support, and integrated content management for seamless writing and publishing workflows.',
     category: 'Content Creation',
     icon: FileText,
-    url: '/tools/markdown',
+    url: '/projects/markdown',
     features: [
       'Live Preview',
       'WYSIWYG Editor',
@@ -90,7 +90,7 @@ const tools: Tool[] = [
       'Create professional RACI matrices to define roles and responsibilities for your projects. Generate interactive tables and exportable Mermaid diagrams.',
     category: 'Project Management',
     icon: Wrench,
-    url: '/tools/raci-builder',
+    url: '/projects/raci-builder',
     features: [
       'Role Assignment',
       'Matrix Generation',
@@ -106,7 +106,7 @@ const tools: Tool[] = [
       'Prioritize your tasks using the Eisenhower Matrix based on importance and urgency. Visualize quadrants and export to XLSX for offline use.',
     category: 'Project Management',
     icon: Wrench,
-    url: '/tools/priority-matrix',
+    url: '/projects/priority-matrix',
     features: [
       'Eisenhower Matrix',
       'Quadrant Visualization',
@@ -122,7 +122,7 @@ const tools: Tool[] = [
       'Build project timelines with task durations and dates. Visualize with interactive Gantt charts and export to XLSX. Ready for AI-optimized scheduling.',
     category: 'Project Management',
     icon: Wrench,
-    url: '/tools/gantt-builder',
+    url: '/projects/gantt-chart',
     features: [
       'Timeline Visualization',
       'Duration Calculation',
@@ -139,7 +139,7 @@ const tools: Tool[] = [
       'Assess project risks with likelihood and impact scores. Generate matrix table with risk levels and export to XLSX. Ready for AI mitigation suggestions.',
     category: 'Project Management',
     icon: Wrench,
-    url: '/tools/risk-assessment',
+    url: '/projects/risk-assessment',
     features: [
       'Risk Scoring',
       'Matrix Generation',
