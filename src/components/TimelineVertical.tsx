@@ -1,9 +1,10 @@
 /**
  * TimelineVertical Component
  *
- * Two-column vertical timeline:
- * - Left column: Education & Certifications
- * - Right column: Career & Military positions
+ * Single unified vertical timeline:
+ * - Left side: Education & Certifications cards
+ * - Center: Timeline spine with icons
+ * - Right side: Career & Military cards
  */
 
 import { Badge } from '@/components/ui/badge';
@@ -17,8 +18,7 @@ import {
 import {
   categoryColors,
   formatDateRange,
-  getCareerTimeline,
-  getEducationTimeline,
+  getFullTimeline,
   type TimelineEntry,
 } from '@/data/timeline';
 import {
@@ -38,17 +38,15 @@ const iconMap: Record<string, React.ElementType> = {
   Shield,
 };
 
-function TimelineIcon({ entry, size = 'normal' }: { entry: TimelineEntry; size?: 'small' | 'normal' }) {
+function TimelineIcon({ entry }: { entry: TimelineEntry }) {
   const IconComponent = iconMap[entry.icon] || Briefcase;
   const colors = categoryColors[entry.category];
-  const sizeClasses = size === 'small' ? 'size-10' : 'size-12';
-  const iconSize = size === 'small' ? 'size-5' : 'size-6';
 
   return (
     <div
-      className={`flex ${sizeClasses} shrink-0 items-center justify-center rounded-full ${colors.bg} ${colors.border} border-2 shadow-md`}
+      className={`flex size-10 shrink-0 items-center justify-center rounded-full ${colors.bg} ${colors.border} border-2 shadow-md`}
     >
-      <IconComponent className={`${iconSize} ${colors.text}`} />
+      <IconComponent className={`size-5 ${colors.text}`} />
     </div>
   );
 }
@@ -122,83 +120,49 @@ function TimelineCard({ entry }: { entry: TimelineEntry }) {
   );
 }
 
-function TimelineColumn({
-  title,
-  subtitle,
-  entries,
-  align,
-}: {
-  title: string;
-  subtitle: string;
-  entries: TimelineEntry[];
-  align: 'left' | 'right';
-}) {
+export function TimelineVertical() {
+  const allEntries = getFullTimeline();
+
   return (
-    <div className='flex flex-col'>
-      {/* Column Header */}
-      <div className={`mb-6 ${align === 'right' ? 'text-left' : 'text-left'}`}>
-        <h3 className='text-xl font-bold text-text-foreground'>{title}</h3>
-        <p className='text-sm text-text-secondary'>{subtitle}</p>
-      </div>
+    <div className='relative'>
+      {/* Center Timeline Spine */}
+      <div className='absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-gradient-to-b from-strategy-gold via-strategy-gold/50 to-transparent' />
 
-      {/* Timeline Track */}
-      <div className='relative flex-1'>
-        {/* Vertical Line */}
-        <div
-          className={`absolute top-0 h-full w-0.5 bg-gradient-to-b from-strategy-gold via-strategy-gold/50 to-transparent ${
-            align === 'left' ? 'left-5' : 'left-5'
-          }`}
-        />
+      {/* Timeline Entries */}
+      <div className='space-y-8'>
+        {allEntries.map((entry) => {
+          const isLeft = entry.side === 'left';
 
-        {/* Entries */}
-        <div className='space-y-6'>
-          {entries.map((entry) => (
-            <div key={entry.id} className='relative flex items-start gap-4'>
-              {/* Icon on the line */}
-              <div className='relative z-10'>
-                <TimelineIcon entry={entry} size='small' />
+          return (
+            <div
+              key={entry.id}
+              className='relative grid grid-cols-[1fr_auto_1fr] items-start gap-4'
+            >
+              {/* Left Side - Education/Certifications */}
+              <div className={`flex justify-end ${isLeft ? '' : 'invisible'}`}>
+                {isLeft && <TimelineCard entry={entry} />}
               </div>
 
-              {/* Card */}
-              <div className='flex-1 pb-2'>
-                <TimelineCard entry={entry} />
+              {/* Center Icon */}
+              <div className='relative z-10 flex items-start justify-center pt-2'>
+                <TimelineIcon entry={entry} />
+              </div>
+
+              {/* Right Side - Career/Military */}
+              <div className={`flex justify-start ${isLeft ? 'invisible' : ''}`}>
+                {!isLeft && <TimelineCard entry={entry} />}
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
 
-        {/* End marker */}
-        <div className='relative mt-6 flex'>
-          <div className='ml-3 size-4 rounded-full border-2 border-strategy-gold/50 bg-surface-base'>
-            <div className='m-0.5 size-2 rounded-full bg-strategy-gold/50' />
-          </div>
+      {/* End marker */}
+      <div className='relative mt-8 flex justify-center'>
+        <div className='size-4 rounded-full border-2 border-strategy-gold/50 bg-surface-base'>
+          <div className='m-0.5 size-2 rounded-full bg-strategy-gold/50' />
         </div>
       </div>
-    </div>
-  );
-}
-
-export function TimelineVertical() {
-  const educationEntries = getEducationTimeline();
-  const careerEntries = getCareerTimeline();
-
-  return (
-    <div className='grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12'>
-      {/* Left Column: Education & Certifications */}
-      <TimelineColumn
-        title='Education & Certifications'
-        subtitle='Academic achievements and professional credentials'
-        entries={educationEntries}
-        align='left'
-      />
-
-      {/* Right Column: Career & Military */}
-      <TimelineColumn
-        title='Career & Military Service'
-        subtitle='Professional positions and military assignments'
-        entries={careerEntries}
-        align='right'
-      />
     </div>
   );
 }
