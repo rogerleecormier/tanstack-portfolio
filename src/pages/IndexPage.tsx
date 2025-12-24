@@ -225,8 +225,8 @@ export default function IndexPage() {
               { number: '∞', label: 'Learning' },
             ]}
             ctas={[
-              { label: 'View Work', href: '/portfolio', variant: 'primary' },
-              { label: 'Learn More', variant: 'secondary' },
+              { label: 'View Work', href: '/projects', variant: 'primary' },
+              { label: 'Learn More', href: '/about', variant: 'secondary' },
             ]}
           />
         </div>
