@@ -55,6 +55,7 @@ const MarkdownOnlyPage = lazy(() =>
   }))
 );
 const PrivateToolsPage = lazy(() => import('./pages/PrivateToolsPage'));
+const TimelinePage = lazy(() => import('./pages/TimelinePage'));
 
 import {
   PortfolioPageWrapper,
@@ -263,6 +264,13 @@ const riskAssessmentRoute = createRoute({
   component: RiskAssessmentPage,
 });
 
+// Timeline route
+const timelineRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'timeline',
+  component: TimelinePage,
+});
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -288,6 +296,7 @@ const routeTree = rootRoute.addChildren([
   priorityMatrixRoute,
   ganttChartBuilderRoute,
   riskAssessmentRoute,
+  timelineRoute,
 ]);
 
 // Create router instance
