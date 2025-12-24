@@ -68,7 +68,7 @@ export default function TimelinePage() {
                 { number: '15+', label: 'Years Experience' },
                 { number: '7', label: 'Years Military' },
                 { number: '150+', label: 'Projects Delivered' },
-                { number: '3', label: 'Degrees Earned' },
+                { number: '4', label: 'Credentials Earned' },
               ].map((stat) => (
                 <div
                   key={stat.label}
