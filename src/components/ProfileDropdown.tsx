@@ -9,7 +9,6 @@ import {
   Wrench,
   Mail,
   LogOut,
-  ChevronDown,
 } from 'lucide-react';
 import { useAuth, CloudflareUser } from '@/hooks/useAuth';
 
@@ -77,28 +76,15 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user }) => {
       <Button
         variant='ghost'
         onClick={() => setIsOpen(!isOpen)}
-        className='group relative h-10 w-auto min-w-[100px] max-w-[180px] shrink-0 rounded-full border-0 bg-white/5 px-2 py-1 text-white transition-all duration-200 hover:bg-white/15'
+        className='group relative size-10 shrink-0 rounded-full border-0 bg-white/5 p-0 text-white transition-all duration-200 hover:bg-white/15'
       >
-        <div className='flex items-center gap-2'>
-          {/* Minimalist Avatar */}
-          <Avatar className='size-7 rounded-full ring-2 ring-white/30 transition-all duration-200 group-hover:ring-white/50'>
-            <AvatarImage src={user.picture} alt={getUserDisplayName(user)} />
-            <AvatarFallback className='bg-strategy-gold text-xs font-medium text-white'>
-              {getUserInitials(user)}
-            </AvatarFallback>
-          </Avatar>
-
-          <div className='hidden text-left sm:block'>
-            <div className='max-w-28 truncate text-sm font-medium text-white'>
-              {getUserDisplayName(user)}
-            </div>
-          </div>
-
-          {/* Simple chevron */}
-          <ChevronDown
-            className={`size-3 text-white/70 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-          />
-        </div>
+        {/* Compact Avatar with Initials */}
+        <Avatar className='size-8 rounded-full ring-2 ring-white/30 transition-all duration-200 group-hover:ring-white/50'>
+          <AvatarImage src={user.picture} alt={getUserDisplayName(user)} />
+          <AvatarFallback className='bg-strategy-gold text-xs font-medium text-white'>
+            {getUserInitials(user)}
+          </AvatarFallback>
+        </Avatar>
       </Button>
 
       {isOpen && (
