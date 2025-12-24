@@ -1,8 +1,9 @@
 /**
  * TimelineVertical Component
  *
- * Full vertical timeline with alternating left/right cards
- * Used on the dedicated Timeline page
+ * Two-column vertical timeline:
+ * - Left column: Education & Certifications
+ * - Right column: Career & Military positions
  */
 
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { categoryColors, getFullTimeline, type TimelineEntry } from '@/data/timeline';
+import {
+  categoryColors,
+  formatDateRange,
+  getCareerTimeline,
+  getEducationTimeline,
+  type TimelineEntry,
+} from '@/data/timeline';
 import {
   Award,
   Briefcase,
@@ -31,48 +38,42 @@ const iconMap: Record<string, React.ElementType> = {
   Shield,
 };
 
-function TimelineIcon({ entry }: { entry: TimelineEntry }) {
+function TimelineIcon({ entry, size = 'normal' }: { entry: TimelineEntry; size?: 'small' | 'normal' }) {
   const IconComponent = iconMap[entry.icon] || Briefcase;
   const colors = categoryColors[entry.category];
+  const sizeClasses = size === 'small' ? 'size-10' : 'size-12';
+  const iconSize = size === 'small' ? 'size-5' : 'size-6';
 
   return (
     <div
-      className={`flex size-14 shrink-0 items-center justify-center rounded-full ${colors.bg} ${colors.border} border-2 shadow-lg`}
+      className={`flex ${sizeClasses} shrink-0 items-center justify-center rounded-full ${colors.bg} ${colors.border} border-2 shadow-md`}
     >
-      <IconComponent className={`size-7 ${colors.text}`} />
+      <IconComponent className={`${iconSize} ${colors.text}`} />
     </div>
   );
 }
 
-function TimelineCard({
-  entry,
-  position,
-}: {
-  entry: TimelineEntry;
-  position: 'left' | 'right';
-}) {
+function TimelineCard({ entry }: { entry: TimelineEntry }) {
   const colors = categoryColors[entry.category];
+  const dateRange = formatDateRange(entry.startDate, entry.endDate);
 
   return (
-    <Card
-      className={`group border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold/50 hover:shadow-xl ${
-        position === 'left' ? 'md:mr-8' : 'md:ml-8'
-      }`}
-    >
+    <Card className='group border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold/50 hover:shadow-lg'>
       <CardHeader className='pb-3'>
+        {/* Date Range Badge */}
         <div className='mb-2 flex flex-wrap items-center gap-2'>
-          <Badge className={`${colors.bg} ${colors.text} ${colors.border} border`}>
+          <span className='rounded-md bg-surface-base px-2 py-1 text-sm font-semibold text-strategy-gold'>
+            {dateRange}
+          </span>
+          <Badge className={`${colors.bg} ${colors.text} ${colors.border} border text-xs`}>
             {entry.category.charAt(0).toUpperCase() + entry.category.slice(1)}
           </Badge>
-          <span className='text-sm font-semibold text-strategy-gold'>
-            {entry.year}
-            {entry.endYear && ` - ${entry.endYear}`}
-          </span>
         </div>
-        <CardTitle className='text-xl text-text-foreground transition-colors group-hover:text-strategy-gold'>
+
+        <CardTitle className='text-lg text-text-foreground transition-colors group-hover:text-strategy-gold'>
           {entry.title}
         </CardTitle>
-        <CardDescription className='flex items-center gap-2 text-base'>
+        <CardDescription className='flex flex-wrap items-center gap-2 text-sm'>
           <span className='font-medium'>{entry.organization}</span>
           {entry.location && (
             <>
@@ -86,18 +87,18 @@ function TimelineCard({
         </CardDescription>
       </CardHeader>
       <CardContent className='pt-0'>
-        <p className='mb-4 leading-relaxed text-text-secondary'>
+        <p className='mb-3 text-sm leading-relaxed text-text-secondary'>
           {entry.description}
         </p>
 
         {entry.highlights && entry.highlights.length > 0 && (
-          <ul className='mb-4 space-y-2'>
+          <ul className='mb-3 space-y-1'>
             {entry.highlights.map((highlight, idx) => (
               <li
                 key={idx}
-                className='flex items-start gap-2 text-sm text-text-secondary'
+                className='flex items-start gap-2 text-xs text-text-secondary'
               >
-                <span className='mt-1.5 size-1.5 shrink-0 rounded-full bg-strategy-gold' />
+                <span className='mt-1.5 size-1 shrink-0 rounded-full bg-strategy-gold' />
                 {highlight}
               </li>
             ))}
@@ -105,11 +106,11 @@ function TimelineCard({
         )}
 
         {entry.badges && entry.badges.length > 0 && (
-          <div className='flex flex-wrap gap-2'>
+          <div className='flex flex-wrap gap-1.5'>
             {entry.badges.map((badge) => (
               <Badge
                 key={badge}
-                className='border-strategy-gold/20 bg-strategy-gold/10 text-strategy-gold'
+                className='border-strategy-gold/20 bg-strategy-gold/10 text-xs text-strategy-gold'
               >
                 {badge}
               </Badge>
@@ -121,67 +122,83 @@ function TimelineCard({
   );
 }
 
-export function TimelineVertical() {
-  const timeline = getFullTimeline();
-
+function TimelineColumn({
+  title,
+  subtitle,
+  entries,
+  align,
+}: {
+  title: string;
+  subtitle: string;
+  entries: TimelineEntry[];
+  align: 'left' | 'right';
+}) {
   return (
-    <div className='relative'>
-      {/* Center Line - Hidden on mobile */}
-      <div className='absolute left-1/2 top-0 hidden h-full w-0.5 -translate-x-1/2 bg-gradient-to-b from-strategy-gold via-strategy-gold/50 to-transparent md:block' />
+    <div className='flex flex-col'>
+      {/* Column Header */}
+      <div className={`mb-6 ${align === 'right' ? 'text-left' : 'text-left'}`}>
+        <h3 className='text-xl font-bold text-text-foreground'>{title}</h3>
+        <p className='text-sm text-text-secondary'>{subtitle}</p>
+      </div>
 
-      {/* Mobile Line */}
-      <div className='absolute left-7 top-0 h-full w-0.5 bg-gradient-to-b from-strategy-gold via-strategy-gold/50 to-transparent md:hidden' />
+      {/* Timeline Track */}
+      <div className='relative flex-1'>
+        {/* Vertical Line */}
+        <div
+          className={`absolute top-0 h-full w-0.5 bg-gradient-to-b from-strategy-gold via-strategy-gold/50 to-transparent ${
+            align === 'left' ? 'left-5' : 'left-5'
+          }`}
+        />
 
-      <div className='space-y-8 md:space-y-12'>
-        {timeline.map((entry, index) => {
-          const position = index % 2 === 0 ? 'left' : 'right';
-
-          return (
-            <div
-              key={entry.id}
-              className='relative grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto_1fr] md:gap-8'
-            >
-              {/* Left Content (Desktop) */}
-              <div
-                className={`hidden md:block ${
-                  position === 'left' ? '' : 'md:order-1'
-                }`}
-              >
-                {position === 'left' && <TimelineCard entry={entry} position='left' />}
+        {/* Entries */}
+        <div className='space-y-6'>
+          {entries.map((entry) => (
+            <div key={entry.id} className='relative flex items-start gap-4'>
+              {/* Icon on the line */}
+              <div className='relative z-10'>
+                <TimelineIcon entry={entry} size='small' />
               </div>
 
-              {/* Center Icon */}
-              <div className='relative z-10 flex justify-start md:justify-center'>
-                <div className='flex items-center gap-4 md:block'>
-                  <TimelineIcon entry={entry} />
-                  {/* Mobile Card */}
-                  <div className='flex-1 md:hidden'>
-                    <TimelineCard entry={entry} position='right' />
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Content (Desktop) */}
-              <div
-                className={`hidden md:block ${
-                  position === 'right' ? '' : 'md:order-first'
-                }`}
-              >
-                {position === 'right' && (
-                  <TimelineCard entry={entry} position='right' />
-                )}
+              {/* Card */}
+              <div className='flex-1 pb-2'>
+                <TimelineCard entry={entry} />
               </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
 
-      {/* Timeline End Marker */}
-      <div className='relative mt-12 flex justify-center'>
-        <div className='flex size-8 items-center justify-center rounded-full border-2 border-strategy-gold bg-surface-base'>
-          <div className='size-3 rounded-full bg-strategy-gold' />
+        {/* End marker */}
+        <div className='relative mt-6 flex'>
+          <div className='ml-3 size-4 rounded-full border-2 border-strategy-gold/50 bg-surface-base'>
+            <div className='m-0.5 size-2 rounded-full bg-strategy-gold/50' />
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function TimelineVertical() {
+  const educationEntries = getEducationTimeline();
+  const careerEntries = getCareerTimeline();
+
+  return (
+    <div className='grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12'>
+      {/* Left Column: Education & Certifications */}
+      <TimelineColumn
+        title='Education & Certifications'
+        subtitle='Academic achievements and professional credentials'
+        entries={educationEntries}
+        align='left'
+      />
+
+      {/* Right Column: Career & Military */}
+      <TimelineColumn
+        title='Career & Military Service'
+        subtitle='Professional positions and military assignments'
+        entries={careerEntries}
+        align='right'
+      />
     </div>
   );
 }

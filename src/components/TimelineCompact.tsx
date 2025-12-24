@@ -7,7 +7,12 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { categoryColors, getCompactTimeline, type TimelineEntry } from '@/data/timeline';
+import {
+  categoryColors,
+  formatDateRange,
+  getCompactTimeline,
+  type TimelineEntry,
+} from '@/data/timeline';
 import { useNavigate } from '@tanstack/react-router';
 import {
   ArrowRight,
@@ -37,6 +42,23 @@ function TimelineIcon({ entry }: { entry: TimelineEntry }) {
       <IconComponent className={`size-6 ${colors.text}`} />
     </div>
   );
+}
+
+// Format compact date for display (e.g., "2022 - Now" or "2016 - 23")
+function formatCompactDate(startDate: string, endDate?: string): string {
+  // Extract year from startDate
+  const startParts = startDate.split(' ');
+  const startYear = startParts.length > 1 ? startParts[1] : startDate;
+  
+  if (!endDate) return startYear ?? startDate;
+  if (endDate === 'Present') return `${startYear} - Now`;
+  
+  // Extract year from endDate and shorten
+  const endParts = endDate.split(' ');
+  const endYear = endParts.length > 1 ? endParts[1] : endDate;
+  const shortEnd = endYear?.slice(-2) ?? endDate.slice(-2);
+  
+  return `${startYear} - ${shortEnd}`;
 }
 
 export function TimelineCompact() {
@@ -71,8 +93,7 @@ export function TimelineCompact() {
               <TimelineIcon entry={entry} />
               <div className='min-w-0 flex-1'>
                 <p className='text-sm font-semibold text-strategy-gold'>
-                  {entry.year}
-                  {entry.endYear && ` - ${entry.endYear}`}
+                  {formatDateRange(entry.startDate, entry.endDate)}
                 </p>
                 <h3 className='truncate font-semibold text-text-foreground'>
                   {entry.title}
@@ -102,9 +123,7 @@ export function TimelineCompact() {
                     <TimelineIcon entry={entry} />
                   </div>
                   <p className='mb-1 text-center text-sm font-semibold text-strategy-gold'>
-                    {entry.year}
-                    {entry.endYear && entry.endYear !== 'Present' && ` - ${entry.endYear.slice(-2)}`}
-                    {entry.endYear === 'Present' && ' - Now'}
+                    {formatCompactDate(entry.startDate, entry.endDate)}
                   </p>
                   <h3 className='mb-1 text-center text-sm font-semibold leading-tight text-text-foreground'>
                     {entry.title.split(',')[0]}
