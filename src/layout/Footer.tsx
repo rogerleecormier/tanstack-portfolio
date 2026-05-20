@@ -1,58 +1,41 @@
 import { Link } from '@tanstack/react-router';
-import NewsletterSignup from '@/components/NewsletterSignup';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 export default function Footer() {
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/portfolio', label: 'Portfolio' },
-    { href: '/projects', label: 'Projects' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/contact', label: 'Contact' },
-  ];
-
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className='border-t border-border-subtle bg-surface-elevated'>
-      <div className='mx-auto max-w-7xl px-4 py-16 md:px-8'>
-        {/* Footer Grid - 4 columns */}
-        <div className='mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4'>
-          {/* Column 1: Brand & Tagline */}
-          <div className='space-y-4'>
+    <footer className='border-t border-border-subtle bg-surface-deep'>
+      <div className='mx-auto max-w-6xl px-6 py-12'>
+        <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
+          {/* Brand */}
+          <div className='space-y-3'>
             <Link to='/' className='flex items-center gap-2'>
-              <img
-                src='/header-logo.svg'
-                alt='Roger Lee Cormier Logo'
-                className='h-8 w-8'
-              />
-              <div>
-                <h2 className='text-sm font-bold leading-tight text-text-foreground'>
-                  Roger Lee Cormier
-                </h2>
-                <p className='text-xs font-semibold uppercase tracking-widest text-strategy-gold'>
-                  Technical Strategist
-                </p>
-              </div>
+              <img src='/header-logo.svg' alt='Logo' className='h-7 w-7' />
+              <span className='text-sm font-bold text-text-foreground'>Roger Lee Cormier</span>
             </Link>
-            <p className='text-xs leading-relaxed text-text-secondary'>
-              Designing and building enterprise solutions with precision.
-              Specializing in full-stack architecture, digital transformation,
-              and technical leadership.
+            <p className='text-xs leading-relaxed text-text-secondary max-w-xs'>
+              Technical Project Manager. Veteran. Builder.
+              Turning complex systems into measurable outcomes.
             </p>
           </div>
 
-          {/* Column 2: Navigation Links */}
+          {/* Nav */}
           <div>
-            <h3 className='mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground'>
+            <h3 className='mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-text-tertiary'>
               Navigation
             </h3>
-            <div className='space-y-3'>
-              {navLinks.map(link => (
+            <div className='space-y-2'>
+              {[
+                { href: '/about', label: 'About' },
+                { href: '/work', label: 'Work' },
+                { href: '/tools', label: 'Tools' },
+                { href: '/contact', label: 'Contact' },
+              ].map(link => (
                 <Link
                   key={link.href}
                   to={link.href}
-                  className='block text-xs text-text-secondary transition-colors hover:text-strategy-gold'
+                  className='block text-xs text-text-secondary hover:text-strategy-gold transition-colors'
                 >
                   {link.label}
                 </Link>
@@ -60,59 +43,48 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 3: Additional Links */}
+          {/* Social */}
           <div>
-            <h3 className='mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground'>
-              Resources
+            <h3 className='mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-text-tertiary'>
+              Connect
             </h3>
-            <div className='space-y-3'>
-              <Link
-                to='/privacy'
-                className='block text-xs text-text-secondary transition-colors hover:text-strategy-gold'
-              >
-                Privacy Policy
-              </Link>
+            <div className='flex gap-4'>
               <a
                 href='https://github.com/rogerleecormier'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='block text-xs text-text-secondary transition-colors hover:text-strategy-gold'
+                className='p-2 rounded-md text-text-secondary hover:text-strategy-gold hover:bg-strategy-gold/10 transition-all'
+                aria-label='GitHub'
               >
-                GitHub
+                <Github className='h-4 w-4' />
               </a>
               <a
                 href='https://linkedin.com/in/rogerleecormier'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='block text-xs text-text-secondary transition-colors hover:text-strategy-gold'
+                className='p-2 rounded-md text-text-secondary hover:text-strategy-gold hover:bg-strategy-gold/10 transition-all'
+                aria-label='LinkedIn'
               >
-                LinkedIn
+                <Linkedin className='h-4 w-4' />
               </a>
+              <Link
+                to='/contact'
+                className='p-2 rounded-md text-text-secondary hover:text-strategy-gold hover:bg-strategy-gold/10 transition-all'
+                aria-label='Contact'
+              >
+                <Mail className='h-4 w-4' />
+              </Link>
             </div>
-          </div>
-
-          {/* Column 4: Newsletter Signup */}
-          <div>
-            <h3 className='mb-4 text-xs font-bold uppercase tracking-widest text-text-foreground'>
-              Stay Updated
-            </h3>
-            <NewsletterSignup
-              variant='inline'
-              placeholder='your@email.com'
-              buttonText='Subscribe'
-              className='flex-col sm:flex-col'
-            />
           </div>
         </div>
 
-        {/* Divider */}
-        <div className='mb-8 h-px bg-border-subtle' />
-
-        {/* Copyright */}
-        <div className='text-center'>
+        <div className='mt-10 pt-6 border-t border-border-subtle/50 flex flex-col sm:flex-row justify-between items-center gap-2'>
           <p className='text-xs text-text-tertiary'>
             © {currentYear} Roger Lee Cormier. All rights reserved.
           </p>
+          <Link to='/privacy' className='text-xs text-text-tertiary hover:text-strategy-gold transition-colors'>
+            Privacy Policy
+          </Link>
         </div>
       </div>
     </footer>

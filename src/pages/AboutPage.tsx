@@ -1,429 +1,323 @@
-/**
- * About Page - Refactored
- *
- * Modern React component-based design featuring:
- * - Hero section with profile
- * - Compressed career timeline
- * - Core expertise grid
- * - Impact/values sections
- * - Contact CTA
- */
+import { fadeUp, stagger } from '@/lib/animations';
+import { motion } from 'framer-motion';
+import { Award, Briefcase, GraduationCap, Shield } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { ScrollToTop } from '@/components/ScrollToTop';
-import { SectionHeader } from '@/components/sections/SectionHeader';
-import { TimelineCompact } from '@/components/TimelineCompact';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { useNavigate } from '@tanstack/react-router';
-import {
-  Brain,
-  Briefcase,
-  Database,
-  Globe,
-  Heart,
-  MessageSquare,
-  Shield,
-  Target,
-  Users,
-  Zap,
-} from 'lucide-react';
-import { useEffect } from 'react';
+function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <motion.div
+      initial='hidden'
+      whileInView='visible'
+      viewport={{ once: true, amount: 0.1 }}
+      variants={stagger}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const certifications = [
+  { label: 'Project Management Professional (PMP®)', org: 'Project Management Institute', year: '2025' },
+  { label: 'Network+ Certification', org: 'CompTIA', year: '2009' },
+];
+
+const education = [
+  {
+    degree: 'M.S. Organizational Leadership',
+    school: 'Excelsior University',
+    detail: 'Technology & Data Analytics emphasis · SALUTE Honor Society · In Progress',
+    year: '2024–Present',
+  },
+  {
+    degree: 'B.S. Information Technology',
+    school: 'Excelsior University',
+    detail: 'Completed while serving in active duty and civilian tech roles',
+    year: '2012–2024',
+  },
+  {
+    degree: 'A.A.S. Technical Studies',
+    school: 'Excelsior College',
+    detail: 'Computer Technologies concentration',
+    year: '2009–2011',
+  },
+];
+
+const timeline = [
+  {
+    period: 'Oct 2022 – Present',
+    role: 'Technical Project Manager',
+    org: 'Vertex Education',
+    type: 'career' as const,
+    bullets: [
+      'Lead SaaS platform delivery and API integration architecture for 150+ K-12 subsidiaries',
+      'Ramp–NetSuite AP modernization: 35% reduction in month-end close cycle',
+      'Box → SharePoint migration: 25TB, 300+ users, zero data loss',
+      'Asana AI-augmented PMO: 100+ manual hours reclaimed monthly',
+      'Cloudflare Workers AI integration for autonomous status reporting',
+    ],
+  },
+  {
+    period: 'Jan 2016 – May 2023',
+    role: 'Technical PM / Integrations Specialist',
+    org: 'Ravyx (formerly STCR)',
+    type: 'career' as const,
+    bullets: [
+      'Directed POS and payment system architecture across 150+ retail locations',
+      'Toshiba TCxSky/4690, Verifone/Ingenico, PCI-compliant payment integrations',
+      '30+ automation scripts — deployment time reduced by 300%',
+      '50+ VMware environments managed for QA validation',
+      '45% increase in self-checkout adoption through UX optimization',
+    ],
+  },
+  {
+    period: 'Jan 2012 – Dec 2015',
+    role: 'Telecom Systems Manager / Logistics Manager',
+    org: 'U.S. Army – Fort Drum, NY',
+    type: 'military' as const,
+    bullets: [
+      'Led 24/7 NOC operations as NCOIC (E-5 Sergeant)',
+      'Supply Sergeant: governed $35M+ in telecommunications and IT assets',
+      'Implemented asset tracking system — 50% improvement in visibility',
+      'Trained 800+ personnel on deployment readiness procedures',
+      'Army Commendation Medal · Army Achievement Medal',
+    ],
+  },
+  {
+    period: 'Jan 2011 – Dec 2011',
+    role: 'Telecom Systems Manager',
+    org: 'U.S. Army – Operation New Dawn, Iraq',
+    type: 'military' as const,
+    bullets: [
+      'Deployed to Camp Victory and Al Asad Air Base, Iraq',
+      'Engineered SATCOM, WAN, and RF LOS networks in combat conditions',
+      '100% mission-critical communications uptime across full deployment',
+      'Supervised 24/7 NOC operations with immediate failover protocols',
+      'Joint Service Commendation Medal · Joint Meritorious Unit Award',
+    ],
+  },
+  {
+    period: 'Jul 2008 – Jan 2011',
+    role: 'Telecom Systems Operator',
+    org: 'U.S. Army – Fort Bragg, NC',
+    type: 'military' as const,
+    bullets: [
+      '25Q MOS: Multichannel Transmission Systems Operator-Maintainer',
+      'Operated STT satellite terminals, HCLOS, Harris radios, Promina multiplexers',
+      'Configured WIN-T infrastructure for encrypted tactical communications',
+      '18th Airborne Corps · Good Conduct Medal',
+    ],
+  },
+];
+
+const skills = [
+  { category: 'Project Management', items: ['PMP® Methodology', 'Agile / Scrum', 'Stakeholder Management', 'Risk Management', 'Change Management', 'PMO Operations'] },
+  { category: 'Technical', items: ['REST API Integration', 'Cloudflare Workers / AI', 'NetSuite', 'SharePoint / M365', 'VMware', 'SQL / D1'] },
+  { category: 'AI & Automation', items: ['Cloudflare Workers AI', 'Asana AI', 'Agentic Workflows', 'LLM Integration', 'Workflow Automation', 'Prompt Engineering'] },
+  { category: 'Leadership', items: ['Cross-functional Teams', 'Executive Communication', 'Vendor Management', 'Budget Oversight', 'Military NCO Leadership', 'Mentoring'] },
+];
 
 export default function AboutPage() {
-  const navigate = useNavigate();
-
-  // Scroll to top on mount
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, []);
-
-  // SEO metadata
-  useDocumentTitle({
-    title: 'About Roger Lee Cormier - Technical Project Manager',
-    description:
-      'PMP-certified Technical Project Manager specializing in digital transformation, AI automation, and enterprise integration. U.S. Army veteran delivering precision-targeted technology solutions.',
-    keywords: [
-      'Roger Lee Cormier',
-      'Technical Project Manager',
-      'PMP Certified',
-      'Digital Transformation',
-      'AI Automation',
-      'Military Veteran',
-      'NetSuite',
-      'ERP Integration',
-    ],
-    type: 'profile',
-    author: 'Roger Lee Cormier',
-  });
-
-  const handleNavigation = (path: string) => {
-    void navigate({ to: path });
-  };
-
   return (
-    <div className='min-h-screen bg-surface-base'>
-      {/* Hero Section */}
-      <div className='px-4 py-12 md:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <section className='relative overflow-hidden rounded-lg border border-border-subtle bg-gradient-to-b from-surface-elevated to-surface-base p-8 md:p-16'>
-            {/* Background gradient */}
-            <div className='bg-gradient-radial pointer-events-none absolute -right-1/2 -top-1/2 h-96 w-96 from-strategy-gold/10 to-transparent' />
-
-            <div className='relative z-10 grid grid-cols-1 items-center gap-12 lg:grid-cols-5'>
-              {/* Profile */}
-              <div className='flex flex-col items-center text-center lg:col-span-2'>
-                <div className='mb-6 flex size-40 items-center justify-center overflow-hidden rounded-full border-4 border-strategy-gold bg-strategy-gold/10 shadow-lg shadow-strategy-gold/20'>
-                  <img
-                    src='/images/IMG_1242.JPG'
-                    alt='Roger Lee Cormier'
-                    className='size-full object-cover'
-                  />
-                </div>
-                <h1 className='mb-2 text-2xl font-bold text-text-foreground'>
-                  Roger Lee Cormier
-                </h1>
-                <p className='text-sm font-semibold uppercase tracking-widest text-strategy-gold'>
-                  Technical Project Manager
-                </p>
-
-                {/* Badges */}
-                <div className='mt-4 flex flex-wrap justify-center gap-2'>
-                  {['PMP Certified', 'U.S. Army Veteran', '15+ Years'].map((badge) => (
-                    <Badge
-                      key={badge}
-                      className='border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold'
-                    >
-                      {badge}
-                    </Badge>
-                  ))}
-                </div>
+    <div className='min-h-screen bg-surface-base text-text-foreground'>
+      {/* Hero */}
+      <div className='pt-32 pb-16 px-6 border-b border-border-subtle'>
+        <div className='mx-auto max-w-6xl'>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'
+          >
+            <div>
+              <p className='text-xs font-bold uppercase tracking-[0.2em] text-strategy-gold mb-3'>About</p>
+              <h1 className='text-4xl sm:text-5xl font-bold text-text-foreground mb-6 leading-tight'>
+                I bridge the gap between strategy and execution.
+              </h1>
+              <p className='text-lg text-text-secondary leading-relaxed mb-6'>
+                I'm Roger Lee Cormier — PMP®-certified Technical Project Manager, U.S. Army veteran,
+                and builder of enterprise systems that actually work. I specialize in digital transformation,
+                AI integration, and making complex organizations move faster.
+              </p>
+              <p className='text-text-secondary leading-relaxed'>
+                My career spans three distinct chapters: Signal Corps communications under combat conditions,
+                enterprise POS infrastructure across 150+ retail locations, and leading AI-augmented
+                digital transformation in K-12 education. Each chapter made me a sharper problem-solver
+                and a more effective leader.
+              </p>
+            </div>
+            <div className='relative'>
+              <div className='aspect-[4/5] max-w-sm mx-auto rounded-2xl overflow-hidden border border-border-subtle'>
+                <img
+                  src='/images/IMG_1242.JPG'
+                  alt='Roger Lee Cormier'
+                  className='w-full h-full object-cover'
+                />
               </div>
-
-              {/* Content */}
-              <div className='lg:col-span-3'>
-                <p className='mb-3 text-sm font-semibold uppercase tracking-widest text-strategy-gold'>
-                  Targeting Digital Transformation with Precision
-                </p>
-
-                <h2 className='mb-6 text-3xl font-bold leading-tight text-text-foreground md:text-4xl'>
-                  Building Enterprise Solutions with Military Precision
-                </h2>
-
-                <p className='mb-8 max-w-2xl text-lg leading-relaxed text-text-secondary'>
-                  I bridge the gap between high-level business strategy and complex technical
-                  execution. With over 15 years of progressive leadership as a PMP-certified
-                  Technical Project Manager and U.S. Army veteran, I specialize in leading
-                  digital transformation, governing enterprise-scale SaaS platforms, and
-                  optimizing the full DevOps lifecycle.
-                </p>
-
-                {/* Stats */}
-                <div className='mb-8 grid grid-cols-2 gap-4 md:grid-cols-3'>
-                  {[
-                    { number: '15+', label: 'Years Experience' },
-                    { number: '150+', label: 'Projects Delivered' },
-                    { number: '7', label: 'Years Military' },
-                  ].map((stat) => (
-                    <div
-                      key={stat.label}
-                      className='rounded-lg border border-border-subtle bg-strategy-gold/5 p-4 text-center'
-                    >
-                      <div className='text-3xl font-bold text-strategy-gold'>{stat.number}</div>
-                      <div className='mt-2 text-xs font-semibold uppercase tracking-widest text-text-tertiary'>
-                        {stat.label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTAs */}
-                <div className='flex flex-col gap-4 sm:flex-row'>
-                  <Button
-                    onClick={() => handleNavigation('/contact')}
-                    className='bg-strategy-gold text-precision-charcoal hover:brightness-110'
-                  >
-                    Get in Touch
-                  </Button>
-                  <Button
-                    onClick={() => handleNavigation('/portfolio')}
-                    variant='outline'
-                    className='border-strategy-gold text-strategy-gold hover:bg-strategy-gold/10'
-                  >
-                    View Portfolio
-                  </Button>
+              <div className='absolute -bottom-4 right-4 bg-surface-elevated border border-strategy-gold/30 rounded-xl px-4 py-3 shadow-lg'>
+                <div className='flex items-center gap-2'>
+                  <Award className='h-5 w-5 text-strategy-gold' />
+                  <div>
+                    <div className='text-xs font-bold text-text-foreground'>PMP® Certified</div>
+                    <div className='text-[10px] text-text-tertiary'>PMI · 2025</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </section>
+          </motion.div>
         </div>
       </div>
 
-      {/* Timeline Section */}
-      <div className='px-4 md:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <TimelineCompact />
-        </div>
-      </div>
+      {/* Career Timeline */}
+      <Section className='py-20 px-6'>
+        <div className='mx-auto max-w-6xl'>
+          <motion.div variants={fadeUp} className='mb-12'>
+            <div className='flex items-center gap-3 mb-2'>
+              <Briefcase className='h-5 w-5 text-strategy-gold' />
+              <h2 className='text-2xl font-bold text-text-foreground'>Career & Service</h2>
+            </div>
+            <div className='h-px bg-border-subtle mt-3' />
+          </motion.div>
 
-      {/* Core Expertise Section */}
-      <div className='px-4 py-16 md:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <SectionHeader
-            title='Core Expertise'
-            subtitle="My technical expertise spans the full spectrum of digital transformation—from strategic planning through hands-on implementation."
-          />
+          <div className='space-y-8'>
+            {timeline.map((item, i) => (
+              <motion.div
+                key={i}
+                variants={fadeUp}
+                className='relative pl-8 border-l-2 border-border-subtle hover:border-strategy-gold/50 transition-colors duration-300'
+              >
+                <div className={`absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 ${
+                  item.type === 'military'
+                    ? 'border-text-tertiary bg-surface-base'
+                    : 'border-strategy-gold bg-surface-base'
+                }`} />
 
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'>
-            {/* DevOps & Cloud */}
-            <Card className='group border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold hover:shadow-lg'>
-              <CardHeader className='pb-4'>
-                <div className='mb-4 flex size-12 items-center justify-center rounded-lg bg-strategy-gold/10 ring-1 ring-strategy-gold/20'>
-                  <Database className='size-6 text-strategy-gold' />
+                <div className='flex flex-wrap items-center gap-2 mb-1'>
+                  <span className='text-xs font-bold text-text-tertiary'>{item.period}</span>
+                  {item.type === 'military' && (
+                    <span className='inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-surface-elevated border border-border-subtle text-text-tertiary'>
+                      <Shield className='h-2.5 w-2.5' /> Military
+                    </span>
+                  )}
                 </div>
-                <CardTitle className='text-lg text-text-foreground transition-colors group-hover:text-strategy-gold'>
-                  Enterprise DevOps & Cloud
-                </CardTitle>
-                <CardDescription>
-                  CI/CD pipeline governance, serverless architecture, GitHub Actions & Azure
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='mb-4 flex flex-wrap gap-2'>
-                  {['CI/CD', 'Serverless', 'GitHub Actions'].map((tag) => (
-                    <Badge
-                      key={tag}
-                      className='border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold'
-                    >
-                      {tag}
-                    </Badge>
+                <h3 className='text-base font-bold text-text-foreground mb-0.5'>{item.role}</h3>
+                <p className='text-sm font-medium text-strategy-gold mb-3'>{item.org}</p>
+                <ul className='space-y-1.5'>
+                  {item.bullets.map((b, j) => (
+                    <li key={j} className='flex items-start gap-2 text-sm text-text-secondary'>
+                      <span className='mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-strategy-gold/50' />
+                      {b}
+                    </li>
                   ))}
-                </div>
-                <p className='text-sm text-text-secondary'>
-                  Leading the design and implementation of mature DevOps practices that drive
-                  development velocity and operational stability.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* SaaS Integration */}
-            <Card className='group border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold hover:shadow-lg'>
-              <CardHeader className='pb-4'>
-                <div className='mb-4 flex size-12 items-center justify-center rounded-lg bg-strategy-gold/10 ring-1 ring-strategy-gold/20'>
-                  <Globe className='size-6 text-strategy-gold' />
-                </div>
-                <CardTitle className='text-lg text-text-foreground transition-colors group-hover:text-strategy-gold'>
-                  SaaS Platform Integration
-                </CardTitle>
-                <CardDescription>
-                  NetSuite, Ramp, API-first integration strategies
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='mb-4 flex flex-wrap gap-2'>
-                  {['NetSuite', 'Ramp', 'API Integration'].map((tag) => (
-                    <Badge
-                      key={tag}
-                      className='border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold'
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <p className='text-sm text-text-secondary'>
-                  Architecting enterprise ecosystems with financial workflow automation and
-                  real-time visibility across multi-entity operations.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* AI Automation */}
-            <Card className='group border border-border-subtle bg-surface-elevated transition-all duration-300 hover:border-strategy-gold hover:shadow-lg'>
-              <CardHeader className='pb-4'>
-                <div className='mb-4 flex size-12 items-center justify-center rounded-lg bg-strategy-gold/10 ring-1 ring-strategy-gold/20'>
-                  <Brain className='size-6 text-strategy-gold' />
-                </div>
-                <CardTitle className='text-lg text-text-foreground transition-colors group-hover:text-strategy-gold'>
-                  AI-Augmented Workflows
-                </CardTitle>
-                <CardDescription>
-                  Generative AI, automated reporting, intelligent triage
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='mb-4 flex flex-wrap gap-2'>
-                  {['Gen AI', 'Automation', '40% Overhead Cut'].map((tag) => (
-                    <Badge
-                      key={tag}
-                      className='border-strategy-gold/30 bg-strategy-gold/15 text-strategy-gold'
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <p className='text-sm text-text-secondary'>
-                  Championing emerging technologies, leveraging AI to automate reporting,
-                  backlog triage, and documentation.
-                </p>
-              </CardContent>
-            </Card>
+                </ul>
+              </motion.div>
+            ))}
           </div>
         </div>
-      </div>
+      </Section>
 
-      {/* Military Foundation Section */}
-      <div className='border-t border-border-subtle bg-surface-elevated px-4 py-16 md:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <div className='grid grid-cols-1 items-center gap-12 lg:grid-cols-2'>
-            <div>
-              <p className='mb-3 text-sm font-semibold uppercase tracking-widest text-strategy-gold'>
-                Professional Foundation
-              </p>
-              <h2 className='mb-6 text-3xl font-bold text-text-foreground md:text-4xl'>
-                Military to Technology Leadership
-              </h2>
-              <p className='mb-6 text-lg leading-relaxed text-text-secondary'>
-                My career foundation was forged through U.S. Army service, where mission-critical
-                reliability wasn't optional—it was mandatory. The discipline, strategic thinking,
-                and zero-failure mindset developed in military communications now drive my approach
-                to enterprise technology delivery.
-              </p>
-              <p className='mb-8 text-text-secondary'>
-                Deployed to Operation New Dawn (Iraq drawdown), I managed satellite & RF
-                communications in high-stakes environments. Led teams under pressure, coordinated
-                complex multi-stakeholder operations, and learned that precision and accountability
-                translate directly to enterprise technology success.
-              </p>
+      {/* Skills */}
+      <Section className='py-20 px-6 bg-surface-elevated/30 border-y border-border-subtle'>
+        <div className='mx-auto max-w-6xl'>
+          <motion.div variants={fadeUp} className='mb-12'>
+            <h2 className='text-2xl font-bold text-text-foreground mb-1'>Core Capabilities</h2>
+            <div className='h-px bg-border-subtle mt-3' />
+          </motion.div>
 
-              <div className='flex flex-wrap gap-2'>
-                {[
-                  'Operation New Dawn',
-                  'Signal Corps',
-                  'NOC Command',
-                  '$35M+ Equipment',
-                ].map((badge) => (
-                  <Badge key={badge} className='bg-slate-600/20 text-slate-400'>
-                    {badge}
-                  </Badge>
-                ))}
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+            {skills.map((group, i) => (
+              <motion.div key={i} variants={fadeUp}>
+                <h3 className='text-[10px] font-bold uppercase tracking-[0.2em] text-strategy-gold mb-3'>{group.category}</h3>
+                <div className='flex flex-wrap gap-1.5'>
+                  {group.items.map(skill => (
+                    <span key={skill} className='text-xs px-2.5 py-1 rounded-lg bg-surface-base border border-border-subtle text-text-secondary hover:border-strategy-gold/40 hover:text-text-foreground transition-colors cursor-default'>
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Education & Certifications */}
+      <Section className='py-20 px-6'>
+        <div className='mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-16'>
+          <div>
+            <motion.div variants={fadeUp} className='mb-8'>
+              <div className='flex items-center gap-3 mb-2'>
+                <GraduationCap className='h-5 w-5 text-strategy-gold' />
+                <h2 className='text-2xl font-bold text-text-foreground'>Education</h2>
               </div>
+              <div className='h-px bg-border-subtle mt-3' />
+            </motion.div>
+            <div className='space-y-6'>
+              {education.map((edu, i) => (
+                <motion.div key={i} variants={fadeUp} className='pl-6 border-l-2 border-border-subtle'>
+                  <div className='text-xs font-bold text-text-tertiary mb-1'>{edu.year}</div>
+                  <div className='font-semibold text-text-foreground'>{edu.degree}</div>
+                  <div className='text-sm text-strategy-gold font-medium mb-1'>{edu.school}</div>
+                  <div className='text-xs text-text-secondary'>{edu.detail}</div>
+                </motion.div>
+              ))}
             </div>
+          </div>
 
-            <div className='grid grid-cols-2 gap-4'>
-              {[
-                { icon: Shield, title: 'Mission Focus', desc: 'Zero-failure mindset' },
-                { icon: Target, title: 'Precision', desc: 'Exacting standards' },
-                { icon: Users, title: 'Leadership', desc: 'Team-first approach' },
-                { icon: Zap, title: 'Execution', desc: 'Results-driven' },
-              ].map((item) => (
-                <Card
-                  key={item.title}
-                  className='border border-border-subtle bg-surface-base text-center'
+          <div>
+            <motion.div variants={fadeUp} className='mb-8'>
+              <div className='flex items-center gap-3 mb-2'>
+                <Award className='h-5 w-5 text-strategy-gold' />
+                <h2 className='text-2xl font-bold text-text-foreground'>Certifications</h2>
+              </div>
+              <div className='h-px bg-border-subtle mt-3' />
+            </motion.div>
+            <div className='space-y-4'>
+              {certifications.map((cert, i) => (
+                <motion.div
+                  key={i}
+                  variants={fadeUp}
+                  className='flex items-start gap-4 p-4 rounded-xl border border-border-subtle bg-surface-elevated hover:border-strategy-gold/30 transition-colors'
                 >
-                  <CardContent className='pt-6'>
-                    <div className='mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-slate-500/10'>
-                      <item.icon className='size-6 text-slate-400' />
-                    </div>
-                    <h3 className='font-semibold text-text-foreground'>{item.title}</h3>
-                    <p className='text-sm text-text-secondary'>{item.desc}</p>
-                  </CardContent>
-                </Card>
+                  <div className='flex-shrink-0 h-10 w-10 rounded-lg bg-strategy-gold/10 border border-strategy-gold/20 flex items-center justify-center'>
+                    <Award className='h-5 w-5 text-strategy-gold' />
+                  </div>
+                  <div>
+                    <div className='font-semibold text-text-foreground text-sm'>{cert.label}</div>
+                    <div className='text-xs text-text-secondary mt-0.5'>{cert.org} · {cert.year}</div>
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
-      </div>
+      </Section>
 
-      {/* Values Section */}
-      <div className='px-4 py-16 md:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <SectionHeader
-            title='Leadership Values'
-            subtitle='Principles forged through military service and reinforced through years of professional experience'
-          />
-
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-2'>
-            <Card className='border border-border-subtle bg-surface-elevated'>
-              <CardHeader>
-                <div className='mb-4 flex size-12 items-center justify-center rounded-lg bg-strategy-gold/10'>
-                  <Heart className='size-6 text-strategy-gold' />
-                </div>
-                <CardTitle className='text-text-foreground'>Integrity & Mission Focus</CardTitle>
-                <CardDescription>
-                  Ethical technology decisions with unwavering commitment
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className='text-text-secondary'>
-                  Technology decisions have real consequences. I prioritize ethical solutions that
-                  serve genuine business needs. Like military operations, successful projects
-                  require clear objectives, disciplined execution, and unwavering commitment to
-                  the mission.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className='border border-border-subtle bg-surface-elevated'>
-              <CardHeader>
-                <div className='mb-4 flex size-12 items-center justify-center rounded-lg bg-strategy-gold/10'>
-                  <Users className='size-6 text-strategy-gold' />
-                </div>
-                <CardTitle className='text-text-foreground'>People-Centric Excellence</CardTitle>
-                <CardDescription>
-                  Leading with empathy while maintaining high standards
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className='text-text-secondary'>
-                  The best technology means nothing without adoption. I lead teams with empathy
-                  while maintaining high standards. Precision execution demands meticulous attention
-                  to detail—whether targeting communications or enterprise integration.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className='border-t border-border-subtle px-4 py-16 md:px-8'>
-        <div className='mx-auto max-w-4xl text-center'>
-          <div className='rounded-lg border border-border-subtle bg-gradient-to-b from-surface-elevated to-surface-base p-12'>
-            <h2 className='mb-4 text-3xl font-bold text-text-foreground md:text-4xl'>
-              Ready to Transform Your Organization?
-            </h2>
-            <p className='mx-auto mb-8 max-w-2xl text-lg text-text-secondary'>
-              Whether you need enterprise integration expertise, AI automation strategy, or
-              digital transformation leadership—I'm here to deliver precision-targeted results.
-            </p>
-            <div className='flex flex-col justify-center gap-4 sm:flex-row'>
-              <Button
-                onClick={() => handleNavigation('/contact')}
-                className='bg-strategy-gold px-8 py-3 text-lg font-semibold text-precision-charcoal hover:brightness-110'
-              >
-                Start a Conversation
-                <MessageSquare className='ml-2 size-5' />
-              </Button>
-              <Button
-                onClick={() => handleNavigation('/portfolio')}
-                className='border border-strategy-gold/50 bg-strategy-gold/10 px-8 py-3 text-lg font-semibold text-strategy-gold hover:border-strategy-gold hover:bg-strategy-gold/20'
-              >
-                View Portfolio
-                <Briefcase className='ml-2 size-5' />
-              </Button>
+      {/* CTA */}
+      <Section className='py-16 px-6 border-t border-border-subtle'>
+        <div className='mx-auto max-w-6xl'>
+          <motion.div variants={fadeUp} className='flex flex-col sm:flex-row items-center justify-between gap-6 rounded-2xl border border-border-subtle bg-surface-elevated p-8'>
+            <div>
+              <h2 className='text-xl font-bold text-text-foreground mb-1'>Ready to work together?</h2>
+              <p className='text-sm text-text-secondary'>I'm open to TPM roles, consulting engagements, and interesting collaborations.</p>
             </div>
-          </div>
+            <div className='flex gap-3 flex-shrink-0'>
+              <Link
+                to='/contact'
+                className='px-5 py-2.5 rounded-lg bg-strategy-gold text-precision-charcoal font-semibold text-sm hover:brightness-110 transition-all'
+              >
+                Get in Touch
+              </Link>
+              <Link
+                to='/work'
+                className='px-5 py-2.5 rounded-lg border border-border-subtle text-text-secondary font-semibold text-sm hover:border-strategy-gold hover:text-text-foreground transition-all'
+              >
+                View Work
+              </Link>
+            </div>
+          </motion.div>
         </div>
-      </div>
-
-      <ScrollToTop />
+      </Section>
     </div>
   );
 }

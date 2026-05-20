@@ -1,103 +1,93 @@
-import { Button } from '@/components/ui/button';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Link } from '@tanstack/react-router';
-import React, { useState } from 'react';
-import RedesignedSearch from '@/components/RedesignedSearch';
-import { LoginPage } from '@/components/LoginPage';
-import ProfileDropdown from '@/components/ProfileDropdown';
-import { useAuth } from '@/hooks/useAuth';
+import { Menu, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-const Header: React.FC = () => {
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const { user } = useAuth();
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/work', label: 'Work' },
+  { href: '/tools', label: 'Tools' },
+  { href: '/contact', label: 'Contact' },
+];
 
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/timeline', label: 'Timeline' },
-    { href: '/portfolio', label: 'Portfolio' },
-    { href: '/projects', label: 'Projects' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/contact', label: 'Contact' },
-  ];
+export default function Header() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <header className='sticky top-0 z-50 border-b border-border-subtle bg-gradient-to-r from-surface-deep to-precision-charcoal backdrop-blur-md'>
-      <div className='mx-auto max-w-7xl px-4 py-4 md:px-8'>
-        <div className='flex items-center justify-between gap-4'>
-          {/* Left Section: Hamburger + Logo + Brand */}
-          <div className='flex items-center gap-3'>
-            {/* Mobile Menu Trigger */}
-            <SidebarTrigger className='flex lg:hidden' />
+    <header
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+        scrolled
+          ? 'border-b border-border-subtle bg-surface-deep/95 backdrop-blur-md shadow-lg'
+          : 'bg-transparent'
+      }`}
+    >
+      <div className='mx-auto max-w-6xl px-6 py-4'>
+        <div className='flex items-center justify-between'>
+          {/* Brand */}
+          <Link to='/' className='flex items-center gap-2.5 group'>
+            <img src='/header-logo.svg' alt='Logo' className='h-8 w-8' />
+            <div>
+              <span className='block text-sm font-bold text-text-foreground leading-tight'>
+                Roger Lee Cormier
+              </span>
+              <span className='block text-[10px] font-semibold uppercase tracking-[0.2em] text-strategy-gold leading-tight'>
+                Technical Strategist
+              </span>
+            </div>
+          </Link>
 
-            {/* Logo & Brand */}
-            <Link to='/' className='flex shrink-0 items-center gap-2'>
-              <img
-                src='/header-logo.svg'
-                alt='Logo'
-                className='h-8 w-8 md:h-10 md:w-10'
-              />
-              <div className='hidden sm:block'>
-                <h1 className='text-base font-bold leading-tight text-text-foreground md:text-lg'>
-                  Roger Lee Cormier
-                </h1>
-                <p className='text-xs font-semibold uppercase leading-tight tracking-widest text-strategy-gold'>
-                  Technical Strategist
-                </p>
-              </div>
-            </Link>
-          </div>
-
-          {/* Center Section: Desktop Navigation */}
-          <nav className='hidden flex-1 items-center gap-6 lg:flex xl:gap-8'>
+          {/* Desktop Nav */}
+          <nav className='hidden md:flex items-center gap-8'>
             {navLinks.map(link => (
               <Link
                 key={link.href}
                 to={link.href}
-                className='text-sm font-medium text-text-secondary transition-colors hover:text-strategy-gold'
-                activeProps={{
-                  className:
-                    'text-strategy-gold border-b-2 border-strategy-gold pb-1',
-                }}
+                className='text-sm font-medium text-text-secondary transition-colors hover:text-text-foreground'
+                activeProps={{ className: 'text-strategy-gold font-semibold' }}
+                activeOptions={{ exact: link.href === '/' }}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Right Section: Search + Login + Logout */}
-          <div className='flex items-center gap-2 md:gap-3'>
-            {/* Search Component - responsive */}
-            <div className='hidden max-w-sm flex-1 md:block'>
-              <RedesignedSearch />
-            </div>
-
-            {/* Login/Logout Button */}
-            {user ? (
-              <ProfileDropdown user={user} />
-            ) : (
-              <Button
-                onClick={() => setShowLoginModal(true)}
-                size='sm'
-                className='bg-strategy-gold text-precision-charcoal transition-all hover:brightness-110'
-              >
-                <span className='hidden sm:inline'>Login</span>
-                <span className='sm:hidden'>Sign In</span>
-              </Button>
-            )}
-          </div>
+          {/* Mobile toggle */}
+          <button
+            className='md:hidden p-2 text-text-secondary hover:text-text-foreground transition-colors'
+            onClick={() => setMobileOpen(o => !o)}
+            aria-label='Toggle menu'
+          >
+            {mobileOpen ? <X className='h-5 w-5' /> : <Menu className='h-5 w-5' />}
+          </button>
         </div>
       </div>
 
-      {/* Login Modal */}
-      <Dialog open={showLoginModal} onOpenChange={setShowLoginModal}>
-        <DialogContent className='border-strategy-gold/20 bg-surface-deep/95 backdrop-blur-xl'>
-          <LoginPage onClose={() => setShowLoginModal(false)} />
-        </DialogContent>
-      </Dialog>
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className='md:hidden border-t border-border-subtle bg-surface-deep/98 backdrop-blur-md'>
+          <nav className='flex flex-col px-6 py-4 gap-1'>
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className='py-3 text-sm font-medium text-text-secondary hover:text-text-foreground transition-colors border-b border-border-subtle/50 last:border-0'
+                activeProps={{ className: 'text-strategy-gold font-semibold' }}
+                activeOptions={{ exact: link.href === '/' }}
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
     </header>
   );
-};
-
-export default Header;
+}
