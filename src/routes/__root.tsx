@@ -12,11 +12,11 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'Roger Lee Cormier | Strategic TPM' },
+      { title: 'Roger Lee Cormier | Enterprise Technology Strategist' },
       {
         name: 'description',
         content:
-          'Portfolio of Roger Lee Cormier, Strategic Technical Program Manager.',
+          'Portfolio of Roger Lee Cormier, Enterprise Technology Strategist.',
       },
     ],
     links: [
@@ -41,7 +41,7 @@ function Root() {
                 to='/'
                 className='text-xl font-bold tracking-tight text-white transition-colors hover:text-indigo-400'
               >
-                rcormier<span className='text-indigo-500'>.</span>
+                Roger Lee Cormier<span className='text-indigo-500'>.</span>
               </Link>
               <nav className='flex space-x-6 text-sm font-medium'>
                 <Link

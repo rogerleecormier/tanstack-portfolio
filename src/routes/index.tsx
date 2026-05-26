@@ -12,8 +12,15 @@ function Index() {
       {/* Section 1: Hero */}
       <section className='relative mx-auto flex min-h-[calc(100vh-4rem)] max-w-4xl flex-col items-center justify-center px-4 text-center'>
         <div className='pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0%,transparent_60%)]' />
+        <div className='mb-8 flex size-32 items-center justify-center overflow-hidden rounded-full border-4 border-indigo-500/20 bg-slate-900 shadow-2xl shadow-indigo-500/10'>
+          <img
+            src='/images/IMG_1242.JPG'
+            alt='Roger Lee Cormier'
+            className='size-full object-cover'
+          />
+        </div>
         <span className='mb-6 animate-pulse rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-400'>
-          Enterprise Technology Strategist & TPM
+          Enterprise Technology Strategist
         </span>
         <h1 className='mb-6 text-4xl font-black tracking-tight text-white md:text-6xl'>
           Bridging Business Strategy with{' '}
