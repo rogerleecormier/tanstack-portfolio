@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Outlet, Link } from '@tanstack/react-router';
 
 export default function Root() {

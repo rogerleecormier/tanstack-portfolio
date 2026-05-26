@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { resumeData } from '../data/resume';
-import { Award, Briefcase, GraduationCap } from 'lucide-react';
+import { Award, GraduationCap } from 'lucide-react';
 
 export default function About() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);

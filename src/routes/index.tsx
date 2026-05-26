@@ -1,8 +1,5 @@
-import React from 'react';
-import { Link } from '@tanstack/react-router';
-import { resumeData } from '../data/resume';
 import { projectsData } from '../data/projects';
-import { ArrowDown, Briefcase, Award, Zap, Code, ShieldCheck } from 'lucide-react';
+import { ArrowDown, Briefcase, Zap, Code } from 'lucide-react';
 
 export default function Index() {
   return (
