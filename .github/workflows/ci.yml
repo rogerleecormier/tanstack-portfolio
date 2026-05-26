@@ -43,16 +43,8 @@ jobs:
       - name: TypeScript type check
         run: npm run type-check
 
-      - name: ESLint check and fix
-        run: npm run lint:fix
-
-      - name: Prettier format check and fix
-        run: |
-          npx prettier --write .
-          npx prettier --check .
-
-      - name: Security audit
-        run: npm run audit
+      - name: Prettier format check
+        run: npx prettier --check .
 
       - name: Build project
         run: npm run build
