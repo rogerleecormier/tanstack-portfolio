@@ -20,6 +20,7 @@ export const Route = createRootRoute({
       },
     ],
     links: [
+      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       { rel: 'icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
     ],
@@ -39,8 +40,14 @@ function Root() {
             <div className='mx-auto flex h-16 max-w-6xl items-center justify-between px-4'>
               <Link
                 to='/'
-                className='text-xl font-bold tracking-tight text-white transition-colors hover:text-indigo-400'
+                className='flex items-center gap-3 text-xl font-bold tracking-tight text-white transition-colors hover:text-indigo-400'
               >
+                <img
+                  src='/favicon.svg'
+                  alt='RC'
+                  className='h-8 w-8 flex-shrink-0 rounded-md'
+                  aria-hidden='true'
+                />
                 Roger Lee Cormier<span className='text-indigo-500'>.</span>
               </Link>
               <nav className='flex space-x-6 text-sm font-medium'>
