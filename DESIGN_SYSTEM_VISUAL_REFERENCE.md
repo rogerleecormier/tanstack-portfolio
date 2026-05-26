@@ -31,11 +31,11 @@
 ### Glassmorphic Header Pattern
 
 ```tsx
-<div className='border-strategy-gold/20 bg-surface-elevated/30 relative border-b backdrop-blur-xl'>
+<div className='relative border-b border-strategy-gold/20 bg-surface-elevated/30 backdrop-blur-xl'>
   {/* Gradient overlay */}
-  <div className='from-strategy-gold/8 via-strategy-gold/5 to-strategy-gold/8 absolute inset-0 bg-gradient-to-r'></div>
+  <div className='from-strategy-gold/8 to-strategy-gold/8 absolute inset-0 bg-gradient-to-r via-strategy-gold/5'></div>
   {/* Glow effect */}
-  <div className='bg-strategy-gold/5 absolute -right-1/2 -top-1/2 h-96 w-96 rounded-full blur-3xl'></div>
+  <div className='absolute -right-1/2 -top-1/2 h-96 w-96 rounded-full bg-strategy-gold/5 blur-3xl'></div>
   {/* Content with relative z-index */}
   <div className='relative ...'>Content</div>
 </div>
@@ -44,7 +44,7 @@
 ### Glassmorphic Card Pattern
 
 ```tsx
-<Card className='border-strategy-gold/20 bg-surface-elevated/30 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-strategy-gold/20 border shadow-lg backdrop-blur-xl transition-all duration-300 hover:shadow-xl'>
+<Card className='border border-strategy-gold/20 bg-surface-elevated/30 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-strategy-gold/50 hover:bg-surface-elevated/50 hover:shadow-xl hover:shadow-strategy-gold/20'>
   Content
 </Card>
 ```
@@ -52,8 +52,8 @@
 ### Icon Container Pattern
 
 ```tsx
-<div className='from-strategy-gold/20 to-strategy-gold/20 rounded-xl bg-gradient-to-r p-3'>
-  <IconComponent className='text-strategy-gold size-6' />
+<div className='rounded-xl bg-gradient-to-r from-strategy-gold/20 to-strategy-gold/20 p-3'>
+  <IconComponent className='size-6 text-strategy-gold' />
 </div>
 ```
 

@@ -5,19 +5,23 @@
  * Used by TimelineCompact (About page) and TimelineVertical (Timeline page)
  */
 
-export type TimelineCategory = 'military' | 'education' | 'certification' | 'career';
+export type TimelineCategory =
+  | 'military'
+  | 'education'
+  | 'certification'
+  | 'career';
 export type TimelineSide = 'left' | 'right';
 
 export interface TimelineEntry {
   id: string;
-  startDate: string;       // "Jul 2008" or "2024"
-  endDate?: string;        // "Dec 2015" or "Present"
+  startDate: string; // "Jul 2008" or "2024"
+  endDate?: string; // "Dec 2015" or "Present"
   title: string;
   organization: string;
   location?: string;
   description: string;
   category: TimelineCategory;
-  side: TimelineSide;      // left = education, right = career/military
+  side: TimelineSide; // left = education, right = career/military
   icon: string;
   badges?: string[];
   highlights?: string[];
@@ -25,7 +29,7 @@ export interface TimelineEntry {
 
 export const timelineData: TimelineEntry[] = [
   // ==================== EDUCATION (LEFT SIDE) ====================
-  
+
   // MS Org Leadership (Current)
   {
     id: 'ms-leadership',
@@ -34,7 +38,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Master of Science, Organizational Leadership',
     organization: 'Excelsior University',
     location: 'Albany, NY',
-    description: 'Technology & Data Analytics emphasis. Advancing strategic leadership capabilities for enterprise digital transformation with focus on technology management and innovation.',
+    description:
+      'Technology & Data Analytics emphasis. Advancing strategic leadership capabilities for enterprise digital transformation with focus on technology management and innovation.',
     category: 'education',
     side: 'left',
     icon: 'GraduationCap',
@@ -49,7 +54,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Bachelor of Science, Information Technology',
     organization: 'Excelsior University',
     location: 'Albany, NY',
-    description: 'Comprehensive IT education completed while serving in military and civilian technical roles. Foundation in network systems, security, and enterprise technology.',
+    description:
+      'Comprehensive IT education completed while serving in military and civilian technical roles. Foundation in network systems, security, and enterprise technology.',
     category: 'education',
     side: 'left',
     icon: 'GraduationCap',
@@ -64,7 +70,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Associate of Applied Science, Technical Studies',
     organization: 'Excelsior College',
     location: 'Albany, NY',
-    description: 'Computer Technologies concentration. Built foundation in network operations, systems administration, and IT infrastructure.',
+    description:
+      'Computer Technologies concentration. Built foundation in network operations, systems administration, and IT infrastructure.',
     category: 'education',
     side: 'left',
     icon: 'GraduationCap',
@@ -79,7 +86,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Advanced Individual Training (AIT)',
     organization: 'U.S. Army Signal School',
     location: 'Fort Gordon, GA',
-    description: '25Q Multichannel Transmission Systems Operator-Maintainer MOS training. Specialized in tactical satellite terminals, HCLOS, tactical radios, and network systems.',
+    description:
+      '25Q Multichannel Transmission Systems Operator-Maintainer MOS training. Specialized in tactical satellite terminals, HCLOS, tactical radios, and network systems.',
     category: 'military',
     side: 'left',
     icon: 'Shield',
@@ -94,7 +102,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Basic Combat Training (BCT)',
     organization: 'U.S. Army',
     location: 'Fort Jackson, SC',
-    description: 'Completed U.S. Army Basic Combat Training. Foundation of military discipline, physical fitness, and combat readiness.',
+    description:
+      'Completed U.S. Army Basic Combat Training. Foundation of military discipline, physical fitness, and combat readiness.',
     category: 'military',
     side: 'left',
     icon: 'Shield',
@@ -109,19 +118,21 @@ export const timelineData: TimelineEntry[] = [
     startDate: 'May 2009',
     title: 'Network+ Certification',
     organization: 'CompTIA',
-    description: 'Industry-recognized certification validating expertise in network operations and security.',
+    description:
+      'Industry-recognized certification validating expertise in network operations and security.',
     category: 'certification',
     side: 'left',
     icon: 'Award',
     badges: ['CompTIA'],
   },
-  
+
   {
     id: 'pmp-certification',
     startDate: 'Jul 2025',
     title: 'Project Management Professional (PMP)',
     organization: 'Project Management Institute',
-    description: 'Industry-recognized certification validating expertise in project management, strategic planning, and team leadership.',
+    description:
+      'Industry-recognized certification validating expertise in project management, strategic planning, and team leadership.',
     category: 'certification',
     side: 'left',
     icon: 'Award',
@@ -138,7 +149,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Technical Project Manager',
     organization: 'Vertex Education',
     location: 'Remote',
-    description: 'Shape enterprise technology roadmap for multi-entity K-12 education network. Lead SaaS platform delivery, API integration architecture, and AI-augmented PMO practices across 150+ subsidiary organizations.',
+    description:
+      'Shape enterprise technology roadmap for multi-entity K-12 education network. Lead SaaS platform delivery, API integration architecture, and AI-augmented PMO practices across 150+ subsidiary organizations.',
     category: 'career',
     side: 'right',
     icon: 'Briefcase',
@@ -158,7 +170,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Technical Project Manager / Integrations Specialist',
     organization: 'Ravyx (formerly STCR)',
     location: 'Endwell, NY',
-    description: 'Directed enterprise POS and payment system architecture across 150+ retail locations. Managed Toshiba TCxSky/4690 platforms, Verifone/Ingenico terminals, and PCI-compliant payment integrations.',
+    description:
+      'Directed enterprise POS and payment system architecture across 150+ retail locations. Managed Toshiba TCxSky/4690 platforms, Verifone/Ingenico terminals, and PCI-compliant payment integrations.',
     category: 'career',
     side: 'right',
     icon: 'Server',
@@ -180,7 +193,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Telecommunications Systems Manager / Logistics Manager',
     organization: 'U.S. Army',
     location: 'Fort Drum, NY',
-    description: 'Led 24/7 NOC operations as NCOIC. Governed $35M+ in telecommunications and IT assets as unit Supply Sergeant, executing full lifecycle asset planning and logistics coordination.',
+    description:
+      'Led 24/7 NOC operations as NCOIC. Governed $35M+ in telecommunications and IT assets as unit Supply Sergeant, executing full lifecycle asset planning and logistics coordination.',
     category: 'military',
     side: 'right',
     icon: 'Shield',
@@ -200,7 +214,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Telecommunications Systems Manager',
     organization: 'U.S. Army',
     location: 'Fort Bragg, NC',
-    description: 'Reintegration and transition support following Operation New Dawn deployment.',
+    description:
+      'Reintegration and transition support following Operation New Dawn deployment.',
     category: 'military',
     side: 'right',
     icon: 'Shield',
@@ -215,7 +230,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Telecommunications Systems Manager',
     organization: 'U.S. Army',
     location: 'Camp Victory & Al Asad Air Base, Iraq',
-    description: 'Deployed to Operation New Dawn. Engineered and maintained mission-critical SATCOM, WAN, and RF LOS networks ensuring 100% uptime in combat conditions. Supervised 24/7 NOC operations.',
+    description:
+      'Deployed to Operation New Dawn. Engineered and maintained mission-critical SATCOM, WAN, and RF LOS networks ensuring 100% uptime in combat conditions. Supervised 24/7 NOC operations.',
     category: 'military',
     side: 'right',
     icon: 'Shield',
@@ -235,7 +251,8 @@ export const timelineData: TimelineEntry[] = [
     title: 'Telecommunications Systems Operator',
     organization: 'U.S. Army',
     location: 'Fort Bragg, NC',
-    description: 'Operated and maintained tactical communications systems including STT satellite terminals, HCLOS, Harris radios, and Promina multiplexers. Prepared for overseas deployment.',
+    description:
+      'Operated and maintained tactical communications systems including STT satellite terminals, HCLOS, Harris radios, and Promina multiplexers. Prepared for overseas deployment.',
     category: 'military',
     side: 'right',
     icon: 'Shield',
@@ -245,12 +262,17 @@ export const timelineData: TimelineEntry[] = [
       'Configured WIN-T infrastructure for encrypted tactical comms',
     ],
   },
-
 ];
 
 // Get entries for compact timeline (key milestones only)
 export const getCompactTimeline = (): TimelineEntry[] => {
-  const keyIds = ['ms-leadership', 'vertex-education', 'pmp-certification', 'ravyx-us', 'army-iraq'];
+  const keyIds = [
+    'ms-leadership',
+    'vertex-education',
+    'pmp-certification',
+    'ravyx-us',
+    'army-iraq',
+  ];
   return timelineData.filter(entry => keyIds.includes(entry.id));
 };
 
@@ -282,11 +304,16 @@ export const getCareerTimeline = (): TimelineEntry[] => {
 
 // Get all entries sorted by date descending
 export const getFullTimeline = (): TimelineEntry[] => {
-  return [...timelineData].sort((a, b) => parseDate(b.startDate) - parseDate(a.startDate));
+  return [...timelineData].sort(
+    (a, b) => parseDate(b.startDate) - parseDate(a.startDate)
+  );
 };
 
 // Category colors for styling
-export const categoryColors: Record<TimelineCategory, { bg: string; text: string; border: string }> = {
+export const categoryColors: Record<
+  TimelineCategory,
+  { bg: string; text: string; border: string }
+> = {
   military: {
     bg: 'bg-slate-500/10',
     text: 'text-slate-400',
@@ -310,7 +337,10 @@ export const categoryColors: Record<TimelineCategory, { bg: string; text: string
 };
 
 // Format date range for display
-export const formatDateRange = (startDate: string, endDate?: string): string => {
+export const formatDateRange = (
+  startDate: string,
+  endDate?: string
+): string => {
   if (!endDate) return startDate;
   return `${startDate} – ${endDate}`;
 };

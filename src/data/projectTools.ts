@@ -25,7 +25,12 @@ export const projectTools: ProjectTool[] = [
       'Advanced weight loss tracking dashboard with projections and comprehensive health analytics. Features weight loss projections, trend analysis, and data visualization in pounds.',
     category: 'Health & Wellness',
     url: '/projects/healthbridge-enhanced',
-    tags: ['Health Analytics', 'Weight Tracking', 'Predictive Modeling', 'Cloudflare Workers'],
+    tags: [
+      'Health Analytics',
+      'Weight Tracking',
+      'Predictive Modeling',
+      'Cloudflare Workers',
+    ],
     status: 'active',
   },
   {
@@ -75,7 +80,12 @@ export const projectTools: ProjectTool[] = [
       'Assess project risks with likelihood and impact scores. Generate matrix table with risk levels and export to XLSX. Ready for AI mitigation suggestions.',
     category: 'Project Management',
     url: '/projects/risk-assessment',
-    tags: ['Risk Assessment', 'Risk Matrix', 'Project Management', 'XLSX Export'],
+    tags: [
+      'Risk Assessment',
+      'Risk Matrix',
+      'Project Management',
+      'XLSX Export',
+    ],
     status: 'coming-soon',
   },
 ];

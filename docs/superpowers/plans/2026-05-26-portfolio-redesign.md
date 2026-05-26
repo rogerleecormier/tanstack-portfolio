@@ -13,14 +13,16 @@
 ### Task 1: Package and Config purging
 
 **Files:**
+
 - Modify: `package.json`
 - Modify: `vite.config.ts`
 - Create: `wrangler.jsonc`
 
 - [ ] **Step 1: Simplify package.json**
-  Update `package.json` to keep only React 19, `@tanstack/react-start` (v0), `@tanstack/react-router` (v1), Tailwind, Lucide React, and cloudflare plugins. Remove TipTap, CodeMirror, Recharts, pdf/excel renderers, and database/auth dependencies.
-  
+      Update `package.json` to keep only React 19, `@tanstack/react-start` (v0), `@tanstack/react-router` (v1), Tailwind, Lucide React, and cloudflare plugins. Remove TipTap, CodeMirror, Recharts, pdf/excel renderers, and database/auth dependencies.
+
   Replace the contents of `package.json` with:
+
   ```json
   {
     "name": "rcormier-portfolio",
@@ -61,9 +63,10 @@
   ```
 
 - [ ] **Step 2: Update vite.config.ts**
-  Configure Vite to support TanStack Start and Cloudflare Pages deployment environment.
-  
+      Configure Vite to support TanStack Start and Cloudflare Pages deployment environment.
+
   Replace `vite.config.ts` with:
+
   ```typescript
   import { defineConfig } from 'vite';
   import { tanstackStart } from '@tanstack/react-start/plugin/vite';
@@ -86,9 +89,10 @@
   ```
 
 - [ ] **Step 3: Create wrangler.jsonc**
-  Define wrangler settings for Cloudflare Pages/Workers target.
-  
+      Define wrangler settings for Cloudflare Pages/Workers target.
+
   Create `wrangler.jsonc` containing:
+
   ```json
   {
     "$schema": "node_modules/wrangler/config-schema.json",
@@ -100,11 +104,11 @@
   ```
 
 - [ ] **Step 4: Install dependencies**
-  Run: `npm install`
-  Expected: Successful package install with cleaned-up dependency tree.
+      Run: `npm install`
+      Expected: Successful package install with cleaned-up dependency tree.
 
 - [ ] **Step 5: Commit config changes**
-  Run:
+      Run:
   ```bash
   git add package.json vite.config.ts wrangler.jsonc
   git commit -m "chore: setup TanStack Start configurations and clean package dependencies"
@@ -115,12 +119,14 @@
 ### Task 2: Client & Server entry points and Directory cleanup
 
 **Files:**
+
 - Create: `src/entry-client.tsx`
 - Create: `src/entry-server.tsx`
 - Modify: `src/index.css`
 
 - [ ] **Step 1: Create client entry point**
-  Create `src/entry-client.tsx` to handle React 19 client hydration:
+      Create `src/entry-client.tsx` to handle React 19 client hydration:
+
   ```typescript
   import { hydrateRoot } from 'react-dom/client';
   import { StartClient } from '@tanstack/react-start';
@@ -132,9 +138,13 @@
   ```
 
 - [ ] **Step 2: Create server entry point**
-  Create `src/entry-server.tsx` to export the TanStack Start handler:
+      Create `src/entry-server.tsx` to export the TanStack Start handler:
+
   ```typescript
-  import { createStartHandler, defaultStreamHandler } from '@tanstack/react-start/server';
+  import {
+    createStartHandler,
+    defaultStreamHandler,
+  } from '@tanstack/react-start/server';
   import { createRouter } from './router';
 
   const router = createRouter();
@@ -148,9 +158,10 @@
   ```
 
 - [ ] **Step 3: Simplify CSS style system**
-  Simplify `src/index.css` to represent the custom dark slate background and neon indigo accents.
-  
+      Simplify `src/index.css` to represent the custom dark slate background and neon indigo accents.
+
   Replace the contents of `src/index.css` with:
+
   ```css
   @tailwind base;
   @tailwind components;
@@ -188,7 +199,7 @@
   ```
 
 - [ ] **Step 4: Commit entry setup**
-  Run:
+      Run:
   ```bash
   git add src/entry-client.tsx src/entry-server.tsx src/index.css
   git commit -m "feat: configure client/server entry hydration and slate & indigo tailwind styles"
@@ -199,13 +210,15 @@
 ### Task 3: Static Data definition
 
 **Files:**
+
 - Create: `src/data/resume.ts`
 - Create: `src/data/projects.ts`
 
 - [ ] **Step 1: Create static resume data**
-  Define resume Version 12 information in typescript.
-  
+      Define resume Version 12 information in typescript.
+
   Create `src/data/resume.ts` with:
+
   ```typescript
   export interface Experience {
     role: string;
@@ -235,79 +248,82 @@
   }
 
   export const resumeData: ResumeData = {
-    name: "Roger Lee Cormier",
-    title: "PMP Technical Project Manager & SaaS Integration Leader",
-    email: "rogerleecormier@gmail.com",
-    phone: "(585) 808-6213",
-    location: "Davenport, Florida",
-    summary: "PMP-certified Technical Project Manager with 15+ years experience spanning SaaS platform integrations (NetSuite, Vena, Ramp AP), cloud transformation (Azure, Cloudflare), secure communications, and U.S. Army network operations command.",
+    name: 'Roger Lee Cormier',
+    title: 'PMP Technical Project Manager & SaaS Integration Leader',
+    email: 'rogerleecormier@gmail.com',
+    phone: '(585) 808-6213',
+    location: 'Davenport, Florida',
+    summary:
+      'PMP-certified Technical Project Manager with 15+ years experience spanning SaaS platform integrations (NetSuite, Vena, Ramp AP), cloud transformation (Azure, Cloudflare), secure communications, and U.S. Army network operations command.',
     skills: [
-      "SaaS Integration & Governance",
-      "API Architecture & Python Scripting",
-      "PMO Setup & RACI Design",
-      "NetSuite ERP Administration",
-      "Cloud Solutions (Azure, Cloudflare)",
-      "Logistics & Property Management",
-      "AI Prompt Engineering & Workflows",
-      "Network Engineering & WIN-T"
+      'SaaS Integration & Governance',
+      'API Architecture & Python Scripting',
+      'PMO Setup & RACI Design',
+      'NetSuite ERP Administration',
+      'Cloud Solutions (Azure, Cloudflare)',
+      'Logistics & Property Management',
+      'AI Prompt Engineering & Workflows',
+      'Network Engineering & WIN-T',
     ],
     experience: [
       {
-        role: "Technical Project Manager",
-        company: "Vertex Education (Remote)",
-        period: "October 2022 – Present",
+        role: 'Technical Project Manager',
+        company: 'Vertex Education (Remote)',
+        period: 'October 2022 – Present',
         points: [
-          "Led custom Python/API SaaS integrations connecting NetSuite ERP, Vena, Ramp AP, Checkbook.io, and Box/SharePoint (25TB migration).",
-          "Established technical PMO standards, intake governance, risk matrices, and status dashboards using Asana and Smartsheet.",
-          "Designed date-triggered automated weekly status update summaries using generative AI integrations, saving 40% admin time.",
-          "Collaborated on outsource data analytics services including enrollment forecasting and operational dashboards for 150+ entities."
-        ]
+          'Led custom Python/API SaaS integrations connecting NetSuite ERP, Vena, Ramp AP, Checkbook.io, and Box/SharePoint (25TB migration).',
+          'Established technical PMO standards, intake governance, risk matrices, and status dashboards using Asana and Smartsheet.',
+          'Designed date-triggered automated weekly status update summaries using generative AI integrations, saving 40% admin time.',
+          'Collaborated on outsource data analytics services including enrollment forecasting and operational dashboards for 150+ entities.',
+        ],
       },
       {
-        role: "Technical Project Manager",
-        company: "Ravyx (formerly STCR)",
-        period: "February 2016 – March 2023",
+        role: 'Technical Project Manager',
+        company: 'Ravyx (formerly STCR)',
+        period: 'February 2016 – March 2023',
         points: [
-          "Managed enterprise point-of-sale (POS) systems across 150+ retail locations supporting Toshiba TCxSky and Verifone systems.",
-          "Coded custom script automations (30+ scripts in Python, VBScript, Batch) increasing deployment speeds by 300%.",
-          "Provisioned, debugged, and maintained 50+ VMware virtual staging and QA sandbox environments."
-        ]
+          'Managed enterprise point-of-sale (POS) systems across 150+ retail locations supporting Toshiba TCxSky and Verifone systems.',
+          'Coded custom script automations (30+ scripts in Python, VBScript, Batch) increasing deployment speeds by 300%.',
+          'Provisioned, debugged, and maintained 50+ VMware virtual staging and QA sandbox environments.',
+        ],
       },
       {
-        role: "Telecommunications Systems Manager / Supply Sergeant",
-        company: "U.S. Army (Fort Drum)",
-        period: "July 2008 – December 2015",
+        role: 'Telecommunications Systems Manager / Supply Sergeant',
+        company: 'U.S. Army (Fort Drum)',
+        period: 'July 2008 – December 2015',
         points: [
-          "Supervised 24/7 Network Operations Center (NOC) functions, managing deployable SATCOM, LAN/WAN, and RF LOS terminals.",
-          "Managed Property accountability for $35M+ signal signal systems, utilizing GCSS-Army ERP and SAMS-E inventory systems.",
-          "Standardized Command Supply Discipline Program (CSDP) SOPs ensuring 100% regulatory compliance and successful audits."
-        ]
-      }
+          'Supervised 24/7 Network Operations Center (NOC) functions, managing deployable SATCOM, LAN/WAN, and RF LOS terminals.',
+          'Managed Property accountability for $35M+ signal signal systems, utilizing GCSS-Army ERP and SAMS-E inventory systems.',
+          'Standardized Command Supply Discipline Program (CSDP) SOPs ensuring 100% regulatory compliance and successful audits.',
+        ],
+      },
     ],
     education: [
       {
-        degree: "M.S., Organizational Leadership (Emphasis: Technology and Data Analytics)",
-        school: "Excelsior University, Albany, NY",
-        year: "Expected July 2026",
-        details: "Honors: SALUTE National Honor Society (Pending)"
+        degree:
+          'M.S., Organizational Leadership (Emphasis: Technology and Data Analytics)',
+        school: 'Excelsior University, Albany, NY',
+        year: 'Expected July 2026',
+        details: 'Honors: SALUTE National Honor Society (Pending)',
       },
       {
-        degree: "B.S., Information Technology",
-        school: "Excelsior University, Albany, NY",
-        year: "July 2024"
-      }
+        degree: 'B.S., Information Technology',
+        school: 'Excelsior University, Albany, NY',
+        year: 'July 2024',
+      },
     ],
     certifications: [
-      "Project Management Professional (PMP) — PMI (August 2025)",
-      "CompTIA Network+ — CompTIA (May 2009)"
-    ]
+      'Project Management Professional (PMP) — PMI (August 2025)',
+      'CompTIA Network+ — CompTIA (May 2009)',
+    ],
   };
   ```
 
 - [ ] **Step 2: Create static projects data**
-  Define metadata for your featured applications: Taper, Caliber, and ProOrca.
-  
+      Define metadata for your featured applications: Taper, Caliber, and ProOrca.
+
   Create `src/data/projects.ts` with:
+
   ```typescript
   export interface Project {
     title: string;
@@ -321,46 +337,55 @@
 
   export const projectsData: Project[] = [
     {
-      title: "Taper",
-      tagline: "Funnel your income with absolute precision.",
-      description: "A zero-based envelope budgeting app that lets users taper monthly income into targeted, balanced category buckets. Complete allocation with zero waste.",
+      title: 'Taper',
+      tagline: 'Funnel your income with absolute precision.',
+      description:
+        'A zero-based envelope budgeting app that lets users taper monthly income into targeted, balanced category buckets. Complete allocation with zero waste.',
       features: [
-        "Interactive envelope ledger flow",
-        "Split chronological timeline tracker",
-        "Recurring payment scheduling and real-time alerts"
+        'Interactive envelope ledger flow',
+        'Split chronological timeline tracker',
+        'Recurring payment scheduling and real-time alerts',
       ],
-      url: "https://taper.rcormier.dev",
-      techStack: ["React", "TypeScript", "Tailwind CSS", "Vite"]
+      url: 'https://taper.rcormier.dev',
+      techStack: ['React', 'TypeScript', 'Tailwind CSS', 'Vite'],
     },
     {
-      title: "Caliber",
-      tagline: "Stop searching. Surface only high-caliber roles.",
-      description: "An AI-powered job search agent and matches reporter. Deploys background agents to match remote roles, run requirements checks, and tailors ATS resumes.",
+      title: 'Caliber',
+      tagline: 'Stop searching. Surface only high-caliber roles.',
+      description:
+        'An AI-powered job search agent and matches reporter. Deploys background agents to match remote roles, run requirements checks, and tailors ATS resumes.',
       features: [
-        "High-curation match scores & verdicts",
-        "Unicorn transferable skill detection panels",
-        "ATS resume and cover letter one-click builders"
+        'High-curation match scores & verdicts',
+        'Unicorn transferable skill detection panels',
+        'ATS resume and cover letter one-click builders',
       ],
-      url: "https://caliber.rcormier.dev",
-      techStack: ["React", "TypeScript", "Vite", "Cloudflare Workers", "Drizzle ORM"]
+      url: 'https://caliber.rcormier.dev',
+      techStack: [
+        'React',
+        'TypeScript',
+        'Vite',
+        'Cloudflare Workers',
+        'Drizzle ORM',
+      ],
     },
     {
-      title: "ProOrca",
-      tagline: "Plan school like a skill map, not a spreadsheet.",
-      description: "A map-first homeschool LMS and visual curriculum workspace. Features interactive learning path nodes, custom assignments, and student XP progress currents.",
+      title: 'ProOrca',
+      tagline: 'Plan school like a skill map, not a spreadsheet.',
+      description:
+        'A map-first homeschool LMS and visual curriculum workspace. Features interactive learning path nodes, custom assignments, and student XP progress currents.',
       features: [
-        "Visual skill-map course pathing editor",
-        "AI Lesson Planner Chat & quiz checkpoints builder",
-        "Student dashboard & rewards currents integration"
+        'Visual skill-map course pathing editor',
+        'AI Lesson Planner Chat & quiz checkpoints builder',
+        'Student dashboard & rewards currents integration',
       ],
-      url: "https://proorca.rcormier.dev",
-      techStack: ["React", "TypeScript", "Vite", "Tailwind CSS"]
-    }
+      url: 'https://proorca.rcormier.dev',
+      techStack: ['React', 'TypeScript', 'Vite', 'Tailwind CSS'],
+    },
   ];
   ```
 
 - [ ] **Step 3: Commit static data**
-  Run:
+      Run:
   ```bash
   git add src/data/resume.ts src/data/projects.ts
   git commit -m "feat: add static resume V12 and project metadata definitions"
@@ -371,6 +396,7 @@
 ### Task 4: Setup Router and base routing file-structure
 
 **Files:**
+
 - Create: `src/router.tsx`
 - Create: `src/routes/__root.tsx`
 - Create: `src/routes/index.tsx`
@@ -379,11 +405,16 @@
 - Create: `src/routes/contact.tsx`
 
 - [ ] **Step 1: Implement src/router.tsx**
-  Implement `src/router.tsx` which configures the TanStack Router.
-  
+      Implement `src/router.tsx` which configures the TanStack Router.
+
   Create `src/router.tsx` with:
+
   ```typescript
-  import { createRootRoute, createRoute, createRouter as createRouterBase } from '@tanstack/react-router';
+  import {
+    createRootRoute,
+    createRoute,
+    createRouter as createRouterBase,
+  } from '@tanstack/react-router';
   import { lazy } from 'react';
 
   // Lazy load main route components
@@ -442,10 +473,11 @@
   }
   ```
 
-- [ ] **Step 2: Implement src/routes/__root.tsx**
-  Create base layout with a header, footer, and Dark Mode Slate & Neon Indigo themes.
-  
+- [ ] **Step 2: Implement src/routes/\_\_root.tsx**
+      Create base layout with a header, footer, and Dark Mode Slate & Neon Indigo themes.
+
   Create `src/routes/__root.tsx` with:
+
   ```typescript
   import React from 'react';
   import { Outlet, Link } from '@tanstack/react-router';
@@ -493,9 +525,10 @@
   ```
 
 - [ ] **Step 3: Implement src/routes/index.tsx (Home Journey)**
-  Implement the immersive "Strategic Leadership Journey" scroll flow.
-  
+      Implement the immersive "Strategic Leadership Journey" scroll flow.
+
   Create `src/routes/index.tsx` with:
+
   ```typescript
   import React from 'react';
   import { Link } from '@tanstack/react-router';
@@ -620,9 +653,10 @@
   ```
 
 - [ ] **Step 4: Implement src/routes/about.tsx (About / Timeline)**
-  Implement the about page layout with collapsible accordion sections.
-  
+      Implement the about page layout with collapsible accordion sections.
+
   Create `src/routes/about.tsx` with:
+
   ```typescript
   import React, { useState } from 'react';
   import { resumeData } from '../data/resume';
@@ -724,9 +758,10 @@
   ```
 
 - [ ] **Step 5: Implement src/routes/projects.tsx (App Hub)**
-  Create a grid of your detailed project cards linking to `taper`, `caliber`, and `proorca`.
-  
+      Create a grid of your detailed project cards linking to `taper`, `caliber`, and `proorca`.
+
   Create `src/routes/projects.tsx` with:
+
   ```typescript
   import React from 'react';
   import { projectsData } from '../data/projects';
@@ -786,9 +821,10 @@
   ```
 
 - [ ] **Step 6: Implement src/routes/contact.tsx**
-  Implement the responsive shadcn-styled contact form.
-  
+      Implement the responsive shadcn-styled contact form.
+
   Create `src/routes/contact.tsx` with:
+
   ```typescript
   import React, { useState } from 'react';
   import { Mail, Phone, MapPin, Send } from 'lucide-react';
@@ -882,7 +918,7 @@
   ```
 
 - [ ] **Step 7: Commit routing templates**
-  Run:
+      Run:
   ```bash
   git add src/router.tsx src/routes/
   git commit -m "feat: implement file-based routing components and home, about, projects, contact pages"
@@ -893,12 +929,13 @@
 ### Task 5: Build, Test & Verify
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Step 1: Verify Dev Server Compilation**
-  Run: `npm run dev`
-  Expected output: Server starts on standard port and renders index page without missing symbol or runtime errors.
+      Run: `npm run dev`
+      Expected output: Server starts on standard port and renders index page without missing symbol or runtime errors.
 
 - [ ] **Step 2: Build test**
-  Run: `npm run build`
-  Expected output: Successful Vite SSR and CSR build process compiling assets directly into static outputs without warnings or errors.
+      Run: `npm run build`
+      Expected output: Successful Vite SSR and CSR build process compiling assets directly into static outputs without warnings or errors.
