@@ -1,7 +1,11 @@
 
-import { Outlet, Link } from '@tanstack/react-router';
+import { createRootRoute, Outlet, Link } from '@tanstack/react-router';
 
-export default function Root() {
+export const Route = createRootRoute({
+  component: Root,
+});
+
+function Root() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-950 text-slate-50 selection:bg-indigo-500 selection:text-white">
       <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur">

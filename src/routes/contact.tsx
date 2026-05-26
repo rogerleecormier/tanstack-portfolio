@@ -1,7 +1,12 @@
+import { createFileRoute } from '@tanstack/react-router';
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
-export default function Contact() {
+export const Route = createFileRoute('/contact')({
+  component: Contact,
+});
+
+function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
 

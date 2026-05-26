@@ -1,8 +1,13 @@
 
+import { createFileRoute } from '@tanstack/react-router';
 import { projectsData } from '../data/projects';
 import { ExternalLink, CheckCircle } from 'lucide-react';
 
-export default function Projects() {
+export const Route = createFileRoute('/projects')({
+  component: Projects,
+});
+
+function Projects() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-16 space-y-12">
       <div className="text-center max-w-2xl mx-auto space-y-4">

@@ -1,7 +1,12 @@
+import { createFileRoute } from '@tanstack/react-router';
 import { projectsData } from '../data/projects';
 import { ArrowDown, Briefcase, Zap, Code } from 'lucide-react';
 
-export default function Index() {
+export const Route = createFileRoute('/')({
+  component: Index,
+});
+
+function Index() {
   return (
     <div className="space-y-24 pb-24">
       {/* Section 1: Hero */}

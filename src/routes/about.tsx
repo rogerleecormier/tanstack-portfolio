@@ -1,8 +1,13 @@
+import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { resumeData } from '../data/resume';
 import { Award, GraduationCap } from 'lucide-react';
 
-export default function About() {
+export const Route = createFileRoute('/about')({
+  component: About,
+});
+
+function About() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggleAccordion = (idx: number) => {
