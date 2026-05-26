@@ -8,6 +8,7 @@ dist/
 # Generated files
 *.min.js
 *.min.css
+src/routeTree.gen.ts
 
 # Config files that should maintain their formatting
 package-lock.json
