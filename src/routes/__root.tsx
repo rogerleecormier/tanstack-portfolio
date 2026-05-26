@@ -75,7 +75,7 @@ function Root() {
               </nav>
             </div>
             {/* Scroll progress indicator */}
-            <div className='absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 scroll-progress-bar' />
+            <div className='scroll-progress-bar absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500' />
           </header>
           <main className='flex-grow'>
             <Outlet />
