@@ -60,9 +60,6 @@ function Root() {
                 <span className='hidden sm:inline'>
                   Roger Lee Cormier<span className='text-indigo-500'>.</span>
                 </span>
-                <span className='sm:hidden'>
-                  RC<span className='text-indigo-500'>.</span>
-                </span>
               </Link>
               {/* Desktop nav */}
               <nav className='hidden md:flex md:space-x-6 md:text-sm md:font-medium'>
