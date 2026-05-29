@@ -14,8 +14,9 @@ function Projects() {
           Independent Applications Showcase
         </h1>
         <p className='text-sm leading-relaxed text-slate-400'>
-          Four edge-native and serverless web tools built to automate key workflows,
-          budgeting allocation, memory management, and curated AI matchmaking agents.
+          Four edge-native and serverless web tools built to automate key
+          workflows, budgeting allocation, memory management, and curated AI
+          matchmaking agents.
         </p>
       </div>
 
