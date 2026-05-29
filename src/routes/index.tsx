@@ -130,7 +130,7 @@ function Index() {
           </div>
           <div className='card-hover-effect rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center'>
             <p className='mb-2 text-4xl font-extrabold text-indigo-400'>
-              25 TB
+              10+ TB
             </p>
             <p className='mb-1 text-sm font-semibold text-slate-300'>
               Enterprise Content Migrated

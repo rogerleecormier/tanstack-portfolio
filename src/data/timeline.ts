@@ -157,7 +157,7 @@ export const timelineData: TimelineEntry[] = [
     badges: ['Current', 'Remote'],
     highlights: [
       'Led Ramp-NetSuite AP modernization reducing month-end close by 35%',
-      'Directed 25TB Box to SharePoint migration for 300+ users',
+      'Directed 10+ TB Box to SharePoint migration for 300+ users',
       'Automated workflows reclaiming 100+ manual hours monthly',
     ],
   },

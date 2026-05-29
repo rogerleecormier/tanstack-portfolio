@@ -49,7 +49,7 @@ export const resumeData: ResumeData = {
       company: 'Vertex Education (Remote)',
       period: 'October 2022 – Present',
       points: [
-        'Led custom Python/API SaaS integrations connecting NetSuite ERP, Vena, Ramp AP, Checkbook.io, and Box/SharePoint (25TB migration), reducing AP month-end close cycle by 35%.',
+        'Led custom Python/API SaaS integrations connecting NetSuite ERP, Vena, Ramp AP, Checkbook.io, and Box/SharePoint (10+ TB migration), reducing AP month-end close cycle by 35%.',
         'Established technical PMO standards, intake governance, risk matrices, and status dashboards using Asana and Smartsheet to coordinate U.S. and offshore development teams.',
         'Designed date-triggered automated weekly status update summaries using generative AI integrations, reclaiming 100+ manual hours monthly (40% admin overhead cut).',
         'Collaborated on outsource data analytics services including enrollment forecasting and operational dashboards for 150+ education organizations.',
