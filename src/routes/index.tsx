@@ -157,10 +157,10 @@ function Index() {
           Active Product Suite
         </h2>
         <p className='mx-auto mb-10 max-w-xl text-sm text-slate-400'>
-          Three independent edge-native tools built to streamline workflows,
-          finances, and search agents.
+          Four independent edge-native tools built to streamline workflows,
+          finances, memory management, and search agents.
         </p>
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2'>
           {projectsData.map((project, idx) => (
             <div
               key={idx}

@@ -14,12 +14,12 @@ function Projects() {
           Independent Applications Showcase
         </h1>
         <p className='text-sm leading-relaxed text-slate-400'>
-          Edge-native and serverless web tools built to automate key workflows,
-          budgeting allocation, and curated AI matchmaking agents.
+          Four edge-native and serverless web tools built to automate key workflows,
+          budgeting allocation, memory management, and curated AI matchmaking agents.
         </p>
       </div>
 
-      <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
+      <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2'>
         {projectsData.map((project, idx) => (
           <div
             key={idx}
