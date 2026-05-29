@@ -1,6 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { projectsData } from '../data/projects';
-import { ArrowDown, ArrowUpRight, Search, ShieldCheck, Cpu, Cloud, Users, TrendingUp } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowUpRight,
+  Search,
+  ShieldCheck,
+  Cpu,
+  Cloud,
+  Users,
+  TrendingUp,
+} from 'lucide-react';
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -75,7 +84,10 @@ function Index() {
               1. Assessment & Alignment
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Evaluating operational readiness, auditing data flows, and aligning executive sponsors. Mapping complex processes to establish a robust strategic foundation before introducing technology.
+              Evaluating operational readiness, auditing data flows, and
+              aligning executive sponsors. Mapping complex processes to
+              establish a robust strategic foundation before introducing
+              technology.
             </p>
           </div>
 
@@ -88,7 +100,9 @@ function Index() {
               2. Governance & Structure
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Enforcing accountability with clear PMO standards, RACI matrices, and intake templates in Smartsheet and Asana to coordinate distributed onshore and offshore development teams.
+              Enforcing accountability with clear PMO standards, RACI matrices,
+              and intake templates in Smartsheet and Asana to coordinate
+              distributed onshore and offshore development teams.
             </p>
           </div>
 
@@ -101,7 +115,9 @@ function Index() {
               3. AI-Powered Workflows
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Reclaiming 100+ manual hours monthly. Integrating agentic AI update generators with Claude and ChatGPT to automate status aggregation, PMO triage, and SOP updates.
+              Reclaiming 100+ manual hours monthly. Integrating agentic AI
+              update generators with Claude and ChatGPT to automate status
+              aggregation, PMO triage, and SOP updates.
             </p>
           </div>
 
@@ -114,7 +130,9 @@ function Index() {
               4. Cloud Integration & API Architecture
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Deploying secure serverless integration pipelines (Python, Azure Functions, Cloudflare Workers) to connect NetSuite ERP, Vena forecasting, Ramp AP, and Box/SharePoint.
+              Deploying secure serverless integration pipelines (Python, Azure
+              Functions, Cloudflare Workers) to connect NetSuite ERP, Vena
+              forecasting, Ramp AP, and Box/SharePoint.
             </p>
           </div>
 
@@ -127,7 +145,9 @@ function Index() {
               5. Change Management & Adoption
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Driving user engagement through active champion networks, targeted training, and UI/UX optimization—proven by a 45% increase in system adoption during enterprise rollouts.
+              Driving user engagement through active champion networks, targeted
+              training, and UI/UX optimization—proven by a 45% increase in
+              system adoption during enterprise rollouts.
             </p>
           </div>
 
@@ -140,7 +160,9 @@ function Index() {
               6. Scaling & Evolution
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Establishing quarterly review cadences and performance metrics. Managing changes through version control and robust release cycles to sustain long-term operational velocity.
+              Establishing quarterly review cadences and performance metrics.
+              Managing changes through version control and robust release cycles
+              to sustain long-term operational velocity.
             </p>
           </div>
         </div>
@@ -171,7 +193,8 @@ function Index() {
               Month-End Close Cycle
             </p>
             <p className='text-xs text-slate-500'>
-              Automated AP workflows across NetSuite ERP, Vena, and Ramp AP integrations.
+              Automated AP workflows across NetSuite ERP, Vena, and Ramp AP
+              integrations.
             </p>
           </div>
           <div className='card-hover-effect rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center'>
