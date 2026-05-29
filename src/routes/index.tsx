@@ -103,9 +103,9 @@ function Index() {
               3. Process Automation
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Reclaiming over 100 manual hours monthly. Integrating
-              Date-triggered AI updating agents with Claude, ChatGPT, and custom
-              Python scripts to streamline PMO triage and document creation.
+              Reclaiming over 100 manual hours monthly. Deploying agentic AI
+              workflows with Claude and ChatGPT to automate PMO status
+              consolidation, task management, and document generation.
             </p>
           </div>
         </div>

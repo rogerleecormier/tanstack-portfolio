@@ -54,4 +54,24 @@ export const projectsData: Project[] = [
     url: 'https://proorca.rcormier.dev',
     techStack: ['React', 'TypeScript', 'Vite', 'Tailwind CSS'],
   },
+  {
+    title: 'Locker',
+    tagline: 'Secure memory vault for users and AI.',
+    description:
+      'A private memory management system with AES-256-GCM encryption. Stores facts semantically, exposes MCP tools for AI chatbots, and includes hybrid search via vector embeddings.',
+    features: [
+      'AES-256-GCM encryption at rest in Cloudflare D1',
+      'MCP JSON-RPC integration for AI memory operations',
+      'Hybrid semantic + metadata search via Vectorize',
+      'Bulk export to JSON and Markdown',
+    ],
+    url: 'https://locker.rcormier.dev',
+    techStack: [
+      'TanStack Start',
+      'TypeScript',
+      'Cloudflare D1',
+      'Vectorize',
+      'AES-256',
+    ],
+  },
 ];
