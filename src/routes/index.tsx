@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { projectsData } from '../data/projects';
-import { ArrowDown, Briefcase, Zap, Code, ArrowUpRight } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Search, ShieldCheck, Cpu, Cloud, Users, TrendingUp } from 'lucide-react';
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -66,46 +66,81 @@ function Index() {
           {/* Active Filling Connection Line */}
           <div className='timeline-fill absolute bottom-0 left-0 top-0 w-[2px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500' />
 
-          {/* Step 1: Strategic Vision */}
+          {/* Step 1: Assessment & Alignment */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
-              <Code className='h-5 w-5 text-indigo-400 transition-transform group-hover:rotate-6' />
+              <Search className='h-5 w-5 text-indigo-400 transition-transform group-hover:rotate-6' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              1. Strategic Vision
+              1. Assessment & Alignment
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Driving multi-entity ERP and AP SaaS platform deployments
-              (NetSuite, Vena, Ramp). Standardizing data patterns to coordinate
-              operations for 150+ education organizations.
+              Evaluating operational readiness, auditing data flows, and aligning executive sponsors. Mapping complex processes to establish a robust strategic foundation before introducing technology.
             </p>
           </div>
-          {/* Step 2: PMO Governance */}
+
+          {/* Step 2: PMO Governance & Structure */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
-              <Briefcase className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-6' />
+              <ShieldCheck className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-6' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              2. Operations & Governance
+              2. Governance & Structure
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Establishing intake pipelines, milestone mapping, and RACI
-              matrices using Smartsheet and Asana to coordinate distributed U.S.
-              and offshore development teams.
+              Enforcing accountability with clear PMO standards, RACI matrices, and intake templates in Smartsheet and Asana to coordinate distributed onshore and offshore development teams.
             </p>
           </div>
-          {/* Step 3: AI & Automation */}
+
+          {/* Step 3: AI-Powered Workflows */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
-              <Zap className='h-5 w-5 text-indigo-400 transition-transform group-hover:scale-110' />
+              <Cpu className='h-5 w-5 text-indigo-400 transition-transform group-hover:scale-110' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              3. Process Automation
+              3. AI-Powered Workflows
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Reclaiming over 100 manual hours monthly. Deploying agentic AI
-              workflows with Claude and ChatGPT to automate PMO status
-              consolidation, task management, and document generation.
+              Reclaiming 100+ manual hours monthly. Integrating agentic AI update generators with Claude and ChatGPT to automate status aggregation, PMO triage, and SOP updates.
+            </p>
+          </div>
+
+          {/* Step 4: Cloud Integration & APIs */}
+          <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
+            <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
+              <Cloud className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-12' />
+            </span>
+            <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
+              4. Cloud Integration & API Architecture
+            </h3>
+            <p className='leading-relaxed text-slate-400'>
+              Deploying secure serverless integration pipelines (Python, Azure Functions, Cloudflare Workers) to connect NetSuite ERP, Vena forecasting, Ramp AP, and Box/SharePoint.
+            </p>
+          </div>
+
+          {/* Step 5: Change Management & UX */}
+          <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
+            <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
+              <Users className='h-5 w-5 text-indigo-400 transition-transform group-hover:scale-110' />
+            </span>
+            <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
+              5. Change Management & Adoption
+            </h3>
+            <p className='leading-relaxed text-slate-400'>
+              Driving user engagement through active champion networks, targeted training, and UI/UX optimization—proven by a 45% increase in system adoption during enterprise rollouts.
+            </p>
+          </div>
+
+          {/* Step 6: Sustaining & Scaling */}
+          <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
+            <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
+              <TrendingUp className='h-5 w-5 text-indigo-400 transition-transform group-hover:translate-x-0.5' />
+            </span>
+            <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
+              6. Scaling & Evolution
+            </h3>
+            <p className='leading-relaxed text-slate-400'>
+              Establishing quarterly review cadences and performance metrics. Managing changes through version control and robust release cycles to sustain long-term operational velocity.
             </p>
           </div>
         </div>
@@ -130,13 +165,13 @@ function Index() {
           </div>
           <div className='card-hover-effect rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center'>
             <p className='mb-2 text-4xl font-extrabold text-indigo-400'>
-              10+ TB
+              35% Cut
             </p>
             <p className='mb-1 text-sm font-semibold text-slate-300'>
-              Enterprise Content Migrated
+              Month-End Close Cycle
             </p>
             <p className='text-xs text-slate-500'>
-              Box to SharePoint migration with custom mappings for 300+ clients.
+              Automated AP workflows across NetSuite ERP, Vena, and Ramp AP integrations.
             </p>
           </div>
           <div className='card-hover-effect rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center'>
