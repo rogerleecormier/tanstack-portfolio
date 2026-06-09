@@ -11,12 +11,11 @@ function Projects() {
     <div className='mx-auto max-w-6xl space-y-12 px-4 py-16'>
       <div className='mx-auto max-w-2xl space-y-4 text-center'>
         <h1 className='text-3xl font-extrabold tracking-tight text-white'>
-          Independent Applications Showcase
+          Edge-Native Application Portfolio
         </h1>
         <p className='text-sm leading-relaxed text-slate-400'>
-          Four edge-native and serverless web tools built to automate key
-          workflows, budgeting allocation, memory management, and curated AI
-          matchmaking agents.
+          Four production applications demonstrating agentic AI, semantic search,
+          financial modeling, and modern edge-native architecture at scale.
         </p>
       </div>
 

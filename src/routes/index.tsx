@@ -3,7 +3,6 @@ import { projectsData } from '../data/projects';
 import {
   ArrowDown,
   ArrowUpRight,
-  Search,
   ShieldCheck,
   Cpu,
   Cloud,
@@ -31,17 +30,17 @@ function Index() {
           </div>
         </div>
         <span className='animate-fade-in-up animation-delay-100 mb-6 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-400'>
-          Enterprise Technology Strategist
+          AI Agentic Engineer & Enterprise Architect
         </span>
         <h1 className='animate-fade-in-up animation-delay-200 mb-6 text-4xl font-black tracking-tight text-white md:text-6xl'>
-          Bridging Business Strategy with{' '}
+          Agentic AI, Enterprise Transformation &{' '}
           <span className='bg-clip-text text-indigo-400'>
-            Technical Execution
+            Edge-Native Systems
           </span>
         </h1>
         <p className='animate-fade-in-up animation-delay-300 mb-10 max-w-2xl text-lg leading-relaxed text-slate-400 md:text-xl'>
-          Leading ERP modernizations, orchestrating PMO compliance frameworks,
-          and architecting AI-augmented automated workflows.
+          Architecting autonomous agents, orchestrating multi-platform SaaS integrations,
+          and building edge-native applications powered by AI.
         </p>
         <div className='animate-fade-in-up animation-delay-400 flex flex-col items-center gap-4 sm:flex-row'>
           <a
@@ -75,94 +74,93 @@ function Index() {
           {/* Active Filling Connection Line */}
           <div className='timeline-fill absolute bottom-0 left-0 top-0 w-[2px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500' />
 
-          {/* Step 1: Assessment & Alignment */}
+          {/* Step 1: AI Architecture & Agent Design */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
-              <Search className='h-5 w-5 text-indigo-400 transition-transform group-hover:rotate-6' />
+              <Cpu className='h-5 w-5 text-indigo-400 transition-transform group-hover:rotate-6' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              1. Assessment & Alignment
+              1. Agentic AI Architecture & Design
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Evaluating operational readiness, auditing data flows, and
-              aligning executive sponsors. Mapping complex processes to
-              establish a robust strategic foundation before introducing
-              technology.
+              Architecting autonomous background agents, designing Graph RAG
+              pipelines, and engineering MCP integrations. Building intelligent
+              systems that reason, plan, and execute across SaaS platforms.
             </p>
           </div>
 
-          {/* Step 2: PMO Governance & Structure */}
+          {/* Step 2: Enterprise SaaS Integration Strategy */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
-              <ShieldCheck className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-6' />
+              <Cloud className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-6' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              2. Governance & Structure
+              2. Enterprise SaaS & Platform Integration
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Enforcing accountability with clear PMO standards, RACI matrices,
-              and intake templates in Smartsheet and Asana to coordinate
-              distributed onshore and offshore development teams.
+              Architecting multi-platform API ecosystems connecting ERP (NetSuite, Vena),
+              spend management (Ramp), and content systems (Box, SharePoint). Building
+              scalable, audit-ready integration patterns with governance frameworks.
             </p>
           </div>
 
-          {/* Step 3: AI-Powered Workflows */}
+          {/* Step 3: PMO Governance & Execution Framework */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
-              <Cpu className='h-5 w-5 text-indigo-400 transition-transform group-hover:scale-110' />
+              <ShieldCheck className='h-5 w-5 text-indigo-400 transition-transform group-hover:scale-110' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              3. AI-Powered Workflows
+              3. PMO Governance & Execution
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Reclaiming 100+ manual hours monthly. Integrating agentic AI
-              update generators with Claude and ChatGPT to automate status
-              aggregation, PMO triage, and SOP updates.
+              Institutionalizing PMO discipline with RACI matrices, intake
+              governance, risk frameworks, and automated dashboards. Coordinating
+              distributed teams across time zones with structured handoffs.
             </p>
           </div>
 
-          {/* Step 4: Cloud Integration & APIs */}
+          {/* Step 4: Edge-Native & Serverless Architecture */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
-              <Cloud className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-12' />
+              <Cpu className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-12' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              4. Cloud Integration & API Architecture
+              4. Edge-Native & Serverless Architecture
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Deploying secure serverless integration pipelines (Python, Azure
-              Functions, Cloudflare Workers) to connect NetSuite ERP, Vena
-              forecasting, Ramp AP, and Box/SharePoint.
+              Building modern full-stack applications on Cloudflare Workers,
+              D1, and Vectorize. Deploying intelligent APIs, vector databases,
+              and autonomous agents at the edge for global performance and resilience.
             </p>
           </div>
 
-          {/* Step 5: Change Management & UX */}
+          {/* Step 5: AI-Augmented Automation & Process Optimization */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
               <Users className='h-5 w-5 text-indigo-400 transition-transform group-hover:scale-110' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              5. Change Management & Adoption
+              5. AI-Augmented Automation & Change Management
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Driving user engagement through active champion networks, targeted
-              training, and UI/UX optimization—proven by a 45% increase in
-              system adoption during enterprise rollouts.
+              Deploying generative AI agents to automate status reporting, PMO
+              triage, and workflow optimization. Reclaiming 100+ manual hours monthly
+              while driving adoption through UI/UX excellence and champion networks.
             </p>
           </div>
 
-          {/* Step 6: Sustaining & Scaling */}
+          {/* Step 6: Observability, Scaling & Evolution */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
               <TrendingUp className='h-5 w-5 text-indigo-400 transition-transform group-hover:translate-x-0.5' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              6. Scaling & Evolution
+              6. Observability, Metrics & Evolution
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Establishing quarterly review cadences and performance metrics.
-              Managing changes through version control and robust release cycles
-              to sustain long-term operational velocity.
+              Establishing performance baselines, KPI dashboards, and quarterly
+              review cadences. Managing continuous evolution through CI/CD pipelines
+              and robust monitoring to sustain long-term operational excellence.
             </p>
           </div>
         </div>
@@ -212,11 +210,11 @@ function Index() {
       {/* Section 4: Personal Deployments */}
       <section className='scroll-reveal mx-auto max-w-6xl px-4 text-center'>
         <h2 className='mb-6 text-2xl font-bold text-white md:text-3xl'>
-          Active Product Suite
+          Edge-Native Product Suite
         </h2>
         <p className='mx-auto mb-10 max-w-xl text-sm text-slate-400'>
-          Four independent edge-native tools built to streamline workflows,
-          finances, memory management, and search agents.
+          Four independent applications demonstrating agentic AI, semantic search,
+          financial modeling, and modern edge architecture.
         </p>
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2'>
           {projectsData.map((project, idx) => (

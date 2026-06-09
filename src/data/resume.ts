@@ -27,21 +27,21 @@ export interface ResumeData {
 
 export const resumeData: ResumeData = {
   name: 'Roger Lee Cormier',
-  title: 'PMP Technical Project Manager & SaaS Integration Leader',
+  title: 'Full-Stack AI Agentic Engineer & Solutions Architect',
   email: 'rogerleecormier@gmail.com',
   phone: '(585) 808-6213',
   location: 'Davenport, Florida',
   summary:
-    'PMP-certified Technical Project Manager with 15+ years experience spanning SaaS platform integrations (NetSuite, Vena, Ramp AP), cloud transformation (Azure, Cloudflare), secure communications, and U.S. Army network operations command.',
+    'Full-stack AI agentic engineer and PMP-certified Solutions Architect with 15+ years spanning AI orchestration (Graph RAG, MCP, autonomous agents), edge-native infrastructure (Cloudflare, serverless), SaaS platform integrations (NetSuite, Ramp, Vena), and enterprise digital transformation across education, retail, and financial services.',
   skills: [
-    'SaaS Integration & Governance',
-    'API Architecture & Python Scripting',
-    'PMO Setup & RACI Design',
-    'NetSuite ERP Administration',
-    'Cloud Solutions (Azure, Cloudflare)',
-    'Logistics & Property Management',
-    'AI Prompt Engineering & Workflows',
-    'Network Engineering & WIN-T',
+    'Agentic AI & LLM Orchestration (MCP, Graph RAG, Autonomous Agents)',
+    'Edge-Native Architecture (Cloudflare, Serverless, D1, Vectorize)',
+    'Enterprise SaaS Integration & API Architecture',
+    'AI Semantic Search & Vector Databases',
+    'Full-Stack Development (React 19, TypeScript, TanStack)',
+    'PMO Governance & Distributed Team Leadership',
+    'NetSuite ERP & Financial Automation',
+    'Security & Compliance (AES-256, PCI-DSS, Zero-Trust)',
   ],
   experience: [
     {

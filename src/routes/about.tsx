@@ -22,9 +22,9 @@ function About() {
           Roger Lee Cormier
         </h1>
         <p className='max-w-2xl text-sm leading-relaxed text-slate-400'>
-          Veteran signals operator, SaaS system architect, and PMP-certified
-          Technical Project Manager with 15+ years of experience leading
-          enterprise digital transformations.
+          Full-stack AI agentic engineer and Solutions Architect specializing in autonomous agents,
+          edge-native infrastructure, and enterprise SaaS transformation. PMP-certified with 15+ years
+          bridging AI innovation, technical leadership, and complex multi-platform systems integration.
         </p>
       </div>
 
@@ -56,79 +56,82 @@ function About() {
             Core Expertise
           </h2>
           <p className='text-xs text-slate-400'>
-            Technical domains spanning systems engineering, workflow automation,
-            and enterprise integrations.
+            Three converging disciplines: agentic AI, edge-native infrastructure,
+            and enterprise SaaS orchestration.
           </p>
         </div>
         <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
-          {/* Card 1: DevOps */}
-          <div className='space-y-4 rounded-xl border border-slate-800 bg-slate-900/20 p-6 transition-colors hover:border-indigo-500/30'>
-            <div className='flex items-center gap-3'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10'>
-                <Database className='h-5 w-5 text-indigo-400' />
-              </div>
-              <h3 className='text-sm font-bold text-white'>
-                Enterprise DevOps & Cloud
-              </h3>
-            </div>
-            <p className='text-xs leading-normal text-slate-400'>
-              CI/CD pipeline governance, serverless architecture, and cloud
-              migrations with GitHub Actions and Azure.
-            </p>
-            <div className='flex flex-wrap gap-1.5'>
-              {['CI/CD', 'Serverless', 'GitHub Actions'].map(tag => (
-                <span
-                  key={tag}
-                  className='rounded border border-slate-800 bg-slate-900 px-2 py-0.5 text-[9px] font-semibold text-slate-400'
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Card 2: SaaS */}
-          <div className='space-y-4 rounded-xl border border-slate-800 bg-slate-900/20 p-6 transition-colors hover:border-indigo-500/30'>
-            <div className='flex items-center gap-3'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10'>
-                <Globe className='h-5 w-5 text-indigo-400' />
-              </div>
-              <h3 className='text-sm font-bold text-white'>
-                SaaS Platform Integration
-              </h3>
-            </div>
-            <p className='text-xs leading-normal text-slate-400'>
-              NetSuite ERP governance, Ramp expense platform, and API-first
-              designs for operational automation.
-            </p>
-            <div className='flex flex-wrap gap-1.5'>
-              {['NetSuite', 'Ramp', 'API Integration'].map(tag => (
-                <span
-                  key={tag}
-                  className='rounded border border-slate-800 bg-slate-900 px-2 py-0.5 text-[9px] font-semibold text-slate-400'
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Card 3: AI */}
+          {/* Card 1: AI Agentic */}
           <div className='space-y-4 rounded-xl border border-slate-800 bg-slate-900/20 p-6 transition-colors hover:border-indigo-500/30'>
             <div className='flex items-center gap-3'>
               <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10'>
                 <Brain className='h-5 w-5 text-indigo-400' />
               </div>
               <h3 className='text-sm font-bold text-white'>
-                AI-Augmented Workflows
+                Agentic AI & LLM Orchestration
               </h3>
             </div>
             <p className='text-xs leading-normal text-slate-400'>
-              Generative AI updates, prompt engineering, and intelligent status
-              report parsing to save admin hours.
+              Autonomous agents, Graph RAG, MCP integration, semantic search,
+              prompt engineering, and LLM inference orchestration across Claude,
+              ChatGPT, Gemini, and edge models.
             </p>
             <div className='flex flex-wrap gap-1.5'>
-              {['Gen AI', 'Automation', 'AI Workflows'].map(tag => (
+              {['MCP', 'Graph RAG', 'Vectorize'].map(tag => (
+                <span
+                  key={tag}
+                  className='rounded border border-slate-800 bg-slate-900 px-2 py-0.5 text-[9px] font-semibold text-slate-400'
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Card 2: Edge Native */}
+          <div className='space-y-4 rounded-xl border border-slate-800 bg-slate-900/20 p-6 transition-colors hover:border-indigo-500/30'>
+            <div className='flex items-center gap-3'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10'>
+                <Database className='h-5 w-5 text-indigo-400' />
+              </div>
+              <h3 className='text-sm font-bold text-white'>
+                Edge-Native Infrastructure
+              </h3>
+            </div>
+            <p className='text-xs leading-normal text-slate-400'>
+              Cloudflare ecosystem (Workers, Pages, D1, R2, Vectorize), modern
+              full-stack (React 19, TanStack), TypeScript, serverless CI/CD,
+              and global performance optimization.
+            </p>
+            <div className='flex flex-wrap gap-1.5'>
+              {['Cloudflare', 'D1', 'Serverless'].map(tag => (
+                <span
+                  key={tag}
+                  className='rounded border border-slate-800 bg-slate-900 px-2 py-0.5 text-[9px] font-semibold text-slate-400'
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Card 3: Enterprise SaaS */}
+          <div className='space-y-4 rounded-xl border border-slate-800 bg-slate-900/20 p-6 transition-colors hover:border-indigo-500/30'>
+            <div className='flex items-center gap-3'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10'>
+                <Globe className='h-5 w-5 text-indigo-400' />
+              </div>
+              <h3 className='text-sm font-bold text-white'>
+                Enterprise SaaS & Platform Integration
+              </h3>
+            </div>
+            <p className='text-xs leading-normal text-slate-400'>
+              Multi-platform API architecture, NetSuite ERP, Ramp, Vena, Box,
+              SharePoint, HubSpot. API-first governance, secure integration
+              patterns, and compliance-ready automation.
+            </p>
+            <div className='flex flex-wrap gap-1.5'>
+              {['NetSuite', 'Ramp', 'API Design'].map(tag => (
                 <span
                   key={tag}
                   className='rounded border border-slate-800 bg-slate-900 px-2 py-0.5 text-[9px] font-semibold text-slate-400'
