@@ -30,17 +30,18 @@ function Index() {
           </div>
         </div>
         <span className='animate-fade-in-up animation-delay-100 mb-6 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-400'>
-          AI Agentic Engineer & Enterprise Architect
+          AI Technical Architect & Strategic Project Leader
         </span>
         <h1 className='animate-fade-in-up animation-delay-200 mb-6 text-4xl font-black tracking-tight text-white md:text-6xl'>
-          Agentic AI, Enterprise Transformation &{' '}
+          Architecting AI Systems & Orchestrating{' '}
           <span className='bg-clip-text text-indigo-400'>
-            Edge-Native Systems
+            Enterprise Transformation
           </span>
         </h1>
         <p className='animate-fade-in-up animation-delay-300 mb-10 max-w-2xl text-lg leading-relaxed text-slate-400 md:text-xl'>
-          Architecting autonomous agents, orchestrating multi-platform SaaS integrations,
-          and building edge-native applications powered by AI.
+          Designing agentic AI systems and multi-platform integrations while
+          directing strategic execution, governance, and enterprise-scale
+          delivery across distributed, high-velocity teams.
         </p>
         <div className='animate-fade-in-up animation-delay-400 flex flex-col items-center gap-4 sm:flex-row'>
           <a
@@ -74,33 +75,35 @@ function Index() {
           {/* Active Filling Connection Line */}
           <div className='timeline-fill absolute bottom-0 left-0 top-0 w-[2px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500' />
 
-          {/* Step 1: AI Architecture & Agent Design */}
+          {/* Step 1: Strategy & Requirements Translation */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
               <Cpu className='h-5 w-5 text-indigo-400 transition-transform group-hover:rotate-6' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              1. Agentic AI Architecture & Design
+              1. Strategic Planning & Requirements Translation
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Architecting autonomous background agents, designing Graph RAG
-              pipelines, and engineering MCP integrations. Building intelligent
-              systems that reason, plan, and execute across SaaS platforms.
+              Translating complex business objectives into technical roadmaps,
+              agentic AI architectures, and multi-platform integration
+              strategies. Defining success metrics, risk frameworks, and
+              delivery governance.
             </p>
           </div>
 
-          {/* Step 2: Enterprise SaaS Integration Strategy */}
+          {/* Step 2: AI Architecture & Technical Design */}
           <div className='scroll-reveal group relative pl-8 transition-all duration-300 hover:translate-x-1 md:pl-16'>
             <span className='absolute -left-5 top-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-500 bg-slate-900 transition-all duration-300 group-hover:scale-110 group-hover:border-indigo-400 group-hover:shadow-lg group-hover:shadow-indigo-500/10'>
               <Cloud className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-6' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              2. Enterprise SaaS & Platform Integration
+              2. AI Architecture & Technical Design
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Architecting multi-platform API ecosystems connecting ERP (NetSuite, Vena),
-              spend management (Ramp), and content systems (Box, SharePoint). Building
-              scalable, audit-ready integration patterns with governance frameworks.
+              Designing autonomous agents, Graph RAG pipelines, and MCP
+              integrations. Architecting multi-platform API ecosystems
+              (NetSuite, Ramp, Vena, Box, SharePoint) with edge-native
+              infrastructure and scalable governance patterns.
             </p>
           </div>
 
@@ -110,12 +113,13 @@ function Index() {
               <ShieldCheck className='h-5 w-5 text-indigo-400 transition-transform group-hover:scale-110' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              3. PMO Governance & Execution
+              3. Governance, Planning & Team Orchestration
             </h3>
             <p className='leading-relaxed text-slate-400'>
               Institutionalizing PMO discipline with RACI matrices, intake
-              governance, risk frameworks, and automated dashboards. Coordinating
-              distributed teams across time zones with structured handoffs.
+              governance, risk frameworks, and automated dashboards. Leading
+              distributed, multi-timezone teams with structured project cadences
+              and performance visibility.
             </p>
           </div>
 
@@ -125,12 +129,13 @@ function Index() {
               <Cpu className='h-5 w-5 text-indigo-400 transition-transform group-hover:-rotate-12' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              4. Edge-Native & Serverless Architecture
+              4. Implementation & Technical Delivery
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Building modern full-stack applications on Cloudflare Workers,
-              D1, and Vectorize. Deploying intelligent APIs, vector databases,
-              and autonomous agents at the edge for global performance and resilience.
+              Building modern full-stack applications on edge-native platforms
+              (Cloudflare Workers, D1, Vectorize). Deploying intelligent APIs,
+              vector databases, and autonomous agents. Managing CI/CD pipelines,
+              QA validation, and production rollouts across distributed systems.
             </p>
           </div>
 
@@ -140,12 +145,13 @@ function Index() {
               <Users className='h-5 w-5 text-indigo-400 transition-transform group-hover:scale-110' />
             </span>
             <h3 className='mb-2 text-xl font-bold text-white transition-colors group-hover:text-indigo-400'>
-              5. AI-Augmented Automation & Change Management
+              5. Adoption, Change Management & Optimization
             </h3>
             <p className='leading-relaxed text-slate-400'>
-              Deploying generative AI agents to automate status reporting, PMO
-              triage, and workflow optimization. Reclaiming 100+ manual hours monthly
-              while driving adoption through UI/UX excellence and champion networks.
+              Driving user adoption through active champion networks, targeted
+              training, and UI/UX excellence. Deploying AI-augmented automation
+              to optimize workflows and PMO operations, reclaiming 100+ manual
+              hours monthly.
             </p>
           </div>
 
@@ -159,8 +165,9 @@ function Index() {
             </h3>
             <p className='leading-relaxed text-slate-400'>
               Establishing performance baselines, KPI dashboards, and quarterly
-              review cadences. Managing continuous evolution through CI/CD pipelines
-              and robust monitoring to sustain long-term operational excellence.
+              review cadences. Managing continuous evolution through CI/CD
+              pipelines and robust monitoring to sustain long-term operational
+              excellence.
             </p>
           </div>
         </div>
@@ -213,8 +220,8 @@ function Index() {
           Edge-Native Product Suite
         </h2>
         <p className='mx-auto mb-10 max-w-xl text-sm text-slate-400'>
-          Four independent applications demonstrating agentic AI, semantic search,
-          financial modeling, and modern edge architecture.
+          Four independent applications demonstrating agentic AI, semantic
+          search, financial modeling, and modern edge architecture.
         </p>
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2'>
           {projectsData.map((project, idx) => (

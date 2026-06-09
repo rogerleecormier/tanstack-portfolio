@@ -22,9 +22,11 @@ function About() {
           Roger Lee Cormier
         </h1>
         <p className='max-w-2xl text-sm leading-relaxed text-slate-400'>
-          Full-stack AI agentic engineer and Solutions Architect specializing in autonomous agents,
-          edge-native infrastructure, and enterprise SaaS transformation. PMP-certified with 15+ years
-          bridging AI innovation, technical leadership, and complex multi-platform systems integration.
+          AI Technical Architect and Strategic Project Leader. Full-stack
+          engineer designing autonomous agents, edge-native systems, and
+          multi-platform SaaS integrations. PMP-certified with 15+ years driving
+          enterprise transformation through strategic execution, governance
+          discipline, and technical excellence across distributed teams.
         </p>
       </div>
 
@@ -56,11 +58,12 @@ function About() {
             Core Expertise
           </h2>
           <p className='text-xs text-slate-400'>
-            Three converging disciplines: agentic AI, edge-native infrastructure,
-            and enterprise SaaS orchestration.
+            Technical architecture meets strategic execution: agentic AI design,
+            edge-native infrastructure, PMO governance, and enterprise SaaS
+            orchestration.
           </p>
         </div>
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
           {/* Card 1: AI Agentic */}
           <div className='space-y-4 rounded-xl border border-slate-800 bg-slate-900/20 p-6 transition-colors hover:border-indigo-500/30'>
             <div className='flex items-center gap-3'>
@@ -100,8 +103,8 @@ function About() {
             </div>
             <p className='text-xs leading-normal text-slate-400'>
               Cloudflare ecosystem (Workers, Pages, D1, R2, Vectorize), modern
-              full-stack (React 19, TanStack), TypeScript, serverless CI/CD,
-              and global performance optimization.
+              full-stack (React 19, TanStack), TypeScript, serverless CI/CD, and
+              global performance optimization.
             </p>
             <div className='flex flex-wrap gap-1.5'>
               {['Cloudflare', 'D1', 'Serverless'].map(tag => (
@@ -132,6 +135,33 @@ function About() {
             </p>
             <div className='flex flex-wrap gap-1.5'>
               {['NetSuite', 'Ramp', 'API Design'].map(tag => (
+                <span
+                  key={tag}
+                  className='rounded border border-slate-800 bg-slate-900 px-2 py-0.5 text-[9px] font-semibold text-slate-400'
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Card 4: Strategic Leadership & PMO */}
+          <div className='space-y-4 rounded-xl border border-slate-800 bg-slate-900/20 p-6 transition-colors hover:border-indigo-500/30'>
+            <div className='flex items-center gap-3'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10'>
+                <Award className='h-5 w-5 text-indigo-400' />
+              </div>
+              <h3 className='text-sm font-bold text-white'>
+                Strategic Leadership & PMO Governance
+              </h3>
+            </div>
+            <p className='text-xs leading-normal text-slate-400'>
+              Enterprise roadmap planning, PMO governance frameworks, RACI
+              matrices, risk management, distributed team orchestration, and
+              stakeholder alignment. AI-augmented planning and execution.
+            </p>
+            <div className='flex flex-wrap gap-1.5'>
+              {['PMO', 'Leadership', 'Governance'].map(tag => (
                 <span
                   key={tag}
                   className='rounded border border-slate-800 bg-slate-900 px-2 py-0.5 text-[9px] font-semibold text-slate-400'

@@ -14,8 +14,9 @@ function Projects() {
           Edge-Native Application Portfolio
         </h1>
         <p className='text-sm leading-relaxed text-slate-400'>
-          Four production applications demonstrating agentic AI, semantic search,
-          financial modeling, and modern edge-native architecture at scale.
+          Four production applications demonstrating agentic AI, semantic
+          search, financial modeling, and modern edge-native architecture at
+          scale.
         </p>
       </div>
 

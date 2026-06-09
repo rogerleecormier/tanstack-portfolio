@@ -27,21 +27,21 @@ export interface ResumeData {
 
 export const resumeData: ResumeData = {
   name: 'Roger Lee Cormier',
-  title: 'Full-Stack AI Agentic Engineer & Solutions Architect',
+  title: 'AI Technical Architect & Strategic Project Leader',
   email: 'rogerleecormier@gmail.com',
   phone: '(585) 808-6213',
   location: 'Davenport, Florida',
   summary:
-    'Full-stack AI agentic engineer and PMP-certified Solutions Architect with 15+ years spanning AI orchestration (Graph RAG, MCP, autonomous agents), edge-native infrastructure (Cloudflare, serverless), SaaS platform integrations (NetSuite, Ramp, Vena), and enterprise digital transformation across education, retail, and financial services.',
+    'AI Technical Architect and PMP-certified Strategic Project Leader with 15+ years spanning agentic AI design (Graph RAG, MCP, autonomous agents), edge-native infrastructure (Cloudflare, serverless), SaaS integrations (NetSuite, Ramp, Vena), PMO governance, and enterprise transformation. Expert in bridging technical architecture with strategic execution and distributed team leadership.',
   skills: [
-    'Agentic AI & LLM Orchestration (MCP, Graph RAG, Autonomous Agents)',
+    'Agentic AI Architecture & LLM Orchestration (MCP, Graph RAG, Autonomous Agents)',
+    'Strategic Planning & Enterprise Roadmap Development',
+    'PMO Governance, Risk Management & Execution Leadership',
     'Edge-Native Architecture (Cloudflare, Serverless, D1, Vectorize)',
-    'Enterprise SaaS Integration & API Architecture',
-    'AI Semantic Search & Vector Databases',
+    'Enterprise SaaS Integration & API Architecture (NetSuite, Ramp, Vena)',
+    'Distributed Team Leadership & Cross-Functional Coordination',
     'Full-Stack Development (React 19, TypeScript, TanStack)',
-    'PMO Governance & Distributed Team Leadership',
-    'NetSuite ERP & Financial Automation',
-    'Security & Compliance (AES-256, PCI-DSS, Zero-Trust)',
+    'Security, Compliance & Governance (AES-256, PCI-DSS, SOC 2)',
   ],
   experience: [
     {
